@@ -8,6 +8,9 @@ parser.add_argument('password', help='Votre mot de passe, champ obligatoire', re
 
 
 class UserRegistration(Resource):
+    """
+        Création des utilisateurs
+    """
     def post(self):
         data = parser.parse_args()
         if UserModel.find_by_username(data['username']):
@@ -30,6 +33,10 @@ class UserRegistration(Resource):
 
 
 class UserLogin(Resource):
+    """
+        Connexion des utilisateurs
+    """
+
     def post(self):
         data=parser.parse_args()
         current_user = UserModel.find_by_username(data['username'])
