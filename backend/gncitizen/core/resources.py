@@ -83,15 +83,15 @@ class TokenRefresh(Resource):
         current_user = get_jwt_identity()
         access_token = create_access_token(identity = current_user)
         return {'access_token': access_token}
-      
-      
+
+
 class AllUsers(Resource):
     def get(self):
         return UserModel.return_all()
-                    
+
     def delete(self):
         return UserModel.delete_all()
-      
+
 class SecretResource(Resource):
     @jwt_required
     def get(self):
