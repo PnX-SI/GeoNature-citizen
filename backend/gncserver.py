@@ -1,3 +1,20 @@
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
+
+
+"""
+   script de test des différents modules à utiliser pour le projet GeoNature-citizen
+
+   Pour le lancer:
+       python3 -m gncserver
+
+   Utilise les modules:
+       * flask
+       * sqlalchemy
+       * marshmallow
+"""
+
+
 import datetime
 from datetime import datetime
 
@@ -12,9 +29,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///apptest.db'
 db = SQLAlchemy(app)
 
 
-##### MODELS #####
+##### MODELS > TODO: models.py #####
 
 class SpecieModel(db.Model):
+    """Table des Espèce"""
     __tablename__ = 'species'
     id = db.Column(db.Integer, primary_key=True)
     cd_ref = db.Column(db.Integer)
@@ -23,6 +41,7 @@ class SpecieModel(db.Model):
 
 
 class SightModel(db.Model):
+    """Table des observations"""
     __tablename__ = 'sights'
     id = db.Column(db.Integer, primary_key=True)
     cd_ref = db.Column(db.Integer, db.ForeignKey('species.cd_ref'))
@@ -35,9 +54,10 @@ class SightModel(db.Model):
     posted_at = db.Column(db.DATETIME, nullable=False, default=datetime.utcnow)
 
 
-##### SCHEMAS #####
+##### SCHEMAS > TODO: schemas.py #####
 
 class SpecieSchema(Schema):
+    """Schéma Marschmallow des espèces"""
     id = fields.Int(dump_only=True)
     cd_ref = fields.Int()
     common_name = fields.Str()
@@ -54,6 +74,7 @@ def must_not_be_blank(data):
 
 
 class SightSchema(Schema):
+    """Schéma marshmallow des observations"""
     id = fields.Int(dump_only=True)
     specie = fields.Nested(SpecieSchema, validate=[must_not_be_blank])
     # dateobs = fields.DateTime(required=True, validate=[must_not_be_blank])
@@ -67,7 +88,7 @@ sight_schema = SightSchema()
 sights_schema = SightSchema(many=True, only=('id', 'count', 'specie'))
 
 
-##### API #####
+##### API > TODO: api.py #####
 
 @app.route('/species/')
 def get_species():
