@@ -1,22 +1,28 @@
 #!/usr/bin/env python3
 
-from server import db
 from passlib.hash import pbkdf2_sha256 as sha256
+
+from server import db, ma
 
 
 class RevokedTokenModel(db.Model):
     __tablename__ = 'revoked_tokens'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120))
-    
+
     def add(self):
         db.session.add(self)
         db.session.commit()
-    
+
     @classmethod
     def is_jti_blacklisted(cls, jti):
-        query = cls.query.filter_by(jti = jti).first()
+        query = cls.query.filter_by(jti=jti).first()
         return bool(query)
+
+
+class RevokedTokenSchema(ma.ModelSchema):
+    class Meta:
+        model = RevokedTokenModel
 
 
 class UserModel(db.Model):
@@ -25,9 +31,9 @@ class UserModel(db.Model):
     """
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(120), unique = True, nullable = False)
-    password = db.Column(db.String(120), nullable = False)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
     admin = db.Column(db.Boolean, default=False)
 
     def save_to_db(self):
@@ -44,7 +50,7 @@ class UserModel(db.Model):
 
     @classmethod
     def find_by_username(cls, username):
-        return cls.query.filter_by(username = username).first()
+        return cls.query.filter_by(username=username).first()
 
     @classmethod
     def return_all(cls):
@@ -52,8 +58,9 @@ class UserModel(db.Model):
             return {
                 'username': x.username,
                 'password': x.password,
-                'admin':x.admin
+                'admin': x.admin
             }
+
         return {'users': list(map(lambda x: to_json(x), UserModel.query.all()))}
 
     @classmethod
@@ -64,3 +71,12 @@ class UserModel(db.Model):
             return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
         except:
             return {'message': 'Something went wrong'}
+
+
+class UserSchema(ma.ModelSchema):
+    class Meta:
+        model = UserModel
+
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
