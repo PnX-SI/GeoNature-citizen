@@ -2,7 +2,7 @@
 
 from passlib.hash import pbkdf2_sha256 as sha256
 
-from server import db, ma
+from server import db
 
 
 class RevokedTokenModel(db.Model):
@@ -20,11 +20,6 @@ class RevokedTokenModel(db.Model):
         return bool(query)
 
 
-class RevokedTokenSchema(ma.ModelSchema):
-    class Meta:
-        model = RevokedTokenModel
-
-
 class UserModel(db.Model):
     """
         Table des utilisateurs
@@ -34,6 +29,7 @@ class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(150), nullable=False)
     admin = db.Column(db.Boolean, default=False)
 
     def save_to_db(self):
@@ -58,6 +54,7 @@ class UserModel(db.Model):
             return {
                 'username': x.username,
                 'password': x.password,
+                'email': x.email,
                 'admin': x.admin
             }
 
@@ -71,12 +68,3 @@ class UserModel(db.Model):
             return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
         except:
             return {'message': 'Something went wrong'}
-
-
-class UserSchema(ma.ModelSchema):
-    class Meta:
-        model = UserModel
-
-
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
