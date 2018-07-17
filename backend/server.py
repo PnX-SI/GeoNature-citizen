@@ -1,6 +1,6 @@
 import logging
 
-from flask import Flask, request, jsonify
+from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_restful import Api
@@ -30,9 +30,10 @@ app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 
 jwt = JWTManager(app)
 
-from gncitizen.core import models as gnmodels, resources as gnresources
-from gncitizen.sights import resources as siresources
-from gncitizen.sights.models import SightsSchema, SightModel
+from gncitizen.auth import models as gnmodels, resources as gnresources
+from gncitizen.sights.routes import sights_url
+
+app.register_blueprint(sights_url)
 
 
 @jwt.token_in_blacklist_loader
@@ -50,29 +51,15 @@ api.add_resource(gnresources.TokenRefresh, '/token/refresh')
 api.add_resource(gnresources.AllUsers, '/users')
 api.add_resource(gnresources.SecretResource, '/secret')
 
-# Sights
-api.add_resource(siresources.AllSights, '/sights/')
-api.add_resource(siresources.SightAdd, '/sights/add')
+# # Sights
+# api.add_resource(siresources.AllSights, '/sights/')
+# api.add_resource(siresources.SightAdd, '/sights/add')
 
-
-@app.route('/sight', methods=['POST'])
-def add_sight():
-    # mount exam object
-    json = request.get_json()
-    if not json_data:
-        return jsonify({'message': 'No input data provided'}), 400
-    logger.warning(json)
-    posted_sight = SightsSchema().load(json)
-    logger.warning(posted_sight.data)
-    sight = SightModel(posted_sight.data)
-    logger.warning(sight)
-
-    sight.save_to_db()
-
-    # return created exam
-    new_sight = SightsSchema().dump(sight).data
-    return jsonify(new_sight), 201
-
+#
 @app.before_first_request
 def create_tables():
     db.create_all()
+
+if __name__ == '__main__':
+    db.create_all()
+    app.run(debug=True, port=5001)
