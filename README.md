@@ -1,7 +1,7 @@
 # GeoNature-citizen
 Portail d'inventaire participatif de la biodiversité à destination du grand public
 
-Les développements de cette première version sur dans la branche `dev`.
+Les développements de cette première version sur dans la branche [dev](https://github.com/PnX-SI/GeoNature-citizen/tree/dev).
 
 ## Solutions logicielles
 
@@ -9,9 +9,9 @@ Les développements de cette première version sur dans la branche `dev`.
 
 * Python 3.5
   * Flask (moteur de l'API)
-  * pyjwt ou flask-jwt (pour l'authentification)
+  * Marshmallow
+  * flask-jwt-extended (pour l'authentification)
   * requests (pour la consultation de sources externses comme les portails faune-xxx.org)
-  * flask-restful
 * PostgreSQL
 
 ### Frontent
