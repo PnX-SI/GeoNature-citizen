@@ -275,3 +275,5 @@ tags
 
 
 # End of https://www.gitignore.io/api/vim,python,pycharm+all
+#
+config/default_config.toml

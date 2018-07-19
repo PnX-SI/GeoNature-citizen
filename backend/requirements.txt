@@ -1,13 +1,15 @@
 click==6.7
 Flask==1.0.2
-Flask-JWT-Extended==3.11.0
+Flask-JWT-Extended==3.10.0
 Flask-SQLAlchemy==2.3.2
+GeoAlchemy2==0.4.2
 itsdangerous==0.24
 Jinja2==2.10
 MarkupSafe==1.0
 marshmallow==2.15.3
+mypy==0.610
 passlib==1.7.1
 psycopg2-binary==2.7.5
 PyJWT==1.6.4
-SQLAlchemy==1.2.10
+SQLAlchemy==1.2.9
 Werkzeug==0.14.1

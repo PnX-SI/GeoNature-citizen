@@ -28,7 +28,6 @@ app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 jwt = JWTManager(app)
 
 from gncitizen.sights.routes import sights_url
-from gncitizen.auth.models import RevokedTokenModel
 from gncitizen.auth.routes import auth
 
 app.register_blueprint(sights_url)
@@ -38,11 +37,10 @@ app.register_blueprint(auth)
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     jti = decrypted_token['jti']
-    return RevokedTokenModel.is_jti_blacklisted(jti)
 
 
 @app.before_first_request
-def create_tables():
+def create_tables(db):
     db.create_all()
 
 

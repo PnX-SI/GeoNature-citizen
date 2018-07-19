@@ -10,7 +10,7 @@ from geoalchemy2 import Geometry
 class SpecieModel(db.Model):
     """Table des Espèce"""
     __tablename__ = 'species'
-    __table_args__ = {'schema': 'gn_citizen'}
+    # __table_args__ = {'schema': 'gn_citizen'}
     id_specie = db.Column(db.Integer, primary_key=True)
     cd_nom = db.Column(db.Integer)
     common_name = db.Column(db.String(150))
@@ -20,7 +20,7 @@ class SpecieModel(db.Model):
 class SightModel(db.Model):
     """Table des observations"""
     __tablename__ = 'sights'
-    __table_args__ = {'schema': 'gn_citizen'}
+    # __table_args__ = {'schema': 'gn_citizen'}
     id_sight = db.Column(db.Integer, primary_key=True)
     uuid_sinp = db.Column(db.String(200), nullable=False)
     cd_nom = db.Column(db.Integer, db.ForeignKey('species.cd_nom'))
