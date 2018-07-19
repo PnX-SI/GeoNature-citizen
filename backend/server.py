@@ -12,7 +12,8 @@ app = Flask(__name__)
 app.debug = True
 
 # Configuration de la bdd
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://gncdbuser:gncdbpwd@127.0.0.1:5432/gncitizen'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -40,7 +41,9 @@ def check_if_token_in_blacklist(decrypted_token):
 
 
 @app.before_first_request
-def create_tables(db):
+def create_tables():
+    from gncitizen.auth.models import UserModel, RevokedTokenModel
+    from gncitizen.sights.models import SpecieModel, SightModel
     db.create_all()
 
 

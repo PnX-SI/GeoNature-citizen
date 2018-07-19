@@ -7,6 +7,7 @@ from server import db
 
 class RevokedTokenModel(db.Model):
     __tablename__ = 'revoked_tokens'
+    __table_args__ = {'schema': 'users'}
     
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120))
@@ -25,9 +26,10 @@ class UserModel(db.Model):
     """
         Table des utilisateurs
     """
-    __tablename__ = 'user'
+    __tablename__ = 'users'
+    __table_args__ = {'schema': 'users'}
 
-    id = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     surname = db.Column(db.String(100), unique=True, nullable=False)
     username = db.Column(db.String(120), unique=True, nullable=False)
@@ -36,6 +38,7 @@ class UserModel(db.Model):
     phone = db.Column(db.String(15))
     organism = db.Column(db.String(100))
     admin = db.Column(db.Boolean, default=False)
+    timestamp_create = db.Column(db.DateTime)
 
     def save_to_db(self):
         db.session.add(self)

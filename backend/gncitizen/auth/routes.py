@@ -4,6 +4,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_ra
 
 from .models import UserModel, RevokedTokenModel
 from .schemas import user_schema
+from server import db
 
 auth = Blueprint('auth', __name__)
 
@@ -14,6 +15,7 @@ def registration():
     Enregistrement de l'utilisation
     """
     json_data = request.get_json()
+    print('+++++ type +++++', type(json_data))
     if not json_data:
         return jsonify({'message': 'No input data provided'}), 400
     # Validate and deserialize input
@@ -21,18 +23,30 @@ def registration():
         data, errors = user_schema.load(json_data)
     except ValidationError as err:
         return jsonify(err.messages), 422
-    username, password, email = data['username'], data['password'], data['email']
+    print('+++++ data +++++', type(data))
+    name, surname, username, password, email = data['name'], data['surname'], data['username'], data['password'], data[
+        'email']
     if UserModel.find_by_username(data['username']):
         return jsonify({'message': 'L\'utilisateur {} éxiste déjà'.format(username)}), 400
     new_user = UserModel(
+        name=name,
+        surname=surname,
         username=username,
         password=UserModel.generate_hash(password),
         email=email
     )
     try:
-        new_user.save_to_db()
+        print('+++++ new_user +++++', new_user)
+        db.session.add(new_user)
+        print('+++++ stdb +++++', db)
+        db.session.commit()
+        print('+++++ commit +++++', db)
+        # new_user.save_to_db()
+        # print('+++++ stdb +++++', stdb)
         access_token = create_access_token(identity=username)
+        print('+++++ access_token +++++', access_token)
         refresh_token = create_refresh_token(identity=username)
+        print('+++++ refresh_token +++++', refresh_token)
         data_json = {
             'message': 'Félicitations, l\'utilisateur <b>{}</b> a été créé'.format(username),
             'access_token': access_token,
@@ -40,7 +54,7 @@ def registration():
         }
         return jsonify(data_json), 200
     except:
-        return {'message': 'Quelque chose s\'est mal déroulé'}, 500
+        return jsonify({'message': 'Quelque chose s\'est mal déroulé'}), 500
 
 
 @auth.route('/login', methods=['POST'])

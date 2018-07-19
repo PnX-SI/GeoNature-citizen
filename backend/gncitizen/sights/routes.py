@@ -2,6 +2,7 @@ from datetime import datetime
 
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (jwt_required)
+import uuid
 
 from server import db
 from .models import SightModel, SpecieModel
@@ -63,25 +64,28 @@ def new_sight():
     # Validate and deserialize input
     try:
         data, errors = sight_schema.load(json_data)
-        print(data['specie']["cd_ref"])
+        print(data['specie']["cd_nom"])
     except ValidationError as err:
         return jsonify(err.messages), 422
-    cd_ref, common_name, sci_name = data['specie']['cd_ref'], data['specie']['common_name'], data['specie']['sci_name']
-    print('data / cd_ref:', cd_ref)
+    cd_nom, common_name, sci_name = data['specie']['cd_nom'], data['specie']['common_name'], data['specie']['sci_name']
+    print('data / cd_nom:', cd_nom)
     print('data / common_name:', common_name)
     print('data / sci_name:', sci_name)
-    # print('data / date:', data['dateobs'])
-    specie = SpecieModel.query.filter_by(cd_ref=cd_ref, common_name=common_name).first()
+    specie = SpecieModel.query.filter_by(cd_nom=cd_nom).first()
+    print('+++++++', (specie.cd_nom, specie.common_name))
     if specie is None:
         #     # Create a new author
-        specie = SpecieModel(cd_ref=cd_ref, common_name=common_name, sci_name=sci_name)
+        specie = SpecieModel(cd_nom=cd_nom, common_name=common_name, sci_name=sci_name)
         db.session.add(specie)
+        db.session.commit()
     # Create new quote
     sight = SightModel(
         # date=data['dateobs'],
-        cd_ref=data['specie']['cd_ref'],
+        cd_nom=cd_nom,
         count=data['count'],
-        posted_at=datetime.utcnow(),
+        timestamp_create=datetime.utcnow(),
+        uuid_sinp=uuid.uuid4(),
+        date=datetime.utcnow()
     )
     db.session.add(sight)
     db.session.commit()

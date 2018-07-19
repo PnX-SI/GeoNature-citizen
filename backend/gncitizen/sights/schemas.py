@@ -8,7 +8,7 @@ def must_not_be_blank(data):
 class SpecieSchema(Schema):
     """Schéma Marschmallow des espèces"""
     id = fields.Int(dump_only=True)
-    cd_ref = fields.Int()
+    cd_nom = fields.Int()
     common_name = fields.Str()
     sci_name = fields.Str()
 
@@ -20,9 +20,9 @@ class SightSchema(Schema):
     """Schéma marshmallow des observations"""
     id = fields.Int(dump_only=True)
     specie = fields.Nested(SpecieSchema, validate=[must_not_be_blank])
-    # dateobs = fields.DateTime(required=True, validate=[must_not_be_blank])
+    date = fields.Date(required=True, validate=[must_not_be_blank])
     count = fields.Integer(required=False)
-    posted_at = fields.DateTime(dump_only=True)
+    timestamp_create = fields.DateTime(dump_only=True)
 
 
 specie_schema = SpecieSchema()
