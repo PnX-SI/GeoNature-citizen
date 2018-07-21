@@ -3,9 +3,10 @@
 
 from datetime import datetime
 
-from server import db
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import UUID
+
+from server import db
 
 
 class SpecieModel(db.Model):
@@ -24,11 +25,10 @@ class SightModel(db.Model):
     __table_args__ = {'schema': 'gn_citizen'}
     id_sight = db.Column(db.Integer, primary_key=True, unique=True)
     uuid_sinp = db.Column(UUID(as_uuid=True), nullable=False, unique=True)
-    cd_nom = db.Column(db.Integer, db.ForeignKey('gn_citizen.species.id_specie'))
+    cd_nom = db.Column(db.Integer, db.ForeignKey('gn_citizen.species.cd_nom'))
     specie = db.relationship(
         'SpecieModel',
-        backref=db.backref('specie', lazy='dynamic'),
-    )
+        backref=db.backref('specie', lazy='dynamic'))
     date = db.Column(db.DATE, nullable=False)
     id_role = db.Column(db.Integer, db.ForeignKey('users.users.id_user'))
     obs_txt = db.Column(db.String(150))

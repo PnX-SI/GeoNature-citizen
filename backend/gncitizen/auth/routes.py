@@ -1,10 +1,10 @@
 from flask import jsonify, request, Blueprint
-from flask_jwt_extended import create_access_token, create_refresh_token, get_raw_jwt, jwt_refresh_token_required, \
-    jwt_required
+from flask_jwt_extended import (create_access_token, create_refresh_token, get_raw_jwt, jwt_refresh_token_required, \
+                                jwt_required, get_jwt_identity)
 
+from server import db
 from .models import UserModel, RevokedTokenModel
 from .schemas import user_schema
-from server import db
 
 auth = Blueprint('auth', __name__)
 
@@ -12,10 +12,21 @@ auth = Blueprint('auth', __name__)
 @auth.route('/registration', methods=['POST'])
 def registration():
     """
-    Enregistrement de l'utilisation
+    Enregistrement de l'utilisateur
+    Utiliser le décorateur `@get_jwt_identity()`
+    pour avoir l'identité de l'utilisateur courant. Exemple:
+
+    ``` python
+    @auth.route('/protected', methods=['GET'])
+    @jwt_required
+    def protected():
+        # Access the identity of the current user with get_jwt_identity
+        current_user = get_jwt_identity()
+        return jsonify(current_suer=current_user), 200
+    ```
+
     """
     json_data = request.get_json()
-    print('+++++ type +++++', type(json_data))
     if not json_data:
         return jsonify({'message': 'No input data provided'}), 400
     # Validate and deserialize input
@@ -23,7 +34,6 @@ def registration():
         data, errors = user_schema.load(json_data)
     except ValidationError as err:
         return jsonify(err.messages), 422
-    print('+++++ data +++++', type(data))
     name, surname, username, password, email = data['name'], data['surname'], data['username'], data['password'], data[
         'email']
     if UserModel.find_by_username(data['username']):
@@ -36,17 +46,10 @@ def registration():
         email=email
     )
     try:
-        print('+++++ new_user +++++', new_user)
         db.session.add(new_user)
-        print('+++++ stdb +++++', db)
         db.session.commit()
-        print('+++++ commit +++++', db)
-        # new_user.save_to_db()
-        # print('+++++ stdb +++++', stdb)
         access_token = create_access_token(identity=username)
-        print('+++++ access_token +++++', access_token)
         refresh_token = create_refresh_token(identity=username)
-        print('+++++ refresh_token +++++', refresh_token)
         data_json = {
             'message': 'Félicitations, l\'utilisateur <b>{}</b> a été créé'.format(username),
             'access_token': access_token,
@@ -136,3 +139,16 @@ def del_allusers():
     Suppression de tous les utilisateurs
     """
     return jsonify(UserModel.delete_all()), 200
+
+
+@auth.route('/logged_user', methods=['GET'])
+@jwt_required
+def logged_user():
+    """
+    Get main informations of current logged user
+    :return:
+    """
+    current_user = get_jwt_identity()
+    print(type(current_user))
+    user = user_schema.dump(UserModel.query.filter_by(username=current_user).first())
+    return jsonify(user=user), 200

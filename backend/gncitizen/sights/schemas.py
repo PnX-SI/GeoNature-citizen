@@ -7,7 +7,7 @@ def must_not_be_blank(data):
 
 class SpecieSchema(Schema):
     """Schéma Marschmallow des espèces"""
-    id = fields.Int(dump_only=True)
+    id = fields.Int()
     cd_nom = fields.Int()
     common_name = fields.Str()
     sci_name = fields.Str()
@@ -28,4 +28,5 @@ class SightSchema(Schema):
 specie_schema = SpecieSchema()
 species_schema = SpecieSchema(many=True)
 sight_schema = SightSchema()
-sights_schema = SightSchema(many=True, only=('id', 'count', 'specie'))
+sights_schema = SightSchema(many=True, only=('id_sight', 'count', 'specie'))
+

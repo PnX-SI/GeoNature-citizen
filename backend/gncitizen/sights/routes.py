@@ -1,19 +1,28 @@
+import uuid
 from datetime import datetime
 
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import (jwt_required)
-import uuid
+from flask_jwt_extended import (jwt_optional, get_jwt_identity)
 
 from server import db
+from gncitizen.auth.models import UserModel
 from .models import SightModel, SpecieModel
 from .schemas import specie_schema, sight_schema, species_schema, sights_schema
 
 sights_url = Blueprint('sights_url', __name__)
 
 
+def get_id_role_if_exists():
+    if get_jwt_identity() is not None:
+        current_user = get_jwt_identity()
+        id_role = UserModel.query.filter_by(username=current_user).first().id_user
+    else:
+        id_role = None
+    return id_role
+
 
 @sights_url.route('/species/')
-@jwt_required
+@jwt_optional
 def get_species():
     species = SpecieModel.query.all()
     # Serialize the queryset
@@ -21,9 +30,8 @@ def get_species():
     return jsonify({'species': result})
 
 
-
 @sights_url.route('/species/<int:pk>')
-@jwt_required
+@jwt_optional
 def get_specie(pk):
     try:
         specie = SpecieModel.query.get(pk)
@@ -35,16 +43,15 @@ def get_specie(pk):
 
 
 @sights_url.route('/sights/', methods=['GET'])
-@jwt_required
+@jwt_optional
 def get_sights():
     sights = SightModel.query.all()
     result = sights_schema.dump(sights)
     return jsonify({'sights': result})
 
 
-
 @sights_url.route('/sights/<int:pk>')
-@jwt_required
+# @jwt_required
 def get_sight(pk):
     try:
         sight = SightModel.query.get(pk)
@@ -55,9 +62,14 @@ def get_sight(pk):
 
 
 @sights_url.route('/sights/', methods=['POST'])
-@jwt_required
+@jwt_optional
 def new_sight():
+    """
+    Saisie d'une nouvelle observation
+    :return:
+    """
     json_data = request.get_json()
+    id_role = get_id_role_if_exists()
     print(json_data)
     if not json_data:
         return jsonify({'message': 'No input data provided'}), 400
@@ -68,28 +80,25 @@ def new_sight():
     except ValidationError as err:
         return jsonify(err.messages), 422
     cd_nom, common_name, sci_name = data['specie']['cd_nom'], data['specie']['common_name'], data['specie']['sci_name']
-    print('data / cd_nom:', cd_nom)
-    print('data / common_name:', common_name)
-    print('data / sci_name:', sci_name)
     specie = SpecieModel.query.filter_by(cd_nom=cd_nom).first()
-    print('+++++++', (specie.cd_nom, specie.common_name))
     if specie is None:
-        #     # Create a new author
+        # Create a new specie if not exists
         specie = SpecieModel(cd_nom=cd_nom, common_name=common_name, sci_name=sci_name)
         db.session.add(specie)
         db.session.commit()
-    # Create new quote
+    # Create new sight
     sight = SightModel(
         # date=data['dateobs'],
         cd_nom=cd_nom,
         count=data['count'],
         timestamp_create=datetime.utcnow(),
         uuid_sinp=uuid.uuid4(),
-        date=datetime.utcnow()
+        date=datetime.utcnow(),
+        id_role=id_role
     )
     db.session.add(sight)
     db.session.commit()
-    result = sight_schema.dump(SightModel.query.get(sight.id))
+    result = sight_schema.dump(SightModel.query.get(sight.id_sight))
     return jsonify({
         'message': 'Created new sight.',
         'sight': result,
