@@ -4,8 +4,8 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (jwt_optional, get_jwt_identity)
 
-from server import db
 from gncitizen.auth.models import UserModel
+from server import db
 from .models import SightModel, SpecieModel
 from .schemas import specie_schema, sight_schema, species_schema, sights_schema
 
@@ -69,17 +69,24 @@ def new_sight():
     :return:
     """
     json_data = request.get_json()
-    id_role = get_id_role_if_exists()
     print(json_data)
     if not json_data:
         return jsonify({'message': 'No input data provided'}), 400
     # Validate and deserialize input
     try:
         data, errors = sight_schema.load(json_data)
-        print(data['specie']["cd_nom"])
+        print(data['specie']['cd_nom'])
     except ValidationError as err:
         return jsonify(err.messages), 422
     cd_nom, common_name, sci_name = data['specie']['cd_nom'], data['specie']['common_name'], data['specie']['sci_name']
+
+    id_role = get_id_role_if_exists()
+    if id_role is None:
+        obs_txt = data['obs_txt']
+    else:
+        obs_txt = None
+
+    # Création d'une nouvelle espèce'
     specie = SpecieModel.query.filter_by(cd_nom=cd_nom).first()
     if specie is None:
         # Create a new specie if not exists
@@ -94,7 +101,8 @@ def new_sight():
         timestamp_create=datetime.utcnow(),
         uuid_sinp=uuid.uuid4(),
         date=datetime.utcnow(),
-        id_role=id_role
+        id_role=id_role,
+        obs_txt=obs_txt
     )
     db.session.add(sight)
     db.session.commit()

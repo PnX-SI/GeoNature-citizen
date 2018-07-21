@@ -22,11 +22,12 @@ class SightSchema(Schema):
     specie = fields.Nested(SpecieSchema, validate=[must_not_be_blank])
     date = fields.Date(required=True, validate=[must_not_be_blank])
     count = fields.Integer(required=False)
+    obs_txt = fields.String(required=False)
     timestamp_create = fields.DateTime(dump_only=True)
 
 
 specie_schema = SpecieSchema()
 species_schema = SpecieSchema(many=True)
 sight_schema = SightSchema()
-sights_schema = SightSchema(many=True, only=('id_sight', 'count', 'specie'))
+sights_schema = SightSchema(many=True, only=('id_sight', 'count', 'id_role','observer','specie'))
 
