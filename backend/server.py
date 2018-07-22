@@ -1,4 +1,5 @@
 import logging
+import os
 
 from flask import Flask
 from flask_jwt_extended import JWTManager
@@ -6,7 +7,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 logger = logging.getLogger()
 logger.setLevel(10)
-
+basedir = os.path.abspath(os.path.dirname(__file__))
+print('media path:', os.path.join(basedir, '../media'))
 app = Flask(__name__)
 
 app.debug = True
@@ -15,6 +17,9 @@ app.debug = True
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://gncdbuser:gncdbpwd@127.0.0.1:5432/gncitizen'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+app.config['MEDIA_FOLDER'] = os.path.join(basedir, '../media')
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 db = SQLAlchemy(app)
 
@@ -42,8 +47,6 @@ def check_if_token_in_blacklist(decrypted_token):
 
 @app.before_first_request
 def create_tables():
-    from gncitizen.auth.models import UserModel, RevokedTokenModel
-    from gncitizen.sights.models import SpecieModel, SightModel
     db.create_all()
 
 

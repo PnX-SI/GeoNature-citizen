@@ -1,5 +1,7 @@
 import uuid
 from datetime import datetime
+from gncitizen.core.media import allowed_file
+from werkzeug.utils import secure_filename
 
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (jwt_optional, get_jwt_identity)
@@ -68,7 +70,20 @@ def new_sight():
     Saisie d'une nouvelle observation
     :return:
     """
+    # try:
+    #     file = request.files['file']
+    #     # if user does not select file, browser also
+    #     # submit an empty part without filename
+    #     if file.filename == '':
+    #         flash('No selected file')
+    #         return redirect(request.url)
+    #     if file and allowed_file(file.filename):
+    #         filename = secure_filename(file.filename)
+    #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    #         return redirect(url_for('uploaded_file',
+    #                                 filename=filename))
     json_data = request.get_json()
+    medias = request.files
     print(json_data)
     if not json_data:
         return jsonify({'message': 'No input data provided'}), 400

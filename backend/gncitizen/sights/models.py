@@ -38,3 +38,4 @@ class SightModel(db.Model):
     comment = db.Column(db.String(300))
     geom = db.Column(Geometry('POINT', 4326))
     timestamp_create = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    photo = db.Col
