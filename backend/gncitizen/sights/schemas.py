@@ -29,5 +29,5 @@ class SightSchema(Schema):
 specie_schema = SpecieSchema()
 species_schema = SpecieSchema(many=True)
 sight_schema = SightSchema()
-sights_schema = SightSchema(many=True, only=('id_sight', 'count', 'id_role','observer','specie'))
+sights_schema = SightSchema(many=True, only=('id_sight', 'count', 'id_role','obs_txt','specie'))
 
