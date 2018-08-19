@@ -1,26 +1,17 @@
 import uuid
 from datetime import datetime
-from gncitizen.core.media import allowed_file
-from werkzeug.utils import secure_filename
 
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import (jwt_optional, get_jwt_identity)
+from flask_jwt_extended import (jwt_optional)
+from geoalchemy2.shape import from_shape
+from shapely.geometry import Point
 
-from gncitizen.auth.models import UserModel
+from gncitizen.core.utils import get_id_role_if_exists
 from server import db
 from .models import SightModel, SpecieModel
 from .schemas import specie_schema, sight_schema, species_schema, sights_schema
 
 sights_url = Blueprint('sights_url', __name__)
-
-
-def get_id_role_if_exists():
-    if get_jwt_identity() is not None:
-        current_user = get_jwt_identity()
-        id_role = UserModel.query.filter_by(username=current_user).first().id_user
-    else:
-        id_role = None
-    return id_role
 
 
 @sights_url.route('/species/')
@@ -44,12 +35,12 @@ def get_specie(pk):
     return jsonify({'specie': specie_result, 'quotes': sights_result})
 
 
-@sights_url.route('/sights/', methods=['GET'])
-@jwt_optional
-def get_sights():
-    sights = SightModel.query.all()
-    result = sights_schema.dump(sights)
-    return jsonify({'sights': result})
+# @sights_url.route('/sights/', methods=['GET'])
+# @jwt_optional
+# def get_sights():
+#     sights = SightModel.query.all()
+#     result = sights_schema.dump(sights)
+#     return jsonify({'sights': result})
 
 
 @sights_url.route('/sights/<int:pk>')
@@ -63,12 +54,14 @@ def get_sight(pk):
     return jsonify({'sight': result})
 
 
-@sights_url.route('/sights/', methods=['POST'])
+@sights_url.route('/sights/', methods=['POST', 'GET'])
 @jwt_optional
-def new_sight():
+def sights():
     """
-    Saisie d'une nouvelle observation
-    :return:
+    Gestion des observations
+
+    If method is POST, add a sight to database else, return all sights
+
     """
     # try:
     #     file = request.files['file']
@@ -82,47 +75,58 @@ def new_sight():
     #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     #         return redirect(url_for('uploaded_file',
     #                                 filename=filename))
-    json_data = request.get_json()
-    medias = request.files
-    print(json_data)
-    if not json_data:
-        return jsonify({'message': 'No input data provided'}), 400
-    # Validate and deserialize input
-    try:
-        data, errors = sight_schema.load(json_data)
-        print(data['specie']['cd_nom'])
-    except ValidationError as err:
-        return jsonify(err.messages), 422
-    cd_nom, common_name, sci_name = data['specie']['cd_nom'], data['specie']['common_name'], data['specie']['sci_name']
+    if request.method == 'POST':
+        json_data = request.get_json()
+        medias = request.files
+        print(json_data)
+        if not json_data:
+            return jsonify({'message': 'No input data provided'}), 400
+        # Validate and deserialize input
+        # info: manque la date
+        try:
+            data, errors = sight_schema.load(json_data)
+            print(data['cd_nom'])
+        except ValidationError as err:
+            return jsonify(err.messages), 422
+        try:
+            cd_nom = data['cd_nom']
+            if data['geom']:
+                geom = from_shape(Point(*data['geom'][0]), srid=4326)
+            else:
+                geom = None
+            if data['count']:
+                count = data['count']
+            else:
+                count = 1
+        except:
+            return jsonify('Données incomplètes'), 422
 
-    id_role = get_id_role_if_exists()
-    if id_role is None:
-        obs_txt = data['obs_txt']
-    else:
-        obs_txt = None
+        id_role = get_id_role_if_exists()
+        if id_role is None:
+            obs_txt = data['obs_txt']
+        else:
+            obs_txt = None
 
-    # Création d'une nouvelle espèce'
-    specie = SpecieModel.query.filter_by(cd_nom=cd_nom).first()
-    if specie is None:
-        # Create a new specie if not exists
-        specie = SpecieModel(cd_nom=cd_nom, common_name=common_name, sci_name=sci_name)
-        db.session.add(specie)
+        # Create new sight
+        sight = SightModel(
+            # date=data['dateobs'],
+            cd_nom=cd_nom,
+            count=count,
+            timestamp_create=datetime.utcnow(),
+            uuid_sinp=uuid.uuid4(),
+            date=datetime.utcnow(),
+            id_role=id_role,
+            obs_txt=obs_txt,
+            geom=geom
+        )
+        db.session.add(sight)
         db.session.commit()
-    # Create new sight
-    sight = SightModel(
-        # date=data['dateobs'],
-        cd_nom=cd_nom,
-        count=data['count'],
-        timestamp_create=datetime.utcnow(),
-        uuid_sinp=uuid.uuid4(),
-        date=datetime.utcnow(),
-        id_role=id_role,
-        obs_txt=obs_txt
-    )
-    db.session.add(sight)
-    db.session.commit()
-    result = sight_schema.dump(SightModel.query.get(sight.id_sight))
-    return jsonify({
-        'message': 'Created new sight.',
-        'sight': result,
-    })
+        result = sight_schema.dump(SightModel.query.get(sight.id_sight))
+        return jsonify({
+            'message': 'Created new sight.',
+            'sight': result,
+        })
+    else:
+        sights = SightModel.query.all()
+        result = sights_schema.dump(sights)
+        return jsonify({'sights': result})
