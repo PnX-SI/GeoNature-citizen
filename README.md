@@ -34,8 +34,8 @@ La première version de ce projet est une démarche soutenue par l'agglomératio
 ![Logo Agglo Valence Romans](https://upload.wikimedia.org/wikipedia/fr/thumb/b/b6/Logo_Valence_Romans.jpg/251px-Logo_Valence_Romans.jpg)
 
 Au delà des fonctionnalités principales de collecte de données naturalistes orienté grand public, des modules supplémentaires sont prévus :
-* Pour afficher une liste d'évènements en lien avec la biodiversté;
-* Pour faire l'inventaire du petit patrimoine (murs en pierre sèche, mares, arbres remarquables, etc.);
+* [gnc_events](https://github.com/lpofredc/gnc_events) Pour afficher une liste d'évènements en lien avec la biodiversté;
+* [gnc_small_heritage](https://github.com/lpofredc/gnc_small_heritage) Pour faire l'inventaire du petit patrimoine (murs en pierre sèche, mares, arbres remarquables, etc.);
 * Des fiches de présentations des espèces (basé sur [TaxHub](https://github.com/PnX-SI/TaxHub)).
 
 # Suivi du projet du projet
