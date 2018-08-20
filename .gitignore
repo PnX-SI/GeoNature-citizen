@@ -278,5 +278,5 @@ tags
 #
 config/default_config.toml
 
-gnc_modules/gnc_*
-
+external_modules/gnc_*
+contrib/gnc_*
