@@ -1,9 +1,6 @@
-from marshmallow import Schema, fields, ValidationError
+from gncitizen.core.utils import must_not_be_blank
+from marshmallow import Schema, fields
 
-
-def must_not_be_blank(data):
-    if not data:
-        raise ValidationError('Data not provided.')
 
 class SpecieSchema(Schema):
     """Schéma Marschmallow des espèces"""
@@ -29,5 +26,4 @@ class SightSchema(Schema):
 specie_schema = SpecieSchema()
 species_schema = SpecieSchema(many=True)
 sight_schema = SightSchema()
-sights_schema = SightSchema(many=True, only=('id_sight', 'count', 'id_role','obs_txt','specie'))
-
+sights_schema = SightSchema(many=True, only=('id_sight', 'count', 'id_role', 'obs_txt', 'specie'))

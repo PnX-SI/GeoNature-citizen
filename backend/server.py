@@ -1,6 +1,7 @@
 import logging
 import os
 
+from flasgger import Swagger
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
@@ -33,11 +34,15 @@ app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 
 jwt = JWTManager(app)
 
+swagger = Swagger(app)
+
 from gncitizen.sights.routes import sights_url
-from gncitizen.auth.routes import auth
+from gncitizen.auth.routes import auth_url
+from gncitizen.georepos.routes import georepos_url
 
 app.register_blueprint(sights_url)
-app.register_blueprint(auth)
+app.register_blueprint(auth_url)
+app.register_blueprint(georepos_url)
 
 
 @jwt.token_in_blacklist_loader
@@ -47,6 +52,7 @@ def check_if_token_in_blacklist(decrypted_token):
 
 @app.before_first_request
 def create_tables():
+    print('Création des tables de la bdd')
     db.create_all()
 
 

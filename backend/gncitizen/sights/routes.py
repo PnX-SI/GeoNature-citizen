@@ -4,10 +4,10 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
-from shapely.geometry import Point
-
 from gncitizen.core.utils import get_id_role_if_exists
 from server import db
+from shapely.geometry import Point
+
 from .models import SightModel, SpecieModel
 from .schemas import specie_schema, sight_schema, species_schema, sights_schema
 
@@ -54,15 +54,34 @@ def get_sight(pk):
     return jsonify({'sight': result})
 
 
-@sights_url.route('/sights/', methods=['POST', 'GET'])
+@sights_url.route('/sights/', methods=['POST'])
 @jwt_optional
 def sights():
-    """
-    Gestion des observations
-
+    """Gestion des observations
     If method is POST, add a sight to database else, return all sights
-
-    """
+        ---
+        parameters:
+          - name: cd_nom
+            in: path
+            type: string
+            required: true
+            default: none
+          - name : observer
+            type : string
+            default :  none
+        definitions:
+          cd_nom:
+            type:int
+          observer:
+            type: string
+          name:
+            type: string
+          geom:
+            type: geometry
+        responses:
+          200:
+            description: Adding a sight
+        """
     # try:
     #     file = request.files['file']
     #     # if user does not select file, browser also
@@ -130,3 +149,27 @@ def sights():
         sights = SightModel.query.all()
         result = sights_schema.dump(sights)
         return jsonify({'sights': result})
+
+@sights_url.route('/sights/', methods=['GET'])
+@jwt_optional
+def get_sights():
+    """Gestion des observations
+    If method is POST, add a sight to database else, return all sights
+        ---
+        definitions:
+          id:
+            type:int
+          insee:
+            type: string
+          name:
+            type: string
+          geom:
+            type: geometry
+        responses:
+          200:
+            description: A list of all sights
+        """
+
+    sights = SightModel.query.all()
+    result = sights_schema.dump(sights)
+    return jsonify({'sights': result})

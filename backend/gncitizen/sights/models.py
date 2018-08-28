@@ -4,9 +4,8 @@
 from datetime import datetime
 
 from geoalchemy2 import Geometry
-from sqlalchemy.dialects.postgresql import UUID
-
 from server import db
+from sqlalchemy.dialects.postgresql import UUID
 
 
 class SpecieModel(db.Model):
@@ -37,5 +36,6 @@ class SightModel(db.Model):
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
     geom = db.Column(Geometry('POINT', 4326))
+    municipality = db.Column(db.String(5), db.ForeignKey('geo_repos.municipality.insee'))
     timestamp_create = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    # photo = db.Column()
+    photo = db.Column(db.Text)

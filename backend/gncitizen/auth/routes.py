@@ -6,10 +6,10 @@ from server import db
 from .models import UserModel, RevokedTokenModel
 from .schemas import user_schema
 
-auth = Blueprint('auth', __name__)
+auth_url = Blueprint('auth_url', __name__)
 
 
-@auth.route('/registration', methods=['POST'])
+@auth_url.route('/registration', methods=['POST'])
 def registration():
     """
     Enregistrement de l'utilisateur
@@ -17,7 +17,7 @@ def registration():
     pour avoir l'identité de l'utilisateur courant. Exemple:
 
     ``` python
-    @auth.route('/protected', methods=['GET'])
+    @auth_url.route('/protected', methods=['GET'])
     @jwt_required
     def protected():
         # Access the identity of the current user with get_jwt_identity
@@ -60,7 +60,7 @@ def registration():
         return jsonify({'message': 'Quelque chose s\'est mal déroulé'}), 500
 
 
-@auth.route('/login', methods=['POST'])
+@auth_url.route('/login', methods=['POST'])
 def login():
     """
     Connexion de l'utilisateur
@@ -97,7 +97,7 @@ def login():
         return jsonify({'message': 'Wrong credentials'}), 401
 
 
-@auth.route('/logout', methods=['POST'])
+@auth_url.route('/logout', methods=['POST'])
 @jwt_refresh_token_required
 def logout():
     """
@@ -112,7 +112,7 @@ def logout():
         return {'message': 'Something went wrong'}, 500
 
 
-@auth.route('/token_refresh', methods=['POST'])
+@auth_url.route('/token_refresh', methods=['POST'])
 @jwt_refresh_token_required
 def token_refresh():
     """
@@ -123,7 +123,7 @@ def token_refresh():
     return {'access_token': access_token}
 
 
-@auth.route('/allusers', methods=['GET'])
+@auth_url.route('/allusers', methods=['GET'])
 @jwt_required
 def get_allusers():
     """
@@ -132,7 +132,7 @@ def get_allusers():
     return jsonify(UserModel.return_all()), 200
 
 
-@auth.route('/allusers', methods=['DELETE'])
+@auth_url.route('/allusers', methods=['DELETE'])
 @jwt_required
 def del_allusers():
     """
@@ -141,7 +141,7 @@ def del_allusers():
     return jsonify(UserModel.delete_all()), 200
 
 
-@auth.route('/logged_user', methods=['GET'])
+@auth_url.route('/logged_user', methods=['GET'])
 @jwt_required
 def logged_user():
     """
