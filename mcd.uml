@@ -1,49 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Diagram>
   <ID>DATABASE</ID>
-  <OriginalElement>761f97d8-7d05-4adc-90a3-160dc2be573f.SCHEMA:gncitizen.geo_repos</OriginalElement>
+  <OriginalElement>761f97d8-7d05-4adc-90a3-160dc2be573f.SCHEMA:gncitizen.gn_citizen</OriginalElement>
   <nodes>
-    <node x="0.0" y="862.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.users.revoked_tokens</node>
-    <node x="199.0" y="862.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.geo_repos.altitude</node>
-    <node x="894.0" y="0.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.geo_repos.naturalarea_type</node>
-    <node x="0.0" y="197.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.geo_repos.municipality</node>
-    <node x="856.0" y="151.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.geo_repos.naturalarea</node>
-    <node x="0.0" y="0.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.geo_repos.portalarea</node>
-    <node x="278.0" y="151.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.users.users</node>
-    <node x="560.0" y="220.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.gn_citizen.species</node>
-    <node x="278.0" y="463.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.gn_citizen.sights</node>
+    <node x="518.0" y="532.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.gn_citizen.species</node>
+    <node x="282.00000000000006" y="532.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.ref_geo.li_municipalities</node>
+    <node x="255.00000000000006" y="243.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.ref_geo.l_areas</node>
+    <node x="291.00000000000006" y="0.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.ref_geo.bib_areas_types</node>
+    <node x="0.0" y="463.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.users.users</node>
+    <node x="814.0" y="0.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.users.revoked_tokens</node>
+    <node x="259.00000000000006" y="775.0">761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.gn_citizen.sights</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.geo_repos.municipality" target="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.geo_repos.portalarea">
-      <point x="0.0" y="-85.0" />
-      <point x="0.0" y="50.5" />
-    </edge>
     <edge source="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.gn_citizen.sights" target="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.gn_citizen.species">
       <point x="87.33333333333331" y="-177.0" />
-      <point x="496.3333333333333" y="438.0" />
-      <point x="685.5" y="438.0" />
+      <point x="477.33333333333337" y="750.0" />
+      <point x="643.5" y="750.0" />
       <point x="0.0" y="62.0" />
     </edge>
-    <edge source="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.geo_repos.naturalarea" target="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.geo_repos.naturalarea_type">
-      <point x="0.0" y="-50.5" />
-      <point x="0.0" y="50.5" />
+    <edge source="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.ref_geo.l_areas" target="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.ref_geo.bib_areas_types">
+      <point x="0.0" y="-85.0" />
+      <point x="0.0" y="96.5" />
     </edge>
-    <edge source="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.gn_citizen.sights" target="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.geo_repos.municipality">
-      <point x="-87.33333333333331" y="-177.0" />
-      <point x="321.6666666666667" y="438.0" />
-      <point x="129.0" y="438.0" />
+    <edge source="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.ref_geo.li_municipalities" target="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.ref_geo.l_areas">
+      <point x="0.0" y="-62.0" />
       <point x="0.0" y="85.0" />
     </edge>
     <edge source="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.gn_citizen.sights" target="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.users.users">
-      <point x="0.0" y="-177.0" />
+      <point x="-87.33333333333331" y="-177.0" />
+      <point x="302.66666666666674" y="750.0" />
+      <point x="131.0" y="750.0" />
       <point x="0.0" y="131.0" />
     </edge>
+    <edge source="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.gn_citizen.sights" target="761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.ref_geo.li_municipalities">
+      <point x="0.0" y="-177.0" />
+      <point x="0.0" y="62.0" />
+    </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0635416666666666" x="152.54946131243878" y="234.3388834476004" />
-  <SelectedNodes>
-    <node>761f97d8-7d05-4adc-90a3-160dc2be573f.TABLE:gncitizen.users.revoked_tokens</node>
-  </SelectedNodes>
+  <settings layout="Hierarchic Group" zoom="1.1708442123585727" x="594.182906203389" y="211.02988181074852" />
+  <SelectedNodes />
   <Categories>
     <Category>Key columns</Category>
     <Category>Columns</Category>
