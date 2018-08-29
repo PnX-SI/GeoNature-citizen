@@ -6,7 +6,7 @@ from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
 from gncitizen.core.utils import get_id_role_if_exists
 from server import db
-from shapely.geometry import Point
+from shapely.geometry import Point, asShape
 
 from .models import SightModel, SpecieModel
 from .schemas import specie_schema, sight_schema, species_schema, sights_schema
@@ -109,10 +109,10 @@ def sights():
             return jsonify(err.messages), 422
         try:
             cd_nom = data['cd_nom']
-            if data['geom']:
-                geom = from_shape(Point(*data['geom'][0]), srid=4326)
-            else:
-                geom = None
+            try:
+                geom = from_shape(Point(data['geom'][0]), srid=4326)
+            except ValidationError as err:
+                return jsonify(err.messages), 422
             if data['count']:
                 count = data['count']
             else:

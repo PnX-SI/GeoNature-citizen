@@ -16,7 +16,7 @@ app.debug = True
 
 # Configuration de la bdd
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://gncdbuser:gncdbpwd@127.0.0.1:5432/gncitizen'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://gncdbuser:gncdbpwd@127.0.0.1:5432/geonaturedb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config['MEDIA_FOLDER'] = os.path.join(basedir, '../media')

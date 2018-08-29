@@ -1,25 +1,25 @@
 from marshmallow import Schema
 
-from .models import MunicipalityModel, NaturalAreaModel, PortalAreaModel
+from .models import LAreas, LiMunicipalities, BibAreasTypes
 
 
-class MunicipalitySchema(Schema):
+class LAreasSchema(Schema):
     class Meta:
-        model = MunicipalityModel
+        model = LAreas
 
 
-class NaturalAreaSchema(Schema):
+class LiMunicipalitiesSchema(Schema):
     class Meta:
-        model = NaturalAreaModel
+        model = LiMunicipalities
 
-class PortalAreaSchema(Schema):
+class BibAreasTypesSchema(Schema):
     class Meta:
-        model = PortalAreaModel
+        model = BibAreasTypes
 
 #schémas
-municipality_schema = MunicipalitySchema()
-municipalities_schema = MunicipalitySchema(many=True)
-naturalarea_schema = NaturalAreaSchema()
-naturalareas_schema = NaturalAreaSchema(many=True)
-portalarea_schema = PortalAreaSchema()
-portalareas_schema = PortalAreaSchema(many=True)
+limunicipality_schema = LiMunicipalitiesSchema()
+limunicipalities_schema = LiMunicipalitiesSchema(many=True)
+larea_schema = LAreasSchema()
+lareas_schema = LAreasSchema(many=True)
+bibareatype_schema = BibAreasTypesSchema()
+bibareastypes_schema = BibAreasTypesSchema(many=True)
