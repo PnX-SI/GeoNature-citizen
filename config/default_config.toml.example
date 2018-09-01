@@ -1,6 +1,11 @@
 # Database
-SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
+SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://gncdbuser:gncdbpwd@127.0.0.1:5432/geonaturedb"
 SQLALCHEMY_TRACK_MODIFICATIONS = false
+
+# JWT Auth
+JWT_SECRET_KEY = 'jwt-secret-string'
+JWT_BLACKLIST_ENABLED = true
+JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
 
 # Application
 
@@ -9,28 +14,20 @@ DEFAULT_LANGUAGE = 'fr'
 
 DEBUG = true
 
-URL_APPLICATION = 'http://url.com/geonature'         # Replace my_url.com by your domain or IP
-API_ENDPOINT = 'http://url.com/geonature/api'        # Replace my_url.com by your domain or IP
+URL_APPLICATION = 'http://url.com/gncitizen'         # Replace my_url.com by your domain or IP
+API_ENDPOINT = 'http://url.com/gncitizen/api'        # Replace my_url.com by your domain or IP
 API_TAXHUB ='http://127.0.0.1:5000/api/'
 
-ID_APPLICATION_GEONATURE = 0                           # id_application of GeoNature in UsersHub
 SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'MyS3cr3tK3y'
 COOKIE_EXPIRATION = 7200
 COOKIE_AUTORENEW = true
 TRAP_ALL_EXCEPTIONS = false
 HTTPS = false
-
+MEDIA_FOLDER = 'static/medias'
 # File
 # BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = 'static/medias'
-
-
-[RIGHTS]
-    NOTHING = 0
-    MY_DATA = 1
-    MY_ORGANISM_DATA = 2
-    ALL_DATA = 3
 
 # Front end configuration
 [FRONTEND]
