@@ -3,7 +3,7 @@ import sys
 
 from pathlib import Path
 from collections import ChainMap, namedtuple
-from backend.gncitizen.utils.utilstoml import load_toml
+from gncitizen.utils.utilstoml import load_toml
 
 from flask_sqlalchemy import SQLAlchemy
 
