@@ -7,6 +7,8 @@ from geoalchemy2 import Geometry
 from server import db
 from sqlalchemy import MetaData, Table, Column, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
+from gncitizen.taxonomy.models import BibNoms
+from gncitizen.auth.models import UserModel
 
 
 class SpecieModel(db.Model):

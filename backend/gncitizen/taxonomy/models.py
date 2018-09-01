@@ -1,5 +1,6 @@
-from server import db
 from sqlalchemy import ForeignKey
+
+from server import db
 
 
 class BibNoms(db.Model):
@@ -8,17 +9,16 @@ class BibNoms(db.Model):
     id_nom = db.Column(db.Integer, primary_key=True)
     cd_nom = db.Column(
         db.Integer,
-        ForeignKey("taxonomie.taxref.cd_nom"),
         nullable=True, unique=True
     )
     cd_ref = db.Column(db.Integer)
     nom_francais = db.Column(db.Unicode)
     comments = db.Column(db.Unicode)
 
-    taxref = db.Column(Integer)
-    attributs = db.Column(Integer)
-    listes = db.Column(Integer)
-    medias = db.Column(Integer)
+    taxref = db.Column(db.Integer)
+    attributs = db.Column(db.Integer)
+    listes = db.Column(db.Integer)
+    medias = db.Column(db.Integer)
 
 
 class CorNomListe(db.Model):
@@ -43,7 +43,7 @@ class CorNomListe(db.Model):
         return '<CorNomListe %r>' % self.id_liste
 
 
-class BibListes(db.Model)
+class BibListes(db.Model):
     __tablename__ = 'bib_listes'
     __table_args__ = {'schema': 'taxonomie'}
     id_liste = db.Column(db.Integer, primary_key=True)

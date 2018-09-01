@@ -5,6 +5,7 @@ from flasgger import Swagger
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
+from gncitizen.utils.env import load_config
 
 logger = logging.getLogger()
 logger.setLevel(10)
@@ -16,10 +17,11 @@ app.debug = True
 
 # Configuration de la bdd
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://gncdbuser:gncdbpwd@127.0.0.1:5432/geonaturedb'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://gncdbuser:gncdbpwd@127.0.0.1:5432/geonaturedb'
+app.config['SQLALCHEMY_DATABASE_URI'] = load_config()['SQLALCHEMY_DATABASE_URI']
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = load_config()['SQLALCHEMY_TRACK_MODIFICATIONS']
+app.config['MEDIA_FOLDER'] = load_config()['MEDIA_FOLDER']
 
-app.config['MEDIA_FOLDER'] = os.path.join(basedir, '../media')
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 db = SQLAlchemy(app)
@@ -28,9 +30,9 @@ logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 # JWTManager
-app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
-app.config['JWT_BLACKLIST_ENABLED'] = True
-app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+app.config['JWT_SECRET_KEY'] = load_config()['JWT_SECRET_KEY']
+app.config['JWT_BLACKLIST_ENABLED'] = load_config()['JWT_BLACKLIST_ENABLED']
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = load_config()['JWT_BLACKLIST_TOKEN_CHECKS']
 
 jwt = JWTManager(app)
 
