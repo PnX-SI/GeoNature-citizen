@@ -54,10 +54,10 @@ def check_if_token_in_blacklist(decrypted_token):
 
 @app.before_first_request
 def create_tables():
-    print('Création des tables de la bdd')
+    print('Creation des tables de la bdd')
     db.create_all()
 
 
 if __name__ == '__main__':
     # db.create_all()
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5001, host='0.0.0.0')
