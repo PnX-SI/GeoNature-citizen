@@ -1,6 +1,6 @@
 from flask_jwt_extended import get_jwt_identity
 
-from gncitizen.auth.models import UserModel
+from gncitizen.core.auth.models import UserModel
 
 
 def get_id_role_if_exists():
@@ -10,8 +10,3 @@ def get_id_role_if_exists():
     else:
         id_role = None
     return id_role
-
-
-def must_not_be_blank(data):
-    if not data:
-        raise ValidationError('Data not provided.')

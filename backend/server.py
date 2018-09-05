@@ -36,15 +36,16 @@ app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = load_config()['JWT_BLACKLIST_TOKEN_CH
 
 jwt = JWTManager(app)
 
+# flasgger disponible à l'adresse '/apidocs'
 swagger = Swagger(app)
 
-from gncitizen.sights.routes import sights_url
-from gncitizen.auth.routes import auth_url
-from gncitizen.georepos.routes import georepos_url
+from gncitizen.core.gnc_sights.routes import sights_url
+from gncitizen.core.auth.routes import auth_url
+from gncitizen.core.ref_geo.routes import georepos_url
 
-app.register_blueprint(sights_url)
-app.register_blueprint(auth_url)
-app.register_blueprint(georepos_url)
+app.register_blueprint(sights_url, url_prefix='/api')
+app.register_blueprint(auth_url, url_prefix='/api')
+app.register_blueprint(georepos_url, url_prefix='/api')
 
 
 @jwt.token_in_blacklist_loader

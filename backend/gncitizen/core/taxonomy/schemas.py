@@ -1,4 +1,4 @@
-from gncitizen.core.utils import must_not_be_blank
+from gncitizen.utils.utils import must_not_be_blank
 from marshmallow import Schema, fields
 
 

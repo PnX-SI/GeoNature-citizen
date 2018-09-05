@@ -4,9 +4,9 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
-from gncitizen.core.utils import get_id_role_if_exists
+from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from server import db
-from shapely.geometry import Point, asShape
+from shapely.geometry import Point
 
 from .models import SightModel, SpecieModel
 from .schemas import specie_schema, sight_schema, species_schema, sights_schema

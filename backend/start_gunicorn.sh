@@ -15,4 +15,4 @@ cd $FLASKDIR
 
 # Start your gunicorn
 exec mkdir -p $APP_DIR/var/log/
-exec gunicorn  wsgi:app --error-log $APP_DIR/var/log/gn_errors.log --pid="geonature-citizen.pid" -b "0.0.0.0:5101"  -n "geonature-citizen"
+exec gunicorn --error-log $APP_DIR/var/log/gn_errors.log --pid="geonature-citizen.pid" -b "0.0.0.0:5001"  -n "geonature-citizen" wsgi:app
