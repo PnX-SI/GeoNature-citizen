@@ -1,15 +1,14 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import (jwt_optional)
+from sqlalchemy.exc import IntegrityError
+
+from .models import LiMunicipalities
+from .schemas import limunicipalities_schema, limunicipality_schema
+
+routes = Blueprint('georepos', __name__)
 
 
-from .models import LAreas, BibAreasTypes, LiMunicipalities
-from .schemas import bibareastypes_schema, bibareatype_schema, limunicipalities_schema, limunicipality_schema, larea_schema, lareas_schema
-
-
-georepos_url = Blueprint('georepos_url', __name__)
-
-
-@georepos_url.route('/municipality/', methods=['GET'])
+@routes.route('/municipality/', methods=['GET'])
 @jwt_optional
 def get_municipalities():
     """list all municipalities
@@ -33,9 +32,9 @@ def get_municipalities():
     return jsonify({'municipalities': result})
 
 
-@georepos_url.route('/species/<insee>', methods=['GET'])
+@routes.route('/municipality/<int:insee>', methods=['GET'])
 @jwt_optional
-def get_municipality(insee_com):
+def get_municipality(insee):
     """list all municipalities
         ---
         parameters:
@@ -65,7 +64,7 @@ def get_municipality(insee_com):
     return jsonify({'municipality': result})
 
 #
-# @georepos_url.route('/portalareal/', methods=['GET'])
+# @routes.route('/portalareal/', methods=['GET'])
 # @jwt_optional
 # def get_portalareas():
 #     portalareas = PortalAreaModel.query.all()
@@ -74,7 +73,7 @@ def get_municipality(insee_com):
 #     return jsonify({'portal_area': result})
 #
 #
-# @georepos_url.route('/portalareal/<int:pk>', methods=['GET'])
+# @routes.route('/portalareal/<int:pk>', methods=['GET'])
 # @jwt_optional
 # def get_portalarea(pk):
 #     try:
@@ -84,7 +83,7 @@ def get_municipality(insee_com):
 #     result = portalarea_schema.dump(portalarea)
 #     return jsonify({'portal_area': result})
 #
-# @georepos_url.route('/naturalarea/', methods=['GET'])
+# @routes.route('/naturalarea/', methods=['GET'])
 # @jwt_optional
 # def get_naturalareas():
 #     naturalareas = NaturalAreaModel.query.all()
@@ -93,7 +92,7 @@ def get_municipality(insee_com):
 #     return jsonify({'natural_areas': result})
 #
 #
-# @georepos_url.route('/naturalarea/<int:pk>', methods=['GET'])
+# @routes.route('/naturalarea/<int:pk>', methods=['GET'])
 # @jwt_optional
 # def get_naturalarea(pk):
 #     try:

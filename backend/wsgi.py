@@ -1,7 +1,15 @@
-from server import app
-from gncitizen.utils.env import load_config
+"""
+    Give a unique entry point for gunicorn
+"""
 
-port = load_config()['API_PORT']
+from gncitizen.utils.env import load_config
+from server import get_app
+
+# get the app config file
+config = load_config()
+
+# give the app context from server.py in a app object
+app = get_app(config)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5101)

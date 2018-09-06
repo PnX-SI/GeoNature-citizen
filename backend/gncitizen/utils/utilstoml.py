@@ -3,7 +3,6 @@ from pathlib import Path
 import toml
 from gncitizen.utils.errors import GeoNatureError
 
-
 def load_toml(toml_file):
     '''
         Fonction qui charge un fichier toml

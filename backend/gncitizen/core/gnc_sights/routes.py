@@ -11,10 +11,10 @@ from shapely.geometry import Point
 from .models import SightModel, SpecieModel
 from .schemas import specie_schema, sight_schema, species_schema, sights_schema
 
-sights_url = Blueprint('sights_url', __name__)
+routes = Blueprint('sights', __name__)
 
 
-@sights_url.route('/species/')
+@routes.route('/species/')
 @jwt_optional
 def get_species():
     species = SpecieModel.query.all()
@@ -23,7 +23,7 @@ def get_species():
     return jsonify({'species': result})
 
 
-@sights_url.route('/species/<int:pk>')
+@routes.route('/species/<int:pk>')
 @jwt_optional
 def get_specie(pk):
     try:
@@ -35,7 +35,7 @@ def get_specie(pk):
     return jsonify({'specie': specie_result, 'quotes': sights_result})
 
 
-# @sights_url.route('/sights/', methods=['GET'])
+# @routes.route('/sights/', methods=['GET'])
 # @jwt_optional
 # def get_sights():
 #     sights = SightModel.query.all()
@@ -43,7 +43,7 @@ def get_specie(pk):
 #     return jsonify({'sights': result})
 
 
-@sights_url.route('/sights/<int:pk>')
+@routes.route('/sights/<int:pk>')
 # @jwt_required
 def get_sight(pk):
     try:
@@ -54,7 +54,7 @@ def get_sight(pk):
     return jsonify({'sight': result})
 
 
-@sights_url.route('/sights/', methods=['POST'])
+@routes.route('/sights/', methods=['POST'])
 @jwt_optional
 def sights():
     """Gestion des observations
@@ -62,22 +62,32 @@ def sights():
         ---
         parameters:
           - name: cd_nom
-            in: path
             type: string
             required: true
             default: none
-          - name : observer
+          - name : obs_txt
             type : string
             default :  none
+            required : false
+          - name : count
+            type : integer
+            default :  none
+          - name : date
+            type : date
+            required: false
+            default :  none
+          - name : geom
+            type : geojson
+            required : true
         definitions:
           cd_nom:
             type:int
-          observer:
+          obs_txt:
             type: string
           name:
             type: string
           geom:
-            type: geometry
+            type: geometry (geojson)
         responses:
           200:
             description: Adding a sight
@@ -150,7 +160,7 @@ def sights():
         result = sights_schema.dump(sights)
         return jsonify({'sights': result})
 
-@sights_url.route('/sights/', methods=['GET'])
+@routes.route('/sights/', methods=['GET'])
 @jwt_optional
 def get_sights():
     """Gestion des observations
