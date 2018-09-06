@@ -1,5 +1,5 @@
 # Database
-SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://gncdbuser:gncdbpwd@127.0.0.1:5432/geonaturedb"
+SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://geonatuser:monpassachanger@127.0.0.1:5432/geonaturedb"
 SQLALCHEMY_TRACK_MODIFICATIONS = false
 
 # JWT Auth
@@ -16,7 +16,7 @@ DEBUG = true
 
 URL_APPLICATION = 'http://url.com/gncitizen'         # Replace my_url.com by your domain or IP
 API_ENDPOINT = 'http://url.com/gncitizen/api'        # Replace my_url.com by your domain or IP
-API_PORT = 5001
+API_PORT = 5001 # 5000 déjà utilisé par taxhub
 API_TAXHUB ='http://127.0.0.1:5000/api/'
 
 SESSION_TYPE = 'filesystem'
@@ -33,6 +33,7 @@ UPLOAD_FOLDER = 'static/medias'
 # Front end configuration
 [FRONTEND]
 PROD_MOD = false
+DISPLAU_HEADER = false
 DISPLAY_FOOTER = false
 MULTILINGUAL = false
 
