@@ -2,15 +2,15 @@ from gncitizen.utils.utils import must_not_be_blank
 from marshmallow import Schema, fields
 
 
-class SpecieSchema(Schema):
-    """Schéma Marschmallow des espèces"""
-    id = fields.Int()
-    cd_nom = fields.Int()
-    common_name = fields.Str()
-    sci_name = fields.Str()
-
-    def format_name(self, specie):
-        return '{}, (<i>{}</i>)'.format(specie.common_name, specie.sci_name)
+# class SpecieSchema(Schema):
+#     """Schéma Marschmallow des espèces"""
+#     id = fields.Int()
+#     cd_nom = fields.Int()
+#     common_name = fields.Str()
+#     sci_name = fields.Str()
+#
+#     def format_name(self, specie):
+#         return '{}, (<i>{}</i>)'.format(specie.common_name, specie.sci_name)
 
 
 class SightSchema(Schema):
@@ -23,7 +23,7 @@ class SightSchema(Schema):
     timestamp_create = fields.DateTime(dump_only=True)
 
 
-specie_schema = SpecieSchema()
-species_schema = SpecieSchema(many=True)
+# specie_schema = SpecieSchema()
+# species_schema = SpecieSchema(many=True)
 sight_schema = SightSchema()
 sights_schema = SightSchema(many=True, only=('id_sight', 'count', 'id_role', 'obs_txt', 'specie'))

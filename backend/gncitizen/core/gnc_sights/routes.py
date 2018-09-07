@@ -4,35 +4,14 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
-from gncitizen.utils.utilsjwt import get_id_role_if_exists
-from server import db
 from shapely.geometry import Point
 
-from .models import SightModel, SpecieModel
-from .schemas import specie_schema, sight_schema, species_schema, sights_schema
+from gncitizen.utils.utilsjwt import get_id_role_if_exists
+from server import db
+from .models import SightModel
+from .schemas import sight_schema, sights_schema
 
 routes = Blueprint('sights', __name__)
-
-
-@routes.route('/species/')
-@jwt_optional
-def get_species():
-    species = SpecieModel.query.all()
-    # Serialize the queryset
-    result = species_schema.dump(species)
-    return jsonify({'species': result})
-
-
-@routes.route('/species/<int:pk>')
-@jwt_optional
-def get_specie(pk):
-    try:
-        specie = SpecieModel.query.get(pk)
-    except IntegrityError:
-        return jsonify({'message': 'Specie could not be found.'}), 400
-    specie_result = specie_schema.dump(specie)
-    sights_result = sights_schema.dump(specie.sights.all())
-    return jsonify({'specie': specie_result, 'quotes': sights_result})
 
 
 # @routes.route('/sights/', methods=['GET'])
@@ -44,7 +23,7 @@ def get_specie(pk):
 
 
 @routes.route('/sights/<int:pk>')
-# @jwt_required
+# @jwt_optional
 def get_sight(pk):
     try:
         sight = SightModel.query.get(pk)
@@ -159,6 +138,7 @@ def sights():
         sights = SightModel.query.all()
         result = sights_schema.dump(sights)
         return jsonify({'sights': result})
+
 
 @routes.route('/sights/', methods=['GET'])
 @jwt_optional
