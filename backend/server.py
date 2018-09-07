@@ -16,25 +16,10 @@ app = Flask(__name__)
 
 app.debug = True
 
-# Configuration de la bdd
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://gncdbuser:gncdbpwd@127.0.0.1:5432/geonaturedb'
-# app.config['SQLALCHEMY_DATABASE_URI'] = load_config()['SQLALCHEMY_DATABASE_URI']
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = load_config()['SQLALCHEMY_TRACK_MODIFICATIONS']
-# app.config['MEDIA_FOLDER'] = load_config()['MEDIA_FOLDER']
-
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-
-
-
-# JWTManager
-# app.config['JWT_SECRET_KEY'] = load_config()['JWT_SECRET_KEY']
-# app.config['JWT_BLACKLIST_ENABLED'] = load_config()['JWT_BLACKLIST_ENABLED']
-# app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = load_config()['JWT_BLACKLIST_TOKEN_CHECKS']
-
 
 class ReverseProxied(object):
 
@@ -73,6 +58,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
 
     # JWT Auth
     jwt = JWTManager(app)
+
     # flasgger disponible à l'adresse '/apidocs'
     swagger = Swagger(app)
 

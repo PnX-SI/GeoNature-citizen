@@ -4,12 +4,16 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
+from marshmallow import ValidationError
 from shapely.geometry import Point
+from sqlalchemy.exc import IntegrityError
 
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from server import db
 from .models import SightModel
 from .schemas import sight_schema, sights_schema
+from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
+from geojson import  FeatureCollection
 
 routes = Blueprint('sights', __name__)
 
@@ -86,14 +90,14 @@ def sights():
     if request.method == 'POST':
         json_data = request.get_json()
         medias = request.files
-        print(json_data)
+        print('jsondata: ', json_data)
         if not json_data:
             return jsonify({'message': 'No input data provided'}), 400
         # Validate and deserialize input
         # info: manque la date
         try:
             data, errors = sight_schema.load(json_data)
-            print(data['cd_nom'])
+            print("datas: ", data)
         except ValidationError as err:
             return jsonify(err.messages), 422
         try:
@@ -136,12 +140,20 @@ def sights():
         })
     else:
         sights = SightModel.query.all()
-        result = sights_schema.dump(sights)
-        return jsonify({'sights': result})
+        features = []
+        for d in sights:
+            print(d)
+            feature = get_geojson_feature(d[1])
+            feature['properties'] = d[0].as_dict(True)
+            features.append(feature)
+        return FeatureCollection(features)
+        # result = sights_schema.dump(sights)
+        # return jsonify({'sights': sights})
 
 
 @routes.route('/sights/', methods=['GET'])
 @jwt_optional
+@json_resp
 def get_sights():
     """Gestion des observations
     If method is POST, add a sight to database else, return all sights
@@ -161,5 +173,14 @@ def get_sights():
         """
 
     sights = SightModel.query.all()
-    result = sights_schema.dump(sights)
-    return jsonify({'sights': result})
+    features = []
+    print(sights)
+    for d in sights:
+        print(d.id_sight, d.uuid_sinp, d.cd_nom, d.date, get_geojson_feature(d.geom))
+        # print(type(d.as_dict()))
+        #
+        feature = get_geojson_feature(d.geom)
+        # feature['properties']
+        feature['properties']=d.as_dict(True)
+        features.append(feature)
+    return FeatureCollection(features)

@@ -5,10 +5,13 @@ from datetime import datetime
 
 from geoalchemy2 import Geometry
 from server import db
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.dialects.postgresql import UUID
 from gncitizen.core.taxonomy.models import BibNoms
+from gncitizen.utils.utilssqlalchemy import serializable, geoserializable
 
-
+@serializable
+@geoserializable
 class SightModel(db.Model):
     """Table des observations"""
     __tablename__ = 'sights'
@@ -28,3 +31,4 @@ class SightModel(db.Model):
     municipality = db.Column(db.String(5), db.ForeignKey('ref_geo.li_municipalities.id_municipality'))
     timestamp_create = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     photo = db.Column(db.Text)
+
