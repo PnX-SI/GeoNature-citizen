@@ -21,6 +21,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
+
 class ReverseProxied(object):
 
     def __init__(self, app, script_name=None, scheme=None, server=None):
@@ -77,14 +78,17 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
         from gncitizen.core.ref_geo.routes import routes
         app.register_blueprint(routes, url_prefix=url_prefix)
 
+        from gncitizen.core.taxonomy.routes import routes
+        app.register_blueprint(routes, url_prefix=url_prefix)
+
         # app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=config['API_ENDPOINT'])
 
         CORS(app, supports_credentials=True)
         # Chargement des mosdules tiers
         if with_external_mods:
             for conf, manifest, module in list_and_import_gn_modules(app):
-                try :
-                    prefix = url_prefix+conf['api_url']
+                try:
+                    prefix = url_prefix + conf['api_url']
                 except:
                     prefix = url_prefix
                 print(prefix)
@@ -96,10 +100,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
                 module.backend.blueprint.blueprint.config = conf
                 app.config[manifest['module_name']] = conf
 
-
         _app = app
 
         db.create_all()
     return app
-
-
