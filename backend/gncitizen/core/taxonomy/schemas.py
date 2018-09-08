@@ -1,29 +1,32 @@
-from gncitizen.utils.utils import must_not_be_blank
 from marshmallow import Schema, fields
 
 
-class SpecieSchema(Schema):
-    """Schéma Marschmallow des espèces"""
-    id = fields.Int()
-    cd_nom = fields.Int()
-    common_name = fields.Str()
-    sci_name = fields.Str()
-
-    def format_name(self, specie):
-        return '{}, (<i>{}</i>)'.format(specie.common_name, specie.sci_name)
+class BibNomsSchema(Schema):
+    cd_nom = fields.Integer()
+    cd_ref = fields.Integer()
+    nom_francais = fields.String()
+    comments = fields.String()
 
 
-class SightSchema(Schema):
-    """Schéma marshmallow des observations"""
-    id = fields.Int(dump_only=True)
-    specie = fields.Nested(SpecieSchema, validate=[must_not_be_blank])
-    date = fields.Date(required=True, validate=[must_not_be_blank])
-    count = fields.Integer(required=False)
-    obs_txt = fields.String(required=False)
-    timestamp_create = fields.DateTime(dump_only=True)
+class BibListesSchema(Schema):
+    id_liste = fields.Integer()
+    nom_liste = fields.String()
+    desc_liste = fields.String()
+    picto = fields.String()
+    regne = fields.String()
+    group2_inpn = fields.String()
 
 
-specie_schema = SpecieSchema()
-species_schema = SpecieSchema(many=True)
-sight_schema = SightSchema()
-sights_schema = SightSchema(many=True, only=('id_sight', 'count', 'id_role', 'obs_txt', 'specie'))
+bib_nom_schema = BibNomsSchema()
+bib_noms_schema = BibNomsSchema(many=True)
+bib_liste_schema = BibListesSchema()
+bib_listes_schema = BibListesSchema(many=True)
+
+
+class CorNomListeSchema(Schema):
+    bib_liste = fields.Nested(BibListesSchema)
+    bib_nom = fields.Nested(BibNomsSchema)
+
+
+cor_nom_liste_schema = CorNomListeSchema()
+cor_nom_listes_schema = CorNomListeSchema(many=True)

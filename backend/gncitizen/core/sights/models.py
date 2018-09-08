@@ -4,11 +4,11 @@
 from datetime import datetime
 
 from geoalchemy2 import Geometry
-from server import db
-from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.dialects.postgresql import UUID
-from gncitizen.core.taxonomy.models import BibNoms
+
 from gncitizen.utils.utilssqlalchemy import serializable, geoserializable
+from server import db
+
 
 @serializable
 @geoserializable

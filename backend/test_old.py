@@ -75,7 +75,7 @@ def logout():
 
 def getsights():
     logger.info("Test getSights")
-    getrequest("gnc_sights")
+    getrequest("sights")
 
 
 if __name__ == "__main__":

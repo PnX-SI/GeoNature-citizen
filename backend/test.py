@@ -51,11 +51,11 @@ class TestAuthFlaskApiUsingRequests(unittest.TestCase):
 class TestFlaskApiUsingRequests(unittest.TestCase):
 
     def test_get_sights(self):
-        response = requests.get(mainUrl + "gnc_sights")
+        response = requests.get(mainUrl + "sights")
         self.assertEqual(response.status_code, 200)
 
     def test_post_sight(self):
-        response = requests.post(mainUrl + "gnc_sights")
+        response = requests.post(mainUrl + "sights")
         self.assertEqual(response.status_code, 200)
 
 

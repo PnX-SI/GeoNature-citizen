@@ -4,7 +4,6 @@ from gncitizen.utils.utilssqlalchemy import serializable
 from server import db
 
 
-
 @serializable
 class BibNoms(db.Model):
     __tablename__ = 'bib_noms'
@@ -19,7 +18,6 @@ class BibNoms(db.Model):
     comments = db.Column(db.Unicode)
 
 
-
 @serializable
 class BibListes(db.Model):
     __tablename__ = 'bib_listes'
@@ -30,11 +28,11 @@ class BibListes(db.Model):
     picto = db.Column(db.Unicode)
     regne = db.Column(db.Unicode)
     group2_inpn = db.Column(db.Unicode)
+
     # cnl = db.relationship("CorNomListe", lazy='select')
 
     def __repr__(self):
         return '<BibListes %r>' % self.nom_liste
-
 
 
 @serializable
@@ -59,12 +57,31 @@ class CorNomListe(db.Model):
     def __repr__(self):
         return '<CorNomListe %r>' % self.id_liste
 
-
-
     # listes = db.relationship("CorNomListe", lazy='select')
     # medias = db.relationship("TMedias", lazy='select')
     #
 
+
+# @serializable
+# class VTaxrefAllListes(db.Model):
+#     __tablenam&e__ = 'v_taxref_all_listes'
+#     __table_args__ = {'schema': 'taxonomie'}
+#     regne = db.Column(db.Unicode)
+#     phylum = db.Column(db.Unicode)
+#     classe = db.Column(db.Unicode)
+#     ordre = db.Column(db.Unicode)
+#     famille = db.Column(db.Unicode)
+#     group1_inpn = db.Column(db.Unicode)
+#     group2_inpn = db.Column(db.Unicode)
+#     cd_nom = db.Column(db.Integer)
+#     cd_ref = db.Column(db.Integer)
+#     nom_complet = db.Column(db.Unicode)
+#     nom_valide = db.Column(db.Unicode)
+#     nom_vern = db.Column(db.Unicode)
+#     lb_nom = db.Column(db.Unicode)
+#     id_liste = db.Column(db.Integer, db.ForeignKey('taxonomie.bib_listes.id_liste'), nullable=False,
+#                          primary_key=False)
+#     bib_liste = db.relationship('BibListes')
 
 
 @serializable
@@ -90,4 +107,3 @@ class TMedias(db.Model):
 
     def __repr__(self):
         return '<TMedias %r>' % self.titre
-

@@ -15,20 +15,16 @@ from geoalchemy2.shape import to_shape
 #         return '{}, (<i>{}</i>)'.format(specie.common_name, specie.sci_name)
 
 
-# class SightSchema(Schema):
-#     """Schéma marshmallow des observations"""
-#     id = fields.Int(dump_only=True)
-#     cd_nom = fields.Int(required=True, validate=[must_not_be_blank])
-#     date = fields.Date(required=True, validate=[must_not_be_blank])
-#     count = fields.Integer(required=False)
-#     obs_txt = fields.String(required=False)
-#     timestamp_create = fields.DateTime(dump_only=True)
-#     geom = fields.String(required=True, validate=[must_not_be_blank])
-
 class SightSchema(Schema):
-    class Meta:
-        model = SightModel
-    # geom = to_shape(geom)
+    """Schéma marshmallow des observations"""
+    id = fields.Int(dump_only=True)
+    cd_nom = fields.Int(required=True, validate=[must_not_be_blank])
+    date = fields.Date(required=True, validate=[must_not_be_blank])
+    count = fields.Integer(required=False)
+    obs_txt = fields.String(required=False)
+    timestamp_create = fields.DateTime(dump_only=True)
+    geom = fields.String(required=True, validate=[must_not_be_blank])
+
 
 sight_schema = SightSchema()
 sights_schema = SightSchema(many=True, only=('id_sight', 'count', 'id_role', 'obs_txt', 'geom','cd_nom'))
