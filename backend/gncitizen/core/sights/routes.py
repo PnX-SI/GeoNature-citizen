@@ -4,16 +4,16 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
+from geojson import FeatureCollection
 from marshmallow import ValidationError
 from shapely.geometry import Point
 from sqlalchemy.exc import IntegrityError
 
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
+from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
 from .models import SightModel
-from .schemas import sight_schema, sights_schema
-from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
-from geojson import  FeatureCollection
+from .schemas import sight_schema
 
 routes = Blueprint('sights', __name__)
 
@@ -28,127 +28,149 @@ routes = Blueprint('sights', __name__)
 
 @routes.route('/sights/<int:pk>')
 # @jwt_optional
+@json_resp
 def get_sight(pk):
+    """Gestion des observations
+     If method is POST, add a sight to database else, return all sights
+         ---
+         definitions:
+           cd_nom:
+             type:int
+             description: cd_nom taxref
+           geometry:
+             type: dict
+             description: Géométrie de la donnée
+           name:
+             type: string
+           geom:
+             type: geometry
+         responses:
+           200:
+             description: A list of all sights
+         """
     try:
-        sight = SightModel.query.get(pk)
+        sight = SightModel.query.filter_by(id_sight=pk).limit(1)
+        features = []
+        for d in sight:
+            feature = get_geojson_feature(d.geom)
+            feature['properties'] = d.as_dict(True)
+            features.append(feature)
     except IntegrityError:
         return jsonify({'message': 'Sight could not be found.'}), 400
-    result = sight_schema.dump(sight)
-    return jsonify({'sight': result})
+    return FeatureCollection(features)
 
 
 @routes.route('/sights/', methods=['POST'])
 @jwt_optional
-def sights():
+def post_sight():
     """Gestion des observations
     If method is POST, add a sight to database else, return all sights
         ---
         parameters:
-          - name: cd_nom
-            type: string
-            required: true
-            default: none
-          - name : obs_txt
-            type : string
-            default :  none
-            required : false
-          - name : count
-            type : integer
-            default :  none
-          - name : date
-            type : date
-            required: false
-            default :  none
-          - name : geom
-            type : geojson
-            required : true
+          - in: body
+            name: body
+            description: JSON parameters.
+            schema:
+              properties:
+                cd_nom
+                  type : string
+                  description : CD_Nom Taxref
+                  example : 65111
+                obs_txt
+                  type : string
+                  default :  none
+                  required : false
+                count
+                  type : integer
+                  default :  none
+                name : date
+                  type : date
+                  required: false
+                  default :  none
+                geom
+                  type : string
+                  required : true
         definitions:
           cd_nom:
-            type:int
+            type :int
           obs_txt:
-            type: string
+            type : string
           name:
-            type: string
+            type : string
           geom:
-            type: geometry (geojson)
+            type: string
         responses:
           200:
             description: Adding a sight
         """
-    # try:
-    #     file = request.files['file']
-    #     # if user does not select file, browser also
-    #     # submit an empty part without filename
-    #     if file.filename == '':
-    #         flash('No selected file')
-    #         return redirect(request.url)
-    #     if file and allowed_file(file.filename):
-    #         filename = secure_filename(file.filename)
-    #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    #         return redirect(url_for('uploaded_file',
-    #                                 filename=filename))
-    if request.method == 'POST':
-        json_data = request.get_json()
-        medias = request.files
-        print('jsondata: ', json_data)
-        if not json_data:
-            return jsonify({'message': 'No input data provided'}), 400
-        # Validate and deserialize input
-        # info: manque la date
+    json_data = request.get_json()
+    medias = request.files
+    print('jsondata: ', json_data)
+    if not json_data:
+        return jsonify({'message': 'No input data provided'}), 400
+    # Validate and deserialize input
+    # info: manque la date
+    try:
+        data, errors = sight_schema.load(json_data)
+    except ValidationError as err:
+        return jsonify(err.messages), 422
+    try:
+        cd_nom = data['cd_nom']
         try:
-            data, errors = sight_schema.load(json_data)
-            print("datas: ", data)
-        except ValidationError as err:
-            return jsonify(err.messages), 422
-        try:
-            cd_nom = data['cd_nom']
-            try:
-                geom = from_shape(Point(data['geom'][0]), srid=4326)
-            except ValidationError as err:
-                return jsonify(err.messages), 422
-            if data['count']:
-                count = data['count']
-            else:
-                count = 1
+            geom = from_shape(Point(data['geom']['coordinates']), srid=4326)
         except:
-            return jsonify('Données incomplètes'), 422
-
+            return jsonify('pb geom'), 422
+        if data['count']:
+            count = data['count']
+        else:
+            count = 1
         id_role = get_id_role_if_exists()
         if id_role is None:
             obs_txt = data['obs_txt']
         else:
-            obs_txt = None
+            obs_txt = 'Anonyme'
+        try:
+            email = data['email']
+        except:
+            email = None
+        # try:
+        #     query = LiMunicipalities.query.join(LAreas, LAreas.ip_area == LiMunicipalities.id_area).add_columns(LiMunicipalities.nom_com).first()
+        #     print(query)
+        #     # municipality = db.session.query(query).filter(func.ST_Intersects(query.geom, geom))
+        # except:
+        #     return jsonify('impossible de trouver la commune'), 422
+    except:
+        return jsonify('Données incomplètes'), 422
 
-        # Create new sight
-        sight = SightModel(
-            # date=data['dateobs'],
-            cd_nom=cd_nom,
-            count=count,
-            timestamp_create=datetime.utcnow(),
-            uuid_sinp=uuid.uuid4(),
-            date=datetime.utcnow(),
-            id_role=id_role,
-            obs_txt=obs_txt,
-            geom=geom
-        )
-        db.session.add(sight)
-        db.session.commit()
-        result = sight_schema.dump(SightModel.query.get(sight.id_sight))
-        return jsonify({
-            'message': 'Created new sight.',
-            'sight': result,
-        })
-    else:
-        sights = SightModel.query.all()
-        features = []
-        for d in sights:
-            print(d)
-            feature = get_geojson_feature(d[1])
-            feature['properties'] = d[0].as_dict(True)
-            features.append(feature)
-        return FeatureCollection(features)
-        # result = sights_schema.dump(sights)
-        # return jsonify({'sights': sights})
+    # Si l'utilisateur est connecté, attribut ajoute l'id_role de l'utilisateur.
+    # Sinon, complète le champ obs_txt.
+    # Si obs_txt est vice, indique 'Anonyme'
+
+    # Create new sight
+    sight = SightModel(
+        cd_nom=cd_nom,
+        count=count,
+        timestamp_create=datetime.utcnow(),
+        uuid_sinp=uuid.uuid4(),
+        date=datetime.utcnow(),
+        email=email,
+        id_role=id_role,
+        obs_txt=obs_txt,
+        # municipality=municipality,
+        geom=geom
+    )
+    db.session.add(sight)
+    db.session.commit()
+    # Réponse en retour
+    result = SightModel.query.get(sight.id_sight)
+    features = []
+    feature = get_geojson_feature(result.geom)
+    feature['properties'] = result.as_dict(True)
+    features.append(feature)
+    return jsonify({
+        'message': 'New sight created.',
+        'features': features,
+    }), 200
 
 
 @routes.route('/sights/', methods=['GET'])
@@ -159,10 +181,12 @@ def get_sights():
     If method is POST, add a sight to database else, return all sights
         ---
         definitions:
-          id:
+          cd_nom:
             type:int
-          insee:
-            type: string
+            description: cd_nom taxref
+          geometry:
+            type: dict
+            description: Géométrie de la donnée
           name:
             type: string
           geom:
@@ -171,16 +195,10 @@ def get_sights():
           200:
             description: A list of all sights
         """
-
     sights = SightModel.query.all()
     features = []
-    print(sights)
     for d in sights:
-        print(d.id_sight, d.uuid_sinp, d.cd_nom, d.date, get_geojson_feature(d.geom))
-        # print(type(d.as_dict()))
-        #
         feature = get_geojson_feature(d.geom)
-        # feature['properties']
-        feature['properties']=d.as_dict(True)
+        feature['properties'] = d.as_dict(True)
         features.append(feature)
     return FeatureCollection(features)
