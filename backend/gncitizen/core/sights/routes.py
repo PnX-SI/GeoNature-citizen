@@ -87,7 +87,6 @@ def post_sight():
                 - date
                 - geom
               properties:
-<<<<<<< HEAD
                 cd_nom:
                   type: string
                   description: CD_Nom Taxref
