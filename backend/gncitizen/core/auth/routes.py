@@ -24,7 +24,40 @@ def registration():
         current_user = get_jwt_identity()
         return jsonify(current_suer=current_user), 200
     ```
-
+    ---
+    tags:
+      - Authentication
+    summary: Creates a new sight
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - name: body
+        in: body
+        description: JSON parameters
+        required: true
+        schema:
+          required:
+            - name
+            - surname
+            - username
+            - email
+            - password
+          properties:
+            name:
+              type: string
+            surname:
+              type: string
+            username:
+              type: string
+            email:
+              type: string
+            password:
+              type: string
+    responses:
+      200:
+        description: user created
     """
     json_data = request.get_json()
     if not json_data:
@@ -64,6 +97,31 @@ def registration():
 def login():
     """
     Connexion de l'utilisateur
+    ---
+    tags:
+      - Authentication
+    summary: Login
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - name: body
+        in: body
+        description: JSON parameters
+        required: true
+        schema:
+          required:
+            - username
+            - password
+          properties:
+            username:
+              type: string
+            password:
+              type: string
+    responses:
+      200:
+        description: user created
     """
     json_data = request.get_json()
     if not json_data:
@@ -102,6 +160,30 @@ def login():
 def logout():
     """
     Déconnexion de l'utilisateur
+    ---
+    tags:
+      - Authentication
+    summary: Logout
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - name: authorization
+        in: authorization
+        description: JSON parameter
+        required: true
+        schema:
+          required:
+            - authorization
+          properties:
+            authorization:
+              type: string
+              example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eSI6ImZjbG9pdHJlIiwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTMyMjA4Nzk0LCJqdGkiOiI5YmQ5OGEwNC1lMTYyLTQwNWMtODg4Zi03YzlhMTAwNTE2ODAiLCJuYmYiOjE1MzIyMDc4OTQsImlhdCI6MTUzMjIwNzg5NH0.oZKoybFIt4mIPF6LrC2cKXHP8o32vAEcet0xVjpCptE
+    responses:
+      200:
+        description: user disconnected
+
     """
     jti = get_raw_jwt()['jti']
     try:

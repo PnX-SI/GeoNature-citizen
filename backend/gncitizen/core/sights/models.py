@@ -6,8 +6,11 @@ from datetime import datetime
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import UUID
 
+from gncitizen.core.taxonomy.models import BibNoms
 from gncitizen.utils.utilssqlalchemy import serializable, geoserializable
 from server import db
+
+bibnoms = BibNoms
 
 
 @serializable

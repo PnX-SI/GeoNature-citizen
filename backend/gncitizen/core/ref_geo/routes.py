@@ -13,6 +13,8 @@ routes = Blueprint('georepos', __name__)
 def get_municipalities():
     """list all municipalities
         ---
+        tags:
+          - Reférentiel géo
         definitions:
           id:
             type:int
@@ -37,6 +39,8 @@ def get_municipalities():
 def get_municipality(insee):
     """list all municipalities
         ---
+        tags:
+          - Reférentiel géo
         parameters:
           - name: insee
             in: path
@@ -64,7 +68,7 @@ def get_municipality(insee):
     return jsonify({'municipality': result})
 
 #
-# @routes.route('/portalareal/', methods=['GET'])
+# @routes.route('/portalarea/', methods=['GET'])
 # @jwt_optional
 # def get_portalareas():
 #     portalareas = PortalAreaModel.query.all()
@@ -73,7 +77,7 @@ def get_municipality(insee):
 #     return jsonify({'portal_area': result})
 #
 #
-# @routes.route('/portalareal/<int:pk>', methods=['GET'])
+# @routes.route('/portalarea/<int:pk>', methods=['GET'])
 # @jwt_optional
 # def get_portalarea(pk):
 #     try:

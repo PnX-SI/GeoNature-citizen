@@ -33,9 +33,11 @@ def get_sight(pk):
     """Gestion des observations
      If method is POST, add a sight to database else, return all sights
          ---
+         tags:
+          - Sights
          definitions:
            cd_nom:
-             type:int
+             type: integer
              description: cd_nom taxref
            geometry:
              type: dict
@@ -66,37 +68,52 @@ def post_sight():
     """Gestion des observations
     If method is POST, add a sight to database else, return all sights
         ---
+        tags:
+          - Sights
+        summary: Creates a new sight
+        consumes:
+          - application/json
+        produces:
+          - application/json
         parameters:
-          - in: body
-            name: body
+          - name: body
+            in: body
             description: JSON parameters.
+            required: true
             schema:
+              id: Sight
+              required:
+                - cd_nom
+                - date
+                - geom
               properties:
-                cd_nom
-                  type : string
-                  description : CD_Nom Taxref
-                  example : 65111
-                obs_txt
-                  type : string
-                  default :  none
-                  required : false
-                count
-                  type : integer
-                  default :  none
-                name : date
-                  type : date
+                cd_nom:
+                  type: string
+                  description: CD_Nom Taxref
+                  example: 3582
+                obs_txt:
+                  type: string
+                  default:  none
                   required: false
-                  default :  none
-                geom
-                  type : string
-                  required : true
+                count:
+                  type: integer
+                  default:  none
+                  example: 5
+                date:
+                  type: string
+                  format: date
+                  required: false
+                  example: 2018-09-06
+                geom:
+                  type: string
+                  example: {"type":"Point", "coordinates":[45,5]}
         definitions:
           cd_nom:
-            type :int
+            type: integer
           obs_txt:
-            type : string
+            type: string
           name:
-            type : string
+            type: string
           geom:
             type: string
         responses:
@@ -180,9 +197,11 @@ def get_sights():
     """Gestion des observations
     If method is POST, add a sight to database else, return all sights
         ---
+        tags:
+          - Sights
         definitions:
           cd_nom:
-            type:int
+            type: integer
             description: cd_nom taxref
           geometry:
             type: dict
