@@ -107,35 +107,6 @@ def post_sight():
                 geom:
                   type: string
                   example: {"type":"Point", "coordinates":[45,5]}
-=======
-                cd_nom
-                  type: string
-                  description : CD_Nom Taxref
-                  example : 65111
-                obs_txt
-                  type: string
-                  default :  none
-                  required : false
-                count
-                  type: integer
-                  default :  none
-                name: date
-                  type: date
-                  required: false
-                  defaul:  none
-                geom
-                  type: string
-                  required: true
->>>>>>> eab19846eac4c3c832f3fdcf40f0f12fa0a36238
-        definitions:
-          cd_nom:
-            type: integer
-          obs_txt:
-            type: string
-          name:
-            type: string
-          geom:
-            type: string
         responses:
           200:
             description: Adding a sight
