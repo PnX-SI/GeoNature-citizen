@@ -73,23 +73,23 @@ def post_sight():
             schema:
               properties:
                 cd_nom
-                  type : string
+                  type: string
                   description : CD_Nom Taxref
                   example : 65111
                 obs_txt
-                  type : string
+                  type: string
                   default :  none
                   required : false
                 count
-                  type : integer
+                  type: integer
                   default :  none
-                name : date
-                  type : date
+                name: date
+                  type: date
                   required: false
-                  default :  none
+                  defaul:  none
                 geom
-                  type : string
-                  required : true
+                  type: string
+                  required: true
         definitions:
           cd_nom:
             type :int
