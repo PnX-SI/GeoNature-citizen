@@ -45,3 +45,11 @@ MULTILINGUAL = false
     MAIL_USERNAME = 'email username'
     MAIL_PASS = 'email to'
     MAIL_TO = 'email to'
+
+
+# API flasgger main config
+[SWAGGER]
+    title = 'GeoNature-Citizen API'
+    version = 'x.x.x'
+    produces = ["application/json"]
+    consumes = ["application/json"]
