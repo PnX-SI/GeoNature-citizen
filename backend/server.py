@@ -61,6 +61,10 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
     jwt = JWTManager(app)
 
     # flasgger disponible à l'adresse '/apidocs'
+    # app.config['SWAGGER'] = {
+    #     'title': 'GeoNature-citizen API',
+    #     'uiversion': 3
+    # }
     swagger = Swagger(app)
 
     with app.app_context():
