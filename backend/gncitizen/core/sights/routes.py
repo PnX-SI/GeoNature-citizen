@@ -35,6 +35,12 @@ def get_sight(pk):
          ---
          tags:
           - Sights
+         parameters:
+          - name: pk
+            in: path
+            type: integer
+            required: true
+            example: 1
          definitions:
            cd_nom:
              type: integer
@@ -95,15 +101,15 @@ def post_sight():
                   type: string
                   default:  none
                   required: false
+                  example: Martin Dupont
                 count:
                   type: integer
                   default:  none
-                  example: 5
+                  example: 1
                 date:
                   type: string
-                  format: date
                   required: false
-                  example: 2018-09-06
+                  example: "2018-09-20"
                 geom:
                   type: string
                   example: {"type":"Point", "coordinates":[45,5]}
