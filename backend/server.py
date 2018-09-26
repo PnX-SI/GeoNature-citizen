@@ -68,9 +68,9 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
     swagger = Swagger(app)
 
     with app.app_context():
-        from gncitizen.utils.logs import mail_handler
-        if app.config['MAILERROR']['MAIL_ON_ERROR']:
-            logging.getLogger().addHandler(mail_handler)
+        # from gncitizen.utils.logs import mail_handler
+        # if app.config['MAILERROR']['MAIL_ON_ERROR']:
+        #     logging.getLogger().addHandler(mail_handler)
         db.create_all()
 
         from gncitizen.core.sights.routes import routes

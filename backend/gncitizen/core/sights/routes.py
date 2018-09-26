@@ -51,7 +51,7 @@ def get_sight(pk):
            name:
              type: string
            geom:
-             type: geometry
+             type: geojson
          responses:
            200:
              description: A list of all sights
@@ -63,9 +63,10 @@ def get_sight(pk):
             feature = get_geojson_feature(d.geom)
             feature['properties'] = d.as_dict(True)
             features.append(feature)
-    except IntegrityError:
-        return jsonify({'message': 'Sight could not be found.'}), 400
-    return FeatureCollection(features)
+        return FeatureCollection(features)    
+    except Exception as e:
+        return jsonify({'message': e}), 400
+    
 
 
 @routes.route('/sights/', methods=['POST'])
