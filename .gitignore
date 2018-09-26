@@ -145,6 +145,8 @@ modules.xml
 .idea/misc.xml
 *.ipr
 
+.vscode/
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
