@@ -23,7 +23,7 @@ routes = Blueprint('sights', __name__)
 
 @routes.route('/sights/<int:pk>')
 # @jwt_optional
-@json_resp
+# @json_resp
 def get_sight(pk):
     """Gestion des observations
      If method is POST, add a sight to database else, return all sights
@@ -52,13 +52,15 @@ def get_sight(pk):
              description: A list of all sights
          """
     try:
-        sight = SightModel.query.filter_by(id_sight=pk).limit(1)
+        result = SightModel.query.get(pk)
+        result_dict = result.as_dict(True)
         features = []
-        for d in sight:
-            feature = get_geojson_feature(d.geom)
-            feature['properties'] = d.as_dict(True)
-            features.append(feature)
-        return FeatureCollection(features)    
+        feature = get_geojson_feature(result.geom)
+        for k in result_dict:
+            if k in ('specie','id_sight','obs_txt', 'count','date','comment','timestamp_create'):
+                feature['properties'][k] = result_dict[k]
+        features.append(feature) 
+        return jsonify({'features': features}), 200
     except Exception as e:
         return jsonify({'message': e}), 400
     
@@ -164,8 +166,8 @@ def post_sight():
     feature = get_geojson_feature(result.geom)
     print("DICOOOOOOO", result_dict)
     for k in result_dict:
-      if k in ('obs_txt', 'count','date', 'timestamp_create'):
-        feature['properties'][k] = result_dict[k]
+        if k in ('specie','id_sight','obs_txt', 'count','date','comment','timestamp_create'):
+            feature['properties'][k] = result_dict[k]
     features.append(feature)
     return jsonify({
         'message': 'New sight created.',
@@ -199,8 +201,11 @@ def get_sights():
         """
     sights = SightModel.query.all()
     features = []
-    for d in sights:
-        feature = get_geojson_feature(d.geom)
-        feature['properties'] = d.as_dict(True)
+    for sight in sights:
+        feature = get_geojson_feature(sight.geom)
+        sight_dict = sight.as_dict(True)
+        for k in sight_dict:
+            if k in ('specie','id_sight','obs_txt', 'count','date','comment','timestamp_create'):
+                feature['properties'][k] = sight_dict[k]
         features.append(feature)
     return FeatureCollection(features)
