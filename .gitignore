@@ -284,5 +284,5 @@ config/default_config.toml
 external_modules/gnc_*
 contrib/gnc_*
 
-
 *.pyc
+backend/__pycache__/server.cpython-35.pyc

@@ -6,24 +6,19 @@ from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from marshmallow import ValidationError
-from shapely.geometry import Point
+from shapely.geometry import Point, asShape
 from sqlalchemy.exc import IntegrityError
 
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
+from gncitizen.utils.errors import GeonatureApiError
 from server import db
 from .models import SightModel
 from .schemas import sight_schema
+from gncitizen.core.auth.models import UserModel
+
 
 routes = Blueprint('sights', __name__)
-
-
-# @routes.route('/sights/', methods=['GET'])
-# @jwt_optional
-# def get_sights():
-#     sights = SightModel.query.all()
-#     result = sights_schema.dump(sights)
-#     return jsonify({'sights': result})
 
 
 @routes.route('/sights/<int:pk>')
@@ -111,76 +106,66 @@ def post_sight():
                   type: string
                   required: false
                   example: "2018-09-20"
-                geom:
+                geometry:
                   type: string
                   example: {"type":"Point", "coordinates":[45,5]}
         responses:
           200:
             description: Adding a sight
         """
-    json_data = request.get_json()
-    medias = request.files
-    print('jsondata: ', json_data)
-    if not json_data:
-        return jsonify({'message': 'No input data provided'}), 400
-    # Validate and deserialize input
-    # info: manque la date
-    try:
-        data, errors = sight_schema.load(json_data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
-    try:
-        cd_nom = data['cd_nom']
-        try:
-            geom = from_shape(Point(data['geom']['coordinates']), srid=4326)
-        except:
-            return jsonify('pb geom'), 422
-        if data['count']:
-            count = data['count']
-        else:
-            count = 1
-        id_role = get_id_role_if_exists()
-        if id_role is None:
-            obs_txt = data['obs_txt']
-        else:
-            obs_txt = 'Anonyme'
-        try:
-            email = data['email']
-        except:
-            email = None
-        # try:
-        #     query = LiMunicipalities.query.join(LAreas, LAreas.ip_area == LiMunicipalities.id_area).add_columns(LiMunicipalities.nom_com).first()
-        #     print(query)
-        #     # municipality = db.session.query(query).filter(func.ST_Intersects(query.geom, geom))
-        # except:
-        #     return jsonify('impossible de trouver la commune'), 422
-    except:
-        return jsonify('Données incomplètes'), 422
+    request_datas = dict(request.get_json())
 
-    # Si l'utilisateur est connecté, attribut ajoute l'id_role de l'utilisateur.
-    # Sinon, complète le champ obs_txt.
-    # Si obs_txt est vice, indique 'Anonyme'
+    if request.files:
+        file = request.files['file']
+        file.save()
+    else:
+        file = None
 
-    # Create new sight
-    sight = SightModel(
-        cd_nom=cd_nom,
-        count=count,
-        timestamp_create=datetime.utcnow(),
-        uuid_sinp=uuid.uuid4(),
-        date=datetime.utcnow(),
-        email=email,
-        id_role=id_role,
-        obs_txt=obs_txt,
-        # municipality=municipality,
-        geom=geom
-    )
-    db.session.add(sight)
+    datas2db = {}
+    for field in request_datas:
+        if hasattr(SightModel, field):
+            datas2db[field] = request_datas[field]
+
+    try:
+        newsight = SightModel(**datas2db)
+    except Exception as e:
+        print(e)
+        raise GeonatureApiError(e)
+
+    try:
+        shape = asShape(request_datas['geometry'])
+        newsight.geom = from_shape(Point(shape), srid=4326)
+    except Exception as e:
+        print(e)
+        raise GeonatureApiError(e)
+
+    if newsight.count is None:
+        count = 1
+
+    id_role = get_id_role_if_exists()
+    print(id_role)
+    if id_role is not None:
+        newsight.id_role = id_role
+        role = UserModel.query.get(id_role)
+        newsight.obs_txt = role.username
+        newsight.email = role.email
+    else:
+        if newsight.obs_txt is None or len(newsight.obs_txt) == 0 :
+            newsight.obs_txt = 'Anonyme'
+
+    newsight.uuid_sinp = uuid.uuid4()
+
+    db.session.add(newsight)
     db.session.commit()
     # Réponse en retour
-    result = SightModel.query.get(sight.id_sight)
+    result = SightModel.query.get(newsight.id_sight)
+    result_dict = result.as_dict(True)
     features = []
     feature = get_geojson_feature(result.geom)
-    feature['properties'] = result.as_dict(True)
+    print("DICOOOOOOO", result_dict)
+    for k in result_dict:
+      if k in ('obs_txt', 'count','date', 'timestamp_create'):
+        feature['properties'][k] = result_dict[k]
     features.append(feature)
     return jsonify({
         'message': 'New sight created.',

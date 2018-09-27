@@ -13,6 +13,8 @@ with open(str((ROOT_DIR / 'VERSION'))) as v:
     GEONATURE_VERSION = v.read()
 DEFAULT_CONFIG_FILE = ROOT_DIR / 'config/default_config.toml'
 GNC_EXTERNAL_MODULE = ROOT_DIR / 'external_modules'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
 
 
 def get_config_file_path(config_file=None):

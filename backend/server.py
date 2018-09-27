@@ -16,7 +16,6 @@ app = Flask(__name__)
 
 app.debug = True
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
@@ -60,17 +59,10 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
     # JWT Auth
     jwt = JWTManager(app)
 
-    # flasgger disponible à l'adresse '/apidocs'
-    # app.config['SWAGGER'] = {
-    #     'title': 'GeoNature-citizen API',
-    #     'uiversion': 3
-    # }
+    # Swagger for api documentation
     swagger = Swagger(app)
 
     with app.app_context():
-        # from gncitizen.utils.logs import mail_handler
-        # if app.config['MAILERROR']['MAIL_ON_ERROR']:
-        #     logging.getLogger().addHandler(mail_handler)
         db.create_all()
 
         from gncitizen.core.sights.routes import routes
@@ -84,8 +76,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
 
         from gncitizen.core.taxonomy.routes import routes
         app.register_blueprint(routes, url_prefix=url_prefix)
-
-        # app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=config['API_ENDPOINT'])
 
         CORS(app, supports_credentials=True)
         # Chargement des mosdules tiers
