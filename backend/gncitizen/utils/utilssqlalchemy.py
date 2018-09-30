@@ -162,8 +162,7 @@ def to_json_resp(
         status=200,
         filename=None,
         as_file=False,
-        indent=None
-):
+        indent=None):
     if not res:
         status = 404
         res = {'message': 'not found'}

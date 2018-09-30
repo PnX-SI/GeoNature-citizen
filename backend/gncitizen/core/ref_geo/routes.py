@@ -1,43 +1,58 @@
-from flask import Blueprint, jsonify
-from flask_jwt_extended import (jwt_optional)
-from sqlalchemy.exc import IntegrityError
+from flask import Blueprint
+from geoalchemy2 import func
+from geoalchemy2.shape import to_shape
+from geojson import FeatureCollection, Feature
 
-from .models import LiMunicipalities
-from .schemas import limunicipalities_schema, limunicipality_schema
+from gncitizen.utils.env import db
+from gncitizen.utils.env import load_config
+from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
+from .models import LAreas
 
 routes = Blueprint('georepos', __name__)
 
 
 @routes.route('/municipality/', methods=['GET'])
-@jwt_optional
+@json_resp
 def get_municipalities():
-    """list all municipalities
+    """List all enabled municipalities
         ---
         tags:
           - Reférentiel géo
         definitions:
-          id:
-            type:int
-          insee:
+          area_name:
             type: string
-          name:
+            description: Municipality name
+          area_code:
             type: string
-          geom:
+            description: Municipality insee code
+          geometry:
             type: geometry
         responses:
           200:
             description: A list of municipalities
         """
-    municipalities = LiMunicipalities.query.all()
-    # Serialize the queryset
-    result = limunicipalities_schema.dump(municipalities)
-    return jsonify({'municipalities': result})
+    try:
+        q = db.session.query(
+            LAreas.area_name,
+            LAreas.area_code,
+            func.ST_Transform(LAreas.geom, 4326).label('geom')
+        ).filter(LAreas.enable, LAreas.id_type == 101)
+        datas = q.all()
+        features = []
+        for data in datas:
+            feature = get_geojson_feature(data.geom)
+            feature['properties']['area_name'] = data.area_name
+            feature['properties']['area_code'] = data.area_code
+            features.append(feature)
+        return FeatureCollection(features)
+    except Exception as e:
+        return {'error': e}, 400
 
 
-@routes.route('/municipality/<int:insee>', methods=['GET'])
-@jwt_optional
+@routes.route('/municipality/<insee>', methods=['GET'])
+@json_resp
 def get_municipality(insee):
-    """list all municipalities
+    """Get one enabled municipality by insee code
         ---
         tags:
           - Reférentiel géo
@@ -48,60 +63,72 @@ def get_municipality(insee):
             required: true
             default: none
         definitions:
-          id:
-            type:int
-          insee:
+          area_name:
             type: string
-          name:
+            description: Municipality name
+          area_code:
             type: string
-          geom:
+            description: Municipality insee code
+          geometry:
             type: geometry
         responses:
           200:
             description: A municipality
         """
+    print('INSEE: ', insee)
     try:
-        municipality = LiMunicipalities.query.get(insee_com=insee)
-    except IntegrityError:
-        return jsonify({'message': 'Municipality could not be found.'}), 400
-    result = limunicipality_schema.dump(municipality)
-    return jsonify({'municipality': result})
+        q = db.session.query(
+            LAreas.area_name,
+            LAreas.area_code,
+            func.ST_Transform(LAreas.geom, 4326).label('geom')
+        ).filter(
+            LAreas.enable,
+            LAreas.area_code == str(insee),
+            LAreas.id_type == 101
+        ).limit(1)
+        datas = q.all()
+        print(datas[0])
+        data = datas[0]
+        print(to_shape(data.geom))
+        feature = Feature(geometry=to_shape(data.geom))
+        feature['properties']['area_name'] = data.area_name
+        feature['properties']['area_code'] = data.area_code
+        return feature
+    except Exception as e:
+        return {'error': 'Code insee non utilisé'}, 400
 
-#
-# @routes.route('/portalarea/', methods=['GET'])
-# @jwt_optional
-# def get_portalareas():
-#     portalareas = PortalAreaModel.query.all()
-#     # Serialize the queryset
-#     result = portalareas_schema.dump(portalareas)
-#     return jsonify({'portal_area': result})
-#
-#
-# @routes.route('/portalarea/<int:pk>', methods=['GET'])
-# @jwt_optional
-# def get_portalarea(pk):
-#     try:
-#         portalarea = PortalAreaModel.query.get(pk)
-#     except IntegrityError:
-#         return jsonify({'message': 'Area could not be found.'}), 400
-#     result = portalarea_schema.dump(portalarea)
-#     return jsonify({'portal_area': result})
-#
-# @routes.route('/naturalarea/', methods=['GET'])
-# @jwt_optional
-# def get_naturalareas():
-#     naturalareas = NaturalAreaModel.query.all()
-#     # Serialize the queryset
-#     result = naturalareas_schema.dump(naturalareas)
-#     return jsonify({'natural_areas': result})
-#
-#
-# @routes.route('/naturalarea/<int:pk>', methods=['GET'])
-# @jwt_optional
-# def get_naturalarea(pk):
-#     try:
-#         naturalarea = NaturalAreaModel.query.get(pk)
-#     except IntegrityError:
-#         return jsonify({'message': 'Area could not be found.'}), 400
-#     result = naturalarea_schema.dump(naturalarea)
-#     return jsonify({'natural_area': result})
+
+@routes.route('/portalarea/', methods=['GET'])
+@json_resp
+def get_portalarea():
+    """Generate a unique area from all enable municipalities to represent portal area
+        ---
+        tags:
+          - Reférentiel géo
+        definitions:
+          name:
+            type: string
+            description: Nom du zonage (configured in app config file as PORTAL_AREA_NAME)
+          geometry:
+            type: geometry
+        responses:
+          200:
+            description: A municipality
+
+    """
+    try:
+        q = db.session.query(func.ST_Transform(func.ST_Union(
+            LAreas.geom), 4326).label('geom')
+                             ).filter(LAreas.enable).subquery()
+        data = db.engine.execute(q)
+        print(type(data))
+        for d in data:
+            print(to_shape(d.geom))
+            feature = Feature(geometry=to_shape(d.geom))
+            if load_config()['PORTAL_AREA_NAME']:
+                feature['properties']['nom'] = load_config()['PORTAL_AREA_NAME']
+            else:
+                feature['properties']['name'] = 'Portal area'
+        return feature
+    except Exception as e:
+        return {'error': e}, 400

@@ -14,7 +14,6 @@ from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from gncitizen.utils.errors import GeonatureApiError
 from server import db
 from .models import SightModel
-from .schemas import sight_schema
 from gncitizen.core.auth.models import UserModel
 
 
@@ -22,10 +21,8 @@ routes = Blueprint('sights', __name__)
 
 
 @routes.route('/sights/<int:pk>')
-# @jwt_optional
-# @json_resp
 def get_sight(pk):
-    """Gestion des observations
+    """Get all sights
      If method is POST, add a sight to database else, return all sights
          ---
          tags:
@@ -69,12 +66,12 @@ def get_sight(pk):
 @routes.route('/sights/', methods=['POST'])
 @jwt_optional
 def post_sight():
-    """Gestion des observations
-    If method is POST, add a sight to database else, return all sights
+    """Post a sight
+    add a sight to database
         ---
         tags:
           - Sights
-        summary: Creates a new sight
+        summary: Creates a new sight (JWT auth optional, if used, obs_txt replaced by username)
         consumes:
           - application/json
         produces:
@@ -98,18 +95,22 @@ def post_sight():
                 obs_txt:
                   type: string
                   default:  none
+                  description: User name
                   required: false
                   example: Martin Dupont
                 count:
                   type: integer
+                  description: Number of individuals
                   default:  none
                   example: 1
                 date:
                   type: string
+                  description: Date
                   required: false
                   example: "2018-09-20"
                 geometry:
                   type: string
+                  description: Geometry (GeoJson format)
                   example: {"type":"Point", "coordinates":[45,5]}
         responses:
           200:
@@ -164,7 +165,6 @@ def post_sight():
     result_dict = result.as_dict(True)
     features = []
     feature = get_geojson_feature(result.geom)
-    print("DICOOOOOOO", result_dict)
     for k in result_dict:
         if k in ('specie','id_sight','obs_txt', 'count','date','comment','timestamp_create'):
             feature['properties'][k] = result_dict[k]
@@ -176,10 +176,9 @@ def post_sight():
 
 
 @routes.route('/sights/', methods=['GET'])
-@jwt_optional
 @json_resp
 def get_sights():
-    """Gestion des observations
+    """Get one sight by id
     If method is POST, add a sight to database else, return all sights
         ---
         tags:
