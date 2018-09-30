@@ -12,6 +12,9 @@ JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
 appName = 'GeoNature-citizen'                               # Application name in the home page
 DEFAULT_LANGUAGE = 'fr'
 
+# Nom du zonage du portail
+PORTAL_AREA_NAME = 'zonage'
+
 DEBUG = true
 
 URL_APPLICATION = 'http://url.com/gncitizen'         # Replace my_url.com by your domain or IP
