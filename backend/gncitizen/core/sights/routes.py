@@ -215,29 +215,31 @@ def get_sights():
         return {'error_message': str(e)}, 400
 
 
-@routes.route('/taxonomy/lists/<int:id>/sights', methods=['GET'])
+@routes.route('/sights/lists/<int:id>/', methods=['GET'])
 @json_resp
-def get_sights_for_list(id):
-    """Renvoie une liste d'espèces spécifiée par son id
+def get_sights_from_list(id):
+    """Get all sights from a taxonomy list
     GET
         ---
         tags:
-          - TaxHub api
+          - Sights
+        parameters:
+          - name: id
+            in: path
+            type: integer
+            required: true
+            example: 1
         definitions:
-          id_liste:
+          cd_nom:
             type: integer
-          nb_taxons:
-            type: integer
-          desc_liste:
+            description: cd_nom taxref
+          geometry:
+            type: dict
+            description: Géométrie de la donnée
+          name:
             type: string
-          picto:
-            type: string
-          group2inpn:
-            type: string
-          nom_liste:
-            type: string
-          regne:
-            type: string
+          geom:
+            type: geometry
         responses:
           200:
             description: A list of all species lists
