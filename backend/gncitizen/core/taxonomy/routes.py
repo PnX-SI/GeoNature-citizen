@@ -1,13 +1,11 @@
 import requests
 from flask import Blueprint, jsonify
 
-from gncitizen.utils.env import load_config
+from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.utilssqlalchemy import json_resp
 
 routes = Blueprint('taxonomy', __name__)
 
-taxhub_url = load_config()['API_TAXHUB']
-taxhub_lists_url = taxhub_url + 'biblistes/'
 
 @routes.route('/taxonomy/lists/', methods=['GET'])
 @json_resp
@@ -72,7 +70,7 @@ def get_list(id):
             description: A list of all species lists
         """
     # taxhub_url = load_config()['TAXHUB_API_URL']
-    r = requests.get(taxhub_lists_url+str(id))
+    r = requests.get(taxhub_lists_url + str(id))
     if r.status_code == 200:
         result = r.json()
         return result
@@ -123,6 +121,7 @@ def get_fulllists():
         return fulllist
     else:
         return jsonify('Erreur de chargement de l \'API', rlists.status_code)
+
 
 @routes.route('/taxonomy/lists/<int:id>/species', methods=['GET'])
 @json_resp

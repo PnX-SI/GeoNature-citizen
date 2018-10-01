@@ -46,7 +46,7 @@ def get_municipalities():
             features.append(feature)
         return FeatureCollection(features)
     except Exception as e:
-        return {'error': e}, 400
+        return {'error_message':str(e)}, 400
 
 
 @routes.route('/municipality/<insee>', methods=['GET'])
@@ -95,7 +95,7 @@ def get_municipality(insee):
         feature['properties']['area_code'] = data.area_code
         return feature
     except Exception as e:
-        return {'error': 'Code insee non utilisé'}, 400
+        return {'error_message':str(e)}, 400
 
 
 @routes.route('/portalarea/', methods=['GET'])
@@ -131,4 +131,4 @@ def get_portalarea():
                 feature['properties']['name'] = 'Portal area'
         return feature
     except Exception as e:
-        return {'error': e}, 400
+        return {'error_message':str(e)}, 400

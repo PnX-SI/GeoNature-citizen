@@ -38,6 +38,8 @@ def load_config(config_file=None):
 SQLALCHEMY_DATABASE_URI = load_config()['SQLALCHEMY_DATABASE_URI']
 db = SQLAlchemy()
 
+taxhub_url = load_config()['API_TAXHUB']
+taxhub_lists_url = taxhub_url + 'biblistes/'
 
 def list_and_import_gn_modules(app, mod_path=GNC_EXTERNAL_MODULE):
     """

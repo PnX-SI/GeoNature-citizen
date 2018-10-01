@@ -1,26 +1,25 @@
 import uuid
-from datetime import datetime
 
-from flask import Blueprint, request, jsonify
+import requests
+from flask import Blueprint, request
 from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
-from marshmallow import ValidationError
 from shapely.geometry import Point, asShape
-from sqlalchemy.exc import IntegrityError
 
+from gncitizen.core.auth.models import UserModel
+from gncitizen.utils.env import taxhub_lists_url
+from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
-from gncitizen.utils.errors import GeonatureApiError
 from server import db
 from .models import SightModel
-from gncitizen.core.auth.models import UserModel
-
 
 routes = Blueprint('sights', __name__)
 
 
 @routes.route('/sights/<int:pk>')
+@json_resp
 def get_sight(pk):
     """Get all sights
      If method is POST, add a sight to database else, return all sights
@@ -54,16 +53,16 @@ def get_sight(pk):
         features = []
         feature = get_geojson_feature(result.geom)
         for k in result_dict:
-            if k in ('specie','id_sight','obs_txt', 'count','date','comment','timestamp_create'):
+            if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
                 feature['properties'][k] = result_dict[k]
-        features.append(feature) 
-        return jsonify({'features': features}), 200
+        features.append(feature)
+        return {'features': features}, 200
     except Exception as e:
-        return jsonify({'message': e}), 400
-    
+        return {'error_message': str(e)}, 400
 
 
 @routes.route('/sights/', methods=['POST'])
+@json_resp
 @jwt_optional
 def post_sight():
     """Post a sight
@@ -116,63 +115,66 @@ def post_sight():
           200:
             description: Adding a sight
         """
-    request_datas = dict(request.get_json())
-
-    if request.files:
-        file = request.files['file']
-        file.save()
-    else:
-        file = None
-
-    datas2db = {}
-    for field in request_datas:
-        if hasattr(SightModel, field):
-            datas2db[field] = request_datas[field]
-
     try:
-        newsight = SightModel(**datas2db)
+        request_datas = dict(request.get_json())
+
+        if request.files:
+            file = request.files['file']
+            file.save()
+        else:
+            file = None
+
+        datas2db = {}
+        for field in request_datas:
+            if hasattr(SightModel, field):
+                datas2db[field] = request_datas[field]
+
+        try:
+            newsight = SightModel(**datas2db)
+        except Exception as e:
+            print(e)
+            raise GeonatureApiError(e)
+
+        try:
+            shape = asShape(request_datas['geometry'])
+            newsight.geom = from_shape(Point(shape), srid=4326)
+        except Exception as e:
+            print(e)
+            raise GeonatureApiError(e)
+
+        if newsight.count is None:
+            count = 1
+
+        id_role = get_id_role_if_exists()
+        print(id_role)
+        if id_role is not None:
+            newsight.id_role = id_role
+            role = UserModel.query.get(id_role)
+            newsight.obs_txt = role.username
+            newsight.email = role.email
+        else:
+            if newsight.obs_txt is None or len(newsight.obs_txt) == 0:
+                newsight.obs_txt = 'Anonyme'
+
+        newsight.uuid_sinp = uuid.uuid4()
+
+        db.session.add(newsight)
+        db.session.commit()
+        # Réponse en retour
+        result = SightModel.query.get(newsight.id_sight)
+        result_dict = result.as_dict(True)
+        features = []
+        feature = get_geojson_feature(result.geom)
+        for k in result_dict:
+            if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
+                feature['properties'][k] = result_dict[k]
+        features.append(feature)
+        return {
+                   'message': 'New sight created.',
+                   'features': features,
+               }, 200
     except Exception as e:
-        print(e)
-        raise GeonatureApiError(e)
-
-    try:
-        shape = asShape(request_datas['geometry'])
-        newsight.geom = from_shape(Point(shape), srid=4326)
-    except Exception as e:
-        print(e)
-        raise GeonatureApiError(e)
-
-    if newsight.count is None:
-        count = 1
-
-    id_role = get_id_role_if_exists()
-    print(id_role)
-    if id_role is not None:
-        newsight.id_role = id_role
-        role = UserModel.query.get(id_role)
-        newsight.obs_txt = role.username
-        newsight.email = role.email
-    else:
-        if newsight.obs_txt is None or len(newsight.obs_txt) == 0 :
-            newsight.obs_txt = 'Anonyme'
-
-    newsight.uuid_sinp = uuid.uuid4()
-
-    db.session.add(newsight)
-    db.session.commit()
-    # Réponse en retour
-    result = SightModel.query.get(newsight.id_sight)
-    result_dict = result.as_dict(True)
-    features = []
-    feature = get_geojson_feature(result.geom)
-    for k in result_dict:
-        if k in ('specie','id_sight','obs_txt', 'count','date','comment','timestamp_create'):
-            feature['properties'][k] = result_dict[k]
-    features.append(feature)
-    return jsonify({
-        'message': 'New sight created.',
-        'features': features,
-    }), 200
+        return {'error_message': str(e)}, 400
 
 
 @routes.route('/sights/', methods=['GET'])
@@ -198,13 +200,66 @@ def get_sights():
           200:
             description: A list of all sights
         """
-    sights = SightModel.query.all()
-    features = []
-    for sight in sights:
-        feature = get_geojson_feature(sight.geom)
-        sight_dict = sight.as_dict(True)
-        for k in sight_dict:
-            if k in ('specie','id_sight','obs_txt', 'count','date','comment','timestamp_create'):
-                feature['properties'][k] = sight_dict[k]
-        features.append(feature)
-    return FeatureCollection(features)
+    try:
+        sights = SightModel.query.all()
+        features = []
+        for sight in sights:
+            feature = get_geojson_feature(sight.geom)
+            sight_dict = sight.as_dict(True)
+            for k in sight_dict:
+                if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
+                    feature['properties'][k] = sight_dict[k]
+            features.append(feature)
+        return FeatureCollection(features)
+    except Exception as e:
+        return {'error_message': str(e)}, 400
+
+
+@routes.route('/taxonomy/lists/<int:id>/sights', methods=['GET'])
+@json_resp
+def get_sights_for_list(id):
+    """Renvoie une liste d'espèces spécifiée par son id
+    GET
+        ---
+        tags:
+          - TaxHub api
+        definitions:
+          id_liste:
+            type: integer
+          nb_taxons:
+            type: integer
+          desc_liste:
+            type: string
+          picto:
+            type: string
+          group2inpn:
+            type: string
+          nom_liste:
+            type: string
+          regne:
+            type: string
+        responses:
+          200:
+            description: A list of all species lists
+        """
+    # taxhub_url = load_config()['TAXHUB_API_URL']
+    taxhub_lists_taxa_url = taxhub_lists_url + 'taxons/' + str(id)
+    rtaxa = requests.get(taxhub_lists_taxa_url)
+    if rtaxa.status_code == 200:
+        try:
+            taxa = rtaxa.json()['items']
+            print(taxa)
+            features = []
+            for t in taxa:
+                print('R', t['cd_nom'])
+                datas = SightModel.query.filter_by(cd_nom=t['cd_nom']).all()
+                for d in datas:
+                    feature = get_geojson_feature(d.geom)
+                    sight_dict = d.as_dict(True)
+                    for k in sight_dict:
+                        if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
+                            feature['properties'][k] = sight_dict[k]
+                    features.append(feature)
+            return FeatureCollection(features)
+        except Exception as e:
+            return {'error_message': str(e)}, 400
