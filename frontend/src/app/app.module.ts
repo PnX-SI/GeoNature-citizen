@@ -8,6 +8,8 @@ import { FormComponent } from './sights/form/form.component';
 import { ListComponent } from './sights/list/list.component';
 import { HomeComponent } from './home/home.component';
 import { SurveysComponent } from './surveys/surveys.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { SurveysComponent } from './surveys/surveys.component';
     FormComponent,
     ListComponent,
     HomeComponent,
-    SurveysComponent
+    SurveysComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule
