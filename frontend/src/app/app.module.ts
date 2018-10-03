@@ -8,8 +8,9 @@ import { FormComponent } from './sights/form/form.component';
 import { ListComponent } from './sights/list/list.component';
 import { HomeComponent } from './home/home.component';
 import { SurveysComponent } from './surveys/surveys.component';
-import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 
 @NgModule({
   declarations: [
@@ -20,11 +21,11 @@ import { RegisterComponent } from './register/register.component';
     ListComponent,
     HomeComponent,
     SurveysComponent,
-    LoginComponent,
     RegisterComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

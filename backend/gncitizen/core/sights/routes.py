@@ -21,8 +21,7 @@ routes = Blueprint('sights', __name__)
 @routes.route('/sights/<int:pk>')
 @json_resp
 def get_sight(pk):
-    """Get all sights
-     If method is POST, add a sight to database else, return all sights
+    """Get on sight by id
          ---
          tags:
           - Sights
@@ -180,8 +179,7 @@ def post_sight():
 @routes.route('/sights/', methods=['GET'])
 @json_resp
 def get_sights():
-    """Get one sight by id
-    If method is POST, add a sight to database else, return all sights
+    """Get all sights
         ---
         tags:
           - Sights
