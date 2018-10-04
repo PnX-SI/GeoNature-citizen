@@ -84,7 +84,7 @@ class UserRights(db.Model):
     __table_args__ = {'schema': 'gncitizen'}
     id_user_right = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey('gncitizen.users.id_user'))
-    id_module = db.Column(db.Integer, db.ForeignKey('gncitizen.gncitizen.id_module'))
+    id_module = db.Column(db.Integer, db.ForeignKey('gncitizen.modules.id_module'))
     right = db.Column(db.String(150), nullable=False)
     create = db.Boolean()
     read = db.Boolean()
