@@ -1,97 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Diagram>
   <ID>DATABASE</ID>
-  <OriginalElement>b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.events</OriginalElement>
+  <OriginalElement>d84767c0-fa88-4317-9601-d3e6336c367f.SCHEMA:geonaturedb.gncitizen</OriginalElement>
   <nodes>
-    <node x="1273.0" y="1095.5">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.modules</node>
-    <node x="661.0" y="877.0">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.ref_geo.li_municipalities</node>
-    <node x="207.5" y="243.0">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.taxref</node>
-    <node x="671.0" y="392.5">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.ref_geo.l_areas</node>
-    <node x="704.0" y="0.0">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.ref_geo.bib_areas_types</node>
-    <node x="1214.0" y="1637.5">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.users_rights</node>
-    <node x="1497.0" y="0.0">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.revoked_tokens</node>
-    <node x="0.0" y="57.5">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.bib_taxref_statuts</node>
-    <node x="914.6153846153846" y="1522.5">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.events</node>
-    <node x="479.0" y="46.0">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.bib_taxref_rangs</node>
-    <node x="991.0" y="1038.0">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.users</node>
-    <node x="596.6153846153846" y="1511.0">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.sights</node>
-    <node x="224.0" y="1095.5">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.bib_noms</node>
-    <node x="235.0" y="46.0">b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.bib_taxref_habitats</node>
+    <node x="768.0" y="46.0">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.bib_taxref_habitats</node>
+    <node x="1012.0" y="46.0">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.bib_taxref_rangs</node>
+    <node x="199.0" y="1038.0">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.users</node>
+    <node x="275.38461538461536" y="1522.5">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.events</node>
+    <node x="1497.0" y="0.0">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.revoked_tokens</node>
+    <node x="0.0" y="1095.5">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.modules</node>
+    <node x="481.0" y="877.0">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.ref_geo.li_municipalities</node>
+    <node x="491.0" y="392.5">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.ref_geo.l_areas</node>
+    <node x="593.3846153846154" y="1511.0">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.sights</node>
+    <node x="40.0" y="1591.5">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.users_rights</node>
+    <node x="991.5" y="1095.5">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.bib_noms</node>
+    <node x="524.0" y="0.0">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.ref_geo.bib_areas_types</node>
+    <node x="1237.0" y="57.5">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.bib_taxref_statuts</node>
+    <node x="975.0" y="243.0">d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.taxref</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.ref_geo.l_areas" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.ref_geo.bib_areas_types">
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.ref_geo.l_areas" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.ref_geo.bib_areas_types">
       <point x="0.0" y="-142.5" />
       <point x="0.0" y="96.5" />
     </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.sights" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.ref_geo.li_municipalities">
-      <point x="0.0" y="-188.5" />
-      <point x="727.6153846153846" y="1491.0" />
-      <point x="738.5" y="1491.0" />
-      <point x="-77.5" y="292.0" />
-    </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.sights" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.bib_noms">
-      <point x="-87.33333333333337" y="-188.5" />
-      <point x="640.2820512820513" y="1491.0" />
-      <point x="347.0" y="1491.0" />
-      <point x="0.0" y="73.5" />
-    </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.ref_geo.li_municipalities" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.ref_geo.l_areas">
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.ref_geo.li_municipalities" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.ref_geo.l_areas">
       <point x="0.0" y="-292.0" />
       <point x="0.0" y="142.5" />
     </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.taxref" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.bib_taxref_statuts">
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.taxref" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.bib_taxref_habitats">
       <point x="-93.0" y="-292.0" />
-      <point x="254.0" y="218.0" />
-      <point x="107.5" y="218.0" />
-      <point x="0.0" y="39.0" />
+      <point x="1021.5" y="218.0" />
+      <point x="880.0" y="218.0" />
+      <point x="0.0" y="50.5" />
     </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.bib_noms" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.taxref">
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.bib_noms" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.taxref">
       <point x="0.0" y="-73.5" />
       <point x="0.0" y="292.0" />
     </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.events" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.ref_geo.li_municipalities">
-      <point x="-65.5" y="-177.0" />
-      <point x="980.1153846153846" y="1481.0" />
-      <point x="893.5" y="1481.0" />
-      <point x="77.5" y="292.0" />
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.taxref" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.bib_taxref_statuts">
+      <point x="93.0" y="-292.0" />
+      <point x="1207.5" y="218.0" />
+      <point x="1344.5" y="218.0" />
+      <point x="0.0" y="39.0" />
     </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.sights" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.users">
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.sights" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.bib_noms">
       <point x="87.33333333333337" y="-188.5" />
-      <point x="814.948717948718" y="1491.0" />
-      <point x="1034.6666666666667" y="1491.0" />
-      <point x="-87.33333333333331" y="131.0" />
-    </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.users_rights" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.modules">
-      <point x="49.5" y="-62.0" />
+      <point x="811.7179487179487" y="1491.0" />
+      <point x="1114.5" y="1491.0" />
       <point x="0.0" y="73.5" />
     </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.events" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.users">
-      <point x="65.5" y="-177.0" />
-      <point x="1111.1153846153848" y="1491.0" />
-      <point x="1122.0" y="1491.0" />
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.users_rights" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.modules">
+      <point x="-49.5" y="-108.0" />
+      <point x="0.0" y="73.5" />
+    </edge>
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.events" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.users">
+      <point x="-65.5" y="-177.0" />
+      <point x="340.88461538461536" y="1491.0" />
+      <point x="330.0" y="1491.0" />
       <point x="0.0" y="131.0" />
     </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.users_rights" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.users">
-      <point x="-49.5" y="-62.0" />
-      <point x="1263.5" y="1491.0" />
-      <point x="1209.3333333333333" y="1491.0" />
-      <point x="87.33333333333331" y="131.0" />
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.sights" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.users">
+      <point x="-87.33333333333337" y="-188.5" />
+      <point x="637.051282051282" y="1481.0" />
+      <point x="417.33333333333326" y="1481.0" />
+      <point x="87.33333333333326" y="131.0" />
     </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.taxref" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.bib_taxref_rangs">
-      <point x="93.0" y="-292.0" />
-      <point x="440.0" y="218.0" />
-      <point x="581.5" y="218.0" />
-      <point x="0.0" y="50.5" />
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.events" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.ref_geo.li_municipalities">
+      <point x="65.5" y="-177.0" />
+      <point x="471.88461538461536" y="1491.0" />
+      <point x="558.5" y="1491.0" />
+      <point x="-77.5" y="292.0" />
     </edge>
-    <edge source="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.taxref" target="b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.taxonomie.bib_taxref_habitats">
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.taxref" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.bib_taxref_rangs">
       <point x="0.0" y="-292.0" />
       <point x="0.0" y="50.5" />
     </edge>
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.sights" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.ref_geo.li_municipalities">
+      <point x="0.0" y="-188.5" />
+      <point x="724.3846153846154" y="1491.0" />
+      <point x="713.5" y="1491.0" />
+      <point x="77.5" y="292.0" />
+    </edge>
+    <edge source="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.users_rights" target="d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.gncitizen.users">
+      <point x="49.5" y="-108.0" />
+      <point x="188.5" y="1491.0" />
+      <point x="242.66666666666674" y="1491.0" />
+      <point x="-87.33333333333326" y="131.0" />
+    </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.4" x="641.0616285554934" y="894.323480200781" />
+  <settings layout="Hierarchic Group" zoom="0.6208258527827648" x="925.5147484094853" y="1653.0595720069405" />
   <SelectedNodes>
-    <node>b2fc72bc-3337-4be2-a7e2-1262de65600b.TABLE:geonaturedb.gncitizen.events</node>
+    <node>d84767c0-fa88-4317-9601-d3e6336c367f.TABLE:geonaturedb.taxonomie.bib_taxref_rangs</node>
   </SelectedNodes>
   <Categories>
     <Category>Key columns</Category>
