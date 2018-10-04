@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from passlib.hash import pbkdf2_sha256 as sha256
-
+from gncitizen.core.commons.models import ModulesModel
 from server import db
 
 

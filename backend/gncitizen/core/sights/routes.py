@@ -7,13 +7,14 @@ from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import Point, asShape
 
-from gncitizen.core.auth.models import UserModel
+from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
 from .models import SightModel
+from gncitizen.core.commons.models import ModulesModel
 
 routes = Blueprint('sights', __name__)
 

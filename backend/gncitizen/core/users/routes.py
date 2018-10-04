@@ -6,13 +6,13 @@ from server import db
 from .models import UserModel, RevokedTokenModel
 from .schemas import user_schema
 
-routes = Blueprint('auth', __name__)
+routes = Blueprint('users', __name__)
 
 
 @routes.route('/registration', methods=['POST'])
 def registration():
     """
-    Enregistrement de l'utilisateur
+    User registration
     Utiliser le décorateur `@get_jwt_identity()`
     pour avoir l'identité de l'utilisateur courant. Exemple:
 
@@ -96,7 +96,7 @@ def registration():
 @routes.route('/login', methods=['POST'])
 def login():
     """
-    Connexion de l'utilisateur
+    User login
     ---
     tags:
       - Authentication
@@ -159,7 +159,7 @@ def login():
 @jwt_refresh_token_required
 def logout():
     """
-    Déconnexion de l'utilisateur
+    User logout
     ---
     tags:
       - Authentication

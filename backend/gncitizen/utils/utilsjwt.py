@@ -1,6 +1,6 @@
 from flask_jwt_extended import get_jwt_identity
 
-from gncitizen.core.auth.models import UserModel
+from gncitizen.core.users.models import UserModel
 
 
 def get_id_role_if_exists():
