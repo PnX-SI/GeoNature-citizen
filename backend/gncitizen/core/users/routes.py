@@ -197,8 +197,16 @@ def logout():
 @routes.route('/token_refresh', methods=['POST'])
 @jwt_refresh_token_required
 def token_refresh():
-    """
-    Renouvellemnet de l'access_token de l'utilisateur
+    """Refresh token
+    ---
+    tags:
+      - Authentication
+    summary: Refresh token for logged user
+    produces:
+      - application/json
+    responses:
+      200:
+        description: list all logged users
     """
     current_user = get_jwt_identity()
     access_token = create_access_token(identity=current_user)
@@ -208,27 +216,50 @@ def token_refresh():
 @routes.route('/allusers', methods=['GET'])
 @jwt_required
 def get_allusers():
-    """
-    Affichage de la liste des utilisateurs
+    """list all users
+    ---
+    tags:
+      - Authentication
+    summary: List all registered users
+    produces:
+      - application/json
+    responses:
+      200:
+        description: list all users
     """
     return jsonify(UserModel.return_all()), 200
 
-
-@routes.route('/allusers', methods=['DELETE'])
-@jwt_required
-def del_allusers():
-    """
-    Suppression de tous les utilisateurs
-    """
-    return jsonify(UserModel.delete_all()), 200
+#
+# @routes.route('/allusers', methods=['DELETE'])
+# @jwt_required
+# def del_allusers():
+#     """Delete all users
+#     ---
+#     tags:
+#       - Authentication
+#     summary: List all logged registered users
+#     produces:
+#       - application/json
+#     responses:
+#       200:
+#         description: Delete all users
+#     """
+#     return jsonify(UserModel.delete_all()), 200
 
 
 @routes.route('/logged_user', methods=['GET'])
 @jwt_required
 def logged_user():
-    """
-    Get main informations of current logged user
-    :return:
+    """list all logged users
+    ---
+    tags:
+      - Authentication
+    summary: List all logged registered users
+    produces:
+      - application/json
+    responses:
+      200:
+        description: list all logged users
     """
     current_user = get_jwt_identity()
     print(type(current_user))

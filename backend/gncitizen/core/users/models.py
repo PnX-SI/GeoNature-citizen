@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 from passlib.hash import pbkdf2_sha256 as sha256
-from gncitizen.core.commons.models import ModulesModel
+
 from server import db
 
 
 class RevokedTokenModel(db.Model):
     __tablename__ = 'revoked_tokens'
     __table_args__ = {'schema': 'gncitizen'}
-    
+
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120))
 
@@ -78,6 +78,7 @@ class UserModel(db.Model):
             except:
                 return {'message': 'Something went wrong'}
 
+
 class UserRights(db.Model):
     """Table de gestion des droits des utilisateurs de GeoNature-citizen"""
     __tablename__ = "users_rights"
@@ -86,7 +87,7 @@ class UserRights(db.Model):
     id_user = db.Column(db.Integer, db.ForeignKey('gncitizen.users.id_user'))
     id_module = db.Column(db.Integer, db.ForeignKey('gncitizen.modules.id_module'))
     right = db.Column(db.String(150), nullable=False)
-    create = db.Boolean()
-    read = db.Boolean()
-    update = db.Boolean()
-    delete = db.Boolean()
+    create = db.Column(db.Boolean(), default=False)
+    read = db.Column(db.Boolean(), default=False)
+    update = db.Column(db.Boolean(), default=False)
+    delete = db.Column(db.Boolean(), default=False)
