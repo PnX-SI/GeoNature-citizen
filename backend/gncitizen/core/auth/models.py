@@ -77,3 +77,16 @@ class UserModel(db.Model):
                 return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
             except:
                 return {'message': 'Something went wrong'}
+
+class UserRights(db.Model):
+    """Table de gestion des droits des utilisateurs de GeoNature-citizen"""
+    __tablename__ = "users_rights"
+    __table_args__ = {'schema': 'gncitizen'}
+    id_user_right = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer, db.ForeignKey('gncitizen.users.id_user'))
+    id_module = db.Column(db.Integer, db.ForeignKey('gncitizen.gncitizen.id_module'))
+    right = db.Column(db.String(150), nullable=False)
+    create = db.Boolean()
+    read = db.Boolean()
+    update = db.Boolean()
+    delete = db.Boolean()
