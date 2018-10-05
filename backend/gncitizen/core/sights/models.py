@@ -31,6 +31,6 @@ class SightModel(db.Model):
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
     geom = db.Column(Geometry('POINT', 4326))
-    municipality = db.Column(db.String(5), db.ForeignKey('ref_geo.li_municipalities.id_municipality'))
+    municipality = db.Column(db.Integer, db.ForeignKey('ref_geo.l_areas.id_area'))
     timestamp_create = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     photo = db.Column(db.Text)
