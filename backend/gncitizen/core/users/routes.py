@@ -1,15 +1,16 @@
 from flask import jsonify, request, Blueprint
-from flask_jwt_extended import (create_access_token, create_refresh_token, get_raw_jwt, jwt_refresh_token_required, \
-                                jwt_required, get_jwt_identity)
+from flask_jwt_extended import (create_access_token, create_refresh_token, get_raw_jwt, get_jwt_identity,
+                                jwt_refresh_token_required, jwt_required)
 
+from gncitizen.utils.utilssqlalchemy import json_resp
 from server import db
 from .models import UserModel, RevokedTokenModel
-from .schemas import user_schema
 
 routes = Blueprint('users', __name__)
 
 
 @routes.route('/registration', methods=['POST'])
+@json_resp
 def registration():
     """
     User registration
@@ -59,41 +60,42 @@ def registration():
       200:
         description: user created
     """
-    json_data = request.get_json()
-    if not json_data:
-        return jsonify({'message': 'No input data provided'}), 400
-    # Validate and deserialize input
     try:
-        data, errors = user_schema.load(json_data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
-    name, surname, username, password, email = data['name'], data['surname'], data['username'], data['password'], data[
-        'email']
-    if UserModel.find_by_username(data['username']):
-        return jsonify({'message': 'L\'utilisateur {} éxiste déjà'.format(username)}), 400
-    new_user = UserModel(
-        name=name,
-        surname=surname,
-        username=username,
-        password=UserModel.generate_hash(password),
-        email=email
-    )
-    try:
-        db.session.add(new_user)
+        request_datas = dict(request.get_json())
+        datas2db = {}
+        for field in request_datas:
+            if hasattr(UserModel, field) and field != 'password':
+                datas2db[field] = request_datas[field]
+
+        datas2db['password'] = UserModel.generate_hash(request_datas['password'])
+
+        try:
+            newuser = UserModel(**datas2db)
+
+        except Exception as e:
+            print(e)
+            raise GeonatureApiError(e)
+
+        if UserModel.find_by_username(newuser.username):
+            return jsonify({'message': 'L\'utilisateur {} éxiste déjà'.format(newuser.username)}), 400
+
+        db.session.add(newuser)
         db.session.commit()
-        access_token = create_access_token(identity=username)
-        refresh_token = create_refresh_token(identity=username)
+        access_token = create_access_token(identity=newuser.username)
+        refresh_token = create_refresh_token(identity=newuser.username)
         data_json = {
-            'message': 'Félicitations, l\'utilisateur <b>{}</b> a été créé'.format(username),
+            'message': 'Félicitations, l\'utilisateur <b>{}</b> a été créé'.format(newuser.username),
             'access_token': access_token,
             'refresh_token': refresh_token
         }
         return jsonify(data_json), 200
-    except:
-        return jsonify({'message': 'Quelque chose s\'est mal déroulé'}), 500
+
+    except Exception as e:
+        return {'error_message': str(e)}, 500
 
 
 @routes.route('/login', methods=['POST'])
+@json_resp
 def login():
     """
     User login
@@ -123,39 +125,38 @@ def login():
       200:
         description: user created
     """
-    json_data = request.get_json()
-    if not json_data:
-        return jsonify({'message': 'No input data provided'}), 400
-    # Validate and deserialize input
     try:
-        data, errors = user_schema.load(json_data)
-        print('username', data['username'])
-    except:
-        return jsonify({'message': 'Problème utilisation params'}), 400
+        request_datas = dict(request.get_json())
+        if request_datas is None:
+            return jsonify({'message': 'No input data provided'}), 400
+        # Validate and deserialize input
+        if request_datas['username'] is None:
+            return jsonify({"error_message": "Missing username parameter"}), 400
+        if request_datas['password'] is None:
+            return jsonify({"error_message": "Missing password parameter"}), 400
 
-    username, password = data['username'], data['password']
+        username = request_datas['username']
+        password = request_datas['password']
 
-    if not username:
-        return jsonify({"msg": "Missing username parameter"}), 400
-    if not password:
-        return jsonify({"msg": "Missing password parameter"}), 400
-
-    current_user = UserModel.find_by_username(data['username'])
-    if not current_user:
-        return jsonify({'message': 'User {} doesn\'t exist'.format(data['username'])}), 400
-    if UserModel.verify_hash(password, current_user.password):
-        access_token = create_access_token(identity=data['username'])
-        refresh_token = create_refresh_token(identity=data['username'])
-        return jsonify({
-            'message': 'Logged in as {}'.format(current_user.username),
-            'access_token': access_token,
-            'refresh_token': refresh_token
-        }), 200
-    else:
-        return jsonify({'message': 'Wrong credentials'}), 401
+        current_user = UserModel.find_by_username(username)
+        if not current_user:
+            return jsonify({'message': 'User {} doesn\'t exist'.format(data['username'])}), 400
+        if UserModel.verify_hash(password, current_user.password):
+            access_token = create_access_token(identity=username)
+            refresh_token = create_refresh_token(identity=username)
+            return jsonify({
+                'message': 'Logged in as {}'.format(username),
+                'access_token': access_token,
+                'refresh_token': refresh_token
+            }), 200
+        else:
+            return {'error_message': 'Wrong credentials'}, 400
+    except Exception as e:
+        return {'error_message': str(e)}, 400
 
 
 @routes.route('/logout', methods=['POST'])
+@json_resp
 @jwt_refresh_token_required
 def logout():
     """
@@ -196,6 +197,7 @@ def logout():
 
 @routes.route('/token_refresh', methods=['POST'])
 @jwt_refresh_token_required
+@json_resp
 def token_refresh():
     """Refresh token
     ---
@@ -215,6 +217,7 @@ def token_refresh():
 
 @routes.route('/allusers', methods=['GET'])
 @jwt_required
+@json_resp
 def get_allusers():
     """list all users
     ---
@@ -227,7 +230,9 @@ def get_allusers():
       200:
         description: list all users
     """
-    return jsonify(UserModel.return_all()), 200
+    allusers = UserModel.return_all()
+    return allusers, 200
+
 
 #
 # @routes.route('/allusers', methods=['DELETE'])
@@ -248,6 +253,7 @@ def get_allusers():
 
 
 @routes.route('/logged_user', methods=['GET'])
+@json_resp
 @jwt_required
 def logged_user():
     """list all logged users
@@ -262,6 +268,5 @@ def logged_user():
         description: list all logged users
     """
     current_user = get_jwt_identity()
-    print(type(current_user))
-    user = user_schema.dump(UserModel.query.filter_by(username=current_user).first())
-    return jsonify(user=user), 200
+    user = UserModel.query.filter_by(username=current_user).first()
+    return user, 200

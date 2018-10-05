@@ -77,6 +77,7 @@ def post_sight():
           - application/json
         parameters:
           - name: body
+
             in: body
             description: JSON parameters.
             required: true
