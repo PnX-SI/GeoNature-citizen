@@ -1,3 +1,368 @@
-<p>
-  sights works!
-</p>
+<div class="row" id="mapapp">
+  <div class="col-lg-8" id="sightmap">
+  </div>
+  <!-- Modal de formulaire -->
+  <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-primary" id="feature-title"></h4>
+        </div>
+
+        <div class="modal-body" id="feature-info">
+          <div class="alert alert-primary" role="alert">
+            <p class="modal-title text-primary" id="feature-coords"></p>
+          </div>
+          <form>
+            <div class="form-row">
+              <div class="form-group col-lg-12">
+                <div class="btn-group" data-toggle="buttons">
+                  <button name="cssPre1" id="css1" value="CSS" class="btn btn-outline-primary" data-ng-model="cssPre">
+                    <img src="http://via.placeholder.com/100x100"
+                         class="rounded-circle"
+                         style="max-width:100%"
+                         alt='customer image'/>
+                  </button>
+                  <button name="cssPre1" id="css1" value="CSS" class="btn btn-outline-primary" data-ng-model="cssPre">
+                    <img src="http://via.placeholder.com/100x100"
+                         style="max-width:100%"
+                         alt='customer image'/>
+                  </button>
+                  <button name="cssPre1" id="css1" value="CSS" class="btn btn-outline-primary" data-ng-model="cssPre">
+                    <img src="http://via.placeholder.com/100x100"
+                         class="rounded-circle"
+                         style="max-width:100%"
+                         alt='customer image'/>
+                  </button>
+                  <button name="cssPre1" id="css1" value="CSS" class="btn btn-outline-primary" data-ng-model="cssPre">
+                    <img src="http://via.placeholder.com/100x100"
+                         style="max-width:100%"
+                         alt='customer image'/>
+                  </button>
+                  <button name="cssPre1" id="css1" value="CSS" class="btn btn-outline-primary" data-ng-model="cssPre">
+                    <img src="http://via.placeholder.com/100x100"
+                         class="rounded-circle"
+                         style="max-width:100%"
+                         alt='customer image'/>
+                  </button>
+                  <button name="cssPre1" id="css1" value="CSS" class="btn btn-outline-primary" data-ng-model="cssPre">
+                    <img src="http://via.placeholder.com/100x100"
+                         style="max-width:100%"
+                         alt='customer image'/>
+                  </button>
+                </div>
+              </div>
+              <div class="form-group col-lg-6">
+                <input type="text"
+                       placeholder="Date de l'observation"
+                       class="form-control"
+                       bsDatepicker>
+              </div>
+              <div class="form-group col-lg-6">
+                <!--<pre class="card card-block card-header mb-3">Model: {{selected | json}}</pre>-->
+                <input type="number"
+                       min="0"
+                       placeholder="Nombre"
+                       data-bind="value:replyNumber"
+                       class="form-control">
+              </div>
+              <div class="form-group col-lg-12">
+                <textarea
+                  placeholder="Commentaire"
+                  class="form-control"
+                  rows="5"
+                  id="comment"></textarea>
+              </div>
+            </div>
+          </form>
+        </div><!-- /.modal-body -->
+        <div class="modal-footer">
+          <div class="btn-group">
+            <div type="button" class="btn btn-default btn-outline-primary" data-dismiss="modal"><i
+              class="fa fa-plus"></i>
+              Ajouter
+            </div>
+            <button type="button" class="btn btn-default btn-outline-danger" data-dismiss="modal"><i
+              class="fa fa-x"></i>Fermer
+            </button>
+          </div>
+        </div><!-- /.modal-footer -->
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <div class="col-lg-4" id="sightlist">
+    <ul class="list-group">
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Guépier d'Europe</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Huppe fasciée</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Hérisson d'Europe</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Guépier d'Europe</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Huppe fasciée</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Hérisson d'Europe</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Guépier d'Europe</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Huppe fasciée</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Hérisson d'Europe</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Guépier d'Europe</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Huppe fasciée</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Hérisson d'Europe</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Guépier d'Europe</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Huppe fasciée</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+      <li href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100"
+                 class="rounded-circle"
+                 style="max-width:50px"
+                 alt='customer image'/>
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">Hérisson d'Europe</a>
+              <button class="btn btn-primary btn-sm pull-right" title="Delete customer"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>JJ/MM/AAAA HH:MM</div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

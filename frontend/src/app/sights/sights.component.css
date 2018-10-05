@@ -1,0 +1,20 @@
+#mapapp {
+  margin-top: 56px;
+}
+
+#sightlist {
+  height: calc(100vh - 56px);
+  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+#sightmap {
+  height: calc(100vh - 56px);
+  width: 100%;
+}
+
+[data-toggle="buttons"] > .btn > input[type="radio"], [data-toggle="buttons"] > .btn > input[type="checkbox"] {
+  clip: rect(1px 10px 1px 1px);
+}

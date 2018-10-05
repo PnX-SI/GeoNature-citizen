@@ -2,13 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Frontend</title>
+  <title>GeoNature-citizen</title>
   <base href="/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-<body>
-  <app-root></app-root>
+<body class="bg-light">
+<header>
+  <nav class="navbar navbar-expand-sm navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">Citiz'Obs</a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample03"
+            aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" id="navbarsExample03" style="">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/"><i class="fa fa-home fa-fw" aria-hidden="true"></i> &nbsp; Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> &nbsp; Agendas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/sights"><i class="fa fa-eye fa-fw" aria-hidden="true"></i> &nbsp; Partagez vos
+            observations</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fa fa-fw" aria-hidden="true"></i> &nbsp; Devenez acteur</a>
+        </li>
+      </ul>
+      <form class="form-inline mt-2 mt-md-0">
+        <a href="/login" class="btn btn-outline-primary my-2 my-sm-0"><i class="fa fa-user-circle"></i></a>
+      </form>
+    </div>
+  </nav>
+
+</header>
+<main class="container-fluid">
+  <div class="app">
+    <app-root></app-root>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <span class="text-muted">Place sticky footer content here.</span>
+  </div>
+</footer>
 </body>
+
 </html>
