@@ -61,7 +61,7 @@ def get_sight(pk):
         return {'error_message': str(e)}, 400
 
 
-@routes.route('/sights/', methods=['POST'])
+@routes.route('/sights', methods=['POST'])
 @json_resp
 @jwt_optional
 def post_sight():
@@ -77,7 +77,6 @@ def post_sight():
           - application/json
         parameters:
           - name: body
-
             in: body
             description: JSON parameters.
             required: true
@@ -178,7 +177,7 @@ def post_sight():
         return {'error_message': str(e)}, 400
 
 
-@routes.route('/sights/', methods=['GET'])
+@routes.route('/sights', methods=['GET'])
 @json_resp
 def get_sights():
     """Get all sights
@@ -215,7 +214,7 @@ def get_sights():
         return {'error_message': str(e)}, 400
 
 
-@routes.route('/sights/lists/<int:id>/', methods=['GET'])
+@routes.route('/sights/lists/<int:id>', methods=['GET'])
 @json_resp
 def get_sights_from_list(id):
     """Get all sights from a taxonomy list

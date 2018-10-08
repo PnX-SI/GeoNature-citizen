@@ -7,7 +7,7 @@ from gncitizen.utils.utilssqlalchemy import json_resp
 routes = Blueprint('taxonomy', __name__)
 
 
-@routes.route('/taxonomy/lists/', methods=['GET'])
+@routes.route('/taxonomy/lists', methods=['GET'])
 @json_resp
 def get_lists():
     """Renvoie toutes liste d'espèces

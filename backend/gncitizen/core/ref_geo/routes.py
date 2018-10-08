@@ -11,7 +11,7 @@ from .models import LAreas
 routes = Blueprint('georepos', __name__)
 
 
-@routes.route('/municipality/', methods=['GET'])
+@routes.route('/municipality', methods=['GET'])
 @json_resp
 def get_municipalities():
     """List all enabled municipalities
@@ -98,7 +98,7 @@ def get_municipality(insee):
         return {'error_message':str(e)}, 400
 
 
-@routes.route('/portalarea/', methods=['GET'])
+@routes.route('/portalarea', methods=['GET'])
 @json_resp
 def get_portalarea():
     """Generate a unique area from all enable municipalities to represent portal area

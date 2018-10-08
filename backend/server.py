@@ -16,7 +16,6 @@ app = Flask(__name__)
 
 app.debug = True
 
-
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
