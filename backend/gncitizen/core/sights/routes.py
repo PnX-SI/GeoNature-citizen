@@ -15,9 +15,15 @@ from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
 from .models import SightModel
 from gncitizen.core.commons.models import ModulesModel
+from gncitizen.core.taxonomy.models import BibNoms
 
 routes = Blueprint('sights', __name__)
 
+
+def get_specie_from_cd_nom(cd_nom):
+    """Renvoie le nom français de l'espèce d'après le cd_nom"""
+    result = BibNoms.query.filter_by(cd_nom=cd_nom).first()
+    return result.nom_francais
 
 @routes.route('/sights/<int:pk>')
 @json_resp
@@ -55,6 +61,7 @@ def get_sight(pk):
         for k in result_dict:
             if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
                 feature['properties'][k] = result_dict[k]
+        feature['properties']['common_name'] = get_specie_from_cd_nom(feature['properties']['cd_nom'])
         features.append(feature)
         return {'features': features}, 200
     except Exception as e:
@@ -168,6 +175,7 @@ def post_sight():
         for k in result_dict:
             if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
                 feature['properties'][k] = result_dict[k]
+        feature['properties']['common_name'] = get_specie_from_cd_nom(feature['properties']['cd_nom'])
         features.append(feature)
         return {
                    'message': 'New sight created.',
@@ -208,6 +216,7 @@ def get_sights():
             for k in sight_dict:
                 if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
                     feature['properties'][k] = sight_dict[k]
+            feature['properties']['common_name'] = get_specie_from_cd_nom(feature['properties']['cd_nom'])
             features.append(feature)
         return FeatureCollection(features)
     except Exception as e:
@@ -260,6 +269,7 @@ def get_sights_from_list(id):
                     for k in sight_dict:
                         if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
                             feature['properties'][k] = sight_dict[k]
+                    feature['properties']['common_name'] = get_specie_from_cd_nom(feature['properties']['cd_nom'])
                     features.append(feature)
             return FeatureCollection(features)
         except Exception as e:
