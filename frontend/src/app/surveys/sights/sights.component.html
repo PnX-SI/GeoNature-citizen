@@ -1,0 +1,69 @@
+<div class="row" id="mapapp">
+  <div class="col-md-8 col-sm-6" id="sightmap">
+  </div>
+  <!-- Modal de formulaire -->
+  <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-primary" id="feature-title"></h4>
+        </div>
+
+        <div class="modal-body" id="feature-info">
+          <div class="alert alert-primary" role="alert">
+            <p class="modal-title text-primary" id="feature-coords"></p>
+          </div>
+          <form>
+            <div class="form-row">
+              <div class="form-group col-lg-12">
+                  <label for="sel1">Sélectionnez une espèce</label>
+                  <select class="form-control" id="sel1">
+                    <option  *ngFor="let s of surveySpecies; let i=index;" value="{{s.cd_nom}}">{{s.nom_francais}}</option>
+                  </select>
+              </div>
+              <div class="form-group col-lg-6">
+                <input type="text" placeholder="Date de l'observation" class="form-control" bsDatepicker>
+              </div>
+              <div class="form-group col-lg-6">
+                <!--<pre class="card card-block card-header mb-3">Model: {{selected | json}}</pre>-->
+                <input type="number" min="0" placeholder="Nombre" data-bind="value:replyNumber" class="form-control">
+              </div>
+              <div class="form-group col-lg-12">
+                <textarea placeholder="Commentaire" class="form-control" rows="5" id="comment"></textarea>
+              </div>
+            </div>
+          </form>
+        </div><!-- /.modal-body -->
+        <div class="modal-footer">
+          <div class="btn-group">
+            <div type="button" class="btn btn-default btn-outline-primary" data-dismiss="modal"><i class="fa fa-plus"></i>
+              Ajouter
+            </div>
+            <button type="button" class="btn btn-default btn-outline-danger" data-dismiss="modal"><i class="fa fa-x"></i>Fermer
+            </button>
+          </div>
+        </div><!-- /.modal-footer -->
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <div class="col-md-4 col-sm-6" id="sightlist">
+    <ul class="list-group">
+      <li *ngFor="let s of sightsFeatures; let i=index;" href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="http://via.placeholder.com/100x100" class="rounded-circle" style="max-width:50px" alt='customer image' />
+          </div>
+          <div class="col-lg-10">
+            <div style="font-weight:bold;">
+              <a href="#" style="cursor:pointer">{{s.properties.common_name}}&nbsp;<small>(<i>{{s.properties.sci_name}}</i>)</small></a>
+              <button class="btn btn-primary btn-sm pull-right" title="Localiser la donnée" class="btn btn-primary btn-xs pull-right map-navigation"><i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <div>{{s.properties.date}}</div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

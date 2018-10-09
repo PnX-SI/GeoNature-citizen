@@ -1,23 +1,22 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpErrorResponse
+} from "@angular/common/http";
+import { map } from "rxjs/operators";
 
-
-const apiUrl = 'http://localhost:5001/api/';
+const apiUrl = "http://localhost:5001/api/";
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({ "Content-Type": "application/json" })
 };
 
 @Injectable()
 export class RestService {
-
-  constructor(private http: HttpClient) { }
-
+  constructor(private http: HttpClient) {}
 
   getSightsItems() {
-    return this.http
-      .get(apiUrl+'sights')
-      .pipe(map(data => data));
+    return this.http.get(apiUrl + "sights").pipe(map(data => data));
   }
 
   // getSight(id): Observable<any> {
@@ -45,6 +44,4 @@ export class RestService {
   //     return of(result as T);
   //   };
   // }
-
 }
-

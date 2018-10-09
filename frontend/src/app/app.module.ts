@@ -4,10 +4,10 @@ import { HttpClientModule} from '@angular/common/http';
 
 
 import {AppComponent} from './app.component';
-import {SightsComponent} from './sights/sights.component';
-import {MapComponent} from './sights/map/map.component';
-import {FormComponent} from './sights/form/form.component';
-import {ListComponent} from './sights/list/list.component';
+import {SightsComponent} from './surveys/sights/sights.component';
+import {MapComponent} from './surveys/sights/map/map.component';
+import {FormComponent} from './surveys/sights/form/form.component';
+import {ListComponent} from './surveys/sights/list/list.component';
 import {HomeComponent} from './home/home.component';
 import {SurveysComponent} from './surveys/surveys.component';
 import {RegisterComponent} from './register/register.component';
