@@ -7,6 +7,7 @@ from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import Point, asShape
 
+from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
@@ -14,16 +15,45 @@ from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
 from .models import SightModel
-from gncitizen.core.commons.models import ModulesModel
-from gncitizen.core.taxonomy.models import BibNoms
 
 routes = Blueprint('sights', __name__)
 
 
 def get_specie_from_cd_nom(cd_nom):
-    """Renvoie le nom français de l'espèce d'après le cd_nom"""
-    result = BibNoms.query.filter_by(cd_nom=cd_nom).first()
-    return result.nom_francais
+    """Renvoie le nom français et scientifique officiel (cd_nom = cd_ref) de l'espèce d'après le cd_nom"""
+    result = Taxref.query.filter_by(cd_nom=cd_nom).first()
+    official_taxa = Taxref.query.filter_by(cd_nom=result.cd_ref).first()
+    common_names = official_taxa.nom_vern
+    common_name = common_names.split(',')[0]
+    sci_name = official_taxa.lb_nom
+    taxref = {}
+    taxref['common_name'] = common_name
+    taxref['sci_name'] = sci_name
+    return taxref
+
+def generate_sight_geojson(id_sight):
+    """generate sight in geojson format from sight id"""
+
+    # Crééer le dictionnaire de l'observation
+    result = SightModel.query.get(id_sight)
+    result_dict = result.as_dict(True)
+
+    # Populate "geometry"
+    features = []
+    feature = get_geojson_feature(result.geom)
+
+    # Populate "properties"
+    for k in result_dict:
+        if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
+            feature['properties'][k] = result_dict[k]
+
+    # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref
+    taxref = get_specie_from_cd_nom(feature['properties']['cd_nom'])
+    for k in taxref:
+        feature['properties'][k] = taxref[k]
+    features.append(feature)
+    return features
+
 
 @routes.route('/sights/<int:pk>')
 @json_resp
@@ -54,15 +84,7 @@ def get_sight(pk):
              description: A list of all sights
          """
     try:
-        result = SightModel.query.get(pk)
-        result_dict = result.as_dict(True)
-        features = []
-        feature = get_geojson_feature(result.geom)
-        for k in result_dict:
-            if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
-                feature['properties'][k] = result_dict[k]
-        feature['properties']['common_name'] = get_specie_from_cd_nom(feature['properties']['cd_nom'])
-        features.append(feature)
+        features = generate_sight_geojson(pk)
         return {'features': features}, 200
     except Exception as e:
         return {'error_message': str(e)}, 400
@@ -168,15 +190,7 @@ def post_sight():
         db.session.add(newsight)
         db.session.commit()
         # Réponse en retour
-        result = SightModel.query.get(newsight.id_sight)
-        result_dict = result.as_dict(True)
-        features = []
-        feature = get_geojson_feature(result.geom)
-        for k in result_dict:
-            if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
-                feature['properties'][k] = result_dict[k]
-        feature['properties']['common_name'] = get_specie_from_cd_nom(feature['properties']['cd_nom'])
-        features.append(feature)
+        features = generate_sight_geojson(pk)
         return {
                    'message': 'New sight created.',
                    'features': features,
@@ -216,7 +230,9 @@ def get_sights():
             for k in sight_dict:
                 if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
                     feature['properties'][k] = sight_dict[k]
-            feature['properties']['common_name'] = get_specie_from_cd_nom(feature['properties']['cd_nom'])
+            taxref = get_specie_from_cd_nom(feature['properties']['cd_nom'])
+            for k in taxref:
+                feature['properties'][k] = taxref[k]
             features.append(feature)
         return FeatureCollection(features)
     except Exception as e:
@@ -269,7 +285,9 @@ def get_sights_from_list(id):
                     for k in sight_dict:
                         if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
                             feature['properties'][k] = sight_dict[k]
-                    feature['properties']['common_name'] = get_specie_from_cd_nom(feature['properties']['cd_nom'])
+                    taxref = get_specie_from_cd_nom(feature['properties']['cd_nom'])
+                    for k in taxref:
+                        feature['properties'][k] = taxref[k]
                     features.append(feature)
             return FeatureCollection(features)
         except Exception as e:

@@ -21,7 +21,7 @@ class SightModel(db.Model):
     __table_args__ = {'schema': 'gncitizen'}
     id_sight = db.Column(db.Integer, primary_key=True, unique=True)
     uuid_sinp = db.Column(UUID(as_uuid=True), nullable=False, unique=True)
-    cd_nom = db.Column(db.Integer, db.ForeignKey('taxonomie.bib_noms.cd_nom'))
+    cd_nom = db.Column(db.Integer, db.ForeignKey('taxonomie.taxref.cd_nom'))
     specie = db.Column(db.String(200))
     date = db.Column(db.DATE, nullable=False)
     id_role = db.Column(db.Integer, db.ForeignKey('gncitizen.users.id_user'))

@@ -61,29 +61,6 @@ class CorNomListe(db.Model):
     # medias = db.relationship("TMedias", lazy='select')
     #
 
-
-# @serializable
-# class VTaxrefAllListes(db.Model):
-#     __tablenam&e__ = 'v_taxref_all_listes'
-#     __table_args__ = {'schema': 'taxonomie'}
-#     regne = db.Column(db.Unicode)
-#     phylum = db.Column(db.Unicode)
-#     classe = db.Column(db.Unicode)
-#     ordre = db.Column(db.Unicode)
-#     famille = db.Column(db.Unicode)
-#     group1_inpn = db.Column(db.Unicode)
-#     group2_inpn = db.Column(db.Unicode)
-#     cd_nom = db.Column(db.Integer)
-#     cd_ref = db.Column(db.Integer)
-#     nom_complet = db.Column(db.Unicode)
-#     nom_valide = db.Column(db.Unicode)
-#     nom_vern = db.Column(db.Unicode)
-#     lb_nom = db.Column(db.Unicode)
-#     id_liste = db.Column(db.Integer, db.ForeignKey('taxonomie.bib_listes.id_liste'), nullable=False,
-#                          primary_key=False)
-#     bib_liste = db.relationship('BibListes')
-
-
 @serializable
 class TMedias(db.Model):
     __tablename__ = 't_medias'
@@ -107,3 +84,38 @@ class TMedias(db.Model):
 
     def __repr__(self):
         return '<TMedias %r>' % self.titre
+
+
+
+@serializable
+class Taxref(db.Model):
+    __tablename__ = 'taxref'
+    __table_args__ = {'schema': 'taxonomie'}
+    cd_nom = db.Column(db.Integer, primary_key=True)
+    id_statut = db.Column(db.Unicode)
+    id_habitat = db.Column(db.Integer)
+    id_rang = db.Column(db.Unicode)
+    regne = db.Column(db.Unicode)
+    phylum = db.Column(db.Unicode)
+    classe = db.Column(db.Unicode)
+    regne = db.Column(db.Unicode)
+    ordre = db.Column(db.Unicode)
+    famille = db.Column(db.Unicode)
+    sous_famille = db.Column(db.Unicode)
+    tribu = db.Column(db.Unicode)
+    cd_taxsup = db.Column(db.Integer)
+    cd_sup = db.Column(db.Integer)
+    cd_ref = db.Column(db.Integer)
+    lb_nom = db.Column(db.Unicode)
+    lb_auteur = db.Column(db.Unicode)
+    nom_complet = db.Column(db.Unicode)
+    nom_complet_html = db.Column(db.Unicode)
+    nom_vern = db.Column(db.Unicode)
+    nom_valide = db.Column(db.Unicode)
+    nom_vern_eng = db.Column(db.Unicode)
+    group1_inpn = db.Column(db.Unicode)
+    group2_inpn = db.Column(db.Unicode)
+    url = db.Column(db.Unicode)
+
+    def __repr__(self):
+        return '<Taxref %r>' % self.nom_complet
