@@ -84,7 +84,7 @@ export class SightsMapComponent implements OnInit {
     this.restItemsServiceGetPortalArea().subscribe(portalarea => {
     this.portalAreaGeoJson = portalarea;
     const mysightmap = this.mysightmap;
-    const portalArea = this.portalAreaGeoJson
+    const portalArea = this.portalAreaGeoJsonw
     L.geoJSON(portalArea).addTo(mysightmap);
     });
   }
