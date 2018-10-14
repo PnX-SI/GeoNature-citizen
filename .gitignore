@@ -285,4 +285,7 @@ external_modules/gnc_*
 contrib/gnc_*
 
 *.pyc
-backend/__pycache__/server.cpython-35.pyc
+*.cpython-35.pyc
+
+#FrontEnd config files
+frontend/src/conf/*.ts
