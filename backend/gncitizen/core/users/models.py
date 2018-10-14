@@ -3,6 +3,7 @@
 from passlib.hash import pbkdf2_sha256 as sha256
 
 from server import db
+from gncitizen.core.commons.models import ModulesModel
 
 
 class RevokedTokenModel(db.Model):
