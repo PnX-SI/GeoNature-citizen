@@ -1,23 +1,19 @@
-import { Component, OnInit } from "@angular/core";
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpErrorResponse
-} from "@angular/common/http";
-import { map } from "rxjs/operators";
-import { ActivatedRoute } from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {map} from 'rxjs/operators';
+import {AppConfig} from '../../conf/app.config';
 
 @Component({
-  selector: "app-surveys",
-  templateUrl: "./surveys.component.html",
-  styleUrls: ["./surveys.component.css"]
+  selector: 'app-surveys',
+  templateUrl: './surveys.component.html',
+  styleUrls: ['./surveys.component.css']
 })
 export class SurveysComponent implements OnInit {
-  title = "Enquêtes";
-  surveysApiUrl = "http://0.0.0.0:5001/api/taxonomy/lists/full";
+  title = 'Enquêtes';
   surveys: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   ngOnInit() {
     this.getSurveyListsItems();
@@ -31,6 +27,7 @@ export class SurveysComponent implements OnInit {
   }
 
   restItemsServiceGetRestItems() {
-    return this.http.get(this.surveysApiUrl).pipe(map(data => data));
+    console.log('URL: ', `${AppConfig.API_ENDPOINT}/taxonomy/lists/full`);
+    return this.http.get(`${AppConfig.API_ENDPOINT}/taxonomy/lists/full`).pipe(map(data => data));
   }
 }

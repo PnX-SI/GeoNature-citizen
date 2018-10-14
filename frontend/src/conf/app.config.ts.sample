@@ -1,0 +1,13 @@
+export const AppConfig = {
+    "appName": "GeoNature-citizen",
+    "API_ENDPOINT":"http://localhost:5001/api",
+    "API_TAXHUB":"http://localhost:5000/api",
+    "FRONTEND":{
+        "PROD_MOD":true,
+        "MULTILINGUAL":false,
+        "DISPLAY_FOOTER": true,
+        "DISPLAU_TOPBAR": false,
+        "DISPLAy_SIDEBAR": true
+    },
+    "URL_APPLICATION":"http://127.0.0.1:4200"
+}

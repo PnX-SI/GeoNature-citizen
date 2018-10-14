@@ -1,3 +1,22 @@
-<p>
-  list works!
-</p>
+<ul class="list-group">
+  <li *ngFor="let s of sightsFeatures; let i=index;" href="#" class="list-group-item">
+    <div class="row">
+      <div class="col-lg-2">
+        <img src="http://via.placeholder.com/100x100" class="rounded-circle" style="max-width:50px"
+             alt='customer image'/>
+      </div>
+      <div class="col-lg-10">
+        <div style="font-weight:bold;">
+          <a href="#" style="cursor:pointer">{{s.properties.common_name}}&nbsp;<small>
+            (<i>{{s.properties.sci_name}}</i>)
+          </small>
+          </a>
+          <button class="btn btn-primary btn-sm pull-right" title="Localiser la donnée"
+                  class="btn btn-primary btn-xs pull-right map-navigation"><i class="fa fa-eye"></i>
+          </button>
+        </div>
+        <div>{{s.properties.date}}</div>
+      </div>
+    </div>
+  </li>
+</ul>

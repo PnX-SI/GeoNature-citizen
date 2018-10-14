@@ -1,3 +1,32 @@
-<p>
-  form works!
-</p>
+<form [formGroup]="sightForm" (ngSubmit)="onFormSubmit(this.sightForm.value)">
+  <div class="alert alert-primary" role="alert">{{sightForm.value | json}}</div>
+  <div class="form-row">
+    <div class="form-group col-lg-12">
+      <label for="sel1">Sélectionnez une espèce</label>
+      <select class="form-control" id="sel1" formControlName="species">
+        <option *ngFor="let s of surveySpecies; let i=index;" [value]="s.cd_nom">
+          {{s.nom_francais}}&nbsp;(<i>{{s.nom_complet }}</i>)
+        </option>
+      </select>
+    </div>
+    <div class="form-group col-lg-6">
+      <div class="input-group">
+        <input class="form-control" placeholder="yyyy-mm-dd"
+               ngbDatepicker #d="ngbDatepicker" formControlName="date">
+        <div class="input-group-append" formControlName="date">
+          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"><span
+            class="fa fa-calendar"></span></button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group col-lg-6">
+      <!--<pre class="card card-block card-header mb-3">Model: {{selected | json}}</pre>-->
+      <input type="number" min="0" placeholder="Nombre" data-bind="value:replyNumber"
+             class="form-control" formControlName="count">
+    </div>
+    <div class="form-group col-lg-12">
+        <textarea placeholder="Commentaire" class="form-control" rows="5"
+                  id="comment" formControlName="comment"></textarea>
+    </div>
+  </div>
+</form>
