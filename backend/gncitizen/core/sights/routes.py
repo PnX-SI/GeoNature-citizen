@@ -190,7 +190,7 @@ def post_sight():
         db.session.add(newsight)
         db.session.commit()
         # Réponse en retour
-        features = generate_sight_geojson(pk)
+        features = generate_sight_geojson(newsight.id_sight)
         return {
                    'message': 'New sight created.',
                    'features': features,
