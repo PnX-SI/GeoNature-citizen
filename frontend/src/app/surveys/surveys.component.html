@@ -2,14 +2,17 @@
   <h1>{{title}}&nbsp;<span class="badge badge-primary">{{surveys.count}}</span></h1>
   <div class="card-deck">
     <div *ngFor="let s of surveys['data']; let i=index;" href="#" class="card-deck">
-      <div class="card">
-        <img class="card-img-top" src="http://via.placeholder.com/200x100" alt='customer image'/>
+      <div class="card m-4">
+        <img class="card-img-top" src="https://picsum.photos/200/100/?random" alt='customer image' />
         <div class="card-body">
           <h5 class="card-title">{{s.nom_liste}}&nbsp;<span class="badge badge-secondary">{{s.nb_taxons}}</span></h5>
-          <p class="card-text">{{s.desc_liste}}</p>
-          <a class="btn btn-primary" href="surveys/{{s.id_liste}}/sights">Participer</a>
+        </div>
+        <div class="card-footer">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-primary" (click)="open(s.nom_liste, s.desc_liste)">Description</button>
+            <button type="button" [routerLink]="[s.id_liste, 'sights']" class="btn btn-success">Participer</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
