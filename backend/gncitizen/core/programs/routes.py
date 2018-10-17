@@ -1,25 +1,21 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 
-import uuid
-
 from flask import Blueprint, request
 from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
+from geojson import FeatureCollection
 from shapely.geometry import asShape, MultiPolygon
 
-from gncitizen.core.users.models import UserModel
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import json_resp
-from geojson import FeatureCollection, Feature
 from server import db
 from .models import ProgramsModel
 
 routes = Blueprint('commons', __name__)
 
 
-@routes.route('/programs/<int:pk>')
+@routes.route('/programs/<int:pk>', methods=['GET'])
 @json_resp
 def get_program(pk):
     """Get on sight by id
@@ -45,6 +41,29 @@ def get_program(pk):
             #     feature['properties'][k] = v
             features.append(feature)
         return {'features': features}, 200
+    except Exception as e:
+        return {'error_message': str(e)}, 400
+
+
+@routes.route('/programs/', methods=['GET'])
+@json_resp
+def get_programs():
+    """Get all programs
+        ---
+        tags:
+          - Programs
+        responses:
+          200:
+            description: A list of all programs
+    """
+    try:
+        programs = ProgramsModel.query.all()
+        features = []
+        for program in programs:
+            feature = program.get_geofeature()
+            feature['properties'] = program.as_dict(True)
+            features.append(feature)
+        return FeatureCollection(features)
     except Exception as e:
         return {'error_message': str(e)}, 400
 

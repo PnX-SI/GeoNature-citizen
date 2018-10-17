@@ -5,13 +5,13 @@ import { AppConfig } from "../../conf/app.config";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DescModalComponent } from './desc-modal/desc-modal.component';
 @Component({
-  selector: "app-surveys",
-  templateUrl: "./surveys.component.html",
-  styleUrls: ["./surveys.component.css"]
+  selector: "app-programs",
+  templateUrl: "./programs.component.html",
+  styleUrls: ["./programs.component.css"]
 })
-export class SurveysComponent implements OnInit {
-  title = "Enquêtes";
-  surveys: any;
+export class ProgramsComponent implements OnInit {
+  title = "Programmes";
+  programs: any;
   closeResult: string;
 
   constructor(private http: HttpClient, private modalService: NgbModal) {}
@@ -23,9 +23,9 @@ export class SurveysComponent implements OnInit {
   }
 
   getSurveyListsItems(): void {
-    this.restItemsServiceGetRestItems().subscribe(surveys => {
-      this.surveys = surveys;
-      console.log(surveys);
+    this.restItemsServiceGetRestItems().subscribe(programs => {
+      this.programs = programs;
+      console.log(programs);
     });
   }
 
