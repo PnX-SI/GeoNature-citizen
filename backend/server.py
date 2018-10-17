@@ -64,10 +64,13 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
     with app.app_context():
         db.create_all()
 
-        from gncitizen.core.sights.routes import routes
+        from gncitizen.core.users.routes import routes
         app.register_blueprint(routes, url_prefix=url_prefix)
 
-        from gncitizen.core.users.routes import routes
+        from gncitizen.core.programs.routes import routes
+        app.register_blueprint(routes, url_prefix=url_prefix)
+
+        from gncitizen.core.sights.routes import routes
         app.register_blueprint(routes, url_prefix=url_prefix)
 
         from gncitizen.core.ref_geo.routes import routes
