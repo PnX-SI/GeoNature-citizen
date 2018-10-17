@@ -2,13 +2,13 @@
 
 from passlib.hash import pbkdf2_sha256 as sha256
 
-from server import db
 from gncitizen.core.commons.models import ModulesModel
+from server import db
 
 
 class RevokedTokenModel(db.Model):
-    __tablename__ = 'revoked_tokens'
-    __table_args__ = {'schema': 'gncitizen'}
+    __tablename__ = 't_revoked_tokens'
+    __table_args__ = {'schema': 'gnc_core'}
 
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120))
@@ -27,8 +27,8 @@ class UserModel(db.Model):
     """
         Table des utilisateurs
     """
-    __tablename__ = 'users'
-    __table_args__ = {'schema': 'gncitizen'}
+    __tablename__ = 't_users'
+    __table_args__ = {'schema': 'gnc_core'}
 
     id_user = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
@@ -82,11 +82,11 @@ class UserModel(db.Model):
 
 class UserRights(db.Model):
     """Table de gestion des droits des utilisateurs de GeoNature-citizen"""
-    __tablename__ = "users_rights"
-    __table_args__ = {'schema': 'gncitizen'}
+    __tablename__ = "t_users_rights"
+    __table_args__ = {'schema': 'gnc_core'}
     id_user_right = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(db.Integer, db.ForeignKey('gncitizen.users.id_user'))
-    id_module = db.Column(db.Integer, db.ForeignKey('gncitizen.modules.id_module'))
+    id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user))
+    id_module = db.Column(db.Integer, db.ForeignKey(ModulesModel.id_module))
     right = db.Column(db.String(150), nullable=False)
     create = db.Column(db.Boolean(), default=False)
     read = db.Column(db.Boolean(), default=False)

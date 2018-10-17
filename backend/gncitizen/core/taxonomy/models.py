@@ -61,6 +61,7 @@ class CorNomListe(db.Model):
     # medias = db.relationship("TMedias", lazy='select')
     #
 
+
 @serializable
 class TMedias(db.Model):
     __tablename__ = 't_medias'
@@ -84,7 +85,6 @@ class TMedias(db.Model):
 
     def __repr__(self):
         return '<TMedias %r>' % self.titre
-
 
 
 @serializable
