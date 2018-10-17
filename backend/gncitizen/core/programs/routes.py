@@ -45,7 +45,7 @@ def get_program(pk):
         return {'error_message': str(e)}, 400
 
 
-@routes.route('/programs/', methods=['GET'])
+@routes.route('/programs', methods=['GET'])
 @json_resp
 def get_programs():
     """Get all programs
@@ -58,12 +58,15 @@ def get_programs():
     """
     try:
         programs = ProgramsModel.query.all()
+        count = len(programs)
         features = []
         for program in programs:
             feature = program.get_geofeature()
             feature['properties'] = program.as_dict(True)
             features.append(feature)
-        return FeatureCollection(features)
+        feature_collection = FeatureCollection(features)
+        feature_collection['count']=count
+        return feature_collection
     except Exception as e:
         return {'error_message': str(e)}, 400
 

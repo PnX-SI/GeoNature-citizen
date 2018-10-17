@@ -1,17 +1,13 @@
 <div class="container" id="main">
-  <h1>{{title}}&nbsp;<span class="badge badge-primary">{{surveys.count}}</span></h1>
-  <div class="card-deck">
-    <div *ngFor="let s of surveys['data']; let i=index;" href="#" class="card-deck">
-      <div class="card m-4">
-        <img class="card-img-top" src="https://picsum.photos/200/100/?random" alt='customer image' />
+  <h1>{{title}}&nbsp;<span class="badge badge-primary">{{programs.count}}</span></h1>
+  <div class="card-column">
+    <div *ngFor="let s of programs['features']; let i=index;" href="#" class="card-deck">
+      <div class="card text-center m-4">
         <div class="card-body">
-          <h5 class="card-title">{{s.nom_liste}}&nbsp;<span class="badge badge-secondary">{{s.nb_taxons}}</span></h5>
-        </div>
-        <div class="card-footer">
-          <div class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-primary" (click)="open(s.nom_liste, s.desc_liste)">Description</button>
-            <button type="button" [routerLink]="[s.id_liste, 'sights']" class="btn btn-success">Participer</button>
-          </div>
+          <h5 class="card-title">{{s.properties.title}}</h5>
+          <p><img class="rounded-circle" width="300" height="300" src="https://picsum.photos/300/300/?random" alt='customer image'
+            [routerLink]="[s.id_liste, 'sights']" /></p>
+          <p><button type="button" class="btn btn-outline-primary" (click)="open(s.properties.title, s.properties.long_desc)">Plus d'infos</button></p>
         </div>
       </div>
     </div>

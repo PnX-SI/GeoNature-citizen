@@ -16,10 +16,10 @@ export class ProgramsComponent implements OnInit {
 
   constructor(private http: HttpClient, private modalService: NgbModal) {}
 
-  open(nom_liste, desc_liste) {
+  open(title, long_desc) {
     const modalRef = this.modalService.open(DescModalComponent, { size: 'lg' });
-    modalRef.componentInstance.desc_liste = desc_liste;
-    modalRef.componentInstance.nom_liste = nom_liste;
+    modalRef.componentInstance.title = title;
+    modalRef.componentInstance.long_desc = long_desc;
   }
 
   getSurveyListsItems(): void {
@@ -30,9 +30,9 @@ export class ProgramsComponent implements OnInit {
   }
 
   restItemsServiceGetRestItems() {
-    console.log("URL: ", `${AppConfig.API_ENDPOINT}/taxonomy/lists/full`);
+    console.log("URL: ", `${AppConfig.API_ENDPOINT}/programs`);
     return this.http
-      .get(`${AppConfig.API_ENDPOINT}/taxonomy/lists/full`)
+      .get(`${AppConfig.API_ENDPOINT}/programs`)
       .pipe(map(data => data));
   }
 
