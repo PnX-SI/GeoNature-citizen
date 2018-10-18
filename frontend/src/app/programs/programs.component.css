@@ -9,11 +9,13 @@
 .img-hover img:hover {
     /* -webkit-backface-visibility: hidden; */
     backface-visibility: hidden;
-    -webkit-transform:translateZ(0) scale(1.20); /* Safari and Chrome */
-    -moz-transform:scale(1.20); /* Firefox */
-    -ms-transform:scale(1.20); /* IE 9 */
-    -o-transform:translatZ(0) scale(1.20); /* Opera */
-    transform:translatZ(0) scale(1.20);
+    -webkit-transform:translateZ(0) scale(1.05); /* Safari and Chrome */
+    -moz-transform:scale(1.05); /* Firefox */
+    -ms-transform:scale(1.05); /* IE 9 */
+    -o-transform:translatZ(0) scale(1.05); /* Opera */
+    transform:translatZ(0) scale(1.05);
+    border-radius:100%;
+    border: 2px solid #007bff;
 }
   
 /* .img-hover:hover:after {

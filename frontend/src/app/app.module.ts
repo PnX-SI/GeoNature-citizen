@@ -16,6 +16,9 @@ import {routing} from './app.routing';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { DescModalComponent } from './programs/desc-modal/desc-modal.component';
+import { SidebarComponent } from './core/sidebar/sidebar.component';
+import { FooterComponent } from './core/footer/footer.component';
+import { TopbarComponent } from './core/topbar/topbar.component';
 
 
 @NgModule({
@@ -37,7 +40,10 @@ import { DescModalComponent } from './programs/desc-modal/desc-modal.component';
     ProgramsComponent,
     RegisterComponent,
     PageNotFoundComponent,
-    DescModalComponent
+    DescModalComponent,
+    SidebarComponent,
+    FooterComponent,
+    TopbarComponent
   ],
   bootstrap: [AppComponent]
   ,     entryComponents: [

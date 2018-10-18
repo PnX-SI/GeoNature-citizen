@@ -1,5 +1,6 @@
 #sightmap {
     height: calc(100vh - 56px);
+    margin-left: 56px;
     width: 100%;
   }
   

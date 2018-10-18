@@ -1,13 +1,24 @@
 <div class="container" id="main">
-  <h1>{{title}}&nbsp;<span class="badge badge-pill badge-primary">{{programs.count}}</span></h1>
-  <div *ngFor="let s of programs['features']; let i=index;" href="#" class="card-column">
-    <div class="card text-center m-4">
-      <div class="card-body">
-        <div class="img-hover">
-          <img class="rounded-circle img-responsive img-rounded" width="300" height="300" src="https://picsum.photos/300/300/?random"
-            alt='customer image' [routerLink]="[s.id_liste, 'sights']" />
+  <div class="row">
+    <h1>{{title}}&nbsp;<span class="badge badge-pill badge-primary">{{programs.count}}</span></h1>
+    <div class="container" id="main">
+      <div class="row justify-content-center">
+        <div *ngFor="let s of programs['features']; let i=index;" href="#" class="col col-lg-4 col-md-6 col-sm-12">
+          <div class="card text-center ">
+            <div class="card-body">
+              <div class="img-hover">
+                <img class="rounded-circle img-responsive img-rounded" width="300" height="300" src="https://picsum.photos/300/300/?random"
+                  alt='customer image' [routerLink]="[s.id_liste, 'sights']" />
+              </div>
+              <h5 class="card-title">{{s.properties.title}}&nbsp;
+                <span class="badge badge-info" (click)="open(s.properties.title, s.properties.long_desc)">
+                  <i class="fa fa-info-circle"></i>
+                </span>
+              </h5>
+            </div>
+          </div>
         </div>
-        <h5 class="card-title">{{s.properties.title}}&nbsp;<span class="badge badge-pill badge-info" (click)="open(s.properties.title, s.properties.long_desc)">?</span></h5>
       </div>
     </div>
   </div>
+</div>
