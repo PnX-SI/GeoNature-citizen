@@ -1,14 +1,13 @@
 <div class="container" id="main">
-  <h1>{{title}}&nbsp;<span class="badge badge-primary">{{programs.count}}</span></h1>
-  <div class="card-column">
-    <div *ngFor="let s of programs['features']; let i=index;" href="#" class="card-deck">
-      <div class="card text-center m-4">
-        <div class="card-body">
-          <h5 class="card-title">{{s.properties.title}}</h5>
-          <p><img class="rounded-circle" width="300" height="300" src="https://picsum.photos/300/300/?random" alt='customer image'
-            [routerLink]="[s.id_liste, 'sights']" /></p>
-          <p><button type="button" class="btn btn-outline-primary" (click)="open(s.properties.title, s.properties.long_desc)">Plus d'infos</button></p>
+  <h1>{{title}}&nbsp;<span class="badge badge-pill badge-primary">{{programs.count}}</span></h1>
+  <div *ngFor="let s of programs['features']; let i=index;" href="#" class="card-column">
+    <div class="card text-center m-4">
+      <div class="card-body">
+        <div class="img-hover">
+          <img class="rounded-circle img-responsive img-rounded" width="300" height="300" src="https://picsum.photos/300/300/?random"
+            alt='customer image' [routerLink]="[s.id_liste, 'sights']" />
         </div>
+        <h5 class="card-title">{{s.properties.title}}&nbsp;<span class="badge badge-pill badge-info" (click)="open(s.properties.title, s.properties.long_desc)">?</span></h5>
       </div>
     </div>
   </div>
