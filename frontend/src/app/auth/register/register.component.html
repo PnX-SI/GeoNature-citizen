@@ -1,33 +1,66 @@
 <div class="container" id="main">
   <div class="row">
-    <div class="col-md-4">
-      <h1>Register</h1>
+    <div class="col col-sm-12 col-md-8 col-lg-12">
+      <h1>Créez votre compte</h1>
       <hr><br>
       <form (ngSubmit)="onRegister()" novalidate>
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" class="form-control" id="username" placeholder="enter username" [(ngModel)]="user.username" name="username"
-            required>
+        <div class="form-row">
+          <div class="col-6">
+            <div class="form-group">
+              <label for="username">Votre nom d'utilisateur</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-user"></i></span>
+                </div>
+                <input type="text" class="form-control" id="username" placeholder="Entrez votre nom d'utilisateur"
+                  [(ngModel)]="user.username" name="username" required>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="email">Votre email</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-envelope"></i></span>
+                </div>
+                <input type="email" class="form-control" id="email" placeholder="Entrez votre email" [(ngModel)]="user.email"
+                  name="email" required>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="text" class="form-control" id="email" placeholder="enter email" [(ngModel)]="user.email" name="email"
-            required>
+        <div class="form-row">
+          <div class="col">
+            <div class="form-group">
+              <label for="name">Votre prénom</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fa fa-id-card"></i></span>
+                </div>
+                <input type="text" class="form-control" id="name" placeholder="Entrez votre prénom" [(ngModel)]="user.name"
+                  name="name" required>
+                <input type="text" class="form-control" id="surname" placeholder="Entrez votre nom" [(ngModel)]="user.surname"
+                  name="surname" required>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" class="form-control" id="name" placeholder="enter name" [(ngModel)]="user.name" name="name"
-            required>
-        </div>
-        <div class="form-group">
-          <label for="surname">Surname</label>
-          <input type="text" class="form-control" id="surname" placeholder="enter surname" [(ngModel)]="user.surname" name="surname"
-            required>
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" class="form-control" id="password" placeholder="enter password" [(ngModel)]="user.password"
-            name="password" required>
+
+        <label for="password">Votre mot de passe</label>
+        <div class="form-row">
+          <div class="col">
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-key"></i></span>
+                </div>
+                <input type="password" class="form-control" id="password" placeholder="Votre mot de passe" [(ngModel)]="user.password" name="password" required>
+                <input type="password" class="form-control" id="PasswordConfirm" placeholder="Confirmez le mot de passe"
+                  required>
+              </div>
+            </div>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary">S'enregistrer</button>
       </form>

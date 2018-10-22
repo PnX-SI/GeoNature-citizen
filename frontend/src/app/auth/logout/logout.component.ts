@@ -10,16 +10,19 @@ export class LogoutComponent implements OnInit {
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
-    const refresh_token = localStorage.getItem("refresh_token");
-    if (refresh_token) {
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
       this.auth
-        .logout(refresh_token)
+        .logout(access_token)
         .then(logout => {
           console.log("LogoutUser Get Status", logout.status);
         })
         .catch(err => {
           console.log(err);
         });
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("username");
     }
   }
 }
