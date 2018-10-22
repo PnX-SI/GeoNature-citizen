@@ -1,13 +1,18 @@
 from flask import jsonify, request, Blueprint
-from flask_jwt_extended import (create_access_token, create_refresh_token, get_raw_jwt, get_jwt_identity,
-                                jwt_refresh_token_required, jwt_required)
-
+from flask_jwt_extended import (
+    create_access_token, create_refresh_token, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required, jwt_required)
+from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.utilssqlalchemy import json_resp
-from server import db
+from server import db, jwt
 from .models import UserModel, RevokedTokenModel
 
 routes = Blueprint('users', __name__)
 
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+  jti = decrypted_token['jti']
+  return RevokedTokenModel.is_jti_blacklisted(jti)
 
 @routes.route('/registration', methods=['POST'])
 @json_resp
@@ -67,7 +72,8 @@ def registration():
             if hasattr(UserModel, field) and field != 'password':
                 datas2db[field] = request_datas[field]
 
-        datas2db['password'] = UserModel.generate_hash(request_datas['password'])
+        datas2db['password'] = UserModel.generate_hash(
+            request_datas['password'])
 
         try:
             newuser = UserModel(**datas2db)
@@ -77,18 +83,18 @@ def registration():
             raise GeonatureApiError(e)
 
         if UserModel.find_by_username(newuser.username):
-            return jsonify({'message': 'L\'utilisateur {} éxiste déjà'.format(newuser.username)}), 400
+            return {'message': 'L\'utilisateur {} éxiste déjà'.format(newuser.username)}, 400
 
         db.session.add(newuser)
         db.session.commit()
         access_token = create_access_token(identity=newuser.username)
         refresh_token = create_refresh_token(identity=newuser.username)
-        data_json = {
+        return {
             'message': 'Félicitations, l\'utilisateur <b>{}</b> a été créé'.format(newuser.username),
+            'username': newuser.username,
             'access_token': access_token,
             'refresh_token': refresh_token
-        }
-        return jsonify(data_json), 200
+        }, 200
 
     except Exception as e:
         return {'error_message': str(e)}, 500
@@ -127,28 +133,22 @@ def login():
     """
     try:
         request_datas = dict(request.get_json())
-        if request_datas is None:
-            return jsonify({'message': 'No input data provided'}), 400
-        # Validate and deserialize input
-        if request_datas['username'] is None:
-            return jsonify({"error_message": "Missing username parameter"}), 400
-        if request_datas['password'] is None:
-            return jsonify({"error_message": "Missing password parameter"}), 400
 
         username = request_datas['username']
         password = request_datas['password']
 
         current_user = UserModel.find_by_username(username)
         if not current_user:
-            return jsonify({'message': 'User {} doesn\'t exist'.format(data['username'])}), 400
+            return {'message': ('User {} doesn\'t exist').format(username)}, 400
         if UserModel.verify_hash(password, current_user.password):
             access_token = create_access_token(identity=username)
             refresh_token = create_refresh_token(identity=username)
-            return jsonify({
+            return {
                 'message': 'Logged in as {}'.format(username),
+                'username': username,
                 'access_token': access_token,
                 'refresh_token': refresh_token
-            }), 200
+            }, 200
         else:
             return {'error_message': 'Wrong credentials'}, 400
     except Exception as e:
@@ -157,7 +157,7 @@ def login():
 
 @routes.route('/logout', methods=['POST'])
 @json_resp
-@jwt_refresh_token_required
+@jwt_required
 def logout():
     """
     User logout
@@ -190,8 +190,8 @@ def logout():
     try:
         revoked_token = RevokedTokenModel(jti=jti)
         revoked_token.add()
-        return {'message': 'Refresh token has been revoked'}
-    except:
+        return jsonify({"msg": "Successfully logged out"}), 200
+    except Exception as e:
         return {'message': 'Something went wrong'}, 500
 
 
@@ -268,5 +268,6 @@ def logged_user():
         description: list all logged users
     """
     current_user = get_jwt_identity()
-    user = UserModel.query.filter_by(username=current_user).first()
-    return user, 200
+    user = UserModel.query.filter_by(username=current_user).one()
+
+    return user.secured_as_dict(), 200

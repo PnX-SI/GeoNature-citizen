@@ -1,0 +1,36 @@
+<div class="container" id="main">
+  <div class="row">
+    <div class="col-md-4">
+      <h1>Register</h1>
+      <hr><br>
+      <form (ngSubmit)="onRegister()" novalidate>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" class="form-control" id="username" placeholder="enter username" [(ngModel)]="user.username" name="username"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="text" class="form-control" id="email" placeholder="enter email" [(ngModel)]="user.email" name="email"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" placeholder="enter name" [(ngModel)]="user.name" name="name"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="surname">Surname</label>
+          <input type="text" class="form-control" id="surname" placeholder="enter surname" [(ngModel)]="user.surname" name="surname"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="enter password" [(ngModel)]="user.password"
+            name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">S'enregistrer</button>
+      </form>
+    </div>
+  </div>
+</div>

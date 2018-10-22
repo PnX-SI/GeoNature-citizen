@@ -1,18 +1,15 @@
-import { AuthService } from './../../auth/auth.service';
 import { Component, OnInit } from "@angular/core";
-import { AppConfig } from "../../../conf/app.config";
-import { stringify } from "@angular/core/src/util";
+import { AuthService } from "./../auth.service";
 
 @Component({
-  selector: "app-topbar",
-  templateUrl: "./topbar.component.html",
-  styleUrls: ["./topbar.component.css"]
+  selector: "app-user-dashboard",
+  templateUrl: "./user-dashboard.component.html",
+  styleUrls: ["./user-dashboard.component.css"]
 })
-export class TopbarComponent implements OnInit {
-  title: string = AppConfig.appName;
+export class UserDashboardComponent implements OnInit {
   isLoggedIn: boolean = false;
-  username: string = "not defined";
-  
+  username: string = 'not defined';
+
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {

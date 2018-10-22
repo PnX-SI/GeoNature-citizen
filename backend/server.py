@@ -1,12 +1,11 @@
 import logging
 import os
 
-from flasgger import Swagger
+
 from flask import Flask
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
 
-from gncitizen.utils.env import db, list_and_import_gn_modules
+from gncitizen.utils.env import db, list_and_import_gn_modules, jwt, swagger
 
 logger = logging.getLogger()
 logger.setLevel(10)
@@ -56,10 +55,10 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
     db.init_app(app)
 
     # JWT Auth
-    jwt = JWTManager(app)
+    jwt.init_app(app)
 
     # Swagger for api documentation
-    swagger = Swagger(app)
+    swagger.init_app(app)
 
     with app.app_context():
         db.create_all()

@@ -3,6 +3,7 @@
 from passlib.hash import pbkdf2_sha256 as sha256
 
 from gncitizen.core.commons.models import ModulesModel
+from gncitizen.utils.utilssqlalchemy import serializable
 from server import db
 
 
@@ -23,6 +24,7 @@ class RevokedTokenModel(db.Model):
         return bool(query)
 
 
+@serializable
 class UserModel(db.Model):
     """
         Table des utilisateurs
@@ -31,8 +33,8 @@ class UserModel(db.Model):
     __table_args__ = {'schema': 'gnc_core'}
 
     id_user = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
-    surname = db.Column(db.String(100), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    surname = db.Column(db.String(100), nullable=False)
     username = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
@@ -44,6 +46,20 @@ class UserModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+    def secured_as_dict(self, recursif=False, columns=()):
+        surname = self.username or ''
+        name = self.name or ''
+        return {
+            'id_role': self.id_user,
+            'name': self.name,
+            'surname': self.surname,
+            'username': self.username,
+            'email': self.email,
+            'phone': self.phone,
+            'organism': self.organism,
+            'full_name': name+' '+surname
+        }
 
     @staticmethod
     def generate_hash(password):
@@ -70,16 +86,17 @@ class UserModel(db.Model):
 
             return {'users': list(map(lambda x: to_json(x), UserModel.query.all()))}
 
-        @classmethod
-        def delete_all(cls):
-            try:
-                num_rows_deleted = db.session.query(cls).delete()
-                db.session.commit()
-                return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
-            except:
-                return {'message': 'Something went wrong'}
+    @classmethod
+    def delete_all(cls):
+        try:
+            num_rows_deleted = db.session.query(cls).delete()
+            db.session.commit()
+            return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
+        except:
+            return {'message': 'Something went wrong'}
 
 
+@serializable
 class UserRights(db.Model):
     """Table de gestion des droits des utilisateurs de GeoNature-citizen"""
     __tablename__ = "t_users_rights"

@@ -9,9 +9,20 @@
     <div class="navbar-collapse collapse" id="navbarsExample03" style="">
       <div class="navbar-nav mr-auto">
       </div>
-      <form class="form-inline mt-2 mt-md-0">
-        <a href="/login" class="btn btn-outline-primary my-2 my-sm-0">Se connecter&nbsp;<i class="fa fa-fw fa-user-circle"></i></a>
-      </form>
+      <div *ngIf="isLoggedIn; then thenBlock else elseBlock"></div>
+      <ng-template #thenBlock>
+        <form class="form-inline mt-2 mt-md-0">
+          Bienvenue&nbsp;<a href="/mydashboard" placement="bottom" ngbTooltip="Mon tableau de bord">{{username}}</a>&nbsp;<a
+            href="/logout" class="btn btn-outline-primary my-2 my-sm-0">Se
+            déconnecter&nbsp;<i class="fa fa-fw fa-user-circle"></i></a>
+        </form>
+      </ng-template>
+      <ng-template #elseBlock>
+        <form class="form-inline mt-2 mt-md-0">
+          <a href="/login" class="btn btn-outline-primary my-2 my-sm-0">Se
+            connecter&nbsp;<i class="fa fa-fw fa-user-circle"></i></a>
+        </form>
+      </ng-template>
     </div>
   </nav>
 </header>

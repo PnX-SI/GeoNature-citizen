@@ -2,7 +2,9 @@ import os
 import sys
 from pathlib import Path
 
+from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
+from flasgger import Swagger
 
 from gncitizen.utils.utilstoml import load_toml
 
@@ -37,6 +39,10 @@ def load_config(config_file=None):
 
 SQLALCHEMY_DATABASE_URI = load_config()['SQLALCHEMY_DATABASE_URI']
 db = SQLAlchemy()
+
+jwt = JWTManager()
+
+swagger = Swagger()
 
 taxhub_url = load_config()['API_TAXHUB']
 taxhub_lists_url = taxhub_url + 'biblistes/'
