@@ -6,5 +6,5 @@ export class Sight {
       public comment: string,
       public count: number
     ) {  }
-    
+
   }
