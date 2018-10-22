@@ -11,7 +11,6 @@ export class LogoutComponent implements OnInit {
 
   ngOnInit(): void {
     const refresh_token = localStorage.getItem("refresh_token");
-    const refresh_token = localStorage.getItem("refresh_token");
     if (refresh_token) {
       this.auth
         .logout(refresh_token)
