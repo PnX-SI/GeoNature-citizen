@@ -33,7 +33,7 @@ def get_program(pk):
              description: A list of all programs
          """
     try:
-        datas = ProgramsModel.query.all()
+        datas = ProgramsModel.query.filter_by(id_program=pk).limit(1)
         features = []
         for data in datas:
             feature = data.get_geofeature()

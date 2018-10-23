@@ -7,6 +7,7 @@ from functools import wraps
 from flask import Response
 from geoalchemy2.shape import to_shape
 from geojson import Feature
+from .env import db
 
 """
     Liste des types de données sql qui
@@ -22,6 +23,11 @@ SERIALIZERS = {
     'numeric': lambda x: str(x) if x else None
 }
 
+def create_schemas(db):
+    '''Créée les schémas lors du premier lancement de l'application'''
+    db.session.execute('CREATE SCHEMA IF NOT EXISTS gnc_core')
+    db.session.execute('CREATE SCHEMA IF NOT EXISTS gnc_sights')
+    db.session.commit()
 
 def get_geojson_feature(wkb):
     ''' retourne une feature geojson à partir d'un WKB'''

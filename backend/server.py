@@ -6,6 +6,7 @@ from flask import Flask
 from flask_cors import CORS
 
 from gncitizen.utils.env import db, list_and_import_gn_modules, jwt, swagger
+from gncitizen.utils.utilssqlalchemy import create_schemas
 
 logger = logging.getLogger()
 logger.setLevel(10)
@@ -91,11 +92,16 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
                     module.backend.blueprint.blueprint,
                     url_prefix=prefix
                 )
+                try:
+                    module.backend.models.create_schema(db)
+                except:
+                    pass
                 # chargement de la configuration du module dans le blueprint.config
                 module.backend.blueprint.blueprint.config = conf
                 app.config[manifest['module_name']] = conf
 
         _app = app
 
+        create_schemas(db)
         db.create_all()
     return app

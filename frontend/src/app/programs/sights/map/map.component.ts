@@ -139,6 +139,7 @@ export class SightsMapComponent implements OnInit {
   }
 
   restItemsServiceGetProgramArea(program_id) {
+    console.log('PROGRAM_GEO_URL: ', `${AppConfig.API_ENDPOINT}/programs/` + program_id);
     return this.http
       .get(`${AppConfig.API_ENDPOINT}/programs/` + program_id)
       .pipe(map(data => data));
