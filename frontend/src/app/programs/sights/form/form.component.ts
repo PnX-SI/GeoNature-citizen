@@ -1,26 +1,23 @@
-import { AfterViewInit, Component } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { AppConfig } from "../../../../conf/app.config";
-import { ActivatedRoute } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
-import { map } from "rxjs/operators";
-import { Sight } from "./sight";
-import { pipe } from "rxjs";
+import {AfterViewInit, Component} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AppConfig} from '../../../../conf/app.config';
+import {ActivatedRoute} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {map} from 'rxjs/operators';
 
 @Component({
-  selector: "app-sight-form",
-  templateUrl: "./form.component.html",
-  styleUrls: ["./form.component.css"]
+  selector: 'app-sight-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.css']
 })
 export class SightsFormComponent implements AfterViewInit {
   coords: any;
   sightForm = new FormGroup({
-    species: new FormControl("", Validators.required),
-    count: new FormControl("", Validators.required),
-    comment: new FormControl("", Validators.required),
-    date: new FormControl("", Validators.required)
+    species: new FormControl('', Validators.required),
+    count: new FormControl('', Validators.required),
+    comment: new FormControl('', Validators.required),
+    date: new FormControl('', Validators.required)
   });
-  survey_id: any;
   surveySpecies: any;
   taxonomyList: any;
   program: any;
@@ -32,7 +29,7 @@ export class SightsFormComponent implements AfterViewInit {
     private route: ActivatedRoute
   ) {
     this.route.params.subscribe(params => {
-      this.program_id = params["id"];
+      this.program_id = params['id'];
     });
   }
 
@@ -43,8 +40,8 @@ export class SightsFormComponent implements AfterViewInit {
   }
 
   onFormSubmit(): void {
-    console.log("sightForm: ", this.sightForm);
-    console.log("formValues:" + this.sightForm.value);
+    console.log('sightForm: ', this.sightForm);
+    console.log('formValues:' + this.sightForm.value);
   }
 
   restItemsServiceGetTaxonomyList(program_id) {
@@ -60,8 +57,8 @@ export class SightsFormComponent implements AfterViewInit {
     return this.http
       .get(
         `${AppConfig.API_ENDPOINT}/taxonomy/lists/` +
-          this.taxonomyList +
-          `/species`
+        this.taxonomyList +
+        `/species`
       )
       .pipe(map(data => data));
   }

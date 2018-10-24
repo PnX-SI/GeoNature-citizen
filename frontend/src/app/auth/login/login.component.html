@@ -1,30 +1,23 @@
-<div class="container" id="main">
-  <div class="row">
-    <div class="col col-sm-12 col-md-8 col-lg-12">
-      <div class="card">
-        <div class="card-header">
-          <h1>Login</h1>
-        </div>
-        <div class="card-body">
-          <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}</ngb-alert>
-          <form (ngSubmit)="onLogin()" novalidate>
-            <div class="form-group">
-              <input type="text" class="form-control" id="username" placeholder="enter username" [(ngModel)]="user.username"
-                name="username" required>
-            </div>
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" placeholder="enter password" [(ngModel)]="user.password"
-                name="password" required>
-            </div>
-            <button type="submit" class="btn btn-outline-primary">Se connecter</button>
-          </form>
-          <div class="text-center">
-            <p>Pas encore de compte?</p>
-            <p><a class="btn btn-outline-primary btn-sm" href="/register">Créez un compte !</a>
-            </p>
-          </div>
-        </div>
-      </div>
+<div class="modal-header">
+  <h4 class="modal-title"><i class="fa fa-fw fa-user-circle"></i>Se connecter</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">&times;</button>
+</div>
+<div class="modal-body">
+  <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}</ngb-alert>
+  <ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">{{ successMessage }}</ngb-alert>
+  <form (ngSubmit)="onLogin()" novalidate>
+    <div class="form-group">
+      <label for="username">Utilisateur</label>
+      <input type="text" class="form-control" id="username" placeholder="Entrez votre nom d'utilisateur"
+             [(ngModel)]="user.username"
+             name="username" required>
     </div>
-  </div>
+    <div class="form-group">
+      <label for="password">Mot de passe</label>
+      <input type="password" class="form-control" id="password" placeholder="Entrez votre mot de passe"
+             [(ngModel)]="user.password"
+             name="password" required>
+    </div>
+    <button type="submit" class="btn btn-outline-primary">Se connecter</button>
+  </form>
+</div>

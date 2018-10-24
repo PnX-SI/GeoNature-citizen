@@ -22,7 +22,7 @@ import { SightsFormComponent } from "./programs/sights/form/form.component";
 import { SightsListComponent } from "./programs/sights/list/list.component";
 import { SightsMapComponent } from "./programs/sights/map/map.component";
 import { SightsComponent } from "./programs/sights/sights.component";
-import { UserDashboardComponent } from './auth/user-dashboard/user-dashboard.component';
+import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 
 @NgModule({
   imports: [
@@ -54,6 +54,11 @@ import { UserDashboardComponent } from './auth/user-dashboard/user-dashboard.com
   ],
   providers: [AuthService],
   bootstrap: [AppComponent],
-  entryComponents: [DescModalComponent]
+  entryComponents: [
+    DescModalComponent,
+    LoginComponent,
+    LogoutComponent,
+    RegisterComponent
+  ]
 })
 export class AppModule {}
