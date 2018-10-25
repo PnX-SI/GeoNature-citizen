@@ -1,6 +1,6 @@
 <header>
   <nav class="navbar navbar-expand-sm fixed-top">
-    <a class="navbar-brand" href="#">{{title}}</a>
+    <a class="navbar-brand" routerLink="">{{title}}</a>
     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample03"
       aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -12,7 +12,7 @@
       <div *ngIf="isLoggedIn; then thenBlock else elseBlock"></div>
       <ng-template #thenBlock>
         <form class="form-inline mt-2 mt-md-0">
-          Bienvenue&nbsp;<a href="/mydashboard" placement="bottom" ngbTooltip="Mon tableau de bord">{{username}}</a>&nbsp;
+          Bienvenue&nbsp;<a routerLink="mydashboard" placement="bottom" ngbTooltip="Mon tableau de bord">{{username}}</a>&nbsp;
           <button class="btn btn-outline-primary my-2 my-sm-0" (click)="logout()">Se
             déconnecter&nbsp;<i class="fa fa-fw fa-user-circle"></i></button>
         </form>
