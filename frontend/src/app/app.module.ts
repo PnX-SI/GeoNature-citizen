@@ -23,6 +23,7 @@ import { SightsListComponent } from "./programs/sights/list/list.component";
 import { SightsMapComponent } from "./programs/sights/map/map.component";
 import { SightsComponent } from "./programs/sights/sights.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
+import { SpeciesComponent } from './synthesis/species/species.component';
 
 @NgModule({
   imports: [
@@ -50,7 +51,8 @@ import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.com
     LoginComponent,
     RegisterComponent,
     LogoutComponent,
-    UserDashboardComponent
+    UserDashboardComponent,
+    SpeciesComponent
   ],
   providers: [AuthService],
   bootstrap: [AppComponent],

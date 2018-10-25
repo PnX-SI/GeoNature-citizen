@@ -28,8 +28,8 @@ export class SightsMapComponent implements OnInit {
 
   ngOnInit() {
     this.initMap();
-    this.getSightsItems();
     this.getProgramArea(this.program_id);
+    this.getSightsItems();
   }
 
   getSightsItems(): void {
@@ -95,7 +95,7 @@ export class SightsMapComponent implements OnInit {
   }
 
   initMap() {
-    const mysightmap = L.map("sightmap").setView([45, 5], 12);
+    const mysightmap = L.map("sightmap");
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "OpenStreetMap"

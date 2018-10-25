@@ -8,27 +8,25 @@
   left: 0;
   background-color: #fefefe;
   overflow-x: hidden;
-  padding-top: 16px;
+  padding-top: 0px;
 }
 
 .sidebar a {
-  padding: 6px 8px 6px 16px;
+  height: 60px;
+  line-height: 60px;
+  vertical-align: middle;
+  text-align: center;
   text-decoration: none;
   font-size: 20px;
-  color: #78e08f;
+  color: #42b983;
   display: block;
 }
 
 .sidebar a:hover {
-  color: #60a3bc;
+  color: #fefefe;
+  background-color: #42b983;
 }
 
-.main {
-  margin-left: 60px;
-  margin-top: 60px;
-  /* Same as the width of the sidenav */
-  padding: 0px 10px;
-}
 
 @media screen and (max-height: 450px) {
   .sidebar {
