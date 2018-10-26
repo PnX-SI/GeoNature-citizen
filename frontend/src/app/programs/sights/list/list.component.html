@@ -1,19 +1,18 @@
-<ul class="list-group">
+<ul class="list-group rounded-0">
   <li *ngFor="let s of sightsFeatures; let i=index;" routerLink="" class="list-group-item">
     <div class="row">
-      <div class="col col-lg-2 col-md-4 col-sm-12">
-        <img src="http://via.placeholder.com/100x100" class="float-left" style="max-width:100%" alt='customer image' />
-      </div>
-      <div class="col col-lg-10 col-md-8 col-sm-12">
-        <div style="font-weight:bold;">
-          <a [routerLink]="['/synthesis/species', s.properties.cd_nom]" style="cursor:pointer">{{s.properties.common_name}}&nbsp;<small>
-              (<i>{{s.properties.sci_name}}</i>)
-            </small>
-          </a>
-          <button class="btn btn-primary btn-xs pull-right map-navigation" title="Localiser la donnée"><i class="fa fa-eye"></i>
-          </button>
-        </div>
-        <div>{{s.properties.date}}</div>
+      <div class="col list-element">
+        <img src="http://via.placeholder.com/100x100" class="img-responsive float-left rounded-0 mr-2" style="max-width:100%" alt='customer image' />
+        <button class="btn btn-primary btn-xs float-right map-navigation rounded-0" title="Localiser la donnée"><i
+          class="fa fa-eye"></i>
+        </button>
+        <a [routerLink]="['/synthesis/species', s.properties.cd_nom]" style="cursor:pointer">
+          {{s.properties.common_name}}&nbsp;<br><small>
+            (<i>{{s.properties.sci_name}}</i>)
+          </small>
+        </a>
+        <p>{{s.properties.date}}</p>
+        <!-- </div> -->
       </div>
     </div>
   </li>

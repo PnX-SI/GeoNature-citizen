@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4><i class="fa fa-fw fa-user-circle-o"></i>Créez votre compte</h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">&times;</button>
+  <button type="button" class="close rounded-0" aria-label="Close" (click)="activeModal.dismiss('Cross click')">&times;</button>
 </div>
 <div class="modal-body">
   <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}</ngb-alert>
@@ -13,7 +13,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1"><i class="fa fa-user"></i></span>
             </div>
-            <input type="text" class="form-control" id="username" placeholder="Entrez votre nom d'utilisateur"
+            <input type="text" class="form-control rounded-0" id="username" placeholder="Entrez votre nom d'utilisateur"
                    [(ngModel)]="user.username" name="username" required>
           </div>
         </div>
@@ -25,7 +25,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1"><i class="fa fa-envelope"></i></span>
             </div>
-            <input type="email" class="form-control" id="email" placeholder="Entrez votre email"
+            <input type="email" class="form-control rounded-0" id="email" placeholder="Entrez votre email"
                    [(ngModel)]="user.email"
                    name="email" required>
           </div>
@@ -36,14 +36,14 @@
       <div class="col-6">
         <div class="form-group">
           <label for="name">Votre prénom</label>
-          <input type="text" class="form-control" id="name" placeholder="Entrez votre prénom" [(ngModel)]="user.name"
+          <input type="text" class="form-control rounded-0" id="name" placeholder="Entrez votre prénom" [(ngModel)]="user.name"
                  name="name" required>
         </div>
       </div>
       <div class="col-6">
         <div class="form-group">
           <label for="surname">Votre nom</label>
-          <input type="text" class="form-control" id="surname" placeholder="Entrez votre nom"
+          <input type="text" class="form-control rounded-0" id="surname" placeholder="Entrez votre nom"
                  [(ngModel)]="user.surname"
                  name="surname" required>
         </div>
@@ -53,19 +53,19 @@
       <div class="col-6">
         <div class="form-group">
           <label for="surname">Votre mot de passe</label>
-          <input type="password" class="form-control" id="password" placeholder="Votre mot de passe"
+          <input type="password" class="form-control rounded-0" id="password" placeholder="Votre mot de passe"
                  [(ngModel)]="user.password" name="password" required>
         </div>
       </div>
       <div class="col-6">
         <div class="form-group">
           <label for="surname">Confirmez votre mot de passe</label>
-          <input type="password" class="form-control" id="PasswordConfirm" placeholder="Confirmez le mot de passe"
+          <input type="password" class="form-control rounded-0" id="PasswordConfirm" placeholder="Confirmez le mot de passe"
                  required>
         </div>
       </div>
     </div>
-    <button type="submit" class="btn btn-outline-primary text-right">S'enregistrer</button>
+    <button type="submit" class="btn btn-outline-primary text-right rounded-0">S'enregistrer</button>
   </form>
 </div>
 

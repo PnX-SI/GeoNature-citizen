@@ -13,16 +13,16 @@
       <ng-template #thenBlock>
         <form class="form-inline mt-2 mt-md-0">
           Bienvenue&nbsp;<a routerLink="mydashboard" placement="bottom" ngbTooltip="Mon tableau de bord">{{username}}</a>&nbsp;
-          <button class="btn btn-outline-primary my-2 my-sm-0" (click)="logout()">Se
+          <button class="btn btn-outline-primary my-2 my-sm-0 rounded-0" (click)="logout()">Se
             déconnecter&nbsp;<i class="fa fa-fw fa-user-circle"></i></button>
         </form>
       </ng-template>
       <ng-template #elseBlock>
         <form class="form-inline mt-2 mt-md-0">
           <div class="btn-group" role="group" aria-label="auth">
-            <button class="btn btn-outline-primary my-2 my-sm-0" (click)="login()">Se
+            <button class="btn btn-outline-primary my-2 my-sm-0 rounded-0" (click)="login()">Se
               connecter&nbsp;<i class="fa fa-fw fa-user-circle"></i></button>
-            <button class="btn btn-outline-primary my-2 my-sm-0" (click)="register()">S'enregistrer&nbsp;<i class="fa fa-fw fa-user-circle"></i></button>
+            <button class="btn btn-outline-primary my-2 my-sm-0 rounded-0" (click)="register()">S'enregistrer&nbsp;<i class="fa fa-fw fa-user-circle"></i></button>
           </div>
         </form>
       </ng-template>
