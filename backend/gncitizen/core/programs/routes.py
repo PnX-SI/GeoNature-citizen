@@ -6,6 +6,7 @@ from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import asShape, MultiPolygon
+import json
 
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.utilssqlalchemy import json_resp
@@ -52,16 +53,30 @@ def get_programs():
         ---
         tags:
           - Programs
+        parameters:
+          - name: with_geom
+            in: query
+            type: boolean
+            description: geom desired (true) or not (false, default)
         responses:
           200:
             description: A list of all programs
     """
     try:
+        # get whith_geom argument from url (?with_geom=true)
+        arg_with_geom = request.args.get('with_geom')
+        if arg_with_geom:
+          with_geom = json.loads(arg_with_geom.lower())
+        else: 
+          with_geom = False
         programs = ProgramsModel.query.all()
         count = len(programs)
         features = []
         for program in programs:
-            feature = program.get_geofeature()
+            if with_geom:
+              feature = program.get_geofeature()
+            else:
+              feature = {}
             feature['properties'] = program.as_dict(True)
             features.append(feature)
         feature_collection = FeatureCollection(features)

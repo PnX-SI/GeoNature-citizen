@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
 import { AppConfig } from "../../conf/app.config";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { DescModalComponent } from './desc-modal/desc-modal.component';
+import { DescModalComponent } from "./desc-modal/desc-modal.component";
 @Component({
   selector: "app-programs",
   templateUrl: "./programs.component.html",
@@ -17,7 +17,7 @@ export class ProgramsComponent implements OnInit {
   constructor(private http: HttpClient, private modalService: NgbModal) {}
 
   open(title, long_desc) {
-    const modalRef = this.modalService.open(DescModalComponent, { size: 'lg' });
+    const modalRef = this.modalService.open(DescModalComponent, { size: "lg" });
     modalRef.componentInstance.title = title;
     modalRef.componentInstance.long_desc = long_desc;
   }
@@ -32,7 +32,11 @@ export class ProgramsComponent implements OnInit {
   restItemsServiceGetRestItems() {
     console.log("URL: ", `${AppConfig.API_ENDPOINT}/programs`);
     return this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs`)
+      .get(`${AppConfig.API_ENDPOINT}/programs`, {
+        params: {
+          with_geom: "true"
+        }
+      })
       .pipe(map(data => data));
   }
 
