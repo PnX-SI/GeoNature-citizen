@@ -32,11 +32,7 @@ export class ProgramsComponent implements OnInit {
   restItemsServiceGetRestItems() {
     console.log("URL: ", `${AppConfig.API_ENDPOINT}/programs`);
     return this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs`, {
-        params: {
-          with_geom: "true"
-        }
-      })
+      .get(`${AppConfig.API_ENDPOINT}/programs`)
       .pipe(map(data => data));
   }
 
