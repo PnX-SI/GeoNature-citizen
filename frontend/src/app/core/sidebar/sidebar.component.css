@@ -27,6 +27,10 @@
   background-color: #42b983;
 }
 
+.sidebar .active-link{
+  color: #fefefe;
+  background-color: #007bff;
+}
 
 @media screen and (max-height: 450px) {
   .sidebar {

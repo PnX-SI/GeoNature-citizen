@@ -9,7 +9,8 @@ import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.com
 import { SpeciesComponent } from "./synthesis/species/species.component";
 
 const appRoutes: Routes = [
-  { path: "", component: HomeComponent },
+  { path: '',   redirectTo: '/home', pathMatch: 'full' },
+  { path: "home", component: HomeComponent },
   { path: "mydashboard", component: UserDashboardComponent },
   { path: "programs", component: ProgramsComponent },
   { path: "programs/:id/sights", component: SightsComponent },
