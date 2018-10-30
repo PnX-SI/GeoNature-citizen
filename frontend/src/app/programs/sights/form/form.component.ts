@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AppConfig} from '../../../../conf/app.config';
 import {ActivatedRoute} from '@angular/router';
@@ -31,11 +31,18 @@ export class SightsFormComponent implements AfterViewInit {
     this.route.params.subscribe(params => {
       this.program_id = params['id'];
     });
+    this.http
+    .get(`${AppConfig.API_ENDPOINT}/programs/` + this.program_id)
+    .subscribe(result => {
+      this.program = result;
+      this.taxonomyList = this.program.features[0].properties.taxonomy_list;
+      console.log('TAXXLIST', this.taxonomyList);
+    });
   }
 
   ngAfterViewInit(): void {
-    this.restItemsServiceGetTaxonomyList(this.program_id);
-    this.getSurveySpeciesItems();
+    console.log('taxlist', this.taxonomyList);
+    this.getSurveySpeciesItems(this.taxonomyList);
     this.onFormSubmit();
   }
 
@@ -53,18 +60,18 @@ export class SightsFormComponent implements AfterViewInit {
       });
   }
 
-  restItemsServiceGetSurveySpeciesItems() {
+  restItemsServiceGetSurveySpeciesItems(taxlist) {
     return this.http
       .get(
         `${AppConfig.API_ENDPOINT}/taxonomy/lists/` +
-        this.taxonomyList +
+        taxlist +
         `/species`
       )
       .pipe(map(data => data));
   }
 
-  getSurveySpeciesItems(): void {
-    this.restItemsServiceGetSurveySpeciesItems().subscribe(species => {
+  getSurveySpeciesItems(taxlist): void {
+    this.restItemsServiceGetSurveySpeciesItems(taxlist).subscribe(species => {
       this.surveySpecies = species;
     });
   }

@@ -2,10 +2,13 @@
   min-height: 60px;
   background-color: #fefefe;
   color: #60a3bc;
+  /* border-bottom: 1px solid #60a3bc; */
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand {
     font-family: 'Lobster';
+    color: #60a3bc;
 }
 
 .main {

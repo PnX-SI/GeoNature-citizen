@@ -24,6 +24,7 @@ import { SightsMapComponent } from "./programs/sights/map/map.component";
 import { SightsComponent } from "./programs/sights/sights.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from './synthesis/species/species.component';
+import { IntroComponent } from './home/intro/intro.component';
 
 @NgModule({
   imports: [
@@ -52,7 +53,8 @@ import { SpeciesComponent } from './synthesis/species/species.component';
     RegisterComponent,
     LogoutComponent,
     UserDashboardComponent,
-    SpeciesComponent
+    SpeciesComponent,
+    IntroComponent
   ],
   providers: [AuthService],
   bootstrap: [AppComponent],

@@ -9,6 +9,19 @@
   background-color: #fefefe;
   overflow-x: hidden;
   padding-top: 0px;
+  /* border-right: 1px solid #42b983; */
+  box-shadow: 2px 0px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-top-content {
+}
+
+
+.sidebar-bottom-content {
+  position: fixed;
+  bottom: 0;
+  width: 60px;
+
 }
 
 .sidebar a {
@@ -31,6 +44,7 @@
   color: #fefefe;
   background-color: #007bff;
 }
+
 
 @media screen and (max-height: 450px) {
   .sidebar {
