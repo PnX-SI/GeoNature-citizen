@@ -7,6 +7,7 @@ import { LoginComponent } from "../../auth/login/login.component";
 import { RegisterComponent } from "../../auth/register/register.component";
 import { LogoutComponent } from "../../auth/logout/logout.component";
 
+
 @Component({
   selector: "app-topbar",
   templateUrl: "./topbar.component.html",
@@ -17,7 +18,10 @@ export class TopbarComponent implements OnInit {
   isLoggedIn: boolean = false;
   username: string = "not defined";
 
-  constructor(private auth: AuthService, private modalService: NgbModal) {}
+  constructor(
+    private auth: AuthService,
+    private modalService: NgbModal
+    ) {}
 
   // modal(content) {
   //   this.modalService.open(content, {size: 'lg',centered:true});

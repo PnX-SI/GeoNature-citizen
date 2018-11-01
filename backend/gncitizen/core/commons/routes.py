@@ -11,9 +11,62 @@ import json
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.utilssqlalchemy import json_resp
 from server import db
-from .models import ProgramsModel
+from .models import ProgramsModel, ModulesModel
 
 routes = Blueprint('commons', __name__)
+
+
+@routes.route('/modules/<int:pk>', methods=['GET'])
+@json_resp
+def get_module(pk):
+    """Get on module by id
+         ---
+         tags:
+          - Modules
+         parameters:
+          - name: pk
+            in: path
+            type: integer
+            required: true
+            example: 1
+         responses:
+           200:
+             description: A module description
+    """
+    try:
+        datas = ModulesModel.query.filter_by(id_program=pk).limit(1)
+        features = []
+        for data in datas:
+            feature = data.get_geofeature()
+            # for k, v in data:
+            #     feature['properties'][k] = v
+            features.append(feature)
+        return {'features': features}, 200
+    except Exception as e:
+        return {'error_message': str(e)}, 400
+
+
+@routes.route('/modules', methods=['GET'])
+@json_resp
+def get_modules():
+    """Get all modules
+        ---
+        tags:
+          - Modules
+        responses:
+          200:
+            description: A list of all programs
+    """
+    try:
+        modules = ModulesModel.query.all()
+        count = len(modules)
+        datas = []
+        for m in modules:
+          print(dict(m))
+        print(dict(modules))
+        return dict(modules.to_dict()), 200
+    except Exception as e:
+        return {'error_message': str(e)}, 400
 
 
 @routes.route('/programs/<int:pk>', methods=['GET'])
@@ -66,21 +119,21 @@ def get_programs():
         # get whith_geom argument from url (?with_geom=true)
         arg_with_geom = request.args.get('with_geom')
         if arg_with_geom:
-          with_geom = json.loads(arg_with_geom.lower())
-        else: 
-          with_geom = False
+            with_geom = json.loads(arg_with_geom.lower())
+        else:
+            with_geom = False
         programs = ProgramsModel.query.all()
         count = len(programs)
         features = []
         for program in programs:
             if with_geom:
-              feature = program.get_geofeature()
+                feature = program.get_geofeature()
             else:
-              feature = {}
+                feature = {}
             feature['properties'] = program.as_dict(True)
             features.append(feature)
         feature_collection = FeatureCollection(features)
-        feature_collection['count']=count
+        feature_collection['count'] = count
         return feature_collection
     except Exception as e:
         return {'error_message': str(e)}, 400
@@ -173,8 +226,8 @@ def post_program():
         db.session.commit()
         # Réponse en retour
         return {
-                   'message': 'New sight created.',
-                   'features': newprogram.as_dict(),
-               }, 200
+            'message': 'New sight created.',
+            'features': newprogram.as_dict(),
+        }, 200
     except Exception as e:
         return {'error_message': str(e)}, 400

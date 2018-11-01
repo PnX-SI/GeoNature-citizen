@@ -62,12 +62,12 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
     swagger.init_app(app)
 
     with app.app_context():
-        db.create_all()
+        # db.create_all()
 
         from gncitizen.core.users.routes import routes
         app.register_blueprint(routes, url_prefix=url_prefix)
 
-        from gncitizen.core.programs.routes import routes
+        from gncitizen.core.commons.routes import routes
         app.register_blueprint(routes, url_prefix=url_prefix)
 
         from gncitizen.core.sights.routes import routes
@@ -104,4 +104,5 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
 
         create_schemas(db)
         db.create_all()
+
     return app
