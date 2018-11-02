@@ -1,17 +1,19 @@
 #!/usr/bin/python3
-# -*- coding: UTF-8 -*-
+# -*- coding:utf-8 -*-
+
+import json
 
 from flask import Blueprint, request
-from flask_jwt_extended import (jwt_optional)
+from flask_jwt_extended import jwt_optional
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
-from shapely.geometry import asShape, MultiPolygon
-import json
+from shapely.geometry import MultiPolygon, asShape
 
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.utilssqlalchemy import json_resp
 from server import db
-from .models import ProgramsModel, ModulesModel
+
+from .models import ModulesModel, ProgramsModel
 
 routes = Blueprint('commons', __name__)
 
@@ -34,14 +36,8 @@ def get_module(pk):
              description: A module description
     """
     try:
-        datas = ModulesModel.query.filter_by(id_program=pk).limit(1)
-        features = []
-        for data in datas:
-            feature = data.get_geofeature()
-            # for k, v in data:
-            #     feature['properties'][k] = v
-            features.append(feature)
-        return {'features': features}, 200
+        datas = ModulesModel.query.filter_by(id_module=pk).first()
+        return datas.as_dict(), 200
     except Exception as e:
         return {'error_message': str(e)}, 400
 
@@ -62,9 +58,9 @@ def get_modules():
         count = len(modules)
         datas = []
         for m in modules:
-          print(dict(m))
-        print(dict(modules))
-        return dict(modules.to_dict()), 200
+            d = m.as_dict()
+            datas.append(d)
+        return {"count": count, "datas": datas}, 200
     except Exception as e:
         return {'error_message': str(e)}, 400
 
