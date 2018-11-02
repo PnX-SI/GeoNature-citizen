@@ -21,6 +21,7 @@ class ModulesModel(db.Model):
     label = db.Column(db.String(50), nullable=False)
     desc = db.Column(db.String(200))
     icon = db.Column(db.String(250))
+    on_sidebar = db.Column(db.Boolean(), default=False)
     
 
 @serializable
