@@ -1,3 +1,4 @@
+import { AboutComponent } from "./about/about.component";
 import { ModuleWithProviders } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
@@ -9,8 +10,9 @@ import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.com
 import { SpeciesComponent } from "./synthesis/species/species.component";
 
 const appRoutes: Routes = [
-  { path: '',   redirectTo: '/home', pathMatch: 'full' },
+  { path: "", redirectTo: "/home", pathMatch: "full" },
   { path: "home", component: HomeComponent },
+  { path: "about", component: AboutComponent },
   { path: "mydashboard", component: UserDashboardComponent },
   { path: "programs", component: ProgramsComponent },
   { path: "programs/:id/sights", component: SightsComponent },
