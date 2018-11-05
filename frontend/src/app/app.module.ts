@@ -1,3 +1,4 @@
+import { GncProgramsService } from './api/gnc-programs.service';
 import { HttpClientModule } from "@angular/common/http";
 import { HttpModule } from "@angular/http";
 import { NgModule } from "@angular/core";
@@ -23,8 +24,9 @@ import { SightsListComponent } from "./programs/sights/list/list.component";
 import { SightsMapComponent } from "./programs/sights/map/map.component";
 import { SightsComponent } from "./programs/sights/sights.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
-import { SpeciesComponent } from './synthesis/species/species.component';
-import { IntroComponent } from './home/intro/intro.component';
+import { SpeciesComponent } from "./synthesis/species/species.component";
+import { IntroComponent } from "./home/intro/intro.component";
+import { GncService } from "./api/gnc.service";
 
 @NgModule({
   imports: [
@@ -56,7 +58,7 @@ import { IntroComponent } from './home/intro/intro.component';
     SpeciesComponent,
     IntroComponent
   ],
-  providers: [AuthService],
+  providers: [AuthService, GncService, GncProgramsService],
   bootstrap: [AppComponent],
   entryComponents: [
     DescModalComponent,

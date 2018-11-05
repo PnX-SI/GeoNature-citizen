@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RestService } from './rest.service';
+import { ProgramsService } from './gnc-programs.service';
 
-describe('RestService', () => {
+describe('ProgramsService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: RestService = TestBed.get(RestService);
+    const service: ProgramsService = TestBed.get(ProgramsService);
     expect(service).toBeTruthy();
   });
 });
