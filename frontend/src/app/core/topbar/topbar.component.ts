@@ -7,7 +7,6 @@ import { LoginComponent } from "../../auth/login/login.component";
 import { RegisterComponent } from "../../auth/register/register.component";
 import { LogoutComponent } from "../../auth/logout/logout.component";
 
-
 @Component({
   selector: "app-topbar",
   templateUrl: "./topbar.component.html",
@@ -16,16 +15,21 @@ import { LogoutComponent } from "../../auth/logout/logout.component";
 export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
   isLoggedIn: boolean = false;
-  username: string = "not defined";
+  username: any;
 
-  constructor(
-    private auth: AuthService,
-    private modalService: NgbModal
-    ) {}
+  constructor(private auth: AuthService, private modalService: NgbModal) {}
 
   // modal(content) {
   //   this.modalService.open(content, {size: 'lg',centered:true});
   // }
+
+  get userLoggedIn() {
+    if (localStorage.getItem("username")) {
+      this.username = localStorage.getItem("username").replace(/\"/g, "");
+      return true;
+    }
+    return false;
+  }
 
   login() {
     this.modalService.open(LoginComponent, { size: "lg", centered: true });

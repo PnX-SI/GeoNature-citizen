@@ -45,7 +45,7 @@ export class GncProgramsService {
     return this.http.get<Program>(`${this.URL}/programs/${id}`).pipe(
       tap(_ => this.log(`fetched program ${id}`)),
       catchError(this.handleError<Program>(`getProgram id=${id}`))
-    );;
+    );
   }
 
   // public createProgram(program: Program): Observable<Program> {

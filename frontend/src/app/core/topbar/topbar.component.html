@@ -12,7 +12,7 @@
     <div class="navbar-collapse collapse" id="navbarsExample03" style="">
       <div class="navbar-nav mr-auto">
       </div>
-      <div *ngIf="isLoggedIn; then thenBlock else elseBlock"></div>
+      <div *ngIf="userLoggedIn; then thenBlock else elseBlock"></div>
       <ng-template #thenBlock>
         <form class="form-inline mt-2 mt-md-0">
           Bienvenue&nbsp;<a routerLink="mydashboard" placement="bottom" ngbTooltip="Mon tableau de bord">{{username}}</a>&nbsp;
