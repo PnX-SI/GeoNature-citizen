@@ -22,7 +22,7 @@ class ModulesModel(db.Model):
     desc = db.Column(db.String(200))
     icon = db.Column(db.String(250))
     on_sidebar = db.Column(db.Boolean(), default=False)
-    
+
 
 @serializable
 @geoserializable
@@ -45,7 +45,21 @@ class ProgramsModel(db.Model):
         ForeignKey(BibListes.id_liste), nullable=True
     )
     geom = db.Column(Geometry('GEOMETRY', 4326))
-    timestamp_create = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    timestamp_create = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow)
 
     def get_geofeature(self, recursif=True, columns=None):
         return self.as_geofeature('geom', 'id_program', recursif, columns=columns)
+
+
+@serializable
+@geoserializable
+class MediaModel(db.Model):
+    """Table des Programmes de GeoNature-citizen
+        """
+    __tablename__ = 't_medias'
+    __table_args__ = {'schema': 'gnc_core'}
+    id_media = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(50), nullable=False)
+    timestamp_create = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow)

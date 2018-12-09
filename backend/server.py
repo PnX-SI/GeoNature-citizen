@@ -5,13 +5,13 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
-from gncitizen.utils.env import db, list_and_import_gn_modules, jwt, swagger
+from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger
 from gncitizen.utils.utilssqlalchemy import create_schemas
 
 logger = logging.getLogger()
 logger.setLevel(10)
 basedir = os.path.abspath(os.path.dirname(__file__))
-print('media path:', os.path.join(basedir, '../media'))
+
 app = Flask(__name__)
 
 app.debug = True
@@ -82,7 +82,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
         CORS(app, supports_credentials=True)
         # Chargement des mosdules tiers
         if with_external_mods:
-            for conf, manifest, module in list_and_import_gn_modules(app):
+            for conf, manifest, module in list_and_import_gnc_modules(app):
                 try:
                     prefix = url_prefix + conf['api_url']
                 except:
