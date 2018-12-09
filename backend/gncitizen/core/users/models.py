@@ -2,7 +2,7 @@
 
 from passlib.hash import pbkdf2_sha256 as sha256
 
-from gncitizen.core.commons.models import ModulesModel
+from gncitizen.core.commons.models import ModulesModel, ProgramsModel
 from gncitizen.utils.utilssqlalchemy import serializable
 from server import db
 
@@ -86,14 +86,14 @@ class UserModel(db.Model):
 
             return {'users': list(map(lambda x: to_json(x), UserModel.query.all()))}
 
-    @classmethod
-    def delete_all(cls):
-        try:
-            num_rows_deleted = db.session.query(cls).delete()
-            db.session.commit()
-            return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
-        except:
-            return {'message': 'Something went wrong'}
+    # @classmethod
+    # def delete_all(cls):
+    #     try:
+    #         num_rows_deleted = db.session.query(cls).delete()
+    #         db.session.commit()
+    #         return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
+    #     except:
+    #         return {'message': 'Something went wrong'}
 
 
 @serializable
@@ -102,8 +102,12 @@ class UserRights(db.Model):
     __tablename__ = "t_users_rights"
     __table_args__ = {'schema': 'gnc_core'}
     id_user_right = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user))
-    id_module = db.Column(db.Integer, db.ForeignKey(ModulesModel.id_module))
+    id_user = db.Column(db.Integer, db.ForeignKey(
+        UserModel.id_user), nullable=False)
+    id_module = db.Column(db.Integer, db.ForeignKey(
+        ModulesModel.id_module), nullable=True)
+    id_module = db.Column(db.Integer, db.ForeignKey(
+        ProgramsModel.id_program), nullable=True)
     right = db.Column(db.String(150), nullable=False)
     create = db.Column(db.Boolean(), default=False)
     read = db.Column(db.Boolean(), default=False)
