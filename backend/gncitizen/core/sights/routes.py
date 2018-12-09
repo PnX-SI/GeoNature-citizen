@@ -1,7 +1,8 @@
 import uuid
 
 import requests
-from flask import Blueprint, request
+from flask import Blueprint, request, redirect, flash, send_from_directory, url_for
+from werkzeug import secure_filename
 from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
@@ -9,12 +10,14 @@ from shapely.geometry import Point, asShape
 
 from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import UserModel
-from gncitizen.utils.env import taxhub_lists_url
+from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR, allowed_file
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
 from .models import SightModel
+import datetime
+import os
 
 routes = Blueprint('sights', __name__)
 
@@ -30,6 +33,7 @@ def get_specie_from_cd_nom(cd_nom):
     taxref['common_name'] = common_name
     taxref['sci_name'] = sci_name
     return taxref
+
 
 def generate_sight_geojson(id_sight):
     """generate sight in geojson format from sight id"""
@@ -90,6 +94,22 @@ def get_sight(pk):
         return {'error_message': str(e)}, 400
 
 
+@routes.route('/photo', methods=['POST'])
+@json_resp
+def post_photo():
+    if request.files:
+        print(request.files)
+        photo = request.files['photo']
+        print('FILE >>>', photo)
+        print(allowed_file(photo))
+        ext = photo.rsplit('.', 1).lower()
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = 'sight_sp'+0000+'_'+timestamp+ext
+        path = MEDIA_DIR+'/'+filename
+        photo.save(path)
+        print(path)
+
+
 @routes.route('/sights', methods=['POST'])
 @json_resp
 @jwt_optional
@@ -102,10 +122,11 @@ def post_sight():
         summary: Creates a new sight (JWT auth optional, if used, obs_txt replaced by username)
         consumes:
           - application/json
+          - multipart/form-data
         produces:
           - application/json
         parameters:
-          - name: body
+          - name: json
             in: body
             description: JSON parameters.
             required: true
@@ -139,7 +160,7 @@ def post_sight():
                 geometry:
                   type: string
                   description: Geometry (GeoJson format)
-                  example: {"type":"Point", "coordinates":[45,5]}
+                  example: {"type":"Point", "coordinates":[5,45]}
         responses:
           200:
             description: Adding a sight
@@ -147,16 +168,30 @@ def post_sight():
     try:
         request_datas = dict(request.get_json())
 
-        if request.files:
-            file = request.files['file']
-            file.save()
-        else:
-            file = None
-
         datas2db = {}
         for field in request_datas:
             if hasattr(SightModel, field):
                 datas2db[field] = request_datas[field]
+        print(datas2db)
+        try:
+            if request.files:
+                print(request.files)
+                file = request.files['photo']
+                print(file)
+                if file and allowed_file(file):
+                    ext = file.rsplit('.', 1).lower()
+                    timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+                    filename = 'sight_sp'+datas2db['cd_nom']+'_'+timestamp+ext
+                    path = MEDIA_DIR+'/'+filename
+                    file.save(path)
+                    print(path)
+                    datas2db['photo'] = filename
+        except Exception as e:
+            print('file ', e)
+            raise GeonatureApiError(e)
+
+        else:
+            file = None
 
         try:
             newsight = SightModel(**datas2db)
@@ -171,6 +206,7 @@ def post_sight():
             print(e)
             raise GeonatureApiError(e)
 
+        # If count is empty, set count to 1.
         if newsight.count is None:
             count = 1
 
@@ -192,9 +228,9 @@ def post_sight():
         # Réponse en retour
         features = generate_sight_geojson(newsight.id_sight)
         return {
-                   'message': 'New sight created.',
-                   'features': features,
-               }, 200
+            'message': 'New sight created.',
+            'features': features,
+        }, 200
     except Exception as e:
         return {'error_message': str(e)}, 400
 
@@ -285,7 +321,8 @@ def get_sights_from_list(id):
                     for k in sight_dict:
                         if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
                             feature['properties'][k] = sight_dict[k]
-                    taxref = get_specie_from_cd_nom(feature['properties']['cd_nom'])
+                    taxref = get_specie_from_cd_nom(
+                        feature['properties']['cd_nom'])
                     for k in taxref:
                         feature['properties'][k] = taxref[k]
                     features.append(feature)

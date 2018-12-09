@@ -11,8 +11,9 @@ routes = Blueprint('users', __name__)
 
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
-  jti = decrypted_token['jti']
-  return RevokedTokenModel.is_jti_blacklisted(jti)
+    jti = decrypted_token['jti']
+    return RevokedTokenModel.is_jti_blacklisted(jti)
+
 
 @routes.route('/registration', methods=['POST'])
 @json_resp
@@ -67,26 +68,30 @@ def registration():
     """
     try:
         request_datas = dict(request.get_json())
-        datas2db = {}
-        for field in request_datas:
-            if hasattr(UserModel, field) and field != 'password':
-                datas2db[field] = request_datas[field]
 
-        datas2db['password'] = UserModel.generate_hash(
+        # Génération du dictionnaire des données à sauvegarder
+        datas_to_save = {}
+        for data in request_datas:
+            if hasattr(UserModel, data) and data != 'password':
+                datas_to_save[data] = request_datas[data]
+
+        # Hashed password
+        datas_to_save['password'] = UserModel.generate_hash(
             request_datas['password'])
 
-        try:
-            newuser = UserModel(**datas2db)
+        # Protection against admin creation from API
+        datas_to_save['admin'] = False
 
+        try:
+            newuser = UserModel(**datas_to_save)
         except Exception as e:
             print(e)
             raise GeonatureApiError(e)
 
         if UserModel.find_by_username(newuser.username):
-            return {'message': 'L\'utilisateur {} éxiste déjà'.format(newuser.username)}, 400
+            return {'error_message': 'L\'utilisateur {} éxiste déjà'.format(newuser.username)}, 400
 
-        db.session.add(newuser)
-        db.session.commit()
+        newuser.save_to_db()
         access_token = create_access_token(identity=newuser.username)
         refresh_token = create_refresh_token(identity=newuser.username)
         return {
@@ -215,41 +220,23 @@ def token_refresh():
     return {'access_token': access_token}
 
 
-@routes.route('/allusers', methods=['GET'])
-@jwt_required
-@json_resp
-def get_allusers():
-    """list all users
-    ---
-    tags:
-      - Authentication
-    summary: List all registered users
-    produces:
-      - application/json
-    responses:
-      200:
-        description: list all users
-    """
-    allusers = UserModel.return_all()
-    return allusers, 200
-
-
-#
-# @routes.route('/allusers', methods=['DELETE'])
+# @routes.route('/allusers', methods=['GET'])
 # @jwt_required
-# def del_allusers():
-#     """Delete all users
+# @json_resp
+# def get_allusers():
+#     """list all users
 #     ---
 #     tags:
 #       - Authentication
-#     summary: List all logged registered users
+#     summary: List all registered users
 #     produces:
 #       - application/json
 #     responses:
 #       200:
-#         description: Delete all users
+#         description: list all users
 #     """
-#     return jsonify(UserModel.delete_all()), 200
+#     allusers = UserModel.return_all()
+#     return allusers, 200
 
 
 @routes.route('/logged_user', methods=['GET'])

@@ -16,7 +16,12 @@ with open(str((ROOT_DIR / 'VERSION'))) as v:
 DEFAULT_CONFIG_FILE = ROOT_DIR / 'config/default_config.toml'
 GNC_EXTERNAL_MODULE = ROOT_DIR / 'external_modules'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+MEDIA_DIR = ROOT_DIR / 'media'
 
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def get_config_file_path(config_file=None):
@@ -47,7 +52,8 @@ swagger = Swagger()
 taxhub_url = load_config()['API_TAXHUB']
 taxhub_lists_url = taxhub_url + 'biblistes/'
 
-def list_and_import_gn_modules(app, mod_path=GNC_EXTERNAL_MODULE):
+
+def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):
     """
         Get all the module enabled from gn_commons.t_modules
     """
