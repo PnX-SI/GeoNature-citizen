@@ -5,6 +5,7 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.utilssqlalchemy import json_resp
 from server import db, jwt
 from .models import UserModel, RevokedTokenModel
+from gncitizen.utils.utilsjwt import admin_required
 
 routes = Blueprint('users', __name__)
 
@@ -220,23 +221,24 @@ def token_refresh():
     return {'access_token': access_token}
 
 
-# @routes.route('/allusers', methods=['GET'])
-# @jwt_required
-# @json_resp
-# def get_allusers():
-#     """list all users
-#     ---
-#     tags:
-#       - Authentication
-#     summary: List all registered users
-#     produces:
-#       - application/json
-#     responses:
-#       200:
-#         description: list all users
-#     """
-#     allusers = UserModel.return_all()
-#     return allusers, 200
+@routes.route('/allusers', methods=['GET'])
+@admin_required
+@json_resp
+@jwt_required
+def get_allusers():
+    """list all users
+    ---
+    tags:
+      - Authentication
+    summary: List all registered users
+    produces:
+      - application/json
+    responses:
+      200:
+        description: list all users
+    """
+    allusers = UserModel.return_all()
+    return allusers, 200
 
 
 @routes.route('/logged_user', methods=['GET'])
