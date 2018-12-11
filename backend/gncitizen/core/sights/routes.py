@@ -15,11 +15,11 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
-from .models import SightModel
+from .models import ObservationModel
 import datetime
 import os
 
-routes = Blueprint('sights', __name__)
+routes = Blueprint('observations', __name__)
 
 
 def get_specie_from_cd_nom(cd_nom):
@@ -35,11 +35,11 @@ def get_specie_from_cd_nom(cd_nom):
     return taxref
 
 
-def generate_sight_geojson(id_sight):
-    """generate sight in geojson format from sight id"""
+def generate_observation_geojson(id_observation):
+    """generate observation in geojson format from observation id"""
 
     # Crééer le dictionnaire de l'observation
-    result = SightModel.query.get(id_sight)
+    result = ObservationModel.query.get(id_observation)
     result_dict = result.as_dict(True)
 
     # Populate "geometry"
@@ -48,7 +48,7 @@ def generate_sight_geojson(id_sight):
 
     # Populate "properties"
     for k in result_dict:
-        if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
+        if k in ('cd_nom', 'id_observation', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
             feature['properties'][k] = result_dict[k]
 
     # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref
@@ -59,13 +59,13 @@ def generate_sight_geojson(id_sight):
     return features
 
 
-@routes.route('/sights/<int:pk>')
+@routes.route('/observations/<int:pk>')
 @json_resp
-def get_sight(pk):
-    """Get on sight by id
+def get_observation(pk):
+    """Get on observation by id
          ---
          tags:
-          - Sights
+          - observations
          parameters:
           - name: pk
             in: path
@@ -85,10 +85,10 @@ def get_sight(pk):
              type: geojson
          responses:
            200:
-             description: A list of all sights
+             description: A list of all observations
          """
     try:
-        features = generate_sight_geojson(pk)
+        features = generate_observation_geojson(pk)
         return {'features': features}, 200
     except Exception as e:
         return {'error_message': str(e)}, 400
@@ -97,6 +97,7 @@ def get_sight(pk):
 @routes.route('/photo', methods=['POST'])
 @json_resp
 def post_photo():
+    """Test pour l'import de médias """
     if request.files:
         print(request.files)
         photo = request.files['photo']
@@ -104,22 +105,22 @@ def post_photo():
         print(allowed_file(photo))
         ext = photo.rsplit('.', 1).lower()
         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = 'sight_sp'+0000+'_'+timestamp+ext
+        filename = 'observation_sp'+0000+'_'+timestamp+ext
         path = MEDIA_DIR+'/'+filename
         photo.save(path)
         print(path)
 
 
-@routes.route('/sights', methods=['POST'])
+@routes.route('/observations', methods=['POST'])
 @json_resp
 @jwt_optional
-def post_sight():
-    """Post a sight
-    add a sight to database
+def post_observation():
+    """Post a observation
+    add a observation to database
         ---
         tags:
-          - Sights
-        summary: Creates a new sight (JWT auth optional, if used, obs_txt replaced by username)
+          - observations
+        summary: Creates a new observation (JWT auth optional, if used, obs_txt replaced by username)
         consumes:
           - application/json
           - multipart/form-data
@@ -131,7 +132,7 @@ def post_sight():
             description: JSON parameters.
             required: true
             schema:
-              id: Sight
+              id: observation
               required:
                 - cd_nom
                 - date
@@ -163,14 +164,14 @@ def post_sight():
                   example: {"type":"Point", "coordinates":[5,45]}
         responses:
           200:
-            description: Adding a sight
+            description: Adding a observation
         """
     try:
         request_datas = dict(request.get_json())
 
         datas2db = {}
         for field in request_datas:
-            if hasattr(SightModel, field):
+            if hasattr(ObservationModel, field):
                 datas2db[field] = request_datas[field]
         print(datas2db)
         try:
@@ -181,7 +182,8 @@ def post_sight():
                 if file and allowed_file(file):
                     ext = file.rsplit('.', 1).lower()
                     timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-                    filename = 'sight_sp'+datas2db['cd_nom']+'_'+timestamp+ext
+                    filename = 'obstax_' + \
+                        datas2db['cd_nom']+'_'+timestamp+ext
                     path = MEDIA_DIR+'/'+filename
                     file.save(path)
                     print(path)
@@ -194,54 +196,54 @@ def post_sight():
             file = None
 
         try:
-            newsight = SightModel(**datas2db)
+            newobservation = ObservationModel(**datas2db)
         except Exception as e:
             print(e)
             raise GeonatureApiError(e)
 
         try:
             shape = asShape(request_datas['geometry'])
-            newsight.geom = from_shape(Point(shape), srid=4326)
+            newobservation.geom = from_shape(Point(shape), srid=4326)
         except Exception as e:
             print(e)
             raise GeonatureApiError(e)
 
         # If count is empty, set count to 1.
-        if newsight.count is None:
+        if newobservation.count is None:
             count = 1
 
         id_role = get_id_role_if_exists()
         print(id_role)
         if id_role is not None:
-            newsight.id_role = id_role
+            newobservation.id_role = id_role
             role = UserModel.query.get(id_role)
-            newsight.obs_txt = role.username
-            newsight.email = role.email
+            newobservation.obs_txt = role.username
+            newobservation.email = role.email
         else:
-            if newsight.obs_txt is None or len(newsight.obs_txt) == 0:
-                newsight.obs_txt = 'Anonyme'
+            if newobservation.obs_txt is None or len(newobservation.obs_txt) == 0:
+                newobservation.obs_txt = 'Anonyme'
 
-        newsight.uuid_sinp = uuid.uuid4()
+        newobservation.uuid_sinp = uuid.uuid4()
 
-        db.session.add(newsight)
+        db.session.add(newobservation)
         db.session.commit()
         # Réponse en retour
-        features = generate_sight_geojson(newsight.id_sight)
+        features = generate_observation_geojson(newobservation.id_observation)
         return {
-            'message': 'New sight created.',
+            'message': 'New observation created.',
             'features': features,
         }, 200
     except Exception as e:
         return {'error_message': str(e)}, 400
 
 
-@routes.route('/sights', methods=['GET'])
+@routes.route('/observations', methods=['GET'])
 @json_resp
-def get_sights():
-    """Get all sights
+def get_observations():
+    """Get all observations
         ---
         tags:
-          - Sights
+          - observations
         definitions:
           cd_nom:
             type: integer
@@ -255,17 +257,17 @@ def get_sights():
             type: geometry
         responses:
           200:
-            description: A list of all sights
+            description: A list of all observations
         """
     try:
-        sights = SightModel.query.all()
+        observations = ObservationModel.query.all()
         features = []
-        for sight in sights:
-            feature = get_geojson_feature(sight.geom)
-            sight_dict = sight.as_dict(True)
-            for k in sight_dict:
-                if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
-                    feature['properties'][k] = sight_dict[k]
+        for observation in observations:
+            feature = get_geojson_feature(observation.geom)
+            observation_dict = observation.as_dict(True)
+            for k in observation_dict:
+                if k in ('cd_nom', 'id_observation', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
+                    feature['properties'][k] = observation_dict[k]
             taxref = get_specie_from_cd_nom(feature['properties']['cd_nom'])
             for k in taxref:
                 feature['properties'][k] = taxref[k]
@@ -275,14 +277,14 @@ def get_sights():
         return {'error_message': str(e)}, 400
 
 
-@routes.route('/sights/lists/<int:id>', methods=['GET'])
+@routes.route('/observations/lists/<int:id>', methods=['GET'])
 @json_resp
-def get_sights_from_list(id):
-    """Get all sights from a taxonomy list
+def get_observations_from_list(id):
+    """Get all observations from a taxonomy list
     GET
         ---
         tags:
-          - Sights
+          - observations
         parameters:
           - name: id
             in: path
@@ -314,13 +316,14 @@ def get_sights_from_list(id):
             features = []
             for t in taxa:
                 print('R', t['cd_nom'])
-                datas = SightModel.query.filter_by(cd_nom=t['cd_nom']).all()
+                datas = ObservationModel.query.filter_by(
+                    cd_nom=t['cd_nom']).all()
                 for d in datas:
                     feature = get_geojson_feature(d.geom)
-                    sight_dict = d.as_dict(True)
-                    for k in sight_dict:
-                        if k in ('cd_nom', 'id_sight', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
-                            feature['properties'][k] = sight_dict[k]
+                    observation_dict = d.as_dict(True)
+                    for k in observation_dict:
+                        if k in ('cd_nom', 'id_observation', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
+                            feature['properties'][k] = observation_dict[k]
                     taxref = get_specie_from_cd_nom(
                         feature['properties']['cd_nom'])
                     for k in taxref:
