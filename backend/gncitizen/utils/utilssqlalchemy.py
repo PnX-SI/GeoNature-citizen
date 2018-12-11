@@ -23,11 +23,13 @@ SERIALIZERS = {
     'numeric': lambda x: str(x) if x else None
 }
 
+
 def create_schemas(db):
     '''Créée les schémas lors du premier lancement de l'application'''
     db.session.execute('CREATE SCHEMA IF NOT EXISTS gnc_core')
-    db.session.execute('CREATE SCHEMA IF NOT EXISTS gnc_sights')
+    db.session.execute('CREATE SCHEMA IF NOT EXISTS gnc_obstax')
     db.session.commit()
+
 
 def get_geojson_feature(wkb):
     ''' retourne une feature geojson à partir d'un WKB'''

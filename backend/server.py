@@ -70,7 +70,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
         from gncitizen.core.commons.routes import routes
         app.register_blueprint(routes, url_prefix=url_prefix)
 
-        from gncitizen.core.sights.routes import routes
+        from gncitizen.core.observations.routes import routes
         app.register_blueprint(routes, url_prefix=url_prefix)
 
         from gncitizen.core.ref_geo.routes import routes
