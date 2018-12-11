@@ -332,3 +332,51 @@ def get_observations_from_list(id):
             return FeatureCollection(features)
         except Exception as e:
             return {'error_message': str(e)}, 400
+
+
+@routes.route('programs/<int:id>/observations', methods=['GET'])
+@json_resp
+def get_observations_from_program(id):
+    """Get all observations from a program
+    GET
+        ---
+        tags:
+          - observations
+        parameters:
+          - name: id
+            in: path
+            type: integer
+            required: true
+            example: 1
+        definitions:
+          cd_nom:
+            type: integer
+            description: cd_nom taxref
+          geometry:
+            type: dict
+            description: Géométrie de la donnée
+          name:
+            type: string
+          geom:
+            type: geometry
+        responses:
+          200:
+            description: A list of all species lists
+        """
+    try:
+        observations = ObservationModel.query.filter_by(
+            id_program=id).all()
+        features = []
+        for observation in observations:
+            feature = get_geojson_feature(observation.geom)
+            observation_dict = observation.as_dict(True)
+            for k in observation_dict:
+                if k in ('cd_nom', 'id_observation', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
+                    feature['properties'][k] = observation_dict[k]
+            taxref = get_specie_from_cd_nom(feature['properties']['cd_nom'])
+            for k in taxref:
+                feature['properties'][k] = taxref[k]
+            features.append(feature)
+        return FeatureCollection(features)
+    except Exception as e:
+        return {'error_message': str(e)}, 400
