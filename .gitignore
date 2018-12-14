@@ -236,7 +236,9 @@ celerybeat-schedule
 .env
 .venv
 env/
+env
 venv/
+venv
 ENV/
 env.bak/
 venv.bak/
@@ -289,3 +291,5 @@ contrib/gnc_*
 
 #FrontEnd config files
 frontend/src/conf/*.ts
+backend/Pipfile*
+backend/__pycache__/

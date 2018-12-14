@@ -3,11 +3,20 @@ import unittest
 
 import requests
 
-mainUrl = "http://127.0.0.1:5000/"
-# head = {'Authorization': 'token {}'.format(myToken)}
-headers = {"content-type": "application/json"}
+from gncitizen.utils.env import load_config
+from server import get_app
+
+APP_CONF = load_config()
+access_token = None
+refresh_token = None
+mainUrl = "http://localhost:5001/api/"
+mimetype = 'application/json'
+headers = {
+    'Content-Type': mimetype,
+    'Accept': mimetype
+}
 user = 'testuser'
-pwd = 'testpwd'
+pwd = 'testpwd'  # noqa: S105
 name = 'tester'
 surname = 'testersurname'
 email = 'tester@test.com'
@@ -48,7 +57,20 @@ class TestAuthFlaskApiUsingRequests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestFlaskApiUsingRequests(unittest.TestCase):
+class SightsTestCase(unittest.TestCase):
+    def setUp(self):
+        """Define test variables and initialize app."""
+        self.app = get_app(load_config())
+        self.client = self.app.test_client
+        self.sights_post_data = {
+            'cd_nom': 3582,
+            'obs_txt': 'Tada',
+            'count': 1,
+            'geometry': {"type": "Point", "coordinates": [5, 45]}
+        }
+
+    def login_user(self, username=user, password=pwd):
+        return self.client().post(mainUrl + 'login', data=auth())
 
     def test_get_sights(self):
         response = requests.get(mainUrl + "sights")
