@@ -32,9 +32,10 @@ def auth():
     return json.dumps(myParams)
 
 
-def postrequest(url):
+def postrequest(url, params=None):
     myUrl = mainUrl + url
-    params = auth()
+    if access_token:
+        headers.update({'Authorization': 'Bearer {}'.format(access_token)})
     response = requests.post(myUrl, headers=headers, data=params)
     return response
 
@@ -49,11 +50,19 @@ def getrequest(url):
 class TestAuthFlaskApiUsingRequests(unittest.TestCase):
 
     def test_login(self):
-        response = postrequest("login")
+        global access_token
+        global refresh_token
+        response = postrequest("login", auth())
+        data = response.json()
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['message'], 'Logged in as testuser')
+        self.assertIsNotNone(data.get('access_token', None))
+        access_token = data['access_token']
+        self.assertIsNotNone(data.get('refresh_token', None))
+        refresh_token = data['refresh_token']
 
     def test_logout(self):
-        response = postrequest("logout")
+        response = postrequest("logout", auth())
         self.assertEqual(response.status_code, 200)
 
 
@@ -70,15 +79,30 @@ class SightsTestCase(unittest.TestCase):
         }
 
     def login_user(self, username=user, password=pwd):
+        # user_data = {
+        #     'username': username,
+        #     'password': password
+        # }
         return self.client().post(mainUrl + 'login', data=auth())
 
     def test_get_sights(self):
-        response = requests.get(mainUrl + "sights")
-        self.assertEqual(response.status_code, 200)
+        response = getrequest("sights")
+        # result = self.login_user()
+        # print('login resp:', result.data.decode())
+        # access_token = json.loads(result.data.decode())['access_token']
+        # response = self.client().post(
+        #     '/api/sights/',
+        #     headers=dict(Authorization="Bearer " + access_token),
+        #     data=self.sights_post_data)
 
-    def test_post_sight(self):
-        response = requests.post(mainUrl + "sights")
         self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data['type'], "FeatureCollection")
+        self.assertIsInstance(data['features'], list)
+
+    # def test_post_sight(self):
+    #     response = postrequest("sights", TEST_POST_SIGHTS)
+    #     self.assertEqual(response.status_code, 200)
 
 
 if __name__ == "__main__":
