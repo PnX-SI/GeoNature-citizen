@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ProgramsService } from './gnc-programs.service';
+import { GncProgramsService } from './gnc-programs.service';
 
-describe('ProgramsService', () => {
+describe('GncProgramsService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ProgramsService = TestBed.get(ProgramsService);
+    const service: GncProgramsService = TestBed.get(GncProgramsService);
     expect(service).toBeTruthy();
   });
 });

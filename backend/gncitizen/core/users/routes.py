@@ -195,7 +195,7 @@ def logout():
     try:
         revoked_token = RevokedTokenModel(jti=jti)
         revoked_token.add()
-        return jsonify({"msg": "Successfully logged out"}), 200
+        return {"msg": "Successfully logged out"}, 200
     except Exception as e:
         return {'message': 'Something went wrong'}, 500
 
