@@ -46,7 +46,7 @@ def get_municipalities():
             features.append(feature)
         return FeatureCollection(features)
     except Exception as e:
-        return {'error_message':str(e)}, 400
+        return {'error_message': str(e)}, 400
 
 
 @routes.route('/municipality/<insee>', methods=['GET'])
@@ -62,15 +62,15 @@ def get_municipality(insee):
             type: string
             required: true
             default: none
-        definitions:
-          area_name:
-            type: string
-            description: Municipality name
-          area_code:
-            type: string
-            description: Municipality insee code
-          geometry:
-            type: geometry
+            properties:
+              area_name:
+                type: string
+                description: Municipality name
+              area_code:
+                type: string
+                description: Municipality insee code
+              geometry:
+                type: geometry
         responses:
           200:
             description: A municipality
@@ -95,40 +95,4 @@ def get_municipality(insee):
         feature['properties']['area_code'] = data.area_code
         return feature
     except Exception as e:
-        return {'error_message':str(e)}, 400
-
-
-@routes.route('/portalarea', methods=['GET'])
-@json_resp
-def get_portalarea():
-    """Generate a unique area from all enable municipalities to represent portal area
-        ---
-        tags:
-          - Reférentiel géo
-        definitions:
-          name:
-            type: string
-            description: Nom du zonage (configured in app config file as PORTAL_AREA_NAME)
-          geometry:
-            type: geometry
-        responses:
-          200:
-            description: A municipality
-
-    """
-    try:
-        q = db.session.query(func.ST_Transform(func.ST_Union(
-            LAreas.geom), 4326).label('geom')
-                             ).filter(LAreas.enable).subquery()
-        data = db.engine.execute(q)
-        print(type(data))
-        for d in data:
-            print(to_shape(d.geom))
-            feature = Feature(geometry=to_shape(d.geom))
-            if load_config()['PORTAL_AREA_NAME']:
-                feature['properties']['nom'] = load_config()['PORTAL_AREA_NAME']
-            else:
-                feature['properties']['name'] = 'Portal area'
-        return feature
-    except Exception as e:
-        return {'error_message':str(e)}, 400
+        return {'error_message': str(e)}, 400
