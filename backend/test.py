@@ -78,23 +78,11 @@ class SightsTestCase(unittest.TestCase):
             'geometry': {"type": "Point", "coordinates": [5, 45]}
         }
 
-    def login_user(self, username=user, password=pwd):
-        # user_data = {
-        #     'username': username,
-        #     'password': password
-        # }
-        return self.client().post(mainUrl + 'login', data=auth())
+    def login_user(self, data):
+        return self.client().post(mainUrl + 'login', data=data)
 
     def test_get_sights(self):
         response = getrequest("sights")
-        # result = self.login_user()
-        # print('login resp:', result.data.decode())
-        # access_token = json.loads(result.data.decode())['access_token']
-        # response = self.client().post(
-        #     '/api/sights/',
-        #     headers=dict(Authorization="Bearer " + access_token),
-        #     data=self.sights_post_data)
-
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(data['type'], "FeatureCollection")
