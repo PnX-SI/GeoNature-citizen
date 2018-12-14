@@ -236,7 +236,9 @@ celerybeat-schedule
 .env
 .venv
 env/
+venv
 venv/
+.venv/
 ENV/
 env.bak/
 venv.bak/
@@ -255,7 +257,6 @@ venv.bak/
 .mypy_cache/
 
 ### Python Patch ###
-.venv/
 
 ### Vim ###
 # Swap
@@ -285,7 +286,10 @@ external_modules/gnc_*
 contrib/gnc_*
 
 *.pyc
-*.cpython-35.pyc
 
 #FrontEnd config files
 frontend/src/conf/*.ts
+
+# pipenv: comment when migrating from traditional pip+v(irtual)env
+Pipfile
+Pipfile.lock
