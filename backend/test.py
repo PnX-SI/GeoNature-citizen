@@ -71,7 +71,7 @@ class SightsTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = get_app(load_config())
         self.client = self.app.test_client
-        self.sights_post_data = {
+        self.observations_post_data = {
             'cd_nom': 3582,
             'obs_txt': 'Tada',
             'count': 1,
@@ -81,16 +81,16 @@ class SightsTestCase(unittest.TestCase):
     def login_user(self, data):
         return self.client().post(mainUrl + 'login', data=data)
 
-    def test_get_sights(self):
-        response = getrequest("sights")
+    def test_get_observations(self):
+        response = getrequest("observations")
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(data['type'], "FeatureCollection")
         self.assertIsInstance(data['features'], list)
 
-    # def test_post_sight(self):
-    #     response = postrequest("sights", TEST_POST_SIGHTS)
-    #     self.assertEqual(response.status_code, 200)
+    def test_post_observation(self):
+        response = self.client().post(mainUrl + 'observations', data=None)
+        self.assertEqual(response.status_code, 200)
 
 
 if __name__ == "__main__":
