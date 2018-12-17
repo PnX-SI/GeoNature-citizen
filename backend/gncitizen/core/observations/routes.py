@@ -1,8 +1,17 @@
+# import os
+import datetime
 import uuid
 
 import requests
-from flask import Blueprint, request, redirect, flash, send_from_directory, url_for
-from werkzeug import secure_filename
+from flask import (
+    Blueprint,
+    request,
+    # redirect,
+    # flash,
+    # send_from_directory,
+    # url_for,
+    current_app)
+# from werkzeug import secure_filename
 from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
@@ -16,14 +25,12 @@ from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
 from .models import ObservationModel
-import datetime
-import os
 
 routes = Blueprint('observations', __name__)
 
 
 def get_specie_from_cd_nom(cd_nom):
-    """Renvoie le nom français et scientifique officiel (cd_nom = cd_ref) de l'espèce d'après le cd_nom"""
+    """Renvoie le nom français et scientifique officiel (cd_nom = cd_ref) de l'espèce d'après le cd_nom"""  # noqa: E501
     result = Taxref.query.filter_by(cd_nom=cd_nom).first()
     official_taxa = Taxref.query.filter_by(cd_nom=result.cd_ref).first()
     common_names = official_taxa.nom_vern
@@ -48,10 +55,11 @@ def generate_observation_geojson(id_observation):
 
     # Populate "properties"
     for k in result_dict:
-        if k in ('cd_nom', 'id_observation', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
+        if k in ('cd_nom', 'id_observation', 'obs_txt', 'count', 'date',
+                 'comment', 'timestamp_create'):
             feature['properties'][k] = result_dict[k]
 
-    # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref
+    # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref  # noqa: E501
     taxref = get_specie_from_cd_nom(feature['properties']['cd_nom'])
     for k in taxref:
         feature['properties'][k] = taxref[k]
@@ -181,7 +189,7 @@ def post_observation():
                 print(file)
                 if file and allowed_file(file):
                     ext = file.rsplit('.', 1).lower()
-                    timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+                    timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')  # noqa: E501
                     filename = 'obstax_' + \
                         datas2db['cd_nom']+'_'+timestamp+ext
                     path = MEDIA_DIR+'/'+filename
