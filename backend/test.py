@@ -48,12 +48,6 @@ INSERT INTO
     );
 '''
 
-obs_data = {
-    'cd_nom': 3590,
-    'date': date.today(),
-    'geom': {"type": "Point", "coordinates": [5, 45]}
-}
-
 
 def auth():
     myParams = {}
@@ -122,7 +116,8 @@ class ObservationsTestCase(unittest.TestCase):
         self.assertIsInstance(data['features'], list)
 
     # def test_post_observation(self):
-    #     response = self.client().post(mainUrl + 'observations', data=obs_data)
+    #     response = self.client().post(
+    #         mainUrl + 'observations', data=self.observations_post_data)
     #     data = response.json()
     #     print(data)
     #     self.assertEqual(response.status_code, 200)
