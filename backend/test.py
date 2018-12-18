@@ -1,3 +1,4 @@
+from datetime import date
 import json
 import unittest
 
@@ -20,6 +21,38 @@ pwd = 'testpwd'  # noqa: S105
 name = 'tester'
 surname = 'testersurname'
 email = 'tester@test.com'
+'''\
+INSERT INTO
+    gnc_core.t_users (
+        id_user,
+        name,
+        surname,
+        username,
+        password,
+        email,
+        phone,
+        organism,
+        admin,
+        timestamp_create
+    ) VALUES (
+        0,
+        'tester',
+        'testersurname',
+        'testuser',
+        '$pbkdf2-sha256$29000$BeAcw7hXqrXW2rvXuhdC6A$UMDBikxvbEXz8VhqAYQZDcS6BG6QUXbYi/EjCpvWVW0',
+        'tester@test.com',
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    );
+'''
+
+obs_data = {
+    'cd_nom': 3590,
+    'date': date.today(),
+    'geom': {"type": "Point", "coordinates": [5, 45]}
+}
 
 
 def auth():
@@ -66,7 +99,7 @@ class TestAuthFlaskApiUsingRequests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class SightsTestCase(unittest.TestCase):
+class ObservationsTestCase(unittest.TestCase):
     def setUp(self):
         """Define test variables and initialize app."""
         self.app = get_app(load_config())
@@ -88,9 +121,11 @@ class SightsTestCase(unittest.TestCase):
         self.assertEqual(data['type'], "FeatureCollection")
         self.assertIsInstance(data['features'], list)
 
-    def test_post_observation(self):
-        response = self.client().post(mainUrl + 'observations', data=None)
-        self.assertEqual(response.status_code, 200)
+    # def test_post_observation(self):
+    #     response = self.client().post(mainUrl + 'observations', data=obs_data)
+    #     data = response.json()
+    #     print(data)
+    #     self.assertEqual(response.status_code, 200)
 
 
 if __name__ == "__main__":
