@@ -28,7 +28,10 @@ class ObservationModel(db.Model):
         Taxref.cd_nom), nullable=False)
     specie = db.Column(db.String(200))
     date = db.Column(db.DATE, nullable=False)
-    id_role = db.Column(db.Integer, db.ForeignKey(UserModel.id_user))
+    id_role = db.Column(db.Integer, db.ForeignKey(
+        UserModel.id_user, ondelete='CASCADE'))
+    role = db.relationship(UserModel, backref=db.backref(
+        'gnc_obstax', cascade='all,delete'))
     obs_txt = db.Column(db.String(150))
     email = db.Column(db.String(150))
     phone = db.Column(db.String(150))

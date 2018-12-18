@@ -216,7 +216,7 @@ def post_observation():
         except Exception as e:
             current_app.logger.debug(e)
             raise GeonatureApiError(e)
-
+            
         id_role = get_id_role_if_exists()
         if id_role:
             newobservation.id_role = id_role
@@ -346,7 +346,7 @@ def get_observations_from_list(id):  # noqa: A002
 
 @routes.route('programs/<int:id>/observations', methods=['GET'])
 @json_resp
-def get_observations_from_program(id):  # noqa: A002
+def get_program_observations(id):
     """Get all observations from a program
     GET
         ---
