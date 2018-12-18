@@ -28,16 +28,14 @@ export class SightsFormComponent implements AfterViewInit {
     private http: HttpClient,
     private route: ActivatedRoute
   ) {
-    this.route.params.subscribe(params => {
-      this.program_id = params['id'];
-    });
+    this.route.params.subscribe(params => this.program_id = params['id'])
     this.http
-    .get(`${AppConfig.API_ENDPOINT}/programs/` + this.program_id)
-    .subscribe(result => {
-      this.program = result;
-      this.taxonomyList = this.program.features[0].properties.taxonomy_list;
-      console.log('TAXXLIST', this.taxonomyList);
-    });
+      .get(`${AppConfig.API_ENDPOINT}/programs/` + this.program_id)
+      .subscribe(result => {
+        this.program = result;
+        this.taxonomyList = this.program.features[0].properties.taxonomy_list;
+        console.log('TAXXLIST', this.taxonomyList);
+      })
   }
 
   ngAfterViewInit(): void {

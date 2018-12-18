@@ -1,28 +1,26 @@
 import { Injectable } from "@angular/core";
-import { Headers, Http } from "@angular/http";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginUser, RegisterUser } from "./models";
 import { AppConfig } from "../../conf/app.config";
-import { Observable } from "rxjs";
 import { Router } from '@angular/router';
 
 
 @Injectable()
 export class AuthService {
 
-  private headers: Headers = new Headers({
+  private headers: HttpHeaders = new HttpHeaders({
     "Content-Type": "application/json"
   });
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private router: Router
     ) {}
 
   login(user: LoginUser): Promise<any> {
     let url = `${AppConfig.API_ENDPOINT}/login`;
+    // console.log('LoginProcess');
     return this.http.post(url, user, { headers: this.headers }).toPromise();
-    this.router.navigate(['/']);
-    console.log('LoginProcess');
   }
 
   register(user: RegisterUser): Promise<any> {
@@ -32,7 +30,7 @@ export class AuthService {
 
   logout(access_token): Promise<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/logout`;
-    let headers_with_bearer: Headers = new Headers({
+    let headers_with_bearer: HttpHeaders = new HttpHeaders({
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`
     });
@@ -41,7 +39,7 @@ export class AuthService {
 
   ensureAuthenticated(access_token): Promise<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/logged_user`;
-    let headers_with_bearer: Headers = new Headers({
+    let headers_with_bearer: HttpHeaders = new HttpHeaders({
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`
     });

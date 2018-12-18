@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { GncService } from './gnc.service';
 // angular
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
 // rxjs
 import { Observable, throwError, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
