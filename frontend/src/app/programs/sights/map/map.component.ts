@@ -29,11 +29,11 @@ export class SightsMapComponent implements OnInit {
   ngOnInit() {
     this.initMap();
     this.getProgramArea(this.program_id);
-    this.getSightsItems();
+    this.getSightsItems(this.program_id);
   }
 
-  getSightsItems(): void {
-    this.restItemsServiceGetSightsItems().subscribe(sights => {
+  getSightsItems(id): void {
+    this.restItemsServiceGetSightsItems(id).subscribe(sights => {
       this.sightsGeoJson = sights;
 
       const geoSights = this.sightsGeoJson;
@@ -132,14 +132,17 @@ export class SightsMapComponent implements OnInit {
     this.mysightmap = mysightmap;
   }
 
-  restItemsServiceGetSightsItems() {
+  restItemsServiceGetSightsItems(program_id) {
     return this.http
-      .get(`${AppConfig.API_ENDPOINT}/sights`)
+      .get(`${AppConfig.API_ENDPOINT}/programs/` + program_id + `/observations`)
       .pipe(map(data => data));
   }
 
   restItemsServiceGetProgramArea(program_id) {
-    console.log('PROGRAM_GEO_URL: ', `${AppConfig.API_ENDPOINT}/programs/` + program_id);
+    console.log(
+      "PROGRAM_GEO_URL: ",
+      `${AppConfig.API_ENDPOINT}/programs/` + program_id
+    );
     return this.http
       .get(`${AppConfig.API_ENDPOINT}/programs/` + program_id)
       .pipe(map(data => data));
