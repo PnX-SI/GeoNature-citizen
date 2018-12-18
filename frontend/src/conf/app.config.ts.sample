@@ -6,8 +6,8 @@ export const AppConfig = {
         "PROD_MOD":true,
         "MULTILINGUAL":false,
         "DISPLAY_FOOTER": true,
-        "DISPLAU_TOPBAR": false,
-        "DISPLAy_SIDEBAR": true
+        "DISPLAY_TOPBAR": false,
+        "DISPLAY_SIDEBAR": true
     },
     "URL_APPLICATION":"http://127.0.0.1:4200"
 }

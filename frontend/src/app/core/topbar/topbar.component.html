@@ -1,6 +1,6 @@
 <header>
   <nav class="navbar navbar-light navbar-expand-sm fixed-top">
-    <a class="navbar-brand" routerLink="home">
+    <a class="navbar-brand" routerLink="home" routerLinkActive="active">
       <img src="/assets/logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">
       {{title}}
     </a>
@@ -9,13 +9,13 @@
       <i class="fa fa-bars"></i>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExample03" style="">
+    <div class="navbar-collapse collapse" id="navbarsExample03">
       <div class="navbar-nav mr-auto">
       </div>
       <div *ngIf="userLoggedIn; then thenBlock else elseBlock"></div>
       <ng-template #thenBlock>
         <form class="form-inline mt-2 mt-md-0">
-          Bienvenue&nbsp;<a routerLink="mydashboard" placement="bottom" ngbTooltip="Mon tableau de bord">{{username}}</a>&nbsp;
+          Bienvenue&nbsp;<a routerLink="mydashboard" placement="bottom" ngbTooltip="Mon tableau de bord" routerLinkActive="active">{{username}}</a>&nbsp;
           <button class="btn btn-outline-primary my-2 my-sm-0 rounded-0" (click)="logout()">Se
             déconnecter&nbsp;<i class="fa fa-fw fa-user-circle"></i></button>
         </form>
