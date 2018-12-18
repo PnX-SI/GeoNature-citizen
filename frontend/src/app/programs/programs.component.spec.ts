@@ -1,4 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {RouterTestingModule} from '@angular/router/testing'
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing'
+import {
+  NgbModule,
+  NgbActiveModal,
+  NgbModal
+} from "@ng-bootstrap/ng-bootstrap"
+
+import { DescModalComponent } from "./desc-modal/desc-modal.component"
+import { GncService } from "../api/gnc.service"
+import { GncProgramsService } from "../api/gnc-programs.service"
 
 import { ProgramsComponent } from './programs.component';
 
@@ -8,6 +22,17 @@ describe('ProgramsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        NgbModule.forRoot(),
+        HttpClientTestingModule,
+        RouterTestingModule,
+        
+      ],
+      providers: [
+        GncService,
+        GncProgramsService,
+        NgbModal,
+      ],
       declarations: [ ProgramsComponent ]
     })
     .compileComponents();

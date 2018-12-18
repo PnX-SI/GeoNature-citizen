@@ -1,20 +1,43 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core'
+import { RouterTestingModule } from '@angular/router/testing'
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import {
+  NgbModule ,
+  NgbActiveModal,
+  NgbDateStruct
+} from "@ng-bootstrap/ng-bootstrap";
 
-import { FormComponent } from './form.component';
+import { SightsFormComponent } from './form.component';
 
-describe('FormComponent', () => {
-  let component: FormComponent;
-  let fixture: ComponentFixture<FormComponent>;
+describe('SightsFormComponent', () => {
+  let component: SightsFormComponent;
+  let fixture: ComponentFixture<SightsFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormComponent ]
+      imports: [
+        NgbModule.forRoot(),
+        HttpClientTestingModule,
+        RouterTestingModule,
+        ReactiveFormsModule,
+        FormsModule,
+      ],
+      providers: [
+        NgbActiveModal,
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [ SightsFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormComponent);
+    fixture = TestBed.createComponent(SightsFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

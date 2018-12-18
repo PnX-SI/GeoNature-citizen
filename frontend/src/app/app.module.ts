@@ -64,7 +64,11 @@ import { HomeCustomComponent } from "./home/custom/custom.component";
     AboutCustomComponent,
     AboutFixedComponent
   ],
-  providers: [AuthService, GncService, GncProgramsService],
+  providers: [
+    AuthService,
+    GncService,
+    GncProgramsService,
+  ],
   bootstrap: [AppComponent],
   entryComponents: [
     DescModalComponent,
