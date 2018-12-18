@@ -210,7 +210,7 @@ def post_observation():
 
         # If count is empty, set count to 1.
         if newobservation.count is None:
-            count = 1
+            newobservation.count = 1
 
         id_role = get_id_role_if_exists()
         print(id_role)
@@ -336,7 +336,7 @@ def get_observations_from_list(id):
 
 @routes.route('programs/<int:id>/observations', methods=['GET'])
 @json_resp
-def get_observations_from_program(id):
+def get_program_observations(id):
     """Get all observations from a program
     GET
         ---
