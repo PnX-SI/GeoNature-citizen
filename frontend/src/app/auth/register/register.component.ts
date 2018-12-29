@@ -30,12 +30,12 @@ export class RegisterComponent {
     this.auth
       .register(this.user)
       .then(user => {
-        localStorage.setItem("access_token", user.json().access_token);
-        localStorage.setItem("refresh_token", user.json().refresh_token);
-        localStorage.setItem("username", user.json().username);
+        localStorage.setItem("access_token", user.access_token);
+        localStorage.setItem("refresh_token", user.refresh_token);
+        localStorage.setItem("username", user.username);
         console.log(user.status);
-        if (user.status == 200) {
-          let message = "Connexion réussie";
+        if (user) {
+          let message = user.message;
           setTimeout(() => (this.staticAlertClosed = true), 20000);
           this._success.subscribe(message => (this.successMessage = message));
           this._success
@@ -47,7 +47,7 @@ export class RegisterComponent {
         }
       })
       .catch(err => {
-        let message = err.json().error_message;
+        let message = err.error.message;
         console.log("ERREUR", message);
         setTimeout(() => (this.staticAlertClosed = true), 20000);
         this._error.subscribe(message => (this.errorMessage = message));
