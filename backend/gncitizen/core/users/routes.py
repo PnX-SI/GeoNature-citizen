@@ -139,10 +139,10 @@ def login():
     """
     try:
         request_datas = dict(request.get_json())
-
+        print(request_datas)
         username = request_datas['username']
         password = request_datas['password']
-
+        print(username)
         current_user = UserModel.find_by_username(username)
         if not current_user:
             return {'message': ('User {} doesn\'t exist').format(username)}, 400
@@ -156,9 +156,9 @@ def login():
                 'refresh_token': refresh_token
             }, 200
         else:
-            return {'error_message': 'Wrong credentials'}, 400
+            return {'message': 'Wrong credentials'}, 400
     except Exception as e:
-        return {'error_message': str(e)}, 400
+        return {'message': str(e)}, 400
 
 
 @routes.route('/logout', methods=['POST'])

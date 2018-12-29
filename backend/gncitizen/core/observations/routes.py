@@ -11,7 +11,7 @@ from flask import (
     # send_from_directory,
     # url_for,
     current_app,
-    )
+)
 # from werkzeug import secure_filename
 from flask_jwt_extended import (jwt_optional)
 from geoalchemy2.shape import from_shape
@@ -28,6 +28,8 @@ from server import db
 from .models import ObservationModel
 
 routes = Blueprint('observations', __name__)
+obs_keys = ('cd_nom', 'id_observation', 'obs_txt',
+            'count', 'date', 'comment', 'timestamp_create')
 
 
 def get_specie_from_cd_nom(cd_nom):
@@ -56,8 +58,7 @@ def generate_observation_geojson(id_observation):
 
     # Populate "properties"
     for k in result_dict:
-        if k in ('cd_nom', 'id_observation', 'obs_txt', 'count', 'date',
-                 'comment', 'timestamp_create'):
+        if k in obs_keys:
             feature['properties'][k] = result_dict[k]
 
     # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref  # noqa: E501
@@ -216,7 +217,7 @@ def post_observation():
         except Exception as e:
             current_app.logger.debug(e)
             raise GeonatureApiError(e)
-            
+
         id_role = get_id_role_if_exists()
         if id_role:
             newobservation.id_role = id_role
@@ -272,9 +273,7 @@ def get_observations():
             feature = get_geojson_feature(observation.geom)
             observation_dict = observation.as_dict(True)
             for k in observation_dict:
-                if k in (
-                        'cd_nom', 'id_observation', 'obs_txt', 'count',
-                        'date', 'comment', 'timestamp_create'):
+                if k in obs_keys:
                     feature['properties'][k] = observation_dict[k]
             taxref = get_specie_from_cd_nom(feature['properties']['cd_nom'])
             for k in taxref:
@@ -330,9 +329,7 @@ def get_observations_from_list(id):  # noqa: A002
                     feature = get_geojson_feature(d.geom)
                     observation_dict = d.as_dict(True)
                     for k in observation_dict:
-                        if k in (
-                                'cd_nom', 'id_observation', 'obs_txt', 'count',
-                                'date', 'comment', 'timestamp_create'):
+                        if k in obs_keys:
                             feature['properties'][k] = observation_dict[k]
                     taxref = get_specie_from_cd_nom(
                         feature['properties']['cd_nom'])
@@ -381,7 +378,7 @@ def get_program_observations(id):
             feature = get_geojson_feature(observation.geom)
             observation_dict = observation.as_dict(True)
             for k in observation_dict:
-                if k in ('cd_nom', 'id_observation', 'obs_txt', 'count', 'date', 'comment', 'timestamp_create'):
+                if k in obs_keys:
                     feature['properties'][k] = observation_dict[k]
             taxref = get_specie_from_cd_nom(feature['properties']['cd_nom'])
             for k in taxref:
