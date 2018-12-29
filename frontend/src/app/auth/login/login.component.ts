@@ -30,12 +30,13 @@ export class LoginComponent {
     this.auth
       .login(this.user)
       .then(user => {
-        localStorage.setItem("access_token", user.json().access_token);
-        localStorage.setItem("refresh_token", user.json().refresh_token);
-        localStorage.setItem("username", user.json().username);
+        console.log("USER STATUS", user.status);
+        localStorage.setItem("access_token", user.access_token);
+        localStorage.setItem("refresh_token", user.refresh_token);
+        localStorage.setItem("username", user.username);
         console.log(user.status);
-        if (user.status == 200) {
-          let message = "Connexion réussie";
+        if (user) {
+          const message = user.message;
           setTimeout(() => (this.staticAlertClosed = true), 20000);
           this._success.subscribe(message => (this.successMessage = message));
           this._success
@@ -47,8 +48,7 @@ export class LoginComponent {
         }
       })
       .catch(err => {
-        let message = err.json().error_message;
-        console.log("ERREUR", message);
+        const message = err.error.message;
         setTimeout(() => (this.staticAlertClosed = true), 20000);
         this._error.subscribe(message => (this.errorMessage = message));
         this._error

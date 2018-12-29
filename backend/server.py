@@ -2,7 +2,7 @@ import logging
 import os
 
 
-from flask import Flask
+from flask import Flask, current_app
 from flask_cors import CORS
 
 from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger
@@ -85,7 +85,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
             for conf, manifest, module in list_and_import_gnc_modules(app):
                 try:
                     prefix = url_prefix + conf['api_url']
-                except:
+                except Exception as e:
+                    current_app.logger.debug(e)
                     prefix = url_prefix
                 print(prefix)
                 app.register_blueprint(
@@ -94,9 +95,10 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix='/api'):
                 )
                 try:
                     module.backend.models.create_schema(db)
-                except:
-                    pass
-                # chargement de la configuration du module dans le blueprint.config
+                except Exception as e:
+                    current_app.logger.debug(e)
+                # chargement de la configuration
+                # du module dans le blueprint.config
                 module.backend.blueprint.blueprint.config = conf
                 app.config[manifest['module_name']] = conf
 
