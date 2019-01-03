@@ -1,18 +1,30 @@
 #!/usr/bin/python3
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 
 from datetime import datetime
 
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
+from sqlalchemy.ext.declarative import declared_attr
 
 from gncitizen.core.taxonomy.models import BibListes
 from gncitizen.utils.env import db
 from gncitizen.utils.utilssqlalchemy import serializable, geoserializable
 
 
+class TimestampMixinModel(object):
+    """Structure commune de suivi des modifications d'une table"""
+    @declared_attr
+    def timestamp_create(cls):
+        return db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    @declared_attr
+    def timestamp_update(cls):
+        return db.Column(db.DateTime, nullable=True, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
 @serializable
-class ModulesModel(db.Model):
+class ModulesModel(TimestampMixinModel, db.Model):
     """Table des modules de GeoNature-citizen"""
     __tablename__ = 't_modules'
     __table_args__ = {'schema': 'gnc_core'}
@@ -26,7 +38,7 @@ class ModulesModel(db.Model):
 
 @serializable
 @geoserializable
-class ProgramsModel(db.Model):
+class ProgramsModel(TimestampMixinModel, db.Model):
     """Table des Programmes de GeoNature-citizen"""
     __tablename__ = 't_programs'
     __table_args__ = {'schema': 'gnc_core'}
@@ -45,8 +57,6 @@ class ProgramsModel(db.Model):
         ForeignKey(BibListes.id_liste), nullable=True
     )
     geom = db.Column(Geometry('GEOMETRY', 4326))
-    timestamp_create = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow)
 
     def get_geofeature(self, recursif=True, columns=None):
         return self.as_geofeature('geom', 'id_program', recursif, columns=columns)
@@ -54,12 +64,10 @@ class ProgramsModel(db.Model):
 
 @serializable
 @geoserializable
-class MediaModel(db.Model):
+class MediaModel(TimestampMixinModel, db.Model):
     """Table des Programmes de GeoNature-citizen
         """
     __tablename__ = 't_medias'
     __table_args__ = {'schema': 'gnc_core'}
     id_media = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(50), nullable=False)
-    timestamp_create = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow)
