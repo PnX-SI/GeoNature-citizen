@@ -1,22 +1,21 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
-
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import UUID
 
-from gncitizen.core.commons.models import ProgramsModel
+from gncitizen.core.commons.models import (
+    ProgramsModel, TimestampMixinModel, MediaModel)
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.taxonomy.models import Taxref
-from gncitizen.core.users.models import UserModel
+from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.utilssqlalchemy import serializable, geoserializable
 from server import db
 
 
 @serializable
 @geoserializable
-class ObservationModel(db.Model):
+class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     """Table des observations"""
     __tablename__ = 't_obstax'
     __table_args__ = {'schema': 'gnc_obstax'}
@@ -28,17 +27,9 @@ class ObservationModel(db.Model):
         Taxref.cd_nom), nullable=False)
     specie = db.Column(db.String(200))
     date = db.Column(db.DATE, nullable=False)
-    id_role = db.Column(db.Integer, db.ForeignKey(
-        UserModel.id_user, ondelete='CASCADE'))
-    role = db.relationship(UserModel, backref=db.backref(
-        'gnc_obstax', cascade='all,delete'))
-    obs_txt = db.Column(db.String(150))
-    email = db.Column(db.String(150))
-    phone = db.Column(db.String(150))
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
-    geom = db.Column(Geometry('POINT', 4326))
     municipality = db.Column(db.Integer, db.ForeignKey(LAreas.id_area))
-    timestamp_create = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow)
-    photo = db.Column(db.Text)
+    id_media = db.Column(db.Integer, db.ForeignKey(
+        MediaModel.id_media, ondelete='SET NULL'))
+    geom = db.Column(Geometry('POINT', 4326))

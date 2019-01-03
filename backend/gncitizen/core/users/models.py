@@ -2,9 +2,11 @@
 
 from passlib.hash import pbkdf2_sha256 as sha256
 
-from gncitizen.core.commons.models import ModulesModel, ProgramsModel
+from gncitizen.core.commons.models import (
+    ModulesModel, ProgramsModel, TimestampMixinModel)
 from gncitizen.utils.utilssqlalchemy import serializable
 from server import db
+from sqlalchemy.ext.declarative import declared_attr
 
 
 class RevokedTokenModel(db.Model):
@@ -25,7 +27,7 @@ class RevokedTokenModel(db.Model):
 
 
 @serializable
-class UserModel(db.Model):
+class UserModel(TimestampMixinModel, db.Model):
     """
         Table des utilisateurs
     """
@@ -41,7 +43,6 @@ class UserModel(db.Model):
     phone = db.Column(db.String(15))
     organism = db.Column(db.String(100))
     admin = db.Column(db.Boolean, default=False)
-    timestamp_create = db.Column(db.DateTime)
 
     def save_to_db(self):
         db.session.add(self)
@@ -97,7 +98,7 @@ class UserModel(db.Model):
 
 
 @serializable
-class UserRights(db.Model):
+class UserRights(TimestampMixinModel, db.Model):
     """Table de gestion des droits des utilisateurs de GeoNature-citizen"""
     __tablename__ = "t_users_rights"
     __table_args__ = {'schema': 'gnc_core'}
@@ -113,3 +114,19 @@ class UserRights(db.Model):
     read = db.Column(db.Boolean(), default=False)
     update = db.Column(db.Boolean(), default=False)
     delete = db.Column(db.Boolean(), default=False)
+
+
+class ObserverMixinModel(object):
+    @declared_attr
+    def id_role(cls):
+        return db.Column(db.Integer, db.ForeignKey(UserModel.id_user, ondelete='SET NULL'), nullable=True)
+
+    @declared_attr
+    def obs_txt(cls):
+        return db.Column(db.String(150))
+
+    @declared_attr
+    def email(cls):
+        return db.Column(db.String(150))
+    # def phone(cls):
+    #     return db.Column(db.String(150))

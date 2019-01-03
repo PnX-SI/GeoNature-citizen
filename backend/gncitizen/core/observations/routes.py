@@ -175,7 +175,7 @@ def post_observation():
         responses:
           200:
             description: Adding a observation
-        """  # noqa: E501
+        """
     try:
         request_datas = dict(request.get_json())
 
