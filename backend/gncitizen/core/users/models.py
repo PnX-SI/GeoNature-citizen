@@ -97,8 +97,17 @@ class UserModel(TimestampMixinModel, db.Model):
     #         return {'message': 'Something went wrong'}
 
 
+class GroupsModel(db.Model):
+    """Table des groupes d'utilisateurs"""
+    __tablename__ = "bib_groups"
+    __table_args__ = {'schema': 'gnc_core'}
+    id_group = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(150), nullable=True)
+    group = db.Column(db.String(150), nullable=False)
+
+
 @serializable
-class UserRights(TimestampMixinModel, db.Model):
+class UserRightsModel(TimestampMixinModel, db.Model):
     """Table de gestion des droits des utilisateurs de GeoNature-citizen"""
     __tablename__ = "t_users_rights"
     __table_args__ = {'schema': 'gnc_core'}
@@ -116,6 +125,17 @@ class UserRights(TimestampMixinModel, db.Model):
     delete = db.Column(db.Boolean(), default=False)
 
 
+class UserGroupsModel(TimestampMixinModel, db.Model):
+    """Table de classement des utilisateurs dans des groupes"""
+    __tablename__ = "cor_users_groups"
+    __table_args__ = {'schema': 'gnc_core'}
+    id_user_right = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer, db.ForeignKey(
+        UserModel.id_user), nullable=False)
+    id_group = db.Column(db.Integer, db.ForeignKey(
+        GroupsModel.id_group), nullable=False)
+
+
 class ObserverMixinModel(object):
     @declared_attr
     def id_role(cls):
@@ -128,5 +148,3 @@ class ObserverMixinModel(object):
     @declared_attr
     def email(cls):
         return db.Column(db.String(150))
-    # def phone(cls):
-    #     return db.Column(db.String(150))
