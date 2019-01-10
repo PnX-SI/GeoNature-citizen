@@ -15,10 +15,10 @@ from server import db
 
 from .models import ModulesModel, ProgramsModel
 
-routes = Blueprint('commons', __name__)
+routes = Blueprint("commons", __name__)
 
 
-@routes.route('/modules/<int:pk>', methods=['GET'])
+@routes.route("/modules/<int:pk>", methods=["GET"])
 @json_resp
 def get_module(pk):
     """Get on module by id
@@ -39,10 +39,10 @@ def get_module(pk):
         datas = ModulesModel.query.filter_by(id_module=pk).first()
         return datas.as_dict(), 200
     except Exception as e:
-        return {'error_message': str(e)}, 400
+        return {"error_message": str(e)}, 400
 
 
-@routes.route('/modules', methods=['GET'])
+@routes.route("/modules", methods=["GET"])
 @json_resp
 def get_modules():
     """Get all modules
@@ -62,10 +62,10 @@ def get_modules():
             datas.append(d)
         return {"count": count, "datas": datas}, 200
     except Exception as e:
-        return {'error_message': str(e)}, 400
+        return {"error_message": str(e)}, 400
 
 
-@routes.route('/programs/<int:pk>', methods=['GET'])
+@routes.route("/programs/<int:pk>", methods=["GET"])
 @json_resp
 def get_program(pk):
     """Get on sight by id
@@ -90,12 +90,12 @@ def get_program(pk):
             # for k, v in data:
             #     feature['properties'][k] = v
             features.append(feature)
-        return {'features': features}, 200
+        return {"features": features}, 200
     except Exception as e:
-        return {'error_message': str(e)}, 400
+        return {"error_message": str(e)}, 400
 
 
-@routes.route('/programs', methods=['GET'])
+@routes.route("/programs", methods=["GET"])
 @json_resp
 def get_programs():
     """Get all programs
@@ -113,7 +113,7 @@ def get_programs():
     """
     try:
         # get whith_geom argument from url (?with_geom=true)
-        arg_with_geom = request.args.get('with_geom')
+        arg_with_geom = request.args.get("with_geom")
         if arg_with_geom:
             with_geom = json.loads(arg_with_geom.lower())
         else:
@@ -126,16 +126,16 @@ def get_programs():
                 feature = program.get_geofeature()
             else:
                 feature = {}
-            feature['properties'] = program.as_dict(True)
+            feature["properties"] = program.as_dict(True)
             features.append(feature)
         feature_collection = FeatureCollection(features)
-        feature_collection['count'] = count
+        feature_collection["count"] = count
         return feature_collection
     except Exception as e:
-        return {'error_message': str(e)}, 400
+        return {"error_message": str(e)}, 400
 
 
-@routes.route('/programs', methods=['POST'])
+@routes.route("/programs", methods=["POST"])
 @json_resp
 @jwt_optional
 def post_program():
@@ -212,7 +212,7 @@ def post_program():
             raise GeonatureApiError(e)
 
         try:
-            shape = asShape(request_datas['geometry'])
+            shape = asShape(request_datas["geometry"])
             newprogram.geom = from_shape(MultiPolygon(shape), srid=4326)
         except Exception as e:
             print(e)
@@ -221,9 +221,10 @@ def post_program():
         db.session.add(newprogram)
         db.session.commit()
         # Réponse en retour
-        return {
-            'message': 'New sight created.',
-            'features': newprogram.as_dict(),
-        }, 200
+        return (
+            {"message": "New sight created.", "features": newprogram.as_dict()},
+            200,
+        )
     except Exception as e:
-        return {'error_message': str(e)}, 400
+        return {"error_message": str(e)}, 400
+
