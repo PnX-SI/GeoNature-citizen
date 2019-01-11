@@ -1,8 +1,8 @@
 <header>
-  <nav class="navbar navbar-light navbar-expand-sm fixed-top">
+  <nav class="navbar navbar-light navbar-expand-md fixed-top">
     <a class="navbar-brand" routerLink="home" routerLinkActive="active">
-      <img src="/assets/logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">
-      {{title}}
+      <img src="/assets/logo.png" width="auto" height="80" class="d-inline-block align-top" alt="">
+      <!-- {{title}} -->
     </a>
     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample03"
       aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,11 +22,24 @@
       </ng-template>
       <ng-template #elseBlock>
         <form class="form-inline mt-2 mt-md-0">
-          <div class="btn-group" role="group" aria-label="auth">
-            <button class="btn btn-outline-primary my-2 my-sm-0 rounded-0" (click)="login()">Se
-              connecter&nbsp;<i class="fa fa-fw fa-user-circle"></i></button>
-            <button class="btn btn-outline-primary my-2 my-sm-0 rounded-0" (click)="register()">S'enregistrer&nbsp;<i
-                class="fa fa-fw fa-user-circle"></i></button>
+          <ul class="btn-group" role="group" aria-label="auth">
+            <li>
+              <a href="#" class="active btn my-2 my-sm-0 rounded-0">Accueil</a>
+            </li>
+            <li>
+              <a [routerLink]="['/programs']" class="btn my-2 my-sm-0 rounded-0">Les programmes</a>
+            </li>
+            <li>
+              <a href="#" class="btn my-2 my-sm-0 rounded-0">Statistiques</a>
+            </li>
+          </ul>  
+          <div class="btn-group">
+            <a class="btn my-2 my-sm-0 rounded-0" (click)="login()">
+              Se connecter&nbsp;
+            </a>
+            <a class="btn my-2 my-sm-0 rounded-0" (click)="register()">
+              S'inscrire&nbsp;
+            </a>
           </div>
         </form>
       </ng-template>
