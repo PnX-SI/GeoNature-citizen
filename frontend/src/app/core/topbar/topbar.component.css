@@ -1,5 +1,5 @@
 .navbar {
-  min-height: 60px;
+  min-height: 100px;
   background-color: #fefefe;
   color: #60a3bc;
   /* border-bottom: 1px solid #60a3bc; */
@@ -7,7 +7,7 @@
 }
 
 .navbar-brand {
-    font-family: 'Lobster';
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
     color: #60a3bc;
 }
 
@@ -21,4 +21,106 @@ main {
   margin-top: 60px;
   /* Same as the width of the sidenav */
   padding: 0px 10px;
+}
+
+form {
+  display: flex;
+  align-items: baseline;
+}
+
+.btn-group li, .btn-group a{
+  min-width: 140px !important;
+  text-align: center;
+  transition: all .1s ease-in-out;
+}
+
+.btn-group a:hover {
+  font-weight: bold;
+}
+
+ul.btn-group li a, div.btn-group a{
+  color: #666565;
+  font-size: 14px;
+  padding: 6px 10px;
+  position: relative;
+}
+
+ul.btn-group li a.active{
+  color : #00a99d;
+  font-weight: bold;
+}
+
+ul.btn-group li a.active:before{
+  content : ' ';
+  width: 8px;
+  height: 8px;
+  background-color: #00a99d;
+  position: absolute;
+  left: 0;
+  top: 43%;
+}
+
+div.btn-group{
+  display: flex;
+  flex-direction: column;
+  border-left: solid 1px #00a99d;
+  margin-left: 50px;
+}
+
+div.btn-group a{
+  background: none !important;
+  padding-left: 5px;
+  text-align: left;
+  padding: 0px 6px;
+}
+
+div.btn-group a:last-child{
+  color: #00a99d;
+}
+
+@media screen and (max-width: 912px){
+  .navbar-collapse form{
+    justify-content: flex-end;
+  }
+  .navbar-collapse form div.btn-group{
+    border-left: none;
+    border-right: solid 1px #00a99d;
+    width: fit-content;
+    align-items: flex-end;
+  }
+  .navbar-collapse form .btn-group{
+    margin-right: 30px;
+  }
+  .navbar-collapse form div.btn-group a{
+    text-align: right !important;
+    width: fit-content;
+    min-width: inherit !important;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .navbar-collapse form{
+      flex-direction: column !important;
+      align-items: flex-end;
+  }
+  .navbar-collapse form ul.btn-group{
+    flex-direction: column !important;
+  }
+  .navbar-collapse form ul.btn-group li a{
+    text-align: right !important;
+  }
+  .navbar-collapse form ul.btn-group li a.active:before{
+    display: none;
+  }
+  .navbar-collapse form div.btn-group{
+    border-left: none;
+    border-right: solid 1px #00a99d;
+    width: fit-content;
+    align-items: flex-end;
+  }
+  .navbar-collapse form div.btn-group a{
+    text-align: right !important;
+    width: fit-content;
+    min-width: inherit !important;
+  }
 }

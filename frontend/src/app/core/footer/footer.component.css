@@ -1,11 +1,11 @@
 /* Sticky footer styles
 -------------------------------------------------- */
 .footer {
-  position: fixed;
+  /* position: fixed;
   text-align: center;
   margin-left: 60px;
   width: calc(100vw - 60px);
-  bottom: 0;
+  bottom: 0; */
   /* width: 100%-60px; */
 
   /* Set the fixed height of the footer here */
