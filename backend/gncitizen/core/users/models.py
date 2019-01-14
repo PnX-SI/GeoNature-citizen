@@ -3,15 +3,18 @@
 from passlib.hash import pbkdf2_sha256 as sha256
 
 from gncitizen.core.commons.models import (
-    ModulesModel, ProgramsModel, TimestampMixinModel)
+    ModulesModel,
+    ProgramsModel,
+    TimestampMixinModel,
+)
 from gncitizen.utils.utilssqlalchemy import serializable
 from server import db
 from sqlalchemy.ext.declarative import declared_attr
 
 
 class RevokedTokenModel(db.Model):
-    __tablename__ = 't_revoked_tokens'
-    __table_args__ = {'schema': 'gnc_core'}
+    __tablename__ = "t_revoked_tokens"
+    __table_args__ = {"schema": "gnc_core"}
 
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120))
@@ -31,8 +34,9 @@ class UserModel(TimestampMixinModel, db.Model):
     """
         Table des utilisateurs
     """
-    __tablename__ = 't_users'
-    __table_args__ = {'schema': 'gnc_core'}
+
+    __tablename__ = "t_users"
+    __table_args__ = {"schema": "gnc_core"}
 
     id_user = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -49,17 +53,17 @@ class UserModel(TimestampMixinModel, db.Model):
         db.session.commit()
 
     def secured_as_dict(self, recursif=False, columns=()):
-        surname = self.username or ''
-        name = self.name or ''
+        surname = self.username or ""
+        name = self.name or ""
         return {
-            'id_role': self.id_user,
-            'name': self.name,
-            'surname': self.surname,
-            'username': self.username,
-            'email': self.email,
-            'phone': self.phone,
-            'organism': self.organism,
-            'full_name': name+' '+surname
+            "id_role": self.id_user,
+            "name": self.name,
+            "surname": self.surname,
+            "username": self.username,
+            "email": self.email,
+            "phone": self.phone,
+            "organism": self.organism,
+            "full_name": name + " " + surname,
         }
 
     @staticmethod
@@ -78,14 +82,14 @@ class UserModel(TimestampMixinModel, db.Model):
     def return_all(cls):
         def to_json(x):
             return {
-                'username': x.username,
-                'password': x.password,
-                'email': x.email,
-                'phone': x.phone,
-                'admin': x.admin
+                "username": x.username,
+                "password": x.password,
+                "email": x.email,
+                "phone": x.phone,
+                "admin": x.admin,
             }
 
-            return {'users': list(map(lambda x: to_json(x), UserModel.query.all()))}
+        return {"users": list(map(lambda x: to_json(x), UserModel.query.all()))}
 
     # @classmethod
     # def delete_all(cls):
@@ -99,8 +103,9 @@ class UserModel(TimestampMixinModel, db.Model):
 
 class GroupsModel(db.Model):
     """Table des groupes d'utilisateurs"""
+
     __tablename__ = "bib_groups"
-    __table_args__ = {'schema': 'gnc_core'}
+    __table_args__ = {"schema": "gnc_core"}
     id_group = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(150), nullable=True)
     group = db.Column(db.String(150), nullable=False)
@@ -109,15 +114,19 @@ class GroupsModel(db.Model):
 @serializable
 class UserRightsModel(TimestampMixinModel, db.Model):
     """Table de gestion des droits des utilisateurs de GeoNature-citizen"""
+
     __tablename__ = "t_users_rights"
-    __table_args__ = {'schema': 'gnc_core'}
+    __table_args__ = {"schema": "gnc_core"}
     id_user_right = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(db.Integer, db.ForeignKey(
-        UserModel.id_user), nullable=False)
-    id_module = db.Column(db.Integer, db.ForeignKey(
-        ModulesModel.id_module), nullable=True)
-    id_module = db.Column(db.Integer, db.ForeignKey(
-        ProgramsModel.id_program), nullable=True)
+    id_user = db.Column(
+        db.Integer, db.ForeignKey(UserModel.id_user), nullable=False
+    )
+    id_module = db.Column(
+        db.Integer, db.ForeignKey(ModulesModel.id_module), nullable=True
+    )
+    id_module = db.Column(
+        db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=True
+    )
     right = db.Column(db.String(150), nullable=False)
     create = db.Column(db.Boolean(), default=False)
     read = db.Column(db.Boolean(), default=False)
@@ -127,19 +136,26 @@ class UserRightsModel(TimestampMixinModel, db.Model):
 
 class UserGroupsModel(TimestampMixinModel, db.Model):
     """Table de classement des utilisateurs dans des groupes"""
+
     __tablename__ = "cor_users_groups"
-    __table_args__ = {'schema': 'gnc_core'}
+    __table_args__ = {"schema": "gnc_core"}
     id_user_right = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(db.Integer, db.ForeignKey(
-        UserModel.id_user), nullable=False)
-    id_group = db.Column(db.Integer, db.ForeignKey(
-        GroupsModel.id_group), nullable=False)
+    id_user = db.Column(
+        db.Integer, db.ForeignKey(UserModel.id_user), nullable=False
+    )
+    id_group = db.Column(
+        db.Integer, db.ForeignKey(GroupsModel.id_group), nullable=False
+    )
 
 
 class ObserverMixinModel(object):
     @declared_attr
     def id_role(cls):
-        return db.Column(db.Integer, db.ForeignKey(UserModel.id_user, ondelete='SET NULL'), nullable=True)
+        return db.Column(
+            db.Integer,
+            db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
+            nullable=True,
+        )
 
     @declared_attr
     def obs_txt(cls):
