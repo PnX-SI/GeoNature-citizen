@@ -1,22 +1,29 @@
 from flask import jsonify, request, Blueprint
 from flask_jwt_extended import (
-    create_access_token, create_refresh_token, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required, jwt_required)
+    create_access_token,
+    create_refresh_token,
+    get_raw_jwt,
+    get_jwt_identity,
+    jwt_refresh_token_required,
+    jwt_required,
+)
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.utilssqlalchemy import json_resp
 from server import db, jwt
 from .models import UserModel, RevokedTokenModel
-# from gncitizen.utils.utilsjwt import admin_required
+from gncitizen.utils.utilsjwt import admin_required
 
-routes = Blueprint('users', __name__)
+
+routes = Blueprint("users", __name__)
 
 
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
-    jti = decrypted_token['jti']
+    jti = decrypted_token["jti"]
     return RevokedTokenModel.is_jti_blacklisted(jti)
 
 
-@routes.route('/registration', methods=['POST'])
+@routes.route("/registration", methods=["POST"])
 @json_resp
 def registration():
     """
@@ -73,15 +80,16 @@ def registration():
         # Génération du dictionnaire des données à sauvegarder
         datas_to_save = {}
         for data in request_datas:
-            if hasattr(UserModel, data) and data != 'password':
+            if hasattr(UserModel, data) and data != "password":
                 datas_to_save[data] = request_datas[data]
 
         # Hashed password
-        datas_to_save['password'] = UserModel.generate_hash(
-            request_datas['password'])
+        datas_to_save["password"] = UserModel.generate_hash(
+            request_datas["password"]
+        )
 
         # Protection against admin creation from API
-        datas_to_save['admin'] = False
+        datas_to_save["admin"] = False
 
         try:
             newuser = UserModel(**datas_to_save)
@@ -90,23 +98,35 @@ def registration():
             raise GeonatureApiError(e)
 
         if UserModel.find_by_username(newuser.username):
-            return {'error_message': 'L\'utilisateur {} éxiste déjà'.format(newuser.username)}, 400
+            return (
+                {
+                    "error_message": "L'utilisateur {} éxiste déjà".format(
+                        newuser.username
+                    )
+                },
+                400,
+            )
 
         newuser.save_to_db()
         access_token = create_access_token(identity=newuser.username)
         refresh_token = create_refresh_token(identity=newuser.username)
-        return {
-            'message': 'Félicitations, l\'utilisateur <b>{}</b> a été créé'.format(newuser.username),
-            'username': newuser.username,
-            'access_token': access_token,
-            'refresh_token': refresh_token
-        }, 200
+        return (
+            {
+                "message": "Félicitations, l'utilisateur <b>{}</b> a été créé".format(
+                    newuser.username
+                ),
+                "username": newuser.username,
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+            },
+            200,
+        )
 
     except Exception as e:
-        return {'error_message': str(e)}, 500
+        return {"error_message": str(e)}, 500
 
 
-@routes.route('/login', methods=['POST'])
+@routes.route("/login", methods=["POST"])
 @json_resp
 def login():
     """
@@ -140,28 +160,31 @@ def login():
     try:
         request_datas = dict(request.get_json())
         print(request_datas)
-        username = request_datas['username']
-        password = request_datas['password']
+        username = request_datas["username"]
+        password = request_datas["password"]
         print(username)
         current_user = UserModel.find_by_username(username)
         if not current_user:
-            return {'message': ('User {} doesn\'t exist').format(username)}, 400
+            return {"message": ("User {} doesn't exist").format(username)}, 400
         if UserModel.verify_hash(password, current_user.password):
             access_token = create_access_token(identity=username)
             refresh_token = create_refresh_token(identity=username)
-            return {
-                'message': 'Logged in as {}'.format(username),
-                'username': username,
-                'access_token': access_token,
-                'refresh_token': refresh_token
-            }, 200
+            return (
+                {
+                    "message": "Logged in as {}".format(username),
+                    "username": username,
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
+                },
+                200,
+            )
         else:
-            return {'message': 'Wrong credentials'}, 400
+            return {"message": "Wrong credentials"}, 400
     except Exception as e:
-        return {'message': str(e)}, 400
+        return {"message": str(e)}, 400
 
 
-@routes.route('/logout', methods=['POST'])
+@routes.route("/logout", methods=["POST"])
 @json_resp
 @jwt_required
 def logout():
@@ -192,16 +215,16 @@ def logout():
         description: user disconnected
 
     """
-    jti = get_raw_jwt()['jti']
+    jti = get_raw_jwt()["jti"]
     try:
         revoked_token = RevokedTokenModel(jti=jti)
         revoked_token.add()
         return {"msg": "Successfully logged out"}, 200
     except Exception as e:
-        return {'message': 'Something went wrong'}, 500
+        return {"message": "Something went wrong"}, 500
 
 
-@routes.route('/token_refresh', methods=['POST'])
+@routes.route("/token_refresh", methods=["POST"])
 @jwt_refresh_token_required
 @json_resp
 def token_refresh():
@@ -218,13 +241,13 @@ def token_refresh():
     """
     current_user = get_jwt_identity()
     access_token = create_access_token(identity=current_user)
-    return {'access_token': access_token}
+    return {"access_token": access_token}
 
 
-@routes.route('/allusers', methods=['GET'])
-# @admin_required
+@routes.route("/allusers", methods=["GET"])
 @json_resp
 @jwt_required
+@admin_required
 def get_allusers():
     """list all users
     ---
@@ -237,11 +260,13 @@ def get_allusers():
       200:
         description: list all users
     """
+    # allusers = UserModel.return_all()
     allusers = UserModel.return_all()
+    print(allusers)
     return allusers, 200
 
 
-@routes.route('/logged_user', methods=['GET'])
+@routes.route("/logged_user", methods=["GET"])
 @json_resp
 @jwt_required
 def logged_user():
