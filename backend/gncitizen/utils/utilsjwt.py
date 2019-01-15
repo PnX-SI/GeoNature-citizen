@@ -16,17 +16,19 @@ def get_id_role_if_exists():
     return id_role
 
 
-# def admin_required(func):
-#     @wraps(func)
-#     def decorated_function(*args, **kwargs):
-#         current_user = get_jwt_identity()
-#         print("CURRENT USER IS", current_user)
-#         try:
-#             is_admin = UserModel.query.filter_by(
-#                 username=current_user).first().admin
-#             if not is_admin:
-#                 return jsonify(message='You do not have access'), 403
-#             return func(*args, **kwargs)
-#         except Exception as e:
-#             return jsonify(message=e), 500
-#     return decorated_function
+def admin_required(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        current_user = get_jwt_identity()
+        print("CURRENT USER IS", current_user)
+        try:
+            is_admin = (
+                UserModel.query.filter_by(username=current_user).first().admin
+            )
+            if not is_admin:
+                return {"message": "Special authorization required"}, 403
+            return func(*args, **kwargs)
+        except Exception as e:
+            return jsonify(message=e), 500
+
+    return decorated_function
