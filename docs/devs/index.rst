@@ -10,17 +10,18 @@ Contribuer avec GitHub
     Pour contribuer, il est nécessaire de faire un *fork* du projet, de travailler sur ce fork et de proposer des mises à jour du dépot principal par *pull request*.
 
 Faire un fork du projet
-###########################
+#######################
 
 `Tout est ici <https://help.github.com/articles/fork-a-repo/>`_
 
 
 Cloner le projet
-####################
+################
 
 Dans un terminal::
 
     $ git clone git@github.com:YOUR_NAME/GeoNature-citizen.git
+
     Cloning into `GeoNature-citizen`...
     remote: Counting objects: 10, done.
     remote: Compressing objects: 100% (8/8), done.
@@ -38,6 +39,7 @@ Pour vérifier que votre clone local puisse suivre votre
 dépot (*origin*) et le dépot principal (*upstream*)::
 
     $ git remove -v
+
     origin	git@github.com:YOUR_NAME/GeoNature-citizen.git (fetch)
     origin	git@github.com:YOUR_NAME/GeoNature-citizen.git (push)
     upstream	git@github.com:PnX-SI/GeoNature-citizen.git (fetch)
@@ -106,10 +108,10 @@ Editez alors les différents paramètres de ce fichier.
 
     # Front end configuration
     [FRONTEND]
-    PROD_MOD = false
-    DISPLAY_HEADER = false
-    DISPLAY_FOOTER = false
-    MULTILINGUAL = false
+        PROD_MOD = false
+        DISPLAY_HEADER = false
+        DISPLAY_FOOTER = false
+        MULTILINGUAL = false
 
     [MAILERROR]
         MAIL_ON_ERROR = false
@@ -133,10 +135,41 @@ Editez alors les différents paramètres de ce fichier.
 Configurer et lancer le backend
 *******************************
 
+Installer l'environnement virtuel python
+########################################
+
+La création de l'environnement virtuel python3 nécessite ``virtualenv``
+ou ``pyenv`` ou tout autre outil équivalent (ex: pyenv)::
+
+    cd backend
+    virtualenv -p /usr/bin/python3 venv
+
+L'activation de cet environnement se fait avec la commande suivante::
+
+    source venv/bin/activate
+
+Et l'installation des librairies nécessaires à GeoNature-citizen avec la commande suivante::
+
+    pip install -r requirements.txt
 
 
+Lancement du Backend
+####################
+
+Pour lancer l'application Backend, il suffit d'éxécuter les commandes suivantes 
+depuis l'environnement virtuel python::
+
+    cd backend
+    source venv/bin/activate
+    python -m wsgi.py
+
+Vous pouvez alors aller sur la page de documentation de l'API à l'adresse suivant ``http://VOTRE_HOTE:5001/apidocs``, en local, ce sera `http://localhost:5001/apidocs <http://localhost:5001/apidocs>`_.
 
 ********************************
 Configurer et lancer le frontend
 ********************************
+
+.. warning::
+
+    A venir
 
