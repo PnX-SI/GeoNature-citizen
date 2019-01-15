@@ -20,8 +20,8 @@
 # -- Project information -----------------------------------------------------
 
 project = "GeoNature-citizen"
-copyright = "2019, Frédéric CLOTIRE"
-author = "Frédéric CLOTIRE"
+copyright = "2019, lpofredc"
+author = "lpofredc"
 
 # The short X.Y version
 version = ""
