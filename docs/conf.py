@@ -132,7 +132,7 @@ latex_documents = [
         master_doc,
         "GeoNature-citizen.tex",
         "GeoNature-citizen Documentation",
-        "Frédéric CLOTIRE",
+        "lpofredc",
         "manual",
     )
 ]
