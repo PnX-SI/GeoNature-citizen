@@ -71,8 +71,9 @@ div.btn-group a{
   padding: 0px 6px;
 }
 
-div.btn-group a:last-child{
+div.btn-group a:first-child{
   color: var(--primary-color);
+  font-weight: bold;
 }
 
 @media screen and (max-width: 912px){
