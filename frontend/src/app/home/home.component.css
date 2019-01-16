@@ -298,7 +298,7 @@ section:first-child span{
         width: 40%;
     }
 
-    /* @Naomi-Fischer: find polygonal clip-path alternative?
+    /* FIXME: find polygonal clip-path alternative?
         background-image:
             url("data:image/svg+xml;utf8,<svg ...></svg>")"
     */
