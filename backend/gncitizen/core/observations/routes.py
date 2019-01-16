@@ -6,12 +6,17 @@ import requests
 from flask import (
     Blueprint,
     request,
-    # redirect,
-    # flash,
+    redirect,
+    flash,
     # send_from_directory,
     # url_for,
     current_app,
+    # render_template,
 )
+
+from werkzeug.utils import secure_filename
+
+import os
 
 # from werkzeug import secure_filename
 from flask_jwt_extended import jwt_optional
@@ -29,6 +34,7 @@ from server import db
 from .models import ObservationModel
 
 routes = Blueprint("observations", __name__)
+
 obs_keys = (
     "cd_nom",
     "id_observation",
@@ -41,7 +47,12 @@ obs_keys = (
 
 
 def get_specie_from_cd_nom(cd_nom):
-    """Renvoie le nom français et scientifique officiel (cd_nom = cd_ref) de l'espèce d'après le cd_nom"""  # noqa: E501
+    """Récupère l'espèce d'après le cdnom
+    
+    Renvoie le nom français et scientifique officiel (cd_nom = cd_ref) de 
+    l'espèce d'après le cd_nom
+    """
+
     result = Taxref.query.filter_by(cd_nom=cd_nom).first()
     official_taxa = Taxref.query.filter_by(cd_nom=result.cd_ref).first()
     common_names = official_taxa.nom_vern
@@ -116,17 +127,57 @@ def get_observation(pk):
 @json_resp
 def post_photo():
     """Test pour l'import de médias """
-    if request.files:
-        current_app.logger.debug(request.files)
-        photo = request.files["photo"]
-        current_app.logger.debug("FILE >>>", photo)
-        current_app.logger.debug(allowed_file(photo))
-        ext = photo.rsplit(".", 1).lower()
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = "observation_sp" + 0000 + "_" + timestamp + ext
-        path = MEDIA_DIR + "/" + filename
-        photo.save(path)
-        current_app.logger.debug(path)
+    if "file" in request.files:
+        file = request.files["file"]
+        current_app.logger.debug(file)
+        if file.filename == "":
+            current_app.logger.debug("No selected file")
+            pass
+        if file and allowed_file(file.filename):
+            ext = file.rsplit(".", 1).lower()
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = "observation_sp" + 0000 + "_" + timestamp + ext
+            file.save(os.path.join(str(MEDIA_DIR), filename))
+            current_app.logger.debug("Fichier {} enregistré".format(filename))
+            return filename
+
+
+@routes.route("/upload", methods=["GET", "POST"])
+def upload_file():
+    if request.method == "POST":
+        # check if the post request has the file part
+        if "file" not in request.files:
+            flash("No file part")
+            return redirect(request.url)
+        file = request.files["file"]
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == "":
+            flash("No selected file")
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(str(MEDIA_DIR), filename))
+            return filename
+    return """
+    <!doctype html>
+    <title>Upload new File</title>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+{% block body %}{% endblock %}
+    <h1>Upload new File</h1>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+    """
 
 
 @routes.route("/observations", methods=["POST"])
@@ -138,7 +189,8 @@ def post_observation():
         ---
         tags:
           - observations
-        summary: Creates a new observation (JWT auth optional, if used, obs_txt replaced by username)
+        summary: Creates a new observation (JWT auth optional, if used, obs_txt 
+        replaced by username)
         consumes:
           - application/json
           - multipart/form-data
@@ -193,24 +245,33 @@ def post_observation():
                 datas2db[field] = request_datas[field]
         current_app.logger.debug("datas2db: %s", datas2db)
         try:
-            if request.files:
-                current_app.logger.debug("request.files: %s", request.files)
-                file = request.files.get("photo", None)
-                current_app.logger.debug("file: %s", file)
-                if file and allowed_file(file):
+            if "file" in request.files:
+                file = request.files["file"]
+                current_app.logger.debug(file)
+                if file.filename == "":
+                    current_app.logger.debug("No selected file")
+                    pass
+                if file and allowed_file(file.filename):
                     ext = file.rsplit(".", 1).lower()
                     timestamp = datetime.datetime.now().strftime(
                         "%Y%m%d_%H%M%S"
-                    )  # noqa: E501
-                    filename = (
-                        "obstax_" + datas2db["cd_nom"] + "_" + timestamp + ext
                     )
-                    path = MEDIA_DIR + "/" + filename
-                    file.save(path)
-                    current_app.logger.debug("path: %s", path)
-                    datas2db["photo"] = filename
+                    filename = (
+                        "obstax_"
+                        + datas2db["cd_nom"]
+                        + "_"
+                        + timestamp
+                        + "."
+                        + ext
+                    )
+                    file.save(os.path.join(str(MEDIA_DIR), filename))
+                    current_app.logger.debug(
+                        "Fichier {} enregistré".format(filename)
+                    )
+            return filename
+
         except Exception as e:
-            current_app.logger.debug("file ", e)
+            current_app.logger.debug("saving file ", e)
             raise GeonatureApiError(e)
 
         else:
