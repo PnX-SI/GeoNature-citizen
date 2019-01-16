@@ -1,5 +1,171 @@
-.list-element {
-  font-weight: bold;
-  padding: 0;
-  vertical-align: middle;
+#collapseExample{
+    padding: 0px;
+}
+
+#list {
+    background: #eee;
+    padding: 5px;
+    overflow: scroll;
+    /* width: 100%; */
+    height: calc(100vh - 160px);
+
+}
+
+#list .espece {
+    background: #fff;
+    margin-bottom: 5px;
+    display: flex;
+    position: relative;
+    border: solid 2px #eee;
+    overflow: hidden;
+}
+
+#list .espece:after{
+    content : ' ';
+    -webkit-clip-path: polygon(100% 78%, 0% 100%, 100% 100%);
+    clip-path: polygon(100% 78%, 0% 100%, 100% 100%);
+    position: absolute;
+    right: 0; bottom: 0; left: 100px; top: 0;
+    background: #75757512;
+}
+
+#list .espece:hover{
+    border: solid 2px #00a99d;
+    cursor: pointer;
+}
+
+.hide{
+    transform: translateX(100%);
+    transition: all .2s ease-in-out;
+    background: #00a99d;
+    height: 100px;
+    padding: 0px 10px;
+    display: flex;
+    align-items: center;
+    color : #fff;
+}
+
+.espece:hover .hide{
+    transform: translateX(0);
+}
+
+#list .espece img{
+    object-fit: cover;
+    width: 100px;
+    height: 100px;
+}
+
+#list .espece .infos{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 25px;
+    width: 100%;
+}
+
+#list .espece div h5{
+    font-size: 16px;
+    margin-bottom: 0px;
+}
+
+#list .espece div p, #list .espece div span{
+    font-style: italic;
+    color: #00a99d;
+    margin-bottom: 0px;
+}
+
+.toggle-list{
+    position: absolute;
+    right: 0;
+    transform: translateX(100%);
+    background: #45765c;
+    padding: 5px;
+    top: 0;
+    bottom: 0;
+    z-index: 50;
+    align-items: center;
+    display: flex;
+    color : #fff;
+}
+
+.toolbar{
+    display: flex;
+}
+
+.toolbar .dropdown, .toolbar input{
+    flex-grow: 1;
+    background: none;
+    border : solid 2px #00a99d;
+}
+
+.dropdown .dropdown-menu{
+    min-width: 100%;
+    border-radius: 0px;
+}
+
+.toolbar input{
+    padding-left: 10px;
+}
+
+.toolbar input:focus{
+    border : solid 2px #00a99d !important;
+}
+
+.obs-found{
+    background: #60b15c;
+    background: linear-gradient(to bottom, #60b15c 0%,#60b15c 50%,#57a154 51%,#57a154 100%);
+}
+
+.obs-found p{
+    margin: 0;
+    font-style: italic;
+    color: #fff;
+    text-align: center;
+}
+
+.toolbar .dropdown button{
+    background: none;
+    width: 100%;
+}
+
+.toolbar .dropdown button:after{
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    color : #00a99d;
+}
+
+.collapse:not(.show){
+    display: block !important;
+    transform: translateX(-100%);
+}
+
+@media screen and (max-width: 992px){
+    #list{
+        height: 230px;
+    }
+    .toggle-list{
+        display: none;
+    }
+    #map{
+        height: 500px;
+    }
+    .hide {
+        transform: translateX(-0%);
+    }
+}
+
+/*==========  scroll bar custom design  ==========*/
+::-webkit-scrollbar-thumb {
+	background: #00a99d;
+	width: 10px;
+	border: 1px solid #eee;
+	margin: 5px;
+}
+::-webkit-scrollbar{
+	background: #eee;
+	width: 10px;
+	height: 10px;
+	margin: 5px;
+	cursor: pointer;
 }
