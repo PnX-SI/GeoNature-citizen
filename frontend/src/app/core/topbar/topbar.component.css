@@ -1,14 +1,15 @@
 .navbar {
   min-height: 100px;
   background-color: #fefefe;
-  color: #60a3bc;
+  /* color: #60a3bc; */
+  color: #00a99d;
   /* border-bottom: 1px solid #60a3bc; */
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand {
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-    color: #60a3bc;
+    color: var(--primary-color);
 }
 
 .main {
@@ -46,24 +47,20 @@ ul.btn-group li a, div.btn-group a{
 }
 
 ul.btn-group li a.active{
-  color : #00a99d;
+  color : var(--primary-color);
   font-weight: bold;
 }
 
 ul.btn-group li a.active:before{
-  content : ' ';
-  width: 8px;
-  height: 8px;
-  background-color: #00a99d;
-  position: absolute;
-  left: 0;
-  top: 43%;
+  content : '■ ';
+  background-color: var(--primary-color);
 }
 
 div.btn-group{
   display: flex;
   flex-direction: column;
-  border-left: solid 1px #00a99d;
+  border-left: solid 1px;
+  border-color: var(--primary-color);
   margin-left: 50px;
 }
 
@@ -75,7 +72,7 @@ div.btn-group a{
 }
 
 div.btn-group a:last-child{
-  color: #00a99d;
+  color: var(--primary-color);
 }
 
 @media screen and (max-width: 912px){
@@ -84,7 +81,8 @@ div.btn-group a:last-child{
   }
   .navbar-collapse form div.btn-group{
     border-left: none;
-    border-right: solid 1px #00a99d;
+    border-right: solid;
+    border-color: var(--primary-color);
     width: fit-content;
     align-items: flex-end;
   }
@@ -114,7 +112,8 @@ div.btn-group a:last-child{
   }
   .navbar-collapse form div.btn-group{
     border-left: none;
-    border-right: solid 1px #00a99d;
+    border-right: solid 1px;
+    border-color: var(--primary-color);
     width: fit-content;
     align-items: flex-end;
   }

@@ -1,4 +1,3 @@
-<header>
   <nav class="navbar navbar-light navbar-expand-md fixed-top">
     <a class="navbar-brand" routerLink="home" routerLinkActive="active">
       <img src="/assets/logo.png" width="auto" height="80" class="d-inline-block align-top" alt="">
@@ -9,18 +8,10 @@
       <i class="fa fa-bars"></i>
     </button>
 
-    <div class="navbar-collapse collapse" id="navbarsExample03">
+    <div class="navbar-collapse collapse align-top" id="navbarsExample03">
       <div class="navbar-nav mr-auto">
       </div>
-      <div *ngIf="userLoggedIn; then thenBlock else elseBlock"></div>
-      <ng-template #thenBlock>
-        <form class="form-inline mt-2 mt-md-0">
-          Bienvenue&nbsp;<a routerLink="mydashboard" placement="bottom" ngbTooltip="Mon tableau de bord" routerLinkActive="active">{{username}}</a>&nbsp;
-          <button class="btn btn-outline-primary my-2 my-sm-0 rounded-0" (click)="logout()">Se
-            déconnecter&nbsp;<i class="fa fa-fw fa-user-circle"></i></button>
-        </form>
-      </ng-template>
-      <ng-template #elseBlock>
+      <div>
         <form class="form-inline mt-2 mt-md-0">
           <ul class="btn-group" role="group" aria-label="auth">
             <li>
@@ -32,17 +23,23 @@
             <li>
               <a href="#" class="btn my-2 my-sm-0 rounded-0">Statistiques</a>
             </li>
-          </ul>  
+          </ul>
           <div class="btn-group">
+          <div *ngIf="userLoggedIn; then thenBlock else elseBlock"></div>
+          <ng-template #thenBlock>
+              <a routerLink="mydashboard" placement="bottom" ngbTooltip="Mon tableau de bord"
+                 routerLinkActive="active"><i class="fa fa-fw fa-user-circle"></i>{{username}}</a>
+                 <a class="btn btn-sm my-2 my-sm-0" (click)="logout()"><i class="fa fa-fw fa-lock"></i>Se déconnecter</a>
+          </ng-template>
+          <ng-template #elseBlock>
             <a class="btn my-2 my-sm-0 rounded-0" (click)="login()">
               Se connecter&nbsp;
             </a>
             <a class="btn my-2 my-sm-0 rounded-0" (click)="register()">
               S'inscrire&nbsp;
             </a>
+          </ng-template>
           </div>
         </form>
-      </ng-template>
     </div>
-  </nav>
-</header>
+  <!-- FIXME: closed elsewhere </nav> -->

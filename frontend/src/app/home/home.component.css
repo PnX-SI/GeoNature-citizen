@@ -1,3 +1,6 @@
+:host {
+  --primary-color: #00a99d;
+}
 section {
     width: 100%;
     min-height: 70vh;
@@ -41,7 +44,7 @@ section:first-child a{
     position: absolute;
     bottom: 100px;
     right: 100px;
-    background-color: #00a99d;
+    background-color: var(--primary-color);
 }
 
 section:first-child span{
@@ -62,7 +65,7 @@ section:first-child span{
 #slide{
     min-height: inherit !important;
 }
- 
+
 #slider h2{
     position: absolute;
     top: 10px; left: 50px;
@@ -215,7 +218,7 @@ section:first-child span{
 
 .observations #list .espece div p, .observations #list .espece div span{
     font-style: italic;
-    color: #00a99d;
+    color: var(--primary-color);
     margin-bottom: 0px;
 }
 
@@ -246,7 +249,7 @@ section:first-child span{
 
 /*==========  scroll bar design  ==========*/
 ::-webkit-scrollbar-thumb {
-	background: #00a99d;
+	background: var(--primary-color);
 	width: 10px;
 	border: 1px solid #eee;
 	margin: 5px;
@@ -282,7 +285,7 @@ section:first-child span{
     .mobile-hidden{
         display: none;
     }
-    
+
     #slider .carousel-text{
         height : 350px;
         width : 350px;
@@ -294,6 +297,14 @@ section:first-child span{
     #list{
         width: 40%;
     }
+
+    /* @Naomi-Fischer: find polygonal clip-path alternative?
+        background-image:
+            url("data:image/svg+xml;utf8,<svg ...></svg>")"
+    */
+    /* .observations #list .espece:after{
+      content: none;
+    } */
 }
 
 @media screen and (max-width: 992px){
@@ -408,4 +419,3 @@ section:first-child span{
         transform: translate3d(0, +100, 0);
     }
 }
-
