@@ -1,5 +1,13 @@
 #sightmap {
-    height: calc(100vh - 56px);
-    /* margin-left: 45px; */
+    height: calc(100vh - 106px);
+    /* FIXME: supprimer la margin quand pas de chevron */
+    margin-left: var(--list-toggler-width);
+    width: calc(100% - var(--list-toggler-width));
+  }
+
+@media screen and (max-width: 992px) {
+  #sightmap {
+    margin: 0;
     width: 100%;
   }
+}

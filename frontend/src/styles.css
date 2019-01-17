@@ -4,7 +4,16 @@
   src: url('assets/NexaRustScriptL-0.otf') format('truetype');
 }
 
-html, body { 
+:root {
+  --primary: #00a99d;
+  --secondary: #60b15c;
+  --secondary-gradient: #57a154;
+  --ternary: #45765c;
+  --list-toggler-width: 21px;
+  --list-obs-offset: 170px;
+}
+
+html, body {
   height: 100%;
 }
 h1,
@@ -56,4 +65,25 @@ input:focus{
   .btn-big{
     padding: 10px 20px;
   }
+}
+
+/* scroll bar theming */
+/* firefox */
+* {
+  scrollbar-color: var(--primary) var(--light);
+}
+
+/* blink scroll bar custom design */
+::-webkit-scrollbar-thumb {
+	background: var(--primary);
+	width: 10px;
+	border: 1px solid #eee;
+	margin: 5px;
+}
+::-webkit-scrollbar{
+	background: #eee;
+	width: 10px;
+	height: 10px;
+	margin: 5px;
+	cursor: pointer;
 }

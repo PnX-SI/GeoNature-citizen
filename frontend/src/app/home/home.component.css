@@ -1,6 +1,3 @@
-:host {
-  --primary-color: #00a99d;
-}
 section {
     width: 100%;
     min-height: 70vh;
@@ -44,7 +41,7 @@ section:first-child a{
     position: absolute;
     bottom: 100px;
     right: 100px;
-    background-color: var(--primary-color);
+    background-color: var(--primary);
 }
 
 section:first-child span{
@@ -115,7 +112,7 @@ section:first-child span{
 
 #slider .carousel-text h3 {
     font-family: 'NexaRust';
-    color : #45765c;
+    color : var(--ternary);
 }
 
 
@@ -126,7 +123,7 @@ section:first-child span{
 }
 
 #slider .carousel-text a {
-    background-color: #60b15c;
+    background-color: var(--secondary);
     width: 90%;
     text-align: center;
 }
@@ -218,7 +215,7 @@ section:first-child span{
 
 .observations #list .espece div p, .observations #list .espece div span{
     font-style: italic;
-    color: var(--primary-color);
+    color: var(--primary);
     margin-bottom: 0px;
 }
 
@@ -230,7 +227,7 @@ section:first-child span{
     padding: 5px;
     top: 0;
     bottom: 0;
-    z-index: 9999;
+    z-index: 999;
     align-items: center;
     display: flex;
     color : #fff;
@@ -249,7 +246,7 @@ section:first-child span{
 
 /*==========  scroll bar design  ==========*/
 ::-webkit-scrollbar-thumb {
-	background: var(--primary-color);
+	background: var(--primary);
 	width: 10px;
 	border: 1px solid #eee;
 	margin: 5px;

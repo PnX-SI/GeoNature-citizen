@@ -9,7 +9,7 @@
 
 .navbar-brand {
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-    color: var(--primary-color);
+    color: var(--primary);
 }
 
 .main {
@@ -47,20 +47,20 @@ ul.btn-group li a, div.btn-group a{
 }
 
 ul.btn-group li a.active{
-  color : var(--primary-color);
+  color : var(--primary);
   font-weight: bold;
 }
 
 ul.btn-group li a.active:before{
   content : '■ ';
-  background-color: var(--primary-color);
+  color: var(--primary);
 }
 
 div.btn-group{
   display: flex;
   flex-direction: column;
   border-left: solid 1px;
-  border-color: var(--primary-color);
+  border-color: var(--primary);
   margin-left: 50px;
 }
 
@@ -72,7 +72,7 @@ div.btn-group a{
 }
 
 div.btn-group a:first-child{
-  color: var(--primary-color);
+  color: var(--primary);
   font-weight: bold;
 }
 
@@ -84,7 +84,7 @@ div.btn-group a:first-child{
   .navbar-collapse form div.btn-group{
     border-left: none;
     border-right: solid;
-    border-color: var(--primary-color);
+    border-color: var(--primary);
     width: fit-content;
     align-items: flex-end;
   }
@@ -115,7 +115,7 @@ div.btn-group a:first-child{
   .navbar-collapse form div.btn-group{
     border-left: none;
     border-right: solid 1px;
-    border-color: var(--primary-color);
+    border-color: var(--primary);
     width: fit-content;
     align-items: flex-end;
   }

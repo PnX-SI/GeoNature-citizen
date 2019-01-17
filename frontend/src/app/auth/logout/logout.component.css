@@ -56,6 +56,6 @@ span.input-group-text {
 
 .modal-body button:hover{
     background: transparent;
-    color: #60b15c;
+    color: var(--secondary);
     border: solid 1px #60b15c;
 }

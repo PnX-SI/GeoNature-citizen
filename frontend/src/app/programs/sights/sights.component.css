@@ -11,16 +11,16 @@
   width: 100%;
 } */
 
-[data-toggle="buttons"] > .btn > input[type="radio"], [data-toggle="buttons"] > .btn > input[type="checkbox"] {
+/* [data-toggle="buttons"] > .btn > input[type="radio"], [data-toggle="buttons"] > .btn > input[type="checkbox"] {
   clip: rect(1px 10px 1px 1px);
-}
+} */
 
 .observations{
     margin: 0px -15px;
     min-height: inherit;
 }
 
-.observations #map{
+.observations #map, .observations #list {
     padding: 0px;
 }
 
@@ -38,7 +38,7 @@
     margin-left: 20px;
     opacity: 0.8;
     padding: 10px 30px;
-    z-index: 9999;
+    z-index: 999;
 }
 
 .observations #map .btn-group button:hover{
@@ -46,11 +46,11 @@
 }
 
 .observations #map .btn-group button:first-child{
-    background-color: #60b15c;
+    background-color: var(--secondary);
 }
 
 .observations #map .btn-group button:nth-child(2n){
-    background: #00a99d;
+    background-color: var(--primary);
 }
 
 /* @media screen and (max-width: 992px){

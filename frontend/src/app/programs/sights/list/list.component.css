@@ -1,14 +1,12 @@
 #collapseExample{
-    padding: 0px;
+    padding: 0px !important;
 }
 
 #list {
     background: #eee;
-    padding: 5px;
+    padding: 5px 5px 5px 0px;
     overflow: scroll;
-    /* width: 100%; */
-    height: calc(100vh - 160px);
-
+    height: calc(100vh - var(--list-obs-offset));
 }
 
 #list .espece {
@@ -24,15 +22,16 @@
 }
 
 #list .espece:hover{
-    border: solid 2px #00a99d;
+    border: solid 2px;
+    border-color: var(--primary);
     cursor: pointer;
 }
 
 .hide{
     transform: translateX(100%);
     transition: all .2s ease-in-out;
-    background: #00a99d;
-    height: 100px;
+    background-color: var(--primary);
+    height: auto;
     padding: 0px 10px;
     display: flex;
     align-items: center;
@@ -45,15 +44,15 @@
 
 #list .espece img{
     object-fit: cover;
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
 }
 
 #list .espece .infos{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-left: 25px;
+    padding-left: 3em;
     width: 100%;
 }
 
@@ -64,7 +63,7 @@
 
 #list .espece div p, #list .espece div span{
     font-style: italic;
-    color: #00a99d;
+    color: var(--primary);
     margin-bottom: 0px;
 }
 
@@ -72,11 +71,11 @@
     position: absolute;
     right: 0;
     transform: translateX(100%);
-    background: #45765c;
+    background-color: var(--ternary);
     padding: 5px;
     top: 0;
     bottom: 0;
-    z-index: 9999;
+    z-index: 999;
     align-items: center;
     display: flex;
     color : #fff;
@@ -84,12 +83,16 @@
 
 .toolbar{
     display: flex;
+    flex-flow: row nowrap;
 }
 
-.toolbar .dropdown, .toolbar input{
+.toolbar .dropdown{
     flex-grow: 1;
+}
+.toolbar .dropdown, .toolbar input{
     background: none;
-    border : solid 2px #00a99d;
+    border : solid 1px;
+    border-color: var(--primary);
 }
 
 .dropdown .dropdown-menu{
@@ -98,16 +101,18 @@
 }
 
 .toolbar input{
+    flex-grow: 2;
     padding-left: 10px;
 }
 
 .toolbar input:focus{
-    border : solid 2px #00a99d !important;
+    border : solid 2px !important;
+    border-color: var(--primary) !important;
 }
 
 .obs-found{
-    background: #60b15c;
-    background: linear-gradient(to bottom, #60b15c 0%,#60b15c 50%,#57a154 51%,#57a154 100%);
+    background-color: var(--secondary);
+    background-image: linear-gradient(to bottom, var(--secondary), var(--secondary-gradient));
 }
 
 .obs-found p{
@@ -127,7 +132,7 @@
     position: absolute;
     top: 50%;
     right: 10px;
-    color : #00a99d;
+    color : var(--primary);
 }
 
 .collapse:not(.show){
@@ -135,9 +140,10 @@
     transform: translateX(-100%);
 }
 
-@media screen and (max-width: 992px){
+@media screen and (max-width: 992px) {
     #list{
-        height: 230px;
+        /* height: 230px; */
+        height: 30vh;
     }
     .toggle-list{
         display: none;
@@ -148,19 +154,4 @@
     .hide {
         transform: translateX(-0%);
     }
-}
-
-/*==========  scroll bar custom design  ==========*/
-::-webkit-scrollbar-thumb {
-	background: #00a99d;
-	width: 10px;
-	border: 1px solid #eee;
-	margin: 5px;
-}
-::-webkit-scrollbar{
-	background: #eee;
-	width: 10px;
-	height: 10px;
-	margin: 5px;
-	cursor: pointer;
 }
