@@ -23,15 +23,6 @@
     background-size: 100% 100%;
 }
 
-/* #list .espece:after{
-    content : ' ';
-    -webkit-clip-path: polygon(100% 78%, 0% 100%, 100% 100%);
-    clip-path: polygon(100% 78%, 0% 100%, 100% 100%);
-    position: absolute;
-    right: 0; bottom: 0; left: 100px; top: 0;
-    background: #75757512;
-} */
-
 #list .espece:hover{
     border: solid 2px #00a99d;
     cursor: pointer;
@@ -85,7 +76,7 @@
     padding: 5px;
     top: 0;
     bottom: 0;
-    z-index: 50;
+    z-index: 9999;
     align-items: center;
     display: flex;
     color : #fff;
@@ -120,6 +111,7 @@
 }
 
 .obs-found p{
+    white-space: nowrap;
     margin: 0;
     font-style: italic;
     color: #fff;
@@ -151,7 +143,7 @@
         display: none;
     }
     #map{
-        height: 500px;
+        height: 50vh;
     }
     .hide {
         transform: translateX(-0%);
