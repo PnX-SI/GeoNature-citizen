@@ -6,9 +6,30 @@
   <div class="col-lg-8 col-md-12" id="map">
     <app-sight-map></app-sight-map>
     <div class="btn-group">
-      <button class="btn-big">Ajouter une observation</button>
+      <button class="btn-big" (click)="modal(obsform)">Ajouter une observation</button>
       <button class="btn-big">Réaliser un programme</button>
     </div>
   </div>
-  <!-- <app-sight-form></app-sight-form> -->
+  <ng-template #obsform let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title">Soumettre une obs</h4>
+    </div>
+
+    <div class="modal-body">
+      <br>
+        <app-sight-form></app-sight-form>
+      </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-default btn-outline-primary rounded-0" data-dismiss="modal">
+        <i class="fa fa-plus-square-o"></i>&nbsp;Ajouter
+      </button>
+      <button type="button"
+              class="btn btn-default btn-outline-danger rounded-0"
+              data-dismiss="modal"
+              (click)="d('CANCEL')">
+        <i class="fa fa-times-circle-o"></i>&nbsp;Fermer
+      </button>
+    </div>
+  </ng-template>
 </section>

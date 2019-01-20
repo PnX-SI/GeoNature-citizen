@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ViewEncapsulation } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AppConfig} from '../../../../conf/app.config';
 import {ActivatedRoute} from '@angular/router';
@@ -8,7 +8,8 @@ import {map} from 'rxjs/operators';
 @Component({
   selector: 'app-sight-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.css']
+  styleUrls: ['./form.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class SightsFormComponent implements AfterViewInit {
   coords: any;
