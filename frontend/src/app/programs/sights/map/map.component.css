@@ -4,13 +4,10 @@
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
 }
-.custom-popup .leaflet-popup-content-wrapper{
-    border-radius: 0px !important;
-}
-
 @media screen and (max-width: 992px) {
   #sightmap {
     margin: 0;
     width: 100%;
   }
+
 }

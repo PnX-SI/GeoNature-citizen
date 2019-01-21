@@ -8,12 +8,17 @@
             <!-- <div class="card text-center ">
             <div class="card-body"> -->
             <div class="img-hover" [ngbTooltip]="s.properties.short_desc">
+<<<<<<< HEAD
               <img class="rounded-circle img-responsive img-rounded" width="300" height="300" src="https://picsum.photos/300/?blur"
                 alt='customer image' [routerLink]="['/programs', s.properties.id_program, 'sights']" />
+=======
+              <img class="rounded-circle img-responsive img-rounded" width="200" height="200" src="../../assets/prog1.jpg"
+                alt='customer image' [routerLink]="['programs', s.properties.id_program, 'sights']" />
+>>>>>>> ac29da7548e1fe9140314013a7ea0c3211d946cb
             </div>
             <h5 class="card-title">{{s.properties.title}}&nbsp;
               <span class="badge badge-info" (click)="open(s.properties.title, s.properties.long_desc)" ngbTooltip="Plus d'informations sur ce programme">
-                <i class="fa fa-info-circle"></i>
+                <!-- <i class="fa fa-info-circle"></i> -->
               </span>
             </h5>
             <!-- </div>

@@ -53,6 +53,51 @@
     background-color: var(--primary);
 }
 
+/* POPUP CUSTOM */
+
+.leaflet-popup-content{
+    margin: 2px !important;
+    min-width: 300px !important;
+    min-height: 81px !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.leaflet-popup-tip, .leaflet-popup-content-wrapper{
+    border-radius: 0px !important;
+}
+
+.leaflet-popup-tip span, .leaflet-popup-content-wrapper span{
+    color : #00a99d;
+    font-style: italic;
+    font-size: 13px;
+}
+
+.leaflet-popup-tip p, .leaflet-popup-content-wrapper p{
+    margin: 0 !important;
+    font-size: 14px;
+}
+
+.leaflet-popup-tip img, .leaflet-popup-content-wrapper img{
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    float: left;
+    margin-right: 5px;
+}
+
+.leaflet-popup-content div{
+    height: 80px;
+    width: 40px;
+    background: #00a99d;
+    color : #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+
 /* @media screen and (max-width: 992px){
     .observations #map{
         height: 500px;
@@ -74,12 +119,6 @@
     color: #fff;
     text-transform: uppercase;
     margin: 0 auto;
-}
-
-.modal-header button {
-    position: absolute;
-    right: 0; top: 0;
-    transform: translate(-37%, 31%);
 }
 
 .modal-content{
@@ -185,6 +224,68 @@ form .d-inline-flex{
 
 .obs-add-img i{
     font-size: 30px;
+}
+
+/* MODALE CONNEXION OU NON */
+
+.modal-body .sign{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.modal-body .sign i{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-box-shadow: 0px 28px 91px -29px rgba(0,0,0,0.75) !important;
+    -moz-box-shadow: 0px 28px 91px -29px rgba(0,0,0,0.75) !important;
+    box-shadow: 0px 28px 91px -29px rgba(0,0,0,0.75) !important;
+    margin-bottom: 30px;
+    height: 130px;
+    width: 130px;
+    border-radius: 50%;
+}
+
+.modal-body .sign i:before{
+    font-size: 60px;
+    color: #fff;
+}
+
+.modal-body .sign i:hover, .modal-body .sign span:hover{
+    cursor: pointer;
+}
+
+.modal-body .sign:first-child i {
+    background : #00a99d;
+}
+
+.modal-body .sign:first-child span{
+    color: #00a99d;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal-body .sign:last-child i {
+    background : #e8e1db;
+}
+
+.modal-body .sign:last-child span{
+    color: #a0a0a0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal-footer span{
+    margin: 0 auto;
+    font-style: italic;
+    border-bottom: solid 1px grey;
+}
+
+.modal-footer span:hover{
+    cursor: pointer;
 }
 
 @media screen and (min-width: 760px){
