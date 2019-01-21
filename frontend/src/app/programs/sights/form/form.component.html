@@ -34,17 +34,12 @@
           <div class="input-group">
             <label for="date">Date de l'observation</label>
             <input ngbDatepicker #d="ngbDatepicker"
+                  type="text"
                   class="form-control rounded-0"
                   placeholder="yyyy-mm-dd"
                   formControlName="date"
+                  (click)="d.toggle()"
                   id="date">
-    <!--         <div class="input-group-append">
-              <button type="button"
-                      class="btn btn-outline-secondary calendar rounded-0"
-                      (click)="d.toggle()">
-                <span class="fa fa-calendar"></span>
-              </button>
-            </div> -->
           </div>
         </div>
         <div class="form-group col-lg-6">
