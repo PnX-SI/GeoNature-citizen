@@ -42,13 +42,8 @@ export class SightsFormComponent implements OnInit {
       })
   }
 
-  // ngAfterViewInit(): void {
-  //   console.log('taxlist', this.taxonomyList);
-  //   this.getSurveySpeciesItems(this.taxonomyList);
-  //   this.onFormSubmit();
-  // }
   ngOnInit() {
-    // TODO: programArea, layer, setview
+    // TODO: programArea, layer, setview, marker
     const formMap = new L.map('formMap').setView([45.04499482319101, 5.042724609375001], 13)
     L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'OpenStreetMap'
