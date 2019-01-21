@@ -1,0 +1,138 @@
+.container-fluid, .col-lg-12{
+    padding: 0px !important;
+    padding-right: 0px !important;
+    padding-left: 0px;
+}
+
+.container{
+    margin: 0px !important;
+    max-width: none !important;
+}
+
+.user{
+    background: url(../../../assets/faune-mercantour.jpg) no-repeat;
+    background-size: cover;
+    background-position: top;
+    position: fixed;
+    width: 100%;
+    position: relative;
+    min-height: 280px;
+}
+
+.user-infos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 140px;
+    text-align: center;
+    margin-top: -160px;
+    text-align: center;
+    z-index: 999;
+    width: 100%;
+}
+
+.user-infos span{
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.212);
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 20px;
+    width: fit-content;
+    padding: 5px 30px;
+    margin-bottom: 20px;
+}
+
+.user-infos img{
+    width: 200px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 50%;
+}
+
+.user-infos p{
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+.user-infos div{
+    background: #61c2ad88;
+    width: 100%;
+}
+.user-infos div p {
+    font-weight: 400;
+    font-size: 25px;
+    margin: 5px;
+}
+
+.user-infos p i {
+    font-size: 23px;
+}
+
+#badges{
+    margin-top: 30px;
+}
+
+#badges h3{
+    text-align: center;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+#badges div{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+    background: #f3f3f3;
+}
+
+#badges div img{
+    margin: 20px 10px;
+    width: 120px;
+    height: 120px;
+}
+
+
+
+@media screen and (min-width: 992px){
+    #badges .row div:nth-child(2):before{
+        content: ' ';
+        background-color: #333;
+        width: 2px;
+        height: 50%;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+    }
+    #badges .row div:nth-child(2):after{
+        content: ' ';
+        background-color: #333;
+        width: 2px;
+        height: 50%;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+    }
+}
+
+@media screen and (max-width: 992px){
+    #badges .row div:nth-child(2):before{
+        content: ' ';
+        background-color: #333;
+        top: 0;
+        position: absolute;
+        height: 2px;
+        width: 60%;
+    }
+     #badges .row div:nth-child(2):after{
+        content: ' ';
+        background-color: #333;
+        bottom: 0;
+        position: absolute;
+        height: 2px;
+        width: 60%;
+    } 
+}

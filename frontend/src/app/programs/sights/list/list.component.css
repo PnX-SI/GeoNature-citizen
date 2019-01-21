@@ -4,7 +4,7 @@
 
 #list {
     background: #eee;
-    padding: 5px 5px 5px 0px;
+    padding: 5px 5px 5px 5px;
     overflow: scroll;
     height: calc(100vh - var(--list-obs-offset));
 }
@@ -44,7 +44,8 @@
 
 #list .espece img{
     object-fit: cover;
-    width: 80px;
+    min-width: 80px !important;
+    max-width: 80px !important;
     height: 80px;
 }
 

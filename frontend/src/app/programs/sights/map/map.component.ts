@@ -53,9 +53,9 @@ export class SightsMapComponent implements OnInit {
         let popupContent =
           "<b>" +
           feature.properties.common_name +
-          "</b> (<i>" +
+          "</b></br>Observé par " +
           feature.properties.sci_name +
-          "</i>)</br>le " +
+          "</br>le " +
           feature.properties.date;
         if (feature.properties && feature.properties.popupContent) {
           popupContent += feature.properties.popupContent;
@@ -97,13 +97,13 @@ export class SightsMapComponent implements OnInit {
   initMap() {
     const mysightmap = L.map("sightmap");
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "OpenStreetMap"
     }).addTo(mysightmap);
 
     const markerIcon = L.icon({
       iconUrl:
-        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png"
+        "//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png"
     });
 
     let myMarker = null;

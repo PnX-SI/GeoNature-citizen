@@ -1,9 +1,12 @@
 #sightmap {
-    height: calc(100vh - 106px);
-    /* FIXME: supprimer la margin quand pas de chevron */
-    margin-left: var(--list-toggler-width);
-    width: calc(100% - var(--list-toggler-width));
-  }
+  height: calc(100vh - 106px);
+  /* FIXME: supprimer la margin quand pas de chevron */
+  margin-left: var(--list-toggler-width);
+  width: calc(100% - var(--list-toggler-width));
+}
+.custom-popup .leaflet-popup-content-wrapper{
+    border-radius: 0px !important;
+}
 
 @media screen and (max-width: 992px) {
   #sightmap {
