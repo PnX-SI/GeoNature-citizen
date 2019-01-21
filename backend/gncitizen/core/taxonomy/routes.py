@@ -86,17 +86,19 @@ def get_list(id):
     # else:
     #     return jsonify('Erreur de chargement de l \'API', r.status_code)
     try:
-        data = db.session.query(BibNoms, Taxref)\
+        data = db.session.query(BibNoms, Taxref, TMedias)\
                 .distinct(BibNoms.cd_ref)\
                 .join(CorNomListe, CorNomListe.id_liste == id)\
                 .join(Taxref, Taxref.cd_ref == BibNoms.cd_ref)\
+                .outerjoin(TMedias, TMedias.cd_ref == BibNoms.cd_ref)\
                 .all()
         # current_app.logger.debug(
         #     [{'nom': d[0], 'taxref': d[1]} for d in data])
         return [
             {
                 'nom': d[0].as_dict(),
-                'taxref': d[1].as_dict()
+                'taxref': d[1].as_dict(),
+                'medias': d[2].as_dict() if d[2] else None
             } for d in data]
     except Exception as e:
         return {'error_message': str(e)}, 400

@@ -1,10 +1,12 @@
-import { AfterViewInit, Component, ViewEncapsulation } from '@angular/core';
+import { OnInit, Component, ViewEncapsulation } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AppConfig} from '../../../../conf/app.config';
 import {ActivatedRoute} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
-import { SightsMapComponent } from '../map/map.component'
+import * as L from 'leaflet'
+// import { SightsMapComponent } from '../map/map.component'
+
 
 @Component({
   selector: 'app-sight-form',
@@ -12,7 +14,7 @@ import { SightsMapComponent } from '../map/map.component'
   styleUrls: ['./form.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class SightsFormComponent /* implements AfterViewInit */ {
+export class SightsFormComponent implements OnInit {
   coords: any;
   sightForm = new FormGroup({
     species: new FormControl('', Validators.required),
@@ -37,7 +39,6 @@ export class SightsFormComponent /* implements AfterViewInit */ {
         this.taxonomyList = this.program.features[0].properties.taxonomy_list;
         this.getSurveySpeciesItems(this.taxonomyList);
         console.log('TAXXLIST', this.taxonomyList);
-        console.log('surveySpecies: ', this.surveySpecies);
       })
   }
 
@@ -46,6 +47,14 @@ export class SightsFormComponent /* implements AfterViewInit */ {
   //   this.getSurveySpeciesItems(this.taxonomyList);
   //   this.onFormSubmit();
   // }
+  ngOnInit() {
+    // TODO: programArea, layer, setview
+    const formMap = new L.map('formMap').setView([45.04499482319101, 5.042724609375001], 13)
+    L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'OpenStreetMap'
+        }).addTo(formMap)
+    console.log(formMap)
+  }
 
   onFormSubmit(): void {
     console.log('sightForm: ', this.sightForm);

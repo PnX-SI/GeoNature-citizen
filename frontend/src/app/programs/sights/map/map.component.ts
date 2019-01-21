@@ -76,6 +76,7 @@ export class SightsMapComponent implements OnInit {
     });
   }
 
+  // mv to services ?
   getProgramArea(id): void {
     this.restItemsServiceGetProgramArea(id).subscribe(programarea => {
       this.programAreaGeoJson = programarea;

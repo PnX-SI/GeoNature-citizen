@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from "../../auth/login/login.component";
 import { RegisterComponent } from "../../auth/register/register.component";
-import { ProgramsComponent } from "../programs.component";
 
 @Component({
   selector: 'app-sights',
@@ -18,7 +17,7 @@ export class SightsComponent implements OnInit {
 
   @ViewChild('Onboarding') Onboarding: ElementRef
   @ViewChild('AddOneObs') ObsForm: ElementRef
-  @ViewChild('ProgramsComponent') ProgramsComponent: ElementRef
+  // @ViewChild('ProgramsComponent') ProgramsComponent: ElementRef
   @ViewChild('RegisterComponent') RegisterComponent: ElementRef
   constructor(
     private route: ActivatedRoute,
@@ -36,18 +35,18 @@ export class SightsComponent implements OnInit {
         (reason) => {
           let trigger = undefined
           switch(reason) {
-            case ModalDismissReasons.ESC:
-              trigger = 'ESC'
-              break
             case ModalDismissReasons.BACKDROP_CLICK:
               trigger = 'BACKDROP'
+              break
+            case ModalDismissReasons.ESC:
+              trigger = 'ESC'
               break
             default:
               trigger = reason
               break
             }
 
-            console.log(`dismissed with ${trigger}`)
+          console.log(`dismissed with ${trigger}`)
         }
       )
   }
@@ -63,9 +62,5 @@ export class SightsComponent implements OnInit {
 
   register() {
     this.modalService.open(RegisterComponent);
-  }
-
-  open_programs() {
-    this.modalService.open(ProgramsComponent)
   }
 }
