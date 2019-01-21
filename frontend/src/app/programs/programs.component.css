@@ -1,1 +1,37 @@
+.container{
+    padding: 0px;
+}
 
+.row h1{
+    width: 100%;
+    color : #fff;
+    background: #00a99d;
+    background: -moz-linear-gradient(top, #00a99d 0%, #00a99d 50%, #0a998f 51%, #0a998f 100%); 
+    background: -webkit-linear-gradient(top, #00a99d 0%,#00a99d 50%,#0a998f 51%,#0a998f 100%); 
+    background: linear-gradient(to bottom, #00a99d 0%,#00a99d 50%,#0a998f 51%,#0a998f 100%);
+    font-size: 1.5rem;
+    padding: 6px 16px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.justify-content-center .text-center{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+.justify-content-center .text-center:hover{
+    opacity: 1;
+    cursor: pointer;
+}
+
+.justify-content-center .text-center img{
+    margin-bottom: 30px;
+}
+
+.justify-content-center .text-center h5{
+    font-weight: normal;
+    color: #00a99d;
+    text-transform: uppercase;
+}

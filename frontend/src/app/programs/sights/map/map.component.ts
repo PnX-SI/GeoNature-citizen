@@ -51,12 +51,13 @@ export class SightsMapComponent implements OnInit {
 
       function onEachFeature(feature, layer) {
         let popupContent =
-          "<b>" +
+          "<img src=\"../../../assets/Azure-Commun-019.JPG\"><p><b>" +
           feature.properties.common_name +
-          "</b></br>Observé par " +
+          "</b></br><span>Observé par " +
           feature.properties.sci_name +
           "</br>le " +
-          feature.properties.date;
+          feature.properties.date +
+          "</span></p><div><i class=\"fa fa-binoculars\"></i></div>";
         if (feature.properties && feature.properties.popupContent) {
           popupContent += feature.properties.popupContent;
         }

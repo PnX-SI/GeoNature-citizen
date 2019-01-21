@@ -38,14 +38,19 @@
         <h4 class="modal-title">AJOUTER UNE OBSERVATION</h4>
     </div>
 
-    <div class="modal-body">
-      <span (click)="register()" data-dismiss="modal">S'incrire et contribuer au site</span>
-      &nbsp;
-      <span (click)="modal(AddOneObs)" data-dismiss="modal">Continuer sans s'enregistrer</span>
+    <div class="modal-body row">
+      <div class="sign col-lg-6 col-md-12">
+        <i class="fa fa-user"></i>
+        <span (click)="register()" data-dismiss="modal">S'incrire <br>et contribuer au site</span>
+      </div>
+      <div class="sign col-lg-6 col-md-12">
+        <i class="fa fa-user"></i>
+        <span (click)="modal(AddOneObs)" data-dismiss="modal">Continuer <br>sans s'enregistrer</span>
+      </div>
     </div>
 
     <div class="modal-footer">
-      <span (click)="login()" data-dismiss="modal">Vous avez déjà un compte ? connectez-vous !</span>
+      <span (click)="login()" data-dismiss="modal">Vous avez déjà un compte ? Connectez-vous !</span>
     </div>
   </ng-template>
 </section>
