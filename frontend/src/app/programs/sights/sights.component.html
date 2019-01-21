@@ -6,19 +6,19 @@
   <div class="col-lg-8 col-md-12" id="map">
     <app-sight-map></app-sight-map>
     <div class="btn-group">
-      <button class="btn-big" (click)="modal(obsform)">Ajouter une observation</button>
+      <button class="btn-big" (click)="modal(onboarding)">Ajouter une observation</button>
       <button class="btn-big">Réaliser un programme</button>
     </div>
   </div>
-  <ng-template #obsform let-c="close" let-d="dismiss">
+
+  <ng-template #add_one_obs_form let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h4 class="modal-title">Soumettre une obs</h4>
+        <h4 class="modal-title">AJOUTER UNE OBSERVATION</h4>
     </div>
 
     <div class="modal-body">
-      <br>
-        <app-sight-form></app-sight-form>
-      </div>
+      <app-sight-form></app-sight-form>
+    </div>
 
     <div class="modal-footer">
       <button type="submit" class="btn btn-default btn-outline-primary rounded-0" data-dismiss="modal">
@@ -30,6 +30,22 @@
               (click)="d('CANCEL')">
         <i class="fa fa-times-circle-o"></i>&nbsp;Fermer
       </button>
+    </div>
+  </ng-template>
+
+  <ng-template #onboarding let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title">AJOUTER UNE OBSERVATION</h4>
+    </div>
+
+    <div class="modal-body">
+      <span (click)="register()" data-dismiss="modal">S'incrire et contribuer au site</span>
+      &nbsp;
+      <span (click)="modal(add_one_obs_form)" data-dismiss="modal">Continuer sans s'enregistrer</span>
+    </div>
+
+    <div class="modal-footer">
+      <span (click)="login()" data-dismiss="modal">Vous avez déjà un compte ? connectez-vous !</span>
     </div>
   </ng-template>
 </section>
