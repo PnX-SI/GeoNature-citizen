@@ -1,11 +1,12 @@
 import { AuthService } from "./../../auth/auth.service";
 import { Component, OnInit } from "@angular/core";
 import { AppConfig } from "../../../conf/app.config";
-import { stringify } from "@angular/core/src/util";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoginComponent } from "../../auth/login/login.component";
 import { RegisterComponent } from "../../auth/register/register.component";
 import { LogoutComponent } from "../../auth/logout/logout.component";
+import { ProgramsComponent } from "../../programs/programs.component";
+
 
 @Component({
   selector: "app-topbar",
@@ -43,16 +44,19 @@ export class TopbarComponent implements OnInit {
     this.modalService.open(LogoutComponent, { size: "lg", centered: true });
   }
 
+  programs() {
+    this.modalService.open(ProgramsComponent, { size: "lg", centered: true });
+  }
+
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
     if (access_token) {
       this.auth
         .ensureAuthenticated(access_token)
         .then(user => {
-          console.log("LoggerUser Get Status", user.status);
-          if (user.status == "200") {
+          if (user.id_role) {
             this.isLoggedIn = true;
-            this.username = user.json().username;
+            this.username = user.username;
           }
         })
         .catch(err => {

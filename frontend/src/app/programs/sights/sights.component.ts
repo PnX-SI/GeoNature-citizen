@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from "../../auth/login/login.component";
 import { RegisterComponent } from "../../auth/register/register.component";
+import { ProgramsComponent } from "../programs.component";
 // declare let $: any;
 
 @Component({
@@ -16,8 +17,9 @@ export class SightsComponent implements OnInit {
   survey_id: any;
   coords: any;
 
-  @ViewChild('add_one_obs_form') ObsForm: ElementRef
-  @ViewChild('onboarding') Onboarding: ElementRef
+  @ViewChild('Onboarding') Onboarding: ElementRef
+  @ViewChild('AddOneObs') ObsForm: ElementRef
+  @ViewChild('ProgramsComponent') ProgramsComponent: ElementRef
   @ViewChild('RegisterComponent') RegisterComponent: ElementRef
   constructor(
     private route: ActivatedRoute,
@@ -56,10 +58,15 @@ export class SightsComponent implements OnInit {
   }
 
   login() {
+    // if not user_logged_in
     this.modalService.open(LoginComponent);
   }
 
   register() {
     this.modalService.open(RegisterComponent);
+  }
+
+  open_programs() {
+    this.modalService.open(ProgramsComponent)
   }
 }

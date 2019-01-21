@@ -18,10 +18,9 @@ export class UserDashboardComponent implements OnInit {
       this.auth
         .ensureAuthenticated(access_token)
         .then(user => {
-          console.log("LoggerUser Get Status", user.status);
-          if (user.status == "200") {
+          if (user.id_role) {
             this.isLoggedIn = true;
-            this.username = user.json().username;
+            this.username = user.username;
           }
         })
         .catch(err => {
