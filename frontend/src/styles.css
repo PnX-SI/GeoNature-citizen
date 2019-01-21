@@ -56,10 +56,15 @@ a, button {
   cursor: pointer;
 }
 
-input:focus{
+a:hover, a:focus, a:active {
+  text-decoration: none !important;
+  color : inherit !important;
+}
+
+input:focus, textarea:focus, select:focus{
   outline: none !important;
   box-shadow: none !important;
-  border-color: transparent !important;
+  border-color: rgb(75, 75, 75) !important;
 }
 
 @media screen and (max-width: 1024px){

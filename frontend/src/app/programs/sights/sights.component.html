@@ -12,7 +12,8 @@
   </div>
   <ng-template #obsform let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h4 class="modal-title">Soumettre une obs</h4>
+        <h4 class="modal-title">Ajouter une observation</h4>
+        <button type="button" class="close rounded-0" aria-label="Close" (click)="activeModal.dismiss('Cross click')">&times;</button>
     </div>
 
     <div class="modal-body">
@@ -22,14 +23,14 @@
 
     <div class="modal-footer">
       <button type="submit" class="btn btn-default btn-outline-primary rounded-0" data-dismiss="modal">
-        <i class="fa fa-plus-square-o"></i>&nbsp;Ajouter
+        <!-- <i class="fa fa-plus-square-o"></i> -->&nbsp;Valider l'observation
       </button>
-      <button type="button"
+<!--       <button type="button"
               class="btn btn-default btn-outline-danger rounded-0"
               data-dismiss="modal"
               (click)="d('CANCEL')">
         <i class="fa fa-times-circle-o"></i>&nbsp;Fermer
-      </button>
+      </button> -->
     </div>
   </ng-template>
 </section>

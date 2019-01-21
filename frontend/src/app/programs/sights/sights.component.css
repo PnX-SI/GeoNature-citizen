@@ -58,3 +58,141 @@
         height: 500px;
     }
 } */
+
+
+.modal-header{
+    background: #60b15c;
+    background: -moz-linear-gradient(top, #60b15c 0%, #60b15c 50%, #57a154 51%, #57a154 100%); 
+    background: -webkit-linear-gradient(top, #60b15c 0%,#60b15c 50%,#57a154 51%,#57a154 100%); 
+    background: linear-gradient(to bottom, #60b15c 0%,#60b15c 50%,#57a154 51%,#57a154 100%);
+    border-radius: 0px;
+    align-items : center;
+    max-height: 61px;
+}
+
+.modal-header h4 {
+    color: #fff;
+    text-transform: uppercase;
+    margin: 0 auto;
+}
+
+.modal-header button {
+    position: absolute;
+    right: 0; top: 0;
+    transform: translate(-37%, 31%);
+}
+
+.modal-content{
+
+    border: none !important;
+}
+
+.modal-body, .modal-content {
+    border-radius: 0px;
+}
+
+span.input-group-text {
+    background-color: var(--secondary);
+    color: #fff;
+}
+
+.modal-body input{
+    border: solid 1px rgb(206, 212, 218);
+}
+
+.modal-content .row{
+    margin : 0 !important;
+}
+
+.modal-content .col-lg-6, .modal-content .col-lg-12{
+    padding: 0px 5px;
+}
+
+.modal-body input::placeholder, .modal-body textarea::placeholder{
+    color : #ccc;
+}
+
+.modal-footer button {
+    background-color: var(--secondary);
+    color: #fff;
+    border: solid 1px transparent;
+    display: flex;
+    margin: 0 auto;
+    text-transform: uppercase;
+    padding : 6px 30px;
+}
+
+.modal-footer button:hover, .modal-footer button:active{
+    background: transparent;
+    color: var(--secondary);
+    border: solid 1px;
+    border-color: var(--secondary);
+}
+
+
+
+.half #sightmap{
+    height: 228px;
+    overflow: hidden;
+}
+
+form .d-inline-flex{
+    width: 100%;
+}
+
+.modal-content .col-lg-8{
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+.modal-content .form-group .form-group{
+    margin-bottom: 0;
+}
+
+.obs-images{
+    justify-content: space-between;
+}
+
+.obs-images img{
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin: 5px;
+    opacity: 0.7;
+}
+
+.obs-images img:hover{
+    opacity: 1;
+    cursor: pointer;
+    box-shadow: 0 0 0 3px #60b15c;
+}
+
+.obs-add-img{
+    margin: 5px;
+    background: #dcdcdc;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    width: 120px;
+}
+
+.obs-add-img:hover{
+    cursor: pointer;
+    background: #a1a1a1;
+}
+
+.obs-add-img i{
+    font-size: 30px;
+}
+
+@media screen and (min-width: 760px){
+    .modal-dialog {
+        min-width: 800px;
+    }
+    
+    .modal-content .form-row .half{
+        min-width: 350px;
+    }
+}

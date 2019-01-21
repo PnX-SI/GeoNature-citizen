@@ -1,0 +1,7 @@
+.form-group .input-group {
+    flex-direction: column;
+}
+
+.input-group input{
+    width: 100% !important;
+}

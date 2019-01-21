@@ -30,7 +30,7 @@ form {
 }
 
 .btn-group li, .btn-group a{
-  min-width: 140px !important;
+  min-width: 143px !important;
   text-align: center;
   transition: all .1s ease-in-out;
 }
@@ -78,15 +78,9 @@ div.btn-group a:first-child{
 
  @media screen and (max-width: 992px){
   /* FIXME: la nav bar ne se referme qu'à 768, pourquoi 912 ? */
-   .navbar-collapse form{
+/*    .navbar-collapse form{
     justify-content: flex-end;
-  }
-
-  .navbar-collapse form div.btn-group a{
-    text-align: right !important;
-    width: fit-content;
-    min-width: inherit !important;
-  }
+  } */
 
   ul.btn-group{
     padding: 0px;
@@ -97,7 +91,7 @@ div.btn-group a:first-child{
   }
 } 
 
- @media screen and (max-width: 800px) {
+ @media screen and (max-width: 850px) {
     div.btn-group{
       margin-left: 10px;
     }

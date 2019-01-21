@@ -18,7 +18,7 @@
   <div id="list">
     <div *ngFor="let s of sightsFeatures; let i=index;" routerLink="">
       <div class="espece">
-        <img src="../../assets/Azure-Commun-019.JPG" alt="First slide">
+        <img src="../../assets/Azure-Commun-019.JPG">
         <div class="infos">
           <a [routerLink]="['/synthesis/species', s.properties.cd_nom]" style="cursor:pointer">
             <h5>{{s.properties.common_name}}</h5>
