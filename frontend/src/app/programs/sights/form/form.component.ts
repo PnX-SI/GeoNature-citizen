@@ -4,6 +4,7 @@ import {AppConfig} from '../../../../conf/app.config';
 import {ActivatedRoute} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
+import { SightsMapComponent } from '../map/map.component'
 
 @Component({
   selector: 'app-sight-form',
@@ -11,7 +12,7 @@ import {map} from 'rxjs/operators';
   styleUrls: ['./form.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class SightsFormComponent implements AfterViewInit {
+export class SightsFormComponent /* implements AfterViewInit */ {
   coords: any;
   sightForm = new FormGroup({
     species: new FormControl('', Validators.required),
@@ -22,10 +23,9 @@ export class SightsFormComponent implements AfterViewInit {
   surveySpecies: any;
   taxonomyList: any;
   program: any;
-  program_id: any;
+  program_id: any = 1;
 
   constructor(
-    // private rest: RestService,
     private http: HttpClient,
     private route: ActivatedRoute
   ) {
@@ -35,15 +35,17 @@ export class SightsFormComponent implements AfterViewInit {
       .subscribe(result => {
         this.program = result;
         this.taxonomyList = this.program.features[0].properties.taxonomy_list;
+        this.getSurveySpeciesItems(this.taxonomyList);
         console.log('TAXXLIST', this.taxonomyList);
+        console.log('surveySpecies: ', this.surveySpecies);
       })
   }
 
-  ngAfterViewInit(): void {
-    console.log('taxlist', this.taxonomyList);
-    this.getSurveySpeciesItems(this.taxonomyList);
-    this.onFormSubmit();
-  }
+  // ngAfterViewInit(): void {
+  //   console.log('taxlist', this.taxonomyList);
+  //   this.getSurveySpeciesItems(this.taxonomyList);
+  //   this.onFormSubmit();
+  // }
 
   onFormSubmit(): void {
     console.log('sightForm: ', this.sightForm);
@@ -70,8 +72,7 @@ export class SightsFormComponent implements AfterViewInit {
   }
 
   getSurveySpeciesItems(taxlist): void {
-    this.restItemsServiceGetSurveySpeciesItems(taxlist).subscribe(species => {
-      this.surveySpecies = species;
-    });
+    this.restItemsServiceGetSurveySpeciesItems(taxlist)
+        .subscribe(species => this.surveySpecies = species);
   }
 }

@@ -1,81 +1,105 @@
-import requests
-from flask import Blueprint, jsonify
+# import requests
+from flask import Blueprint, jsonify, current_app
 
-from gncitizen.utils.env import taxhub_lists_url
+# from gncitizen.utils.env import taxhub_lists_url
+from gncitizen.utils.env import db
 from gncitizen.utils.utilssqlalchemy import json_resp
+from gncitizen.core.taxonomy.models import (
+    BibNoms, BibListes, CorNomListe, TMedias, Taxref)
 
 routes = Blueprint('taxonomy', __name__)
 
 
-# @routes.route('/taxonomy/lists', methods=['GET'])
-# @json_resp
-# def get_lists():
-#     """Renvoie toutes liste d'espèces
-#     GET
-#         ---
-#         tags:
-#           - TaxHub api
-#         definitions:
-#           id_liste:
-#             type: integer
-#           nb_taxons:
-#             type: integer
-#           desc_liste:
-#             type: string
-#           picto:
-#             type: string
-#           group2inpn:
-#             type: string
-#           nom_liste:
-#             type: string
-#           regne:
-#             type: string
-#         responses:
-#           200:
-#             description: A list of all species lists
-#         """
-#     r = requests.get(taxhub_lists_url)
-#     if r.status_code == 200:
-#         result = r.json()
-#         return result
-#     else:
-#         return jsonify('Erreur de chargement de l \'API', r.status_code)
+@routes.route('/taxonomy/lists', methods=['GET'])
+@json_resp
+def get_lists():
+    """Renvoie toutes liste d'espèces
+    GET
+        ---
+        tags:
+          - TaxHub api
+        definitions:
+          id_liste:
+            type: integer
+          nb_taxons:
+            type: integer
+          desc_liste:
+            type: string
+          picto:
+            type: string
+          group2inpn:
+            type: string
+          nom_liste:
+            type: string
+          regne:
+            type: string
+        responses:
+          200:
+            description: A list of all species lists
+        """
+    # r = requests.get(taxhub_lists_url)
+    # if r.status_code == 200:
+    #     result = r.json()
+    #     return result
+    # else:
+    #     return jsonify('Erreur de chargement de l \'API', r.status_code)
+    try:
+        data = BibListes.query.all()
+        # current_app.logger.debug([l.as_dict() for l in data])
+        return [l.as_dict() for l in data]
+    except Exception as e:
+        return {'error_message': str(e)}, 400
 
 
-# @routes.route('/taxonomy/lists/<int:id>', methods=['GET'])
-# @json_resp
-# def get_list(id):
-#     """Renvoie une liste d'espèces spécifiée par son id
-#     GET
-#         ---
-#         tags:
-#           - TaxHub api
-#         definitions:
-#           id_liste:
-#             type: integer
-#           nb_taxons:
-#             type: integer
-#           desc_liste:
-#             type: string
-#           picto:
-#             type: string
-#           group2inpn:
-#             type: string
-#           nom_liste:
-#             type: string
-#           regne:
-#             type: string
-#         responses:
-#           200:
-#             description: A list of all species lists
-#         """
-#     # taxhub_url = load_config()['TAXHUB_API_URL']
-#     r = requests.get(taxhub_lists_url + str(id))
-#     if r.status_code == 200:
-#         result = r.json()
-#         return result
-#     else:
-#         return jsonify('Erreur de chargement de l \'API', r.status_code)
+@routes.route('/taxonomy/lists/<int:id>/species', methods=['GET'])
+@json_resp
+def get_list(id):
+    """Renvoie une liste d'espèces spécifiée par son id
+    GET
+        ---
+        tags:
+          - TaxHub api
+        definitions:
+          id_liste:
+            type: integer
+          nb_taxons:
+            type: integer
+          desc_liste:
+            type: string
+          picto:
+            type: string
+          group2inpn:
+            type: string
+          nom_liste:
+            type: string
+          regne:
+            type: string
+        responses:
+          200:
+            description: A list of all species lists
+        """
+    # # taxhub_url = load_config()['TAXHUB_API_URL']
+    # r = requests.get(taxhub_lists_url + str(id))
+    # if r.status_code == 200:
+    #     result = r.json()
+    #     return result
+    # else:
+    #     return jsonify('Erreur de chargement de l \'API', r.status_code)
+    try:
+        data = db.session.query(BibNoms, Taxref)\
+                .distinct(BibNoms.cd_ref)\
+                .join(CorNomListe, CorNomListe.id_liste == id)\
+                .join(Taxref, Taxref.cd_ref == BibNoms.cd_ref)\
+                .all()
+        # current_app.logger.debug(
+        #     [{'nom': d[0], 'taxref': d[1]} for d in data])
+        return [
+            {
+                'nom': d[0].as_dict(),
+                'taxref': d[1].as_dict()
+            } for d in data]
+    except Exception as e:
+        return {'error_message': str(e)}, 400
 
 
 # @routes.route('/taxonomy/lists/full', methods=['GET'])

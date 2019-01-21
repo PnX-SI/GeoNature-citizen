@@ -9,7 +9,7 @@
             <div class="card-body"> -->
             <div class="img-hover" [ngbTooltip]="s.properties.short_desc">
               <img class="rounded-circle img-responsive img-rounded" width="300" height="300" src="https://picsum.photos/300/?blur"
-                alt='customer image' [routerLink]="['programs', s.properties.id_program, 'sights']" />
+                alt='customer image' [routerLink]="['/programs', s.properties.id_program, 'sights']" />
             </div>
             <h5 class="card-title">{{s.properties.title}}&nbsp;
               <span class="badge badge-info" (click)="open(s.properties.title, s.properties.long_desc)" ngbTooltip="Plus d'informations sur ce programme">

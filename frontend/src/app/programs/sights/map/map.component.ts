@@ -4,13 +4,13 @@ import { HttpClient } from "@angular/common/http";
 import * as L from "leaflet";
 import { map } from "rxjs/operators";
 import { AppConfig } from "../../../../conf/app.config";
-import { ThrowStmt } from "@angular/compiler";
+// import { ThrowStmt } from "@angular/compiler";
 
 declare let $: any;
 
 @Component({
   selector: "app-sight-map",
-  templateUrl: "./map.component.html",
+  template: `<div id="sightmap"></div>`,
   styleUrls: ["./map.component.css"]
 })
 export class SightsMapComponent implements OnInit {
