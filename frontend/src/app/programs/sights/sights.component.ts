@@ -1,7 +1,8 @@
 import {Component, OnInit, ElementRef, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
-
+import { LoginComponent } from "../../auth/login/login.component";
+import { RegisterComponent } from "../../auth/register/register.component";
 // declare let $: any;
 
 @Component({
@@ -15,7 +16,9 @@ export class SightsComponent implements OnInit {
   survey_id: any;
   coords: any;
 
-  @ViewChild('obsform') ObsForm: ElementRef
+  @ViewChild('add_one_obs_form') ObsForm: ElementRef
+  @ViewChild('onboarding') Onboarding: ElementRef
+  @ViewChild('RegisterComponent') RegisterComponent: ElementRef
   constructor(
     private route: ActivatedRoute,
     private modalService: NgbModal
@@ -52,4 +55,11 @@ export class SightsComponent implements OnInit {
     console.log('PARAMS', this.survey_id);
   }
 
+  login() {
+    this.modalService.open(LoginComponent);
+  }
+
+  register() {
+    this.modalService.open(RegisterComponent);
+  }
 }
