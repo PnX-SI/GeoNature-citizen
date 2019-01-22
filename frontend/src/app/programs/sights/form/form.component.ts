@@ -54,19 +54,11 @@ export class SightsFormComponent {
             iconSize: [25, 40],
             iconAnchor: [12, 40]
           })
-          const geojsonMarkerOptions = {
-            radius: 5,
-            fillColor: "#1779ba",
-            color: "#ccc",
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8
-          }
 
         console.debug('prog:', this.program)
 
         const programArea = L.geoJSON(this.program, {
-          style: function(feature) {
+          style: function(_feature) {
             return {
               fillColor: "transparent",
               weight: 2,
@@ -83,7 +75,7 @@ export class SightsFormComponent {
         const myMarkerTitle =
           '<i class="fa fa-eye"></i> Partagez votre observation';
 
-        formMap.on("click", function<LeafletMouseEvent>(e) {
+        formMap.on("click", function(e) {
           //var Coords = "Lat, Lon : " + e.latlng.lat.toFixed(3) + ", " + e.latlng.lng.toFixed(3);
           let coords = JSON.stringify({
             type: "Point",
