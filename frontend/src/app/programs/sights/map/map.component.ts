@@ -64,7 +64,7 @@ export class SightsMapComponent implements OnInit {
         layer.bindPopup(popupContent);
       }
 
-      function pointToLayer(feature, latlng) {
+      function pointToLayer(_feature, latlng) {
         return L.circleMarker(latlng, geojsonMarkerOptions);
       }
 
@@ -82,7 +82,7 @@ export class SightsMapComponent implements OnInit {
       this.programAreaGeoJson = programarea;
       const mysightmap = this.mysightmap;
       const programArea = L.geoJSON(this.programAreaGeoJson, {
-        style: function(feature) {
+        style: function(_feature) {
           return {
             fillColor: "transparent",
             weight: 2,
@@ -106,7 +106,6 @@ export class SightsMapComponent implements OnInit {
     const markerIcon = L.icon({
       iconUrl:
         "../../../../assets/pointer-white.png"
-        //"//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png"
     });
 
     let myMarker = null;
@@ -114,14 +113,13 @@ export class SightsMapComponent implements OnInit {
     const myMarkerTitle =
       '<i class="fa fa-eye"></i> Partagez votre observation';
 
-    mysightmap.on("click", function<LeafletMouseEvent>(e) {
-      //var Coords = "Lat, Lon : " + e.latlng.lat.toFixed(3) + ", " + e.latlng.lng.toFixed(3);
+    mysightmap.on("click", function(e) {
       let coords = JSON.stringify({
         type: "Point",
         coordinates: [e.latlng.lng, e.latlng.lat]
       });
       this.coords = coords;
-      console.log(coords);
+      // console.log(coords);
       if (myMarker !== null) {
         mysightmap.removeLayer(myMarker);
       }
@@ -137,17 +135,17 @@ export class SightsMapComponent implements OnInit {
 
   restItemsServiceGetSightsItems(program_id) {
     return this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs/` + program_id + `/observations`)
+      .get(`${AppConfig.API_ENDPOINT}/programs/${program_id}/observations`)
       .pipe(map(data => data));
   }
 
   restItemsServiceGetProgramArea(program_id) {
     console.log(
       "PROGRAM_GEO_URL: ",
-      `${AppConfig.API_ENDPOINT}/programs/` + program_id
+      `${AppConfig.API_ENDPOINT}/programs/${program_id}`
     );
     return this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs/` + program_id)
+      .get(`${AppConfig.API_ENDPOINT}/programs/${program_id}`)
       .pipe(map(data => data));
   }
 }
