@@ -1,11 +1,13 @@
-import { OnInit, Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AppConfig} from '../../../../conf/app.config';
 import {ActivatedRoute} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import * as L from 'leaflet'
-// import { SightsMapComponent } from '../map/map.component'
+
+
+declare let $: any;
 
 
 @Component({
@@ -14,7 +16,7 @@ import * as L from 'leaflet'
   styleUrls: ['./form.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class SightsFormComponent implements OnInit {
+export class SightsFormComponent {
   coords: any;
   sightForm = new FormGroup({
     species: new FormControl('', Validators.required),
@@ -29,26 +31,76 @@ export class SightsFormComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private route: ActivatedRoute
-  ) {
+    private route: ActivatedRoute) {
     this.route.params.subscribe(params => this.program_id = params['id'])
     this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs/` + this.program_id)
+      .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
       .subscribe(result => {
         this.program = result;
+        console.debug('affcted program')
         this.taxonomyList = this.program.features[0].properties.taxonomy_list;
         this.getSurveySpeciesItems(this.taxonomyList);
         console.log('TAXXLIST', this.taxonomyList);
-      })
-  }
 
-  ngOnInit() {
-    // TODO: programArea, layer, setview, marker
-    const formMap = new L.map('formMap').setView([45.04499482319101, 5.042724609375001], 13)
-    L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'OpenStreetMap'
+        // TODO: programArea, layer, setview, marker
+        const formMap = new L.map('formMap').setView([45.04499482319101, 5.042724609375001], 13)
+        L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: 'OpenStreetMap'
         }).addTo(formMap)
-    console.log(formMap)
+
+        const markerIcon = L.icon({
+            iconUrl:
+              "//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png",
+            iconSize: [25, 40],
+            iconAnchor: [12, 40]
+          })
+          const geojsonMarkerOptions = {
+            radius: 5,
+            fillColor: "#1779ba",
+            color: "#ccc",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          }
+
+        console.debug('prog:', this.program)
+
+        const programArea = L.geoJSON(this.program, {
+          style: function(feature) {
+            return {
+              fillColor: "transparent",
+              weight: 2,
+              opacity: 0.8,
+              color: "red",
+              dashArray: "4"
+            };
+          }
+        }).addTo(formMap)  // .bindPopup("Observation");
+        formMap.fitBounds(programArea.getBounds())
+
+        let myMarker = null;
+
+        const myMarkerTitle =
+          '<i class="fa fa-eye"></i> Partagez votre observation';
+
+        formMap.on("click", function<LeafletMouseEvent>(e) {
+          //var Coords = "Lat, Lon : " + e.latlng.lat.toFixed(3) + ", " + e.latlng.lng.toFixed(3);
+          let coords = JSON.stringify({
+            type: "Point",
+            coordinates: [e.latlng.lng, e.latlng.lat]
+          });
+          this.coords = coords;
+          console.log(coords);
+          if (myMarker !== null) {
+            formMap.removeLayer(myMarker);
+          }
+          myMarker = L.marker(e.latlng, { icon: markerIcon }).addTo(formMap);
+          $("#feature-title").html(myMarkerTitle);
+          $("#feature-coords").html(coords);
+          // $("#feature-info").html(myMarkerContent);
+          $("#featureModal").modal("show");
+        });
+    })
   }
 
   onFormSubmit(): void {
@@ -67,11 +119,7 @@ export class SightsFormComponent implements OnInit {
 
   restItemsServiceGetSurveySpeciesItems(taxlist) {
     return this.http
-      .get(
-        `${AppConfig.API_ENDPOINT}/taxonomy/lists/` +
-        taxlist +
-        `/species`
-      )
+      .get(`${AppConfig.API_ENDPOINT}/taxonomy/lists/${taxlist}/species`)
       .pipe(map(data => data));
   }
 
