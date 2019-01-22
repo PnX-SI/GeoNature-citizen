@@ -104,13 +104,6 @@
     font-size: 18px;
 }
 
-/* @media screen and (max-width: 992px){
-    .observations #map{
-        height: 500px;
-    }
-} */
-
-
 .modal-header{
     background: #60b15c;
     background: -moz-linear-gradient(top, #60b15c 0%, #60b15c 50%, #57a154 51%, #57a154 100%);
@@ -337,12 +330,52 @@ form .d-inline-flex{
     color: #919191;
 }
 
-@media screen and (min-width: 760px){
-    .modal-dialog {
-        min-width: 800px;
-    }
+/* MOdALES NEW BADGES */
 
-    .modal-content .form-row .half{
+.new-badge {
+    text-align: center;
+}
+
+
+.new-badge img{
+    display: block;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+.new-badge div{
+    margin: -16px;
+    margin-bottom: 0px;
+}
+
+.new-badge h5{
+    color: #60b15c;
+    font-style: italic;
+    font-size: 1.8em;
+    margin-top: 20px;
+}
+
+.new-badge h6 {
+    text-transform: uppercase;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.new-badge p {
+    font-size: 1.5em;
+    color : #333;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+@media screen and (min-width: 850px){
+/*     .modal-dialog {
+        min-width: 600px;
+    } */
+
+/*     .modal-content .form-row .half{
         min-width: 350px;
-    }
+    } */
 }

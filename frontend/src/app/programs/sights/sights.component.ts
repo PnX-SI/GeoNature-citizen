@@ -18,6 +18,7 @@ export class SightsComponent implements OnInit {
   @ViewChild('Onboarding') Onboarding: ElementRef
   @ViewChild('AddOneObs') ObsForm: ElementRef
   @ViewChild('obsAdded') obsAdded: ElementRef
+  @ViewChild('newBadge') newBadge: ElementRef
   // @ViewChild('ProgramsComponent') ProgramsComponent: ElementRef
   @ViewChild('RegisterComponent') RegisterComponent: ElementRef
   constructor(
@@ -29,8 +30,8 @@ export class SightsComponent implements OnInit {
     });
   }
 
-  modal(content) {
-    this.modalService.open(content, {})
+  modal(content, options) {
+    this.modalService.open(content, {size:"lg"})
       .result.then(
         (result) => console.log(`closed ${content} with ${result}`),
         (reason) => {
@@ -58,7 +59,7 @@ export class SightsComponent implements OnInit {
 
   login() {
     // if not user_logged_in
-    this.modalService.open(LoginComponent);
+    this.modalService.open(LoginComponent, { size : "lg" });
   }
 
   register() {

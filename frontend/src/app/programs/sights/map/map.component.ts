@@ -105,7 +105,7 @@ export class SightsMapComponent implements OnInit {
 
     const markerIcon = L.icon({
       iconUrl:
-        "../../../../assets/pointer-white.png"
+        "../../../../assets/pointer-blue.png"
     });
 
     let myMarker = null;

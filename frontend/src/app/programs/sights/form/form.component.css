@@ -16,7 +16,7 @@
 }
 
 #formMap {
-    min-height: 50vh;
+    min-height: 213px; /*50vh*/
     width: 100%;
 }
 
