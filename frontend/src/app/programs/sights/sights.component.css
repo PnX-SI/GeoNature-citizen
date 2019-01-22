@@ -294,6 +294,49 @@ form .d-inline-flex{
     cursor: pointer;
 }
 
+/* MODALE OBSERVATION AJOUTEE */
+
+.obs-added {
+    text-align: center;
+}
+
+
+.obs-added img{
+    display: block;
+    width: 100%;
+}
+
+.obs-added div{
+    margin: -16px;
+    margin-bottom: 0px;
+}
+
+.obs-added h5{
+    color: #60b15c;
+    font-style: italic;
+    font-size: 1.8em;
+    margin-top: 20px;
+}
+
+.obs-added h6 {
+    text-transform: uppercase;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.obs-added p {
+    font-size: 1.5em;
+    color : #333;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.obs-added span {
+    font-size: 1.6em;
+    font-style: italic;
+    color: #919191;
+}
+
 @media screen and (min-width: 760px){
     .modal-dialog {
         min-width: 800px;

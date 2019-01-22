@@ -58,18 +58,17 @@
 
   <!-- Observation ajoutée -->
   <ng-template #obsAdded let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <img src="{{(s.media?.url)?s.media.url:'../../assets/Azure-Commun-019.JPG'}}" alt="{{s.nom.nom_francais}}">
+        
+    <div class="modal-body obs-added">
+      <div>
+        <img src="../../assets/Azure-Commun-019.JPG">
+      </div>
+      <h5>Félicitation !</h5>
+      <h6>Votre observation a bien été ajoutée !</h6>
+      <p>Azurée commun</p>
+      <span>Observé par  <br> le </span>
     </div>
 
-    <div class="modal-body row">
-      <div class="col-lg-12 col-md-12" data-dismiss="modal">
-        <h5>Félicitation !</h5>
-        <h6>Votre observation a bien été ajoutée !</h6>
-        <p>{{s.nom.nom_francais}}</p>
-        <span>Observé par {{s.properties.sci_name}} <br> le {{s.properties.date}}</span>
-      </div>
-    </div>
   </ng-template>
 
 </section>
