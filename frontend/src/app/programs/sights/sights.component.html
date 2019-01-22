@@ -11,28 +11,7 @@
     </div>
   </div>
 
-  <ng-template #AddOneObs let-c="close" let-d="dismiss">
-    <div class="modal-header">
-      <h4 class="modal-title">AJOUTER UNE OBSERVATION</h4>
-    </div>
-
-    <div class="modal-body">
-      <app-sight-form></app-sight-form>
-    </div>
-
-    <div class="modal-footer">
-      <button type="submit" class="btn btn-default btn-outline-primary rounded-0" data-dismiss="modal">
-        <!-- <i class="fa fa-plus-square-o"></i> -->&nbsp;Valider l'observation
-      </button>
-<!--       <button type="button"
-              class="btn btn-default btn-outline-danger rounded-0"
-              data-dismiss="modal"
-              (click)="d('CANCEL')">
-        <i class="fa fa-times-circle-o"></i>&nbsp;Fermer
-      </button> -->
-    </div>
-  </ng-template>
-
+  <!-- Se connecter pour ajouter une observation -->
   <ng-template #Onboarding let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h4 class="modal-title">AJOUTER UNE OBSERVATION</h4>
@@ -53,4 +32,44 @@
       <span (click)="login()" data-dismiss="modal">Vous avez déjà un compte ? Connectez-vous !</span>
     </div>
   </ng-template>
+
+  <!-- Ajouter une observation -->
+  <ng-template #AddOneObs let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title">AJOUTER UNE OBSERVATION</h4>
+    </div>
+
+    <div class="modal-body">
+      <app-sight-form></app-sight-form>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-default btn-outline-primary rounded-0" (click)="modal(obsAdded)" data-dismiss="modal">
+        <!-- <i class="fa fa-plus-square-o"></i> -->&nbsp;Valider l'observation
+      </button>
+<!--       <button type="button"
+              class="btn btn-default btn-outline-danger rounded-0"
+              data-dismiss="modal"
+              (click)="d('CANCEL')">
+        <i class="fa fa-times-circle-o"></i>&nbsp;Fermer
+      </button> -->
+    </div>
+  </ng-template>
+
+  <!-- Observation ajoutée -->
+  <ng-template #obsAdded let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <img src="{{(s.media?.url)?s.media.url:'../../assets/Azure-Commun-019.JPG'}}" alt="{{s.nom.nom_francais}}">
+    </div>
+
+    <div class="modal-body row">
+      <div class="col-lg-12 col-md-12" data-dismiss="modal">
+        <h5>Félicitation !</h5>
+        <h6>Votre observation a bien été ajoutée !</h6>
+        <p>{{s.nom.nom_francais}}</p>
+        <span>Observé par {{s.properties.sci_name}} <br> le {{s.properties.date}}</span>
+      </div>
+    </div>
+  </ng-template>
+
 </section>
