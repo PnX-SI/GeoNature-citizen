@@ -105,7 +105,8 @@ export class SightsMapComponent implements OnInit {
 
     const markerIcon = L.icon({
       iconUrl:
-        "//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png"
+        "../../../../assets/pointer-white.png"
+        //"//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png"
     });
 
     let myMarker = null;

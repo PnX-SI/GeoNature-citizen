@@ -17,6 +17,7 @@ export class SightsComponent implements OnInit {
 
   @ViewChild('Onboarding') Onboarding: ElementRef
   @ViewChild('AddOneObs') ObsForm: ElementRef
+  @ViewChild('obsAdded') obsAdded: ElementRef
   // @ViewChild('ProgramsComponent') ProgramsComponent: ElementRef
   @ViewChild('RegisterComponent') RegisterComponent: ElementRef
   constructor(
