@@ -14,7 +14,8 @@
       </div>
     </div>
 
-    <div class="form-group col-lg-12 obs-images d-inline-flex">
+    <div class="form-group col-lg-12 d-inline-flex obs-images">
+      <!-- survey species display threshold ! gallery ? -->
       <div *ngFor="let s of surveySpecies?.slice(-5)">
         <div class="obs-img">
             <img src="{{(s.media?.url)?s.media.url:'../../assets/Azure-Commun-019.JPG'}}" alt="{{s.nom.nom_francais}}">
