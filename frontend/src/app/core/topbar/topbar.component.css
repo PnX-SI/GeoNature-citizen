@@ -96,3 +96,28 @@ div.btn-group a:first-child{
       margin-left: 10px;
     }
 } 
+
+@media screen and (max-width: 767px) {
+  .navbar form{
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .navbar form ul{
+    flex-direction: column;
+  }
+
+  .navbar form ul li {
+    min-width: none !important;
+    max-width: none !important;
+  }
+
+  .navbar div.btn-group{
+    border-left: none;
+    border-right: solid 1px #00a99d;
+  }
+
+  .navbar form ul li a, .navbar form div.btn-group a{
+    text-align: right;
+  }
+}

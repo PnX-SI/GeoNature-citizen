@@ -65,7 +65,28 @@ a:hover, a:focus, a:active {
 input:focus, textarea:focus, select:focus{
   outline: none !important;
   box-shadow: none !important;
-  border-color: rgb(75, 75, 75) !important;
+  border: solid 1px rgb(75, 75, 75) !important;
+}
+
+
+.modal-content{
+  border-radius: 0px !important;
+  border: none !important;
+}
+
+.toolbar{
+  position: relative;
+}
+
+.toolbar:before {
+  font-family: FontAwesome;
+  content : '\f002';
+  position: absolute;
+  right: 13px;
+  width: 10px;
+  height: 10px;
+  top: 6px;
+  color: #00a99d;
 }
 
 @media screen and (max-width: 1024px){

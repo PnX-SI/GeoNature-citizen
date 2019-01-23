@@ -4,7 +4,7 @@
 
     <div class="form-group col-lg-8">
       <label for="sel1">Sélectionnez une espèce</label>
-      <div class="d-inline-flex">
+      <div class="d-inline-flex toolbar">
         <select class="form-control rounded-0 col-lg-6" id="sel1" formControlName="species">
           <option *ngFor="let s of surveySpecies" [value]="s.cd_nom">
             {{s.nom.nom_francais}}&nbsp;(<i>{{s.taxref.nom_complet }}</i>)
@@ -16,16 +16,18 @@
 
     <div class="form-group col-lg-12 d-inline-flex obs-images">
       <!-- survey species display threshold ! gallery ? -->
-      <div *ngFor="let s of surveySpecies?.slice(-5)">
+      <div class="obs-add-img">
+        <i class="fa fa-camera"></i>
+        <input id="file" name="file" class="inputfile" type="file" accept="image/*" capture="capture">
+        <label for="file">Ajouter une photo</label>
+      </div>
+      <div *ngFor="let s of surveySpecies?.slice(-10)">
         <div class="obs-img">
             <img src="{{(s.media?.url)?s.media.url:'../../assets/Azure-Commun-019.JPG'}}" alt="{{s.nom.nom_francais}}">
+            <span>{{s.nom.nom_francais}}</span>
         </div>
       </div>
-      <div class="obs-add-img">
-          <i class="fa fa-camera"></i>
-          <input id="file" name="file" class="inputfile" type="file" accept="image/*" capture="capture">
-          <label for="file">Ajouter une photo</label>
-      </div>
+
     </div>
 
     <div class="form-group col-lg-6 col-md-12 half">

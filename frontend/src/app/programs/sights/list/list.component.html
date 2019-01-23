@@ -1,16 +1,11 @@
 <div id="collapseExample">
   <div class="toolbar">
-    <div class="dropdown">
-      <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        espèces
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#">Action</a>
-        <a class="dropdown-item" href="#">Another action</a>
-        <a class="dropdown-item" href="#">Something else here</a>
-      </div>
-    </div>
-    <input type="text">
+      <select class="form-control rounded-0 col-lg-6" id="sel1" formControlName="species">
+        <option *ngFor="let s of surveySpecies" [value]="s.cd_nom">
+          {{s.nom.nom_francais}}&nbsp;(<i>{{s.taxref.nom_complet }}</i>)
+        </option>
+      </select>
+    <input type="text" class="col-lg-6">
   </div>
   <div class="obs-found">
     <p>{{ sightsFeatures?.length }} observations trouvées !</p>
@@ -27,7 +22,7 @@
           <p>le <span>{{s.properties.date}}</span></p>
         </div>
         <div class="hide">
-            <i class="fa fa-binoculars"></i>
+            <img src="../../../../assets/binoculars.png">
         </div>
       </div>
     </div>

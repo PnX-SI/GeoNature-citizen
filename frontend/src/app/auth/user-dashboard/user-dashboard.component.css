@@ -93,6 +93,25 @@
     height: 120px;
 }
 
+/* DONNEES PERSO */
+
+.personal-data{
+    margin: 20px 0px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.personal-data button{
+    font-size: 16px;
+    background: #00a99d;
+    padding: 10px 30px;
+    margin: 10px 25px;
+}
+
+.personal-data button i{
+    margin-right: 15px;
+}
+
 
 
 @media screen and (min-width: 992px){

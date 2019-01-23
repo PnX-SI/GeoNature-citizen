@@ -1,14 +1,14 @@
-<div class="container">
+<div class="container programs">
   <div class="row">
     <h1>{{title}}&nbsp;<span class="badge badge-pill badge-primary">{{programCount}}</span></h1>
     <div class="container" id="main">
       <div class="row justify-content-center">
-        <div *ngFor="let s of programFeatures; let i=index;" class="col col-lg-4 col-md-6 col-sm-12">
+        <div *ngFor="let s of programFeatures; let i=index;" class="col-lg-4 col-md-4 col-sm-12">
           <div class="text-center">
             <!-- <div class="card text-center ">
             <div class="card-body"> -->
             <div class="img-hover" [ngbTooltip]="s.properties.short_desc">
-              <img class="rounded-circle img-responsive img-rounded" width="300" height="300" src="https://picsum.photos/300/?blur"
+              <img class="rounded-circle img-responsive img-rounded" width="300" height="300" src="../../assets/prog1.jpg"
                 alt='customer image' [routerLink]="['/programs', s.properties.id_program, 'sights']" />
             </div>
             <h5 class="card-title">{{s.properties.title}}&nbsp;

@@ -27,6 +27,17 @@
     cursor: pointer;
 }
 
+.espece:hover .hide{
+    transform: translateX(0);
+}
+
+#list .espece img{
+    object-fit: cover;
+    min-width: 80px !important;
+    max-width: 80px !important;
+    height: 80px;
+}
+
 .hide{
     transform: translateX(100%);
     transition: all .2s ease-in-out;
@@ -38,16 +49,12 @@
     color : #fff;
 }
 
-.espece:hover .hide{
-    transform: translateX(0);
+#list .espece .hide img {
+    min-width: 20px !important;
+    max-width: 20px !important;
+    height: auto !important;
 }
 
-#list .espece img{
-    object-fit: cover;
-    min-width: 80px !important;
-    max-width: 80px !important;
-    height: 80px;
-}
 
 #list .espece .infos{
     display: flex;
@@ -87,10 +94,7 @@
     flex-flow: row nowrap;
 }
 
-.toolbar .dropdown{
-    flex-grow: 1;
-}
-.toolbar .dropdown, .toolbar input{
+.toolbar select, .toolbar input{
     background: none;
     border : solid 1px;
     border-color: var(--primary);
@@ -104,6 +108,7 @@
 .toolbar input{
     flex-grow: 2;
     padding-left: 10px;
+    padding-right: 30px;
 }
 
 .toolbar input:focus{

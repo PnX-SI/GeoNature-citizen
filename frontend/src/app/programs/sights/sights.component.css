@@ -15,6 +15,24 @@
   clip: rect(1px 10px 1px 1px);
 } */
 
+/* MAP */
+
+.leaflet-touch .leaflet-bar{
+    border-radius: 25px;
+}
+
+.leaflet-touch .leaflet-bar a:first-child{
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    color: #00a99d;
+}
+
+.leaflet-touch .leaflet-bar a:last-child{
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    color: #00a99d;
+}
+
 .observations{
     margin: 0px -15px;
     min-height: inherit;
@@ -90,7 +108,7 @@
     object-fit: cover;
     float: left;
     margin-right: 3px;
-    padding: 2px 2px 3px 2px;
+    padding: 2px;
 }
 
 .leaflet-popup-content div{
@@ -120,13 +138,8 @@
     margin: 0 auto;
 }
 
-.modal-content{
-
-    border: none !important;
-}
-
 .modal-body, .modal-content {
-    border-radius: 0px;
+    border-radius: 0px !important;
 }
 
 span.input-group-text {
@@ -167,7 +180,22 @@ span.input-group-text {
     border-color: var(--secondary);
 }
 
+/* MODALES AJOUTER UNE OBS */
 
+.add-obs .obs-images{
+    overflow-x : scroll;
+    overflow-y: hidden;
+    justify-content: space-between;
+    padding: 0px;
+}
+
+.obs-img span{
+    font-size: 11px;
+    opacity: 0;
+    color: #57a154;
+    text-align: center;
+    display: block;
+}
 
 .half #sightmap{
     height: 228px;
@@ -178,17 +206,22 @@ form .d-inline-flex{
     width: 100%;
 }
 
-.modal-content .col-lg-8{
+.add-obs .col-lg-8{
     margin: 0 auto;
     margin-bottom: 20px;
 }
 
-.modal-content .form-group .form-group{
+.add-obs .form-group .form-group{
     margin-bottom: 0;
 }
 
-.obs-images{
-    justify-content: space-between;
+.add-obs select, .add-obs .d-inline-flex input{
+    border: solid 1px #00a99d !important;
+}
+
+.toolbar input{
+    padding-left: 10px;
+    padding-right: 30px !important;
 }
 
 .obs-images img{
@@ -199,10 +232,14 @@ form .d-inline-flex{
     opacity: 0.7;
 }
 
-.obs-images img:hover{
+.obs-images img:hover, .obs-images.selected img{
     opacity: 1;
     cursor: pointer;
     box-shadow: 0 0 0 3px #60b15c;
+}
+
+.obs-img:hover span, .obs-img img.selected span {
+    opacity: 1;
 }
 
 .obs-add-img{
@@ -214,6 +251,7 @@ form .d-inline-flex{
     text-align: center;
     flex-direction: column;
     min-width: 120px;
+    height: 120px;
 }
 
 .obs-add-img:hover{
@@ -225,6 +263,22 @@ form .d-inline-flex{
     font-size: 30px;
 }
 
+.add-obs ::-webkit-scrollbar-thumb {
+	background: var(--primary);
+	width: 10px;
+	border: 1px solid #eee;
+    margin: 5px;
+    border-radius: 5px;
+}
+.add-obs ::-webkit-scrollbar{
+	background: #eee;
+	width: 10px;
+	height: 10px;
+	margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
 /* MODALE CONNEXION OU NON */
 
 .modal-body .sign{
@@ -233,6 +287,10 @@ form .d-inline-flex{
     text-align: center;
     align-items: center;
     padding: 40px;
+}
+
+.modal-body .sign:hover i{
+    transform: translateY(-5px);
 }
 
 .modal-body .sign i{
@@ -246,6 +304,7 @@ form .d-inline-flex{
     height: 130px;
     width: 130px;
     border-radius: 50%;
+    transition: all .3s ease-in-out;
 }
 
 .modal-body .sign i:before{
@@ -253,8 +312,9 @@ form .d-inline-flex{
     color: #fff;
 }
 
-.modal-body .sign i:hover, .modal-body .sign span:hover{
+.modal-body .sign:hover{
     cursor: pointer;
+    
 }
 
 .modal-body .sign:first-child i {
@@ -370,12 +430,18 @@ form .d-inline-flex{
     margin-bottom: 0;
 }
 
-@media screen and (min-width: 850px){
-/*     .modal-dialog {
-        min-width: 600px;
-    } */
+/* @media screen and (min-width: 850px){
+    
+} */
 
-/*     .modal-content .form-row .half{
-        min-width: 350px;
-    } */
+@media screen and (max-width: 991px){
+    .sign{
+        padding: 0px 40px 20px 40px !important;
+    }
+}
+
+@media screen and (max-width: 400px){
+    .observations #map .btn-group{
+        right: 0px;
+    }
 }

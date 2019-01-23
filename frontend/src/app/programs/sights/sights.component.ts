@@ -59,7 +59,7 @@ export class SightsComponent implements OnInit {
 
   login() {
     // if not user_logged_in
-    this.modalService.open(LoginComponent, { size : "lg" });
+    this.modalService.open(LoginComponent);
   }
 
   register() {

@@ -1,5 +1,9 @@
-.container{
+.programs{
     padding: 0px;
+}
+
+.programs .row{
+    margin: 0px;
 }
 
 .row h1{
@@ -15,23 +19,34 @@
     text-align: center;
 }
 
-.justify-content-center .text-center{
+.programs .text-center{
     margin-top: 30px;
     margin-bottom: 30px;
     opacity: 0.8;
 }
 
-.justify-content-center .text-center:hover{
+.programs .text-center:hover{
     opacity: 1;
     cursor: pointer;
 }
 
-.justify-content-center .text-center img{
+.programs .text-center img{
     margin-bottom: 30px;
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
-.justify-content-center .text-center h5{
+.programs .text-center h5{
     font-weight: normal;
     color: #00a99d;
     text-transform: uppercase;
 }
+
+@media screen and (max-width: 775px){
+    .programs .img-hover{
+        max-width: 200px;
+        margin: 0 auto;
+    }
+}
+    
