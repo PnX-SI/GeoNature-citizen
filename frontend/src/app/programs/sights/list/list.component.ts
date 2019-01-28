@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { map } from "rxjs/operators";
 import { AppConfig } from "../../../../conf/app.config";
 import { FormGroup } from "@angular/forms";
@@ -17,10 +16,8 @@ export class SightsListComponent implements OnInit {
   // @Input() formGroup: FormGroup
 
   constructor(
-    // private rest: RestService,
     private http: HttpClient,
     private route: ActivatedRoute,
-    private modalService: NgbModal
   ) {
     this.route.params.subscribe(params => {
       this.program_id = params[`id`];
