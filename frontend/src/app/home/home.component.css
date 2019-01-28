@@ -1,4 +1,4 @@
-/* section {
+ section {
     width: 100%;
     min-height: 70vh;
     position: relative;
@@ -24,12 +24,12 @@
     z-index: 900;
 }
 
-.section:first-child{
+#welcome{
     background: url(../../assets/background.jpg) no-repeat;
     background-size: cover;
 }
 
-section:first-child h1{
+#welcome h1{
     padding-left: 50%;
     margin-top: 30px;
     color: #fff;
@@ -37,21 +37,21 @@ section:first-child h1{
     font-size: 60px;
 }
 
-section:first-child a{
+#welcome a{
     position: absolute;
     bottom: 100px;
     right: 100px;
     background-color: var(--primary);
 }
 
-section:first-child span{
+#welcome span{
     position: absolute;
     bottom: 6%;
     left: 50%;
     color : #fff;
     transform: translateX(-50%);
     font-size: 14px;
-} */
+}
 
 /* SLIDER */
 

@@ -12,11 +12,15 @@ import { ModalFlowService } from './modalflow.service'
 @Component({
   selector: 'app-modalflow',
   template:`
-  <button class="btn-big" (click)="flowService.open(content)">Ajouter une observation</button>
+  <div class="btn-group">
+    <button class="btn-big" (click)="flowService.open(content)">Ajouter une observation</button>
+    <button class="btn-big">Test micro</button>
+  </div>
   <ng-template #content>
     <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>
   </ng-template>
   `,
+  styleUrls: ['./modalflow.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class ModalFlowComponent implements OnInit {

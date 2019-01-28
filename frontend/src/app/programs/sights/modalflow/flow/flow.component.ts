@@ -6,7 +6,8 @@ import {
   ViewChild,
   ComponentFactoryResolver,
   Output,
-  EventEmitter
+  EventEmitter,
+  ViewEncapsulation,
 } from '@angular/core'
 
 import { FlowDirective } from './flow.directive'
@@ -18,7 +19,8 @@ import { IFlowComponent } from './flow'
   template: `
     <ng-template user-flow></ng-template>
   `,
-  styleUrls: ['./flow.component.css']
+  styleUrls: ['./flow.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class FlowComponent implements OnInit/*, OnDestroy*/ {
   @Input() flowItems: FlowItem[]
