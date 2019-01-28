@@ -9,7 +9,6 @@ import * as L from 'leaflet'
 
 declare let $: any;
 
-
 @Component({
   selector: 'app-sight-form',
   templateUrl: './form.component.html',
@@ -32,6 +31,7 @@ export class SightsFormComponent implements AfterViewInit {
   program: any;
   program_id: any = 1;
   formMap: any
+  taxonListThreshold = 10
 
   constructor(
     private http: HttpClient,
