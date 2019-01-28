@@ -67,7 +67,7 @@ export class ModalFlowService extends FlowService {
     return [
       new FlowItem(OnboardComponent, {service: this}),
       new FlowItem(CommittedComponent, {service: this}),
-      new FlowItem(CongratsComponent, {service: this}),
+      new FlowItem(CongratsComponent, {service: this, date: new Date().toLocaleDateString()}),
       new FlowItem(RewardComponent, {service: this}),
     ]
   }

@@ -14,15 +14,15 @@
 
 .collapse{
     transition-property: all;
-  transition-property: transform;
-  transition-duration: .2s;
+    transition-property: transform;
+    transition-duration: .2s;
 }
 
-.collapse:not(.show){
+/* .collapse:not(.show){
     transform: translateX(-100%) !important;
     display: block !important;
     z-index: 900;
-}
+} */
 
 #welcome{
     background: url(../../assets/background.jpg) no-repeat;
@@ -133,7 +133,7 @@
  investigate obs list glitch @921px -> 892
 */
 app-sights {
-  min-width: 100vw;
+  min-width: 100%;
 }
 
 /* SCROLLBAR CUSTOM */
@@ -188,14 +188,6 @@ app-sights {
     #list{
         width: 40%;
     }
-
-    /* FIXME: find polygonal clip-path alternative?
-        background-image:
-            url("data:image/svg+xml;utf8,<svg ...></svg>")"
-    */
-    /* .observations #list .espece:after{
-      content: none;
-    } */
 }
 
 @media screen and (max-width: 992px){

@@ -58,6 +58,7 @@ export class RewardComponent implements IFlowComponent, OnInit, OnDestroy, After
   ngAfterViewChecked() {
     if (!(this.ref as ViewRef).destroyed) {
       this.ref.detectChanges()
+      // FIXME: come up with a better timed strategy
       this.timeout = setTimeout(() => this.close((this.rewarded)?'timeout':'noreward'), (this.rewarded)?3000:0)
     }
   }

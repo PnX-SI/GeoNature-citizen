@@ -19,14 +19,3 @@
     min-height: 213px; /*50vh*/
     width: 100%;
 }
-
-/* .gallery {
-    padding: 0;
-    overflow-x: auto;
-    scroll-padding: 0 50%;
-    scroll-snap-type: x mandatory;
-}
-
-obs-img {
-    scroll-snap-align: center;
-} */
