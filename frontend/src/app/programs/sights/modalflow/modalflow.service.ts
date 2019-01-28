@@ -6,13 +6,13 @@ import {
   NgbModalRef,
 } from '@ng-bootstrap/ng-bootstrap'
 
-import { FlowService } from '../flow/flow.service'
-import { FlowItem } from '../flow/flow-item'
+import { FlowService } from './flow/flow.service'
+import { FlowItem } from './flow/flow-item'
 
-import { OnboardComponent } from '../steps/onboard/onboard.component'
-import { CommittedComponent } from '../steps/committed/committed.component'
-import { CongratsComponent } from '../steps/congrats/congrats.component'
-import { RewardComponent } from '../steps/reward/reward.component';
+import { OnboardComponent } from './steps/onboard/onboard.component'
+import { CommittedComponent } from './steps/committed/committed.component'
+import { CongratsComponent } from './steps/congrats/congrats.component'
+import { RewardComponent } from './steps/reward/reward.component';
 
 export const MODAL_DEFAULTS = { centered: true }
 
@@ -21,7 +21,6 @@ export const MODAL_DEFAULTS = { centered: true }
 })
 export class ModalFlowService extends FlowService {
   modalRef: NgbModalRef
-  timeout: any
 
   constructor(
     private modalService: NgbModal,

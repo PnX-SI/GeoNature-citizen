@@ -1,9 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { map } from "rxjs/operators";
 import { AppConfig } from "../../../../conf/app.config";
+import { FormGroup } from "@angular/forms";
 
 @Component({
   selector: "app-sight-list",
@@ -13,6 +14,7 @@ import { AppConfig } from "../../../../conf/app.config";
 export class SightsListComponent implements OnInit {
   program_id: any;
   sightsFeatures: any;
+  // @Input() formGroup: FormGroup
 
   constructor(
     // private rest: RestService,

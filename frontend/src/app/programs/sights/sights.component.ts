@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 
 // import { FlowItem } from '../../flow/flow-item'
-import { ModalFlowService } from '../../modalflow/modalflow.service'
+import { ModalFlowService } from './modalflow/modalflow.service'
 import { ActivatedRoute } from '@angular/router';
 // import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 // import { LoginComponent } from "../../auth/login/login.component";

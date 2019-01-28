@@ -23,7 +23,9 @@ export class SightsFormComponent {
     count: new FormControl('', Validators.required),
     comment: new FormControl('', Validators.required),
     date: new FormControl('', Validators.required),
-    file: new FormControl('', )
+    file: new FormControl(),
+    taxon: new FormControl(),
+    // coord,
   });
   surveySpecies: any;
   taxonomyList: any;
@@ -43,7 +45,7 @@ export class SightsFormComponent {
         this.getSurveySpeciesItems(this.taxonomyList);
         console.log('TAXXLIST', this.taxonomyList);
 
-        // TODO: programArea, layer, setview, marker
+        // TODO: view constraints to keep program perimeter centered (chckbx?)
         const formMap = new L.map('formMap').setView([45.04499482319101, 5.042724609375001], 13)
         L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'OpenStreetMap'

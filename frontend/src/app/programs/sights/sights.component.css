@@ -45,14 +45,14 @@
 .observations #map iframe{
     height: 100%;
 }
-
-.observations #map .btn-group{
+.observations #map .btn-group,  {
     position: absolute;
     bottom: 20px;
     right: 20px;
 }
 
-.observations #map .btn-group button{
+/* FIXME */
+.observations #map .btn-group button, .observations #map .btn-group app-modalflow button {
     margin-left: 20px;
     opacity: 0.8;
     padding: 10px 30px;
@@ -314,7 +314,7 @@ form .d-inline-flex{
 
 .modal-body .sign:hover{
     cursor: pointer;
-    
+
 }
 
 .modal-body .sign:first-child i {
@@ -431,7 +431,7 @@ form .d-inline-flex{
 }
 
 /* @media screen and (min-width: 850px){
-    
+
 } */
 
 @media screen and (max-width: 991px){

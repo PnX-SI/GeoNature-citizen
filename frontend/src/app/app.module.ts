@@ -30,25 +30,25 @@ import { AboutComponent } from "./about/about.component";
 import { AboutCustomComponent } from "./about/custom/custom.component";
 import { AboutFixedComponent } from "./about/fixed/fixed.component";
 import { HomeCustomComponent } from "./home/custom/custom.component";
-import { FlowComponent } from './flow/flow.component'
-import { FlowService } from './flow/flow.service'
-import { FlowDirective } from './flow/flow.directive'
-import { OnboardComponent } from './steps/onboard/onboard.component'
-import { CommittedComponent } from './steps/committed/committed.component'
-import { CongratsComponent } from './steps/congrats/congrats.component';
-import { ModalFlowComponent } from './modalflow/modalflow.component';
-import { RewardComponent } from './steps/reward/reward.component';
-import { ModalFlowService } from './modalflow/modalflow.service';
+import { FlowComponent } from './programs/sights/modalflow/flow/flow.component'
+// import { FlowService } from './programs/sights/flow/flow.service'
+import { FlowDirective } from './programs/sights/modalflow/flow/flow.directive'
+import { OnboardComponent } from './programs/sights/modalflow/steps/onboard/onboard.component'
+import { CommittedComponent } from './programs/sights/modalflow/steps/committed/committed.component'
+import { CongratsComponent } from './programs/sights/modalflow/steps/congrats/congrats.component';
+import { ModalFlowComponent } from './programs/sights/modalflow/modalflow.component';
+import { RewardComponent } from './programs/sights/modalflow/steps/reward/reward.component';
+import { ModalFlowService } from './programs/sights/modalflow/modalflow.service';
 
 @NgModule({
   imports: [
     BrowserModule,
-    NgbModule,
-    HttpModule,
     HttpClientModule,
-    FormsModule,
+    HttpModule,
     ReactiveFormsModule,
-    routing
+    FormsModule,
+    NgbModule,
+    routing,
   ],
   declarations: [
     AppComponent,
@@ -84,7 +84,7 @@ import { ModalFlowService } from './modalflow/modalflow.service';
     AuthService,
     GncService,
     GncProgramsService,
-    FlowService,
+    // FlowService,
     ModalFlowService,
   ],
   bootstrap: [AppComponent],
@@ -92,7 +92,11 @@ import { ModalFlowService } from './modalflow/modalflow.service';
     DescModalComponent,
     LoginComponent,
     LogoutComponent,
-    RegisterComponent
+    RegisterComponent,
+    OnboardComponent,
+    CommittedComponent,
+    CongratsComponent,
+    RewardComponent,
   ]
 })
 export class AppModule {}
