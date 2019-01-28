@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   ViewChild,
   ElementRef,
   ViewEncapsulation,
@@ -13,7 +12,7 @@ import { ModalFlowService } from './modalflow.service'
   selector: 'app-modalflow',
   template:`
   <div class="btn-group">
-    <button class="btn-big" (click)="flowService.open(content)">Ajouter une observation</button>
+    <button class="btn-big" (click)="clicked()">Ajouter une observation</button>
     <button class="btn-big">Réaliser un programme</button>
   </div>
   <ng-template #content>
@@ -23,7 +22,7 @@ import { ModalFlowService } from './modalflow.service'
   styleUrls: ['./modalflow.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class ModalFlowComponent implements OnInit {
+export class ModalFlowComponent {
   @ViewChild('content') content: ElementRef
   flowitems: FlowItem[]
   timeout: any
@@ -32,9 +31,14 @@ export class ModalFlowComponent implements OnInit {
     public flowService: ModalFlowService,
   ) { }
 
-  ngOnInit() {
+  clicked() {
     this.flowitems = this.flowService.getFlowItems()
     console.debug('flow items: ', this.flowitems)
+    this.flowService.open(this.content)
+  }
+
+  ngOnDestroy(): void {
+    console.debug('destroyed')
   }
 
   step(data) {

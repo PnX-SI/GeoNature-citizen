@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import * as L from "leaflet";
@@ -11,7 +11,8 @@ declare let $: any;
 @Component({
   selector: "app-sight-map",
   template: `<div id="sightmap"></div>`,
-  styleUrls: ["./map.component.css"]
+  styleUrls: ["./map.component.css"],
+  encapsulation: ViewEncapsulation.None
 })
 export class SightsMapComponent implements OnInit {
   sightsGeoJson: any;
