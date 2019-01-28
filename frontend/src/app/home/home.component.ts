@@ -1,5 +1,7 @@
 import { Component, OnInit , ViewEncapsulation} from '@angular/core';
 
+// import { SightsComponent } from '../programs/sights/sights.component'
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',

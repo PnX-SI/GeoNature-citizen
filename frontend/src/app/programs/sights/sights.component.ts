@@ -1,8 +1,18 @@
-import { Component, OnInit, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  // ViewChild,
+  // ElementRef,
+  ViewEncapsulation,
+  // OnDestroy
+} from '@angular/core';
+
+// import { FlowItem } from '../../flow/flow-item'
+import { ModalFlowService } from '../../modalflow/modalflow.service'
 import { ActivatedRoute } from '@angular/router';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { LoginComponent } from "../../auth/login/login.component";
-import { RegisterComponent } from "../../auth/register/register.component";
+// import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+// import { LoginComponent } from "../../auth/login/login.component";
+// import { RegisterComponent } from "../../auth/register/register.component";
 
 @Component({
   selector: 'app-sights',
@@ -15,54 +25,26 @@ export class SightsComponent implements OnInit {
   survey_id: any;
   coords: any;
 
-  @ViewChild('Onboarding') Onboarding: ElementRef
-  @ViewChild('AddOneObs') ObsForm: ElementRef
-  @ViewChild('obsAdded') obsAdded: ElementRef
-  @ViewChild('newBadge') newBadge: ElementRef
-  // @ViewChild('ProgramsComponent') ProgramsComponent: ElementRef
-  @ViewChild('RegisterComponent') RegisterComponent: ElementRef
   constructor(
     private route: ActivatedRoute,
-    private modalService: NgbModal
+    public flowService: ModalFlowService,
   ) {
     this.route.params.subscribe(params => {
-      this.survey_id = params['id'];
+      this.survey_id = params['id'] || 1;
     });
   }
 
-  modal(content, options) {
-    this.modalService.open(content, {size:"lg"})
-      .result.then(
-        (result) => console.log(`closed ${content} with ${result}`),
-        (reason) => {
-          let trigger = undefined
-          switch(reason) {
-            case ModalDismissReasons.BACKDROP_CLICK:
-              trigger = 'BACKDROP'
-              break
-            case ModalDismissReasons.ESC:
-              trigger = 'ESC'
-              break
-            default:
-              trigger = reason
-              break
-            }
-
-          console.log(`dismissed with ${trigger}`)
-        }
-      )
-  }
 
   ngOnInit() {
     console.log('PARAMS', this.survey_id);
   }
-
-  login() {
-    // if not user_logged_in
-    this.modalService.open(LoginComponent);
-  }
-
-  register() {
-    this.modalService.open(RegisterComponent);
-  }
+  //
+  // login() {
+  //   // if not user_logged_in
+  //   this.modalService.open(LoginComponent);
+  // }
+  //
+  // register() {
+  //   this.modalService.open(RegisterComponent);
+  // }
 }

@@ -6,13 +6,14 @@
   <div class="col-lg-8 col-md-12" id="map">
     <app-sight-map></app-sight-map>
     <div class="btn-group">
-      <button class="btn-big" (click)="modal(Onboarding)">Ajouter une observation</button>
+      <button class="btn-big" (click)="flowService.open(content)">Ajouter une observation</button>
+      <app-modalflow></app-modalflow>
       <button class="btn-big">Réaliser un programme</button>
     </div>
   </div>
 
   <!-- Se connecter pour ajouter une observation -->
-  <ng-template #Onboarding let-c="close" let-d="dismiss">
+  <!-- <ng-template #Onboarding let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h4 class="modal-title">AJOUTER UNE OBSERVATION</h4>
     </div>
@@ -31,10 +32,10 @@
     <div class="modal-footer">
       <span (click)="login()" data-dismiss="modal">Vous avez déjà un compte ? Connectez-vous !</span>
     </div>
-  </ng-template>
+  </ng-template> -->
 
   <!-- Ajouter une observation -->
-  <ng-template #AddOneObs let-c="close" let-d="dismiss">
+  <!-- <ng-template #AddOneObs let-c="close" let-d="dismiss">
     <div class="modal-header">
       <h4 class="modal-title">AJOUTER UNE OBSERVATION</h4>
     </div>
@@ -44,21 +45,21 @@
     </div>
 
     <div class="modal-footer">
-      <button type="submit" class="btn btn-default btn-outline-primary rounded-0" (click)="modal(obsAdded)" data-dismiss="modal">
-        <!-- <i class="fa fa-plus-square-o"></i> -->&nbsp;Valider l'observation
-      </button>
+      <button type="submit" class="btn btn-default btn-outline-primary rounded-0" (click)="modal(obsAdded)" data-dismiss="modal"> -->
+        <!-- <i class="fa fa-plus-square-o"></i> --><!-- &nbsp;Valider l'observation -->
+      <!-- </button> -->
 <!--       <button type="button"
               class="btn btn-default btn-outline-danger rounded-0"
               data-dismiss="modal"
               (click)="d('CANCEL')">
         <i class="fa fa-times-circle-o"></i>&nbsp;Fermer
       </button> -->
-    </div>
-  </ng-template>
+    <!-- </div>
+  </ng-template> -->
 
   <!-- Observation ajoutée -->
-  <ng-template #obsAdded let-c="close" let-d="dismiss">
-        
+  <!-- <ng-template #obsAdded let-c="close" let-d="dismiss">
+
     <div class="modal-body obs-added">
       <div>
         <img src="../../assets/Azure-Commun-019.JPG">
@@ -69,11 +70,11 @@
       <span>Observé par  <br> le </span>
     </div>
 
-  </ng-template>
+  </ng-template> -->
 
     <!--Badge remporté -->
-    <ng-template #newBadge let-c="close" let-d="dismiss">
-        
+    <!-- <ng-template #newBadge let-c="close" let-d="dismiss">
+
       <div class="modal-body new-badge">
         <div>
           <img src="../../assets/user.jpg">
@@ -82,7 +83,7 @@
         <h6>Vous venez d'obtenir ce badge</h6>
         <p>Observateur confirmé</p>
       </div>
-  
-    </ng-template>
+
+    </ng-template> -->
 
 </section>

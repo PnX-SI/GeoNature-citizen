@@ -133,13 +133,13 @@ export class SightsMapComponent implements OnInit {
     this.mysightmap = mysightmap;
   }
 
-  restItemsServiceGetSightsItems(program_id) {
+  restItemsServiceGetSightsItems(program_id=1) {
     return this.http
       .get(`${AppConfig.API_ENDPOINT}/programs/${program_id}/observations`)
       .pipe(map(data => data));
   }
 
-  restItemsServiceGetProgramArea(program_id) {
+  restItemsServiceGetProgramArea(program_id=1) {
     console.log(
       "PROGRAM_GEO_URL: ",
       `${AppConfig.API_ENDPOINT}/programs/${program_id}`

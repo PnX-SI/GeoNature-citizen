@@ -22,7 +22,8 @@ export class SightsFormComponent {
     species: new FormControl('', Validators.required),
     count: new FormControl('', Validators.required),
     comment: new FormControl('', Validators.required),
-    date: new FormControl('', Validators.required)
+    date: new FormControl('', Validators.required),
+    file: new FormControl('', )
   });
   surveySpecies: any;
   taxonomyList: any;
@@ -32,7 +33,7 @@ export class SightsFormComponent {
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute) {
-    this.route.params.subscribe(params => this.program_id = params['id'])
+    this.route.params.subscribe(params => this.program_id = params['id'] || 1)
     this.http
       .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
       .subscribe(result => {

@@ -1,16 +1,16 @@
-section {
+/* section {
     width: 100%;
     min-height: 70vh;
     position: relative;
     margin-bottom: 20px;
 }
 
-/* section:before{
+.section:before{
     content : ' ';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: #00000056;
-} */
+}
 
 .collapse{
     transition-property: all;
@@ -24,7 +24,7 @@ section {
     z-index: 900;
 }
 
-section:first-child{
+.section:first-child{
     background: url(../../assets/background.jpg) no-repeat;
     background-size: cover;
 }
@@ -51,7 +51,7 @@ section:first-child span{
     color : #fff;
     transform: translateX(-50%);
     font-size: 14px;
-}
+} */
 
 /* SLIDER */
 
@@ -129,7 +129,13 @@ section:first-child span{
 }
 
 /* OBSERVATION / MAP */
-
+/*
+ investigate obs list glitch @921px -> 892
+*/
+app-sights {
+  min-width: 100vw;
+}
+/*
 .observations{
     margin: 0;
     min-height: inherit;
@@ -160,10 +166,10 @@ section:first-child span{
     padding: 0px;
 }
 
-.observations #list {
+.observations #list { */
 /*     position: absolute;
     top: 0;
-    bottom: 0; */
+    bottom: 0; */ /*
     background: #eee;
     z-index: 999;
     padding: 5px;
@@ -240,7 +246,7 @@ section:first-child span{
 .observations #map iframe{
     height: 70vh;
 }
-
+*/
 
 /* SCROLLBAR CUSTOM */
 

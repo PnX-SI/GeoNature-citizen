@@ -29,13 +29,13 @@ export class SightsListComponent implements OnInit {
     this.getSightsFeatures(this.program_id);
   }
 
-  getSightsFeatures(program_id): void {
+  getSightsFeatures(program_id=1): void {
     this.restItemsServiceGetSightsItems(program_id).subscribe(sights => {
       this.sightsFeatures = sights[`features`];
     });
   }
 
-  restItemsServiceGetSightsItems(program_id) {
+  restItemsServiceGetSightsItems(program_id=1) {
     return this.http
       .get(`${AppConfig.API_ENDPOINT}/programs/` + program_id + `/observations`)
       .pipe(map(data => data));
