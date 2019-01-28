@@ -28,7 +28,7 @@ export class ModalFlowService extends FlowService {
     super()
   }
 
-  open(content, options) {
+  open(content, options={}) {
     this.modalRef = this.modalService.open(content, {...MODAL_DEFAULTS, ...options})
     this.modalRef.result.then(
         (result) => {

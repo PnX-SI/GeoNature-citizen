@@ -121,7 +121,7 @@
     background-image: linear-gradient(to bottom, var(--secondary), var(--secondary-gradient));
 }
 
-.obs-found p{
+.obs-found p {
     white-space: nowrap;
     margin: 0;
     font-style: italic;

@@ -2,7 +2,6 @@ import {
   Component,
   Input,
   OnInit,
-  // OnDestroy,
   ViewChild,
   ComponentFactoryResolver,
   Output,
@@ -22,25 +21,17 @@ import { IFlowComponent } from './flow'
   styleUrls: ['./flow.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class FlowComponent implements OnInit/*, OnDestroy*/ {
+export class FlowComponent implements OnInit {
   @Input() flowItems: FlowItem[]
   @Output() step = new EventEmitter()
   @ViewChild(FlowDirective) flowitem: FlowDirective
   currentFlowIndex = -1
-  // interval: any
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
 
   ngOnInit(): void {
     this.loadComponent()
-    // this.getFlowItems()
   }
-
-  /*
-  ngOnDestroy(): void {
-     clearInterval(this.interval)
-  }
-  */
 
   loadComponent() {
     this.currentFlowIndex = (this.currentFlowIndex + 1) % this.flowItems.length
@@ -52,18 +43,13 @@ export class FlowComponent implements OnInit/*, OnDestroy*/ {
     (<IFlowComponent>componentRef.instance).data = flowItem.data
 
     this.step.emit(this.flowItems[this.currentFlowIndex].component.name)
+    const self = this
 
     if ((!(<IFlowComponent>componentRef.instance).data.next)
         && (!(<IFlowComponent>componentRef.instance).data.final)) {
-      (<IFlowComponent>componentRef.instance).data.next = () => this.loadComponent()
+      (<IFlowComponent>componentRef.instance).data.next = () => {
+        console.debug('loadComponent this:', self)
+        this.loadComponent()}
     }
   }
-
-  /*
-  demo() {
-    this.interval = setInterval(() => {
-      this.loadComponent()
-    }, 3000)
-  }
-  */
 }
