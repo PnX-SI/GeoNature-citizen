@@ -1,8 +1,10 @@
-import { Component, Input, ViewEncapsulation, OnDestroy } from '@angular/core'
+import { Component, Input, ViewEncapsulation, OnDestroy, ViewChild, ElementRef } from '@angular/core'
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap'
 
 import { IFlowComponent } from '../../flow/flow'
+import { RegisterComponent } from 'src/app/auth/register/register.component';
+import { LoginComponent } from 'src/app/auth/login/login.component';
 
 @Component({
   templateUrl: './onboard.component.html',
@@ -10,9 +12,11 @@ import { IFlowComponent } from '../../flow/flow'
   encapsulation: ViewEncapsulation.None,
 })
 export class OnboardComponent implements IFlowComponent, OnDestroy {
-  @Input() data: any
   RegistrationModalRef: NgbModalRef
   LoginModalRef: NgbModalRef
+  @Input() data: any
+  @ViewChild('RegisterComponent') RegisterComponent: ElementRef
+  @ViewChild('LoginComponent') LoginComponent: ElementRef
 
   constructor(private modalService: NgbModal) { }
 
@@ -27,16 +31,11 @@ export class OnboardComponent implements IFlowComponent, OnDestroy {
     // if not logged_in then stack Register modal dialog ... for now (?)
     // QUESTION: by the end of the registration process, is the user logged in ?
     console.debug('register action > data:', this.data)
-    this.RegistrationModalRef = this.modalService.open('registration', { centered: true })
-
-    // TODO: rm for integration
-    this.data.timeout = setTimeout(() => {
-      this.RegistrationModalRef.close('registration')
-    }, 1000)
-
+    this.RegistrationModalRef = this.modalService.open(RegisterComponent, { centered: true })
     this.RegistrationModalRef.result.then(
       (result) => {
         console.debug('registration resolved:', result)
+
         // TODO: registered check
         this.data.next()
       },
@@ -49,17 +48,11 @@ export class OnboardComponent implements IFlowComponent, OnDestroy {
   login() {
     // if not logged_in then stack Login modal dialog
     console.debug('login action > data:', this.data)
-    this.LoginModalRef = this.modalService.open('login', { centered: true })
-
-    // TODO: rm for integration
-    this.data.timeout = setTimeout(() => {
-      this.LoginModalRef.close('login')
-    }, 1000)
-
+    this.LoginModalRef = this.modalService.open(LoginComponent, { centered: true })
     this.LoginModalRef.result.then(
       (result) => {
-
         console.debug('login resolved:', result)
+
         // TODO: authenticated check
         this.data.next()
 

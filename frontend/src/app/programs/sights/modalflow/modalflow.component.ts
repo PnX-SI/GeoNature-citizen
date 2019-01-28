@@ -14,7 +14,7 @@ import { ModalFlowService } from './modalflow.service'
   template:`
   <div class="btn-group">
     <button class="btn-big" (click)="flowService.open(content)">Ajouter une observation</button>
-    <button class="btn-big">Test micro</button>
+    <button class="btn-big">Réaliser un programme</button>
   </div>
   <ng-template #content>
     <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>

@@ -31,6 +31,7 @@ export class SightsFormComponent {
   taxonomyList: any;
   program: any;
   program_id: any = 1;
+  formMap: any
 
   constructor(
     private http: HttpClient,
@@ -46,7 +47,7 @@ export class SightsFormComponent {
         console.log('TAXXLIST', this.taxonomyList);
 
         // TODO: view constraints to keep program perimeter centered (chckbx?)
-        const formMap = new L.map('formMap').setView([45.04499482319101, 5.042724609375001], 13)
+        const formMap = L.map('formMap').setView([45.04499482319101, 5.042724609375001], 13)
         L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'OpenStreetMap'
         }).addTo(formMap)
