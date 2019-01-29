@@ -1,17 +1,18 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import * as L from "leaflet";
 import { map } from "rxjs/operators";
 import { AppConfig } from "../../../../conf/app.config";
-import { ThrowStmt } from "@angular/compiler";
+// import { ThrowStmt } from "@angular/compiler";
 
 declare let $: any;
 
 @Component({
   selector: "app-sight-map",
-  templateUrl: "./map.component.html",
-  styleUrls: ["./map.component.css"]
+  template: `<div id="sightmap"></div>`,
+  styleUrls: ["./map.component.css"],
+  encapsulation: ViewEncapsulation.None
 })
 export class SightsMapComponent implements OnInit {
   sightsGeoJson: any;
@@ -51,19 +52,20 @@ export class SightsMapComponent implements OnInit {
 
       function onEachFeature(feature, layer) {
         let popupContent =
-          "<b>" +
+          "<img src=\"../../../assets/Azure-Commun-019.JPG\"><p><b>" +
           feature.properties.common_name +
-          "</b> (<i>" +
+          "</b></br><span>Observé par " +
           feature.properties.sci_name +
-          "</i>)</br>le " +
-          feature.properties.date;
+          "</br>le " +
+          feature.properties.date +
+          "</span></p><div><i class=\"fa fa-binoculars\"></i></div>";
         if (feature.properties && feature.properties.popupContent) {
           popupContent += feature.properties.popupContent;
         }
         layer.bindPopup(popupContent);
       }
 
-      function pointToLayer(feature, latlng) {
+      function pointToLayer(_feature, latlng) {
         return L.circleMarker(latlng, geojsonMarkerOptions);
       }
 
@@ -75,12 +77,13 @@ export class SightsMapComponent implements OnInit {
     });
   }
 
+  // mv to services ?
   getProgramArea(id): void {
     this.restItemsServiceGetProgramArea(id).subscribe(programarea => {
       this.programAreaGeoJson = programarea;
       const mysightmap = this.mysightmap;
       const programArea = L.geoJSON(this.programAreaGeoJson, {
-        style: function(feature) {
+        style: function(_feature) {
           return {
             fillColor: "transparent",
             weight: 2,
@@ -97,13 +100,13 @@ export class SightsMapComponent implements OnInit {
   initMap() {
     const mysightmap = L.map("sightmap");
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "OpenStreetMap"
     }).addTo(mysightmap);
 
     const markerIcon = L.icon({
       iconUrl:
-        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png"
+        "../../../../assets/pointer-blue.png"
     });
 
     let myMarker = null;
@@ -111,14 +114,13 @@ export class SightsMapComponent implements OnInit {
     const myMarkerTitle =
       '<i class="fa fa-eye"></i> Partagez votre observation';
 
-    mysightmap.on("click", function<LeafletMouseEvent>(e) {
-      //var Coords = "Lat, Lon : " + e.latlng.lat.toFixed(3) + ", " + e.latlng.lng.toFixed(3);
+    mysightmap.on("click", function(e) {
       let coords = JSON.stringify({
         type: "Point",
         coordinates: [e.latlng.lng, e.latlng.lat]
       });
       this.coords = coords;
-      console.log(coords);
+      // console.log(coords);
       if (myMarker !== null) {
         mysightmap.removeLayer(myMarker);
       }
@@ -132,19 +134,19 @@ export class SightsMapComponent implements OnInit {
     this.mysightmap = mysightmap;
   }
 
-  restItemsServiceGetSightsItems(program_id) {
+  restItemsServiceGetSightsItems(program_id=1) {
     return this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs/` + program_id + `/observations`)
+      .get(`${AppConfig.API_ENDPOINT}/programs/${program_id}/observations`)
       .pipe(map(data => data));
   }
 
-  restItemsServiceGetProgramArea(program_id) {
+  restItemsServiceGetProgramArea(program_id=1) {
     console.log(
       "PROGRAM_GEO_URL: ",
-      `${AppConfig.API_ENDPOINT}/programs/` + program_id
+      `${AppConfig.API_ENDPOINT}/programs/${program_id}`
     );
     return this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs/` + program_id)
+      .get(`${AppConfig.API_ENDPOINT}/programs/${program_id}`)
       .pipe(map(data => data));
   }
 }

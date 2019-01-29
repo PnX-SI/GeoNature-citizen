@@ -1,35 +1,35 @@
-section {
+ section {
     width: 100%;
     min-height: 70vh;
     position: relative;
     margin-bottom: 20px;
 }
 
-/* section:before{
+.section:before{
     content : ' ';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: #00000056;
-} */
+}
 
 .collapse{
     transition-property: all;
-  transition-property: transform;
-  transition-duration: .2s;
+    transition-property: transform;
+    transition-duration: .2s;
 }
 
-.collapse:not(.show){
+/* .collapse:not(.show){
     transform: translateX(-100%) !important;
     display: block !important;
     z-index: 900;
-}
+} */
 
-section:first-child{
+#welcome{
     background: url(../../assets/background.jpg) no-repeat;
     background-size: cover;
 }
 
-section:first-child h1{
+#welcome h1{
     padding-left: 50%;
     margin-top: 30px;
     color: #fff;
@@ -37,14 +37,14 @@ section:first-child h1{
     font-size: 60px;
 }
 
-section:first-child a{
+#welcome a{
     position: absolute;
     bottom: 100px;
     right: 100px;
-    background-color: #00a99d;
+    background-color: var(--primary);
 }
 
-section:first-child span{
+#welcome span{
     position: absolute;
     bottom: 6%;
     left: 50%;
@@ -62,7 +62,7 @@ section:first-child span{
 #slide{
     min-height: inherit !important;
 }
- 
+
 #slider h2{
     position: absolute;
     top: 10px; left: 50px;
@@ -112,7 +112,7 @@ section:first-child span{
 
 #slider .carousel-text h3 {
     font-family: 'NexaRust';
-    color : #45765c;
+    color : var(--ternary);
 }
 
 
@@ -123,130 +123,24 @@ section:first-child span{
 }
 
 #slider .carousel-text a {
-    background-color: #60b15c;
+    background-color: var(--secondary);
     width: 90%;
     text-align: center;
 }
 
 /* OBSERVATION / MAP */
-
-.observations{
-    margin: 0;
-    min-height: inherit;
+/*
+ investigate obs list glitch @921px -> 892
+*/
+app-sights {
+  min-width: 100%;
 }
-
-.observations h2{
-    position: absolute;
-    top: 10px; right: 50px;
-    z-index: 999;
-    color: #fff;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 20px;
-}
-
-.observations h2:after{
-    content : ' ';
-    position: absolute;
-    width: 40px;
-    height: 21px;
-    background: #fff;
-    transform: translateX(125%);
-    background: #fff;
-    right: 0;
-}
-
-.observations #collapseExample{
-    padding: 0px;
-}
-
-.observations #list {
-/*     position: absolute;
-    top: 0;
-    bottom: 0; */
-    background: #eee;
-    z-index: 999;
-    padding: 5px;
-    overflow: scroll;
-    width: 100%;
-    max-height: 70vh;
-
-}
-
-.observations #list .espece {
-    background: #fff;
-    margin-bottom: 5px;
-    display: flex;
-    position: relative;
-}
-
-.observations #list .espece:after{
-    content : ' ';
-    -webkit-clip-path: polygon(100% 78%, 0% 100%, 100% 100%);
-    clip-path: polygon(100% 78%, 0% 100%, 100% 100%);
-    position: absolute;
-    right: 0; bottom: 0; left: 100px; top: 0;
-    background: #f9f9f9
-}
-
-.observations #list .espece a{
-    position: absolute;
-    top: 0; bottom: 0; right: 0; left: 0;
-}
-
-
-.observations #list .espece img{
-    object-fit: cover;
-    width: 100px;
-    height: 100px;
-}
-
-.observations #list .espece div{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 25px;
-}
-
-.observations #list .espece div h5{
-    font-size: 16px;
-    margin-bottom: 0px;
-}
-
-.observations #list .espece div p, .observations #list .espece div span{
-    font-style: italic;
-    color: #00a99d;
-    margin-bottom: 0px;
-}
-
-.observations .toggle-list{
-    position: absolute;
-    right: 0;
-    transform: translateX(100%);
-    background: #4f5c64;
-    padding: 5px;
-    top: 0;
-    bottom: 0;
-    z-index: 9999;
-    align-items: center;
-    display: flex;
-    color : #fff;
-}
-
-.observations #map{
-    padding: 0px;
-}
-
-.observations #map iframe{
-    height: 70vh;
-}
-
 
 /* SCROLLBAR CUSTOM */
 
 /*==========  scroll bar design  ==========*/
 ::-webkit-scrollbar-thumb {
-	background: #00a99d;
+	background: var(--primary);
 	width: 10px;
 	border: 1px solid #eee;
 	margin: 5px;
@@ -282,7 +176,7 @@ section:first-child span{
     .mobile-hidden{
         display: none;
     }
-    
+
     #slider .carousel-text{
         height : 350px;
         width : 350px;
@@ -408,4 +302,3 @@ section:first-child span{
         transform: translate3d(0, +100, 0);
     }
 }
-

@@ -1,14 +1,15 @@
 .navbar {
   min-height: 100px;
   background-color: #fefefe;
-  color: #60a3bc;
+  /* color: #60a3bc; */
+  color: #00a99d;
   /* border-bottom: 1px solid #60a3bc; */
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand {
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-    color: #60a3bc;
+    color: var(--primary);
 }
 
 .main {
@@ -29,7 +30,7 @@ form {
 }
 
 .btn-group li, .btn-group a{
-  min-width: 140px !important;
+  min-width: 143px !important;
   text-align: center;
   transition: all .1s ease-in-out;
 }
@@ -46,24 +47,20 @@ ul.btn-group li a, div.btn-group a{
 }
 
 ul.btn-group li a.active{
-  color : #00a99d;
+  color : var(--primary);
   font-weight: bold;
 }
 
 ul.btn-group li a.active:before{
-  content : ' ';
-  width: 8px;
-  height: 8px;
-  background-color: #00a99d;
-  position: absolute;
-  left: 0;
-  top: 43%;
+  content : '■ ';
+  color: var(--primary);
 }
 
 div.btn-group{
   display: flex;
   flex-direction: column;
-  border-left: solid 1px #00a99d;
+  border-left: solid 1px;
+  border-color: var(--primary);
   margin-left: 50px;
 }
 
@@ -74,53 +71,53 @@ div.btn-group a{
   padding: 0px 6px;
 }
 
-div.btn-group a:last-child{
-  color: #00a99d;
+div.btn-group a:first-child{
+  color: var(--primary);
+  font-weight: bold;
 }
 
-@media screen and (max-width: 912px){
-  .navbar-collapse form{
+ @media screen and (max-width: 992px){
+  /* FIXME: la nav bar ne se referme qu'à 768, pourquoi 912 ? */
+/*    .navbar-collapse form{
     justify-content: flex-end;
-  }
-  .navbar-collapse form div.btn-group{
-    border-left: none;
-    border-right: solid 1px #00a99d;
-    width: fit-content;
-    align-items: flex-end;
-  }
-  .navbar-collapse form .btn-group{
-    margin-right: 30px;
-  }
-  .navbar-collapse form div.btn-group a{
-    text-align: right !important;
-    width: fit-content;
-    min-width: inherit !important;
-  }
-}
+  } */
 
-@media screen and (max-width: 760px) {
-  .navbar-collapse form{
-      flex-direction: column !important;
-      align-items: flex-end;
+  ul.btn-group{
+    padding: 0px;
   }
-  .navbar-collapse form ul.btn-group{
-    flex-direction: column !important;
+  ul.btn-group li{
+    min-width: 120px !important;
+    max-width: 120px !important;
   }
-  .navbar-collapse form ul.btn-group li a{
-    text-align: right !important;
-  }
-  .navbar-collapse form ul.btn-group li a.active:before{
-    display: none;
-  }
-  .navbar-collapse form div.btn-group{
-    border-left: none;
-    border-right: solid 1px #00a99d;
-    width: fit-content;
+} 
+
+ @media screen and (max-width: 850px) {
+    div.btn-group{
+      margin-left: 10px;
+    }
+} 
+
+@media screen and (max-width: 767px) {
+  .navbar form{
+    flex-direction: column;
     align-items: flex-end;
   }
-  .navbar-collapse form div.btn-group a{
-    text-align: right !important;
-    width: fit-content;
-    min-width: inherit !important;
+
+  .navbar form ul{
+    flex-direction: column;
+  }
+
+  .navbar form ul li {
+    min-width: none !important;
+    max-width: none !important;
+  }
+
+  .navbar div.btn-group{
+    border-left: none;
+    border-right: solid 1px #00a99d;
+  }
+
+  .navbar form ul li a, .navbar form div.btn-group a{
+    text-align: right;
   }
 }

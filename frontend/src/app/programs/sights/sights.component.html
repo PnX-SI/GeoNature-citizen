@@ -1,28 +1,12 @@
-<div class="row" id="mapapp">
-  <!-- Carte avec le composant sights/Map -->
-  <div class="col-md-8 col-sm-6" id="sightmap">
-    <app-sight-map></app-sight-map>
-  </div>
-  <!-- Modal de formulaire -->
-  <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title text-primary" id="feature-title"></h4>
-        </div>
-
-        <div class="modal-body" id="feature-info">
-          <!-- Formulaire avec le composans sights/form -->
-          <app-sight-form></app-sight-form>
-        </div><!-- /.modal-body -->
-        <div class="modal-footer">
-        </div><!-- /.modal-footer -->
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
-
-  <div class="col-md-4 col-sm-6" id="sightlist">
-    <!-- Liste avec le composant sights/list -->
+<section class="observations row">
+  <div class="col-lg-4 col-md-12" id="list">
     <app-sight-list></app-sight-list>
   </div>
-</div>
+
+  <div class="col-lg-8 col-md-12" id="map">
+    <app-sight-map></app-sight-map>
+    <div class="btn-groups">
+      <app-modalflow></app-modalflow>
+    </div>
+  </div>
+</section>

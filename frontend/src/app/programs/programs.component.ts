@@ -21,7 +21,7 @@ export class ProgramsComponent implements OnInit {
   programCount: number;
 
   constructor(
-    private http: HttpClient,
+    // private http: HttpClient,
     private modalService: NgbModal,
     private programservice: GncProgramsService
   ) {}

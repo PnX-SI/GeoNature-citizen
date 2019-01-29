@@ -81,7 +81,8 @@ class TMedias(db.Model):
     is_public = db.Column(db.BOOLEAN)
     supprime = db.Column(db.BOOLEAN)
     id_type = db.Column(db.Integer)
-    types = db.Column(db.Integer)
+    source = db.Column(db.Text)
+    licence = db.Column(db.Text)
 
     def __repr__(self):
         return '<TMedias %r>' % self.titre

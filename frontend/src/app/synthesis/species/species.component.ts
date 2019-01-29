@@ -1,10 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: "app-species",
   templateUrl: "./species.component.html",
-  styleUrls: ["./species.component.css"]
+  styleUrls: ["./species.component.css"],
+  encapsulation: ViewEncapsulation.None,
 })
 export class SpeciesComponent implements OnInit {
   title = "fiche espèce";
