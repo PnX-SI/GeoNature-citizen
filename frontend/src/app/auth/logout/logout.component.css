@@ -29,12 +29,8 @@ span.input-group-text {
 
 .modal-body input{
     border: solid 1px transparent;
-    background: #eee;
+    border : solid 1px #bbb;
     transition: all .2s ease-in-out;
-}
-
-.modal-body input:focus{
-    background: rgb(196, 196, 196);
 }
 
 .modal-body input::placeholder{
@@ -56,6 +52,6 @@ span.input-group-text {
 
 .modal-body button:hover{
     background: transparent;
-    color: #60b15c;
+    color: var(--secondary);
     border: solid 1px #60b15c;
 }

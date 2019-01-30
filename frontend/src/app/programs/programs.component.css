@@ -1,209 +1,52 @@
-.observations{
-    margin: 0px -15px;
-    min-height: inherit;
-}
-
-.observations #collapseExample{
+.programs{
     padding: 0px;
 }
 
-.observations #list {
-    background: #eee;
-    padding: 5px;
-    overflow: scroll;
-    /* width: 100%; */
-    height: calc(100vh - 160px);
-
+.programs .row{
+    margin: 0px;
 }
 
-.observations #list .espece {
-    background: #fff;
-    margin-bottom: 5px;
-    display: flex;
-    position: relative;
-    border: solid 2px #eee;
-    overflow: hidden;
-}
-
-.observations #list .espece:after{
-    content : ' ';
-    -webkit-clip-path: polygon(100% 78%, 0% 100%, 100% 100%);
-    clip-path: polygon(100% 78%, 0% 100%, 100% 100%);
-    position: absolute;
-    right: 0; bottom: 0; left: 100px; top: 0;
-    background: #75757512;
-}
-
-.observations #list .espece:hover{
-    border: solid 2px #00a99d;
-    cursor: pointer;
-}
-
-.observations .hide{
-    transform: translateX(100%);
-    transition: all .2s ease-in-out;
-    background: #00a99d;
-    height: 100px;
-    padding: 0px 10px;
-    display: flex;
-    align-items: center;
-    color : #fff;
-}
-
-.observations .espece:hover .hide{
-    transform: translateX(0);
-}
-
-.observations #list .espece img{
-    object-fit: cover;
-    width: 100px;
-    height: 100px;
-}
-
-.observations #list .espece .infos{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 25px;
+.row h1{
     width: 100%;
-}
-
-#list .espece div h5{
-    font-size: 16px;
-    margin-bottom: 0px;
-}
-
-#list .espece div p, #list .espece div span{
-    font-style: italic;
-    color: #00a99d;
-    margin-bottom: 0px;
-}
-
-.observations .toggle-list{
-    position: absolute;
-    right: 0;
-    transform: translateX(100%);
-    background: #45765c;
-    padding: 5px;
-    top: 0;
-    bottom: 0;
-    z-index: 50;
-    align-items: center;
-    display: flex;
     color : #fff;
-}
-
-.observations #map{
-    padding: 0px;
-}
-
-.observations #map iframe{
-    height: 100%;
-}
-
-.observations .toolbar{
-    display: flex;
-}
-
-.observations .toolbar .dropdown, .observations .toolbar input{
-    flex-grow: 1;
-    background: none;
-    border : solid 2px #00a99d;
-}
-
-.observations .dropdown .dropdown-menu{
-    min-width: 100%;
-    border-radius: 0px;
-}
-
-.observations .toolbar input{
-    padding-left: 10px;
-}
-
-.observations .toolbar input:focus{
-    border : solid 2px #00a99d !important;
-}
-
-.observations .obs-found{
-    background: #60b15c;
-    background: linear-gradient(to bottom, #60b15c 0%,#60b15c 50%,#57a154 51%,#57a154 100%);
-}
-
-.observations .obs-found p{
-    margin: 0;
-    font-style: italic;
-    color: #fff;
+    background: #00a99d;
+    background: -moz-linear-gradient(top, #00a99d 0%, #00a99d 50%, #0a998f 51%, #0a998f 100%); 
+    background: -webkit-linear-gradient(top, #00a99d 0%,#00a99d 50%,#0a998f 51%,#0a998f 100%); 
+    background: linear-gradient(to bottom, #00a99d 0%,#00a99d 50%,#0a998f 51%,#0a998f 100%);
+    font-size: 1.5rem;
+    padding: 6px 16px;
+    text-transform: uppercase;
     text-align: center;
 }
 
-.observations .toolbar .dropdown button{
-    background: none;
-    width: 100%;
-}
-
-.observations .toolbar .dropdown button:after{
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    color : #00a99d;
-}
-
-.collapse:not(.show){
-    display: block !important;
-    transform: translateX(-100%);
-}
-
-.observations #map .btn-group{
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-}
-
-.observations #map .btn-group button{
-    margin-left: 20px;
+.programs .text-center{
+    margin-top: 30px;
+    margin-bottom: 30px;
     opacity: 0.8;
-    padding: 10px 30px;
 }
 
-.observations #map .btn-group button:hover{
+.programs .text-center:hover{
     opacity: 1;
+    cursor: pointer;
 }
 
-.observations #map .btn-group button:first-child{
-    background-color: #60b15c;
+.programs .text-center img{
+    margin-bottom: 30px;
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
-.observations #map .btn-group button:nth-child(2n){
-    background: #00a99d;
-}
-/* SCROLLBAR CUSTOM */
-
-/*==========  scroll bar design  ==========*/
-::-webkit-scrollbar-thumb {
-	background: #00a99d;
-	width: 10px;
-	border: 1px solid #eee;
-	margin: 5px;
-}
-::-webkit-scrollbar{
-	background: #eee;
-	width: 10px;
-	height: 10px;
-	margin: 5px;
-	cursor: pointer;
+.programs .text-center h5{
+    font-weight: normal;
+    color: #00a99d;
+    text-transform: uppercase;
 }
 
-@media screen and (max-width: 992px){
-    .observations #list{
-        height: 230px;
-    }
-    .observations .toggle-list{
-        display: none;
-    }
-    .observations #map{
-        height: 500px;
-    }
-    .observations .hide {
-        transform: translateX(-0%);
+@media screen and (max-width: 775px){
+    .programs .img-hover{
+        max-width: 200px;
+        margin: 0 auto;
     }
 }
+    
