@@ -66,10 +66,12 @@ def registration():
               type: string
             username:
               type: string
+              example: user1
             email:
               type: string
             password:
               type: string
+              example: user1
     responses:
       200:
         description: user created

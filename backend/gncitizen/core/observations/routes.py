@@ -1,24 +1,10 @@
-# import os
-import datetime
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import uuid
 
 import requests
-from flask import (
-    Blueprint,
-    request,
-    redirect,
-    flash,
-    # send_from_directory,
-    # url_for,
-    current_app,
-    # render_template,
-)
-
-from werkzeug.utils import secure_filename
-
-import os
-
-# from werkzeug import secure_filename
+from flask import Blueprint, current_app, request
 from flask_jwt_extended import jwt_optional
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
@@ -26,12 +12,14 @@ from shapely.geometry import Point, asShape
 
 from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import UserModel
-from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR, allowed_file
+from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
+from gncitizen.utils.media import save_upload_file
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
-from .models import ObservationModel
+
+from .models import ObservationModel, ObservationMediaModel
 
 routes = Blueprint("observations", __name__)
 
@@ -47,9 +35,9 @@ obs_keys = (
 
 
 def get_specie_from_cd_nom(cd_nom):
-    """Récupère l'espèce d'après le cdnom
-    
-    Renvoie le nom français et scientifique officiel (cd_nom = cd_ref) de 
+    """Récupère l'espèce d'après le cdnom.
+
+    Renvoie le nom français et scientifique officiel (cd_nom = cd_ref) de
     l'espèce d'après le cd_nom
     """
 
@@ -123,63 +111,6 @@ def get_observation(pk):
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/photo", methods=["POST"])
-@json_resp
-def post_photo():
-    """Test pour l'import de médias """
-    if "file" in request.files:
-        file = request.files["file"]
-        current_app.logger.debug(file)
-        if file.filename == "":
-            current_app.logger.debug("No selected file")
-            pass
-        if file and allowed_file(file.filename):
-            ext = file.rsplit(".", 1).lower()
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = "observation_sp" + 0000 + "_" + timestamp + ext
-            file.save(os.path.join(str(MEDIA_DIR), filename))
-            current_app.logger.debug("Fichier {} enregistré".format(filename))
-            return filename
-
-
-@routes.route("/upload", methods=["GET", "POST"])
-def upload_file():
-    if request.method == "POST":
-        # check if the post request has the file part
-        if "file" not in request.files:
-            flash("No file part")
-            return redirect(request.url)
-        file = request.files["file"]
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == "":
-            flash("No selected file")
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(str(MEDIA_DIR), filename))
-            return filename
-    return """
-    <!doctype html>
-    <title>Upload new File</title>
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-{% block body %}{% endblock %}
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    """
-
-
 @routes.route("/observations", methods=["POST"])
 @json_resp
 @jwt_optional
@@ -188,9 +119,10 @@ def post_observation():
     add a observation to database
         ---
         tags:
-          - observations
-        summary: Creates a new observation (JWT auth optional, if used, obs_txt 
-        replaced by username)
+          - observations      
+        # security:
+        #   - bearerAuth: []
+        summary: Creates a new observation (JWT auth optional, if used, obs_txt replaced by username)
         consumes:
           - application/json
           - multipart/form-data
@@ -208,6 +140,11 @@ def post_observation():
                 - date
                 - geom
               properties:
+                id_program: 
+                  type: string
+                  description: Program unique id
+                  example: 1
+                  default: 1
                 cd_nom:
                   type: string
                   description: CD_Nom Taxref
@@ -238,77 +175,58 @@ def post_observation():
         """
     try:
         request_datas = dict(request.get_json())
-
+        print(request_datas)
         datas2db = {}
         for field in request_datas:
             if hasattr(ObservationModel, field):
                 datas2db[field] = request_datas[field]
         current_app.logger.debug("datas2db: %s", datas2db)
-        try:
-            if "file" in request.files:
-                file = request.files["file"]
-                current_app.logger.debug(file)
-                if file.filename == "":
-                    current_app.logger.debug("No selected file")
-                    pass
-                if file and allowed_file(file.filename):
-                    ext = file.rsplit(".", 1).lower()
-                    timestamp = datetime.datetime.now().strftime(
-                        "%Y%m%d_%H%M%S"
-                    )
-                    filename = (
-                        "obstax_"
-                        + datas2db["cd_nom"]
-                        + "_"
-                        + timestamp
-                        + "."
-                        + ext
-                    )
-                    file.save(os.path.join(str(MEDIA_DIR), filename))
-                    current_app.logger.debug(
-                        "Fichier {} enregistré".format(filename)
-                    )
-            return filename
-
-        except Exception as e:
-            current_app.logger.debug("saving file ", e)
-            raise GeonatureApiError(e)
-
-        else:
-            file = None
 
         try:
-            newobservation = ObservationModel(**datas2db)
+            newobs = ObservationModel(**datas2db)
         except Exception as e:
             current_app.logger.debug(e)
             raise GeonatureApiError(e)
 
         try:
             shape = asShape(request_datas["geometry"])
-            newobservation.geom = from_shape(Point(shape), srid=4326)
+            newobs.geom = from_shape(Point(shape), srid=4326)
         except Exception as e:
             current_app.logger.debug(e)
             raise GeonatureApiError(e)
 
         id_role = get_id_role_if_exists()
         if id_role:
-            newobservation.id_role = id_role
+            newobs.id_role = id_role
             role = UserModel.query.get(id_role)
-            newobservation.obs_txt = role.username
-            newobservation.email = role.email
+            newobs.obs_txt = role.username
+            newobs.email = role.email
         else:
-            if (
-                newobservation.obs_txt is None
-                or len(newobservation.obs_txt) == 0
-            ):
-                newobservation.obs_txt = "Anonyme"
+            if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
+                newobs.obs_txt = "Anonyme"
 
-        newobservation.uuid_sinp = uuid.uuid4()
+        newobs.uuid_sinp = uuid.uuid4()
 
-        db.session.add(newobservation)
+        db.session.add(newobs)
         db.session.commit()
         # Réponse en retour
-        features = generate_observation_geojson(newobservation.id_observation)
+        features = generate_observation_geojson(newobs.id_observation)
+        # Enregistrement de la photo et correspondance Obs Photo
+        if "file" in request.files:
+            try:
+                filename, id_media, id_match = save_upload_file(
+                    request.files,
+                    "obstax",
+                    datas2db["cd_nom"],
+                    newobs.id_observation,
+                    ObservationMediaModel,
+                )
+                return filename, id_media
+
+            except Exception as e:
+                current_app.logger.debug("saving file ", e)
+                raise GeonatureApiError(e)
+
         return (
             {"message": "New observation created.", "features": features},
             200,

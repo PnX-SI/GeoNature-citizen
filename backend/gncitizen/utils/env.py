@@ -19,13 +19,6 @@ ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
 MEDIA_DIR = ROOT_DIR / "media"
 
 
-def allowed_file(filename):
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-    )
-
-
 def get_config_file_path(config_file=None):
     """ Return the config file path by checking several sources
 
@@ -49,7 +42,20 @@ db = SQLAlchemy()
 
 jwt = JWTManager()
 
-swagger = Swagger()
+swagger_template = {
+    # "openapi": "3.0.0",
+    # "components": {
+    #     "securitySchemes": {
+    #         "bearerAuth": {
+    #             "type": "http",
+    #             "scheme": "bearer",
+    #             "bearerFormat": "JWT",
+    #         }
+    #     }
+    # },
+}
+
+swagger = Swagger(template=swagger_template)
 
 taxhub_url = load_config()["API_TAXHUB"]
 taxhub_lists_url = taxhub_url + "biblistes/"
