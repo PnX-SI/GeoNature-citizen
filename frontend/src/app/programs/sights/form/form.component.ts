@@ -31,7 +31,7 @@ export class SightsFormComponent implements AfterViewInit {
   program: any;
   program_id: any = 1;
   formMap: any
-  taxonListThreshold = 10
+  taxonListThreshold = 10  // TODO: export to conf
 
   constructor(
     private http: HttpClient,
@@ -48,20 +48,30 @@ export class SightsFormComponent implements AfterViewInit {
       this.taxonomyList = this.program.features[0].properties.taxonomy_list;
       this.getSurveySpeciesItems(this.taxonomyList);
       console.log('TAXXLIST', this.taxonomyList);
-      // TODO: constraints to keep program perimeter inbound (chckbx?)
+
       const formMap = L.map('formMap').setView([45.04499482319101, 5.042724609375001], 13)
+      // TODO: extract programArea centroid
+      /*
+       const formMap = L.map('formMap').locate({setView: true, maxZoom: 13})
+      function onLocationFound(e) {
+        const radius = e.accuracy / 2;
+        L.marker(e.latlng).addTo(map)
+            .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+        L.circle(e.latlng, radius).addTo(map);
+      }
+      map.on('locationfound', onLocationFound);
+      */
+
       L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
               attribution: 'OpenStreetMap'
       }).addTo(formMap)
 
       const markerIcon = L.icon({
           iconUrl:
-            "//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/marker-icon.png",
-          iconSize: [25, 40],
-          iconAnchor: [12, 40]
+          "../../../../assets/pointer-blue.png",  // TODO: Asset path should be normalized, conf ?
+          iconAnchor: [16, 42]
         })
-
-      console.debug('prog:', this.program)
 
       const programArea = L.geoJSON(this.program, {
         style: function(_feature) {
@@ -73,13 +83,17 @@ export class SightsFormComponent implements AfterViewInit {
             dashArray: "4"
           };
         }
-      }).addTo(formMap)  // .bindPopup("Observation");
-      formMap.fitBounds(programArea.getBounds())
+      }).addTo(formMap)
+
+      const maxBounds = programArea.getBounds()
+      formMap.fitBounds(maxBounds)
+      // enforce program area maxBounds (optional ?)
+      // formMap.setMaxBounds(maxBounds)
 
       let myMarker = null;
+      const myMarkerTitle = '<i class="fa fa-eye"></i> Partagez votre observation';
 
-      const myMarkerTitle =
-        '<i class="fa fa-eye"></i> Partagez votre observation';
+      console.debug('prog:', this.program)
 
       formMap.on("click", function(e) {
         //var Coords = "Lat, Lon : " + e.latlng.lat.toFixed(3) + ", " + e.latlng.lng.toFixed(3);
@@ -87,16 +101,25 @@ export class SightsFormComponent implements AfterViewInit {
           type: "Point",
           coordinates: [e.latlng.lng, e.latlng.lat]
         });
-        this.coords = coords;
+        // this.coords = coords;
         console.log(coords);
+
         if (myMarker !== null) {
           formMap.removeLayer(myMarker);
         }
-        myMarker = L.marker(e.latlng, { icon: markerIcon }).addTo(formMap);
-        $("#feature-title").html(myMarkerTitle);
-        $("#feature-coords").html(coords);
-        // $("#feature-info").html(myMarkerContent);
-        $("#featureModal").modal("show");
+
+        // TODO: enforce program area -> concave polygon: see ray casting algorithm.
+        // inspiration: https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
+        if (L.latLngBounds(maxBounds).contains([e.latlng.lat, e.latlng.lng])) {
+          myMarker = L.marker(e.latlng, { icon: markerIcon }).addTo(formMap);
+          $("#feature-title").html(myMarkerTitle);
+          $("#feature-coords").html(coords);
+          // $("#feature-info").html(myMarkerContent);
+          $("#featureModal").modal("show");
+        /* } else {
+            console.debug(maxBounds, [e.latlng.lat, e.latlng.lng])
+        */
+        }
       });
     })
   }
