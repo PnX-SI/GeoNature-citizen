@@ -1,6 +1,6 @@
-'''
+"""
 Fonctions utilitaires
-'''
+"""
 import json
 from functools import wraps
 
@@ -15,29 +15,27 @@ from .env import db
     @TODO MANQUE FLOAT
 """
 SERIALIZERS = {
-    'date': lambda x: str(x) if x else None,
-    'datetime': lambda x: str(x) if x else None,
-    'time': lambda x: str(x) if x else None,
-    'timestamp': lambda x: str(x) if x else None,
-    'uuid': lambda x: str(x) if x else None,
-    'numeric': lambda x: str(x) if x else None
+    "date": lambda x: str(x) if x else None,
+    "datetime": lambda x: str(x) if x else None,
+    "time": lambda x: str(x) if x else None,
+    "timestamp": lambda x: str(x) if x else None,
+    "uuid": lambda x: str(x) if x else None,
+    "numeric": lambda x: str(x) if x else None,
 }
 
 
 def create_schemas(db):
-    '''Créée les schémas lors du premier lancement de l'application'''
-    db.session.execute('CREATE SCHEMA IF NOT EXISTS gnc_core')
-    db.session.execute('CREATE SCHEMA IF NOT EXISTS gnc_obstax')
+    """Créée les schémas lors du premier lancement de l'application"""
+    db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_core")
+    db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_obstax")
+    db.session.execute("CREATE SCHEMA IF NOT EXISTS ref_geo")
     db.session.commit()
 
 
 def get_geojson_feature(wkb):
-    ''' retourne une feature geojson à partir d'un WKB'''
+    """ retourne une feature geojson à partir d'un WKB"""
     geometry = to_shape(wkb)
-    feature = Feature(
-        geometry=geometry,
-        properties={}
-    )
+    feature = Feature(geometry=geometry, properties={})
     return feature
 
 
@@ -56,12 +54,11 @@ def serializable(cls):
         (
             db_col.key,
             SERIALIZERS.get(
-                db_col.type.__class__.__name__.lower(),
-                lambda x: x
-            )
+                db_col.type.__class__.__name__.lower(), lambda x: x
+            ),
         )
         for db_col in cls.__mapper__.c
-        if not db_col.type.__class__.__name__ == 'Geometry'
+        if not db_col.type.__class__.__name__ == "Geometry"
     ]
 
     """
@@ -92,7 +89,8 @@ def serializable(cls):
             fprops = cls_db_columns
 
         out = {
-            item: _serializer(getattr(self, item)) for item, _serializer in fprops
+            item: _serializer(getattr(self, item))
+            for item, _serializer in fprops
         }
 
         if recursif is False:
@@ -140,7 +138,7 @@ def geoserializable(cls):
         feature = Feature(
             id=str(getattr(self, idCol)),
             geometry=geometry,
-            properties=self.as_dict(recursif, columns)
+            properties=self.as_dict(recursif, columns),
         )
         return feature
 
@@ -149,10 +147,10 @@ def geoserializable(cls):
 
 
 def json_resp(fn):
-    '''
+    """
     Décorateur transformant le résultat renvoyé par une vue
     en objet JSON
-    '''
+    """
 
     @wraps(fn)
     def _json_resp(*args, **kwargs):
@@ -165,29 +163,24 @@ def json_resp(fn):
     return _json_resp
 
 
-def to_json_resp(
-        res,
-        status=200,
-        filename=None,
-        as_file=False,
-        indent=None):
+def to_json_resp(res, status=200, filename=None, as_file=False, indent=None):
     if not res:
         status = 404
-        res = {'message': 'not found'}
+        res = {"message": "not found"}
 
     headers = None
     if as_file:
         headers = Headers()
-        headers.add('Content-Type', 'application/json')
+        headers.add("Content-Type", "application/json")
         headers.add(
-            'Content-Disposition',
-            'attachment',
-            filename='export_%s.json' % filename
+            "Content-Disposition",
+            "attachment",
+            filename="export_%s.json" % filename,
         )
 
     return Response(
         json.dumps(res, indent=indent),
         status=status,
-        mimetype='application/json',
-        headers=headers
+        mimetype="application/json",
+        headers=headers,
     )
