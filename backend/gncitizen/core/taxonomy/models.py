@@ -13,7 +13,7 @@ class BibNoms(db.Model):
         db.Integer,
         nullable=True, unique=True
     )
-    cd_ref = db.Column(db.Integer)
+    cd_ref = db.Column(db.Integer, unique=True)
     nom_francais = db.Column(db.Unicode)
     comments = db.Column(db.Unicode)
 

@@ -28,6 +28,8 @@ def create_schemas(db):
     '''Créée les schémas lors du premier lancement de l'application'''
     db.session.execute('CREATE SCHEMA IF NOT EXISTS gnc_core')
     db.session.execute('CREATE SCHEMA IF NOT EXISTS gnc_obstax')
+    db.session.execute('CREATE SCHEMA IF NOT EXISTS taxonomie')
+    db.session.execute('CREATE SCHEMA IF NOT EXISTS ref_geo')
     db.session.commit()
 
 
