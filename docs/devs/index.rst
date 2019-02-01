@@ -1,6 +1,11 @@
 Installer GeoNature-citizen en mode développement
 =================================================
 
+.. warning::
+
+    GeoNature-citizen nécessite l'installation préalable de TaxHub > https://taxhub.readthedocs.io/fr/latest/
+
+
 **********************
 Contribuer avec GitHub
 **********************
