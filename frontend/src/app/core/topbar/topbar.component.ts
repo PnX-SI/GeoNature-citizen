@@ -1,7 +1,7 @@
 import { AuthService } from "./../../auth/auth.service";
 import { Component, OnInit } from "@angular/core";
 import { AppConfig } from "../../../conf/app.config";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoginComponent } from "../../auth/login/login.component";
 import { RegisterComponent } from "../../auth/register/register.component";
 import { LogoutComponent } from "../../auth/logout/logout.component";
@@ -17,12 +17,9 @@ export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
   isLoggedIn: boolean = false;
   username: any;
+  modalRef: NgbModalRef
 
   constructor(private auth: AuthService, private modalService: NgbModal) {}
-
-  // modal(content) {
-  //   this.modalService.open(content, {size: 'lg',centered:true});
-  // }
 
   get userLoggedIn() {
     if (localStorage.getItem("username")) {
@@ -33,19 +30,19 @@ export class TopbarComponent implements OnInit {
   }
 
   login() {
-    this.modalService.open(LoginComponent, { size: "lg", centered: true });
+    this.modalRef = this.modalService.open(LoginComponent, { size: "lg", centered: true });
   }
 
   register() {
-    this.modalService.open(RegisterComponent, { size: "lg", centered: true });
+    this.modalRef = this.modalService.open(RegisterComponent, { size: "lg", centered: true });
   }
 
   logout() {
-    this.modalService.open(LogoutComponent, { size: "lg", centered: true });
+    this.modalRef = this.modalService.open(LogoutComponent, { size: "lg", centered: true });
   }
 
   programs() {
-    this.modalService.open(ProgramsComponent, { size: "lg", centered: true });
+    this.modalRef = this.modalService.open(ProgramsComponent, { size: "lg", centered: true });
   }
 
   ngOnInit(): void {
@@ -63,5 +60,10 @@ export class TopbarComponent implements OnInit {
           console.log(err);
         });
     }
+  }
+
+  close(d) {
+    console.debug(`modal close: ${d}`)
+    this.modalRef.close(d)
   }
 }
