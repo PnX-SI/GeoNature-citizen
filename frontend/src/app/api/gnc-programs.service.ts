@@ -24,6 +24,16 @@ export interface IGncFeatures extends FeatureCollection {
   count: number;
 }
 
+export interface IGeoFeatureProgramAdapter {
+  properties: Program;
+}
+
+export interface IGeoFeatures {
+  type: string;
+  features: IGeoFeatureProgramAdapter[];
+  count: number;
+}
+
 @Injectable({
   deps: [
     [new Optional(), new SkipSelf(), GncProgramsService],
