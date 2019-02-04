@@ -12,12 +12,12 @@ import {
 
 import { SightsFormComponent } from "./form/form.component"
 import { SightsListComponent } from "./list/list.component"
-import { SightsMapComponent } from "./map/map.component"
-import { SightsComponent } from './sights.component'
+import { ObsMapComponent } from "./map/map.component"
+import { ObsComponent } from './obs.component'
 
-describe('SightsComponent', () => {
-  let component: SightsComponent;
-  let fixture: ComponentFixture<SightsComponent>;
+describe('ObsComponent', () => {
+  let component: ObsComponent;
+  let fixture: ComponentFixture<ObsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,17 +31,17 @@ describe('SightsComponent', () => {
         NgbModal,
       ],
       declarations: [
-        SightsComponent,
+        ObsComponent,
         SightsFormComponent,
         SightsListComponent,
-        SightsMapComponent,
+        ObsMapComponent,
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SightsComponent);
+    fixture = TestBed.createComponent(ObsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

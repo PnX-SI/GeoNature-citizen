@@ -1,8 +1,16 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core'
+import {
+  CanActivate,
+  CanActivateChild,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  Router
+} from '@angular/router'
+import { Observable, of } from 'rxjs'
+import { map, catchError } from 'rxjs/operators'
 
 import { GncProgramsService } from '../api/gnc-programs.service'
+import { Program } from './programs.models'
 
 @Injectable({
   providedIn: 'root'
@@ -12,18 +20,21 @@ export class UniqueProgramGuard implements CanActivate, CanActivateChild {
 
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-      let count = 0
-      this.programService.getAllPrograms().subscribe(programs => {
-        count = (programs) ? programs.length : count
+    state: RouterStateSnapshot
+  ): Observable<boolean> | Promise<boolean> | boolean {
+    return this.programService.getAllPrograms().pipe(  // FIXME: leverage resolve
+      map((p: Program[]) => {
+        const count = (p) ? p.length : 0
+        const programs = (p) ? p : undefined
         console.debug(`UniqueProgramGuard program count: ${count}`, programs)
-      })
-      if (count > 1) {
-        // FIXME: route snapshot data ?  program = programs[0]
+        if (count === 1) {
+          this.router.navigate(['programs', programs[0].id_program, 'observations'])
+          return false
+        }
         return true
-      }
-      this.router.navigate(['/programs'])
-      return false
+      }),
+      catchError(_e => of(true))
+    )
   }
 
   canActivateChild(

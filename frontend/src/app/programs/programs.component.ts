@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+
 // import { AppConfig } from "../../conf/app.config";
 import { Program } from "./programs.models";
 import { GncProgramsService } from "../api/gnc-programs.service";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 
 @Component({
@@ -28,14 +29,15 @@ export class ProgramsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // FIXME ProgramsComponent route snapshot data
-    // console.debug('ProgramsComponent: route snapshot programs', this.route.snapshot.programs)
-    // this.route.data.subscribe((data: { programs: Program[] }) => {
-
-    this.programService.getAllPrograms().subscribe((programs: Program[]) => {
-      this.programs = programs;
-      console.debug('ProgramsComponent: GncProgramsService call result:', this.programs)
-      this.programCount = (this.programs)?this.programs.length:0;
+    this.programService.getAllPrograms().subscribe(
+      programs => {
+        this.programs = programs;
+        console.debug('ProgramsComponent: GncProgramsService call result:', this.programs)
+        this.programCount = (this.programs)?this.programs.length:0;
     })
+  }
+
+  close() {
+    this.modal.close('PROGRAM_SELECTED')
   }
 }
