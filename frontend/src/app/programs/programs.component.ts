@@ -2,6 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+
 // import { AppConfig } from "../../conf/app.config";
 import { Program } from "./programs.models";
 import { GncProgramsService } from "../api/gnc-programs.service";
@@ -29,5 +31,9 @@ export class ProgramsComponent implements OnInit {
         this.programCount = this.programs ? this.programs.length : 0;
       });
     }
+  }
+
+  close() {
+    this.modal.close("PROGRAM_SELECTED");
   }
 }

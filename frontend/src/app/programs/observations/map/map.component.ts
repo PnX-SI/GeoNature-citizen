@@ -1,222 +1,146 @@
-import {
-  Component,
-  ViewEncapsulation,
-  OnInit,
-  Input,
-  Output,
-  OnChanges,
-  SimpleChanges,
-  EventEmitter
-} from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { map } from "rxjs/operators";
 
-import { GeoJsonObject, FeatureCollection } from "geojson";
 import * as L from "leaflet";
-import "leaflet.markercluster";
 
-// import { AppConfig } from "../../../../conf/app.config";
+import { AppConfig } from "../../../../conf/app.config";
 
 declare let $: any;
 
-export const DEFAULT_TILES = {
-  url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  attribution: "OpenStreetMap"
-};
+const newObsMarkerIcon = L.icon({
+  iconUrl: "../../../../assets/pointer-blue.png",
+  iconSize: [33, 42],
+  iconAnchor: [16, 42]
+})
 
-const newObsMarkerIcon = () =>
-  L.icon({
-    iconUrl: "../../../../assets/pointer-blue2.png",
-    iconSize: [33, 42],
-    iconAnchor: [16, 42]
-  });
-
-const obsMarkerIcon = () =>
-  L.icon({
-    iconUrl: "../../../../assets/pointer-green.png",
-    iconSize: [33, 42],
-    iconAnchor: [16, 42]
-  });
+const obsMarkerIcon = L.icon({
+  iconUrl: "../../../../assets/pointer-white.png",
+  iconSize: [33, 42],
+  iconAnchor: [16, 42]
+})
 
 const myMarkerTitle = '<i class="fa fa-eye"></i> Partagez votre observation';
 
-const programAreaStyle = {
-  fillColor: "transparent",
-  weight: 2,
-  opacity: 0.8,
-  color: "red",
-  dashArray: "4"
-};
 
 @Component({
   selector: "app-obs-map",
-  template: `
-    <div id="obsMap"></div>
-  `,
-  styleUrls: ["./map.component.css"],
+  template: `<div id="obsMap"></div>`,
+  styleUrls: ['./map.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class ObsMapComponent implements OnInit, OnChanges {
-  @Input("observations") observations: FeatureCollection;
-  @Input("program") program: FeatureCollection;
-  @Input("geolocate") geolocate = true;
-  @Output() onClick: EventEmitter<any> = new EventEmitter();
-  programMaxBounds: L.LatLngBounds;
-  coords: string;
-  obsMap: L.Map;
-  clustersLayer: L.FeatureGroup;
-  map_init = false;
+export class ObsMapComponent implements OnInit {
+  obsGeoFeature: any;
+  programAreaGeoJson: any;
+  coords: any;
+  program_id: any;
+  obsMap: any;
 
-  constructor() {}
+  constructor(private http: HttpClient, private route: ActivatedRoute) {
+    this.route.params.subscribe(params => {
+      this.program_id = params["id"];
+    });
+  }
 
   ngOnInit() {
-    this.initMap("obsMap", {}, DEFAULT_TILES);
+    this.initMap();
+    this.getProgramArea(this.program_id);
+    this.getObservation(this.program_id);
   }
 
-  ngOnChanges(_changes: SimpleChanges) {
-    if (this.obsMap) {
-      this.loadProgramArea();
-      this.loadObservations();
-    }
-  }
+  getObservation(id): void {
+    this.restItemsServiceGetSightsItems(id).subscribe(obs => {
+      const geoFeatures = obs
+      const obsMap = this.obsMap;
 
-  initMap(
-    element: string | HTMLElement = "obsMap",
-    options: L.MapOptions = {},
-    tiles: Object = DEFAULT_TILES
-  ): void {
-    this.obsMap = L.map(element, options);
-    this.obsMap.zoomControl.setPosition("topright");
-    L.control
-      .scale({ position: "bottomleft", imperial: false })
-      .addTo(this.obsMap);
-    L.tileLayer(tiles["url"], {
-      attribution: tiles["attribution"]
-    }).addTo(this.obsMap);
-    this.map_init = true;
-    if (this.geolocate) {
-      this.initTracking();
-    }
-  }
-
-  loadObservations(): void {
-    if (this.observations) {
-      // this.obsMap.remove this.clustersLayer
-      this.clustersLayer = L.markerClusterGroup({
-        iconCreateFunction: clusters => {
-          const childCount = clusters.getChildCount();
-          let c = " marker-cluster-";
-          if (childCount < 10) {
-            c += "small";
-          } else if (childCount < 100) {
-            c += "medium";
-          } else {
-            c += "large";
-          }
-
-          return new L.DivIcon({
-            html: "<div><span>" + childCount + "</span></div>",
-            className: "marker-cluster" + c,
-            iconSize: new L.Point(40, 40)
-          });
+      function onEachFeature(feature, layer) {
+        let popupContent =
+          "<img src=\"../../../assets/Azure-Commun-019.JPG\"><p><b>" +
+          feature.properties.common_name +
+          "</b></br><span>Observé par " +
+          feature.properties.sci_name +
+          "</br>le " +
+          feature.properties.date +
+          "</span></p><div><i class=\"fa fa-binoculars\"></i></div>";
+        if (feature.properties && feature.properties.popupContent) {
+          popupContent += feature.properties.popupContent;
         }
-      });
+        layer.bindPopup(popupContent);
+      }
 
-      this.clustersLayer.addLayer(
-        L.geoJSON(<GeoJsonObject>this.observations, {
-          onEachFeature: this.onEachFeature,
-          pointToLayer: this.pointToLayer
-        })
-      );
+      function pointToLayer(_feature, latlng) {
+        return L.marker(latlng, { icon: obsMarkerIcon })
+      }
 
-      this.obsMap.addLayer(this.clustersLayer);
-    }
-  }
-
-  initTracking() {
-    this.obsMap.locate({
-      watch: true,
-      enableHighAccuracy: true
+      console.debug("Observations :", geoFeatures);
+      L.geoJSON(geoFeatures, {
+        onEachFeature: onEachFeature,
+        pointToLayer: pointToLayer
+      }).addTo(obsMap);
     });
-    this.obsMap.on("locationfound", this.onLocationFound.bind(this));
-    this.obsMap.on("locationerror", this.onLocationError.bind(this));
   }
 
-  onEachFeature(feature, layer) {
-    let popupContent =
-      '<img src="../../../assets/Azure-Commun-019.JPG"><p><b>' +
-      feature.properties.common_name +
-      "</b></br><span>Observé par " +
-      feature.properties.sci_name +
-      "</br>le " +
-      feature.properties.date +
-      '</span></p><div><img class="icon" src="../../../../assets/binoculars.png"></div>';
-
-    if (feature.properties && feature.properties.popupContent) {
-      popupContent += feature.properties.popupContent;
-    }
-
-    layer.bindPopup(popupContent);
-  }
-
-  pointToLayer(_feature, latlng) {
-    return L.marker(latlng, { icon: obsMarkerIcon() });
-  }
-
-  onLocationFound(e) {
-    const radius = e.accuracy / 2;
-    L.marker(e.latlng, {
-      icon: newObsMarkerIcon()
-    }).addTo(this.obsMap);
-    // geolocation.bindPopup("You are within " + radius + " meters from this point").openPopup()
-    const disk = L.circle(e.latlng, radius).addTo(this.obsMap);
-    console.debug("Geolocation", e.latlng);
-    if (this.programMaxBounds) {
-      this.obsMap.fitBounds(disk.getBounds().extend(this.programMaxBounds));
-    }
-  }
-
-  onLocationError(e) {
-    window.alert(e.message);
-  }
-
-  loadProgramArea(): void {
-    if (this.program) {
-      const programArea = L.geoJSON(this.program, {
+  // mv to services ?
+  getProgramArea(id): void {
+    this.restItemsServiceGetProgramArea(id).subscribe(programarea => {
+      this.programAreaGeoJson = programarea;
+      const obsMap = this.obsMap;
+      const programArea = L.geoJSON(this.programAreaGeoJson, {
         style: function(_feature) {
-          return programAreaStyle;
+          return {
+            fillColor: "transparent",
+            weight: 2,
+            opacity: 0.8,
+            color: "red",
+            dashArray: "4"
+          };
         }
-      }).addTo(this.obsMap);
-      const programBounds = programArea.getBounds();
-      this.obsMap.fitBounds(programBounds);
-      // this.obsMap.setMaxBounds(programBounds)
+      }).addTo(obsMap);
+      obsMap.fitBounds(programArea.getBounds());
+    });
+  }
 
-      let myNewObsMarker = null;
-      this.obsMap.on("click", (e: L.LeafletMouseEvent) => {
-        this.onClick.emit();
-        let coords = JSON.stringify({
-          type: "Point",
-          coordinates: [e.latlng.lng, e.latlng.lat]
-        });
+  initMap() {
+    const obsMap = L.map("obsMap");
+    let myMarker = null;
 
-        if (myNewObsMarker !== null) {
-          this.obsMap.removeLayer(myNewObsMarker);
-        }
+    L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "OpenStreetMap" })
+        .addTo(obsMap);
 
-        // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
-        // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
-        if (programBounds.contains([e.latlng.lat, e.latlng.lng])) {
-          this.coords = coords;
-          console.debug(coords);
-          // emit new coordinates
-          myNewObsMarker = L.marker(e.latlng, {
-            icon: newObsMarkerIcon()
-          }).addTo(this.obsMap);
-          $("#feature-title").html(myMarkerTitle);
-          $("#feature-coords").html(coords);
-          // $("#feature-info").html(myMarkerContent);
-          $("#featureModal").modal("show");
-        }
+
+    obsMap.on("click", function(e) {
+      let coords = JSON.stringify({
+        type: "Point", coordinates: [e.latlng.lng, e.latlng.lat]
       });
-      this.programMaxBounds = programBounds;
-    }
+      this.coords = coords;
+      // console.log(coords);
+      if (myMarker !== null) {
+        obsMap.removeLayer(myMarker);
+      }
+      myMarker = L.marker(e.latlng, { icon: newObsMarkerIcon }).addTo(obsMap);
+      $("#feature-title").html(myMarkerTitle);
+      $("#feature-coords").html(coords);
+      // $("#feature-info").html(myMarkerContent);
+      $("#featureModal").modal("show");
+    });
+
+    this.obsMap = obsMap;
+  }
+
+  restItemsServiceGetSightsItems(program_id=1) {
+    return this.http
+      .get(`${AppConfig.API_ENDPOINT}/programs/${program_id}/observations`)
+      .pipe(map(data => data));
+  }
+
+  restItemsServiceGetProgramArea(program_id=1) {
+    console.log(
+      "PROGRAM_GEO_URL: ",
+      `${AppConfig.API_ENDPOINT}/programs/${program_id}`
+    );
+    return this.http
+      .get(`${AppConfig.API_ENDPOINT}/programs/${program_id}`)
+      .pipe(map(data => data));
   }
 }

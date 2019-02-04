@@ -1,44 +1,13 @@
 #obsMap {
   height: calc(100vh - 106px);
+  /* FIXME: supprimer la margin quand pas de chevron */
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
 }
-
-.marker-cluster {
-  background-image: url(/assets/marker2.svg);
-}
-
-.marker-cluster span {
-  color: var(--primary);
-  font-size: .9em;
-  font-weight: bold;
-  line-height: 45px;
-}
-
-.marker-cluster-small {
-  background-color: rgba(254, 250, 245, 0.1);
-}
-.marker-cluster-small div {
-  background-color: rgba(254, 250, 245, 0.1);
-}
-.marker-cluster-medium {
-  background-color: rgba(254, 250, 245, 0.1);
-}
-.marker-cluster-medium div {
-  background-color: rgba(254, 250, 245, 0.1);
-}
-
-.marker-cluster-large {
-  background-color: rgba(254, 250, 245, 0.1);
-}
-.marker-cluster-large div {
-  background-color: rgba(254, 250, 245, 0.1);
-}
-
-@media screen and (max-width: 991px){
-
-  #obsMap{
+@media screen and (max-width: 992px) {
+  #obsMap {
     margin: 0;
     width: 100%;
   }
+
 }
