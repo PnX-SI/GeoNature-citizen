@@ -179,7 +179,7 @@ def post_program():
                   example: "<h1> Long Description</h1> <p>jkll kjlk jlkj lkj lkjl j</p>"
                 module:
                   type: integer
-                  description: module associé (sights par défaut)
+                  description: module associé (observations par défaut)
                   required: true
                   example: 1
                   default: 1

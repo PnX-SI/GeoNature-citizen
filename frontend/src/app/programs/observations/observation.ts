@@ -1,4 +1,4 @@
-export class Sight {
+export class Observation {
 
     constructor(
       public species: number,

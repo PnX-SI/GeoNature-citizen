@@ -1,25 +1,41 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
-import * as L from "leaflet";
 import { map } from "rxjs/operators";
+
+import * as L from "leaflet";
+
 import { AppConfig } from "../../../../conf/app.config";
-// import { ThrowStmt } from "@angular/compiler";
 
 declare let $: any;
 
+const newObsMarkerIcon = L.icon({
+  iconUrl: "../../../../assets/pointer-blue.png",
+  iconSize: [33, 42],
+  iconAnchor: [16, 42]
+})
+
+const obsMarkerIcon = L.icon({
+  iconUrl: "../../../../assets/pointer-white.png",
+  iconSize: [33, 42],
+  iconAnchor: [16, 42]
+})
+
+const myMarkerTitle = '<i class="fa fa-eye"></i> Partagez votre observation';
+
+
 @Component({
-  selector: "app-sight-map",
-  template: `<div id="sightmap"></div>`,
-  styleUrls: ["./map.component.css"],
+  selector: "app-obs-map",
+  template: `<div id="obsMap"></div>`,
+  styleUrls: ['./map.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class SightsMapComponent implements OnInit {
-  sightsGeoJson: any;
+export class ObsMapComponent implements OnInit {
+  obsGeoFeature: any;
   programAreaGeoJson: any;
   coords: any;
   program_id: any;
-  mysightmap: any;
+  obsMap: any;
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
@@ -30,25 +46,13 @@ export class SightsMapComponent implements OnInit {
   ngOnInit() {
     this.initMap();
     this.getProgramArea(this.program_id);
-    this.getSightsItems(this.program_id);
+    this.getObservation(this.program_id);
   }
 
-  getSightsItems(id): void {
-    this.restItemsServiceGetSightsItems(id).subscribe(sights => {
-      this.sightsGeoJson = sights;
-
-      const geoSights = this.sightsGeoJson;
-
-      const mysightmap = this.mysightmap;
-
-      const geojsonMarkerOptions = {
-        radius: 5,
-        fillColor: "#1779ba",
-        color: "#ccc",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-      };
+  getObservation(id): void {
+    this.restItemsServiceGetSightsItems(id).subscribe(obs => {
+      const geoFeatures = obs
+      const obsMap = this.obsMap;
 
       function onEachFeature(feature, layer) {
         let popupContent =
@@ -66,14 +70,14 @@ export class SightsMapComponent implements OnInit {
       }
 
       function pointToLayer(_feature, latlng) {
-        return L.circleMarker(latlng, geojsonMarkerOptions);
+        return L.marker(latlng, { icon: obsMarkerIcon })
       }
 
-      console.log("SIGHTS :", geoSights);
-      L.geoJSON(geoSights, {
+      console.debug("Observations :", geoFeatures);
+      L.geoJSON(geoFeatures, {
         onEachFeature: onEachFeature,
         pointToLayer: pointToLayer
-      }).addTo(mysightmap);
+      }).addTo(obsMap);
     });
   }
 
@@ -81,7 +85,7 @@ export class SightsMapComponent implements OnInit {
   getProgramArea(id): void {
     this.restItemsServiceGetProgramArea(id).subscribe(programarea => {
       this.programAreaGeoJson = programarea;
-      const mysightmap = this.mysightmap;
+      const obsMap = this.obsMap;
       const programArea = L.geoJSON(this.programAreaGeoJson, {
         style: function(_feature) {
           return {
@@ -92,46 +96,36 @@ export class SightsMapComponent implements OnInit {
             dashArray: "4"
           };
         }
-      }).addTo(mysightmap);
-      mysightmap.fitBounds(programArea.getBounds());
+      }).addTo(obsMap);
+      obsMap.fitBounds(programArea.getBounds());
     });
   }
 
   initMap() {
-    const mysightmap = L.map("sightmap");
-
-    L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "OpenStreetMap"
-    }).addTo(mysightmap);
-
-    const markerIcon = L.icon({
-      iconUrl:
-        "../../../../assets/pointer-blue.png"
-    });
-
+    const obsMap = L.map("obsMap");
     let myMarker = null;
 
-    const myMarkerTitle =
-      '<i class="fa fa-eye"></i> Partagez votre observation';
+    L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "OpenStreetMap" })
+        .addTo(obsMap);
 
-    mysightmap.on("click", function(e) {
+
+    obsMap.on("click", function(e) {
       let coords = JSON.stringify({
-        type: "Point",
-        coordinates: [e.latlng.lng, e.latlng.lat]
+        type: "Point", coordinates: [e.latlng.lng, e.latlng.lat]
       });
       this.coords = coords;
       // console.log(coords);
       if (myMarker !== null) {
-        mysightmap.removeLayer(myMarker);
+        obsMap.removeLayer(myMarker);
       }
-      myMarker = L.marker(e.latlng, { icon: markerIcon }).addTo(mysightmap);
+      myMarker = L.marker(e.latlng, { icon: newObsMarkerIcon }).addTo(obsMap);
       $("#feature-title").html(myMarkerTitle);
       $("#feature-coords").html(coords);
       // $("#feature-info").html(myMarkerContent);
       $("#featureModal").modal("show");
     });
 
-    this.mysightmap = mysightmap;
+    this.obsMap = obsMap;
   }
 
   restItemsServiceGetSightsItems(program_id=1) {

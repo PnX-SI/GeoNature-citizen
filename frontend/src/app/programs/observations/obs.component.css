@@ -33,6 +33,10 @@
     color: #00a99d;
 }
 
+section .observations {
+  min-width: 100%;
+}
+
 .observations{
     margin: 0px -15px;
     min-height: inherit;
@@ -197,7 +201,7 @@ span.input-group-text {
     display: block;
 }
 
-.half #sightmap{
+.half #obsMap{
     height: 228px;
     overflow: hidden;
 }
