@@ -1,8 +1,11 @@
 export class Program {
   id_program: number;
-  name: string;
-  lable: string;
-  desc: string;
-  icon: string;
+  title: string;
+  short_desc: string;
+  long_desc: string;
+  image: string;
+  logo: string;
+  module: number;
+  taxonomy_list: number;
   on_sidebar: Boolean;
 }
