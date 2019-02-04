@@ -5,11 +5,11 @@ import {
   HttpTestingController
 } from '@angular/common/http/testing'
 
-import { SightsMapComponent } from './map.component';
+import { ObsMapComponent } from './map.component';
 
-describe('SightsMapComponent', () => {
-  let component: SightsMapComponent;
-  let fixture: ComponentFixture<SightsMapComponent>;
+describe('ObsMapComponent', () => {
+  let component: ObsMapComponent;
+  let fixture: ComponentFixture<ObsMapComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -17,13 +17,13 @@ describe('SightsMapComponent', () => {
         HttpClientTestingModule,
         RouterTestingModule,
       ],
-      declarations: [ SightsMapComponent ]
+      declarations: [ ObsMapComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SightsMapComponent);
+    fixture = TestBed.createComponent(ObsMapComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

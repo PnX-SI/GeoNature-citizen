@@ -8,8 +8,8 @@
             <div class="img-hover" [ngbTooltip]="p.short_desc">
               <img class="rounded-circle img-responsive img-rounded"
                   alt='p.title' width="300" height="300" src="../../assets/prog1.jpg"
-                  [routerLink]="['/programs', p.id_program, 'sights']"
-                  (click)="modal.close()" />
+                  [routerLink]="['/programs', p.id_program, 'observations']"
+                  (click)="close()" />
             </div>
             <h5 class="card-title">{{p.title}}&nbsp;
               <span class="badge badge-info"> </span>
