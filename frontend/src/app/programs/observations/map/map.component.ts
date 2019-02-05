@@ -10,13 +10,13 @@ import { AppConfig } from "../../../../conf/app.config";
 declare let $: any;
 
 const newObsMarkerIcon = L.icon({
-  iconUrl: "../../../../assets/pointer-blue.png",
+  iconUrl: "../../../../assets/pointer-blue2.png",
   iconSize: [33, 42],
   iconAnchor: [16, 42]
 })
 
 const obsMarkerIcon = L.icon({
-  iconUrl: "../../../../assets/pointer-white.png",
+  iconUrl: "../../../../assets/pointer-green.png",
   iconSize: [33, 42],
   iconAnchor: [16, 42]
 })

@@ -155,3 +155,9 @@
         width: 60%;
     } 
 }
+
+@media screen and (max-width: 577px){
+    .personal-data button{
+        width: 100% !important;
+    }
+}
