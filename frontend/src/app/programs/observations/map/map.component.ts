@@ -50,7 +50,7 @@ export class ObsMapComponent implements OnInit {
   }
 
   getObservation(id): void {
-    this.restItemsServiceGetSightsItems(id).subscribe(obs => {
+    this.restItemsServiceGetObsItems(id).subscribe(obs => {
       const geoFeatures = obs
       const obsMap = this.obsMap;
 
@@ -128,7 +128,7 @@ export class ObsMapComponent implements OnInit {
     this.obsMap = obsMap;
   }
 
-  restItemsServiceGetSightsItems(program_id=1) {
+  restItemsServiceGetObsItems(program_id=1) {
     return this.http
       .get(`${AppConfig.API_ENDPOINT}/programs/${program_id}/observations`)
       .pipe(map(data => data));

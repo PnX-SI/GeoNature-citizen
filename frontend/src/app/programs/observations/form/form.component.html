@@ -1,12 +1,12 @@
-<form [formGroup]="sightForm" (ngSubmit)="onFormSubmit(this.sightForm.value)">
-  <div class="alert alert-primary rounded-0" role="alert">{{sightForm.value | json}}</div>
+<form [formGroup]="obsForm" (ngSubmit)="onFormSubmit(this.obsForm.value)">
+  <div class="alert alert-primary rounded-0" role="alert">{{obsForm.value | json}}</div>
   <div class="form-row">
 
     <div class="form-group col-lg-8">
       <label for="sel1">Sélectionnez une espèce</label>
       <div class="d-inline-flex toolbar">
         <!-- FIXME: tap sensitivity -->
-        <select class="form-control rounded-0 col-lg-6" id="sel1" name="sel1" [formGroup]="sightForm" formControlName="species">
+        <select class="form-control rounded-0 col-lg-6" id="sel1" name="sel1" [formGroup]="obsForm" formControlName="species">
           <option *ngFor="let s of surveySpecies" [value]="s.cd_nom">
             {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i>)
           </option>
