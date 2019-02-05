@@ -6,6 +6,7 @@ import {
 
 import { ModalFlowService } from './modalflow/modalflow.service'
 import { ActivatedRoute } from '@angular/router';
+import { Program } from '../programs.models';
 
 @Component({
   selector: 'app-observations',
@@ -17,6 +18,8 @@ export class ObsComponent implements OnInit {
   title = 'Observations';
   survey_id: any;
   coords: any;
+  programs: Program[]
+  program: Program
 
   constructor(
     private route: ActivatedRoute,
@@ -26,6 +29,10 @@ export class ObsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.debug('ObsComponent survey', this.survey_id);
+    this.route.data
+      .subscribe((data: { programs: Program[] }) => {
+        this.programs = data.programs
+        this.program = this.programs.find(p => p.id_program == this.survey_id)
+    })
   }
 }

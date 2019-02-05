@@ -16,8 +16,8 @@ const appRoutes: Routes = [
   { path: "home", component: HomeComponent, canActivate: [UniqueProgramGuard], resolve: { programs: ProgramsResolve} },
   { path: "about", component: AboutComponent },
   { path: "mydashboard", component: UserDashboardComponent },
-  { path: "programs", component: ProgramsComponent },
-  { path: "programs/:id/observations", component: ObsComponent },
+  { path: "programs", component: ProgramsComponent, resolve: { programs: ProgramsResolve} },
+  { path: "programs/:id/observations", component: ObsComponent, resolve: { programs: ProgramsResolve} },
   { path: "synthesis/species/:id", component: SpeciesComponent },
   { path: "**", component: PageNotFoundComponent }
 ];
