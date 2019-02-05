@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { AppConfig } from '../../conf/app.config';
@@ -22,10 +22,6 @@ export interface IGeoFeatures {
 })
 export class GncProgramsService {
   private readonly URL = AppConfig.API_ENDPOINT;
-  private _programs$: BehaviorSubject<Program[]> = new BehaviorSubject<Program[]>([])
-  store: {
-    programs: Program[],
-  }
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
@@ -34,33 +30,17 @@ export class GncProgramsService {
     };
   }
 
-  constructor(protected http: HttpClient) {
-    console.debug('GncProgramsService: constructor')
-    this.store = { programs: [] }
-    this.populate()
-  }
+  constructor(protected http: HttpClient) { }
 
-  populate() {
-    this.http.get<IGeoFeatures>(`${this.URL}/programs`)
+  getAllPrograms(): Observable<Program[]> {
+    return this.http.get<IGeoFeatures>(`${this.URL}/programs`)
       .pipe(
         map(adapted => adapted.features),
         map(featureCollection => featureCollection.map(feature => feature.properties)),
-        tap(p => console.debug('GncProgramsService: programs population ', p)),
+        tap(p => console.debug('GncProgramsService: programs ', p)),
       )
-      .subscribe(
-        data => {
-          this.store.programs = data
-          this._programs$.next(Object.assign({}, this.store).programs)
-        },
-        _ => catchError(this.handleError('GncProgramsService.populate', [])),
-        () => console.info('GncProgramsService: store populated', this.store.programs)
-    )
   }
 
-  getAllPrograms(): Observable<Program[]> {
-    return this._programs$
-
-  }
   getProgram(id: number): Observable<Program> {
     return this.http.get<Program>(`${this.URL}/programs/${id}`).pipe(
       tap(_ => console.debug(`fetched program ${id}`)),
