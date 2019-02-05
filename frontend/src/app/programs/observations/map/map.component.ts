@@ -3,11 +3,15 @@ import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
 
-import * as L from "leaflet";
+// import * as L from "leaflet"; // universal ?
+import 'leaflet'
+import 'leaflet.markercluster'
 
 import { AppConfig } from "../../../../conf/app.config";
 
 declare let $: any;
+
+const L = window['L']
 
 const newObsMarkerIcon = L.icon({
   iconUrl: "../../../../assets/pointer-blue2.png",
@@ -74,11 +78,15 @@ export class ObsMapComponent implements OnInit {
       }
 
       console.debug("Observations :", geoFeatures);
-      L.geoJSON(geoFeatures, {
-        onEachFeature: onEachFeature,
-        pointToLayer: pointToLayer
-      }).addTo(obsMap);
-    });
+
+      var cluster = new L.MarkerClusterGroup({singleMarkerMode: true})
+      cluster.addLayer(
+        L.geoJSON(geoFeatures, {
+          onEachFeature: onEachFeature,
+          pointToLayer: pointToLayer
+        }))
+      obsMap.addLayer(cluster)
+    })
   }
 
   // mv to services ?
