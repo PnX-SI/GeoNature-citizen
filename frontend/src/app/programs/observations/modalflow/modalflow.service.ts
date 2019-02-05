@@ -4,17 +4,20 @@ import {
   NgbModal,
   ModalDismissReasons,
   NgbModalRef,
+  NgbModalOptions,
 } from '@ng-bootstrap/ng-bootstrap'
 
 import { FlowService } from './flow/flow.service'
 import { FlowItem } from './flow/flow-item'
-
 import { OnboardComponent } from './steps/onboard/onboard.component'
 import { CommittedComponent } from './steps/committed/committed.component'
 import { CongratsComponent } from './steps/congrats/congrats.component'
 import { RewardComponent } from './steps/reward/reward.component';
 
-export const MODAL_DEFAULTS = { centered: true }
+export const MODAL_DEFAULTS: NgbModalOptions = {
+  size: 'lg',
+  centered: true
+}
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +31,7 @@ export class ModalFlowService extends FlowService {
     super()
   }
 
-  open(content, options={}) {
+  open(content, options: NgbModalOptions = {}) {
     this.modalRef = this.modalService.open(content, {...MODAL_DEFAULTS, ...options})
     this.modalRef.result.then(
         (result) => {
