@@ -1,7 +1,8 @@
 import { Component, OnInit , ViewEncapsulation} from '@angular/core';
-import { ProgramsResolve } from '../programs/programs-resolve.service';
+import { ActivatedRoute } from '@angular/router';
 
-// import { ObsComponent } from '../programs/observations/obs.component'
+import { ProgramsResolve } from '../programs/programs-resolve.service';
+import { Program } from '../programs/programs.models';
 
 @Component({
   selector: 'app-home',
@@ -13,10 +14,16 @@ import { ProgramsResolve } from '../programs/programs-resolve.service';
   ]
 })
 export class HomeComponent implements OnInit {
+  programs: Program[]
 
-  constructor() { }
+  constructor(
+    private route: ActivatedRoute,
+  ) { }
 
   ngOnInit() {
+    this.route.data
+      .subscribe((data: { programs: Program[] }) => {
+        this.programs = data.programs
+    })
   }
-
 }

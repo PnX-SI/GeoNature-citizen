@@ -1,3 +1,130 @@
+section {
+    width: 100%;
+    min-height: 70vh;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.section:before{
+    content : ' ';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #00000056;
+}
+
+#welcome{
+    background: url(/assets/background.jpg) no-repeat;
+    background-size: cover;
+}
+
+#welcome h1{
+    padding-left: 50%;
+    margin-top: 30px;
+    color: #fff;
+    font-family: 'NexaRust';
+    font-size: 60px;
+}
+
+#welcome a{
+    position: absolute;
+    bottom: 100px;
+    right: 100px;
+    background-color: var(--primary);
+}
+
+#welcome span{
+    position: absolute;
+    bottom: 6%;
+    left: 50%;
+    color : #fff;
+    transform: translateX(-50%);
+    font-size: 14px;
+}
+
+/* SLIDER */
+
+#slider .carousel-inner, #slider .carousel-item{
+    max-height: 70vh;
+}
+
+/* #slide{
+    min-height: inherit !important;
+} */
+
+#slider h2{
+    position: absolute;
+    top: 10px; left: 50px;
+    z-index: 999;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 20px;
+}
+
+#slider h2:before{
+    content : ' ';
+    position: absolute;
+    width: 40px;
+    height: 21px;
+    transform: translateX(-125%);
+    background: #fff;
+}
+
+#slider ol.carousel-indicators li{
+    margin-top : 20px;
+    width: 10px;
+    height: 10px;
+    border-radius: 25px;
+    background: transparent;
+    border: solid 1px #fff;
+}
+
+#slider .carousel-text-container{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+#slider .carousel-text{
+    background-color: #fff;
+    padding: 40px;
+    width: 450px;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#slider .carousel-text h3 {
+    font-family: 'NexaRust';
+    color : var(--ternary);
+}
+
+
+#slider .carousel-text p {
+    font-style: italic;
+    font-size: 14px;
+    width: 90%;
+}
+
+#slider .carousel-text a {
+    background-color: var(--secondary);
+    width: 90%;
+    text-align: center;
+}
+
+/* OBSERVATION / MAP */
+/*
+ investigate obs list glitch @921px -> 892
+*/
+app-observations {
+  min-width: 100%;
+}
+
+/* End crude cut n paste from home.css */
 /* #mapapp {
   margin-top: 60px;
   margin-left: 45px;

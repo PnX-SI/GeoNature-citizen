@@ -1,4 +1,4 @@
- section {
+section {
     width: 100%;
     min-height: 70vh;
     position: relative;
@@ -25,7 +25,7 @@
 } */
 
 #welcome{
-    background: url(../../assets/background.jpg) no-repeat;
+    background: url(/assets/background.jpg) no-repeat;
     background-size: cover;
 }
 
