@@ -3,21 +3,17 @@
     <h1>{{title}}&nbsp;<span class="badge badge-pill badge-primary">{{programCount}}</span></h1>
     <div class="container" id="main">
       <div class="row justify-content-center">
-        <div *ngFor="let s of programFeatures; let i=index;" class="col-lg-4 col-md-4 col-sm-12">
+        <div *ngFor="let p of programs; let i=index;" class="col-lg-4 col-md-4 col-sm-12">
           <div class="text-center">
-            <!-- <div class="card text-center ">
-            <div class="card-body"> -->
-            <div class="img-hover" [ngbTooltip]="s.properties.short_desc">
-              <img class="rounded-circle img-responsive img-rounded" width="300" height="300" src="../../assets/prog1.jpg"
-                alt='customer image' [routerLink]="['/programs', s.properties.id_program, 'sights']" />
+            <div class="img-hover" [ngbTooltip]="p.short_desc">
+              <img class="rounded-circle img-responsive img-rounded"
+                  alt='p.title' width="300" height="300" src="../../assets/prog1.jpg"
+                  [routerLink]="['/programs', p.id_program, 'observations']"
+                  (click)="close()" />
             </div>
-            <h5 class="card-title">{{s.properties.title}}&nbsp;
-              <span class="badge badge-info" (click)="open(s.properties.title, s.properties.long_desc)" ngbTooltip="Plus d'informations sur ce programme">
-                <!-- <i class="fa fa-info-circle"></i> -->
-              </span>
+            <h5 class="card-title">{{p.title}}&nbsp;
+              <span class="badge badge-info"> </span>
             </h5>
-            <!-- </div>
-          </div> -->
           </div>
         </div>
       </div>

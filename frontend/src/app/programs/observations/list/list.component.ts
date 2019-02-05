@@ -12,7 +12,7 @@ import { FormGroup } from "@angular/forms";
 })
 export class SightsListComponent implements OnInit {
   program_id: any;
-  sightsFeatures: any;
+  observationsFeatures: any;
   // @Input() formGroup: FormGroup
 
   constructor(
@@ -29,8 +29,8 @@ export class SightsListComponent implements OnInit {
   }
 
   getSightsFeatures(program_id=1): void {
-    this.restItemsServiceGetSightsItems(program_id).subscribe(sights => {
-      this.sightsFeatures = sights[`features`];
+    this.restItemsServiceGetSightsItems(program_id).subscribe(observations => {
+      this.observationsFeatures = observations[`features`];
     });
   }
 
