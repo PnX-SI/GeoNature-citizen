@@ -10,11 +10,11 @@ import {
   NgbModal,
 } from "@ng-bootstrap/ng-bootstrap";
 
-import { SightsListComponent } from './list.component';
+import { ObsListComponent } from './list.component';
 
-describe('SightsListComponent', () => {
-  let component: SightsListComponent;
-  let fixture: ComponentFixture<SightsListComponent>;
+describe('ObsListComponent', () => {
+  let component: ObsListComponent;
+  let fixture: ComponentFixture<ObsListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -25,13 +25,13 @@ describe('SightsListComponent', () => {
       providers: [
         NgbModal,
       ],
-      declarations: [ SightsListComponent ]
+      declarations: [ ObsListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SightsListComponent);
+    fixture = TestBed.createComponent(ObsListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

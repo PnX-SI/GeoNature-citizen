@@ -20,14 +20,14 @@ export const myMarkerTitle = '<i class="fa fa-eye"></i> Partagez votre observati
 
 
 @Component({
-  selector: 'app-sight-form',
+  selector: 'app-obs-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class SightsFormComponent implements AfterViewInit {
+export class ObsFormComponent implements AfterViewInit {
   coords: any;
-  sightForm = new FormGroup({
+  obsForm = new FormGroup({
     species: new FormControl('', Validators.required),
     count: new FormControl('', Validators.required),
     comment: new FormControl('', Validators.required),
@@ -125,8 +125,8 @@ export class SightsFormComponent implements AfterViewInit {
   }
 
   onFormSubmit(): void {
-    console.log('sightForm: ', this.sightForm);
-    console.log('formValues:' + this.sightForm.value);
+    console.log('obsForm: ', this.obsForm);
+    console.log('formValues:' + this.obsForm.value);
   }
 
   restItemsServiceGetTaxonomyList(program_id) {

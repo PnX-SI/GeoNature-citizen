@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -12,10 +12,7 @@ import { GncProgramsService } from "../api/gnc-programs.service";
   selector: "app-programs",
   templateUrl: "./programs.component.html",
   styleUrls: ["./programs.component.css"],
-  providers: [
-    GncProgramsService,
-    NgbActiveModal,
-  ]
+  encapsulation: ViewEncapsulation.None
 })
 export class ProgramsComponent implements OnInit {
   title = "Programmes";
@@ -23,21 +20,18 @@ export class ProgramsComponent implements OnInit {
   programCount: number;
 
   constructor(
-    private modal: NgbActiveModal,
+    public activeModal: NgbActiveModal,
     private route: ActivatedRoute,
     private programService: GncProgramsService,
   ) {}
 
   ngOnInit() {
+    // console.debug('route snapshot', this.route.snapshot.data)
     this.programService.getAllPrograms().subscribe(
       programs => {
         this.programs = programs;
         console.debug('ProgramsComponent: GncProgramsService call result:', this.programs)
         this.programCount = (this.programs)?this.programs.length:0;
     })
-  }
-
-  close() {
-    this.modal.close('PROGRAM_SELECTED')
   }
 }

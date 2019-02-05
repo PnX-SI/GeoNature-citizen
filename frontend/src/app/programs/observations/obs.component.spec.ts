@@ -10,8 +10,8 @@ import {
   NgbModal,
 } from "@ng-bootstrap/ng-bootstrap"
 
-import { SightsFormComponent } from "./form/form.component"
-import { SightsListComponent } from "./list/list.component"
+import { ObsFormComponent } from "./form/form.component"
+import { ObsListComponent } from "./list/list.component"
 import { ObsMapComponent } from "./map/map.component"
 import { ObsComponent } from './obs.component'
 
@@ -32,8 +32,8 @@ describe('ObsComponent', () => {
       ],
       declarations: [
         ObsComponent,
-        SightsFormComponent,
-        SightsListComponent,
+        ObsFormComponent,
+        ObsListComponent,
         ObsMapComponent,
       ]
     })

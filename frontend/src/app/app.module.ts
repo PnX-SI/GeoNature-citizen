@@ -19,8 +19,8 @@ import { HomeComponent } from "./home/home.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { DescModalComponent } from "./programs/desc-modal/desc-modal.component";
 import { ProgramsComponent } from "./programs/programs.component";
-import { SightsFormComponent } from "./programs/observations/form/form.component";
-import { SightsListComponent } from "./programs/observations/list/list.component";
+import { ObsFormComponent } from "./programs/observations/form/form.component";
+import { ObsListComponent } from "./programs/observations/list/list.component";
 import { ObsMapComponent } from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
@@ -55,8 +55,8 @@ import { ProgramsResolve } from "./programs/programs-resolve.service";
     AppComponent,
     ObsComponent,
     ObsMapComponent,
-    SightsFormComponent,
-    SightsListComponent,
+    ObsFormComponent,
+    ObsListComponent,
     HomeComponent,
     HomeCustomComponent,
     ProgramsComponent,
