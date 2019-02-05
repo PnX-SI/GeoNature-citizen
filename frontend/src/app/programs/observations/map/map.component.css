@@ -5,6 +5,17 @@
   width: calc(100% - var(--list-toggler-width));
 }
 
+/* .marker-cluster {
+    background-color: var(--secondary);
+    border-radius: 50%;
+    border: 2px solid white;
+    text-align: center;
+    font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+.leaflet-marker-icon {
+   color: white;
+} */
+
 @media screen and (max-width: 991px){
 
   #obsMap{
