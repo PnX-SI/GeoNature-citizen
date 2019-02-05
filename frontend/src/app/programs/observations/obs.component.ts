@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-observations',
   templateUrl: './obs.component.html',
-  styleUrls: ['./obs.component.css'],
+  styleUrls: ['./obs.component.css', '../../home/home.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
 export class ObsComponent implements OnInit {

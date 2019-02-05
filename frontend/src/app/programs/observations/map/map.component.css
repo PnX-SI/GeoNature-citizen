@@ -4,10 +4,12 @@
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
 }
-@media screen and (max-width: 992px) {
-  #obsMap {
-    margin: 0;
+
+@media screen and (max-width: 991px){
+
+  #obsMap{
+      height: calc(100vh - 475px);
+      margin: 0;
     width: 100%;
   }
-
 }

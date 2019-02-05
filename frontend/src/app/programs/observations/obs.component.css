@@ -38,7 +38,7 @@ section .observations {
 }
 
 .observations{
-    margin: 0px -15px;
+    margin: 0px;
     min-height: inherit;
 }
 
@@ -53,6 +53,15 @@ section .observations {
     position: absolute;
     bottom: 20px;
     right: 20px;
+}
+
+.scroll{
+    width: 15px;
+    height: auto;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 /* FIXME */
@@ -140,6 +149,7 @@ section .observations {
     color: #fff;
     text-transform: uppercase;
     margin: 0 auto;
+    text-align: center;
 }
 
 .modal-body, .modal-content {
@@ -193,12 +203,23 @@ span.input-group-text {
     padding: 0px;
 }
 
+.obs-img{
+    position: relative;
+}
+
 .obs-img span{
     font-size: 11px;
     opacity: 0;
-    color: #57a154;
+    color: #222;
     text-align: center;
+    font-weight: 700;
     display: block;
+    background: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    padding: 2px 5px;
 }
 
 .half #obsMap{
@@ -236,14 +257,14 @@ form .d-inline-flex{
     opacity: 0.7;
 }
 
-.obs-images img:hover, .obs-images.selected img{
+.obs-img:hover img, .obs-img.selected img{
     opacity: 1;
     cursor: pointer;
     box-shadow: 0 0 0 3px #60b15c;
 }
 
 .obs-img:hover span, .obs-img img.selected span {
-    opacity: 1;
+    opacity: 1 !important;
 }
 
 .obs-add-img{
@@ -441,6 +462,9 @@ form .d-inline-flex{
 @media screen and (max-width: 991px){
     .sign{
         padding: 0px 40px 20px 40px !important;
+    }
+    #obsMap{
+        height: calc(100vh - 506px);
     }
 }
 
