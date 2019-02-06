@@ -1,32 +1,18 @@
 #obsMap {
   height: calc(100vh - 106px);
-  /* FIXME: supprimer la margin quand pas de chevron */
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
 }
 
-/*
 .marker-cluster {
-    background-color: var(--secondary);
-    border-radius: 50%;
-    border: 2px solid white;
-    text-align: center;
-    font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
-}
-*/
-/*
-.leaflet-marker-icon {
-   color: white;
-}
-*/
-.marker-cluster {
-  color: var(--primary);
   background-image: url(/assets/marker2.svg);
 }
+
 .marker-cluster span {
-  line-height: 45px;
+  color: var(--primary);
   font-size: .9em;
   font-weight: bold;
+  line-height: 45px;
 }
 
 .marker-cluster-small {
@@ -46,14 +32,13 @@
   background-color: rgba(254, 250, 245, 0.1);
 }
 .marker-cluster-large div {
-  background-color: rgba(254, 250, 245, 0.6);
+  background-color: rgba(254, 250, 245, 0.1);
 }
 
 @media screen and (max-width: 991px){
 
   #obsMap{
-      /* height: calc(100vh - 475px); */
-      margin: 0;
+    margin: 0;
     width: 100%;
   }
 }
