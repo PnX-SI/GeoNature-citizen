@@ -75,20 +75,6 @@
     margin-bottom: 0px;
 }
 
-.toggle-list{
-    position: absolute;
-    right: 0;
-    transform: translateX(100%);
-    background-color: var(--ternary);
-    padding: 5px;
-    top: 0;
-    bottom: 0;
-    z-index: 999;
-    align-items: center;
-    display: flex;
-    color : #fff;
-}
-
 .toolbar{
     display: flex;
     flex-flow: row nowrap;
@@ -151,12 +137,18 @@
         /* height: 230px; */
         height: 30vh;
     }
-    .toggle-list{
+    .toggle{
         display: none;
     }
-    #map{
-        height: 50vh;
+    .side-bar, .map{
+        position: static;
     }
+    .map{
+        height: auto;
+    }
+   /*  #map{
+        height: 50vh;
+    } */
     .hide {
         transform: translateX(-0%);
     }

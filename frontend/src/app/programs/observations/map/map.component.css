@@ -52,7 +52,7 @@
 @media screen and (max-width: 991px){
 
   #obsMap{
-      height: calc(100vh - 475px);
+      /* height: calc(100vh - 475px); */
       margin: 0;
     width: 100%;
   }
