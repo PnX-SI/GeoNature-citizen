@@ -63,13 +63,21 @@ export class ObsFormComponent implements AfterViewInit {
         /*
          const formMap = L.map('formMap').locate({setView: true, maxZoom: 13})
         function onLocationFound(e) {
-          const radius = e.accuracy / 2;
+          const radius = e.accuracy / 2
           L.marker(e.latlng).addTo(map)
-              .bindPopup("You are within " + radius + " meters from this point").openPopup();
+              .bindPopup("You are within " + radius + " meters from this point").openPopup()
 
-          L.circle(e.latlng, radius).addTo(map);
+          L.circle(e.latlng, radius).addTo(map)
         }
-        formMap.on('locationfound', onLocationFound);
+        formMap.on('locationfound', onLocationFound)
+        */
+        /*
+        var locator = L.control.locate({
+          position: 'topright',
+          strings: {
+            title: "Show me where I am, yo!"
+          }
+        }).addTo(map)
         */
 
         L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

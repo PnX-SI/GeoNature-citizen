@@ -5,16 +5,49 @@
   width: calc(100% - var(--list-toggler-width));
 }
 
-/* .marker-cluster {
+/*
+.marker-cluster {
     background-color: var(--secondary);
     border-radius: 50%;
     border: 2px solid white;
     text-align: center;
     font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
+*/
+/*
 .leaflet-marker-icon {
    color: white;
-} */
+}
+*/
+.marker-cluster {
+  color: var(--primary);
+  background-image: url(/assets/marker2.svg);
+}
+.marker-cluster span {
+  line-height: 45px;
+  font-size: .9em;
+  font-weight: bold;
+}
+
+.marker-cluster-small {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+.marker-cluster-small div {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+.marker-cluster-medium {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+.marker-cluster-medium div {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+
+.marker-cluster-large {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+.marker-cluster-large div {
+  background-color: rgba(254, 250, 245, 0.6);
+}
 
 @media screen and (max-width: 991px){
 
