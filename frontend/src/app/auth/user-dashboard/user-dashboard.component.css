@@ -112,6 +112,9 @@
     margin-right: 15px;
 }
 
+#badges .row{
+    padding: 0px;
+}
 
 
 @media screen and (min-width: 992px){

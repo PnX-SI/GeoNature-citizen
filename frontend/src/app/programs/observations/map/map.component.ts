@@ -66,7 +66,7 @@ export class ObsMapComponent implements OnInit {
           feature.properties.sci_name +
           "</br>le " +
           feature.properties.date +
-          "</span></p><div><i class=\"fa fa-binoculars\"></i></div>";
+          "</span></p><div><img class=\"icon\" src=\"../../../../assets/binoculars.png\"></div>";
         if (feature.properties && feature.properties.popupContent) {
           popupContent += feature.properties.popupContent;
         }
