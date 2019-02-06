@@ -49,8 +49,7 @@ export class ObsFormComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.route.params.subscribe(params => this.program_id = params['id'])
-    this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
+    this.http.get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
       .subscribe(result => {
         this.program = result;
         console.debug('Program', this.program)

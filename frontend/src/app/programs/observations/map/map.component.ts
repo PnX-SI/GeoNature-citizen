@@ -27,6 +27,13 @@ const obsMarkerIcon = () => L.icon({
 
 const myMarkerTitle = '<i class="fa fa-eye"></i> Partagez votre observation';
 
+const programAreaStyle = {
+  fillColor: 'transparent',
+  weight: 2,
+  opacity: 0.8,
+  color: 'red',
+  dashArray: '4'
+}
 
 @Component({
   selector: "app-obs-map",
@@ -51,10 +58,11 @@ export class ObsMapComponent implements OnInit {
   ngOnInit() {
     this.initMap();
     this.getProgramArea(this.program_id);
-    this.getObservation(this.program_id);
+    // if not form
+    this.getObservations(this.program_id);
   }
 
-  getObservation(id): void {
+  getObservations(id): void {
     this.restItemsServiceGetObsItems(id).subscribe(obs => {
       const geoFeatures = obs
       const obsMap = this.obsMap;
@@ -68,9 +76,11 @@ export class ObsMapComponent implements OnInit {
           "</br>le " +
           feature.properties.date +
           "</span></p><div><img class=\"icon\" src=\"../../../../assets/binoculars.png\"></div>";
+
         if (feature.properties && feature.properties.popupContent) {
           popupContent += feature.properties.popupContent;
         }
+
         layer.bindPopup(popupContent);
       }
 
@@ -85,13 +95,11 @@ export class ObsMapComponent implements OnInit {
           const childCount = cluster.getChildCount()
           let c = ' marker-cluster-'
           if (childCount < 10) {
-           c += 'small'
-          }
-          else if (childCount < 100) {
-           c += 'medium'
-          }
-          else {
-           c += 'large'
+            c += 'small'
+          } else if (childCount < 100) {
+            c += 'medium'
+          } else {
+            c += 'large'
           }
 
           return new L.DivIcon({ html: '<div><span>' + childCount + '</span></div>',
@@ -99,11 +107,14 @@ export class ObsMapComponent implements OnInit {
           }
         }
       )
+
       cluster.addLayer(
         L.geoJSON(geoFeatures, {
           onEachFeature: onEachFeature,
           pointToLayer: pointToLayer
-        }))
+        })
+      )
+
       obsMap.addLayer(cluster)
     })
   }
@@ -116,26 +127,23 @@ export class ObsMapComponent implements OnInit {
       const obsMap = this.obsMap;
       const programArea = L.geoJSON(this.programAreaGeoJson, {
         style: function(_feature) {
-          return {
-            fillColor: "transparent",
-            weight: 2,
-            opacity: 0.8,
-            color: "red",
-            dashArray: "4"
-          };
+          return programAreaStyle
         }
       }).addTo(obsMap);
 
       const programMaxBounds = programArea.getBounds()
       obsMap.fitBounds(programMaxBounds)
+      // QUESTION: enforce program area maxBounds (optional ?)
+      // obsMap.setMaxBounds(programMaxBounds)
 
       let myMarker = null;
       obsMap.on("click", function(e) {
         let coords = JSON.stringify({
           type: "Point", coordinates: [e.latlng.lng, e.latlng.lat]
         });
+        
         this.coords = coords;
-        // console.log(coords);
+        console.debug(coords)
 
         if (myMarker !== null) {
           obsMap.removeLayer(myMarker);
