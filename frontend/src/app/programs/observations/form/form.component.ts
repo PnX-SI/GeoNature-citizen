@@ -58,7 +58,7 @@ export class ObsFormComponent implements AfterViewInit {
         console.log('TaxonomyList', this.taxonomyList);
 
         // TODO: extract programArea centroid
-        const formMap = L.map('formMap').setView([45.04499482319101, 5.042724609375001], 13)
+        const formMap = L.map('formMap')
         /*
          const formMap = L.map('formMap').locate({setView: true, maxZoom: 13})
         function onLocationFound(e) {
