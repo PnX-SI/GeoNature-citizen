@@ -37,6 +37,7 @@ export class RewardComponent implements IFlowComponent, OnInit, OnDestroy, After
   // interval: any
   timeout: any
   rewarded: boolean = Math.random() >= 0.5
+  username: string
 
   constructor(private ref: ChangeDetectorRef) {
     this.ref.detach()
@@ -53,12 +54,17 @@ export class RewardComponent implements IFlowComponent, OnInit, OnDestroy, After
 
   ngOnInit(): void {
     console.debug('reward init data:', this.data)
+    if (localStorage.getItem("username")) {
+      this.username = localStorage.getItem("username").replace(/\"/g, "")
+      this.ref.detach()
+    } else {
+      this.close('ANONYMOUS_SOURCE')
+    }
   }
 
   ngAfterViewChecked() {
     if (!(this.ref as ViewRef).destroyed) {
       this.ref.detectChanges()
-      // FIXME: come up with a better timed strategy
       this.timeout = setTimeout(() => this.close((this.rewarded)?'timeout':'noreward'), (this.rewarded)?3000:0)
     }
   }
