@@ -15,9 +15,8 @@
         <li *ngFor="let p of programs; index as i; first as isFirst"
             data-target="#slider" [attr.data-slide-to]="i" [class.active]="isFirst"></li>
       </ol>
+      <h2>Les programmes du moment</h2>
       <div class="carousel-inner">
-        <h2>Les programmes du moment</h2>
-
         <div *ngFor="let p of programs; first as isFirst" [ngClass]="{'active': isFirst, 'carousel-item': true }">
           <img class="d-block w-100" [src]="p.image || '../../assets/Azure-Commun-019.JPG'" alt="Programme {{ p.title }}">
           <div class="carousel-text-container">
