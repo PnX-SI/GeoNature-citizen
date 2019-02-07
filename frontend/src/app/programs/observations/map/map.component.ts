@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
 
-import * as L from "leaflet"; // universal ?
+import * as L from "leaflet"; // universal compliant ?
 // import 'leaflet'
 import 'leaflet.markercluster'
 
@@ -48,6 +48,7 @@ export class ObsMapComponent implements OnInit {
   programMaxBounds: any;
   coords: any;
   obsMap: any;
+  geolocate: true
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
@@ -58,7 +59,6 @@ export class ObsMapComponent implements OnInit {
   ngOnInit() {
     this.initMap();
     this.getProgramArea(this.program_id);
-    // if not form
     this.getObservations(this.program_id);
   }
 
@@ -66,6 +66,8 @@ export class ObsMapComponent implements OnInit {
     this.restItemsServiceGetObsItems(id).subscribe(obs => {
       const geoFeatures = obs
       const obsMap = this.obsMap;
+      const geolocate = this.geolocate
+      const programMaxBounds = this.programMaxBounds
 
       function onEachFeature(feature, layer) {
         let popupContent =
@@ -90,7 +92,7 @@ export class ObsMapComponent implements OnInit {
 
       console.debug("Observations :", geoFeatures);
 
-      var cluster = new L.MarkerClusterGroup({
+      const cluster = new L.MarkerClusterGroup({
       	iconCreateFunction: function(cluster) {
           const childCount = cluster.getChildCount()
           let c = ' marker-cluster-'
@@ -116,6 +118,31 @@ export class ObsMapComponent implements OnInit {
       )
 
       obsMap.addLayer(cluster)
+
+      // FIXME: geolocation, programArea is a shared ressource
+      // this should be extracted anyway and /program/:id/observation api calls mutualised
+      function onLocationFound(e) {
+        console.debug('GEOLOCALIZED')
+        const radius = e.accuracy / 2
+        const geolocation = L.marker(e.latlng, { icon: newObsMarkerIcon() }).addTo(obsMap)
+        // geolocation.bindPopup("You are within " + radius + " meters from this point").openPopup()
+        const disk = L.circle(e.latlng, radius).addTo(obsMap)
+        console.debug('GEOLOCATION', e.latlng)
+        if (programMaxBounds) {
+          obsMap.fitBounds(disk.getBounds().extend(programMaxBounds))
+        }
+      }
+
+      console.debug('GEOLOCATION INITIALIZATION', geolocate)
+      // if (geolocate) {
+        obsMap.locate({
+          setView: true,
+          watch: true,
+          enableHighAccuracy: true,
+        })
+        console.debug('GEOLOCATION INITIALIZED')
+        obsMap.on('locationfound', onLocationFound)
+      // }
     })
   }
 
@@ -133,33 +160,32 @@ export class ObsMapComponent implements OnInit {
 
       const programMaxBounds = programArea.getBounds()
       obsMap.fitBounds(programMaxBounds)
-      // QUESTION: enforce program area maxBounds (optional ?)
       // obsMap.setMaxBounds(programMaxBounds)
 
-      let myMarker = null;
+      let myNewObsMarker = null;
       obsMap.on("click", function(e) {
         let coords = JSON.stringify({
           type: "Point", coordinates: [e.latlng.lng, e.latlng.lat]
         });
-        
+
         this.coords = coords;
         console.debug(coords)
 
-        if (myMarker !== null) {
-          obsMap.removeLayer(myMarker);
+        if (myNewObsMarker !== null) {
+          obsMap.removeLayer(myNewObsMarker);
         }
 
         // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
         // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
         if (L.latLngBounds(programMaxBounds).contains([e.latlng.lat, e.latlng.lng])) {
-          myMarker = L.marker(e.latlng, { icon: newObsMarkerIcon() }).addTo(obsMap);
+          myNewObsMarker = L.marker(e.latlng, { icon: newObsMarkerIcon() }).addTo(obsMap);
           $("#feature-title").html(myMarkerTitle);
           $("#feature-coords").html(coords);
           // $("#feature-info").html(myMarkerContent);
           $("#featureModal").modal("show");
         }
       });
-
+      this.programMaxBounds = programMaxBounds
     });
   }
 
