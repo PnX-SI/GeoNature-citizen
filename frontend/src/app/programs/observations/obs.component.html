@@ -1,10 +1,13 @@
 <div class="row">
   <!-- LA PLATEFORME -->
   <section *ngIf="programs.length === 1" id="welcome" class="row">
-    <h1>Bienvenue<br> sur Geonature Citizen</h1>
+    <h1>
+      Bienvenue<br />
+      sur Geonature Citizen
+    </h1>
     <a class="btn-big">Participer au programme</a>
     <span>Scrollez pour en voir plus !</span>
-    <img class="d-block scroll" src="../../assets/scroll.svg">
+    <img class="d-block scroll" src="../../assets/scroll.svg" />
   </section>
 </div>
 
@@ -15,12 +18,19 @@
       <div class="carousel-inner">
         <h2>Le programme {{ program.title }}</h2>
         <div class="carousel-item active">
-          <img class="d-block w-100" [src]="program.image || '../../assets/Azure-Commun-019.JPG'" alt="First slide">
+          <img
+            class="d-block w-100"
+            [src]="program.image || '../../assets/Azure-Commun-019.JPG'"
+            alt="First slide"
+          />
           <div class="carousel-text-container">
             <div class="carousel-text">
               <h3>{{ program.title }}</h3>
-              <p>{{ program.short_desc }}</p>
-              <div class="mobile-hidden">{{ program.long_desc }}</div>
+              <p [innerHTML]="programShortDescription"></p>
+              <div
+                class="mobile-hidden"
+                [innerHTML]="programLongDescription"
+              ></div>
               <a class="btn-big">Partager une observation</a>
             </div>
           </div>
@@ -33,17 +43,17 @@
 <div class="row">
   <!-- original observations -->
   <section class="observations row">
-      <input id="slide-sidebar" type="checkbox" role="button" />
-      <label class="toggle" for="slide-sidebar"><i class="fa fa-chevron-left"></i></label>
+    <input id="slide-sidebar" type="checkbox" role="button" />
+    <label class="toggle" for="slide-sidebar"
+      ><i class="fa fa-chevron-left"></i
+    ></label>
     <div class="col-lg-4 col-md-12 side-bar" id="list">
       <app-obs-list></app-obs-list>
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
       <app-obs-map></app-obs-map>
-      <div class="btn-groups">
-        <app-modalflow></app-modalflow>
-      </div>
+      <div class="btn-groups"><app-modalflow></app-modalflow></div>
     </div>
   </section>
   <!-- end original observations -->
