@@ -6,7 +6,7 @@ import {ngExpressEngine} from '@nguniversal/express-engine';
 import {provideModuleMap} from '@nguniversal/module-map-ngfactory-loader';
 
 import * as express from 'express';
-import {join} from 'path';
+import { join } from 'path';
 import { readFileSync } from 'fs';
 
 // Faster server renders w/ Prod mode (dev mode never needed)
@@ -21,7 +21,6 @@ const DIST_FOLDER = join(process.cwd(), 'dist/browser');
 const MockBrowser = require('mock-browser').mocks.MockBrowser;
 const mock = new MockBrowser();
 const domino = require('domino');
-const path = require('path');
 const template = readFileSync(join(DIST_FOLDER, 'index.html')).toString();
 const win = domino.createWindow(template);
 win.Object = Object;
@@ -37,6 +36,7 @@ global['DOMTokenList'] = win.DOMTokenList;
 global['Node'] = win.Node;
 global['Text'] = win.Text;
 global['localStorage'] = win.localStorage = mock.getLocalStorage();
+global['L'] = require('leaflet')
 
 // * NOTE :: leave this as require() since this file is built Dynamically from webpack
 const {AppServerModuleNgFactory, LAZY_MODULE_MAP} = require('./dist/server/main');

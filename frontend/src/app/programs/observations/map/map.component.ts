@@ -1,24 +1,16 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, AfterViewInit, ViewEncapsulation } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
 
 import { GeoJsonObject } from "geojson";
-// import L from "leaflet";
-// import 'leaflet'
-// import * as L from "leaflet";
-import leaflet from "leaflet";
-// import "leaflet.markercluster";
-// import { MarkerClusterGroup } from "leaflet.markercluster"
+import L from "leaflet";
+import "leaflet.markercluster";
 
 import { AppConfig } from "../../../../conf/app.config";
 import { Subscription } from "rxjs";
 
 declare let $: any;
-
-// window['L'] = L
-window['L'] = leaflet
-const L = window['L']
 
 const newObsMarkerIcon = () =>
   L.icon({
@@ -52,7 +44,7 @@ const programAreaStyle = {
   styleUrls: ["./map.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class ObsMapComponent implements OnInit {
+export class ObsMapComponent implements AfterViewInit {
   obsGeoFeature: any;
   programAreaGeoJson: any;
   program_id: any;
@@ -68,15 +60,14 @@ export class ObsMapComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.initMap();
     this.getProgramArea(this.program_id);
     this.getObservations(this.program_id);
   }
 
   ngOnDestroy() {
-    this.obsMap.remove();
-    this.routeSubscription.unsubscribe()
+    this.routeSubscription.unsubscribe();
   }
 
   getObservations(id): void {
@@ -109,27 +100,26 @@ export class ObsMapComponent implements OnInit {
 
       console.debug("Observations :", geoFeatures);
 
-      // const cluster = leaflet.markerClusterGroup({
-      //   iconCreateFunction: cluster => {
-      //     const childCount = cluster.getChildCount();
-      //     let c = " marker-cluster-";
-      //     if (childCount < 10) {
-      //       c += "small";
-      //     } else if (childCount < 100) {
-      //       c += "medium";
-      //     } else {
-      //       c += "large";
-      //     }
-      //
-      //     return new L.DivIcon({
-      //       html: "<div><span>" + childCount + "</span></div>",
-      //       className: "marker-cluster" + c,
-      //       iconSize: new L.Point(40, 40)
-      //     });
-      //   }
-      // });
+      let cluster = L.markerClusterGroup({
+        iconCreateFunction: cluster => {
+          const childCount = cluster.getChildCount();
+          let c = " marker-cluster-";
+          if (childCount < 10) {
+            c += "small";
+          } else if (childCount < 100) {
+            c += "medium";
+          } else {
+            c += "large";
+          }
 
-      const cluster = leaflet.featureGroup()
+          return new L.DivIcon({
+            html: "<div><span>" + childCount + "</span></div>",
+            className: "marker-cluster" + c,
+            iconSize: new L.Point(40, 40)
+          });
+        }
+      });
+
       cluster.addLayer(
         L.geoJSON(<GeoJsonObject>geoFeatures, {
           onEachFeature: onEachFeature,
@@ -199,12 +189,7 @@ export class ObsMapComponent implements OnInit {
 
         // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
         // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
-        if (
-          programMaxBounds.contains([
-            e.latlng.lat,
-            e.latlng.lng
-          ])
-        ) {
+        if (programMaxBounds.contains([e.latlng.lat, e.latlng.lng])) {
           myNewObsMarker = L.marker(e.latlng, {
             icon: newObsMarkerIcon()
           }).addTo(obsMap);
