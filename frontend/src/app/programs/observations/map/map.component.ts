@@ -8,7 +8,7 @@ import { GeoJsonObject } from "geojson";
 // import 'leaflet'
 // import * as L from "leaflet";
 import leaflet from "leaflet";
-import "leaflet.markercluster";
+// import "leaflet.markercluster";
 // import { MarkerClusterGroup } from "leaflet.markercluster"
 
 import { AppConfig } from "../../../../conf/app.config";
@@ -109,26 +109,27 @@ export class ObsMapComponent implements OnInit {
 
       console.debug("Observations :", geoFeatures);
 
-      const cluster = leaflet.markerClusterGroup({
-        iconCreateFunction: cluster => {
-          const childCount = cluster.getChildCount();
-          let c = " marker-cluster-";
-          if (childCount < 10) {
-            c += "small";
-          } else if (childCount < 100) {
-            c += "medium";
-          } else {
-            c += "large";
-          }
+      // const cluster = leaflet.markerClusterGroup({
+      //   iconCreateFunction: cluster => {
+      //     const childCount = cluster.getChildCount();
+      //     let c = " marker-cluster-";
+      //     if (childCount < 10) {
+      //       c += "small";
+      //     } else if (childCount < 100) {
+      //       c += "medium";
+      //     } else {
+      //       c += "large";
+      //     }
+      //
+      //     return new L.DivIcon({
+      //       html: "<div><span>" + childCount + "</span></div>",
+      //       className: "marker-cluster" + c,
+      //       iconSize: new L.Point(40, 40)
+      //     });
+      //   }
+      // });
 
-          return new L.DivIcon({
-            html: "<div><span>" + childCount + "</span></div>",
-            className: "marker-cluster" + c,
-            iconSize: new L.Point(40, 40)
-          });
-        }
-      });
-
+      const cluster = leaflet.featureGroup()
       cluster.addLayer(
         L.geoJSON(<GeoJsonObject>geoFeatures, {
           onEachFeature: onEachFeature,
