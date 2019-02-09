@@ -43,7 +43,7 @@ import { ProgramsResolve } from "./programs/programs-resolve.service";
 
 @NgModule({
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     HttpClientModule,
     HttpModule,
     ReactiveFormsModule,

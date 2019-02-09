@@ -1,4 +1,4 @@
-<form [formGroup]="obsForm" (ngSubmit)="onFormSubmit(this.obsForm.value)">
+<form [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
   <div class="alert alert-primary rounded-0" role="alert">{{obsForm.value | json}}</div>
   <div class="form-row">
 

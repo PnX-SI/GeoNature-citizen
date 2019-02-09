@@ -5,6 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
 
 import * as L from 'leaflet'
+import { LeafletMouseEvent } from 'leaflet';
 
 import { AppConfig } from '../../../../conf/app.config';
 
@@ -36,6 +37,7 @@ export class ObsFormComponent implements AfterViewInit {
     taxon: new FormControl(),
     // coord,
   });
+  taxonListThreshold = taxonListThreshold
   surveySpecies: any;
   taxonomyList: any;
   program: any;
@@ -95,14 +97,14 @@ export class ObsFormComponent implements AfterViewInit {
           }
         }).addTo(formMap)  // .bindPopup("Observation");
 
-        const maxBounds = programArea.getBounds()
+        const maxBounds: L.LatLngBounds = programArea.getBounds()
         formMap.fitBounds(maxBounds)
         // QUESTION: enforce program area maxBounds (optional ?)
         // formMap.setMaxBounds(maxBounds)
 
         let myMarker = null;
 
-        formMap.on("click", function(e) {
+        formMap.on('click', <LeafletMouseEvent>(e) => {
           //var Coords = "Lat, Lon : " + e.latlng.lat.toFixed(3) + ", " + e.latlng.lng.toFixed(3);
           let coords = JSON.stringify({
             type: "Point",
@@ -117,7 +119,7 @@ export class ObsFormComponent implements AfterViewInit {
 
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
-          if (L.latLngBounds(maxBounds).contains([e.latlng.lat, e.latlng.lng])) {
+          if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
             myMarker = L.marker(e.latlng, { icon: obsFormMarkerIcon }).addTo(formMap);
             $("#feature-title").html(myMarkerTitle);
             $("#feature-coords").html(coords);
