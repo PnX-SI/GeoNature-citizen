@@ -3,8 +3,8 @@ import { Component, Input, ViewEncapsulation, OnDestroy, ViewChild, ElementRef }
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap'
 
 import { IFlowComponent } from '../../flow/flow'
-import { RegisterComponent } from 'src/app/auth/register/register.component';
-import { LoginComponent } from 'src/app/auth/login/login.component';
+import { RegisterComponent } from '../../../../../auth/register/register.component';
+import { LoginComponent } from '../../../../../auth/login/login.component';
 
 @Component({
   templateUrl: './onboard.component.html',

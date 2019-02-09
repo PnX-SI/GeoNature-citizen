@@ -1,5 +1,6 @@
 import { Component, OnInit , ViewEncapsulation} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+// import { Meta } from '@angular/platform-browser';
 
 import { ProgramsResolve } from '../programs/programs-resolve.service';
 import { Program } from '../programs/programs.models';
@@ -18,6 +19,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    // private meta: Meta,
   ) { }
 
   ngOnInit() {
@@ -25,5 +27,9 @@ export class HomeComponent implements OnInit {
       .subscribe((data: { programs: Program[] }) => {
         this.programs = data.programs
     })
+    // this.meta.updateTag({
+    //    name: 'description',
+    //    content: '...my description'
+    //  });
   }
 }
