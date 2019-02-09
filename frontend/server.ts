@@ -20,9 +20,6 @@ const DIST_FOLDER = join(process.cwd(), 'dist/browser');
 
 const MockBrowser = require('mock-browser').mocks.MockBrowser;
 const mock = new MockBrowser();
-global['navigator'] = mock.getNavigator()
-// global['window'] = mock.createWindow()
-// Fix for window error:
 const domino = require('domino');
 const path = require('path');
 const template = readFileSync(join(DIST_FOLDER, 'index.html')).toString();
@@ -39,6 +36,7 @@ global['HTMLElement'] = win.HTMLElement;
 global['DOMTokenList'] = win.DOMTokenList;
 global['Node'] = win.Node;
 global['Text'] = win.Text;
+global['localStorage'] = win.localStorage = mock.getLocalStorage();
 
 // * NOTE :: leave this as require() since this file is built Dynamically from webpack
 const {AppServerModuleNgFactory, LAZY_MODULE_MAP} = require('./dist/server/main');
