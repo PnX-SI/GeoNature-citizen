@@ -1,9 +1,12 @@
 <div class="row">
   <section id="welcome">
-    <h1>Bienvenue<br> sur Geonature Citizen</h1>
+    <h1>
+      Bienvenue<br />
+      sur Geonature Citizen
+    </h1>
     <a class="btn-big">Participer au programme</a>
     <span>Scrollez pour en voir plus !</span>
-    <img class="d-block scroll" src="../../assets/scroll.svg">
+    <img class="d-block scroll" src="../../assets/scroll.svg" />
   </section>
 </div>
 
@@ -12,28 +15,49 @@
   <section id="slide" *ngIf="programs.length > 1">
     <div id="slider" class="carousel slide" data-ride="carousel">
       <ol class="carousel-indicators">
-        <li *ngFor="let p of programs; index as i; first as isFirst"
-            data-target="#slider" [attr.data-slide-to]="i" [class.active]="isFirst"></li>
+        <li
+          *ngFor="let p of programs; index as i; first as isFirst"
+          data-target="#slider"
+          [attr.data-slide-to]="i"
+          [class.active]="isFirst"
+        ></li>
       </ol>
       <h2>Les programmes du moment</h2>
       <div class="carousel-inner">
-        <div *ngFor="let p of programs; first as isFirst" [ngClass]="{'active': isFirst, 'carousel-item': true }">
-          <img class="d-block w-100" [src]="p.image || '../../assets/Azure-Commun-019.JPG'" alt="Programme {{ p.title }}">
+        <div
+          *ngFor="let p of programs; first as isFirst"
+          [ngClass]="{ active: isFirst, 'carousel-item': true }"
+        >
+          <img
+            class="d-block w-100"
+            [src]="p.image || '../../assets/Azure-Commun-019.JPG'"
+            alt="Programme {{ p.title }}"
+          />
           <div class="carousel-text-container">
             <div class="carousel-text">
               <h3>{{ p.title }}</h3>
-              <p>{{ p.short_desc }}</p>
-              <div class="mobile-hidden">{{ p.long_desc }}</div>
+              <p [innerHTML]="p.short_desc"></p>
+              <div class="mobile-hidden" [innerHTML]="p.long_desc"></div>
               <a class="btn-big">Partager une observation</a>
             </div>
           </div>
         </div>
       </div>
-      <a class="carousel-control-prev" href="#slider" role="button" data-slide="prev">
+      <a
+        class="carousel-control-prev"
+        href="#slider"
+        role="button"
+        data-slide="prev"
+      >
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>
       </a>
-      <a class="carousel-control-next" href="#slider" role="button" data-slide="next">
+      <a
+        class="carousel-control-next"
+        href="#slider"
+        role="button"
+        data-slide="next"
+      >
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
       </a>

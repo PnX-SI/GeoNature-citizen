@@ -22,7 +22,7 @@ export class ObsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    protected domSanitizer: DomSanitizer,
+    protected domSanitizer: DomSanitizer, // TODO: mv to program service
     public flowService: ModalFlowService
   ) {
     this.route.params.subscribe(params => (this.survey_id = params["id"]));
