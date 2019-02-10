@@ -1,21 +1,38 @@
 <div class="container programs">
   <div class="row">
-    <h1>{{title}}&nbsp;<span class="badge badge-pill badge-primary">{{programCount}}</span></h1>
+    <h1>
+      {{ title }}&nbsp;<span class="badge badge-pill badge-primary">{{
+        programCount
+      }}</span>
+    </h1>
     <div class="container" id="main">
       <div class="row justify-content-center">
-        <div *ngFor="let p of programs; let i=index;" class="col-lg-4 col-md-4 col-sm-12">
-          <div class="text-center">
-            <div class="img-hover" [ngbTooltip]="p.short_desc">
-              <img class="rounded-circle img-responsive img-rounded"
-                  alt='p.title' width="300" height="300" src="../../assets/prog1.jpg"
-                  [routerLink]="['/programs', p.id_program, 'observations']"
-                  (click)="activeModal.close('PROGRAM_SELECTED')" />
+        <div
+          *ngFor="let p of programs; let i = index"
+          class="col-lg-4 col-md-4 col-sm-12"
+        >
+          <a [routerLink]="['/programs', p.id_program, 'observations']">
+            <div class="text-center">
+              <div class="img-hover" [ngbTooltip]="p.short_desc">
+                <img
+                  class="rounded-circle img-responsive img-rounded"
+                  alt="p.title"
+                  width="300"
+                  height="300"
+                  src="../../assets/prog1.jpg"
+                  (click)="activeModal.close('PROGRAM_SELECTED')"
+                />
+              </div>
+              <h5 class="card-title">
+                {{ p.title }}&nbsp; <span class="badge badge-info"> </span>
+              </h5>
+              <p>
+                Sed cautela nimia in peiores haeserat plagas, ut narrabimus
+                postea, aemulis consarcinantibus insidias graves apud
+                Constantium
+              </p>
             </div>
-            <h5 class="card-title">{{p.title}}&nbsp;
-              <span class="badge badge-info"> </span>
-            </h5>
-            <p>Sed cautela nimia in peiores haeserat plagas, ut narrabimus postea, aemulis consarcinantibus insidias graves apud Constantium</p>
-          </div>
+          </a>
         </div>
       </div>
     </div>
