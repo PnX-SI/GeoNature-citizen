@@ -12,7 +12,10 @@
           class="col-lg-4 col-md-4 col-sm-12"
         >
           <a [routerLink]="['/programs', p.id_program, 'observations']">
-            <div class="text-center">
+            <div
+              class="text-center"
+              (click)="activeModal.close('PROGRAM_SELECTED')"
+            >
               <div class="img-hover" [ngbTooltip]="p.short_desc">
                 <img
                   class="rounded-circle img-responsive img-rounded"
@@ -20,7 +23,6 @@
                   width="300"
                   height="300"
                   src="../../assets/prog1.jpg"
-                  (click)="activeModal.close('PROGRAM_SELECTED')"
                 />
               </div>
               <h5 class="card-title">
