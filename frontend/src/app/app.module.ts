@@ -3,7 +3,10 @@ import { HttpClientModule } from "@angular/common/http";
 import { HttpModule } from "@angular/http";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
+import {
+  BrowserModule,
+  BrowserTransferStateModule
+} from "@angular/platform-browser";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppComponent } from "./app.component";
@@ -30,26 +33,27 @@ import { AboutComponent } from "./about/about.component";
 import { AboutCustomComponent } from "./about/custom/custom.component";
 import { AboutFixedComponent } from "./about/fixed/fixed.component";
 import { HomeCustomComponent } from "./home/custom/custom.component";
-import { FlowComponent } from './programs/observations/modalflow/flow/flow.component'
+import { FlowComponent } from "./programs/observations/modalflow/flow/flow.component";
 // import { FlowService } from './programs/observations/flow/flow.service'
-import { FlowDirective } from './programs/observations/modalflow/flow/flow.directive'
-import { OnboardComponent } from './programs/observations/modalflow/steps/onboard/onboard.component'
-import { CommittedComponent } from './programs/observations/modalflow/steps/committed/committed.component'
-import { CongratsComponent } from './programs/observations/modalflow/steps/congrats/congrats.component';
-import { ModalFlowComponent } from './programs/observations/modalflow/modalflow.component';
-import { RewardComponent } from './programs/observations/modalflow/steps/reward/reward.component';
-import { ModalFlowService } from './programs/observations/modalflow/modalflow.service';
+import { FlowDirective } from "./programs/observations/modalflow/flow/flow.directive";
+import { OnboardComponent } from "./programs/observations/modalflow/steps/onboard/onboard.component";
+import { CommittedComponent } from "./programs/observations/modalflow/steps/committed/committed.component";
+import { CongratsComponent } from "./programs/observations/modalflow/steps/congrats/congrats.component";
+import { ModalFlowComponent } from "./programs/observations/modalflow/modalflow.component";
+import { RewardComponent } from "./programs/observations/modalflow/steps/reward/reward.component";
+import { ModalFlowService } from "./programs/observations/modalflow/modalflow.service";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 
 @NgModule({
   imports: [
-    BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    BrowserModule.withServerTransition({ appId: "serverApp" }),
+    BrowserTransferStateModule,
     HttpClientModule,
     HttpModule,
     ReactiveFormsModule,
     FormsModule,
     NgbModule,
-    routing,
+    routing
   ],
   declarations: [
     AppComponent,
@@ -79,7 +83,7 @@ import { ProgramsResolve } from "./programs/programs-resolve.service";
     CommittedComponent,
     CongratsComponent,
     ModalFlowComponent,
-    RewardComponent,
+    RewardComponent
   ],
   providers: [
     AuthService,
@@ -87,7 +91,7 @@ import { ProgramsResolve } from "./programs/programs-resolve.service";
     GncProgramsService,
     // FlowService,
     ModalFlowService,
-    ProgramsResolve,
+    ProgramsResolve
   ],
   bootstrap: [AppComponent],
   entryComponents: [
@@ -98,7 +102,7 @@ import { ProgramsResolve } from "./programs/programs-resolve.service";
     OnboardComponent,
     CommittedComponent,
     CongratsComponent,
-    RewardComponent,
+    RewardComponent
   ]
 })
 export class AppModule {}
