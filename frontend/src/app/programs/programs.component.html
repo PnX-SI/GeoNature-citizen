@@ -11,7 +11,7 @@
           *ngFor="let p of programs; let i = index"
           class="col-lg-4 col-md-4 col-sm-12"
         >
-          <a [routerLink]="['/programs', p.id_program, 'observations']">
+          <a [routerLink]="['programs', p.id_program, 'observations']">
             <div
               class="text-center"
               (click)="activeModal.close('PROGRAM_SELECTED')"
