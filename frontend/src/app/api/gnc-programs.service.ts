@@ -77,12 +77,14 @@ export class GncProgramsService implements OnInit {
           })
         ),
         tap(programs => {
-          this.programs = programs;
           this.state.set(PROGRAMS_KEY, programs as any);
           console.debug("GncProgramsService: programs ", programs);
+          return programs;
         }),
         catchError(this.handleError<Program[]>("getAllPrograms"))
       );
+    } else {
+      return this.programs$;
     }
   }
 
@@ -104,16 +106,14 @@ export class GncProgramsService implements OnInit {
   }
 
   getProgramTaxonomyList(program_id: number): Observable<any[]> {
-    return of(this.programs).pipe(
+    return this.getAllPrograms().pipe(
       map(programs => programs.filter(p => p.id_program == program_id)),
       take(1),
-      // tap(progs => console.debug("progs", progs)),
       mergeMap(programs => {
         return this.http.get<any[]>(
           `${this.URL}/taxonomy/lists/${programs[0]["taxonomy_list"]}/species`
         );
       }),
-      // tap(n => console.debug("taxlist", n)),
       catchError(this.handleError<any[]>(`getProgramTaxonomyList`))
     );
   }
