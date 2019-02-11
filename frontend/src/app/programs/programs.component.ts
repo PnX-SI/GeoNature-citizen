@@ -10,8 +10,6 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Program } from "./programs.models";
 import { GncProgramsService } from "../api/gnc-programs.service";
 
-const PROGRAMS_KEY = makeStateKey("programs");
-
 @Component({
   selector: "app-programs",
   templateUrl: "./programs.component.html",
