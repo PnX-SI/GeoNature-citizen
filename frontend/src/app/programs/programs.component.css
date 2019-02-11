@@ -53,8 +53,16 @@
     color: #111;
     background: #eee;
     padding: 5px 5px;
+    margin-bottom: 0px;
     border-radius: 3px;
     position: relative;
+}
+
+.programs .text-center p h1 {
+    background: inherit;
+    font-size: 16px;
+    color: inherit;
+    margin: 0px;
 }
 
 .programs .text-center p:before{
