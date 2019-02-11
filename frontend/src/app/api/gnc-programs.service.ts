@@ -6,11 +6,12 @@ import {
 } from "@angular/platform-browser";
 import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
-import { catchError, tap, map } from "rxjs/operators";
+import { catchError, tap, map, take, mergeMap } from "rxjs/operators";
+
+import { FeatureCollection, Feature } from "geojson";
 
 import { AppConfig } from "../../conf/app.config";
 import { Program } from "../programs/programs.models";
-import { FeatureCollection, Feature } from "geojson";
 
 const PROGRAMS_KEY = makeStateKey("programs");
 
@@ -41,12 +42,15 @@ export interface IGncFeatures extends FeatureCollection {
 export class GncProgramsService implements OnInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   programs: Program[];
+  programs$: Observable<Program[]>;
 
   constructor(
     protected http: HttpClient,
     private state: TransferState,
     protected domSanitizer: DomSanitizer
-  ) {}
+  ) {
+    this.programs$ = of(this.programs);
+  }
 
   ngOnInit() {
     this.programs = this.state.get(PROGRAMS_KEY, null as any);
@@ -73,6 +77,7 @@ export class GncProgramsService implements OnInit {
           })
         ),
         tap(programs => {
+          this.programs = programs;
           this.state.set(PROGRAMS_KEY, programs as any);
           console.debug("GncProgramsService: programs ", programs);
         }),
@@ -98,24 +103,19 @@ export class GncProgramsService implements OnInit {
       );
   }
 
-  getTaxonomyList(program_id): Observable<any[]> {
-    // if (this.programs) {
-    const program = this.programs.filter(p => p.id_program === program_id);
-    return this.http
-      .get<any[]>(
-        `${this.URL}/taxonomy/lists/${program["taxonomy_list"]}/species`
-      )
-      .pipe(
-        tap(n => console.debug("taxlist", n)),
-        catchError(
-          this.handleError<any[]>(
-            `getTaxonomyList id=${program["taxonomy_list"]} ${
-              program["program_id"]
-            }`
-          )
-        )
-      );
-    // }
+  getProgramTaxonomyList(program_id: number): Observable<any[]> {
+    return of(this.programs).pipe(
+      map(programs => programs.filter(p => p.id_program == program_id)),
+      take(1),
+      // tap(progs => console.debug("progs", progs)),
+      mergeMap(programs => {
+        return this.http.get<any[]>(
+          `${this.URL}/taxonomy/lists/${programs[0]["taxonomy_list"]}/species`
+        );
+      }),
+      // tap(n => console.debug("taxlist", n)),
+      catchError(this.handleError<any[]>(`getProgramTaxonomyList`))
+    );
   }
 
   private handleError<T>(operation = "operation", result?: T) {

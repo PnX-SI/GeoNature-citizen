@@ -15,7 +15,7 @@ import { FeatureCollection } from "geojson";
 })
 export class ObsComponent implements OnInit {
   title = "Observations";
-  survey_id: any;
+  program_id: any;
   coords: any;
   programs: Program[];
   program: Program;
@@ -27,23 +27,25 @@ export class ObsComponent implements OnInit {
     public flowService: ModalFlowService,
     private programService: GncProgramsService
   ) {
-    this.route.params.subscribe(params => (this.survey_id = params["id"]));
+    this.route.params.subscribe(params => (this.program_id = params["id"]));
   }
 
   ngOnInit() {
     this.route.data.subscribe((data: { programs: Program[] }) => {
       this.programs = data.programs;
-      this.program = this.programs.find(p => p.id_program == this.survey_id);
+      this.program = this.programs.find(p => p.id_program == this.program_id);
       this.programService
-        .getProgramObservations(this.survey_id)
+        .getProgramObservations(this.program_id)
         .subscribe(observations => {
           this.observations = observations;
           console.debug("obs component observations", this.observations);
         });
-      this.programService.getTaxonomyList(this.survey_id).subscribe(taxa => {
-        this.surveySpecies = taxa;
-        console.debug("obs component taxon list", this.surveySpecies);
-      });
+      this.programService
+        .getProgramTaxonomyList(this.program_id)
+        .subscribe(taxa => {
+          this.surveySpecies = taxa;
+          console.debug("obs component taxon list", this.surveySpecies);
+        });
     });
   }
 }
