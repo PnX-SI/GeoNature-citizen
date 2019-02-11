@@ -179,10 +179,10 @@ section .observations {
 .observations #map iframe{
     height: 100%;
 }
-.observations #map .btn-group,  {
+.observations #map .btn-group  {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 0px;
+    right: 0px;
 }
 
 .scroll{

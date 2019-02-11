@@ -1,0 +1,85 @@
+
+.carousel-inner, .carousel-item{
+    max-height: 80vh;
+}
+
+.species {
+    width: 100%;
+}
+
+h2{
+    position: absolute;
+    top: 10px; left: 50px;
+    z-index: 999;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 20px;
+}
+
+h2:before{
+    content : ' ';
+    position: absolute;
+    width: 40px;
+    height: 21px;
+    transform: translateX(-125%);
+    background: #fff;
+}
+
+ol.carousel-indicators li{
+    margin-top : 20px;
+    width: 10px;
+    height: 10px;
+    border-radius: 25px;
+    background: transparent;
+    border: solid 1px #fff;
+}
+
+.carousel-text-container{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+.carousel-text{
+    background-color: #fff;
+    padding: 40px;
+    min-width: 450px;
+    max-width: 1200px;
+    min-height: 450px;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.carousel-text h3 {
+    font-family: 'NexaRust';
+    color : var(--ternary);
+}
+
+
+.carousel-text p {
+    font-style: italic;
+    font-size: 14px;
+    width: 90%;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.carousel-text a {
+    background-color: var(--secondary);
+    width: 90%;
+    text-align: center;
+}
+
+
+.row{
+    margin: 0;
+}
+.container-fluid{
+    padding: 0px;
+}
