@@ -26,10 +26,10 @@
           <div class="carousel-text-container">
             <div class="carousel-text">
               <h3>{{ program.title }}</h3>
-              <p [innerHTML]="programShortDescription"></p>
+              <p [innerHTML]="program.html_short_desc"></p>
               <div
                 class="mobile-hidden"
-                [innerHTML]="programLongDescription"
+                [innerHTML]="program.html_long_desc"
               ></div>
               <a class="btn-big">Partager une observation</a>
             </div>
@@ -48,7 +48,10 @@
       ><i class="fa fa-chevron-left"></i
     ></label>
     <div class="col-lg-4 col-md-12 side-bar" id="list">
-      <app-obs-list></app-obs-list>
+      <app-obs-list
+        [observations]="observations"
+        [taxa]="surveySpecies"
+      ></app-obs-list>
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
