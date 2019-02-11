@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import uuid
-
+import json
+from pprint import pprint
 import requests
+
+from werkzeug.datastructures import ImmutableMultiDict
 from flask import Blueprint, current_app, request
 from flask_jwt_extended import jwt_optional
 from geoalchemy2.shape import from_shape
@@ -174,8 +177,7 @@ def post_observation():
             description: Adding a observation
         """
     try:
-        request_datas = dict(request.get_json())
-        print(request_datas)
+        request_datas = json.loads(request.form.get("data"))
         datas2db = {}
         for field in request_datas:
             if hasattr(ObservationModel, field):
@@ -212,25 +214,27 @@ def post_observation():
         # Réponse en retour
         features = generate_observation_geojson(newobs.id_observation)
         # Enregistrement de la photo et correspondance Obs Photo
-        if "file" in request.files:
-            try:
-                filename, id_media, id_match = save_upload_file(
-                    request.files,
-                    "obstax",
-                    datas2db["cd_nom"],
-                    newobs.id_observation,
-                    ObservationMediaModel,
-                )
-                return filename, id_media
+        try:
+            filename, id_media, id_match = save_upload_file(
+                request.files,
+                "obstax",
+                datas2db["cd_nom"],
+                newobs.id_observation,
+                ObservationMediaModel,
+            )
+            current_app.logger.debug(
+                "ObsTax UPLOAD FILE {}, ({})".format(filename, id_media)
+            )
 
-            except Exception as e:
-                current_app.logger.debug("saving file ", e)
-                raise GeonatureApiError(e)
+        except Exception as e:
+            current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
+            raise GeonatureApiError(e)
 
         return (
-            {"message": "New observation created.", "features": features},
+            {"message": "New observation created", "features": features},
             200,
         )
+
     except Exception as e:
         current_app.logger.warning("Error: %s", str(e))
         return {"error_message": str(e)}, 400

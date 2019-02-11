@@ -29,52 +29,62 @@ def save_upload_file(
     matching_model=None,
 ):
     """Save on server and db a single file from POST request"""
-    print("test")
     filename, id_media, id_match = None, None, None
-    if "file" in request_file:
-        file = request.files["file"]
-        current_app.logger.debug(file)
-        current_app.logger.debug(
-            "Allowed filename :", allowed_file(file.filename)
-        )
-        if allowed_file(file.filename):
-            # save file
+    try:
+        if "file" in request_file:
+            file = request.files["file"]
+            filename = file.filename
             current_app.logger.debug(
-                "Préparation de l'enregistrement de ".format(filename)
+                "{} is an allowed filename : {}".format(
+                    filename, allowed_file(filename)
+                )
             )
-            ext = file.rsplit(".", 1).lower()
-            current_app.logger.debug("File extension :".format(filename))
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = "obstax" + "_" + cdnom + "_" + timestamp + "." + ext
-            file.save(os.path.join(str(MEDIA_DIR), filename))
-            # Save media filename to Database
-            try:
-                newmedia = MediaModel(filename=filename)
-                db.session.add(newmedia)
-                db.session.commit()
-                id_media = newmedia.id_media
-                current_app.logger.debug("id_media : ", id_media)
-                return id_media
-            except Exception as e:
-                current_app.logger.debug(e)
-                raise GeonatureApiError(e)
-            # Save id_media in matching table
-            try:
-                matchingids = {
-                    "id_media": id_media,
-                    "id_data_source": id_data_source,
-                }
-                newmatch = matching_model(matchingids)
-                db.session.add(newmatch)
-                db.session.commit()
-                id_match = newmatch.id_match
-                return id_match
-            except Exception as e:
-                current_app.logger.debug(e)
-                raise GeonatureApiError(e)
 
-            # log
-            current_app.logger.debug("Fichier {} enregistré".format(filename))
+            if allowed_file(filename):
+                # save file
+                current_app.logger.debug(
+                    'Preparing file "{}" saving'.format(filename)
+                )
+                ext = filename.rsplit(".", 1)[1].lower()
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = "obstax_{}_{}.{}".format(str(cdnom), timestamp, ext)
+                current_app.logger.debug("new filename : {}".format(filename))
+                file.save(os.path.join(str(MEDIA_DIR), filename))
+                # Save media filename to Database
+                try:
+                    newmedia = MediaModel(filename=filename)
+                    current_app.logger.debug("newmedia {}".format(newmedia))
+                    db.session.add(newmedia)
+                    db.session.commit()
+                    id_media = newmedia.id_media
+                    current_app.logger.debug(
+                        "id_media : ".format(str(id_media))
+                    )
+                    # return id_media
+                except Exception as e:
+                    current_app.logger.debug("ERROR MEDIAMODEL: {}".format(e))
+                    raise GeonatureApiError(e)
+                # Save id_media in matching table
+                try:
+                    newmatch = matching_model(
+                        id_media=id_media, id_data_source=id_data_source
+                    )
+                    db.session.add(newmatch)
+                    db.session.commit()
+                    id_match = newmatch.id_match
+                    current_app.logger.debug("id_match {}".format(id_match))
+                except Exception as e:
+                    current_app.logger.debug("ERROR MATCH MEDIA: {}".format(e))
+                    raise GeonatureApiError(e)
+
+                # log
+                current_app.logger.debug(
+                    "Fichier {} enregistré".format(filename)
+                )
+
+    except Exception as e:
+        current_app.logger.debug("ERROR save_upload_file : {}".format(e))
+        raise GeonatureApiError(e)
 
     return filename, id_media, id_match
 
