@@ -24,16 +24,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe((data: { programs: Program[] }) => {
-      this.programs = data.programs.map(p => {
-        p.html_short_desc = this.domSanitizer.bypassSecurityTrustHtml(
-          p.short_desc
-        );
-        p.html_long_desc = this.domSanitizer.bypassSecurityTrustHtml(
-          p.long_desc
-        );
-        return p;
-      });
+      this.programs = data.programs;
     });
+
     // this.meta.updateTag({
     //    name: 'description',
     //    content: '...my description'

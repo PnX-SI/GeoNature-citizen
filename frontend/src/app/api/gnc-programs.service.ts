@@ -1,44 +1,84 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
+import { Injectable, OnInit, Optional, SkipSelf } from "@angular/core";
+import {
+  DomSanitizer,
+  TransferState,
+  makeStateKey
+} from "@angular/platform-browser";
+import { HttpClient } from "@angular/common/http";
+import { Observable, of } from "rxjs";
+import { catchError, tap, map } from "rxjs/operators";
 
-import { AppConfig } from '../../conf/app.config';
-import { Program } from '../programs/programs.models';
+import { AppConfig } from "../../conf/app.config";
+import { Program } from "../programs/programs.models";
+import { FeatureCollection, Feature } from "geojson";
 
+const PROGRAMS_KEY = makeStateKey("programs");
 
-export interface IGeoFeatureProgramAdapter {
-  properties: Program
+export interface IGncProgram extends Feature {
+  properties: Program;
 }
 
-export interface IGeoFeatures {
-  type: string
-  features: IGeoFeatureProgramAdapter[]
-  count: number
+export interface IGncFeatures extends FeatureCollection {
+  features: IGncProgram[];
+  count: number;
 }
 
 @Injectable({
-  providedIn: 'root'
+  deps: [
+    [new Optional(), new SkipSelf(), GncProgramsService],
+    HttpClient,
+    TransferState,
+    DomSanitizer
+  ],
+  providedIn: "root",
+  useFactory: (
+    instance: GncProgramsService | null,
+    http: HttpClient,
+    state: TransferState,
+    domSanitizer: DomSanitizer
+  ) => instance || new GncProgramsService(http, state, domSanitizer)
 })
-export class GncProgramsService {
+export class GncProgramsService implements OnInit {
   private readonly URL = AppConfig.API_ENDPOINT;
+  programs: Program[];
 
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(`${operation} failed: ${error.message}`, error);
-      return of(result as T);
-    };
+  constructor(
+    protected http: HttpClient,
+    private state: TransferState,
+    protected domSanitizer: DomSanitizer
+  ) {}
+
+  ngOnInit() {
+    this.programs = this.state.get(PROGRAMS_KEY, null as any);
   }
 
-  constructor(protected http: HttpClient) { }
+  getGeoFeatures(features): Observable<IGncFeatures> {
+    return this.http.get<IGncFeatures>(`${this.URL}/${features}`);
+  }
 
   getAllPrograms(): Observable<Program[]> {
-    return this.http.get<IGeoFeatures>(`${this.URL}/programs`)
-      .pipe(
-        map(adapted => adapted.features),
-        map(featureCollection => featureCollection.map(feature => feature.properties)),
-        tap(p => console.debug('GncProgramsService: programs ', p)),
-      )
+    if (!this.programs) {
+      return this.getGeoFeatures("programs").pipe(
+        map(featureCollection => featureCollection.features),
+        map(feature => feature.map(feature => feature.properties)),
+        map(programs =>
+          programs.map(program => {
+            program.html_short_desc = this.domSanitizer.bypassSecurityTrustHtml(
+              program.short_desc
+            );
+            program.html_long_desc = this.domSanitizer.bypassSecurityTrustHtml(
+              program.long_desc
+            );
+            return program;
+          })
+        ),
+        tap(programs => {
+          this.state.set(PROGRAMS_KEY, programs as any);
+          console.debug("GncProgramsService: programs ", programs);
+        }),
+        catchError(this.handleError<Program[]>("getAllPrograms"))
+      );
+    }
   }
 
   getProgram(id: number): Observable<Program> {
@@ -48,6 +88,43 @@ export class GncProgramsService {
     );
   }
 
+  getProgramObservations(id: number): Observable<IGncFeatures> {
+    return this.http
+      .get<IGncFeatures>(`${this.URL}/programs/${id}/observations`)
+      .pipe(
+        catchError(
+          this.handleError<IGncFeatures>(`getProgramObservations id=${id}`)
+        )
+      );
+  }
+
+  getTaxonomyList(program_id): Observable<any[]> {
+    // if (this.programs) {
+    const program = this.programs.filter(p => p.id_program === program_id);
+    return this.http
+      .get<any[]>(
+        `${this.URL}/taxonomy/lists/${program["taxonomy_list"]}/species`
+      )
+      .pipe(
+        tap(n => console.debug("taxlist", n)),
+        catchError(
+          this.handleError<any[]>(
+            `getTaxonomyList id=${program["taxonomy_list"]} ${
+              program["program_id"]
+            }`
+          )
+        )
+      );
+    // }
+  }
+
+  private handleError<T>(operation = "operation", result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} failed: ${error.message}`, error);
+      return of(result as T);
+    };
+  }
+
   // public createProgram(program: Program): Observable<Program> {
   //   return this.http
   //     .post<Program>(`${this.URL}/programs`, program)
@@ -55,9 +132,9 @@ export class GncProgramsService {
   // }
 
   // public updateProgram(program: Program): Observable<Program> {
-    // return this.http
-    //   .put<Program>(`${this.URL}/programs/${program.id_program}`, program)
-    //   .map(response => response.json() || []);
+  // return this.http
+  //   .put<Program>(`${this.URL}/programs/${program.id_program}`, program)
+  //   .map(response => response.json() || []);
   // }
 
   // public deleteProgram(program: Program): Observable<Program> {
