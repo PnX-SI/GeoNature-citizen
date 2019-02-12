@@ -6,7 +6,7 @@ import {
 } from "@angular/platform-browser";
 import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
-import { catchError, tap, map, take, mergeMap } from "rxjs/operators";
+import { catchError, tap, map, mergeMap } from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 
@@ -56,15 +56,11 @@ export class GncProgramsService implements OnInit {
     this.programs = this.state.get(PROGRAMS_KEY, null as any);
   }
 
-  getGeoFeatures(features): Observable<IGncFeatures> {
-    return this.http.get<IGncFeatures>(`${this.URL}/${features}`);
-  }
-
   getAllPrograms(): Observable<Program[]> {
     if (!this.programs) {
-      return this.getGeoFeatures("programs").pipe(
+      return this.http.get<IGncFeatures>(`${this.URL}/programs`).pipe(
         map(featureCollection => featureCollection.features),
-        map(feature => feature.map(feature => feature.properties)),
+        map(features => features.map(feature => feature.properties)),
         map(programs =>
           programs.map(program => {
             program.html_short_desc = this.domSanitizer.bypassSecurityTrustHtml(
@@ -88,19 +84,19 @@ export class GncProgramsService implements OnInit {
     }
   }
 
-  getProgram(id: number): Observable<Program> {
-    return this.http.get<Program>(`${this.URL}/programs/${id}`).pipe(
+  getProgram(id: number): Observable<FeatureCollection> {
+    return this.http.get<FeatureCollection>(`${this.URL}/programs/${id}`).pipe(
       tap(_ => console.debug(`fetched program ${id}`)),
-      catchError(this.handleError<Program>(`getProgram id=${id}`))
+      catchError(this.handleError<FeatureCollection>(`getProgram id=${id}`))
     );
   }
 
-  getProgramObservations(id: number): Observable<IGncFeatures> {
+  getProgramObservations(id: number): Observable<FeatureCollection> {
     return this.http
-      .get<IGncFeatures>(`${this.URL}/programs/${id}/observations`)
+      .get<FeatureCollection>(`${this.URL}/programs/${id}/observations`)
       .pipe(
         catchError(
-          this.handleError<IGncFeatures>(`getProgramObservations id=${id}`)
+          this.handleError<FeatureCollection>(`getProgramObservations id=${id}`)
         )
       );
   }
