@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
   <div class="row">
     <div class="col">
       <h1>{{title}}</h1>
@@ -6,3 +6,30 @@
     </div>
   </div>
 </div>
+ -->
+
+<section class="row">
+  <div class="species">
+    <div class="carousel-inner">
+      <h2>Program.title</h2>
+      <div class="specie-img">
+        <img
+          class="d-block w-100"
+          src="../../assets/Azure-Commun-019.JPG"
+          alt="First picture"
+        />
+        <div class="carousel-text-container">
+          <div class="carousel-text">
+            <h3>specie.title</h3>
+            <p [innerHTML]="programShortDescription"></p>
+            <div
+              class="mobile-hidden"
+              [innerHTML]="programLongDescription"
+            ></div>
+            <a class="btn-big">Partager une observation</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -55,16 +55,6 @@
     margin-top: 20px;
 }
 
-.user-infos div{
-    background: #61c2ad88;
-    width: 100%;
-}
-.user-infos div p {
-    font-weight: 400;
-    font-size: 25px;
-    margin: 5px;
-}
-
 .user-infos p i {
     font-size: 23px;
 }
@@ -106,12 +96,16 @@
     background: #00a99d;
     padding: 10px 30px;
     margin: 10px 25px;
+    max-height: 115px;
 }
 
 .personal-data button i{
     margin-right: 15px;
 }
 
+#badges .row{
+    padding: 0px;
+}
 
 
 @media screen and (min-width: 992px){
@@ -137,7 +131,7 @@
     }
 }
 
-@media screen and (max-width: 992px){
+@media screen and (max-width: 991px){
     #badges .row div:nth-child(2):before{
         content: ' ';
         background-color: #333;
@@ -154,4 +148,10 @@
         height: 2px;
         width: 60%;
     } 
+}
+
+@media screen and (max-width: 577px){
+    .personal-data button{
+        width: 100% !important;
+    }
 }

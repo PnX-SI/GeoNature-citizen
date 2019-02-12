@@ -62,7 +62,7 @@ span.input-group-text {
 @media screen and (max-width: 576px) {
     .modal-body .form-row{
         flex-direction: column;
-        width: 80%;
+        width: 95%;
         align-items: center;
         margin: 0 auto;
     }

@@ -1,44 +1,37 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { map } from "rxjs/operators";
-import { AppConfig } from "../../conf/app.config";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { DescModalComponent } from "./desc-modal/desc-modal.component";
-import { GncService } from "../api/gnc.service";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+
+// import { AppConfig } from "../../conf/app.config";
+import { Program } from "./programs.models";
 import { GncProgramsService } from "../api/gnc-programs.service";
+
 @Component({
   selector: "app-programs",
   templateUrl: "./programs.component.html",
   styleUrls: ["./programs.component.css"],
-  providers: [GncProgramsService]
+  encapsulation: ViewEncapsulation.None
 })
 export class ProgramsComponent implements OnInit {
   title = "Programmes";
-  programs: any;
-  closeResult: string;
-  listprograms: any;
-  programFeatures: any;
+  programs: Program[];
   programCount: number;
 
   constructor(
-    // private http: HttpClient,
-    private modalService: NgbModal,
-    private programservice: GncProgramsService
+    public activeModal: NgbActiveModal,
+    private programService: GncProgramsService
   ) {}
 
-  open(title, long_desc) {
-    const modalRef = this.modalService.open(DescModalComponent, { size: "lg" });
-    modalRef.componentInstance.title = title;
-    modalRef.componentInstance.long_desc = long_desc;
-  }
-
   ngOnInit() {
-    // this.getSurveyListsItems();
-    this.programservice.getAllPrograms().subscribe(programs => {
-      this.programs = programs;
-      this.programFeatures = this.programs["features"];
-      this.programCount = this.programs["count"];
-      console.log(programs);
-    });
+    if (!this.programs) {
+      this.programService.getAllPrograms().subscribe(programs => {
+        this.programs = programs;
+        console.debug(
+          "ProgramsComponent: GncProgramsService call result:",
+          this.programs
+        );
+        this.programCount = this.programs ? this.programs.length : 0;
+      });
+    }
   }
 }

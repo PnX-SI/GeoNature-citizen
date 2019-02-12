@@ -1,0 +1,10 @@
+<!-- Observation ajoutée -->
+<div class="modal-body obs-added">
+  <div>
+    <img src="../../assets/Azure-Commun-019.JPG">
+  </div>
+  <h5>Félicitations !</h5>
+  <h6>Votre observation a bien été ajoutée !</h6>
+  <p>{{ obs?.taxon || 'Azurée commun' }}</p>
+  <span>Observé par {{ username || 'Anonyme' }} <br> le  {{ obs?.date || data.date}}</span>
+</div>

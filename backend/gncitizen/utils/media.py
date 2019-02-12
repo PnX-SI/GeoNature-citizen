@@ -1,4 +1,4 @@
-from server import ALLOWED_EXTENSIONS
+from gncitizen.utils.env import ALLOWED_EXTENSIONS
 
 
 def allowed_file(filename):
