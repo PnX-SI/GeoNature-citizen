@@ -121,11 +121,11 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   initTracking() {
     this.obsMap.locate({
-      // setView: true,
       watch: true,
       enableHighAccuracy: true
     });
     this.obsMap.on("locationfound", this.onLocationFound.bind(this));
+    this.obsMap.on("locationerror", this.onLocationError.bind(this));
   }
 
   onEachFeature(feature, layer) {
@@ -160,6 +160,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
     if (this.programMaxBounds) {
       this.obsMap.fitBounds(disk.getBounds().extend(this.programMaxBounds));
     }
+  }
+
+  onLocationError(e) {
+    window.alert(e.message);
   }
 
   loadProgramArea(): void {
