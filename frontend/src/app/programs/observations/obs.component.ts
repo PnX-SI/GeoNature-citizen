@@ -20,6 +20,7 @@ export class ObsComponent implements OnInit {
   programs: Program[];
   program: Program;
   observations: FeatureCollection;
+  programFeature: FeatureCollection;
   surveySpecies: any[];
 
   constructor(
@@ -47,6 +48,10 @@ export class ObsComponent implements OnInit {
           this.surveySpecies = taxa;
           console.debug("obs component taxon list", this.surveySpecies);
         });
+      this.programService.getProgram(this.program_id).subscribe(program => {
+        this.programFeature = program;
+        console.debug("program geometry", this.programFeature);
+      });
     });
   }
 }

@@ -1,19 +1,17 @@
 import {
   Component,
-  AfterViewInit,
   ViewEncapsulation,
-  Input
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges
 } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { ActivatedRoute } from "@angular/router";
-import { map } from "rxjs/operators";
 
 import { GeoJsonObject, FeatureCollection } from "geojson";
-import L from "leaflet";
+import * as L from "leaflet";
 import "leaflet.markercluster";
 
-import { AppConfig } from "../../../../conf/app.config";
-import { Subscription } from "rxjs";
+// import { AppConfig } from "../../../../conf/app.config";
 
 declare let $: any;
 
@@ -49,40 +47,47 @@ const programAreaStyle = {
   styleUrls: ["./map.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class ObsMapComponent implements AfterViewInit {
+export class ObsMapComponent implements OnInit, OnChanges {
   @Input("observations") observations: FeatureCollection;
-  obsGeoFeature: any;
-  programAreaGeoJson: any;
-  program_id: any;
-  programMaxBounds: any;
-  coords: any;
-  obsMap: any;
-  geolocate: true;
-  routeSubscription: Subscription;
+  @Input("program") program: FeatureCollection;
+  @Input("geolocate") geolocate = true;
+  programMaxBounds: L.LatLngBounds;
+  coords: string;
+  obsMap: L.Map;
   clustersLayer: L.FeatureGroup;
+  map_init = false;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {
-    this.routeSubscription = this.route.params.subscribe(params => {
-      this.program_id = params["id"];
-    });
-  }
+  constructor() {}
 
-  ngAfterViewInit() {
+  ngOnInit() {
     this.initMap();
-    this.getProgramArea(this.program_id);
-    // this.getObservations(this.program_id);
+    if (this.geolocate) {
+      this.initTracking();
+    }
   }
 
-  ngOnDestroy() {
-    this.routeSubscription.unsubscribe();
+  ngOnChanges(_changes: SimpleChanges) {
+    if (this.map_init) {
+      this.loadProgramArea();
+      this.loadObservations();
+    }
   }
 
-  ngOnChanges() {
+  initMap() {
+    this.obsMap = L.map("obsMap");
+    this.obsMap.zoomControl.setPosition("topright");
+    L.control
+      .scale({ position: "bottomleft", imperial: false })
+      .addTo(this.obsMap);
+    L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "OpenStreetMap"
+    }).addTo(this.obsMap);
+    this.map_init = true;
+  }
+
+  loadObservations(): void {
     if (this.observations) {
-      const geoFeatures = this.observations["features"];
-
-      console.debug("Observations :", geoFeatures);
-
+      // this.obsMap.remove this.clustersLayer
       this.clustersLayer = L.markerClusterGroup({
         iconCreateFunction: clusters => {
           const childCount = clusters.getChildCount();
@@ -111,18 +116,16 @@ export class ObsMapComponent implements AfterViewInit {
       );
 
       this.obsMap.addLayer(this.clustersLayer);
-
-      console.debug("GEOLOCATION INITIALIZATION", this.geolocate);
-      // if (this.geolocate) {
-      this.obsMap.locate({
-        // setView: true,
-        watch: true,
-        enableHighAccuracy: true
-      });
-      console.debug("GEOLOCATION INITIALIZED");
-      this.obsMap.on("locationfound", this.onLocationFound.bind(this));
-      // }
     }
+  }
+
+  initTracking() {
+    this.obsMap.locate({
+      // setView: true,
+      watch: true,
+      enableHighAccuracy: true
+    });
+    this.obsMap.on("locationfound", this.onLocationFound.bind(this));
   }
 
   onEachFeature(feature, layer) {
@@ -147,91 +150,59 @@ export class ObsMapComponent implements AfterViewInit {
   }
 
   onLocationFound(e) {
-    console.debug("GEOLOCALIZED");
     const radius = e.accuracy / 2;
-    const map = this.obsMap;
-    console.debug(this.obsMap);
-    const geolocation = L.marker(e.latlng, {
+    L.marker(e.latlng, {
       icon: newObsMarkerIcon()
-    }).addTo(map);
+    }).addTo(this.obsMap);
     // geolocation.bindPopup("You are within " + radius + " meters from this point").openPopup()
-    const disk = L.circle(e.latlng, radius).addTo(map);
+    const disk = L.circle(e.latlng, radius).addTo(this.obsMap);
     console.debug("GEOLOCATION", e.latlng);
     if (this.programMaxBounds) {
       this.obsMap.fitBounds(disk.getBounds().extend(this.programMaxBounds));
     }
   }
 
-  // mv to services ?
-  getProgramArea(id): void {
-    this.restItemsServiceGetProgramArea(id).subscribe(programarea => {
-      this.programAreaGeoJson = programarea;
-      const obsMap = this.obsMap;
-      const programArea = L.geoJSON(this.programAreaGeoJson, {
+  loadProgramArea(): void {
+    if (this.program) {
+      const programArea = L.geoJSON(this.program, {
         style: function(_feature) {
           return programAreaStyle;
         }
-      }).addTo(obsMap);
-
-      const programMaxBounds = programArea.getBounds();
-      obsMap.fitBounds(programMaxBounds);
-      // obsMap.setMaxBounds(programMaxBounds)
+      }).addTo(this.obsMap);
+      const programBounds = programArea.getBounds();
+      console.debug("program", this.program);
+      console.debug("programArea", programArea);
+      console.debug("programBounds", programBounds);
+      this.obsMap.fitBounds(programBounds);
+      // this.obsMap.setMaxBounds(programBounds)
 
       let myNewObsMarker = null;
-      obsMap.on("click", function(e) {
+      this.obsMap.on("click", (e: L.LeafletMouseEvent) => {
         let coords = JSON.stringify({
           type: "Point",
           coordinates: [e.latlng.lng, e.latlng.lat]
         });
 
-        this.coords = coords;
-        console.debug(coords);
-
         if (myNewObsMarker !== null) {
-          obsMap.removeLayer(myNewObsMarker);
+          this.obsMap.removeLayer(myNewObsMarker);
         }
 
         // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
         // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
-        if (programMaxBounds.contains([e.latlng.lat, e.latlng.lng])) {
+        if (programBounds.contains([e.latlng.lat, e.latlng.lng])) {
+          this.coords = coords;
+          console.debug(coords);
+          // emit new coordinates
           myNewObsMarker = L.marker(e.latlng, {
             icon: newObsMarkerIcon()
-          }).addTo(obsMap);
+          }).addTo(this.obsMap);
           $("#feature-title").html(myMarkerTitle);
           $("#feature-coords").html(coords);
           // $("#feature-info").html(myMarkerContent);
           $("#featureModal").modal("show");
         }
       });
-      this.programMaxBounds = programMaxBounds;
-    });
-  }
-
-  initMap() {
-    const obsMap = L.map("obsMap");
-
-    obsMap.zoomControl.setPosition("topright");
-    L.control.scale({ position: "bottomleft", imperial: false }).addTo(obsMap);
-    L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "OpenStreetMap"
-    }).addTo(obsMap);
-
-    this.obsMap = obsMap;
-  }
-
-  restItemsServiceGetObsItems(program_id) {
-    return this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs/${program_id}/observations`)
-      .pipe(map(data => data));
-  }
-
-  restItemsServiceGetProgramArea(program_id) {
-    console.log(
-      "PROGRAM_GEO_URL: ",
-      `${AppConfig.API_ENDPOINT}/programs/${program_id}`
-    );
-    return this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs/${program_id}`)
-      .pipe(map(data => data));
+      this.programMaxBounds = programBounds;
+    }
   }
 }
