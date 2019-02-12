@@ -1,8 +1,15 @@
+import { SafeHtml } from "@angular/platform-browser";
+
 export class Program {
   id_program: number;
-  name: string;
-  lable: string;
-  desc: string;
-  icon: string;
+  title: string;
+  short_desc: string;
+  long_desc: string;
+  html_short_desc: SafeHtml;
+  html_long_desc: SafeHtml;
+  image: string;
+  logo: string;
+  module: number;
+  taxonomy_list: number;
   on_sidebar: Boolean;
 }

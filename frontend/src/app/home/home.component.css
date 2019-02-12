@@ -1,4 +1,4 @@
- section {
+section {
     width: 100%;
     min-height: 70vh;
     position: relative;
@@ -27,6 +27,17 @@
 #welcome{
     background: url(../../assets/background.jpg) no-repeat;
     background-size: cover;
+    position: relative;
+    height: calc(100vh - 113px);
+}
+
+#welcome:before{
+    content: ' ';
+    position: absolute;
+    top: 0; bottom: 0; right: 0; left: 0;
+    background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 3%, rgba(0, 0, 0, 0.393) 99%, rgba(0, 0, 0, 0.452) 100%);
+    background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 3%, rgba(0, 0, 0, 0.393) 99%, rgba(0, 0, 0, 0.452) 100%);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 3%, rgba(0, 0, 0, 0.393) 99%, rgba(0, 0, 0, 0.452) 100%);
 }
 
 #welcome h1{
@@ -35,6 +46,7 @@
     color: #fff;
     font-family: 'NexaRust';
     font-size: 60px;
+    user-select: none;
 }
 
 #welcome a{
@@ -46,11 +58,20 @@
 
 #welcome span{
     position: absolute;
-    bottom: 6%;
+    bottom: 50px;
     left: 50%;
     color : #fff;
     transform: translateX(-50%);
     font-size: 14px;
+}
+
+#welcome .scroll{
+    width: 15px;
+    height: auto;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 /* SLIDER */
@@ -103,7 +124,8 @@
 #slider .carousel-text{
     background-color: #fff;
     padding: 40px;
-    width: 450px;
+    min-width: 450px;
+    max-width: 1000px;
     height: 450px;
     display: flex;
     flex-direction: column;
@@ -124,15 +146,20 @@
 
 #slider .carousel-text a {
     background-color: var(--secondary);
-    width: 90%;
+    width: fit-content;
     text-align: center;
+    margin: 0 auto;
 }
 
-/* OBSERVATION / MAP */
+.mobile-hidden {
+    overflow: hidden;
+    line-height: 22px;
+}
+
 /*
  investigate obs list glitch @921px -> 892
 */
-app-sights {
+app-observations {
   min-width: 100%;
 }
 
@@ -160,18 +187,27 @@ app-sights {
     }
 }
  */
+ @media screen and (max-width: 1200px){
+    #list .infos p{
+        line-height: 18px;
+        font-size: 14px
+    }
+    #list .infos h5{
+        font-size: 14px !important; 
+    }
+ }
 
 @media screen and (max-width: 1024px){
     /* FIRST SECT */
-    section:first-child h1{
-        font-size: 44px;
-        padding-left: 10%;
+    #welcome h1{
+        font-size: 44px !important;
+        padding-left: 10% !important;
     }
-    section:first-child a {
+     #welcome a {
         padding: 10px 20px;
-        right: 50%;
-        transform: translateX(50%);
-    }
+        right: 50% !important;
+        transform: translateX(50%) !important;
+    } 
     /* SCND SECT */
     .mobile-hidden{
         display: none;
@@ -182,20 +218,22 @@ app-sights {
         width : 350px;
     }
     #slider .carousel-text a {
-        font-size: 13px;
-    }
-
-    #list{
-        width: 40%;
+        font-size: 16px;
     }
 }
 
 @media screen and (max-width: 992px){
-    .toggle-list{
+    .toggle{
         display: none !important;
     }
+    .side-bar, .map{
+        position: static;
+    }
+    .map{
+        height: auto;
+    }
     #list{
-        top: 50% !important;
+        /* top: 50% !important; */
         width: 100% !important;
     }
 }
@@ -235,6 +273,9 @@ app-sights {
     #slider .carousel-text a{
         width: fit-content;
         margin: 0 auto;
+    }
+    #slider .carousel-text{
+        min-width: inherit;
     }
 }
 
@@ -302,3 +343,4 @@ app-sights {
         transform: translate3d(0, +100, 0);
     }
 }
+

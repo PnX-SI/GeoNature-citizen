@@ -1,15 +1,16 @@
 export class LoginUser {
-    constructor(
-        username?: string,
-        password?: string
-        ) {}
+  username: string
+  password: string
+
+  constructor(username: string = '', password: string = '') {}
 }
 
 export class RegisterUser {
-    constructor(
-        username?: string,
-        password?: string,
-        email?: string,
-        name?: string
-        ) {}
+  username?: string
+  password?: string
+  email?: string
+  name?: string
+  surname?: string
+
+  constructor( ) {}
 }

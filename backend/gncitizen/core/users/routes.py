@@ -42,7 +42,7 @@ def registration():
     ---
     tags:
       - Authentication
-    summary: Creates a new sight
+    summary: Creates a new observation
     consumes:
       - application/json
     produces:
