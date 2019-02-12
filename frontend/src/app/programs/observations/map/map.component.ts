@@ -1,9 +1,14 @@
-import { Component, AfterViewInit, ViewEncapsulation } from "@angular/core";
+import {
+  Component,
+  AfterViewInit,
+  ViewEncapsulation,
+  Input
+} from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
 
-import { GeoJsonObject } from "geojson";
+import { GeoJsonObject, FeatureCollection } from "geojson";
 import L from "leaflet";
 import "leaflet.markercluster";
 
@@ -45,6 +50,7 @@ const programAreaStyle = {
   encapsulation: ViewEncapsulation.None
 })
 export class ObsMapComponent implements AfterViewInit {
+  @Input("observations") observations: FeatureCollection;
   obsGeoFeature: any;
   programAreaGeoJson: any;
   program_id: any;
@@ -53,6 +59,7 @@ export class ObsMapComponent implements AfterViewInit {
   obsMap: any;
   geolocate: true;
   routeSubscription: Subscription;
+  clustersLayer: L.FeatureGroup;
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
     this.routeSubscription = this.route.params.subscribe(params => {
@@ -63,46 +70,22 @@ export class ObsMapComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.initMap();
     this.getProgramArea(this.program_id);
-    this.getObservations(this.program_id);
+    // this.getObservations(this.program_id);
   }
 
   ngOnDestroy() {
     this.routeSubscription.unsubscribe();
   }
 
-  getObservations(id): void {
-    this.restItemsServiceGetObsItems(id).subscribe(obs => {
-      const geoFeatures = obs;
-      const obsMap = this.obsMap;
-      const geolocate = this.geolocate;
-      const programMaxBounds = this.programMaxBounds;
-
-      function onEachFeature(feature, layer) {
-        let popupContent =
-          '<img src="../../../assets/Azure-Commun-019.JPG"><p><b>' +
-          feature.properties.common_name +
-          "</b></br><span>Observé par " +
-          feature.properties.sci_name +
-          "</br>le " +
-          feature.properties.date +
-          '</span></p><div><img class="icon" src="../../../../assets/binoculars.png"></div>';
-
-        if (feature.properties && feature.properties.popupContent) {
-          popupContent += feature.properties.popupContent;
-        }
-
-        layer.bindPopup(popupContent);
-      }
-
-      function pointToLayer(_feature, latlng) {
-        return L.marker(latlng, { icon: obsMarkerIcon() });
-      }
+  ngOnChanges() {
+    if (this.observations) {
+      const geoFeatures = this.observations["features"];
 
       console.debug("Observations :", geoFeatures);
 
-      let cluster = L.markerClusterGroup({
-        iconCreateFunction: cluster => {
-          const childCount = cluster.getChildCount();
+      this.clustersLayer = L.markerClusterGroup({
+        iconCreateFunction: clusters => {
+          const childCount = clusters.getChildCount();
           let c = " marker-cluster-";
           if (childCount < 10) {
             c += "small";
@@ -120,42 +103,63 @@ export class ObsMapComponent implements AfterViewInit {
         }
       });
 
-      cluster.addLayer(
-        L.geoJSON(<GeoJsonObject>geoFeatures, {
-          onEachFeature: onEachFeature,
-          pointToLayer: pointToLayer
+      this.clustersLayer.addLayer(
+        L.geoJSON(<GeoJsonObject>this.observations, {
+          onEachFeature: this.onEachFeature,
+          pointToLayer: this.pointToLayer
         })
       );
 
-      obsMap.addLayer(cluster);
+      this.obsMap.addLayer(this.clustersLayer);
 
-      // FIXME: geolocation, programArea is a shared ressource
-      // this should be extracted anyway and /program/:id/observation api calls mutualised
-      function onLocationFound(e) {
-        console.debug("GEOLOCALIZED");
-        const radius = e.accuracy / 2;
-        const geolocation = L.marker(e.latlng, {
-          icon: newObsMarkerIcon()
-        }).addTo(obsMap);
-        // geolocation.bindPopup("You are within " + radius + " meters from this point").openPopup()
-        const disk = L.circle(e.latlng, radius).addTo(obsMap);
-        console.debug("GEOLOCATION", e.latlng);
-        if (programMaxBounds) {
-          obsMap.fitBounds(disk.getBounds().extend(programMaxBounds));
-        }
-      }
-
-      console.debug("GEOLOCATION INITIALIZATION", geolocate);
-      // if (geolocate) {
-      obsMap.locate({
+      console.debug("GEOLOCATION INITIALIZATION", this.geolocate);
+      // if (this.geolocate) {
+      this.obsMap.locate({
         // setView: true,
         watch: true,
         enableHighAccuracy: true
       });
       console.debug("GEOLOCATION INITIALIZED");
-      obsMap.on("locationfound", onLocationFound);
+      this.obsMap.on("locationfound", this.onLocationFound.bind(this));
       // }
-    });
+    }
+  }
+
+  onEachFeature(feature, layer) {
+    let popupContent =
+      '<img src="../../../assets/Azure-Commun-019.JPG"><p><b>' +
+      feature.properties.common_name +
+      "</b></br><span>Observé par " +
+      feature.properties.sci_name +
+      "</br>le " +
+      feature.properties.date +
+      '</span></p><div><img class="icon" src="../../../../assets/binoculars.png"></div>';
+
+    if (feature.properties && feature.properties.popupContent) {
+      popupContent += feature.properties.popupContent;
+    }
+
+    layer.bindPopup(popupContent);
+  }
+
+  pointToLayer(_feature, latlng) {
+    return L.marker(latlng, { icon: obsMarkerIcon() });
+  }
+
+  onLocationFound(e) {
+    console.debug("GEOLOCALIZED");
+    const radius = e.accuracy / 2;
+    const map = this.obsMap;
+    console.debug(this.obsMap);
+    const geolocation = L.marker(e.latlng, {
+      icon: newObsMarkerIcon()
+    }).addTo(map);
+    // geolocation.bindPopup("You are within " + radius + " meters from this point").openPopup()
+    const disk = L.circle(e.latlng, radius).addTo(map);
+    console.debug("GEOLOCATION", e.latlng);
+    if (this.programMaxBounds) {
+      this.obsMap.fitBounds(disk.getBounds().extend(this.programMaxBounds));
+    }
   }
 
   // mv to services ?
