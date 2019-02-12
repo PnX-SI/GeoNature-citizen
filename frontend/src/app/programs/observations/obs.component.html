@@ -41,7 +41,7 @@
 </div>
 
 <div class="row">
-  <!-- original observations -->
+  <!-- LES OBSERVATIONS -->
   <section class="observations row">
     <input id="slide-sidebar" type="checkbox" role="button" />
     <label class="toggle" for="slide-sidebar"
@@ -55,9 +55,8 @@
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
-      <app-obs-map></app-obs-map>
+      <app-obs-map [observations]="observations"></app-obs-map>
       <div class="btn-groups"><app-modalflow></app-modalflow></div>
     </div>
   </section>
-  <!-- end original observations -->
 </div>

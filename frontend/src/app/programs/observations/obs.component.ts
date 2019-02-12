@@ -32,6 +32,7 @@ export class ObsComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe((data: { programs: Program[] }) => {
+      // TODO: merge observables
       this.programs = data.programs;
       this.program = this.programs.find(p => p.id_program == this.program_id);
       this.programService

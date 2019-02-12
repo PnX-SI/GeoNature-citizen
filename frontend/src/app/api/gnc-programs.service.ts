@@ -108,11 +108,11 @@ export class GncProgramsService implements OnInit {
   getProgramTaxonomyList(program_id: number): Observable<any[]> {
     return this.getAllPrograms().pipe(
       map(programs => programs.find(p => p.id_program == program_id)),
-      mergeMap(program => {
-        return this.http.get<any[]>(
+      mergeMap(program =>
+        this.http.get<any[]>(
           `${this.URL}/taxonomy/lists/${program["taxonomy_list"]}/species`
-        );
-      }),
+        )
+      ),
       catchError(this.handleError<any[]>(`getProgramTaxonomyList`))
     );
   }
