@@ -7,7 +7,6 @@ import { RegisterComponent } from "../../auth/register/register.component";
 import { LogoutComponent } from "../../auth/logout/logout.component";
 import { ProgramsComponent } from "../../programs/programs.component";
 
-
 @Component({
   selector: "app-topbar",
   templateUrl: "./topbar.component.html",
@@ -17,7 +16,7 @@ export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
   isLoggedIn: boolean = false;
   username: any;
-  modalRef: NgbModalRef
+  modalRef: NgbModalRef;
 
   constructor(private auth: AuthService, private modalService: NgbModal) {}
 
@@ -30,19 +29,31 @@ export class TopbarComponent implements OnInit {
   }
 
   login() {
-    this.modalRef = this.modalService.open(LoginComponent, { size: "lg", centered: true });
+    this.modalRef = this.modalService.open(LoginComponent, {
+      size: "lg",
+      centered: true
+    });
   }
 
   register() {
-    this.modalRef = this.modalService.open(RegisterComponent, { size: "lg", centered: true });
+    this.modalRef = this.modalService.open(RegisterComponent, {
+      size: "lg",
+      centered: true
+    });
   }
 
   logout() {
-    this.modalRef = this.modalService.open(LogoutComponent, { size: "lg", centered: true });
+    this.modalRef = this.modalService.open(LogoutComponent, {
+      size: "lg",
+      centered: true
+    });
   }
 
   programs() {
-    this.modalRef = this.modalService.open(ProgramsComponent, { size: "lg", centered: true });
+    this.modalRef = this.modalService.open(ProgramsComponent, {
+      size: "lg",
+      centered: true
+    });
   }
 
   ngOnInit(): void {
@@ -63,7 +74,6 @@ export class TopbarComponent implements OnInit {
   }
 
   close(d) {
-    console.debug(`modal close: ${d}`)
-    this.modalRef.close(d)
+    this.modalRef.close(d);
   }
 }

@@ -74,7 +74,6 @@ export class GncProgramsService implements OnInit {
         ),
         tap(programs => {
           this.state.set(PROGRAMS_KEY, programs as any);
-          console.debug("GncProgramsService: programs ", programs);
           return programs;
         }),
         catchError(this.handleError<Program[]>("getAllPrograms"))
@@ -86,7 +85,7 @@ export class GncProgramsService implements OnInit {
 
   getProgram(id: number): Observable<FeatureCollection> {
     return this.http.get<FeatureCollection>(`${this.URL}/programs/${id}`).pipe(
-      tap(_ => console.debug(`fetched program ${id}`)),
+      map(data => data),
       catchError(this.handleError<FeatureCollection>(`getProgram id=${id}`))
     );
   }

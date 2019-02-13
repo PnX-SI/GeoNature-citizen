@@ -40,17 +40,14 @@ export class ObsComponent implements OnInit {
         .getProgramObservations(this.program_id)
         .subscribe(observations => {
           this.observations = observations;
-          console.debug("obs component observations", this.observations);
         });
       this.programService
         .getProgramTaxonomyList(this.program_id)
         .subscribe(taxa => {
           this.surveySpecies = taxa;
-          console.debug("obs component taxon list", this.surveySpecies);
         });
       this.programService.getProgram(this.program_id).subscribe(program => {
         this.programFeature = program;
-        console.debug("program geometry", this.programFeature);
       });
     });
   }
