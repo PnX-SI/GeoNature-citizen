@@ -5,6 +5,7 @@ import uuid
 import json
 from pprint import pprint
 import requests
+from werkzeug import FileStorage
 
 from werkzeug.datastructures import ImmutableMultiDict
 from flask import Blueprint, current_app, request
@@ -17,7 +18,7 @@ from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.media import save_upload_file
+from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
@@ -112,6 +113,34 @@ def get_observation(pk):
         return {"features": features}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
+
+
+@routes.route("/test", methods=["POST"])
+def test():
+    import datetime
+    from gncitizen.utils.env import MEDIA_DIR
+    import os
+
+    files = request.files
+    current_app.logger.debug(files)
+    current_app.logger.debug(files.getlist("file"))
+    current_app.logger.debug(type(files))
+    current_app.logger.debug("longueur {}".format(len(files)))
+    for file in files.getlist("file"):
+        current_app.logger.debug(type(file))
+        if isinstance(file, FileStorage):
+            current_app.logger.debug(
+                "{} where {} is {}".format(file, file.filename, type(file))
+            )
+            file.save(os.path.join(str(MEDIA_DIR), file.filename))
+            print(file.content_length)
+
+        # ext = filename.rsplit(".", 1)[1].lower()
+        # timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        # filename = "obstax_{}_{}.{}".format(str(0000), timestamp, ext)
+        # current_app.logger.debug("new filename : {}".format(filename))
+        # file.save(os.path.join(str(MEDIA_DIR), filename))
+    return "ok"
 
 
 @routes.route("/observations", methods=["POST"])
@@ -215,16 +244,14 @@ def post_observation():
         features = generate_observation_geojson(newobs.id_observation)
         # Enregistrement de la photo et correspondance Obs Photo
         try:
-            filename, id_media, id_match = save_upload_file(
+            medias = save_upload_files(
                 request.files,
                 "obstax",
                 datas2db["cd_nom"],
                 newobs.id_observation,
                 ObservationMediaModel,
             )
-            current_app.logger.debug(
-                "ObsTax UPLOAD FILE {}, ({})".format(filename, id_media)
-            )
+            current_app.logger.debug("ObsTax UPLOAD FILE {}".format(medias))
 
         except Exception as e:
             current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))

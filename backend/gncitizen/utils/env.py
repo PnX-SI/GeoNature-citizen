@@ -12,7 +12,7 @@ ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
 with open(str((ROOT_DIR / "VERSION"))) as v:
-    GEONATURE_VERSION = v.read()
+    GNCITIZEN_VERSION = v.read()
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/default_config.toml"
 GNC_EXTERNAL_MODULE = ROOT_DIR / "external_modules"
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
