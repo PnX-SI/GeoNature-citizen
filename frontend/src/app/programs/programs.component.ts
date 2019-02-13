@@ -26,10 +26,6 @@ export class ProgramsComponent implements OnInit {
     if (!this.programs) {
       this.programService.getAllPrograms().subscribe(programs => {
         this.programs = programs;
-        console.debug(
-          "ProgramsComponent: GncProgramsService call result:",
-          this.programs
-        );
         this.programCount = this.programs ? this.programs.length : 0;
       });
     }

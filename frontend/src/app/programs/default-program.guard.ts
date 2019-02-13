@@ -30,7 +30,6 @@ export class UniqueProgramGuard implements CanActivate, CanActivateChild {
       map((p: Program[]) => {
         const count = p ? p.length : 0;
         const programs = p ? p : undefined;
-        console.debug(`UniqueProgramGuard program count: ${count}`, programs);
         if (count === 1) {
           this.router.navigate([
             "programs",
