@@ -65,9 +65,9 @@ Renseigner les fichiers de configuration
 Modifier le fichier de configuration
 ####################################
 
-Les fichiers de configuration sont dans le dossier ``config``. 
-Le fichier à modifier est default_config.toml. 
-Le fichier utilisé par GeoNature-citizen est default_config.toml. 
+Les fichiers de configuration sont dans le dossier ``config``.
+Le fichier à modifier est default_config.toml.
+Le fichier utilisé par GeoNature-citizen est default_config.toml.
 Il peut-être créé en copiant le fichier ``default_config.toml.example`` vers ``default_config.toml``::
 
     $ cp default_config.toml.example default_config.toml
@@ -133,7 +133,7 @@ Editez alors les différents paramètres de ce fichier.
         title = 'GeoNature-Citizen API'
         version = 'x.x.x'
         produces = ["application/json"]
-        consumes = ["application/json"] 
+        consumes = ["application/json"]
 
 
 *******************************
@@ -161,7 +161,7 @@ Et l'installation des librairies nécessaires à GeoNature-citizen avec la comma
 Lancement du Backend
 ####################
 
-Pour lancer l'application Backend, il suffit d'éxécuter les commandes suivantes 
+Pour lancer l'application Backend, il suffit d'éxécuter les commandes suivantes
 depuis l'environnement virtuel python::
 
     cd backend
@@ -178,3 +178,41 @@ Configurer et lancer le frontend
 
     A venir
 
+
+Gestion du Server Side Rendering
+################################
+
+Le SSR a été intégré au projet à partir de la commande:
+
+    npm run ng add @nguniversal/express-engine --clientProject frontend
+
+NB: L'intégration Leaflet.MarkerCluster a nécessité de déclarer un espace de nommage global ``L`` dans le script ``server.ts``.
+
+Les modules ``BrowserTransferState`` et ``ServerTransferState`` importés, nous avons créé un couple ``{clé: valeur}`` pour être transféré du serveur au client.
+
+La clé est créée avec la fonction factory [``makeStateKey``](https://angular.io/api/platform-browser/StateKey#description)
+
+    const PROGRAMS_KEY = makeStateKey("programs");
+
+Le transfert d'état s'effectue avec des accesseurs:
+
+    this.programs = this.state.get(PROGRAMS_KEY, null as any);
+    if (!this.programs) {
+      /*
+        code exécuté côté serveur Node, express
+        qui effectue donc un appel à l'API de GN-Citizen
+        et génère une capture d'état
+      */
+      this.state.set(PROGRAMS_KEY, programs as any);
+    } else {
+      /*
+        code exécuté côté présentation qui consomme l'état "cristallisé"
+        transféré depuis le serveur.
+      */
+    }
+
+Le ``build`` et le démarrage du service sur le port 4000 s'effectue via le oneliner:
+
+    npm run build:ssr && npm run serve:ssr
+
+La redirection de port pourrait se faire au niveau du serveur web / reverse proxy, avec un filtre sur l'entête de requête ``User-Agent``
