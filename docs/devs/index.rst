@@ -190,7 +190,7 @@ NB: L'intégration Leaflet.MarkerCluster a nécessité de déclarer un espace de
 
 Les modules ``BrowserTransferState`` et ``ServerTransferState`` importés, nous avons créé un couple ``{clé: valeur}`` pour être transféré du serveur au client.
 
-La clé est créée avec la fonction factory `makeStateKey <https://angular.io/api/platform-browser/StateKey#description>`
+La clé est créée avec la fonction factory `makeStateKey <https://angular.io/api/platform-browser/StateKey#description>`_.
 
     const PROGRAMS_KEY = makeStateKey("programs");
 
