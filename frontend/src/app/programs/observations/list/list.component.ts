@@ -11,6 +11,7 @@ import { FeatureCollection, Feature } from "geojson";
 export class ObsListComponent implements OnChanges {
   @Input("observations") obs: FeatureCollection;
   @Input("taxa") surveySpecies: any[];
+  townships: string[];
   observations: Feature[] = [];
   program_id: number;
   taxa: any[];
@@ -18,6 +19,11 @@ export class ObsListComponent implements OnChanges {
   ngOnChanges() {
     if (this.obs) {
       this.observations = this.obs["features"];
+      this.townships = this.obs.features
+        .map(features => features.properties)
+        .map(property => property.township)
+        .filter(township => (township != null ? <string>township : ""))
+        .filter((v, i, a) => a.indexOf(v) === i);
     }
   }
 }
