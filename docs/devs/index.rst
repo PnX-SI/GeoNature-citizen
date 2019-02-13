@@ -186,7 +186,7 @@ Le SSR a été intégré au projet à partir de la commande:
 
     npm run ng add @nguniversal/express-engine --clientProject frontend
 
-NB: L'intégration Leaflet.MarkerCluster a nécessité de déclarer un espace de nommage global ``L`` dans le script ``server.ts``.
+NB: L'intégration Leaflet.MarkerCluster a nécessité de déclarer une variable globale ``L`` et d'y importer Leaflet; c'est dans le script ``server.ts``.
 
 Les modules ``BrowserTransferState`` et ``ServerTransferState`` importés, nous avons créé un couple ``{clé: valeur}`` pour être transféré du serveur au client.
 
@@ -194,7 +194,7 @@ La clé est créée avec la fonction factory `makeStateKey <https://angular.io/a
 
     const PROGRAMS_KEY = makeStateKey("programs");
 
-Le transfert d'état s'effectue avec des accesseurs:
+Le transfert d'état s'effectue avec accesseur et mutateur:
 
     this.programs = this.state.get(PROGRAMS_KEY, null as any);
     if (!this.programs) {
