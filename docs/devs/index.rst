@@ -190,7 +190,7 @@ NB: L'intégration Leaflet.MarkerCluster a nécessité de déclarer un espace de
 
 Les modules ``BrowserTransferState`` et ``ServerTransferState`` importés, nous avons créé un couple ``{clé: valeur}`` pour être transféré du serveur au client.
 
-La clé est créée avec la fonction factory [``makeStateKey``](https://angular.io/api/platform-browser/StateKey#description)
+La clé est créée avec la fonction factory `makeStateKey<https://angular.io/api/platform-browser/StateKey#description>`
 
     const PROGRAMS_KEY = makeStateKey("programs");
 
@@ -203,7 +203,7 @@ Le transfert d'état s'effectue avec des accesseurs:
         qui effectue donc un appel à l'API de GN-Citizen
         et génère une capture d'état
       */
-      
+
       this.state.set(PROGRAMS_KEY, programs as any);
     } else {
       /*
