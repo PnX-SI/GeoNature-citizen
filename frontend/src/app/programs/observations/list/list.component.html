@@ -3,11 +3,20 @@
     <select class="form-control rounded-0 col-lg-6" id="sel1">
       <!-- formControlName="species" -->
       <option *ngFor="let s of surveySpecies" [value]="s.cd_nom">
-        {{ s.nom.nom_francais }}&nbsp;(<i>{{ s.taxref.nom_complet }}</i
+        {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
         >)
       </option>
     </select>
-    <input type="text" class="col-lg-6" />
+    <select
+      id="township"
+      name="township"
+      type="text"
+      class="form-control rounded-0 col-lg-6"
+    >
+      <!-- formControlName="townships" -->
+      <option *ngFor="let t of townships">{{ t }}</option>
+    </select>
+    />
   </div>
   <div class="obs-found">
     <p>{{ observations?.length }} observations trouvées !</p>
@@ -15,22 +24,24 @@
   <div id="list">
     <div *ngFor="let o of observations">
       <div class="espece">
-        <img src="../../assets/Azure-Commun-019.JPG" />
-        <div class="infos">
-          <a
-            [routerLink]="['/synthesis/species', o.properties.cd_nom]"
-            style="cursor:pointer"
-          >
+        <a
+          [routerLink]="['/synthesis/species', o.properties.cd_nom]"
+          style="cursor:pointer"
+        >
+          <img src="../../assets/Azure-Commun-019.JPG" />
+          <div class="infos">
             <h5>{{ o.properties.common_name }}</h5>
-          </a>
-          <p>
-            Observé par <span>{{ o.properties.sci_name }}</span>
-          </p>
-          <p>
-            le <span>{{ o.properties.date }}</span>
-          </p>
-        </div>
-        <div class="hide"><img src="../../../../assets/binoculars.png" /></div>
+            <p>
+              Observé par <span>{{ o.properties.sci_name }}</span>
+            </p>
+            <p>
+              le <span>{{ o.properties.date }}</span>
+            </p>
+          </div>
+          <div class="hide">
+            <img src="../../../../assets/binoculars.png" />
+          </div>
+        </a>
       </div>
     </div>
   </div>
