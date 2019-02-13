@@ -67,7 +67,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(_changes: SimpleChanges) {
-    if (this.map_init) {
+    // migrate to observables on Inputs and on changes
+    if (this.obsMap) {
       this.loadProgramArea();
       this.loadObservations();
     }
@@ -156,7 +157,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     }).addTo(this.obsMap);
     // geolocation.bindPopup("You are within " + radius + " meters from this point").openPopup()
     const disk = L.circle(e.latlng, radius).addTo(this.obsMap);
-    console.debug("GEOLOCATION", e.latlng);
+    console.debug("Geolocation", e.latlng);
     if (this.programMaxBounds) {
       this.obsMap.fitBounds(disk.getBounds().extend(this.programMaxBounds));
     }
@@ -174,9 +175,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
         }
       }).addTo(this.obsMap);
       const programBounds = programArea.getBounds();
-      console.debug("program", this.program);
-      console.debug("programArea", programArea);
-      console.debug("programBounds", programBounds);
       this.obsMap.fitBounds(programBounds);
       // this.obsMap.setMaxBounds(programBounds)
 
