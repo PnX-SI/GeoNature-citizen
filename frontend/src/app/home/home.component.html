@@ -4,7 +4,9 @@
       Bienvenue<br />
       sur Geonature Citizen
     </h1>
-    <a class="btn-big">Participer au programme</a>
+    <a [routerLink]="['/home']" fragment="programs" class="btn-big"
+      >Participer au programme</a
+    >
     <span>Scrollez pour en voir plus !</span>
     <img class="d-block scroll" src="../../assets/scroll.svg" />
   </section>
@@ -12,7 +14,7 @@
 
 <div class="row">
   <!-- LES PROGRAMMES -->
-  <section id="slide" *ngIf="programs.length > 1">
+  <section id="programs" *ngIf="programs.length > 1">
     <div id="slider" class="carousel slide" data-ride="carousel">
       <ol class="carousel-indicators">
         <li
@@ -38,7 +40,11 @@
               <h3>{{ p.title }}</h3>
               <p [innerHTML]="p.short_desc"></p>
               <div class="mobile-hidden" [innerHTML]="p.long_desc"></div>
-              <a class="btn-big">Partager une observation</a>
+              <a
+                class="btn-big"
+                [routerLink]="['/programs', p.id_program, 'observations']"
+                >Partager une observation</a
+              >
             </div>
           </div>
         </div>
