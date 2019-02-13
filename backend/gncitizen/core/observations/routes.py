@@ -20,6 +20,7 @@ from geojson import FeatureCollection
 from shapely.geometry import Point, asShape
 
 from gncitizen.core.taxonomy.models import Taxref
+from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR, allowed_file
 from gncitizen.utils.errors import GeonatureApiError
@@ -56,7 +57,7 @@ def get_specie_from_cd_nom(cd_nom):
 def generate_observation_geojson(id_observation):
     """generate observation in geojson format from observation id"""
 
-    # Crééer le dictionnaire de l'observation
+    # Crée le dictionnaire de l'observation
     result = ObservationModel.query.get(id_observation)
     result_dict = result.as_dict(True)
 
@@ -386,11 +387,17 @@ def get_program_observations(id):
             description: A list of all species lists
         """
     try:
-        observations = ObservationModel.query.filter_by(id_program=id).all()
+        observations = db.session\
+            .query(ObservationModel, LAreas.area_name.label('township'))\
+            .filter_by(id_program=id)\
+            .join(LAreas, LAreas.id_area == ObservationModel.municipality,
+                  isouter=True)\
+            .all()
         features = []
         for observation in observations:
-            feature = get_geojson_feature(observation.geom)
-            observation_dict = observation.as_dict(True)
+            feature = get_geojson_feature(observation.ObservationModel.geom)
+            feature['properties']['township'] = observation.township
+            observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys:
                     feature["properties"][k] = observation_dict[k]
