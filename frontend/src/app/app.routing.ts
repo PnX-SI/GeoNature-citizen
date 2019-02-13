@@ -41,5 +41,9 @@ const appRoutes: Routes = [
 ];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {
-  // enableTracing: true
+  useHash: false,
+  // enableTracing: true,
+  scrollPositionRestoration: "enabled",
+  anchorScrolling: "enabled"
+  // scrollOffset: [0, y]  // topbar height ?
 });

@@ -31,7 +31,9 @@
                 class="mobile-hidden"
                 [innerHTML]="program.html_long_desc"
               ></div>
-              <a class="btn-big">Partager une observation</a>
+              <a class="btn-big" [routerLink]="" fragment="program"
+                >Partager une observation</a
+              >
             </div>
           </div>
         </div>
@@ -42,7 +44,7 @@
 
 <div class="row">
   <!-- LES OBSERVATIONS -->
-  <section class="observations row">
+  <section id="program" class="observations row">
     <input id="slide-sidebar" type="checkbox" role="button" />
     <label class="toggle" for="slide-sidebar"
       ><i class="fa fa-chevron-left"></i
@@ -57,7 +59,8 @@
     <div class="map col-lg-12 col-md-12" id="map">
       <app-obs-map
         [observations]="observations"
-        [program]="programFeature"></app-obs-map>
+        [program]="programFeature"
+      ></app-obs-map>
       <div class="btn-groups"><app-modalflow></app-modalflow></div>
     </div>
   </section>
