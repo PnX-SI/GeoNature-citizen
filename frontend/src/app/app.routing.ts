@@ -2,14 +2,15 @@ import { AboutComponent } from "./about/about.component";
 import { ModuleWithProviders } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
-import { HomeComponent } from "./home/home.component"; //import home components
-import { ObsComponent } from "./programs/observations/obs.component"; //import observations component
+import { HomeComponent } from "./home/home.component";
+import { ObsComponent } from "./programs/observations/obs.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { ProgramsComponent } from "./programs/programs.component";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { UniqueProgramGuard } from "./programs/default-program.guard";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
+import { AuthGuard } from "./auth/auth.guard";
 
 const appRoutes: Routes = [
   {
@@ -24,7 +25,11 @@ const appRoutes: Routes = [
     resolve: { programs: ProgramsResolve }
   },
   { path: "about", component: AboutComponent },
-  { path: "mydashboard", component: UserDashboardComponent },
+  {
+    path: "mydashboard",
+    component: UserDashboardComponent,
+    canActivate: [AuthGuard]
+  },
   {
     path: "programs",
     component: ProgramsComponent,

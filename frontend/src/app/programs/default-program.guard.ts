@@ -25,8 +25,6 @@ export class UniqueProgramGuard implements CanActivate, CanActivateChild {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    // FIXME: leverage resolve
-
     return this.programService.getAllPrograms().pipe(
       map((p: Program[]) => {
         const count = p ? p.length : 0;

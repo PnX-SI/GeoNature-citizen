@@ -1,25 +1,22 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { LoginUser, RegisterUser } from "./models";
 import { AppConfig } from "../../conf/app.config";
-import { Router } from '@angular/router';
-
+import { Router } from "@angular/router";
 
 @Injectable()
 export class AuthService {
-
   private headers: HttpHeaders = new HttpHeaders({
     "Content-Type": "application/json"
   });
 
-  constructor(
-    private http: HttpClient,
-    private router: Router
-    ) {}
+  redirectUrl: string;
+
+  constructor(private http: HttpClient, private router: Router) {}
 
   login(user: LoginUser): Promise<any> {
     let url = `${AppConfig.API_ENDPOINT}/login`;
-    // console.log('LoginProcess');
+    // withCredentials: true
     return this.http.post(url, user, { headers: this.headers }).toPromise();
   }
 
