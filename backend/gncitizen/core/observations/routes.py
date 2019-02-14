@@ -388,15 +388,21 @@ def get_program_observations(id):
         """
     try:
         observations = db.session\
-            .query(ObservationModel, LAreas.area_name.label('township'))\
+            .query(
+                ObservationModel,
+                (
+                    LAreas.area_name + ' (' + LAreas.area_code + ')'
+                ).label('municipality'))\
             .filter_by(id_program=id)\
-            .join(LAreas, LAreas.id_area == ObservationModel.municipality,
-                  isouter=True)\
+            .join(
+                LAreas,
+                LAreas.id_area == ObservationModel.municipality,
+                isouter=True)\
             .all()
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
-            feature['properties']['township'] = observation.township
+            feature['properties']['municipality'] = observation.municipality
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys:
@@ -405,6 +411,7 @@ def get_program_observations(id):
             for k in taxref:
                 feature["properties"][k] = taxref[k]
             features.append(feature)
+        current_app.logger.debug(FeatureCollection(features))
         return FeatureCollection(features)
     except Exception as e:
         return {"error_message": str(e)}, 400
