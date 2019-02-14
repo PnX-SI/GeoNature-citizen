@@ -115,34 +115,6 @@ def get_observation(pk):
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/test", methods=["POST"])
-def test():
-    import datetime
-    from gncitizen.utils.env import MEDIA_DIR
-    import os
-
-    files = request.files
-    current_app.logger.debug(files)
-    current_app.logger.debug(files.getlist("file"))
-    current_app.logger.debug(type(files))
-    current_app.logger.debug("longueur {}".format(len(files)))
-    for file in files.getlist("file"):
-        current_app.logger.debug(type(file))
-        if isinstance(file, FileStorage):
-            current_app.logger.debug(
-                "{} where {} is {}".format(file, file.filename, type(file))
-            )
-            file.save(os.path.join(str(MEDIA_DIR), file.filename))
-            print(file.content_length)
-
-        # ext = filename.rsplit(".", 1)[1].lower()
-        # timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        # filename = "obstax_{}_{}.{}".format(str(0000), timestamp, ext)
-        # current_app.logger.debug("new filename : {}".format(filename))
-        # file.save(os.path.join(str(MEDIA_DIR), filename))
-    return "ok"
-
-
 @routes.route("/observations", methods=["POST"])
 @json_resp
 @jwt_optional
