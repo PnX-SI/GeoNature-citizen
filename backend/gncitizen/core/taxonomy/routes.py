@@ -1,5 +1,5 @@
 # import requests
-from flask import Blueprint, jsonify, current_app
+from flask import Blueprint
 
 # from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.env import db
@@ -174,3 +174,28 @@ def get_list(id):
 #         return taxa
 #     except:
 #         return jsonify('Erreur de chargement de l \'API', rtaxa.status_code)
+
+@routes.route('/taxonomy/taxon/<int:cd_nom>', methods=['GET'])
+@json_resp
+def get_taxon_from_cd_nom(cd_nom):
+    """Get taxon TaxRef data from cd_nom
+         ---
+         tags:
+          - taxon
+         parameters:
+          - name: cd_nom
+            in: path
+            type: integer
+            required: true
+            example: 1
+         definitions:
+           cd_nom:
+             type: integer
+             description: cd_nom from TaxRef
+         responses:
+           200:
+             description: Taxon data from Taxref
+    """
+    """Renvoie la fiche TaxRef de l'espèce d'après le cd_nom"""
+    taxon = Taxref.query.filter_by(cd_nom=cd_nom).first()
+    return taxon.as_dict(True)

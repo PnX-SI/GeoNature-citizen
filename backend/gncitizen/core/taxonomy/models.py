@@ -99,7 +99,6 @@ class Taxref(db.Model):
     regne = db.Column(db.Unicode)
     phylum = db.Column(db.Unicode)
     classe = db.Column(db.Unicode)
-    regne = db.Column(db.Unicode)
     ordre = db.Column(db.Unicode)
     famille = db.Column(db.Unicode)
     sous_famille = db.Column(db.Unicode)
