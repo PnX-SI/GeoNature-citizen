@@ -15,8 +15,7 @@ const appRoutes: Routes = [
   {
     path: "",
     redirectTo: "home",
-    pathMatch:
-      "full" /*, canActivate: [UniqueProgramGuard], resolve: { programs: ProgramsResolve}*/
+    pathMatch: "full"
   },
   {
     path: "home",
@@ -45,5 +44,5 @@ export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {
   // enableTracing: true,
   scrollPositionRestoration: "enabled",
   anchorScrolling: "enabled"
-  // scrollOffset: [0, y]  // topbar height ?
+  // scrollOffset: [0, y]  // router-outlet height ?
 });
