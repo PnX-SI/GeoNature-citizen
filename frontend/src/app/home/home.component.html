@@ -4,11 +4,17 @@
       Bienvenue<br />
       sur Geonature Citizen
     </h1>
-    <a [routerLink]="['/home']" fragment="programs" class="btn-big"
+    <a
+      [routerLink]="['/home']"
+      fragment="programs"
+      class="btn-big"
+      role="button"
       >Participer au programme</a
     >
-    <span>Scrollez pour en voir plus !</span>
-    <img class="d-block scroll" src="../../assets/scroll.svg" />
+    <a [routerLink]="['/home']" fragment="programs">
+      <span>Scrollez pour en voir plus !</span>
+      <img class="d-block scroll" src="../../assets/scroll.svg" />
+    </a>
   </section>
 </div>
 

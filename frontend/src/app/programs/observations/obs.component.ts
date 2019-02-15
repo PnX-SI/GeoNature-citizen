@@ -1,4 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  AfterViewChecked
+} from "@angular/core";
 
 import { ModalFlowService } from "./modalflow/modalflow.service";
 import { ActivatedRoute } from "@angular/router";
@@ -13,8 +18,9 @@ import { FeatureCollection } from "geojson";
   styleUrls: ["./obs.component.css", "../../home/home.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class ObsComponent implements OnInit {
+export class ObsComponent implements OnInit, AfterViewChecked {
   title = "Observations";
+  fragment: string;
   program_id: any;
   coords: any;
   programs: Program[];
@@ -29,6 +35,9 @@ export class ObsComponent implements OnInit {
     private programService: GncProgramsService
   ) {
     this.route.params.subscribe(params => (this.program_id = params["id"]));
+    this.route.fragment.subscribe(fragment => {
+      this.fragment = fragment;
+    });
   }
 
   ngOnInit() {
@@ -50,5 +59,17 @@ export class ObsComponent implements OnInit {
         this.programFeature = program;
       });
     });
+  }
+
+  ngAfterViewChecked(): void {
+    try {
+      if (this.fragment) {
+        document
+          .querySelector("#" + this.fragment)
+          .scrollIntoView({ behavior: "smooth" });
+      }
+    } catch (e) {
+      alert(e);
+    }
   }
 }
