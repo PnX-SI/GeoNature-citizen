@@ -46,6 +46,10 @@ section {
 }
 
 /* SLIDER */
+#slide {
+  /* min-height: inherit !important; */
+  height: calc(100vh - var(--router-outlet-offset));
+}
 
 #slider .carousel-inner,
 #slider .carousel-item {
@@ -54,15 +58,10 @@ section {
 }
 
 @media screen and (max-width: 799px) {
-  #slider .carousel-item {
-    /* max-height: 70vh; */
+  #slider {
+    max-height: 70vh;
     height: calc(100vh - var(--router-outlet-offset));
   }
-}
-
-#slide {
-  /* min-height: inherit !important; */
-  height: calc(100vh - var(--router-outlet-offset));
 }
 
 #slider h2 {
@@ -101,18 +100,19 @@ section {
   bottom: 0;
   display: flex;
   align-items: center;
+  max-width: 40vw;
 }
 
-#slider .carousel-text {
+/* #slider .carousel-text {
   background-color: #fff;
-  padding: 40px;
+  padding: 5vw;
   min-width: 450px;
   max-width: 70%;
   height: 450px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
+} */
 
 #slider .carousel-text h3 {
   font-family: "NexaRust";
@@ -132,9 +132,6 @@ section {
 }
 
 /* OBSERVATION / MAP */
-/*
- investigate obs list glitch @921px -> 892
-*/
 app-observations {
   min-width: 100%;
 }
