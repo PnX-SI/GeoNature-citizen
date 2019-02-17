@@ -27,10 +27,7 @@
             <div class="carousel-text">
               <h3>{{ program.title }}</h3>
               <p [innerHTML]="program.html_short_desc"></p>
-              <div
-                class="mobile-hidden"
-                [innerHTML]="program.html_long_desc"
-              ></div>
+              <div [innerHTML]="program.html_long_desc"></div>
               <a class="btn-big" [routerLink]="" fragment="program"
                 >Partager une observation</a
               >
