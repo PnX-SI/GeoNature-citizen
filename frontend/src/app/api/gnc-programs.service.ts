@@ -6,7 +6,7 @@ import {
 } from "@angular/platform-browser";
 import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
-import { catchError, tap, map, mergeMap } from "rxjs/operators";
+import { catchError, map, mergeMap, take } from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 
@@ -72,10 +72,11 @@ export class GncProgramsService implements OnInit {
             return program;
           })
         ),
-        tap(programs => {
+        map(programs => {
           this.state.set(PROGRAMS_KEY, programs as any);
           return programs;
         }),
+        take(1),
         catchError(this.handleError<Program[]>("getAllPrograms"))
       );
     } else {
@@ -86,6 +87,7 @@ export class GncProgramsService implements OnInit {
   getProgram(id: number): Observable<FeatureCollection> {
     return this.http.get<FeatureCollection>(`${this.URL}/programs/${id}`).pipe(
       map(data => data),
+      take(1),
       catchError(this.handleError<FeatureCollection>(`getProgram id=${id}`))
     );
   }
@@ -94,6 +96,7 @@ export class GncProgramsService implements OnInit {
     return this.http
       .get<FeatureCollection>(`${this.URL}/programs/${id}/observations`)
       .pipe(
+        take(1),
         catchError(
           this.handleError<FeatureCollection>(`getProgramObservations id=${id}`)
         )
@@ -108,6 +111,7 @@ export class GncProgramsService implements OnInit {
           `${this.URL}/taxonomy/lists/${program["taxonomy_list"]}/species`
         )
       ),
+      take(1),
       catchError(this.handleError<any[]>(`getProgramTaxonomyList`))
     );
   }
