@@ -214,16 +214,18 @@ def post_observation():
         db.session.commit()
         # Réponse en retour
         features = generate_observation_geojson(newobs.id_observation)
+        current_app.logger.debug("FEATURES: {}".format(features))
         # Enregistrement de la photo et correspondance Obs Photo
         try:
-            medias = save_upload_files(
+            file = save_upload_files(
                 request.files,
                 "obstax",
                 datas2db["cd_nom"],
                 newobs.id_observation,
                 ObservationMediaModel,
             )
-            current_app.logger.debug("ObsTax UPLOAD FILE {}".format(medias))
+            current_app.logger.debug("ObsTax UPLOAD FILE {}".format(file))
+            features[0]["properties"]["images"] = file
 
         except Exception as e:
             current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
@@ -270,6 +272,7 @@ def get_observations():
             for k in observation_dict:
                 if k in obs_keys:
                     feature["properties"][k] = observation_dict[k]
+
             taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
             for k in taxref:
                 feature["properties"][k] = taxref[k]
