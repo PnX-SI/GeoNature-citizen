@@ -96,14 +96,14 @@ section {
 }
 
 /* SLIDER */
+#slide {
+  min-height: inherit !important;
+  height: calc(100vh - var(--router-outlet-offset));
+}
 
 #slider .carousel-inner,
 #slider .carousel-item {
   height: calc(100vh - var(--router-outlet-offset));
-}
-
-#slide {
-  min-height: inherit !important;
 }
 
 #slider h2 {
@@ -233,7 +233,7 @@ app-observations {
   }
 
   #slider .carousel-text {
-    height: 350px;
+    /* height: 350px; */
     width: 350px;
   }
   #slider .carousel-text a {
@@ -328,14 +328,12 @@ app-observations {
 
   #slider .carousel-control-prev {
     bottom: 50%;
-    width: 75%;
   }
 
   #slider .carousel-control-next {
     top: 50%;
     bottom: 0;
     left: 0;
-    width: 75%;
   }
 
   #slider .carousel-control-prev .carousel-control-prev-icon {
