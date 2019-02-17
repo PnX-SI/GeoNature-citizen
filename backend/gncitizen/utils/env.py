@@ -12,18 +12,11 @@ ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
 with open(str((ROOT_DIR / "VERSION"))) as v:
-    GEONATURE_VERSION = v.read()
+    GNCITIZEN_VERSION = v.read()
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/default_config.toml"
 GNC_EXTERNAL_MODULE = ROOT_DIR / "external_modules"
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
 MEDIA_DIR = ROOT_DIR / "media"
-
-
-def allowed_file(filename):
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-    )
 
 
 def get_config_file_path(config_file=None):
@@ -49,7 +42,20 @@ db = SQLAlchemy()
 
 jwt = JWTManager()
 
-swagger = Swagger()
+swagger_template = {
+    # "openapi": "3.0.0",
+    # "components": {
+    #     "securitySchemes": {
+    #         "bearerAuth": {
+    #             "type": "http",
+    #             "scheme": "bearer",
+    #             "bearerFormat": "JWT",
+    #         }
+    #     }
+    # },
+}
+
+swagger = Swagger(template=swagger_template)
 
 taxhub_url = load_config()["API_TAXHUB"]
 taxhub_lists_url = taxhub_url + "biblistes/"

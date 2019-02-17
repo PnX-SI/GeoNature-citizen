@@ -7,7 +7,6 @@ from functools import wraps
 from flask import Response
 from geoalchemy2.shape import to_shape
 from geojson import Feature
-from .env import db
 
 """
     Liste des types de données sql qui
