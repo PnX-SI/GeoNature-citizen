@@ -2,15 +2,18 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  AfterViewChecked
+  AfterViewChecked,
+  ViewChild,
+  ElementRef
 } from "@angular/core";
-
-import { ModalFlowService } from "./modalflow/modalflow.service";
 import { ActivatedRoute } from "@angular/router";
+
+import { FeatureCollection } from "geojson";
+
+import { GncProgramsService } from "../../api/gnc-programs.service";
 import { Program } from "../programs.models";
 // import { Observation } from "./observation.model";
-import { GncProgramsService } from "../../api/gnc-programs.service";
-import { FeatureCollection } from "geojson";
+import { ModalFlowService } from "./modalflow/modalflow.service";
 
 @Component({
   selector: "app-observations",
@@ -31,8 +34,8 @@ export class ObsComponent implements OnInit, AfterViewChecked {
 
   constructor(
     private route: ActivatedRoute,
-    public flowService: ModalFlowService,
-    private programService: GncProgramsService
+    private programService: GncProgramsService,
+    public flowService: ModalFlowService
   ) {
     this.route.params.subscribe(params => (this.program_id = params["id"]));
     this.route.fragment.subscribe(fragment => {
@@ -55,9 +58,9 @@ export class ObsComponent implements OnInit, AfterViewChecked {
         .subscribe(taxa => {
           this.surveySpecies = taxa;
         });
-      this.programService.getProgram(this.program_id).subscribe(program => {
-        this.programFeature = program;
-      });
+      this.programService
+        .getProgram(this.program_id)
+        .subscribe(program => (this.programFeature = program));
     });
   }
 
