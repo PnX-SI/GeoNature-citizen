@@ -1,19 +1,14 @@
-# import os
-import datetime
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import uuid
-
+import json
+from pprint import pprint
 import requests
-from flask import (
-    Blueprint,
-    request,
-    # redirect,
-    # flash,
-    # send_from_directory,
-    # url_for,
-    current_app,
-)
+from werkzeug import FileStorage
 
-# from werkzeug import secure_filename
+from werkzeug.datastructures import ImmutableMultiDict
+from flask import Blueprint, current_app, request
 from flask_jwt_extended import jwt_optional
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
@@ -21,14 +16,17 @@ from shapely.geometry import Point, asShape
 
 from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import UserModel
-from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR, allowed_file
+from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
+from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
-from .models import ObservationModel
+
+from .models import ObservationModel, ObservationMediaModel
 
 routes = Blueprint("observations", __name__)
+
 obs_keys = (
     "cd_nom",
     "id_observation",
@@ -41,7 +39,12 @@ obs_keys = (
 
 
 def get_specie_from_cd_nom(cd_nom):
-    """Renvoie le nom français et scientifique officiel (cd_nom = cd_ref) de l'espèce d'après le cd_nom"""  # noqa: E501
+    """Récupère l'espèce d'après le cdnom.
+
+    Renvoie le nom français et scientifique officiel (cd_nom = cd_ref) de
+    l'espèce d'après le cd_nom
+    """
+
     result = Taxref.query.filter_by(cd_nom=cd_nom).first()
     official_taxa = Taxref.query.filter_by(cd_nom=result.cd_ref).first()
     common_names = official_taxa.nom_vern
@@ -112,23 +115,6 @@ def get_observation(pk):
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/photo", methods=["POST"])
-@json_resp
-def post_photo():
-    """Test pour l'import de médias """
-    if request.files:
-        current_app.logger.debug(request.files)
-        photo = request.files["photo"]
-        current_app.logger.debug("FILE >>>", photo)
-        current_app.logger.debug(allowed_file(photo))
-        ext = photo.rsplit(".", 1).lower()
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = "observation_sp" + 0000 + "_" + timestamp + ext
-        path = MEDIA_DIR + "/" + filename
-        photo.save(path)
-        current_app.logger.debug(path)
-
-
 @routes.route("/observations", methods=["POST"])
 @json_resp
 @jwt_optional
@@ -137,7 +123,9 @@ def post_observation():
     add a observation to database
         ---
         tags:
-          - observations
+          - observations      
+        # security:
+        #   - bearerAuth: []
         summary: Creates a new observation (JWT auth optional, if used, obs_txt replaced by username)
         consumes:
           - application/json
@@ -156,6 +144,11 @@ def post_observation():
                 - date
                 - geom
               properties:
+                id_program: 
+                  type: string
+                  description: Program unique id
+                  example: 1
+                  default: 1
                 cd_nom:
                   type: string
                   description: CD_Nom Taxref
@@ -185,73 +178,64 @@ def post_observation():
             description: Adding a observation
         """
     try:
-        request_datas = dict(request.get_json())
-
+        request_datas = json.loads(request.form.get("data"))
         datas2db = {}
         for field in request_datas:
             if hasattr(ObservationModel, field):
                 datas2db[field] = request_datas[field]
         current_app.logger.debug("datas2db: %s", datas2db)
-        try:
-            if request.files:
-                current_app.logger.debug("request.files: %s", request.files)
-                file = request.files.get("photo", None)
-                current_app.logger.debug("file: %s", file)
-                if file and allowed_file(file):
-                    ext = file.rsplit(".", 1).lower()
-                    timestamp = datetime.datetime.now().strftime(
-                        "%Y%m%d_%H%M%S"
-                    )  # noqa: E501
-                    filename = (
-                        "obstax_" + datas2db["cd_nom"] + "_" + timestamp + ext
-                    )
-                    path = MEDIA_DIR + "/" + filename
-                    file.save(path)
-                    current_app.logger.debug("path: %s", path)
-                    datas2db["photo"] = filename
-        except Exception as e:
-            current_app.logger.debug("file ", e)
-            raise GeonatureApiError(e)
-
-        else:
-            file = None
 
         try:
-            newobservation = ObservationModel(**datas2db)
+            newobs = ObservationModel(**datas2db)
         except Exception as e:
             current_app.logger.debug(e)
             raise GeonatureApiError(e)
 
         try:
             shape = asShape(request_datas["geometry"])
-            newobservation.geom = from_shape(Point(shape), srid=4326)
+            newobs.geom = from_shape(Point(shape), srid=4326)
         except Exception as e:
             current_app.logger.debug(e)
             raise GeonatureApiError(e)
 
         id_role = get_id_role_if_exists()
         if id_role:
-            newobservation.id_role = id_role
+            newobs.id_role = id_role
             role = UserModel.query.get(id_role)
-            newobservation.obs_txt = role.username
-            newobservation.email = role.email
+            newobs.obs_txt = role.username
+            newobs.email = role.email
         else:
-            if (
-                newobservation.obs_txt is None
-                or len(newobservation.obs_txt) == 0
-            ):
-                newobservation.obs_txt = "Anonyme"
+            if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
+                newobs.obs_txt = "Anonyme"
 
-        newobservation.uuid_sinp = uuid.uuid4()
+        newobs.uuid_sinp = uuid.uuid4()
 
-        db.session.add(newobservation)
+        db.session.add(newobs)
         db.session.commit()
         # Réponse en retour
-        features = generate_observation_geojson(newobservation.id_observation)
+        features = generate_observation_geojson(newobs.id_observation)
+        current_app.logger.debug("FEATURES: {}".format(features))
+        # Enregistrement de la photo et correspondance Obs Photo
+        try:
+            file = save_upload_files(
+                request.files,
+                "obstax",
+                datas2db["cd_nom"],
+                newobs.id_observation,
+                ObservationMediaModel,
+            )
+            current_app.logger.debug("ObsTax UPLOAD FILE {}".format(file))
+            features[0]["properties"]["images"] = file
+
+        except Exception as e:
+            current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
+            raise GeonatureApiError(e)
+
         return (
-            {"message": "New observation created.", "features": features},
+            {"message": "New observation created", "features": features},
             200,
         )
+
     except Exception as e:
         current_app.logger.warning("Error: %s", str(e))
         return {"error_message": str(e)}, 400
@@ -288,6 +272,7 @@ def get_observations():
             for k in observation_dict:
                 if k in obs_keys:
                     feature["properties"][k] = observation_dict[k]
+
             taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
             for k in taxref:
                 feature["properties"][k] = taxref[k]
