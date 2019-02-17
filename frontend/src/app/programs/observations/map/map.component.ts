@@ -1,10 +1,12 @@
 import {
   Component,
   ViewEncapsulation,
-  Input,
-  OnChanges,
   OnInit,
-  SimpleChanges
+  Input,
+  Output,
+  OnChanges,
+  SimpleChanges,
+  EventEmitter
 } from "@angular/core";
 
 import { GeoJsonObject, FeatureCollection } from "geojson";
@@ -14,6 +16,11 @@ import "leaflet.markercluster";
 // import { AppConfig } from "../../../../conf/app.config";
 
 declare let $: any;
+
+export const DEFAULT_TILES = {
+  url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  attribution: "OpenStreetMap"
+};
 
 const newObsMarkerIcon = () =>
   L.icon({
@@ -51,6 +58,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
   @Input("geolocate") geolocate = true;
+  @Output() onClick: EventEmitter<any> = new EventEmitter();
   programMaxBounds: L.LatLngBounds;
   coords: string;
   obsMap: L.Map;
@@ -60,30 +68,33 @@ export class ObsMapComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit() {
-    this.initMap();
-    if (this.geolocate) {
-      this.initTracking();
-    }
+    this.initMap("obsMap", {}, DEFAULT_TILES);
   }
 
   ngOnChanges(_changes: SimpleChanges) {
-    // migrate to observables on Inputs and on changes
     if (this.obsMap) {
       this.loadProgramArea();
       this.loadObservations();
     }
   }
 
-  initMap() {
-    this.obsMap = L.map("obsMap");
+  initMap(
+    element: string | HTMLElement = "obsMap",
+    options: L.MapOptions = {},
+    tiles: Object = DEFAULT_TILES
+  ): void {
+    this.obsMap = L.map(element, options);
     this.obsMap.zoomControl.setPosition("topright");
     L.control
       .scale({ position: "bottomleft", imperial: false })
       .addTo(this.obsMap);
-    L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "OpenStreetMap"
+    L.tileLayer(tiles["url"], {
+      attribution: tiles["attribution"]
     }).addTo(this.obsMap);
     this.map_init = true;
+    if (this.geolocate) {
+      this.initTracking();
+    }
   }
 
   loadObservations(): void {
@@ -180,6 +191,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
       let myNewObsMarker = null;
       this.obsMap.on("click", (e: L.LeafletMouseEvent) => {
+        this.onClick.emit();
         let coords = JSON.stringify({
           type: "Point",
           coordinates: [e.latlng.lng, e.latlng.lat]
