@@ -1,13 +1,15 @@
 import { Component, ViewEncapsulation, AfterViewInit } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 
+import { Position, Point } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
 
 import { AppConfig } from "../../../../conf/app.config";
+import { Observable } from "rxjs";
 
 declare let $: any;
 
@@ -27,15 +29,15 @@ export const myMarkerTitle =
   encapsulation: ViewEncapsulation.None
 })
 export class ObsFormComponent implements AfterViewInit {
-  coords: any;
+  private readonly URL = AppConfig.API_ENDPOINT;
   obsForm = new FormGroup({
-    species: new FormControl("", Validators.required),
+    cd_nom: new FormControl("", Validators.required),
     count: new FormControl("", Validators.required),
     comment: new FormControl("", Validators.required),
     date: new FormControl("", Validators.required),
-    file: new FormControl(),
-    taxon: new FormControl()
-    // coord,
+    file: new FormControl("", Validators.required),
+    municipality: new FormControl("", Validators.required),
+    coords: new FormControl("", Validators.required)
   });
   taxonListThreshold = taxonListThreshold;
   surveySpecies: any;
@@ -80,10 +82,12 @@ export class ObsFormComponent implements AfterViewInit {
         let myMarker = null;
 
         formMap.on("click", <LeafletMouseEvent>(e) => {
-          let coords = JSON.stringify({
+          let coords = <Point>{
             type: "Point",
-            coordinates: [e.latlng.lng, e.latlng.lat]
-          });
+            coordinates: <Position>[e.latlng.lng, e.latlng.lat]
+          };
+          this.obsForm.patchValue({ coords: coords });
+          // this.obsForm.patchValue({ municipality: municipality });
           console.debug(coords);
 
           if (myMarker !== null) {
@@ -106,8 +110,26 @@ export class ObsFormComponent implements AfterViewInit {
   }
 
   onFormSubmit(): void {
-    console.log("obsForm: ", this.obsForm);
-    console.log("formValues:" + this.obsForm.value);
+    console.debug("formValues:", this.obsForm.value);
+    this.postObservation().subscribe(data => {
+      data = data.json();
+      console.debug(data);
+    });
+  }
+
+  postObservation(): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json"
+        // Authorization: "my-auth-token"
+      })
+    };
+    return this.http
+      .post<any>(`${this.URL}/observations`, this.obsForm.value, httpOptions)
+      .pipe(
+        map(response => response.json() || []),
+        tap(data => console.debug(data))
+      );
   }
 
   restItemsServiceGetTaxonomyList(program_id) {
