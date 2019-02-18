@@ -17,10 +17,25 @@ import "leaflet.markercluster";
 
 declare let $: any;
 
+// TODO: coupling of marker theming and map tile config
 export const DEFAULT_TILES = {
   url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   attribution: "OpenStreetMap"
 };
+
+// export const DEFAULT_TILES = {
+//   // url: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+//   url: "https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg",
+//   // url: "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg",
+//   attribution: "maps.stamen.com"
+// };
+
+// export const DEFAULT_TILES = {
+//   url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+//   // url: "https://mt1.google.com/vt/lyrs=t&x={x}&y={y}&z={z}",
+//   // url: "https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={z}",
+//   attribution: "maps.google.com"
+// };
 
 const newObsMarkerIcon = () =>
   L.icon({
