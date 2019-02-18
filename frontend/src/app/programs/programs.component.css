@@ -60,10 +60,8 @@
   transform: translateY(-5px);
 }
 
-.programs .text-center h5 {
-  font-weight: normal;
-  color: #00a99d;
-  text-transform: uppercase;
+.programs .text-center:hover img {
+  transform: translateY(-5px);
 }
 
 .programs .text-center p {

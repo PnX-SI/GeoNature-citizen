@@ -1,56 +1,33 @@
 <form [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
-  <div class="alert alert-primary rounded-0" role="alert">
-    {{ obsForm.value | json }}
-  </div>
+  <div class="alert alert-primary rounded-0" role="alert">{{obsForm.value | json}}</div>
   <div class="form-row">
+
     <div class="form-group col-lg-8">
       <label for="sel1">Sélectionnez une espèce</label>
       <div class="d-inline-flex toolbar">
         <!-- FIXME: tap sensitivity -->
-        <select
-          class="form-control rounded-0 col-lg-6"
-          id="sel1"
-          name="sel1"
-          [formGroup]="obsForm"
-          formControlName="species"
-        >
+        <select class="form-control rounded-0 col-lg-6" id="sel1" name="sel1" [formGroup]="obsForm" formControlName="species">
           <option *ngFor="let s of surveySpecies" [value]="s.cd_nom">
-            {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
-            >)
+            {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i>)
           </option>
         </select>
-        <input
-          id="taxon"
-          type="text"
-          class="form-control rounded-0 col-lg-6"
-          formControlName="taxon"
-        />
+        <input id="taxon" type="text" class="form-control rounded-0 col-lg-6" formControlName="taxon">
       </div>
     </div>
 
     <div class="form-group col-lg-12 d-inline-flex obs-images">
       <div class="obs-add-img">
         <i class="fa fa-camera"></i>
-        <input
-          formControlName="file"
-          id="file"
-          name="file"
-          class="inputfile"
-          type="file"
-          accept="image/*"
-          capture="environment"
-        />
+        <input formControlName="file" id="file" name="file" class="inputfile" type="file" accept="image/*" capture="environment">
         <label for="file">Ajouter une photo</label>
       </div>
       <div *ngFor="let s of surveySpecies?.slice(-taxonListThreshold)">
         <div class="obs-img">
-          <img
-            src="{{(s.media?.url)?s.media.url:'../../assets/Azure-Commun-019.JPG'}}"
-            alt="{{s.nom.nom_francais}}"
-          />
-          <span>{{ s.nom.nom_francais }}</span>
+            <img src="{{(s.media?.url)?s.media.url:'../../assets/Azure-Commun-019.JPG'}}" alt="{{s.nom.nom_francais}}">
+            <span>{{s.nom.nom_francais}}</span>
         </div>
       </div>
+
     </div>
 
     <div class="form-group col-lg-6 col-md-12 half">
@@ -59,44 +36,27 @@
         <div class="form-group col-lg-6">
           <div class="input-group">
             <label for="date">Date de l'observation</label>
-            <input
-              ngbDatepicker
-              #d="ngbDatepicker"
-              type="text"
-              class="form-control rounded-0"
-              placeholder="yyyy-mm-dd"
-              formControlName="date"
-              (click)="d.toggle()"
-              id="date"
-            />
+            <input ngbDatepicker #d="ngbDatepicker"
+                  type="text"
+                  class="form-control rounded-0"
+                  placeholder="yyyy-mm-dd"
+                  formControlName="date"
+                  (click)="d.toggle()"
+                  id="date">
           </div>
         </div>
         <div class="form-group col-lg-6">
-          <!--
-            <pre class="card card-block card-header mb-3">Model: {{selected | json}}</pre>
-          -->
+          <!--<pre class="card card-block card-header mb-3">Model: {{selected | json}}</pre>-->
           <label for="observateur">Dénombrement</label>
-          <input
-            type="number"
-            min="0"
-            placeholder="Nombre"
-            data-bind="value:replyNumber"
-            class="form-control rounded-0"
-            formControlName="count"
-            id="observateur"
-          />
+          <input type="number" min="0" placeholder="Nombre" data-bind="value:replyNumber"
+                class="form-control rounded-0" formControlName="count" id="observateur">
         </div>
       </div>
 
       <div class="form-group col-lg-12">
-        <label for="comment">Commentaire</label>
-        <textarea
-          placeholder="Votre commentaire"
-          class="form-control rounded-0"
-          rows="4"
-          id="comment"
-          formControlName="comment"
-        ></textarea>
+          <label for="comment">Commentaire</label>
+          <textarea placeholder="Votre commentaire" class="form-control rounded-0" rows="4"
+                    id="comment" formControlName="comment"></textarea>
       </div>
     </div>
     <div class="form-group col-lg-6 col-md-12 half">
