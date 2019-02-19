@@ -30,10 +30,11 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     )
     cd_nom = db.Column(db.Integer, db.ForeignKey(Taxref.cd_nom), nullable=False)
     specie = db.Column(db.String(200))
-    date = db.Column(db.DATE, nullable=False)
+    date = db.Column(db.Date, nullable=False)
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
-    municipality = db.Column(db.Integer, db.ForeignKey(LAreas.id_area))
+    # FIXME: remove nullable prop from ObservationModel.municipality once debugged
+    municipality = db.Column(db.Integer, db.ForeignKey(LAreas.id_area), nullable=True)
     id_media = db.Column(
         db.Integer, db.ForeignKey(MediaModel.id_media, ondelete="SET NULL")
     )

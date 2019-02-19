@@ -89,6 +89,7 @@ export class ObsFormComponent implements AfterViewInit {
           };
           this.obsForm.patchValue({ geometry: coords });
           // this.obsForm.patchValue({ municipality: municipality });
+          this.obsForm.patchValue({ municipality: null });
           console.debug(coords);
 
           if (myMarker !== null) {
@@ -111,11 +112,19 @@ export class ObsFormComponent implements AfterViewInit {
   }
 
   onFormSubmit(): void {
+    // FIXME: ExpressionChangedAfterItHasBeenCheckedError
     this.obsForm.patchValue({ id_program: this.program_id });
     // this.obsForm.patchValue({ specie: this.what.nom.nom_francais})
+
+    let obsDate = this.obsForm.controls.date.value;
+    this.obsForm.patchValue({
+      date: new Date(obsDate.year, obsDate.month, obsDate.day)
+        .toISOString()
+        .match(/\d{4}-\d{2}-\d{2}/)[0]
+    });
+
     console.debug("formValues:", this.obsForm.value);
     this.postObservation().subscribe(data => {
-      data = data.json();
       console.debug(data);
     });
   }
