@@ -1,17 +1,26 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core'
+import {
+  Component,
+  Input,
+  ViewEncapsulation,
+  ViewChild,
+  ElementRef
+} from "@angular/core";
 
-import { IFlowComponent } from '../../flow/flow'
+import { IFlowComponent } from "../../flow/flow";
+import { ObsFormComponent } from "../../../form/form.component";
 
 @Component({
-  templateUrl: './committed.component.html',
-  styleUrls: ['./committed.component.css'],
-  encapsulation: ViewEncapsulation.None,
+  templateUrl: "./committed.component.html",
+  styleUrls: ["./committed.component.css"],
+  encapsulation: ViewEncapsulation.None
 })
 export class CommittedComponent implements IFlowComponent {
-  @Input() data: any
+  @Input() data: any;
+  @ViewChild(ObsFormComponent) form: ObsFormComponent;
 
   committed() {
-    console.debug('committed action > data:', this.data)
-    this.data.next()
+    this.form.onFormSubmit();
+    console.debug("committed action > data:", this.data);
+    this.data.next();
   }
 }

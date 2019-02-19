@@ -91,9 +91,13 @@
     justify-content: space-around;
 }
 
+.personal-data, #badges{
+    min-height: inherit !important;
+}
+
 .personal-data button{
     font-size: 16px;
-    background: #00a99d;
+    background: var(--primary);
     padding: 10px 30px;
     margin: 10px 25px;
     max-height: 115px;

@@ -5,7 +5,6 @@ import { LoginUser } from "./../models";
 import { Router } from "@angular/router";
 import { debounceTime } from "rxjs/operators";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { isSuccess } from "@angular/http/src/http_utils";
 
 @Component({
   selector: "app-login",
@@ -30,11 +29,10 @@ export class LoginComponent {
     this.auth
       .login(this.user)
       .then(user => {
-        console.log("USER STATUS", user.status);
+        console.log("USER STATUS", user);
         localStorage.setItem("access_token", user.access_token);
         localStorage.setItem("refresh_token", user.refresh_token);
         localStorage.setItem("username", user.username);
-        console.log(user.status);
         if (user) {
           const message = user.message;
           setTimeout(() => (this.staticAlertClosed = true), 20000);
@@ -43,7 +41,8 @@ export class LoginComponent {
             .pipe(debounceTime(5000))
             .subscribe(() => (this.successMessage = null));
           this.displaySuccessMessage(message);
-          this.router.navigate(["/"]);
+          let redirect = this.auth.redirectUrl ? this.auth.redirectUrl : "/";
+          this.router.navigate([redirect]);
           this.activeModal.close();
         }
       })
