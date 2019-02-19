@@ -1,4 +1,10 @@
-import { Component, ViewEncapsulation, AfterViewInit } from "@angular/core";
+import {
+  Component,
+  ViewEncapsulation,
+  AfterViewInit,
+  ViewChild,
+  ElementRef
+} from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -30,6 +36,7 @@ export const myMarkerTitle =
 })
 export class ObsFormComponent implements AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
+  @ViewChild("photo") photo: ElementRef;
   obsForm = new FormGroup({
     cd_nom: new FormControl("", Validators.required),
     count: new FormControl("", Validators.required),
@@ -132,17 +139,37 @@ export class ObsFormComponent implements AfterViewInit {
   postObservation(): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
-        "Content-Type": "application/json"
+        // "Content-Type": "application/json"
+        "Content-Type": "multipart/form-data",
+        Accept: "application/json"
         // Authorization: "my-auth-token"
       })
     };
-    return this.http
-      .post<any>(`${this.URL}/observations`, this.obsForm.value, httpOptions)
-      .pipe(
-        map(response => response.json() || []),
-        tap(data => console.debug(data))
-      );
+    const formData: FormData = new FormData();
+    // debugger;
+
+    const files: FileList = this.photo.nativeElement.files;
+    formData.append("files", files[0], files[0].name);
+    // for (let c of this.obsForm.controls) {
+    //    append to formData
+    // }
+    return (
+      this.http
+        // .post<any>(`${this.URL}/observations`, this.obsForm.value, httpOptions)
+        .post<any>(`${this.URL}/observations`, formData, httpOptions)
+        .pipe(
+          map(response => response.json() || []),
+          tap(data => console.debug(data))
+        )
+    );
   }
+
+  // onPhotoChange(event) {
+  //   if (event.target.files.length > 0) {
+  //     let file = event.target.files[0];
+  //     this.obsForm.get("photo").setValue(file);
+  //   }
+  // }
 
   restItemsServiceGetTaxonomyList(program_id) {
     this.http

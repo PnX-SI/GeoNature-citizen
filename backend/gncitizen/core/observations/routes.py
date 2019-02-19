@@ -187,6 +187,7 @@ def post_observation():
         """
     try:
         request_datas = dict(request.get_json())
+        current_app.logger.debug('request data:', request_datas)
 
         datas2db = {}
         for field in request_datas:
@@ -202,7 +203,7 @@ def post_observation():
                     ext = file.rsplit(".", 1).lower()
                     timestamp = datetime.datetime.now().strftime(
                         "%Y%m%d_%H%M%S"
-                    )  # noqa: E501
+                    )
                     filename = (
                         "obstax_" + datas2db["cd_nom"] + "_" + timestamp + ext
                     )
