@@ -35,9 +35,10 @@ export class ObsFormComponent implements AfterViewInit {
     count: new FormControl("", Validators.required),
     comment: new FormControl("", Validators.required),
     date: new FormControl("", Validators.required),
-    file: new FormControl("", Validators.required),
+    photo: new FormControl("", Validators.required),
     municipality: new FormControl("", Validators.required),
-    coords: new FormControl("", Validators.required)
+    geometry: new FormControl("", Validators.required),
+    id_program: new FormControl("", Validators.required)
   });
   taxonListThreshold = taxonListThreshold;
   surveySpecies: any;
@@ -86,7 +87,7 @@ export class ObsFormComponent implements AfterViewInit {
             type: "Point",
             coordinates: <Position>[e.latlng.lng, e.latlng.lat]
           };
-          this.obsForm.patchValue({ coords: coords });
+          this.obsForm.patchValue({ geometry: coords });
           // this.obsForm.patchValue({ municipality: municipality });
           console.debug(coords);
 
@@ -110,6 +111,8 @@ export class ObsFormComponent implements AfterViewInit {
   }
 
   onFormSubmit(): void {
+    this.obsForm.patchValue({ id_program: this.program_id });
+    // this.obsForm.patchValue({ specie: this.what.nom.nom_francais})
     console.debug("formValues:", this.obsForm.value);
     this.postObservation().subscribe(data => {
       data = data.json();

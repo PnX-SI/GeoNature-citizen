@@ -25,6 +25,11 @@
           class="form-control rounded-0 col-lg-6"
           formControlName="municipality"
         />
+        <input
+          formControlName="id_program"
+          type="hidden"
+          [value]="program_id"
+        />
       </div>
     </div>
 
@@ -32,7 +37,7 @@
       <div class="obs-add-img">
         <i class="fa fa-camera"></i>
         <input
-          formControlName="file"
+          formControlName="photo"
           id="file"
           name="file"
           class="inputfile"
@@ -102,7 +107,7 @@
     <div class="form-group col-lg-6 col-md-12 half">
       <h5>Où avez-vous observé cette espèce ?</h5>
       <div id="formMap" class="col-lg-12"></div>
-      <input formControlName="coords" type="hidden" />
+      <input formControlName="geometry" type="hidden" />
     </div>
   </div>
 </form>

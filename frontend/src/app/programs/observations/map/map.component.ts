@@ -190,7 +190,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   onLocationError(e) {
-    window.alert(e.message);
+    // window.alert(e.message);
+    console.warn(e.message);
   }
 
   loadProgramArea(): void {
