@@ -1,5 +1,4 @@
 import { Component, OnChanges, Input } from "@angular/core";
-// import { FormGroup } from "@angular/forms";
 
 import { FeatureCollection, Feature } from "geojson";
 

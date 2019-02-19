@@ -2,7 +2,7 @@
   <div class="toolbar">
     <select class="form-control rounded-0 col-lg-6" id="sel1">
       <!-- formControlName="species" -->
-      <option *ngFor="let s of surveySpecies" [value]="s.cd_nom">
+      <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
         {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
         >)
       </option>

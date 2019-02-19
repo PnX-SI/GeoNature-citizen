@@ -2,9 +2,7 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  AfterViewChecked,
-  ViewChild,
-  ElementRef
+  AfterViewChecked
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
