@@ -25,7 +25,7 @@ section {
   padding-left: 50%;
   margin-top: 30px;
   color: #fff;
-  font-family: "NexaRust";
+  font-family: "Satisfy";
   font-size: 60px;
 }
 
@@ -36,24 +36,24 @@ section {
   background-color: var(--primary);
 }
 
-#welcome span {
+/* #welcome span {
   position: absolute;
   bottom: 6%;
   left: 50%;
   color: #fff;
   transform: translateX(-50%);
   font-size: 14px;
-}
+} */
 
 /* SLIDER */
-#slide {
-  /* min-height: inherit !important; */
+/* #slide {
+  min-height: inherit !important; 
   height: calc(100vh - var(--router-outlet-offset));
 }
 
 #slider .carousel-inner,
 #slider .carousel-item {
-  /* max-height: 70vh; */
+  max-height: 70vh;
   height: calc(100vh - var(--router-outlet-offset));
 }
 
@@ -101,7 +101,7 @@ section {
   display: flex;
   align-items: center;
   max-width: 40vw;
-}
+} */
 
 /* #slider .carousel-text {
   background-color: #fff;
@@ -113,9 +113,9 @@ section {
   flex-direction: column;
   justify-content: space-between;
 } */
-
+/* 
 #slider .carousel-text h3 {
-  font-family: "NexaRust";
+  font-family: "Satisfy";
   color: var(--ternary);
 }
 
@@ -129,6 +129,95 @@ section {
   background-color: var(--secondary);
   width: 90%;
   text-align: center;
+} */
+
+
+/* SLIDER */
+#slide {
+  min-height: inherit !important;
+  /* height: calc(100vh - var(--router-outlet-offset)); */
+}
+
+#slider .carousel-inner,
+#slider .carousel-item {
+  /* height: calc(100vh - var(--router-outlet-offset)); */
+  /* max-height: 70vh; */
+}
+
+#slider h2 {
+  position: absolute;
+  top: 10px;
+  left: 50px;
+  z-index: 999;
+  color: #fff;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 20px;
+}
+
+#slider h2:before {
+  content: " ";
+  position: absolute;
+  width: 40px;
+  height: 21px;
+  transform: translateX(-125%);
+  background: #fff;
+}
+
+#slider ol.carousel-indicators li {
+  margin-top: 20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 25px;
+  background: transparent;
+  border: solid 1px #fff;
+}
+
+#slider .carousel-text-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  max-width: 70%;
+}
+
+#slider .carousel-text {
+  background-color: #fff;
+  padding: 40px;
+  min-width: 450px;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#slider .carousel-text h3 {
+  font-family: "Satisfy";
+  color: var(--ternary);
+}
+
+#slider .carousel-text p {
+  font-style: italic;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+#slider .carousel-text a {
+  background-color: var(--secondary);
+  width: fit-content;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.mobile-hidden {
+  overflow: hidden;
+  line-height: 22px;
+}
+
+app-observations {
+  min-width: 100%;
 }
 
 /* OBSERVATION / MAP */
@@ -163,13 +252,13 @@ app-observations {
 .leaflet-touch .leaflet-bar a:first-child {
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
-  color: #00a99d;
+  color: var(--primary);
 }
 
 .leaflet-touch .leaflet-bar a:last-child {
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
-  color: #00a99d;
+  color: var(--primary);
 }
 
 section .observations {
@@ -250,7 +339,7 @@ section .observations {
 
 .leaflet-popup-tip span,
 .leaflet-popup-content-wrapper span {
-  color: #00a99d;
+  color: var(--primary);
   font-style: italic;
   font-size: 13px;
 }
@@ -278,7 +367,7 @@ section .observations {
 .leaflet-popup-content div {
   height: 80px;
   width: 40px;
-  background: #00a99d;
+  background: var(--primary);
   color: #fff;
   display: flex;
   justify-content: center;
@@ -370,8 +459,7 @@ span.input-group-text {
 /* MODALES AJOUTER UNE OBS */
 
 .add-obs .obs-images {
-  overflow-x: scroll;
-  overflow-y: hidden;
+  overflow: hidden;
   justify-content: space-between;
   padding: 0px;
 }
@@ -415,7 +503,7 @@ form .d-inline-flex {
 
 .add-obs select,
 .add-obs .d-inline-flex input {
-  border: solid 1px #00a99d !important;
+  border: solid 1px var(--primary) !important;
 }
 
 .toolbar input {
@@ -443,6 +531,11 @@ form .d-inline-flex {
   opacity: 1 !important;
 }
 
+.scroll-img {
+  display: inline-flex;
+  overflow-x: scroll;
+}
+
 .obs-add-img {
   margin: 5px;
   background: #dcdcdc;
@@ -456,12 +549,20 @@ form .d-inline-flex {
 }
 
 .obs-add-img:hover {
-  cursor: pointer;
   background: #a1a1a1;
+}
+
+.obs-add-img input:hover, .obs-add-img i:hover,.obs-add-img label:hover, .obs-add-img:hover {
+  cursor: pointer !important;
 }
 
 .obs-add-img i {
   font-size: 30px;
+}
+
+.obs-add-img input{
+  height: 120px;
+  width: 120px;
 }
 
 .add-obs ::-webkit-scrollbar-thumb {
@@ -518,11 +619,11 @@ form .d-inline-flex {
 }
 
 .modal-body .sign:first-child i {
-  background: #00a99d;
+  background: var(--primary);
 }
 
 .modal-body .sign:first-child span {
-  color: #00a99d;
+  color: var(--primary);
   font-size: 20px;
   font-weight: 600;
 }
@@ -628,17 +729,13 @@ form .d-inline-flex {
   margin-bottom: 0;
 }
 
-/* @media screen and (min-width: 850px){
-
-} */
-
 @media screen and (max-width: 991px) {
   .sign {
     padding: 0px 40px 20px 40px !important;
   }
-  /*     #obsMap{
-        height: calc(100vh - 506px);
-    } */
+  .obs-img span, .obs-img img {
+    opacity: 1;
+  }
 }
 
 @media screen and (max-width: 400px) {

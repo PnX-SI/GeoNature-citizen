@@ -2,7 +2,7 @@
   min-height: 100px;
   background-color: #fefefe;
   /* color: #60a3bc; */
-  color: #00a99d;
+  color: var(--primary);
   /* border-bottom: 1px solid #60a3bc; */
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
@@ -91,10 +91,10 @@ div.btn-group a:first-child{
   }
 } 
 
- @media screen and (max-width: 850px) {
-    div.btn-group{
-      margin-left: 10px;
-    }
+ @media screen and (max-width: 820px) {
+  div.btn-group{
+    margin-left: 0px;
+  }
 } 
 
 @media screen and (max-width: 767px) {
@@ -114,7 +114,7 @@ div.btn-group a:first-child{
 
   .navbar div.btn-group{
     border-left: none;
-    border-right: solid 1px #00a99d;
+    border-right: solid 1px var(--primary);
   }
 
   .navbar form ul li a, .navbar form div.btn-group a{
