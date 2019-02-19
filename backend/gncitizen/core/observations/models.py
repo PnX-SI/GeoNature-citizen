@@ -35,7 +35,22 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     comment = db.Column(db.String(300))
     # FIXME: remove nullable prop from ObservationModel.municipality once debugged
     municipality = db.Column(db.Integer, db.ForeignKey(LAreas.id_area), nullable=True)
-    id_media = db.Column(
-        db.Integer, db.ForeignKey(MediaModel.id_media, ondelete="SET NULL")
-    )
     geom = db.Column(Geometry("POINT", 4326))
+
+
+class ObservationMediaModel(TimestampMixinModel, db.Model):
+    """Table de correspondances des médias (photos) avec les observations"""
+
+    __tablename__ = "cor_obstax_media"
+    __table_args__ = {"schema": "gnc_obstax"}
+    id_match = db.Column(db.Integer, primary_key=True, unique=True)
+    id_data_source = db.Column(
+        db.Integer,
+        db.ForeignKey(ObservationModel.id_observation, ondelete="CASCADE"),
+        nullable=False,
+    )
+    id_media = db.Column(
+        db.Integer,
+        db.ForeignKey(MediaModel.id_media, ondelete="CASCADE"),
+        nullable=False,
+    )
