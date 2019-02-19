@@ -65,7 +65,7 @@ section {
   padding-left: 50%;
   margin-top: 30px;
   color: #fff;
-  font-family: "NexaRust";
+  font-family: "Satisfy";
   font-size: 60px;
   user-select: none;
 }
@@ -77,33 +77,33 @@ section {
   background-color: var(--primary);
 }
 
-#welcome span {
+#welcome a[fragment="programs"].scroll {
   position: absolute;
-  bottom: 50px;
+  bottom: 0px;
   left: 50%;
   color: #fff;
   transform: translateX(-50%);
   font-size: 14px;
+  background-color: transparent !important;
+  width: fit-content;
 }
 
-#welcome .scroll {
+#welcome .scroll img {
   width: 15px;
   height: auto;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  margin: auto;
 }
 
 /* SLIDER */
 #slide {
   min-height: inherit !important;
-  height: calc(100vh - var(--router-outlet-offset));
+  /* height: calc(100vh - var(--router-outlet-offset)); */
 }
 
 #slider .carousel-inner,
 #slider .carousel-item {
-  height: calc(100vh - var(--router-outlet-offset));
+  /* height: calc(100vh - var(--router-outlet-offset)); */
+  max-height: 70vh;
 }
 
 #slider h2 {
@@ -142,28 +142,28 @@ section {
   bottom: 0;
   display: flex;
   align-items: center;
+  max-width: 50%;
 }
 
 #slider .carousel-text {
   background-color: #fff;
   padding: 40px;
   min-width: 450px;
-  max-width: 1000px;
-  height: 450px;
+  height: 80%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 #slider .carousel-text h3 {
-  font-family: "NexaRust";
+  font-family: "Satisfy";
   color: var(--ternary);
 }
 
 #slider .carousel-text p {
   font-style: italic;
   font-size: 14px;
-  width: 90%;
+  overflow: hidden;
 }
 
 #slider .carousel-text a {
@@ -184,7 +184,6 @@ app-observations {
 
 /* SCROLLBAR CUSTOM */
 
-/*==========  scroll bar design  ==========*/
 ::-webkit-scrollbar-thumb {
   background: var(--primary);
   width: 10px;
@@ -200,12 +199,7 @@ app-observations {
 }
 
 /* MEDIA QUERIES */
-/* @media screen and (max-width: 1200px) {
-    #list{
-        width: 40%;
-    }
-}
- */
+
 @media screen and (max-width: 1200px) {
   #list .infos p {
     line-height: 18px;
@@ -222,7 +216,7 @@ app-observations {
     font-size: 44px !important;
     padding-left: 10% !important;
   }
-  #welcome a {
+  #welcome a:first-child {
     padding: 10px 20px;
     right: 50% !important;
     transform: translateX(50%) !important;
@@ -234,7 +228,7 @@ app-observations {
 
   #slider .carousel-text {
     /* height: 350px; */
-    width: 350px;
+    /* width: 350px; */
   }
   #slider .carousel-text a {
     font-size: 16px;
@@ -259,6 +253,10 @@ app-observations {
 }
 
 @media screen and (max-width: 760px) {
+  #welcome a[role="button"] {
+    left: 50%;
+    transform: translateX(-50%);
+  }
   #slider .carousel-inner {
     max-height: fit-content;
   }
@@ -267,11 +265,12 @@ app-observations {
   }
   #slider .carousel-control-next,
   #slider .carousel-control-prev {
-    height: 50%;
+    height: 60%;
   }
   #slider .carousel-text-container {
     position: relative;
     width: 100%;
+    max-width: inherit;
   }
   #slider .carousel-text {
     width: 100%;

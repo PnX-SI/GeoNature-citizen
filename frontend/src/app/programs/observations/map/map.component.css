@@ -1,5 +1,5 @@
 #obsMap {
-  height: calc(100vh - 106px);
+  height: calc(100vh - var(--router-outlet-offset));
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
 }
@@ -35,8 +35,15 @@
   background-color: rgba(254, 250, 245, 0.1);
 }
 
-@media screen and (max-width: 991px){
+.leaflet-right {
+  left: 15px;
+  right: inherit !important;
+}
 
+@media screen and (max-width: 991px){
+  .btn-group .btn-big{
+    opacity: 1 !important;
+  }
   #obsMap{
     margin: 0;
     width: 100%;
