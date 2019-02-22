@@ -8,14 +8,15 @@ import {
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Observable } from "rxjs";
 import { map, tap } from "rxjs/operators";
 
+import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { Position, Point } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
 
 import { AppConfig } from "../../../../conf/app.config";
-import { Observable } from "rxjs";
 
 declare let $: any;
 
@@ -96,7 +97,7 @@ export class ObsFormComponent implements AfterViewInit {
           };
           this.obsForm.patchValue({ geometry: coords });
           // this.obsForm.patchValue({ municipality: municipality });
-          this.obsForm.patchValue({ municipality: null });
+          // this.obsForm.patchValue({ municipality: NULL });
           console.debug(coords);
 
           if (myMarker !== null) {
@@ -119,57 +120,59 @@ export class ObsFormComponent implements AfterViewInit {
   }
 
   onFormSubmit(): void {
-    // FIXME: ExpressionChangedAfterItHasBeenCheckedError
+    console.debug("formValues:", this.obsForm.value);
+    this.postObservation().subscribe(
+      data => console.debug(data),
+      err => console.error(err)
+    );
+  }
+
+  postObservation(): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Accept: "application/json"
+        // Authorization: localStorage.getItem('token')
+      })
+    };
+
     this.obsForm.patchValue({ id_program: this.program_id });
     // this.obsForm.patchValue({ specie: this.what.nom.nom_francais})
 
-    let obsDate = this.obsForm.controls.date.value;
+    let obsDate = NgbDate.from(this.obsForm.controls.date.value);
     this.obsForm.patchValue({
       date: new Date(obsDate.year, obsDate.month, obsDate.day)
         .toISOString()
         .match(/\d{4}-\d{2}-\d{2}/)[0]
     });
 
-    console.debug("formValues:", this.obsForm.value);
-    this.postObservation().subscribe(data => {
-      console.debug(data);
-    });
-  }
-
-  postObservation(): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        // "Content-Type": "application/json"
-        "Content-Type": "multipart/form-data",
-        Accept: "application/json"
-        // Authorization: "my-auth-token"
-      })
-    };
-    const formData: FormData = new FormData();
-    // debugger;
+    let formData: FormData = new FormData();
 
     const files: FileList = this.photo.nativeElement.files;
-    formData.append("files", files[0], files[0].name);
-    // for (let c of this.obsForm.controls) {
-    //    append to formData
-    // }
-    return (
-      this.http
-        // .post<any>(`${this.URL}/observations`, this.obsForm.value, httpOptions)
-        .post<any>(`${this.URL}/observations`, formData, httpOptions)
-        .pipe(
-          map(response => response.json() || []),
-          tap(data => console.debug(data))
-        )
-    );
-  }
+    if (files.length > 0) {
+      formData.append("photo", files[0], files[0].name);
+    }
 
-  // onPhotoChange(event) {
-  //   if (event.target.files.length > 0) {
-  //     let file = event.target.files[0];
-  //     this.obsForm.get("photo").setValue(file);
-  //   }
-  // }
+    formData.append(
+      "geometry",
+      JSON.stringify(this.obsForm.get("geometry").value)
+    );
+
+    for (let item of [
+      "cd_nom",
+      "count",
+      "comment",
+      "date",
+      // "municipality",
+      "id_program"
+    ]) {
+      formData.append(item, this.obsForm.get(item).value);
+    }
+
+    console.debug("formData:", formData);
+    return this.http
+      .post<any>(`${this.URL}/observations`, formData, httpOptions)
+      .pipe(tap(data => console.debug(data)));
+  }
 
   restItemsServiceGetTaxonomyList(program_id) {
     this.http

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 import uuid
 import json
 from pprint import pprint
@@ -17,9 +18,9 @@ from shapely.geometry import Point, asShape
 from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.users.models import UserModel
-from gncitizen.utils.env import taxhub_lists_url
+from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.media import save_upload_files
+from gncitizen.utils.media import save_upload_files, allowed_file
 from gncitizen.utils.utilsjwt import get_id_role_if_exists
 from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
 from server import db
@@ -124,7 +125,7 @@ def post_observation():
     add a observation to database
         ---
         tags:
-          - observations      
+          - observations
         # security:
         #   - bearerAuth: []
         summary: Creates a new observation (JWT auth optional, if used, obs_txt replaced by username)
@@ -145,7 +146,7 @@ def post_observation():
                 - date
                 - geom
               properties:
-                id_program: 
+                id_program:
                   type: string
                   description: Program unique id
                   example: 1
@@ -179,9 +180,9 @@ def post_observation():
             description: Adding a observation
         """
     try:
-        request_datas = dict(request.get_json())
+        request_datas = request.form
         current_app.logger.debug('request data:', request_datas)
-        
+
         datas2db = {}
         for field in request_datas:
             if hasattr(ObservationModel, field):
@@ -220,7 +221,7 @@ def post_observation():
             raise GeonatureApiError(e)
 
         try:
-            shape = asShape(request_datas["geometry"])
+            shape = asShape(json.loads(request_datas["geometry"]))
             newobs.geom = from_shape(Point(shape), srid=4326)
         except Exception as e:
             current_app.logger.debug(e)
