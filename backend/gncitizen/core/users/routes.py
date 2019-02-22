@@ -272,16 +272,16 @@ def get_allusers():
 @json_resp
 @jwt_required
 def logged_user():
-    """list all logged users
+    """current user model
     ---
     tags:
       - Authentication
-    summary: List all logged registered users
+    summary: current registered user
     produces:
       - application/json
     responses:
       200:
-        description: list all logged users
+        description: current user model
     """
     current_user = get_jwt_identity()
     user = UserModel.query.filter_by(username=current_user).one()
