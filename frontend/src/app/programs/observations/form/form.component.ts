@@ -44,7 +44,7 @@ export class ObsFormComponent implements AfterViewInit {
     comment: new FormControl("", Validators.required),
     date: new FormControl("", Validators.required),
     photo: new FormControl("", Validators.required),
-    municipality: new FormControl("", Validators.required),
+    municipality: new FormControl(),
     geometry: new FormControl("", Validators.required),
     id_program: new FormControl("", Validators.required)
   });
@@ -96,8 +96,7 @@ export class ObsFormComponent implements AfterViewInit {
             coordinates: <Position>[e.latlng.lng, e.latlng.lat]
           };
           this.obsForm.patchValue({ geometry: coords });
-          // this.obsForm.patchValue({ municipality: municipality });
-          // this.obsForm.patchValue({ municipality: NULL });
+          // TODO: this.obsForm.patchValue({ municipality: municipality });
           console.debug(coords);
 
           if (myMarker !== null) {
@@ -123,7 +122,8 @@ export class ObsFormComponent implements AfterViewInit {
     console.debug("formValues:", this.obsForm.value);
     this.postObservation().subscribe(
       data => console.debug(data),
-      err => console.error(err)
+      err => console.error(err),
+      () => console.log("done")
     );
   }
 
@@ -136,7 +136,7 @@ export class ObsFormComponent implements AfterViewInit {
     };
 
     this.obsForm.patchValue({ id_program: this.program_id });
-    // this.obsForm.patchValue({ specie: this.what.nom.nom_francais})
+    // TODO: this.obsForm.patchValue({ specie: this.what.nom.nom_francais})
 
     let obsDate = NgbDate.from(this.obsForm.controls.date.value);
     this.obsForm.patchValue({
@@ -169,9 +169,12 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     console.debug("formData:", formData);
-    return this.http
-      .post<any>(`${this.URL}/observations`, formData, httpOptions)
-      .pipe(tap(data => console.debug(data)));
+    return this.http.post<any>(
+      `${this.URL}/observations`,
+      formData,
+      httpOptions
+    );
+    // .pipe(tap(data => console.debug(data)));
   }
 
   restItemsServiceGetTaxonomyList(program_id) {
