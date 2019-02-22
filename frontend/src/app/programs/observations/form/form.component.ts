@@ -149,7 +149,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     const files: FileList = this.photo.nativeElement.files;
     if (files.length > 0) {
-      formData.append("photo", files[0], files[0].name);
+      formData.append("file", files[0], files[0].name);
     }
 
     formData.append(

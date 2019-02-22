@@ -192,20 +192,21 @@ def post_observation():
         try:
             if request.files:
                 current_app.logger.debug("request.files: %s", request.files)
-                file = request.files.get("photo", None)
+                file = request.files.get("file", None)
                 current_app.logger.debug("file: %s", file)
-                if file and allowed_file(file):
-                    ext = file.rsplit(".", 1).lower()
-                    timestamp = datetime.datetime.now().strftime(
-                        "%Y%m%d_%H%M%S"
-                    )
-                    filename = (
-                        "obstax_" + datas2db["cd_nom"] + "_" + timestamp + ext
-                    )
-                    path = MEDIA_DIR + "/" + filename
-                    file.save(path)
-                    current_app.logger.debug("path: %s", path)
-                    datas2db["photo"] = filename
+                # if file and allowed_file(file.filename):
+                #     ext = file.filename.rsplit(".", 1)[1].lower()
+                #     timestamp = datetime.now().strftime(
+                #         "%Y%m%d_%H%M%S"
+                #     )
+                #     filename = (
+                #         "obstax_" + datas2db["cd_nom"] + "_" + timestamp + ext
+                #     )
+                #     path = MEDIA_DIR / filename
+                #     file.save(str(path))
+                #     current_app.logger.debug("path: %s", path)
+                #     # datas2db["photo"] = filename
+                # save_upload_files(request.files)
         except Exception as e:
             current_app.logger.debug("file ", e)
             raise GeonatureApiError(e)
@@ -245,20 +246,20 @@ def post_observation():
         features = generate_observation_geojson(newobs.id_observation)
         current_app.logger.debug("FEATURES: {}".format(features))
         # Enregistrement de la photo et correspondance Obs Photo
-        #try:
-        #    file = save_upload_files(
-        #        request.files,
-        #        "obstax",
-        #        datas2db["cd_nom"],
-        #        newobs.id_observation,
-        #        ObservationMediaModel,
-        #    )
-        #    current_app.logger.debug("ObsTax UPLOAD FILE {}".format(file))
-        #    features[0]["properties"]["images"] = file
-        #
-        #except Exception as e:
-        #    current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
-        #    raise GeonatureApiError(e)
+        try:
+            file = save_upload_files(
+                request.files,
+                "obstax",
+                datas2db["cd_nom"],
+                newobs.id_observation,
+                ObservationMediaModel,
+            )
+            current_app.logger.debug("ObsTax UPLOAD FILE {}".format(file))
+            features[0]["properties"]["images"] = file
+
+        except Exception as e:
+            current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
+            raise GeonatureApiError(e)
 
         return (
             {"message": "New observation created", "features": features},
