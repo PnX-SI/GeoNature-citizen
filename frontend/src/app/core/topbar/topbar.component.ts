@@ -69,6 +69,17 @@ export class TopbarComponent implements OnInit {
         })
         .catch(err => {
           console.log(err);
+          this.auth
+            .logout(access_token)
+            .then(logout => {
+              console.log("LogoutUser Get Status", logout.status);
+            })
+            .catch(err => {
+              console.log(err);
+            });
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          localStorage.removeItem("username");
         });
     }
   }
