@@ -35,7 +35,7 @@ export class AuthService {
   }
 
   ensureAuthenticated(access_token): Promise<any> {
-    let url: string = `${AppConfig.API_ENDPOINT}/logged_user`;
+    let url: string = `${AppConfig.API_ENDPOINT}/user`;
     let headers_with_bearer: HttpHeaders = new HttpHeaders({
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`

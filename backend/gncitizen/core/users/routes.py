@@ -1,4 +1,4 @@
-from flask import jsonify, request, Blueprint
+from flask import jsonify, request, Blueprint, current_app
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -268,7 +268,7 @@ def get_allusers():
     return allusers, 200
 
 
-@routes.route("/logged_user", methods=["GET"])
+@routes.route("/user", methods=["GET"])
 @json_resp
 @jwt_required
 def logged_user():
@@ -283,7 +283,64 @@ def logged_user():
       200:
         description: list all logged users
     """
+    current_app.logger.debug("récupération des données utilisateur")
     current_user = get_jwt_identity()
     user = UserModel.query.filter_by(username=current_user).one()
-
+    current_app.logger.debug("user {}".format(user.secured_as_dict()))
     return user.secured_as_dict(), 200
+
+
+@routes.route("/user", methods=["DELETE"])
+@json_resp
+@jwt_required
+def delete_user():
+    """list all logged users
+    ---
+    tags:
+      - Authentication
+    summary: Delete current logged user
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Delete current logged user
+    """
+    # Get logged user
+    current_user = get_jwt_identity()
+    if current_user:
+        current_app.logger.debug(
+            "userdel: current user is {}".format(current_user)
+        )
+        user = UserModel.query.filter_by(username=current_user)
+        current_app.logger.debug("userdel: user info are {}".format(user))
+        # get username
+        username = user.one().username
+        # delete user
+        try:
+            db.session.query(UserModel).filter(
+                UserModel.username == current_user
+            ).delete()
+            db.session.commit()
+        except:
+            db.session.rollback()
+
+        return (
+            {
+                "message": "Le compte utilisateur {} a été supprimé".format(
+                    username
+                )
+            },
+            200,
+        )
+    else:
+        return (
+            {
+                "message": "Le compte utilisateur {} a déjà été supprimé".format(
+                    username
+                )
+            },
+            200,
+        )
+
