@@ -268,7 +268,7 @@ def get_allusers():
     return allusers, 200
 
 
-@routes.route("/user", methods=["GET"])
+@routes.route("/user/info", methods=["GET"])
 @json_resp
 @jwt_required
 def logged_user():
@@ -305,7 +305,7 @@ def logged_user():
         )
 
 
-@routes.route("/user", methods=["DELETE"])
+@routes.route("/user/delete", methods=["DELETE"])
 @json_resp
 @jwt_required
 def delete_user():
