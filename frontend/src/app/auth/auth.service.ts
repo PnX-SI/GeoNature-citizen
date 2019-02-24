@@ -45,7 +45,7 @@ export class AuthService {
 
   // TODO: verify service to delete account in response to GDPR recommandations
   selfDeleteAccount(access_token): Promise<any> {
-    let url string = `${AppConfig.API_ENDPOINT}/user/delete`;
+    let url: string = `${AppConfig.API_ENDPOINT}/user/delete`;
     let headers_with_bearer: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${access_token}`
