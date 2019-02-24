@@ -35,11 +35,21 @@ export class AuthService {
   }
 
   ensureAuthenticated(access_token): Promise<any> {
-    let url: string = `${AppConfig.API_ENDPOINT}/logged_user`;
+    let url: string = `${AppConfig.API_ENDPOINT}/user/info`;
     let headers_with_bearer: HttpHeaders = new HttpHeaders({
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`
     });
     return this.http.get(url, { headers: headers_with_bearer }).toPromise();
+  }
+
+  // TODO: verify service to delete account in response to GDPR recommandations
+  selfDeleteAccount(access_token): Promise<any> {
+    let url: string = `${AppConfig.API_ENDPOINT}/user/delete`;
+    let headers_with_bearer: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`
+    });
+    return this.http.delete(url, { headers: headers_with_bearer }).toPromise();
   }
 }
