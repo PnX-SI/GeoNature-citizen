@@ -283,11 +283,26 @@ def logged_user():
       200:
         description: list all logged users
     """
-    current_app.logger.debug("récupération des données utilisateur")
-    current_user = get_jwt_identity()
-    user = UserModel.query.filter_by(username=current_user).one()
-    current_app.logger.debug("user {}".format(user.secured_as_dict()))
-    return user.secured_as_dict(), 200
+    current_app.logger.debug("[logged_user] Get current user personnal datas")
+    try:
+        current_user = get_jwt_identity()
+        user = UserModel.query.filter_by(username=current_user).one()
+        current_app.logger.debug(
+            "[logged_user] current user is {}".format(user.as_secured_dict())
+        )
+        return (
+            {
+                "message": "Vos données personelles",
+                "features": user.as_secured_dict(True),
+            },
+            200,
+        )
+    except Exception as e:
+        raise GeonatureApiError(e)
+        return (
+            {"error_message": "You must log in to get your personal datas"},
+            200,
+        )
 
 
 @routes.route("/user", methods=["DELETE"])
@@ -308,13 +323,14 @@ def delete_user():
         description: Delete current logged user
     """
     # Get logged user
+    current_app.logger.debug("[delete_user] Delete current user")
+
     current_user = get_jwt_identity()
     if current_user:
         current_app.logger.debug(
-            "userdel: current user is {}".format(current_user)
+            "[delete_user] current user is {}".format(current_user)
         )
         user = UserModel.query.filter_by(username=current_user)
-        current_app.logger.debug("userdel: user info are {}".format(user))
         # get username
         username = user.one().username
         # delete user
@@ -323,21 +339,17 @@ def delete_user():
                 UserModel.username == current_user
             ).delete()
             db.session.commit()
-        except:
+            current_app.logger.debug(
+                "[delete_user] user {} succesfully deleted".format(username)
+            )
+        except Exception as e:
             db.session.rollback()
+            raise GeonatureApiError(e)
+            return {"error_message": str(e)}, 400
 
         return (
             {
-                "message": "Le compte utilisateur {} a été supprimé".format(
-                    username
-                )
-            },
-            200,
-        )
-    else:
-        return (
-            {
-                "message": "Le compte utilisateur {} a déjà été supprimé".format(
+                "message": "Account {} have been successfully deleted".format(
                     username
                 )
             },
