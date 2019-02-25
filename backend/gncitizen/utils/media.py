@@ -99,7 +99,23 @@ def save_upload_files(
     id_data_source=None,
     matching_model=None,
 ):
-    """Save on server and db a single file from POST request"""
+    """Save files on server and filenames in db from POST request
+
+
+    :param request_file: request files from post request.
+    :type request_file: function
+    :param prefix: filename prefix
+    :type prefix: str
+    :param cdnom: species id from taxref cdnom
+    :type cdnom: int
+    :param id_data_source: source id in matching model
+    :type id_data_source: int
+    :param matching_model: matching model of observation (eg: ObservationModel or SiteModel)
+    :type matching_model: class
+
+    :returns: a filename list
+
+    """
     files = []
     try:
         i = 0
