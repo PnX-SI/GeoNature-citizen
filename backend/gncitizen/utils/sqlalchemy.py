@@ -1,6 +1,8 @@
-"""
-Fonctions utilitaires
-"""
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""A module to manage database and datas with sqlalchemy"""
+
 import json
 from functools import wraps
 
@@ -24,18 +26,14 @@ SERIALIZERS = {
 
 
 def create_schemas(db):
-    """Créée les schémas lors du premier lancement de l'application"""
+    """create db schemas at first launch
+
+    :param db: db connection
+    """
     db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_core")
     db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_obstax")
     db.session.execute("CREATE SCHEMA IF NOT EXISTS ref_geo")
     db.session.commit()
-
-
-def get_geojson_feature(wkb):
-    """ retourne une feature geojson à partir d'un WKB"""
-    geometry = to_shape(wkb)
-    feature = Feature(geometry=geometry, properties={})
-    return feature
 
 
 def serializable(cls):
@@ -183,3 +181,5 @@ def to_json_resp(res, status=200, filename=None, as_file=False, indent=None):
         mimetype="application/json",
         headers=headers,
     )
+
+

@@ -5,7 +5,8 @@ from geojson import FeatureCollection, Feature
 
 from gncitizen.utils.env import db
 from gncitizen.utils.env import load_config
-from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
+from gncitizen.utils.geometry import get_geojson_feature
+from gncitizen.utils.sqlalchemy import json_resp
 from .models import LAreas
 
 routes = Blueprint('georepos', __name__)

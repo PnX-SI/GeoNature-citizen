@@ -10,7 +10,7 @@ from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
 
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.utilssqlalchemy import json_resp
+from gncitizen.utils.sqlalchemy import json_resp
 from server import db
 
 from .models import ModulesModel, ProgramsModel

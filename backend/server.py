@@ -6,7 +6,7 @@ from flask import Flask, current_app
 from flask_cors import CORS
 
 from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger
-from gncitizen.utils.utilssqlalchemy import create_schemas
+from gncitizen.utils.sqlalchemy import create_schemas
 
 logger = logging.getLogger()
 logger.setLevel(10)
