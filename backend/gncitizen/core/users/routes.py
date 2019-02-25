@@ -8,10 +8,10 @@ from flask_jwt_extended import (
     jwt_required,
 )
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.utilssqlalchemy import json_resp
+from gncitizen.utils.sqlalchemy import json_resp
 from server import db, jwt
 from .models import UserModel, RevokedTokenModel
-from gncitizen.utils.utilsjwt import admin_required
+from gncitizen.utils.jwt import admin_required
 
 
 routes = Blueprint("users", __name__)

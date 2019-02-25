@@ -12,7 +12,7 @@ from gncitizen.core.commons.models import (
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import ObserverMixinModel
-from gncitizen.utils.utilssqlalchemy import serializable, geoserializable
+from gncitizen.utils.sqlalchemy import serializable, geoserializable
 from server import db
 
 
