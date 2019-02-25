@@ -15,6 +15,7 @@ from geojson import FeatureCollection
 from shapely.geometry import Point, asShape
 
 from gncitizen.core.taxonomy.models import Taxref
+from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
@@ -59,7 +60,7 @@ def get_specie_from_cd_nom(cd_nom):
 def generate_observation_geojson(id_observation):
     """generate observation in geojson format from observation id"""
 
-    # Crééer le dictionnaire de l'observation
+    # Crée le dictionnaire de l'observation
     result = ObservationModel.query.get(id_observation)
     result_dict = result.as_dict(True)
 
@@ -113,34 +114,6 @@ def get_observation(pk):
         return {"features": features}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
-
-
-@routes.route("/test", methods=["POST"])
-def test():
-    import datetime
-    from gncitizen.utils.env import MEDIA_DIR
-    import os
-
-    files = request.files
-    current_app.logger.debug(files)
-    current_app.logger.debug(files.getlist("file"))
-    current_app.logger.debug(type(files))
-    current_app.logger.debug("longueur {}".format(len(files)))
-    for file in files.getlist("file"):
-        current_app.logger.debug(type(file))
-        if isinstance(file, FileStorage):
-            current_app.logger.debug(
-                "{} where {} is {}".format(file, file.filename, type(file))
-            )
-            file.save(os.path.join(str(MEDIA_DIR), file.filename))
-            print(file.content_length)
-
-        # ext = filename.rsplit(".", 1)[1].lower()
-        # timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        # filename = "obstax_{}_{}.{}".format(str(0000), timestamp, ext)
-        # current_app.logger.debug("new filename : {}".format(filename))
-        # file.save(os.path.join(str(MEDIA_DIR), filename))
-    return "ok"
 
 
 @routes.route("/observations", methods=["POST"])
@@ -206,12 +179,39 @@ def post_observation():
             description: Adding a observation
         """
     try:
-        request_datas = json.loads(request.form.get("data"))
+        request_datas = dict(request.get_json())
+        current_app.logger.debug('request data:', request_datas)
+        
         datas2db = {}
         for field in request_datas:
             if hasattr(ObservationModel, field):
                 datas2db[field] = request_datas[field]
         current_app.logger.debug("datas2db: %s", datas2db)
+
+        try:
+            if request.files:
+                current_app.logger.debug("request.files: %s", request.files)
+                file = request.files.get("photo", None)
+                current_app.logger.debug("file: %s", file)
+                if file and allowed_file(file):
+                    ext = file.rsplit(".", 1).lower()
+                    timestamp = datetime.datetime.now().strftime(
+                        "%Y%m%d_%H%M%S"
+                    )
+                    filename = (
+                        "obstax_" + datas2db["cd_nom"] + "_" + timestamp + ext
+                    )
+                    path = MEDIA_DIR + "/" + filename
+                    file.save(path)
+                    current_app.logger.debug("path: %s", path)
+                    datas2db["photo"] = filename
+        except Exception as e:
+            current_app.logger.debug("file ", e)
+            raise GeonatureApiError(e)
+
+        else:
+            file = None
+
 
         try:
             newobs = ObservationModel(**datas2db)
@@ -242,20 +242,22 @@ def post_observation():
         db.session.commit()
         # Réponse en retour
         features = generate_observation_geojson(newobs.id_observation)
+        current_app.logger.debug("FEATURES: {}".format(features))
         # Enregistrement de la photo et correspondance Obs Photo
-        try:
-            medias = save_upload_files(
-                request.files,
-                "obstax",
-                datas2db["cd_nom"],
-                newobs.id_observation,
-                ObservationMediaModel,
-            )
-            current_app.logger.debug("ObsTax UPLOAD FILE {}".format(medias))
-
-        except Exception as e:
-            current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
-            raise GeonatureApiError(e)
+        #try:
+        #    file = save_upload_files(
+        #        request.files,
+        #        "obstax",
+        #        datas2db["cd_nom"],
+        #        newobs.id_observation,
+        #        ObservationMediaModel,
+        #    )
+        #    current_app.logger.debug("ObsTax UPLOAD FILE {}".format(file))
+        #    features[0]["properties"]["images"] = file
+        #
+        #except Exception as e:
+        #    current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
+        #    raise GeonatureApiError(e)
 
         return (
             {"message": "New observation created", "features": features},
@@ -298,6 +300,7 @@ def get_observations():
             for k in observation_dict:
                 if k in obs_keys:
                     feature["properties"][k] = observation_dict[k]
+
             taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
             for k in taxref:
                 feature["properties"][k] = taxref[k]
@@ -396,11 +399,23 @@ def get_program_observations(id):
             description: A list of all species lists
         """
     try:
-        observations = ObservationModel.query.filter_by(id_program=id).all()
+        observations = db.session\
+            .query(
+                ObservationModel,
+                (
+                    LAreas.area_name + ' (' + LAreas.area_code + ')'
+                ).label('municipality'))\
+            .filter_by(id_program=id)\
+            .join(
+                LAreas,
+                LAreas.id_area == ObservationModel.municipality,
+                isouter=True)\
+            .all()
         features = []
         for observation in observations:
-            feature = get_geojson_feature(observation.geom)
-            observation_dict = observation.as_dict(True)
+            feature = get_geojson_feature(observation.ObservationModel.geom)
+            feature['properties']['municipality'] = observation.municipality
+            observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys:
                     feature["properties"][k] = observation_dict[k]
@@ -408,6 +423,7 @@ def get_program_observations(id):
             for k in taxref:
                 feature["properties"][k] = taxref[k]
             features.append(feature)
+        current_app.logger.debug(FeatureCollection(features))
         return FeatureCollection(features)
     except Exception as e:
         return {"error_message": str(e)}, 400

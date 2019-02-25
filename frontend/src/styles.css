@@ -1,19 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
 @font-face {
-  font-family: 'NexaRust';
-  src: url('assets/NexaRustScriptL-0.otf') format('truetype');
+  font-family: "Satisfy";
+  src: url("assets/Satisfy-Regular.ttf") format("truetype");
 }
 
 :root {
   --primary: #00a99d;
+  --dark-primary : #0a998f;
   --secondary: #60b15c;
   --secondary-gradient: #57a154;
   --ternary: #45765c;
   --list-toggler-width: 21px;
   --list-obs-offset: 170px;
+  --router-outlet-offset: 113px;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   color: #5d6970;
 }
@@ -23,14 +26,15 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
 
-button, .btn {
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+button,
+.btn {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
 
-.btn-big{
+.btn-big {
   text-transform: uppercase;
   color: #fff !important;
   padding: 20px 30px;
@@ -38,61 +42,66 @@ button, .btn {
   font-weight: 500;
   font-size: 18px;
   width: fit-content;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
-.btn-big:hover{
-  -webkit-box-shadow: 0px 5px 24px -2px rgba(0,0,0,0.75) !important;
-  -moz-box-shadow: 0px 5px 24px -2px rgba(0,0,0,0.75) !important;
-  box-shadow: 0px 5px 24px -2px rgba(0,0,0,0.75) !important;
+.btn-big:hover {
+  -webkit-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
+  -moz-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
+  box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
   color: #fff !important;
   transform: translateY(-5px);
 }
 
-ul{
+ul {
   list-style-type: none;
 }
 
-a, button, *:focus {
-  color : #000;
+a,
+button,
+*:focus {
+  color: #000;
   box-shadow: none !important;
   cursor: pointer;
   outline: none;
 }
 
-a:hover, a:focus, a:active {
+a:hover,
+a:focus,
+a:active {
   text-decoration: none !important;
-  color : inherit !important;
+  color: #555;
 }
 
-input:focus, textarea:focus, select:focus{
+input:focus,
+textarea:focus,
+select:focus {
   outline: none !important;
   box-shadow: none !important;
-  border: solid 1px rgb(75, 75, 75) !important;
+  border: solid 2px var(--primary) !important;
 }
 
-
-.modal-content{
+.modal-content {
   border-radius: 0px !important;
   border: none !important;
 }
 
-.toolbar{
+/* .toolbar {
   position: relative;
 }
 
 .toolbar:before {
   font-family: FontAwesome;
-  content : '\f002';
+  content: "\f002";
   position: absolute;
   right: 13px;
   width: 10px;
   height: 10px;
   top: 6px;
   color: #00a99d;
-}
+} */
 
-@media screen and (max-width: 1024px){
-  .btn-big{
+@media screen and (max-width: 1024px) {
+  .btn-big {
     padding: 10px 20px;
   }
 }
@@ -105,15 +114,15 @@ input:focus, textarea:focus, select:focus{
 
 /* blink scroll bar custom design */
 ::-webkit-scrollbar-thumb {
-	background: var(--primary);
-	width: 10px;
-	border: 1px solid #eee;
-	margin: 5px;
+  background: var(--primary);
+  width: 10px;
+  border: 1px solid #eee;
+  margin: 5px;
 }
-::-webkit-scrollbar{
-	background: #eee;
-	width: 10px;
-	height: 10px;
-	margin: 5px;
-	cursor: pointer;
+::-webkit-scrollbar {
+  background: #eee;
+  width: 10px;
+  height: 10px;
+  margin: 5px;
+  cursor: pointer;
 }

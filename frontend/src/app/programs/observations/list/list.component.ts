@@ -1,5 +1,4 @@
 import { Component, OnChanges, Input } from "@angular/core";
-// import { FormGroup } from "@angular/forms";
 
 import { FeatureCollection, Feature } from "geojson";
 
@@ -11,6 +10,7 @@ import { FeatureCollection, Feature } from "geojson";
 export class ObsListComponent implements OnChanges {
   @Input("observations") obs: FeatureCollection;
   @Input("taxa") surveySpecies: any[];
+  municipalities: string[];
   observations: Feature[] = [];
   program_id: number;
   taxa: any[];
@@ -18,6 +18,13 @@ export class ObsListComponent implements OnChanges {
   ngOnChanges() {
     if (this.obs) {
       this.observations = this.obs["features"];
+      this.municipalities = this.obs.features
+        .map(features => features.properties)
+        .map(property => property.municipality)
+        .filter(municipality =>
+          municipality != null ? <string>municipality : ""
+        )
+        .filter((v, i, a) => a.indexOf(v) === i);
     }
   }
 }

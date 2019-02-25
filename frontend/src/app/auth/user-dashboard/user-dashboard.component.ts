@@ -8,7 +8,7 @@ import { AuthService } from "./../auth.service";
 })
 export class UserDashboardComponent implements OnInit {
   isLoggedIn: boolean = false;
-  username: string = 'not defined';
+  username: string = "not defined";
 
   constructor(private auth: AuthService) {}
 
@@ -23,9 +23,7 @@ export class UserDashboardComponent implements OnInit {
             this.username = user.username;
           }
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(err => console.log(err));
     }
   }
 }

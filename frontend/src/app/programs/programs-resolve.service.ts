@@ -26,13 +26,11 @@ export class ProgramsResolve implements Resolve<Program[]> {
   ): Observable<Program[]> | Observable<never> {
     return this.programService.getAllPrograms().pipe(
       take(1),
-      tap(p => console.debug(p)),
+      // tap(p => console.debug(p)),
       mergeMap((programs: Program[]) => {
-        console.debug("ProgramsResolve:", programs);
         if (programs) {
           return of(programs);
         } else {
-          // this.router.navigate(['/404']);
           return EMPTY;
         }
       })

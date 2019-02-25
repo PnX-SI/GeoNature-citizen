@@ -23,7 +23,9 @@ Faire un fork du projet
 Cloner le projet
 ################
 
-Dans un terminal::
+Dans un terminal:
+
+.. code-block:: bash
 
     $ git clone git@github.com:YOUR_NAME/GeoNature-citizen.git
 
@@ -36,12 +38,16 @@ Dans un terminal::
 Récupérer les mises à jour du dépot principal
 *********************************************
 
-Dans un terminal, dans le dossier cloné::
+Dans un terminal, dans le dossier cloné:
+
+.. code-block:: bash
 
     $ git remote add upstream git@github.com:PnX-SI/GeoNature-citizen.git
 
 Pour vérifier que votre clone local puisse suivre votre
-dépot (*origin*) et le dépot principal (*upstream*)::
+dépot (*origin*) et le dépot principal (*upstream*):
+
+.. code-block:: bash
 
     $ git remove -v
 
@@ -53,7 +59,9 @@ dépot (*origin*) et le dépot principal (*upstream*)::
 Créer votre propre branche de développement
 *******************************************
 
-Pour créer votre branche de développement, dans un terminal::
+Pour créer votre branche de développement, dans un terminal:
+
+.. code-block:: bash
 
     $ git checkout -b dev_mabranche
 
@@ -65,16 +73,18 @@ Renseigner les fichiers de configuration
 Modifier le fichier de configuration
 ####################################
 
-Les fichiers de configuration sont dans le dossier ``config``. 
-Le fichier à modifier est default_config.toml. 
-Le fichier utilisé par GeoNature-citizen est default_config.toml. 
-Il peut-être créé en copiant le fichier ``default_config.toml.example`` vers ``default_config.toml``::
+Les fichiers de configuration sont dans le dossier ``config``.
+Le fichier à modifier est default_config.toml.
+Le fichier utilisé par GeoNature-citizen est default_config.toml.
+Il peut-être créé en copiant le fichier ``default_config.toml.example`` vers ``default_config.toml``:
+
+.. code-block:: bash
 
     $ cp default_config.toml.example default_config.toml
 
 Editez alors les différents paramètres de ce fichier.
 
-::
+.. code-block:: python
 
     # Database
     SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://geonatuser:monpassachanger@127.0.0.1:5432/geonaturedb"
@@ -133,7 +143,7 @@ Editez alors les différents paramètres de ce fichier.
         title = 'GeoNature-Citizen API'
         version = 'x.x.x'
         produces = ["application/json"]
-        consumes = ["application/json"] 
+        consumes = ["application/json"]
 
 
 *******************************
@@ -144,16 +154,22 @@ Installer l'environnement virtuel python
 ########################################
 
 La création de l'environnement virtuel python3 nécessite ``virtualenv``
-ou ``pyenv`` ou tout autre outil équivalent (ex: pyenv)::
+ou ``pyenv`` ou tout autre outil équivalent (ex: pyenv):
+
+.. code-block:: bash
 
     cd backend
     virtualenv -p /usr/bin/python3 venv
 
-L'activation de cet environnement se fait avec la commande suivante::
+L'activation de cet environnement se fait avec la commande suivante:
+
+.. code-block:: bash
 
     source venv/bin/activate
 
-Et l'installation des librairies nécessaires à GeoNature-citizen avec la commande suivante::
+Et l'installation des librairies nécessaires à GeoNature-citizen avec la commande suivante:
+
+.. code-block:: bash
 
     pip install -r requirements.txt
 
@@ -161,8 +177,10 @@ Et l'installation des librairies nécessaires à GeoNature-citizen avec la comma
 Lancement du Backend
 ####################
 
-Pour lancer l'application Backend, il suffit d'éxécuter les commandes suivantes 
-depuis l'environnement virtuel python::
+Pour lancer l'application Backend, il suffit d'éxécuter les commandes suivantes
+depuis l'environnement virtuel python:
+
+.. code-block:: bash
 
     cd backend
     source venv/bin/activate
@@ -178,3 +196,49 @@ Configurer et lancer le frontend
 
     A venir
 
+
+Gestion du Server Side Rendering
+################################
+
+Le SSR a été intégré au projet à partir de la commande : 
+
+.. code-block:: bash
+
+    npm run ng add @nguniversal/express-engine --clientProject frontend
+
+NB: L'intégration Leaflet.MarkerCluster a nécessité de déclarer une variable globale ``L`` et d'y importer Leaflet; c'est dans le script ``server.ts``.
+
+Les modules ``BrowserTransferState`` et ``ServerTransferState`` importés, nous avons créé un couple ``{clé: valeur}`` pour être transféré du serveur au client.
+
+La clé est créée avec la fonction factory `makeStateKey <https://angular.io/api/platform-browser/StateKey#description>`_ :
+
+.. code-block:: typescript
+
+    const PROGRAMS_KEY = makeStateKey("programs");
+
+Le transfert d'état s'effectue avec accesseur et mutateur: 
+
+.. code-block:: typescript
+
+
+    this.programs = this.state.get(PROGRAMS_KEY, null as any);
+    if (!this.programs) {
+      /*
+        code exécuté côté serveur Node, express
+        qui effectue donc un appel à l'API de GN-Citizen
+        et génère une capture d'état
+      */
+
+      this.state.set(PROGRAMS_KEY, programs as any);
+    } else {
+      /*
+        code exécuté côté présentation qui consomme l'état "cristallisé"
+        transféré depuis le serveur.
+      */
+    }
+
+Le ``build`` et le démarrage du service sur le port 4000 s'effectue via le oneliner:
+
+    npm run build:ssr && npm run serve:ssr
+
+La redirection de port pourrait se faire au niveau du serveur web / reverse proxy, avec un filtre sur l'entête de requête ``User-Agent``

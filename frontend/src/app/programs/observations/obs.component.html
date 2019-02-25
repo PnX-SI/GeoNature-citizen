@@ -27,11 +27,10 @@
             <div class="carousel-text">
               <h3>{{ program.title }}</h3>
               <p [innerHTML]="program.html_short_desc"></p>
-              <div
-                class="mobile-hidden"
-                [innerHTML]="program.html_long_desc"
-              ></div>
-              <a class="btn-big">Partager une observation</a>
+              <div [innerHTML]="program.html_long_desc"></div>
+              <a class="btn-big" [routerLink]="" fragment="program"
+                >Partager une observation</a
+              >
             </div>
           </div>
         </div>
@@ -41,8 +40,8 @@
 </div>
 
 <div class="row">
-  <!-- original observations -->
-  <section class="observations row">
+  <!-- LES OBSERVATIONS -->
+  <section id="program" class="observations row">
     <input id="slide-sidebar" type="checkbox" role="button" />
     <label class="toggle" for="slide-sidebar"
       ><i class="fa fa-chevron-left"></i
@@ -55,9 +54,11 @@
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
-      <app-obs-map></app-obs-map>
+      <app-obs-map
+        [observations]="observations"
+        [program]="programFeature"
+      ></app-obs-map>
       <div class="btn-groups"><app-modalflow></app-modalflow></div>
     </div>
   </section>
-  <!-- end original observations -->
 </div>

@@ -1,4 +1,4 @@
-from flask import jsonify, request, Blueprint
+from flask import jsonify, request, Blueprint, current_app
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -268,7 +268,7 @@ def get_allusers():
     return allusers, 200
 
 
-@routes.route("/logged_user", methods=["GET"])
+@routes.route("/user/info", methods=["GET"])
 @json_resp
 @jwt_required
 def logged_user():
@@ -283,7 +283,76 @@ def logged_user():
       200:
         description: list all logged users
     """
-    current_user = get_jwt_identity()
-    user = UserModel.query.filter_by(username=current_user).one()
+    current_app.logger.debug("[logged_user] Get current user personnal datas")
+    try:
+        current_user = get_jwt_identity()
+        user = UserModel.query.filter_by(username=current_user).one()
+        current_app.logger.debug(
+            "[logged_user] current user is {}".format(user.as_secured_dict())
+        )
+        return (
+            {
+                "message": "Vos données personelles",
+                "features": user.as_secured_dict(True),
+            },
+            200,
+        )
+    except Exception as e:
+        raise GeonatureApiError(e)
+        return (
+            {"error_message": "You must log in to get your personal datas"},
+            200,
+        )
 
-    return user.secured_as_dict(), 200
+
+@routes.route("/user/delete", methods=["DELETE"])
+@json_resp
+@jwt_required
+def delete_user():
+    """list all logged users
+    ---
+    tags:
+      - Authentication
+    summary: Delete current logged user
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Delete current logged user
+    """
+    # Get logged user
+    current_app.logger.debug("[delete_user] Delete current user")
+
+    current_user = get_jwt_identity()
+    if current_user:
+        current_app.logger.debug(
+            "[delete_user] current user is {}".format(current_user)
+        )
+        user = UserModel.query.filter_by(username=current_user)
+        # get username
+        username = user.one().username
+        # delete user
+        try:
+            db.session.query(UserModel).filter(
+                UserModel.username == current_user
+            ).delete()
+            db.session.commit()
+            current_app.logger.debug(
+                "[delete_user] user {} succesfully deleted".format(username)
+            )
+        except Exception as e:
+            db.session.rollback()
+            raise GeonatureApiError(e)
+            return {"error_message": str(e)}, 400
+
+        return (
+            {
+                "message": "Account {} have been successfully deleted".format(
+                    username
+                )
+            },
+            200,
+        )
+

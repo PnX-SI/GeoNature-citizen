@@ -1,17 +1,7 @@
-<!-- <div class="container">
-  <div class="row">
-    <div class="col">
-      <h1>{{title}}</h1>
-      <p>cd_nom = {{specie_id}}</p>
-    </div>
-  </div>
-</div>
- -->
-
 <section class="row">
   <div class="species">
     <div class="carousel-inner">
-      <h2>Program.title</h2>
+      <h2>{{ taxon?.nom_vern }}</h2>
       <div class="specie-img">
         <img
           class="d-block w-100"
@@ -20,13 +10,19 @@
         />
         <div class="carousel-text-container">
           <div class="carousel-text">
-            <h3>specie.title</h3>
-            <p [innerHTML]="programShortDescription"></p>
-            <div
-              class="mobile-hidden"
-              [innerHTML]="programLongDescription"
-            ></div>
-            <a class="btn-big">Partager une observation</a>
+            <h3 [innerHTML]="taxon?.nom_complet_html_sanitized"></h3>
+            <ul>
+              <li>{{ taxon?.classe }}</li>
+              <li>{{ taxon?.famille }}</li>
+              <li>{{ taxon?.ordre }}</li>
+              <li>{{ taxon?.phylum }}</li>
+              <li>{{ taxon?.group1_inpn }}</li>
+              <li>{{ taxon?.group2_inpn }}</li>
+              <li>{{ taxon?.regne }}</li>
+            </ul>
+            <a target="_blank" [href]="taxon?.url" hreflang="fr" class="btn-big"
+              >Découvrir sur INPN</a
+            >
           </div>
         </div>
       </div>

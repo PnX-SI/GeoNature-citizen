@@ -1,7 +1,11 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  AfterViewChecked
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-// import { Meta } from '@angular/platform-browser';
+import { Meta } from "@angular/platform-browser";
 
 import { ProgramsResolve } from "../programs/programs-resolve.service";
 import { Program } from "../programs/programs.models";
@@ -13,23 +17,36 @@ import { Program } from "../programs/programs.models";
   encapsulation: ViewEncapsulation.None,
   providers: [ProgramsResolve]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewChecked {
   programs: Program[];
+  fragment: string;
 
-  constructor(
-    private route: ActivatedRoute,
-    // private meta: Meta,
-    protected domSanitizer: DomSanitizer // TODO: mv to program service
-  ) {}
+  constructor(private route: ActivatedRoute, private meta: Meta) {}
 
   ngOnInit() {
     this.route.data.subscribe((data: { programs: Program[] }) => {
       this.programs = data.programs;
     });
+    this.route.fragment.subscribe(fragment => {
+      this.fragment = fragment;
+    });
 
-    // this.meta.updateTag({
-    //    name: 'description',
-    //    content: '...my description'
-    //  });
+    this.meta.updateTag({
+      name: "description",
+      content:
+        "Géonature-citizen est une application de crowdsourcing des données sur la biodiversité."
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    try {
+      if (this.fragment) {
+        document.querySelector("#" + this.fragment).scrollIntoView({
+          behavior: "smooth"
+        });
+      }
+    } catch (e) {
+      alert(e);
+    }
   }
 }

@@ -6,7 +6,7 @@ import {
 } from "@angular/platform-browser";
 import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
-import { catchError, tap, map, take, mergeMap } from "rxjs/operators";
+import { catchError, map, mergeMap, take } from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 
@@ -56,15 +56,11 @@ export class GncProgramsService implements OnInit {
     this.programs = this.state.get(PROGRAMS_KEY, null as any);
   }
 
-  getGeoFeatures(features): Observable<IGncFeatures> {
-    return this.http.get<IGncFeatures>(`${this.URL}/${features}`);
-  }
-
   getAllPrograms(): Observable<Program[]> {
     if (!this.programs) {
-      return this.getGeoFeatures("programs").pipe(
+      return this.http.get<IGncFeatures>(`${this.URL}/programs`).pipe(
         map(featureCollection => featureCollection.features),
-        map(feature => feature.map(feature => feature.properties)),
+        map(features => features.map(feature => feature.properties)),
         map(programs =>
           programs.map(program => {
             program.html_short_desc = this.domSanitizer.bypassSecurityTrustHtml(
@@ -76,11 +72,11 @@ export class GncProgramsService implements OnInit {
             return program;
           })
         ),
-        tap(programs => {
+        map(programs => {
           this.state.set(PROGRAMS_KEY, programs as any);
-          console.debug("GncProgramsService: programs ", programs);
           return programs;
         }),
+        take(1),
         catchError(this.handleError<Program[]>("getAllPrograms"))
       );
     } else {
@@ -88,32 +84,34 @@ export class GncProgramsService implements OnInit {
     }
   }
 
-  getProgram(id: number): Observable<Program> {
-    return this.http.get<Program>(`${this.URL}/programs/${id}`).pipe(
-      tap(_ => console.debug(`fetched program ${id}`)),
-      catchError(this.handleError<Program>(`getProgram id=${id}`))
+  getProgram(id: number): Observable<FeatureCollection> {
+    return this.http.get<FeatureCollection>(`${this.URL}/programs/${id}`).pipe(
+      map(data => data),
+      take(1),
+      catchError(this.handleError<FeatureCollection>(`getProgram id=${id}`))
     );
   }
 
-  getProgramObservations(id: number): Observable<IGncFeatures> {
+  getProgramObservations(id: number): Observable<FeatureCollection> {
     return this.http
-      .get<IGncFeatures>(`${this.URL}/programs/${id}/observations`)
+      .get<FeatureCollection>(`${this.URL}/programs/${id}/observations`)
       .pipe(
+        take(1),
         catchError(
-          this.handleError<IGncFeatures>(`getProgramObservations id=${id}`)
+          this.handleError<FeatureCollection>(`getProgramObservations id=${id}`)
         )
       );
   }
 
   getProgramTaxonomyList(program_id: number): Observable<any[]> {
     return this.getAllPrograms().pipe(
-      map(programs => programs.filter(p => p.id_program == program_id)),
+      map(programs => programs.find(p => p.id_program == program_id)),
+      mergeMap(program =>
+        this.http.get<any[]>(
+          `${this.URL}/taxonomy/lists/${program["taxonomy_list"]}/species`
+        )
+      ),
       take(1),
-      mergeMap(programs => {
-        return this.http.get<any[]>(
-          `${this.URL}/taxonomy/lists/${programs[0]["taxonomy_list"]}/species`
-        );
-      }),
       catchError(this.handleError<any[]>(`getProgramTaxonomyList`))
     );
   }
