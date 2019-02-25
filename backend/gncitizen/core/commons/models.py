@@ -9,7 +9,7 @@ from sqlalchemy.ext.declarative import declared_attr
 
 from gncitizen.core.taxonomy.models import BibListes
 from gncitizen.utils.env import db
-from gncitizen.utils.utilssqlalchemy import serializable, geoserializable
+from gncitizen.utils.sqlalchemy import serializable, geoserializable
 
 
 class TimestampMixinModel(object):

@@ -7,7 +7,7 @@ from gncitizen.core.commons.models import (
     ProgramsModel,
     TimestampMixinModel,
 )
-from gncitizen.utils.utilssqlalchemy import serializable
+from gncitizen.utils.sqlalchemy import serializable
 from server import db
 from sqlalchemy.ext.declarative import declared_attr
 
