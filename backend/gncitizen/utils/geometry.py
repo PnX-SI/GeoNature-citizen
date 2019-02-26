@@ -3,8 +3,9 @@
 
 """A module to manage geometry"""
 
-from geoalchemy2.shape import from_shape
+from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import asShape
+from geojson import Feature
 
 
 def geom_from_geojson(data):
