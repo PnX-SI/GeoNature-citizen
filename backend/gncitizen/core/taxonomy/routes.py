@@ -3,7 +3,7 @@ from flask import Blueprint
 
 # from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.env import db
-from gncitizen.utils.utilssqlalchemy import json_resp
+from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.core.taxonomy.models import (
     BibNoms, BibListes, CorNomListe, TMedias, Taxref)
 

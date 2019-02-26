@@ -14,7 +14,7 @@ Documentation de GeoNature-citizen!
    GeoNature-citizen est encore en phase intensive de développement et n'est pas encore fonctionnel.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contenu:
 
    devs/index

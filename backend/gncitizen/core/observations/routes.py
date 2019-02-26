@@ -20,9 +20,11 @@ from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.media import save_upload_files, allowed_file
-from gncitizen.utils.utilsjwt import get_id_role_if_exists
-from gncitizen.utils.utilssqlalchemy import get_geojson_feature, json_resp
+from gncitizen.utils.media import save_upload_files
+from gncitizen.utils.jwt import get_id_role_if_exists
+from gncitizen.utils.geometry import get_geojson_feature
+from gncitizen.utils.sqlalchemy import json_resp
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
 
 from .models import ObservationModel, ObservationMediaModel
@@ -38,24 +40,6 @@ obs_keys = (
     "comment",
     "timestamp_create",
 )
-
-
-def get_specie_from_cd_nom(cd_nom):
-    """Récupère l'espèce d'après le cdnom.
-
-    Renvoie le nom français et scientifique officiel (cd_nom = cd_ref) de
-    l'espèce d'après le cd_nom
-    """
-
-    result = Taxref.query.filter_by(cd_nom=cd_nom).first()
-    official_taxa = Taxref.query.filter_by(cd_nom=result.cd_ref).first()
-    common_names = official_taxa.nom_vern
-    common_name = common_names.split(",")[0]
-    sci_name = official_taxa.lb_nom
-    taxref = {}
-    taxref["common_name"] = common_name
-    taxref["sci_name"] = sci_name
-    return taxref
 
 
 def generate_observation_geojson(id_observation):

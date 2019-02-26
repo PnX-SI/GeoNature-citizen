@@ -1,11 +1,22 @@
-from flask_jwt_extended import get_jwt_identity, jwt_refresh_token_required
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""A module to manage jwt"""
+
 from functools import wraps
-from gncitizen.core.users.models import UserModel
-from gncitizen.utils.utilssqlalchemy import json_resp
+
 from flask import jsonify
+from flask_jwt_extended import get_jwt_identity
+
+from gncitizen.core.users.models import UserModel
 
 
 def get_id_role_if_exists():
+    """get id_role if exists from ``get_jwt_identity()``
+
+    :return: user id
+    :rtype: int
+    """
     if get_jwt_identity() is not None:
         current_user = get_jwt_identity()
         id_role = (
@@ -17,6 +28,15 @@ def get_id_role_if_exists():
 
 
 def admin_required(func):
+    """Admin required decorator that check if user is an ``admin``
+
+    :param func: decorated function
+    :type func: func
+
+    :return: decorated function
+    :rtype: func
+    """
+
     @wraps(func)
     def decorated_function(*args, **kwargs):
         current_user = get_jwt_identity()
@@ -32,3 +52,5 @@ def admin_required(func):
             return jsonify(message=e), 500
 
     return decorated_function
+
+

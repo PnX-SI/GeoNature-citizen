@@ -7,7 +7,7 @@ from gncitizen.core.commons.models import (
     ProgramsModel,
     TimestampMixinModel,
 )
-from gncitizen.utils.utilssqlalchemy import serializable
+from gncitizen.utils.sqlalchemy import serializable
 from server import db
 from sqlalchemy.ext.declarative import declared_attr
 
@@ -52,7 +52,7 @@ class UserModel(TimestampMixinModel, db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def secured_as_dict(self, recursif=False, columns=()):
+    def as_secured_dict(self, recursif=False, columns=()):
         surname = self.username or ""
         name = self.name or ""
         return {
@@ -64,6 +64,8 @@ class UserModel(TimestampMixinModel, db.Model):
             "phone": self.phone,
             "organism": self.organism,
             "full_name": name + " " + surname,
+            "timestamp_create": self.timestamp_create.isoformat(),
+            "timestamp_update": self.timestamp_update.isoformat(),
         }
 
     @staticmethod

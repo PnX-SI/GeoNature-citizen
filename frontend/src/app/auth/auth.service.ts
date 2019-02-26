@@ -32,12 +32,26 @@ export class AuthService {
   }
 
   ensureAuthenticated(access_token): Promise<any> {
-    let url: string = `${AppConfig.API_ENDPOINT}/logged_user`;
-    return this.http.get(url, { headers: this.headers }).toPromise();
+    let url: string = `${AppConfig.API_ENDPOINT}/user/info`;
+    let headers_with_bearer: HttpHeaders = new HttpHeaders({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`
+    });
+    return this.http.get(url, { headers: headers_with_bearer }).toPromise();
   }
 
   getRefreshToken(access_token): Observable<Object> {
     const url: string = `${AppConfig.API_ENDPOINT}/token_refresh`;
     return this.http.post(url, access_token, { headers: this.headers });
+  }
+
+  // TODO: verify service to delete account in response to GDPR recommandations
+  selfDeleteAccount(access_token): Promise<any> {
+    let url: string = `${AppConfig.API_ENDPOINT}/user/delete`;
+    let headers_with_bearer: HttpHeaders = new HttpHeaders({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`
+    });
+    return this.http.delete(url, { headers: headers_with_bearer }).toPromise();
   }
 }

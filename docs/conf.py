@@ -12,19 +12,19 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../backend'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = "GeoNature-citizen"
-copyright = "2019, lpofredc"
+copyright = "2019, collectif"
 author = "lpofredc"
 
 # The short X.Y version
-version = ""
+version = "0.0"
 # The full version, including alpha/beta/rc tags
 release = "dev"
 
@@ -69,7 +69,7 @@ language = "fr"
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = "sphinx"
+pygments_style = "monokai"
 
 
 # -- Options for HTML output -------------------------------------------------
