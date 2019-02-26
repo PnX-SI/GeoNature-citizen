@@ -21,8 +21,7 @@ from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.jwt import get_id_role_if_exists
-from gncitizen.utils.geometry import get_geojson_feature
-from gncitizen.utils.sqlalchemy import json_resp
+from gncitizen.utils.sqlalchemy import json_resp, get_geojson_feature
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
 
