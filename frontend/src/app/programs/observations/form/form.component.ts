@@ -124,6 +124,7 @@ export class ObsFormComponent implements AfterViewInit {
       data => console.debug(data),
       err => console.error(err),
       () => console.log("done")
+      // TODO: queue obs in list
     );
   }
 
@@ -131,7 +132,6 @@ export class ObsFormComponent implements AfterViewInit {
     const httpOptions = {
       headers: new HttpHeaders({
         Accept: "application/json"
-        // Authorization: localStorage.getItem('token')
       })
     };
 
@@ -177,6 +177,7 @@ export class ObsFormComponent implements AfterViewInit {
     // .pipe(tap(data => console.debug(data)));
   }
 
+  // TODO: call GncProgramsService
   restItemsServiceGetTaxonomyList(program_id) {
     this.http
       .get(`${AppConfig.API_ENDPOINT}/programs/` + program_id)
