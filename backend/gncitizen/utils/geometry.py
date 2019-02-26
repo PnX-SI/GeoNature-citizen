@@ -3,8 +3,11 @@
 
 """A module to manage geometry"""
 
-from geoalchemy2.shape import from_shape
+from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import asShape
+from geojson import Feature
+
+from gncitizen.utils.errors import GeonatureApiError
 
 
 def geom_from_geojson(data):
@@ -21,8 +24,10 @@ def geom_from_geojson(data):
     try:
         geojson = asShape(data)
         geom = from_shape(geojson, srid=4326)
-    except:
-        raise ValidationError("Can't convert geojson geometry to wkb")
+    except Exception:
+        # FIXME: define ValidationError
+        # raise ValidationError("Can't convert geojson geometry to wkb")
+        raise GeonatureApiError("Can't convert geojson geometry to wkb")
     return geom
 
 

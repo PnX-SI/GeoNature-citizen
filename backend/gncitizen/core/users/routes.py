@@ -222,7 +222,7 @@ def logout():
         revoked_token = RevokedTokenModel(jti=jti)
         revoked_token.add()
         return {"msg": "Successfully logged out"}, 200
-    except Exception as e:
+    except Exception:
         return {"message": "Something went wrong"}, 500
 
 
@@ -355,4 +355,3 @@ def delete_user():
             },
             200,
         )
-
