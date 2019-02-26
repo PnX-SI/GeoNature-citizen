@@ -64,8 +64,8 @@ class UserModel(TimestampMixinModel, db.Model):
             "phone": self.phone,
             "organism": self.organism,
             "full_name": name + " " + surname,
-            "timestamp_create": self.timestamp_create.isoformat(),
-            "timestamp_update": self.timestamp_update.isoformat(),
+            "timestamp_create": self.timestamp_create.isoformat() if self.timestamp_create else None,
+            "timestamp_update": self.timestamp_update.isoformat() if self.timestamp_update else None,
         }
 
     @staticmethod

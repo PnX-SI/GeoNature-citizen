@@ -1,5 +1,5 @@
 import { GncProgramsService } from "./api/gnc-programs.service";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { HttpModule } from "@angular/http";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -12,6 +12,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AppComponent } from "./app.component";
 import { routing } from "./app.routing";
 import { AuthService } from "./auth/auth.service";
+import { AuthInterceptor } from "./auth/auth.interceptor";
 import { LoginComponent } from "./auth/login/login.component";
 import { LogoutComponent } from "./auth/logout/logout.component";
 import { RegisterComponent } from "./auth/register/register.component";
@@ -91,7 +92,12 @@ import { ProgramsResolve } from "./programs/programs-resolve.service";
     GncProgramsService,
     // FlowService,
     ModalFlowService,
-    ProgramsResolve
+    ProgramsResolve,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent],
   entryComponents: [

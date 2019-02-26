@@ -222,7 +222,7 @@ def logout():
         revoked_token = RevokedTokenModel(jti=jti)
         revoked_token.add()
         return {"msg": "Successfully logged out"}, 200
-    except Exception as e:
+    except Exception:
         return {"message": "Something went wrong"}, 500
 
 
@@ -272,16 +272,16 @@ def get_allusers():
 @json_resp
 @jwt_required
 def logged_user():
-    """list all logged users
+    """current user model
     ---
     tags:
       - Authentication
-    summary: List all logged registered users
+    summary: current registered user
     produces:
       - application/json
     responses:
       200:
-        description: list all logged users
+        description: current user model
     """
     current_app.logger.debug("[logged_user] Get current user personnal datas")
     try:
@@ -355,4 +355,3 @@ def delete_user():
             },
             200,
         )
-

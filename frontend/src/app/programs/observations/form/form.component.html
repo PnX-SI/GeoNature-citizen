@@ -4,27 +4,24 @@
   </div>
   <div class="form-row">
     <div class="form-group col-lg-8">
-      <label for="sel1">Sélectionnez une espèce</label>
+      <label for="cd_nom">Sélectionnez une espèce</label>
       <div class="d-inline-flex toolbar">
-        <!-- FIXME: tap sensitivity -->
         <select
-          class="form-control rounded-0 col-lg-6"
-          id="sel1"
-          name="sel1"
-          [formGroup]="obsForm"
           formControlName="cd_nom"
+          class="form-control rounded-0 col-lg-6"
         >
           <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
             {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
             >)
           </option>
         </select>
+
         <input
-          id="municipality"
           type="text"
           class="form-control rounded-0 col-lg-6"
           formControlName="municipality"
         />
+
         <input
           formControlName="id_program"
           type="hidden"
@@ -36,22 +33,22 @@
     <div class="form-group col-lg-12 d-inline-flex obs-images">
       <div class="obs-add-img">
         <i class="fa fa-camera"></i>
-        <!-- (change)="onPhotoChange($event)" -->
         <input
           #photo
+          id="photo"
+          name="photo"
           formControlName="photo"
-          id="file"
-          name="file"
           class="inputfile"
           type="file"
           accept="image/*"
           capture="environment"
         />
-        <label for="file">Ajouter une photo</label>
+        <label for="photo">Ajouter une photo</label>
       </div>
       <div class="scroll-img">
         <div *ngFor="let s of surveySpecies?.slice(-taxonListThreshold)">
           <div class="obs-img">
+            <!-- checkbox/onclick ? -->
             <img
               src="{{(s.media?.url)?s.media.url:'../../assets/Azure-Commun-019.JPG'}}"
               alt="{{s.nom.nom_francais}}"
@@ -69,14 +66,13 @@
           <div class="input-group">
             <label for="date">Date de l'observation</label>
             <input
-              ngbDatepicker
-              #d="ngbDatepicker"
+              formControlName="date"
               type="text"
               class="form-control rounded-0"
               placeholder="yyyy-mm-dd"
-              formControlName="date"
+              ngbDatepicker
+              #d="ngbDatepicker"
               (click)="d.toggle()"
-              id="date"
             />
           </div>
         </div>

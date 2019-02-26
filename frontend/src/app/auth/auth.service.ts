@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { LoginUser, RegisterUser } from "./models";
 import { AppConfig } from "../../conf/app.config";
 import { Router } from "@angular/router";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class AuthService {
@@ -27,11 +28,7 @@ export class AuthService {
 
   logout(access_token): Promise<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/logout`;
-    let headers_with_bearer: HttpHeaders = new HttpHeaders({
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${access_token}`
-    });
-    return this.http.post(url, { headers: headers_with_bearer }).toPromise();
+    return this.http.post(url, { headers: this.headers }).toPromise();
   }
 
   ensureAuthenticated(access_token): Promise<any> {
@@ -43,11 +40,16 @@ export class AuthService {
     return this.http.get(url, { headers: headers_with_bearer }).toPromise();
   }
 
+  getRefreshToken(access_token): Observable<Object> {
+    const url: string = `${AppConfig.API_ENDPOINT}/token_refresh`;
+    return this.http.post(url, access_token, { headers: this.headers });
+  }
+
   // TODO: verify service to delete account in response to GDPR recommandations
   selfDeleteAccount(access_token): Promise<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/user/delete`;
     let headers_with_bearer: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`
     });
     return this.http.delete(url, { headers: headers_with_bearer }).toPromise();

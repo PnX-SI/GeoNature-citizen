@@ -18,6 +18,20 @@ import "leaflet.markercluster";
 declare let $: any;
 
 // TODO: coupling of marker theming and map tile config
+/*
+ PLAN:
+    migrate layer logic to parent component/service, rm inputs
+    instance config (element_id, {tilehost, attribution})
+      @outputs:
+        onLayerAdded
+        onLayerRemoved
+        onClick
+
+      fitBounds(layer)
+      setMaxBounds(layer)
+      panTo(layer)
+      geolocate(boolean)
+*/
 export const DEFAULT_TILES = {
   url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   attribution: "OpenStreetMap"
@@ -114,7 +128,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   loadObservations(): void {
     if (this.observations) {
-      // this.obsMap.remove this.clustersLayer
+      // if (this.clusterLayer) { this.obsMap.remove this.clustersLayer }
       this.clustersLayer = L.markerClusterGroup({
         iconCreateFunction: clusters => {
           const childCount = clusters.getChildCount();
@@ -146,16 +160,16 @@ export class ObsMapComponent implements OnInit, OnChanges {
     }
   }
 
-  initTracking() {
+  initTracking(watch = true, enableHighAccuracy = true): void {
     this.obsMap.locate({
-      watch: true,
-      enableHighAccuracy: true
+      watch: watch,
+      enableHighAccuracy: enableHighAccuracy
     });
     this.obsMap.on("locationfound", this.onLocationFound.bind(this));
     this.obsMap.on("locationerror", this.onLocationError.bind(this));
   }
 
-  onEachFeature(feature, layer) {
+  onEachFeature(feature, layer): void {
     let popupContent =
       '<img src="../../../assets/Azure-Commun-019.JPG"><p><b>' +
       feature.properties.common_name +
@@ -172,11 +186,11 @@ export class ObsMapComponent implements OnInit, OnChanges {
     layer.bindPopup(popupContent);
   }
 
-  pointToLayer(_feature, latlng) {
+  pointToLayer(_feature, latlng): L.Marker {
     return L.marker(latlng, { icon: obsMarkerIcon() });
   }
 
-  onLocationFound(e) {
+  onLocationFound(e): void {
     const radius = e.accuracy / 2;
     L.marker(e.latlng, {
       icon: newObsMarkerIcon()
