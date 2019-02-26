@@ -54,11 +54,11 @@ export class TaxhubService {
         );
         return taxon;
       }),
-      tap(taxon => {
-        // this.state.set(TAXON_KEY, taxon as any);
-        console.debug("taxhub taxon", taxon);
-        return taxon;
-      }),
+      // tap(taxon => {
+      //   // this.state.set(TAXON_KEY, taxon as any);
+      //   console.debug("taxhub taxon", taxon);
+      //   return taxon;
+      // }),
       catchError(this.handleError<Taxon>(`getTaxon(${cd_nom})`))
     );
   }

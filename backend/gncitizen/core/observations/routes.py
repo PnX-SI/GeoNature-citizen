@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import datetime
+
+from datetime import datetime
+import uuid
 import json
 import os
 import uuid
@@ -20,7 +22,8 @@ from gncitizen.core.commons.models import MediaModel
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import UserModel
-from gncitizen.utils.env import ALLOWED_EXTENSIONS, MEDIA_DIR, taxhub_lists_url
+
+from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.media import allowed_file, save_upload_files
@@ -118,7 +121,7 @@ def post_observation():
     add a observation to database
         ---
         tags:
-          - observations      
+          - observations
         # security:
         #   - bearerAuth: []
         summary: Creates a new observation (JWT auth optional, if used, obs_txt replaced by username)
@@ -139,7 +142,7 @@ def post_observation():
                 - date
                 - geom
               properties:
-                id_program: 
+                id_program:
                   type: string
                   description: Program unique id
                   example: 1
@@ -173,9 +176,8 @@ def post_observation():
             description: Adding a observation
         """
     try:
-        request_datas = dict(request.get_json())
-        current_app.logger.debug('[post_observation] request data:', request_datas)
-        
+        request_datas = request.form
+        current_app.logger.debug("request data:", request_datas)
         datas2db = {}
         for field in request_datas:
             if hasattr(ObservationModel, field):
@@ -184,28 +186,30 @@ def post_observation():
 
         try:
             if request.files:
-                current_app.logger.debug("[post_observation] request.files: %s", request.files)
-                file = request.files.get("photo", None)
-                current_app.logger.debug("[post_observation] file: %s", file)
-                if file and allowed_file(file):
-                    ext = file.rsplit(".", 1).lower()
-                    timestamp = datetime.datetime.now().strftime(
-                        "%Y%m%d_%H%M%S"
-                    )
-                    filename = (
-                        "obstax_" + datas2db["cd_nom"] + "_" + timestamp + ext
-                    )
-                    path = MEDIA_DIR + "/" + filename
-                    file.save(path)
-                    current_app.logger.debug("path: %s", path)
-                    datas2db["photo"] = filename
+
+                current_app.logger.debug("request.files: %s", request.files)
+                file = request.files.get("file", None)
+                current_app.logger.debug("file: %s", file)
+                # if file and allowed_file(file.filename):
+                #     ext = file.filename.rsplit(".", 1)[1].lower()
+                #     timestamp = datetime.now().strftime(
+                #         "%Y%m%d_%H%M%S"
+                #     )
+                #     filename = (
+                #         "obstax_" + datas2db["cd_nom"] + "_" + timestamp + ext
+                #     )
+                #     path = MEDIA_DIR / filename
+                #     file.save(str(path))
+                #     current_app.logger.debug("path: %s", path)
+                #     # datas2db["photo"] = filename
+                # save_upload_files(request.files)
+
         except Exception as e:
             current_app.logger.debug("[post_observation] file ", e)
             raise GeonatureApiError(e)
 
         else:
             file = None
-
 
         try:
             newobs = ObservationModel(**datas2db)
@@ -214,7 +218,7 @@ def post_observation():
             raise GeonatureApiError(e)
 
         try:
-            shape = asShape(request_datas["geometry"])
+            shape = asShape(json.loads(request_datas["geometry"]))
             newobs.geom = from_shape(Point(shape), srid=4326)
         except Exception as e:
             current_app.logger.debug(e)
@@ -223,10 +227,10 @@ def post_observation():
         id_role = get_id_role_if_exists()
         if id_role:
             newobs.id_role = id_role
-            #for GDPR compatibility, we can't update obs_txt and email fields with user informations, user name will be be automaticaly must be added from user model
-            #role = UserModel.query.get(id_role)
-            #newobs.obs_txt = role.username
-            #newobs.email = role.email
+            # for GDPR compatibility, we can't update obs_txt and email fields with user informations, user name will be be automaticaly must be added from user model
+            # role = UserModel.query.get(id_role)
+            # newobs.obs_txt = role.username
+            # newobs.email = role.email
         else:
             if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
                 newobs.obs_txt = "Anonyme"
@@ -239,20 +243,20 @@ def post_observation():
         features = generate_observation_geojson(newobs.id_observation)
         current_app.logger.debug("FEATURES: {}".format(features))
         # Enregistrement de la photo et correspondance Obs Photo
-        #try:
-        #    file = save_upload_files(
-        #        request.files,
-        #        "obstax",
-        #        datas2db["cd_nom"],
-        #        newobs.id_observation,
-        #        ObservationMediaModel,
-        #    )
-        #    current_app.logger.debug("ObsTax UPLOAD FILE {}".format(file))
-        #    features[0]["properties"]["images"] = file
-        #
-        #except Exception as e:
-        #    current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
-        #    raise GeonatureApiError(e)
+        try:
+            file = save_upload_files(
+                request.files,
+                "obstax",
+                datas2db["cd_nom"],
+                newobs.id_observation,
+                ObservationMediaModel,
+            )
+            current_app.logger.debug("ObsTax UPLOAD FILE {}".format(file))
+            features[0]["properties"]["images"] = file
+
+        except Exception as e:
+            current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
+            raise GeonatureApiError(e)
 
         return (
             {"message": "New observation created", "features": features},
@@ -394,22 +398,25 @@ def get_program_observations(id):
             description: A list of all species lists
         """
     try:
-        observations = db.session\
-            .query(
+        observations = (
+            db.session.query(
                 ObservationModel,
-                (
-                    LAreas.area_name + ' (' + LAreas.area_code + ')'
-                ).label('municipality'))\
-            .filter_by(id_program=id)\
+                (LAreas.area_name + " (" + LAreas.area_code + ")").label(
+                    "municipality"
+                ),
+            )
+            .filter_by(id_program=id)
             .join(
                 LAreas,
                 LAreas.id_area == ObservationModel.municipality,
-                isouter=True)\
+                isouter=True,
+            )
             .all()
+        )
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
-            feature['properties']['municipality'] = observation.municipality
+            feature["properties"]["municipality"] = observation.municipality
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys:

@@ -247,3 +247,5 @@ frontend/src/conf/*.ts
 # pipenv: comment when migrating from traditional pip+v(irtual)env
 Pipfile
 Pipfile.lock
+
+media/

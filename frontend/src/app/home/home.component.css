@@ -86,6 +86,8 @@ section {
   font-size: 14px;
   background-color: transparent !important;
   width: fit-content;
+  min-width: 100px;
+  text-align: center;
 }
 
 #welcome .scroll img {
@@ -147,7 +149,7 @@ section {
 
 #slider .carousel-text {
   background-color: #fff;
-  padding: 40px;
+  padding: 35px 20px 35px 35px;
   min-width: 450px;
   height: 80%;
   display: flex;
@@ -275,7 +277,7 @@ app-observations {
   #slider .carousel-text {
     width: 100%;
     padding: 20px;
-    height: 275px;
+    height: auto;
   }
   #slider .carousel-inner h2,
   .observations h2 {
