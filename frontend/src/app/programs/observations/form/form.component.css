@@ -1,5 +1,5 @@
 .form-group .input-group {
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .input-group input {

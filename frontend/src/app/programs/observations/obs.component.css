@@ -36,102 +36,6 @@ section {
   background-color: var(--primary);
 }
 
-/* #welcome span {
-  position: absolute;
-  bottom: 6%;
-  left: 50%;
-  color: #fff;
-  transform: translateX(-50%);
-  font-size: 14px;
-} */
-
-/* SLIDER */
-/* #slide {
-  min-height: inherit !important; 
-  height: calc(100vh - var(--router-outlet-offset));
-}
-
-#slider .carousel-inner,
-#slider .carousel-item {
-  max-height: 70vh;
-  height: calc(100vh - var(--router-outlet-offset));
-}
-
-@media screen and (max-width: 799px) {
-  #slider {
-    max-height: 70vh;
-    height: calc(100vh - var(--router-outlet-offset));
-  }
-}
-
-#slider h2 {
-  position: absolute;
-  top: 10px;
-  left: 50px;
-  z-index: 999;
-  color: #fff;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 20px;
-}
-
-#slider h2:before {
-  content: " ";
-  position: absolute;
-  width: 40px;
-  height: 21px;
-  transform: translateX(-125%);
-  background: #fff;
-}
-
-#slider ol.carousel-indicators li {
-  margin-top: 20px;
-  width: 10px;
-  height: 10px;
-  border-radius: 25px;
-  background: transparent;
-  border: solid 1px #fff;
-}
-
-#slider .carousel-text-container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  max-width: 40vw;
-} */
-
-/* #slider .carousel-text {
-  background-color: #fff;
-  padding: 5vw;
-  min-width: 450px;
-  max-width: 70%;
-  height: 450px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-} */
-/* 
-#slider .carousel-text h3 {
-  font-family: "Satisfy";
-  color: var(--ternary);
-}
-
-#slider .carousel-text p {
-  font-style: italic;
-  font-size: 14px;
-  width: 90%;
-}
-
-#slider .carousel-text a {
-  background-color: var(--secondary);
-  width: 90%;
-  text-align: center;
-} */
-
-
 /* SLIDER */
 #slide {
   min-height: inherit !important;
@@ -185,7 +89,7 @@ section {
 
 #slider .carousel-text {
   background-color: #fff;
-  padding: 40px;
+  padding: 35px 20px 35px 35px;
   min-width: 450px;
   height: 80%;
   display: flex;
@@ -198,10 +102,17 @@ section {
   color: var(--ternary);
 }
 
-#slider .carousel-text p {
+#slider .carousel-text > p {
   font-style: italic;
   font-size: 14px;
   overflow: hidden;
+  max-height: 20%;
+}
+
+#slider .carousel-text div{
+  max-height: 50%;
+  overflow-y: auto;
+  margin-bottom: 15px;
 }
 
 #slider .carousel-text a {
