@@ -165,7 +165,8 @@ def post_observation():
         """
     try:
         request_datas = request.form
-        current_app.logger.debug('request data:', request_datas)
+        current_app.logger.debug(
+            '[post_observation] request data:', request_datas)
 
         datas2db = {}
         for field in request_datas:
@@ -177,7 +178,8 @@ def post_observation():
             if request.files:
                 current_app.logger.debug("request.files: %s", request.files)
                 file = request.files.get("file", None)
-                current_app.logger.debug("file: %s", file)
+                current_app.logger.debug(
+                    "[post_observation] request.files: %s", request.files)
                 # if file and allowed_file(file.filename):
                 #     ext = file.filename.rsplit(".", 1)[1].lower()
                 #     timestamp = datetime.now().strftime(
@@ -197,7 +199,6 @@ def post_observation():
 
         else:
             file = None
-
 
         try:
             newobs = ObservationModel(**datas2db)
