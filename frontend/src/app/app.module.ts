@@ -1,12 +1,12 @@
-import { GncProgramsService } from "./api/gnc-programs.service";
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { HttpModule } from "@angular/http";
-import { NgModule } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { LOCALE_ID, NgModule } from "@angular/core";
 import {
   BrowserModule,
   BrowserTransferStateModule
 } from "@angular/platform-browser";
+import { HttpModule } from "@angular/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppComponent } from "./app.component";
@@ -30,6 +30,7 @@ import { ObsComponent } from "./programs/observations/obs.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { GncService } from "./api/gnc.service";
+import { GncProgramsService } from "./api/gnc-programs.service";
 import { AboutComponent } from "./about/about.component";
 import { AboutCustomComponent } from "./about/custom/custom.component";
 import { AboutFixedComponent } from "./about/fixed/fixed.component";
@@ -44,6 +45,13 @@ import { ModalFlowComponent } from "./programs/observations/modalflow/modalflow.
 import { RewardComponent } from "./programs/observations/modalflow/steps/reward/reward.component";
 import { ModalFlowService } from "./programs/observations/modalflow/modalflow.service";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
+// import { AppConfig } from 'src/conf/app.config'
+
+import { registerLocaleData } from "@angular/common";
+import localeFr from "@angular/common/locales/fr";
+registerLocaleData(localeFr, "fr");
+// import localeFrExtra from "@angular/common/locales/extra/fr";
+// registerLocaleData(localeFr, "fr-FR", localeFrExtra);
 
 @NgModule({
   imports: [
@@ -97,7 +105,8 @@ import { ProgramsResolve } from "./programs/programs-resolve.service";
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
+    { provide: LOCALE_ID, useValue: "fr" }
   ],
   bootstrap: [AppComponent],
   entryComponents: [
