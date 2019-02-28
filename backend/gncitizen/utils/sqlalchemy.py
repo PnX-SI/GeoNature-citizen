@@ -6,9 +6,10 @@
 import json
 from functools import wraps
 
-from flask import Response
-from geoalchemy2.shape import to_shape
+from flask import Response, current_app
+from geoalchemy2.shape import from_shape, to_shape
 from geojson import Feature
+from shapely.geometry import asShape
 
 """
     Liste des types de données sql qui
@@ -35,6 +36,41 @@ def create_schemas(db):
     db.session.execute("CREATE SCHEMA IF NOT EXISTS ref_geo")
     db.session.commit()
 
+
+def geom_from_geojson(data):
+    """this function transform geojson geometry into `WKB\
+    <https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary>`_\
+    data commonly used in PostGIS geometry fields
+
+    :param data: geojson formatted geometry
+    :type data: dict
+
+    :return: wkb geometry
+    :rtype: str
+    """
+    try:
+        geojson = asShape(data)
+        geom = from_shape(geojson, srid=4326)
+    except Exception as e :
+        current_app.logger.debug("[geom_from_geojson] Can't convert geojson geometry to wkb: {}".format(str(e)))
+    return geom
+
+
+def get_geojson_feature(wkb):
+    """ return a geojson feature from WKB
+
+    :param wkb: wkb geometry
+    :type wkb: str
+
+    :return: geojson
+    :rtype: dict
+    """
+    try:
+        geometry = to_shape(wkb)
+        feature = Feature(geometry=geometry, properties={})
+    except Exception as e :
+        current_app.logger.debug("[get_geojson_feature] Can't convert wkb geometry to geojson: {}".format(str(e)))
+    return feature
 
 def serializable(cls):
     """
@@ -181,5 +217,3 @@ def to_json_resp(res, status=200, filename=None, as_file=False, indent=None):
         mimetype="application/json",
         headers=headers,
     )
-
-

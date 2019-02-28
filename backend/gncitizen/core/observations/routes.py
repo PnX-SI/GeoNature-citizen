@@ -1,36 +1,41 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+
 from datetime import datetime
 import uuid
 import json
+import os
+import uuid
 from pprint import pprint
-import requests
-from werkzeug import FileStorage
 
-from werkzeug.datastructures import ImmutableMultiDict
+import requests
 from flask import Blueprint, current_app, request
 from flask_jwt_extended import jwt_optional
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import Point, asShape
+from werkzeug import FileStorage
+from werkzeug.datastructures import ImmutableMultiDict
 
-from gncitizen.core.taxonomy.models import Taxref
+from gncitizen.core.commons.models import MediaModel
 from gncitizen.core.ref_geo.models import LAreas
+from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import UserModel
+
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.jwt import get_id_role_if_exists
-from gncitizen.utils.geometry import get_geojson_feature
-from gncitizen.utils.sqlalchemy import json_resp
+from gncitizen.utils.media import allowed_file, save_upload_files
+from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
 
-from .models import ObservationModel, ObservationMediaModel
+from .models import ObservationMediaModel, ObservationModel
 
 routes = Blueprint("observations", __name__)
 
+"""Used attributes in observation features"""
 obs_keys = (
     "cd_nom",
     "id_observation",
@@ -43,7 +48,14 @@ obs_keys = (
 
 
 def generate_observation_geojson(id_observation):
-    """generate observation in geojson format from observation id"""
+    """generate observation in geojson format from observation id
+
+      :param id_observation: Observation unique id
+      :type id_observation: int
+
+      :return features: Observations as a Feature dict
+      :rtype features: dict
+    """
 
     # Crée le dictionnaire de l'observation
     result = ObservationModel.query.get(id_observation)
@@ -172,10 +184,11 @@ def post_observation():
         for field in request_datas:
             if hasattr(ObservationModel, field):
                 datas2db[field] = request_datas[field]
-        current_app.logger.debug("datas2db: %s", datas2db)
+        current_app.logger.debug("[post_observation] datas2db: %s", datas2db)
 
         try:
             if request.files:
+
                 current_app.logger.debug("request.files: %s", request.files)
                 file = request.files.get("file", None)
                 current_app.logger.debug(
@@ -193,8 +206,9 @@ def post_observation():
                 #     current_app.logger.debug("path: %s", path)
                 #     # datas2db["photo"] = filename
                 # save_upload_files(request.files)
+
         except Exception as e:
-            current_app.logger.debug("file ", e)
+            current_app.logger.debug("[post_observation] file ", e)
             raise GeonatureApiError(e)
 
         else:
@@ -216,9 +230,10 @@ def post_observation():
         id_role = get_id_role_if_exists()
         if id_role:
             newobs.id_role = id_role
-            role = UserModel.query.get(id_role)
-            newobs.obs_txt = role.username
-            newobs.email = role.email
+            # for GDPR compatibility, we can't update obs_txt and email fields with user informations, user name will be be automaticaly must be added from user model
+            # role = UserModel.query.get(id_role)
+            # newobs.obs_txt = role.username
+            # newobs.email = role.email
         else:
             if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
                 newobs.obs_txt = "Anonyme"
@@ -252,7 +267,7 @@ def post_observation():
         )
 
     except Exception as e:
-        current_app.logger.warning("Error: %s", str(e))
+        current_app.logger.warning("[post_observation] Error: %s", str(e))
         return {"error_message": str(e)}, 400
 
 
@@ -386,22 +401,25 @@ def get_program_observations(id):
             description: A list of all species lists
         """
     try:
-        observations = db.session\
-            .query(
+        observations = (
+            db.session.query(
                 ObservationModel,
-                (
-                    LAreas.area_name + ' (' + LAreas.area_code + ')'
-                ).label('municipality'))\
-            .filter_by(id_program=id)\
+                (LAreas.area_name + " (" + LAreas.area_code + ")").label(
+                    "municipality"
+                ),
+            )
+            .filter_by(id_program=id)
             .join(
                 LAreas,
                 LAreas.id_area == ObservationModel.municipality,
-                isouter=True)\
+                isouter=True,
+            )
             .all()
+        )
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
-            feature['properties']['municipality'] = observation.municipality
+            feature["properties"]["municipality"] = observation.municipality
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys:

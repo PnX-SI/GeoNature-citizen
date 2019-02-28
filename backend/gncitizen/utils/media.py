@@ -73,7 +73,7 @@ def save_upload_files(
                 i = i + 1
                 filename = file.filename
                 current_app.logger.debug(
-                    "{} is an allowed filename : {}".format(
+                    "[save_upload_files] {} is an allowed filename : {}".format(
                         filename, allowed_file(filename)
                     )
                 )
@@ -81,7 +81,7 @@ def save_upload_files(
                 if allowed_file(filename):
                     # save file
                     current_app.logger.debug(
-                        'Preparing file "{}" saving'.format(filename)
+                        '[save_upload_files] Preparing file "{}" saving'.format(filename)
                     )
                     ext = filename.rsplit(".", 1)[1].lower()
                     timestamp = datetime.datetime.now().strftime(
@@ -91,23 +91,23 @@ def save_upload_files(
                         prefix, str(cdnom), i, timestamp, ext
                     )
                     current_app.logger.debug(
-                        "new filename : {}".format(filename)
+                        "[save_upload_files] new filename : {}".format(filename)
                     )
                     file.save(os.path.join(str(MEDIA_DIR), filename))
                     # Save media filename to Database
                     try:
                         newmedia = MediaModel(filename=filename)
-                        current_app.logger.debug("newmedia {}".format(newmedia))
+                        current_app.logger.debug("[save_upload_files] newmedia {}".format(newmedia))
                         db.session.add(newmedia)
                         db.session.commit()
                         id_media = newmedia.id_media
                         current_app.logger.debug(
-                            "id_media : ".format(str(id_media))
+                            "[save_upload_files] id_media : ".format(str(id_media))
                         )
                         # return id_media
                     except Exception as e:
                         current_app.logger.debug(
-                            "ERROR MEDIAMODEL: {}".format(e)
+                            "[save_upload_files] ERROR MEDIAMODEL: {}".format(e)
                         )
                         raise GeonatureApiError(e)
                     # Save id_media in matching table
@@ -118,21 +118,21 @@ def save_upload_files(
                         db.session.add(newmatch)
                         db.session.commit()
                         id_match = newmatch.id_match
-                        current_app.logger.debug("id_match {}".format(id_match))
+                        current_app.logger.debug("[save_upload_files] id_match {}".format(id_match))
                     except Exception as e:
                         current_app.logger.debug(
-                            "ERROR MATCH MEDIA: {}".format(e)
+                            "[save_upload_files] ERROR MATCH MEDIA: {}".format(e)
                         )
                         raise GeonatureApiError(e)
 
                     # log
                     current_app.logger.debug(
-                        "Fichier {} enregistré".format(filename)
+                        "[save_upload_files] Fichier {} enregistré".format(filename)
                     )
                     files.append(filename)
 
     except Exception as e:
-        current_app.logger.debug("ERROR save_upload_file : {}".format(e))
+        current_app.logger.debug("[save_upload_files] ERROR save_upload_file : {}".format(e))
         raise GeonatureApiError(e)
 
     return files
