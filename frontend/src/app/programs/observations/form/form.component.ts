@@ -136,7 +136,6 @@ export class ObsFormComponent implements AfterViewInit {
     };
 
     this.obsForm.patchValue({ id_program: this.program_id });
-    // TODO: this.obsForm.patchValue({ specie: this.what.nom.nom_francais})
 
     let obsDate = NgbDate.from(this.obsForm.controls.date.value);
     this.obsForm.patchValue({
