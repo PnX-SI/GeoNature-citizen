@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { AuthService } from "./../auth.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
-import { AppConfig } from "src/conf/app.config";
+import { AppConfig } from "../../../conf/app.config";
 import { Router } from "@angular/router";
 
 @Component({
