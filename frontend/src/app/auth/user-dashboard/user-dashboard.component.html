@@ -37,10 +37,16 @@
       </section>
 
       <section class="personal-data row">
-        <button class="btn-big col-lg-3 col-md-5 col-sm-12">
+        <button
+          class="btn-big col-lg-3 col-md-5 col-sm-12"
+          (click)="exportPersonalData()"
+        >
           <i class="fa fa-download"></i>Exporter mes données personnelles
         </button>
-        <button class="btn-big col-lg-3 col-md-5 col-sm-12">
+        <button
+          class="btn-big col-lg-3 col-md-5 col-sm-12"
+          (click)="deletePersonalData()"
+        >
           <i class="fa fa-trash"></i>Supprimer mes données personnelles
         </button>
       </section>

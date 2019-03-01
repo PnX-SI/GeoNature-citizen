@@ -4,6 +4,7 @@ import {
   ServerTransferStateModule
 } from "@angular/platform-server";
 // import { NoopAnimationsModule } from '@angular/platform-browser/animations'
+import { ModuleMapLoaderModule } from "@nguniversal/module-map-ngfactory-loader";
 
 import { AppModule } from "./app.module";
 import { AppComponent } from "./app.component";
@@ -13,7 +14,8 @@ import { AppComponent } from "./app.component";
     AppModule,
     ServerModule,
     // NoopAnimationsModule,
-    ServerTransferStateModule
+    ServerTransferStateModule,
+    ModuleMapLoaderModule
   ],
   bootstrap: [AppComponent]
 })

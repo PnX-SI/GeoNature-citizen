@@ -54,7 +54,7 @@ def generate_observation_geojson(id_observation):
       :type id_observation: int
 
       :return features: Observations as a Feature dict
-      :rtype features: dict    
+      :rtype features: dict
     """
 
     # Crée le dictionnaire de l'observation
@@ -177,7 +177,9 @@ def post_observation():
         """
     try:
         request_datas = request.form
-        current_app.logger.debug("request data:", request_datas)
+        current_app.logger.debug(
+            '[post_observation] request data:', request_datas)
+
         datas2db = {}
         for field in request_datas:
             if hasattr(ObservationModel, field):
@@ -189,7 +191,8 @@ def post_observation():
 
                 current_app.logger.debug("request.files: %s", request.files)
                 file = request.files.get("file", None)
-                current_app.logger.debug("file: %s", file)
+                current_app.logger.debug(
+                    "[post_observation] request.files: %s", request.files)
                 # if file and allowed_file(file.filename):
                 #     ext = file.filename.rsplit(".", 1)[1].lower()
                 #     timestamp = datetime.now().strftime(
