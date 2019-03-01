@@ -45,7 +45,7 @@ import { ModalFlowComponent } from "./programs/observations/modalflow/modalflow.
 import { RewardComponent } from "./programs/observations/modalflow/steps/reward/reward.component";
 import { ModalFlowService } from "./programs/observations/modalflow/modalflow.service";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
-// import { AppConfig } from 'src/conf/app.config'
+import { AppConfig } from "src/conf/app.config";
 
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";

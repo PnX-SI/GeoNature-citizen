@@ -11,7 +11,9 @@
     "compile:server": "webpack --config webpack.server.config.js --progress --colors",
     "serve:ssr": "node dist/server",
     "build:ssr": "npm run build:client-and-server-bundles && npm run compile:server",
-    "build:client-and-server-bundles": "ng build --prod && ng run frontend:server:production"
+    "build:i18n-ssr": "npm run build:client-and-server-bundles-i18n && npm run compile:server",
+    "build:client-and-server-bundles": "ng build --prod && ng run frontend:server:production",
+    "build:client-and-server-bundles-i18n": "ng run frontend:build:fr && ng run frontend:build:en && ng run frontend:server:production"
   },
   "private": true,
   "dependencies": {
