@@ -40,7 +40,7 @@ export class ObsFormComponent implements AfterViewInit {
   @ViewChild("photo") photo: ElementRef;
   obsForm = new FormGroup({
     cd_nom: new FormControl("", Validators.required),
-    count: new FormControl("", Validators.required),
+    count: new FormControl("1", Validators.required),
     comment: new FormControl("", Validators.required),
     date: new FormControl("", Validators.required),
     photo: new FormControl("", Validators.required),
