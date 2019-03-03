@@ -53,14 +53,14 @@ export const DEFAULT_TILES = {
 
 const newObsMarkerIcon = () =>
   L.icon({
-    iconUrl: "../../../../assets/pointer-blue2.png",
+    iconUrl: "assets/pointer-blue2.png",
     iconSize: [33, 42],
     iconAnchor: [16, 42]
   });
 
 const obsMarkerIcon = () =>
   L.icon({
-    iconUrl: "../../../../assets/pointer-green.png",
+    iconUrl: "assets/pointer-green.png",
     iconSize: [33, 42],
     iconAnchor: [16, 42]
   });
@@ -171,13 +171,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   onEachFeature(feature, layer): void {
     let popupContent =
-      '<img src="../../../assets/Azure-Commun-019.JPG"><p><b>' +
+      '<img src="assets/Azure-Commun-019.JPG"><p><b>' +
       feature.properties.common_name +
       "</b></br><span>Observé par " +
       feature.properties.sci_name +
       "</br>le " +
       feature.properties.date +
-      '</span></p><div><img class="icon" src="../../../../assets/binoculars.png"></div>';
+      '</span></p><div><img class="icon" src="assets/binoculars.png"></div>';
 
     if (feature.properties && feature.properties.popupContent) {
       popupContent += feature.properties.popupContent;

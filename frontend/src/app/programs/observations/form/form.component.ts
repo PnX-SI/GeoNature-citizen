@@ -23,7 +23,7 @@ declare let $: any;
 // TODO: migrate to conf
 export const taxonListThreshold = 10;
 export const obsFormMarkerIcon = L.icon({
-  iconUrl: "../../../../assets/pointer-blue2.png", // TODO: Asset path should be normalized, conf ?
+  iconUrl: "assets/pointer-blue2.png",
   iconAnchor: [16, 42]
 });
 export const myMarkerTitle =
