@@ -54,33 +54,35 @@ export class AuthInterceptor implements HttpInterceptor {
       this.refreshing = true;
       this.token$.next(null);
 
-      return this.auth.performTokenRefresh();
-      // .pipe(
-      //   tap(data =>
-      //     console.debug("[AuthInterceptor.performTokenRefresh] result", data)
-      //   ),
-      //   take(1),
-      //   map((data: TokenRefresh) => {
-      //     if (data && data.access_token) {
-      //       localStorage.setItem("access_token", data.access_token);
-      //       this.token$.next(data.access_token);
-      //       return next.handle(this.addToken(request, data.access_token));
-      //     }
-      //
-      //     this.auth.logout("bla");
-      //     return this.router.navigate(["/home"]);
-      //   }),
-      //   catchError(error => {
-      //     console.error(
-      //       `[AuthInterceptor.performTokenRefresh] error "${error}"`
-      //     );
-      //     return this.auth.logout("bla");
-      //   }),
-      //   finalize(() => {
-      //     console.debug("done");
-      //     this.refreshing = false;
-      //   })
-      // );
+      return this.auth.performTokenRefresh().pipe(
+        take(1),
+        map(token => {
+          console.debug("[AuthInterceptor.performTokenRefresh] result", token);
+          this.token$.next(token);
+        }),
+        // take(1),
+        //   map((data: TokenRefresh) => {
+        //     if (data && data.access_token) {
+        //       localStorage.setItem("access_token", data.access_token);
+        //       this.token$.next(data.access_token);
+        //       return next.handle(this.addToken(request, data.access_token));
+        //     }
+        //
+        //     this.auth.logout("bla");
+        //     return this.router.navigate(["/home"]);
+        //   }),
+        catchError(error => {
+          console.error(
+            `[AuthInterceptor.performTokenRefresh] error "${error}"`
+          );
+          this.router.navigate(["/home"]);
+          return this.auth.logout("bla");
+        }),
+        finalize(() => {
+          console.debug("done");
+          this.refreshing = false;
+        })
+      );
     } else {
       return this.token$.pipe(
         filter(token => token != null),
@@ -101,28 +103,11 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     let errorMessage = "";
-    // wip
     let expired = this.auth.tokenExpiration(this.auth.getAccessToken());
-    console.debug(`[AuthInterceptor.intercept] token expired: ${expired > 0}`);
-    if (expired > 0) {
-      this.auth.performTokenRefresh().pipe(
-        tap(data =>
-          console.debug(
-            "[AuthInterceptor.intercept] performTokenRefresh result",
-            data
-          )
-        ),
-        take(1),
-        map((data: TokenRefresh) => {
-          if (data && data.access_token) {
-            localStorage.setItem("access_token", data.access_token);
-            this.token$.next(data.access_token);
-            return next.handle(this.addToken(request, data.access_token));
-          }
-        })
-      );
+    if (expired <= 10.0) {
+      console.debug(`[AuthInterceptor.intercept] expiring token: ${expired}`);
+      // renew
     }
-    //
 
     return next.handle(this.addToken(request, this.auth.getAccessToken())).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -133,6 +118,7 @@ export class AuthInterceptor implements HttpInterceptor {
           // api call failure response
           switch (error.status) {
             case 400:
+            case 422:
               return this.handle400(error);
             case 401:
               console.debug(
@@ -145,7 +131,8 @@ export class AuthInterceptor implements HttpInterceptor {
               }`;
           }
         }
-        window.alert(errorMessage);
+        // window.alert(errorMessage);
+        console.error(errorMessage);
         return throwError(errorMessage);
       })
     );

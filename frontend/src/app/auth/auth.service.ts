@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, of, from } from "rxjs";
 import { share, map, tap, take, catchError, finalize } from "rxjs/operators";
 
 import { AppConfig } from "../../conf/app.config";
@@ -81,7 +81,7 @@ export class AuthService {
     return this.http.get(url, { headers: this.headers }).toPromise();
   }
 
-  performTokenRefresh(): Observable<void | Object> {
+  performTokenRefresh(): Observable<string> | Promise<any> {
     const url: string = `${AppConfig.API_ENDPOINT}/token_refresh`;
     const refresh_token = this.getRefreshToken();
     const headers = this.headers.set(
@@ -100,11 +100,13 @@ export class AuthService {
       }),
       catchError(error => {
         console.error(`[AuthService.performTokenRefresh] error "${error}"`);
-        this.logout("bla");
-        return this.router.navigate(["/home"]);
+        console.debug("logout");
+        this.router.navigate(["/home"]);
+        return from(this.logout("bla"));
       }),
       finalize(() => {
         console.debug("done");
+        return of(localStorage.getItem("access_token"));
       })
     );
   }
@@ -155,8 +157,9 @@ export class AuthService {
     const jwt = this.decodeToken(token);
     if (!jwt) return;
     const now: number = new Date().getTime();
-    const expiration: number = (jwt.payload.exp - now) / 1000;
-    console.debug(`[token] expiration in ${expiration}`);
+    const delta: number = jwt.payload.exp * 1000 - now;
+    const expiration = delta / 1000.0;
+    console.debug(`[token] expiration in ${expiration} sec`);
     return expiration;
   }
 }
