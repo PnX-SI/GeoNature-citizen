@@ -33,10 +33,7 @@ export class AuthGuard implements CanActivate {
             resolve(true);
           })
           .catch(error => {
-            console.error(error);
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("refresh_token");
-            localStorage.removeItem("username");
+            console.error("[AuthGuard] canActivate error", error);
             this.authService.logout("bla");
             this.router.navigate(["/home"]);
             resolve(false);

@@ -36,6 +36,7 @@
           i18n="login|Entrez votre nom d'utilisateur"
           [(ngModel)]="user.username"
           name="username"
+          autocomplete="username"
           required
         />
       </div>
@@ -56,6 +57,7 @@
           i18n="login|Entrez votre mot de passe"
           [(ngModel)]="user.password"
           name="password"
+          autocomplete="current-password"
           required
         />
       </div>

@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, BehaviorSubject } from "rxjs";
-import { share, map, tap, switchMap } from "rxjs/operators";
+import { share, map, tap, take, catchError, finalize } from "rxjs/operators";
 
 import { AppConfig } from "../../conf/app.config";
-import { LoginUser, RegisterUser } from "./models";
+import { LoginUser, RegisterUser, JWT, TokenRefresh } from "./models";
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,7 @@ export class AuthService {
   authorized$ = new BehaviorSubject<boolean>(this.hasAccessToken());
   timeoutID: any = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   login(user: LoginUser): Promise<any> {
     let url = `${AppConfig.API_ENDPOINT}/login`;
@@ -31,11 +32,14 @@ export class AuthService {
             localStorage.setItem("refresh_token", user["refresh_token"]);
             this.authenticated$.next(true);
             localStorage.setItem("username", user["username"]);
-            clearInterval(this.timeoutID);
-            // ought to utilize observer interval if autorenewal concept proves itself worthy of time investment
+            // options:
+            // - utilize observer timer and trigger auto renewal on login, stopping on logout or invalidation
+            // - decode token header and payload, extract exp and refresh accordingly and proactively when possible
+            //
+            // clearInterval(this.timeoutID);
             // this.timeoutID = setInterval(() => {
             //   console.debug("refreshing");
-            //   this.refreshToken(localStorage.getItem("refresh_token")).pipe(
+            //   this.performTokenRefresh(localStorage.getItem("refresh_token")).pipe(
             //     tap(data => console.debug("new access_token", data))
             //     switchMap(data => {
             //       if (data && data["access_token"]) {
@@ -68,6 +72,7 @@ export class AuthService {
       localStorage.removeItem("refresh_token");
       this.authenticated$.next(false);
       localStorage.removeItem("username");
+      this.router.navigate(["/home"]);
     }
   }
 
@@ -76,10 +81,32 @@ export class AuthService {
     return this.http.get(url, { headers: this.headers }).toPromise();
   }
 
-  refreshToken(refresh_token: string): Observable<Object> {
+  performTokenRefresh(): Observable<void | Object> {
     const url: string = `${AppConfig.API_ENDPOINT}/token_refresh`;
-    let headers = this.headers.set("Authorization", `Bearer ${refresh_token}`);
-    return this.http.post(url, refresh_token, { headers: headers });
+    const refresh_token = this.getRefreshToken();
+    const headers = this.headers.set(
+      "Authorization",
+      `Bearer ${refresh_token}`
+    );
+    return this.http.post(url, refresh_token, { headers: headers }).pipe(
+      tap(data =>
+        console.debug("[AuthService.performTokenRefresh] result", data)
+      ),
+      take(1),
+      map((data: TokenRefresh) => {
+        if (data && data.access_token) {
+          localStorage.setItem("access_token", data.access_token);
+        }
+      }),
+      catchError(error => {
+        console.error(`[AuthService.performTokenRefresh] error "${error}"`);
+        this.logout("bla");
+        return this.router.navigate(["/home"]);
+      }),
+      finalize(() => {
+        console.debug("done");
+      })
+    );
   }
 
   // TODO: verify service to delete account in response to GDPR recommandations
@@ -92,11 +119,44 @@ export class AuthService {
     return this.authorized$.pipe(share());
   }
 
+  getRefreshToken(): string {
+    return localStorage.getItem("refresh_token");
+  }
+
+  getAccessToken(): string {
+    return localStorage.getItem("access_token");
+  }
+
   private hasRefreshToken(): boolean {
     return !!localStorage.getItem("refresh_token");
   }
 
   private hasAccessToken(): boolean {
     return !!localStorage.getItem("access_token");
+  }
+
+  decodeToken(token: string): JWT {
+    if (!token) return;
+    const parts: any[] = token.split(".");
+    if (parts.length < 3) return;
+    try {
+      return {
+        header: JSON.parse(atob(parts[0])),
+        payload: JSON.parse(atob(parts[1]))
+      };
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+  }
+
+  tokenExpiration(token: string): number {
+    if (!token) return;
+    const jwt = this.decodeToken(token);
+    if (!jwt) return;
+    const now: number = new Date().getTime();
+    const expiration: number = (jwt.payload.exp - now) / 1000;
+    console.debug(`[token] expiration in ${expiration}`);
+    return expiration;
   }
 }
