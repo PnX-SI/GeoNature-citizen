@@ -45,8 +45,10 @@
           </li>
         </ul>
         <div class="btn-group">
-          <div *ngIf="userLoggedIn; then: thenBlock; else: elseBlock"></div>
-          <ng-template #thenBlock>
+          <div
+            *ngIf="(isLoggedIn() | async); then: connected; else: disconnected"
+          ></div>
+          <ng-template #connected>
             <a
               placement="bottom"
               ngbTooltip="Mon tableau de bord"
@@ -63,12 +65,12 @@
               <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
             </a>
           </ng-template>
-          <ng-template #elseBlock>
+          <ng-template #disconnected>
             <a class="btn my-2 my-sm-0 rounded-0" (click)="login()">
-              Se connecter&nbsp;
+              Se connecter
             </a>
             <a class="btn my-2 my-sm-0 rounded-0" (click)="register()">
-              S'inscrire&nbsp;
+              S'inscrire
             </a>
           </ng-template>
         </div>

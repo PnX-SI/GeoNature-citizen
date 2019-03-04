@@ -1,10 +1,14 @@
-import { AuthService } from "./../../auth/auth.service";
 import { Component, OnInit } from "@angular/core";
-import { AppConfig } from "../../../conf/app.config";
+import { Observable } from "rxjs";
+import { tap, map } from "rxjs/operators";
+
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+
+import { AppConfig } from "../../../conf/app.config";
+import { AuthService } from "./../../auth/auth.service";
 import { LoginComponent } from "../../auth/login/login.component";
-import { RegisterComponent } from "../../auth/register/register.component";
 import { LogoutComponent } from "../../auth/logout/logout.component";
+import { RegisterComponent } from "../../auth/register/register.component";
 import { ProgramsComponent } from "../../programs/programs.component";
 
 @Component({
@@ -14,11 +18,25 @@ import { ProgramsComponent } from "../../programs/programs.component";
 })
 export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
-  isLoggedIn: boolean = false;
+  // isLoggedIn: boolean = false;
   username: any;
   modalRef: NgbModalRef;
 
-  constructor(private auth: AuthService, private modalService: NgbModal) {}
+  constructor(private auth: AuthService, private modalService: NgbModal) {
+    const tmp = localStorage.getItem("username");
+    this.username = tmp ? tmp.replace(/\"/g, "") : "Anonymous";
+  }
+
+  isLoggedIn(): Observable<boolean> {
+    return this.auth.authorized$.pipe(
+      map(value => {
+        if (value === true) {
+          this.username = localStorage.getItem("username").replace(/\"/g, "");
+        }
+        return value;
+      })
+    );
+  }
 
   get userLoggedIn() {
     if (localStorage.getItem("username")) {
@@ -63,7 +81,7 @@ export class TopbarComponent implements OnInit {
         .ensureAuthenticated(access_token)
         .then(user => {
           if (user.id_role) {
-            this.isLoggedIn = true;
+            // this.isLoggedIn = true;
             this.username = user.username;
           }
         })
@@ -77,9 +95,6 @@ export class TopbarComponent implements OnInit {
             .catch(err => {
               console.log(err);
             });
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("refresh_token");
-          localStorage.removeItem("username");
         });
     }
   }

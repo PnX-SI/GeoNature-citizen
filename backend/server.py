@@ -1,5 +1,6 @@
 import logging
 import os
+import datetime
 
 
 from flask import Flask, current_app
@@ -56,6 +57,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     # JWT Auth
     jwt.init_app(app)
+    # wip token refresh
+    # app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=30)
 
     # Swagger for api documentation
     swagger.init_app(app)

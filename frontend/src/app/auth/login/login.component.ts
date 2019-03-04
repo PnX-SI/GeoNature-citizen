@@ -30,9 +30,6 @@ export class LoginComponent {
       .login(this.user)
       .then(user => {
         console.log("USER STATUS", user);
-        localStorage.setItem("access_token", user.access_token);
-        localStorage.setItem("refresh_token", user.refresh_token);
-        localStorage.setItem("username", user.username);
         if (user) {
           const message = user.message;
           setTimeout(() => (this.staticAlertClosed = true), 20000);
