@@ -16,7 +16,7 @@ import {
   tap,
   map
 } from "rxjs/operators";
-import { Observable, throwError, BehaviorSubject } from "rxjs";
+import { Observable, throwError, BehaviorSubject, from } from "rxjs";
 
 import { AuthService } from "./auth.service";
 import { TokenRefresh } from "./models";
@@ -39,14 +39,14 @@ export class AuthInterceptor implements HttpInterceptor {
   handle401(
     request: HttpRequest<any>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> | Promise<any> {
+  ): Observable<HttpEvent<any>> {
     // error.error.msg === "Token has expired";
     if (
       request.url.includes("token_refresh") ||
       request.url.includes("login")
     ) {
       if (request.url.includes("token_refresh")) {
-        this.auth.logout("bla");
+        this.auth.logout();
       }
       return throwError("Not authenticated");
     }
@@ -56,27 +56,27 @@ export class AuthInterceptor implements HttpInterceptor {
 
       return this.auth.performTokenRefresh().pipe(
         take(1),
-        map(token => {
+        tap(token => {
           console.debug("[AuthInterceptor.performTokenRefresh] result", token);
-          this.token$.next(token);
         }),
-        // take(1),
-        //   map((data: TokenRefresh) => {
-        //     if (data && data.access_token) {
-        //       localStorage.setItem("access_token", data.access_token);
-        //       this.token$.next(data.access_token);
-        //       return next.handle(this.addToken(request, data.access_token));
-        //     }
-        //
-        //     this.auth.logout("bla");
-        //     return this.router.navigate(["/home"]);
-        //   }),
+        take(1),
+        map((data: TokenRefresh) => {
+          if (data && data.access_token) {
+            localStorage.setItem("access_token", data.access_token);
+            this.token$.next(data.access_token);
+            return next.handle(this.addToken(request, data.access_token));
+          }
+
+          this.auth.logout();
+          // return from(this.router.navigate(["/home"]));
+          return this.router.navigate(["/home"]);
+        }),
         catchError(error => {
           console.error(
             `[AuthInterceptor.performTokenRefresh] error "${error}"`
           );
           this.router.navigate(["/home"]);
-          return this.auth.logout("bla");
+          return from(this.auth.logout());
         }),
         finalize(() => {
           console.debug("done");
@@ -94,7 +94,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   async handle400(error): Promise<any> {
     console.error(`[400 handler] "${error.message}"`);
-    this.auth.logout("bla");
+    this.auth.logout();
     return this.router.navigate(["/home"]);
   }
 
@@ -104,9 +104,13 @@ export class AuthInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     let errorMessage = "";
     let expired = this.auth.tokenExpiration(this.auth.getAccessToken());
-    if (expired <= 10.0) {
-      console.debug(`[AuthInterceptor.intercept] expiring token: ${expired}`);
+    if (expired <= 10.0 && expired > 0.5) {
       // renew
+      console.debug(`[AuthInterceptor.intercept] expiring token: ${expired}`);
+      return this.handle401(request, next);
+    } else {
+      console.warn(`[AuthInterceptor.intercept] expired token: ${expired}`);
+      // do login
     }
 
     return next.handle(this.addToken(request, this.auth.getAccessToken())).pipe(

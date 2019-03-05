@@ -5,7 +5,13 @@ import { Observable, BehaviorSubject, of, from } from "rxjs";
 import { share, map, tap, take, catchError, finalize } from "rxjs/operators";
 
 import { AppConfig } from "../../conf/app.config";
-import { LoginUser, RegisterUser, JWT, TokenRefresh } from "./models";
+import {
+  LoginUser,
+  RegisterUser,
+  JWT,
+  TokenRefresh,
+  LoginPayload
+} from "./models";
 
 @Injectable()
 export class AuthService {
@@ -23,31 +29,15 @@ export class AuthService {
   login(user: LoginUser): Promise<any> {
     let url = `${AppConfig.API_ENDPOINT}/login`;
     return this.http
-      .post(url, user, { headers: this.headers })
+      .post<LoginPayload>(url, user, { headers: this.headers })
       .pipe(
         map(user => {
           if (user) {
-            localStorage.setItem("access_token", user["access_token"]);
+            localStorage.setItem("access_token", user.access_token);
             this.authorized$.next(true);
-            localStorage.setItem("refresh_token", user["refresh_token"]);
+            localStorage.setItem("refresh_token", user.refresh_token);
             this.authenticated$.next(true);
-            localStorage.setItem("username", user["username"]);
-            // options:
-            // - utilize observer timer and trigger auto renewal on login, stopping on logout or invalidation
-            // - decode token header and payload, extract exp and refresh accordingly and proactively when possible
-            //
-            // clearInterval(this.timeoutID);
-            // this.timeoutID = setInterval(() => {
-            //   console.debug("refreshing");
-            //   this.performTokenRefresh(localStorage.getItem("refresh_token")).pipe(
-            //     tap(data => console.debug("new access_token", data))
-            //     switchMap(data => {
-            //       if (data && data["access_token"]) {
-            //         localStorage.setItem("access_token", data["access_token"]);
-            //       }
-            //     })
-            //   );
-            // }, 10 * 1000);
+            localStorage.setItem("username", user.username);
           }
           return user;
         })
@@ -60,7 +50,7 @@ export class AuthService {
     return this.http.post(url, user, { headers: this.headers }).toPromise();
   }
 
-  logout(_access_token): Promise<any> {
+  logout(): Promise<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/logout`;
     try {
       this.authorized$.next(false);
@@ -81,14 +71,16 @@ export class AuthService {
     return this.http.get(url, { headers: this.headers }).toPromise();
   }
 
-  performTokenRefresh(): Observable<string> | Promise<any> {
+  performTokenRefresh(): Observable<TokenRefresh> {
     const url: string = `${AppConfig.API_ENDPOINT}/token_refresh`;
     const refresh_token = this.getRefreshToken();
     const headers = this.headers.set(
       "Authorization",
       `Bearer ${refresh_token}`
     );
-    return this.http.post(url, refresh_token, { headers: headers }).pipe(
+    return this.http.post<TokenRefresh>(url, refresh_token, {
+      headers: headers
+    }); /*.pipe(
       tap(data =>
         console.debug("[AuthService.performTokenRefresh] result", data)
       ),
@@ -102,13 +94,13 @@ export class AuthService {
         console.error(`[AuthService.performTokenRefresh] error "${error}"`);
         console.debug("logout");
         this.router.navigate(["/home"]);
-        return from(this.logout("bla"));
+        return from(this.logout());
       }),
       finalize(() => {
         console.debug("done");
         return of(localStorage.getItem("access_token"));
       })
-    );
+    );*/
   }
 
   // TODO: verify service to delete account in response to GDPR recommandations
@@ -157,9 +149,8 @@ export class AuthService {
     const jwt = this.decodeToken(token);
     if (!jwt) return;
     const now: number = new Date().getTime();
-    const delta: number = jwt.payload.exp * 1000 - now;
-    const expiration = delta / 1000.0;
-    console.debug(`[token] expiration in ${expiration} sec`);
-    return expiration;
+    const delta: number = (jwt.payload.exp * 1000 - now) / 1000.0;
+    console.debug(`[token] expiration in ${delta} sec`);
+    return delta;
   }
 }

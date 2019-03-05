@@ -1,10 +1,3 @@
-export class LoginUser {
-  username: string;
-  password: string;
-
-  constructor(username: string = "", password: string = "") {}
-}
-
 export class RegisterUser {
   username?: string;
   password?: string;
@@ -13,6 +6,18 @@ export class RegisterUser {
   surname?: string;
 
   constructor() {}
+}
+
+export interface LoginUser {
+  username: string;
+  password: string;
+}
+
+export interface LoginPayload {
+  access_token: string;
+  message: string;
+  refresh_token: string;
+  username: string;
 }
 
 export interface JWT {

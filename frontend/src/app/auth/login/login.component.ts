@@ -12,7 +12,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ["./login.component.css"]
 })
 export class LoginComponent {
-  user: LoginUser = new LoginUser();
+  user: LoginUser = { username: "", password: "" };
   private _error = new Subject<string>();
   private _success = new Subject<string>();
   staticAlertClosed = false;

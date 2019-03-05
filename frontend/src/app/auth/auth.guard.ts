@@ -34,14 +34,14 @@ export class AuthGuard implements CanActivate {
           })
           .catch(error => {
             console.error("[AuthGuard] canActivate error", error);
-            this.authService.logout("bla");
+            this.authService.logout();
             this.router.navigate(["/home"]);
             resolve(false);
           });
       });
     }
 
-    this.authService.logout("bla");
+    this.authService.logout();
     this.router.navigate(["/home"]);
     return false;
   }
