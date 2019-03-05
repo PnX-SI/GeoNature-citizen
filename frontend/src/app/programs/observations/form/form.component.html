@@ -67,11 +67,12 @@
             <label for="date">Date de l'observation</label>
             <input
               formControlName="date"
-              type="text"
+              type="date"
               class="form-control rounded-0"
               placeholder="yyyy-mm-dd"
               ngbDatepicker
               #d="ngbDatepicker"
+              [markDisabled]="isDisabled"
               (click)="d.toggle()"
             />
           </div>
@@ -89,6 +90,7 @@
             class="form-control rounded-0"
             formControlName="count"
             id="counting"
+            required
           />
         </div>
       </div>

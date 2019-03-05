@@ -42,7 +42,7 @@ export class ObsFormComponent implements AfterViewInit {
     cd_nom: new FormControl("", Validators.required),
     count: new FormControl("1", Validators.required),
     comment: new FormControl("", Validators.required),
-    date: new FormControl("", Validators.required),
+    date: new FormControl("2019-03-05", Validators.required),
     photo: new FormControl("", Validators.required),
     municipality: new FormControl(),
     geometry: new FormControl("", Validators.required),
@@ -54,6 +54,8 @@ export class ObsFormComponent implements AfterViewInit {
   program: any;
   program_id: any;
   formMap: any;
+  // FIXME: issue #72 date validation
+  // isDisabled = (date: NgbDate, current: { month: number }) => !(date <= today());
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
