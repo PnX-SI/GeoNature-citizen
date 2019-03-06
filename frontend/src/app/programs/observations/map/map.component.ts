@@ -42,13 +42,13 @@ const BASE_LAYERS = MAP_CONFIG["BASEMAP"].reduce((acc, baseLayer: Object) => {
   });
   return acc;
 }, {});
+const DEFAULT_BASE_MAP = BASE_LAYERS["OpenStreetMap"];
 // Get a random base map to test
-const DEFAULT_BASE_MAP =
-  BASE_LAYERS[
-    Object.keys(BASE_LAYERS)[
-      (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
-    ]
-  ];
+// BASE_LAYERS[
+//   Object.keys(BASE_LAYERS)[
+//     (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
+//   ]
+// ];
 const ZOOM_CONTROL_POSITION = "topright";
 const BASE_LAYER_CONTROL_POSITION = "topright";
 const BASE_LAYER_CONTROL_INIT_COLLAPSED = true;
