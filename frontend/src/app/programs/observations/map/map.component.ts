@@ -19,110 +19,101 @@ import { MAP_CONFIG } from "../../../../conf/map.config";
 
 declare let $: any;
 
-/*
- PLAN:
-    migrate layer logic to parent component/service, rm inputs
-    instance config (element_id, tilehost, attribution, ... std leaflet options)
-      @outputs:
-        onLayerAdded
-        onLayerRemoved
-        onClick
-
-      fitBounds(layer)
-      setMaxBounds(layer)
-      panTo(layer)
-      geolocate(boolean)
-*/
-const GEOLOCATION_HIGH_ACCURACY = false;
-const BASE_LAYERS = MAP_CONFIG["BASEMAP"].reduce((acc, baseLayer: Object) => {
-  acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
-    attribution: baseLayer["attribution"],
-    subdomains: baseLayer["subdomains"],
-    detectRetina: baseLayer["detectRetina"]
-  });
-  return acc;
-}, {});
-const DEFAULT_BASE_MAP = BASE_LAYERS["OpenStreetMap"];
-// Get a random base map to test
-// BASE_LAYERS[
-//   Object.keys(BASE_LAYERS)[
-//     (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
-//   ]
-// ];
-const ZOOM_CONTROL_POSITION = "topright";
-const BASE_LAYER_CONTROL_POSITION = "topright";
-const BASE_LAYER_CONTROL_INIT_COLLAPSED = true;
-const GEOLOCATION_CONTROL_POSITION = "topright";
-const SCALE_CONTROL_POSITION = "bottomleft";
-const NEW_OBS_MARKER_ICON = () =>
-  L.icon({
-    iconUrl: "assets/pointer-blue2.png",
-    iconSize: [33, 42],
-    iconAnchor: [16, 42]
-  });
-const OBS_MARKER_ICON = () =>
-  L.icon({
-    iconUrl: "assets/pointer-green.png",
-    iconSize: [33, 42],
-    iconAnchor: [16, 42]
-  });
-const OBSERVATION_LAYER = () =>
-  L.markerClusterGroup({
-    iconCreateFunction: clusters => {
-      const childCount = clusters.getChildCount();
-      return CLUSTER_MARKER_ICON(childCount);
-    }
-  });
-const CLUSTER_MARKER_ICON = (childCount: number) => {
-  const quantifiedCssClass = (childCount: number) => {
-    let c = " marker-cluster-";
-    if (childCount < 10) {
-      c += "small";
-    } else if (childCount < 10) {
-      c += "medium";
-    } else {
-      c += "large";
-    }
-    return c;
-  };
-  return new L.DivIcon({
-    html: `<div><span>${childCount}</span></div>`,
-    className: "marker-cluster" + quantifiedCssClass(childCount),
-    iconSize: new L.Point(40, 40)
-  });
-};
-const ON_EACH_FEATURE = (feature, layer) => {
-  let popupContent = `
-    <img src="assets/Azure-Commun-019.JPG">
-    <p>
-      <b>${feature.properties.common_name}</b>
-      </br>
-      <span i18n>
-        Observé par ${feature.properties.sci_name}
+const conf = {
+  ELEMENT: "obsMap",
+  GEOLOCATION_HIGH_ACCURACY: false,
+  BASE_LAYERS: MAP_CONFIG["BASEMAP"].reduce((acc, baseLayer: Object) => {
+    acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
+      attribution: baseLayer["attribution"],
+      subdomains: baseLayer["subdomains"],
+      detectRetina: baseLayer["detectRetina"]
+    });
+    return acc;
+  }, {}),
+  DEFAULT_BASE_MAP: () => {
+    // Get a random base map to test
+    // BASE_LAYERS[
+    //   Object.keys(BASE_LAYERS)[
+    //     (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
+    //   ]
+    // ];
+    return conf.BASE_LAYERS["OpenStreetMap"];
+  },
+  ZOOM_CONTROL_POSITION: "topright",
+  BASE_LAYER_CONTROL_POSITION: "topright",
+  BASE_LAYER_CONTROL_INIT_COLLAPSED: true,
+  GEOLOCATION_CONTROL_POSITION: "topright",
+  SCALE_CONTROL_POSITION: "bottomleft",
+  NEW_OBS_MARKER_ICON: () =>
+    L.icon({
+      iconUrl: "assets/pointer-blue2.png",
+      iconSize: [33, 42],
+      iconAnchor: [16, 42]
+    }),
+  OBS_MARKER_ICON: () =>
+    L.icon({
+      iconUrl: "assets/pointer-green.png",
+      iconSize: [33, 42],
+      iconAnchor: [16, 42]
+    }),
+  OBSERVATION_LAYER: () =>
+    L.markerClusterGroup({
+      iconCreateFunction: clusters => {
+        const childCount = clusters.getChildCount();
+        return conf.CLUSTER_MARKER_ICON(childCount);
+      }
+    }),
+  CLUSTER_MARKER_ICON: (childCount: number) => {
+    const quantifiedCssClass = (childCount: number) => {
+      let c = " marker-cluster-";
+      if (childCount < 10) {
+        c += "small";
+      } else if (childCount < 10) {
+        c += "medium";
+      } else {
+        c += "large";
+      }
+      return c;
+    };
+    return new L.DivIcon({
+      html: `<div><span>${childCount}</span></div>`,
+      className: "marker-cluster" + quantifiedCssClass(childCount),
+      iconSize: new L.Point(40, 40)
+    });
+  },
+  ON_EACH_FEATURE: (feature, layer) => {
+    let popupContent = `
+      <img src="assets/Azure-Commun-019.JPG">
+      <p>
+        <b>${feature.properties.common_name}</b>
         </br>
-        le ${feature.properties.date}
-      </span>
-    </p>
-    <div>
-      <img class="icon" src="assets/binoculars.png">
-    </div>`;
+        <span i18n>
+          Observé par ${feature.properties.sci_name}
+          </br>
+          le ${feature.properties.date}
+        </span>
+      </p>
+      <div>
+        <img class="icon" src="assets/binoculars.png">
+      </div>`;
 
-  if (feature.properties && feature.properties.popupContent) {
-    popupContent += feature.properties.popupContent;
+    if (feature.properties && feature.properties.popupContent) {
+      popupContent += feature.properties.popupContent;
+    }
+
+    layer.bindPopup(popupContent);
+  },
+  POINT_TO_LAYER: (_feature, latlng): L.Marker =>
+    L.marker(latlng, { icon: conf.OBS_MARKER_ICON() }),
+  PROGRAM_AREA_STYLE: _feature => {
+    return {
+      fillColor: "transparent",
+      weight: 2,
+      opacity: 0.8,
+      color: "red",
+      dashArray: "4"
+    };
   }
-
-  layer.bindPopup(popupContent);
-};
-const POINT_TO_LAYER = (_feature, latlng): L.Marker =>
-  L.marker(latlng, { icon: OBS_MARKER_ICON() });
-const PROGRAM_AREA_STYLE = _feature => {
-  return {
-    fillColor: "transparent",
-    weight: 2,
-    opacity: 0.8,
-    color: "red",
-    dashArray: "4"
-  };
 };
 
 @Component({
@@ -134,6 +125,21 @@ const PROGRAM_AREA_STYLE = _feature => {
   encapsulation: ViewEncapsulation.None
 })
 export class ObsMapComponent implements OnInit, OnChanges {
+  /*
+   PLAN:
+      migrate layer logic to parent component/service, rm inputs
+      instance config (element_id, tilehost, attribution, ... std leaflet options)
+        @outputs:
+          onLayerAdded
+          onLayerRemoved
+          onClick
+
+        fitBounds(layer)
+        setMaxBounds(layer)
+        panTo(layer)
+        geolocate(boolean)
+  */
+
   @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
   @Input("geolocate") geolocate = true;
@@ -145,11 +151,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
   observationsLayer: L.FeatureGroup;
   map_init = false;
   newObsMarker: L.Marker<any>;
+  options: any;
 
   constructor() {}
 
   ngOnInit() {
-    this.initMap("obsMap");
+    this.initMap(conf);
   }
 
   ngOnChanges(_changes: SimpleChanges) {
@@ -160,32 +167,36 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   initMap(
-    element: string | HTMLElement,
+    // element: string | HTMLElement,
+    options: any,
     LeafletOptions: L.MapOptions = {}
   ): void {
-    this.obsMap = L.map(element, {
-      layers: [DEFAULT_BASE_MAP],
+    this.options = options;
+    this.obsMap = L.map(this.options.ELEMENT, {
+      layers: [this.options.DEFAULT_BASE_MAP()],
       ...LeafletOptions
     });
 
     // zoom
-    this.obsMap.zoomControl.setPosition(ZOOM_CONTROL_POSITION);
+    this.obsMap.zoomControl.setPosition(this.options.ZOOM_CONTROL_POSITION);
     // scale
-    L.control.scale({ position: SCALE_CONTROL_POSITION }).addTo(this.obsMap);
+    L.control
+      .scale({ position: this.options.SCALE_CONTROL_POSITION })
+      .addTo(this.obsMap);
     // Base layers control
     L.control
-      .layers(BASE_LAYERS, null, {
-        collapsed: BASE_LAYER_CONTROL_INIT_COLLAPSED,
-        position: BASE_LAYER_CONTROL_POSITION
+      .layers(this.options.BASE_LAYERS, null, {
+        collapsed: this.options.BASE_LAYER_CONTROL_INIT_COLLAPSED,
+        position: this.options.BASE_LAYER_CONTROL_POSITION
       })
       .addTo(this.obsMap);
     // geolocation control
     L.control
       .locate({
         locateOptions: {
-          enableHighAccuracy: GEOLOCATION_HIGH_ACCURACY
+          enableHighAccuracy: this.options.GEOLOCATION_HIGH_ACCURACY
         },
-        position: GEOLOCATION_CONTROL_POSITION
+        position: this.options.GEOLOCATION_CONTROL_POSITION
         // FIXME: recover program/location fitBounds behavior
         // getLocationBounds: function(locationEvent) {
         //   return this.programMaxBounds.extend(locationEvent.bounds);
@@ -200,12 +211,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
       if (this.observationsLayer) {
         this.obsMap.removeLayer(this.observationsLayer);
       }
-      this.observationsLayer = OBSERVATION_LAYER();
+      this.observationsLayer = this.options.OBSERVATION_LAYER();
 
       this.observationsLayer.addLayer(
         L.geoJSON(<GeoJsonObject>this.observations, {
-          onEachFeature: ON_EACH_FEATURE,
-          pointToLayer: POINT_TO_LAYER
+          onEachFeature: this.options.ON_EACH_FEATURE,
+          pointToLayer: this.options.POINT_TO_LAYER
         })
       );
 
@@ -229,9 +240,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   loadProgramArea(canSubmit = true): void {
     if (this.program) {
       const programArea = L.geoJSON(this.program, {
-        style: function(_feature) {
-          return PROGRAM_AREA_STYLE(_feature);
-        }
+        style: _feature => this.options.PROGRAM_AREA_STYLE(_feature)
       }).addTo(this.obsMap);
       const programBounds = programArea.getBounds();
       this.obsMap.fitBounds(programBounds);
@@ -258,7 +267,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
             console.debug(coords);
             // emit new coordinates
             this.newObsMarker = L.marker(e.latlng, {
-              icon: NEW_OBS_MARKER_ICON()
+              icon: this.options.NEW_OBS_MARKER_ICON()
             }).addTo(this.obsMap);
           }
         });
