@@ -12,6 +12,7 @@ import {
 import { GeoJsonObject, FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import "leaflet.markercluster";
+import "leaflet.locatecontrol";
 
 import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
@@ -32,14 +33,16 @@ declare let $: any;
       panTo(layer)
       geolocate(boolean)
 */
-
+const enableHighAccuracy = true;
 const BASE_LAYERS = MAP_CONFIG["BASEMAP"].reduce((acc, baseLayer: Object) => {
   acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
     attribution: baseLayer["attribution"],
-    subdomains: baseLayer["subdomains"]
+    subdomains: baseLayer["subdomains"],
+    detectRetina: baseLayer["detectRetina"]
   });
   return acc;
 }, {});
+// Get a random base map to test
 const DEFAULT_BASE_MAP =
   BASE_LAYERS[
     Object.keys(BASE_LAYERS)[
@@ -94,7 +97,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit() {
-    this.initMap("obsMap", {});
+    this.initMap("obsMap");
   }
 
   ngOnChanges(_changes: SimpleChanges) {
@@ -119,13 +122,21 @@ export class ObsMapComponent implements OnInit, OnChanges {
       .scale({ position: "bottomleft", imperial: false })
       .addTo(this.obsMap);
     // Base layers control
+    L.control.layers(BASE_LAYERS, null, { collapsed: true }).addTo(this.obsMap);
+    // geolocation control
     L.control
-      .layers(BASE_LAYERS, null, { collapsed: false })
+      .locate({
+        locateOptions: {
+          enableHighAccuracy: enableHighAccuracy
+        },
+        position: "topright"
+        // FIXME: recover program/location fitBounds behavior
+        // getLocationBounds: function(locationEvent) {
+        //   return this.programMaxBounds.extend(locationEvent.bounds);
+        // }
+      })
       .addTo(this.obsMap);
-    this.map_init = true;
-    if (this.geolocate) {
-      this.initTracking();
-    }
+    // this.obsMap.on("locationfound", this.onLocationFound.bind(this));
   }
 
   loadObservations(): void {
@@ -162,15 +173,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
     }
   }
 
-  initTracking(watch = true, enableHighAccuracy = true): void {
-    this.obsMap.locate({
-      watch: watch,
-      enableHighAccuracy: enableHighAccuracy
-    });
-    this.obsMap.on("locationfound", this.onLocationFound.bind(this));
-    this.obsMap.on("locationerror", this.onLocationError.bind(this));
-  }
-
   onEachFeature(feature, layer): void {
     let popupContent =
       '<img src="assets/Azure-Commun-019.JPG"><p><b>' +
@@ -192,23 +194,18 @@ export class ObsMapComponent implements OnInit, OnChanges {
     return L.marker(latlng, { icon: obsMarkerIcon() });
   }
 
-  onLocationFound(e): void {
-    const radius = e.accuracy / 2;
-    L.marker(e.latlng, {
-      icon: newObsMarkerIcon()
-    }).addTo(this.obsMap);
-    // geolocation.bindPopup("You are within " + radius + " meters from this point").openPopup()
-    const disk = L.circle(e.latlng, radius).addTo(this.obsMap);
-    console.debug("Geolocation", e.latlng);
-    if (this.programMaxBounds) {
-      this.obsMap.fitBounds(disk.getBounds().extend(this.programMaxBounds));
-    }
-  }
-
-  onLocationError(e) {
-    // window.alert(e.message);
-    console.warn(e.message);
-  }
+  // onLocationFound(e): void {
+  //   const radius = e.accuracy / 2;
+  //   // L.marker(e.latlng, {
+  //   //   icon: newObsMarkerIcon()
+  //   // }).addTo(this.obsMap);
+  //   // geolocation.bindPopup("You are within " + radius + " meters from this point").openPopup()
+  //   const disk = L.circle(e.latlng, radius).addTo(this.obsMap);
+  //   console.debug("Geolocation", e.latlng);
+  //   if (this.programMaxBounds) {
+  //     this.obsMap.fitBounds(disk.getBounds().extend(this.programMaxBounds));
+  //   }
+  // }
 
   loadProgramArea(): void {
     if (this.program) {
