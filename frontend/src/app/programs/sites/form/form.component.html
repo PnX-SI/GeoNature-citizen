@@ -1,0 +1,26 @@
+<div>
+  <p>
+    {{ jsonData | json }}
+  </p>
+  <h3>
+    Etape {{ currentStep }} : {{ jsonSchema.steps[currentStep-1].title }}
+  </h3>
+  <p>
+    <button class="btn btn-primary" (click)="previousStep()" *ngIf="!isFirstStep()">Etape précédente</button>
+    <button class="btn btn-primary" (click)="nextStep()" *ngIf="!isLastStep()">Etape suivante</button>
+  </p>
+  <p>
+    <button class="btn btn-link" (click)="toogleAdvancedMode()">{{ advancedMode ? "Masquer" : "Afficher" }} les champs avancés</button>
+  </p>
+  <json-schema-form
+  loadExternalAssets="true"
+  [schema]="jsonSchema.schema"
+  [layout]="partialLayout"
+  [(data)]="jsonData"
+  [options]="formOptions"
+  framework="bootstrap-4"
+  (onSubmit)="onFormSubmit($event)"
+  (onChanges)="yourOnChangesFn($event)">
+  </json-schema-form>
+</div>
+
