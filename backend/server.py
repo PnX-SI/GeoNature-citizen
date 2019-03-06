@@ -83,6 +83,10 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
         app.register_blueprint(routes, url_prefix=url_prefix)
 
+        from gncitizen.core.sites.routes import routes
+
+        app.register_blueprint(routes, url_prefix=url_prefix)
+
         CORS(app, supports_credentials=True)
         # Chargement des mosdules tiers
         if with_external_mods:
