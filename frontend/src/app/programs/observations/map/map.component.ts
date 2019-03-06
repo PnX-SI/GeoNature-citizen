@@ -97,7 +97,7 @@ const ON_EACH_FEATURE = (feature, layer) => {
     <p>
       <b>${feature.properties.common_name}</b>
       </br>
-      <span>
+      <span i18n>
         Observé par ${feature.properties.sci_name}
         </br>
         le ${feature.properties.date}
