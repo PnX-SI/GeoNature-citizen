@@ -182,7 +182,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
     // Base layers control
     L.control
       .layers(BASE_LAYERS, null, {
-        collapsed: BASE_LAYER_CONTROL_INIT_COLLAPSED
+        collapsed: BASE_LAYER_CONTROL_INIT_COLLAPSED,
+        position: BASE_LAYER_CONTROL_POSITION
       })
       .addTo(this.obsMap);
     // geolocation control
