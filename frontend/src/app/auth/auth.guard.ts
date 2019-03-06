@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate {
     if (token) {
       return new Promise(resolve => {
         this.authService
-          .ensureAuthenticated(token)
+          .ensureAuthorized(token)
           .then((user: LoginUser) => {
             console.debug("user", user);
             resolve(true);

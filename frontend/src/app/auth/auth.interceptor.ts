@@ -14,7 +14,8 @@ import {
   take,
   filter,
   tap,
-  map
+  map,
+  first
 } from "rxjs/operators";
 import { Observable, throwError, BehaviorSubject, from } from "rxjs";
 
@@ -43,7 +44,8 @@ export class AuthInterceptor implements HttpInterceptor {
     // error.error.msg === "Token has expired";
     if (
       request.url.includes("token_refresh") ||
-      request.url.includes("login")
+      request.url.includes("login") ||
+      request.url.includes("logout")
     ) {
       if (request.url.includes("token_refresh")) {
         this.auth.logout();
@@ -59,7 +61,6 @@ export class AuthInterceptor implements HttpInterceptor {
         tap(token => {
           console.debug("[AuthInterceptor.performTokenRefresh] result", token);
         }),
-        take(1),
         map((data: TokenRefresh) => {
           if (data && data.access_token) {
             localStorage.setItem("access_token", data.access_token);
@@ -68,8 +69,7 @@ export class AuthInterceptor implements HttpInterceptor {
           }
 
           this.auth.logout();
-          // return from(this.router.navigate(["/home"]));
-          return this.router.navigate(["/home"]);
+          return from(this.router.navigate(["/home"]));
         }),
         catchError(error => {
           console.error(
@@ -86,16 +86,18 @@ export class AuthInterceptor implements HttpInterceptor {
     } else {
       return this.token$.pipe(
         filter(token => token != null),
-        take(1),
-        switchMap((token: string) => next.handle(this.addToken(request, token)))
+        switchMap((token: string) =>
+          next.handle(this.addToken(request, token))
+        ),
+        first()
       );
     }
   }
 
   async handle400(error): Promise<any> {
     console.error(`[400 handler] "${error.message}"`);
-    this.auth.logout();
-    return this.router.navigate(["/home"]);
+    // this.auth.logout();
+    return from(this.router.navigateByUrl("/home"));
   }
 
   intercept(
@@ -104,7 +106,7 @@ export class AuthInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     let errorMessage = "";
     let expired = this.auth.tokenExpiration(this.auth.getAccessToken());
-    if (expired <= 10.0 && expired > 0.5) {
+    if (expired && expired <= 10.0 && expired > 0.5) {
       // renew
       console.debug(`[AuthInterceptor.intercept] expiring token: ${expired}`);
       return this.handle401(request, next);

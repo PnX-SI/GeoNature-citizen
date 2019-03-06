@@ -78,7 +78,7 @@ export class TopbarComponent implements OnInit {
     const access_token = localStorage.getItem("access_token");
     if (access_token) {
       this.auth
-        .ensureAuthenticated(access_token)
+        .ensureAuthorized(access_token)
         .then(user => {
           if (user.id_role) {
             // this.isLoggedIn = true;

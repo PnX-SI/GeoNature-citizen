@@ -17,7 +17,6 @@ import "leaflet.markercluster";
 
 declare let $: any;
 
-// TODO: coupling of marker theming and map tile config
 /*
  PLAN:
     migrate layer logic to parent component/service, rm inputs

@@ -10,7 +10,8 @@ import {
   RegisterUser,
   JWT,
   TokenRefresh,
-  LoginPayload
+  LoginPayload,
+  LogoutPayload
 } from "./models";
 
 @Injectable()
@@ -52,21 +53,23 @@ export class AuthService {
 
   logout(): Promise<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/logout`;
-    try {
-      this.authorized$.next(false);
-      return this.http.post(url, { headers: this.headers }).toPromise();
-    } catch (error) {
-      console.error(`[logout] error "${error}"`);
-      localStorage.removeItem("access_token");
-      this.authorized$.next(false);
-      localStorage.removeItem("refresh_token");
-      this.authenticated$.next(false);
-      localStorage.removeItem("username");
-      this.router.navigate(["/home"]);
-    }
+    this.authorized$.next(false);
+    return this.http
+      .post<LogoutPayload>(url, { headers: this.headers })
+      .pipe(
+        catchError(error => {
+          console.error(`[logout] error "${error}"`);
+          localStorage.removeItem("access_token");
+          // localStorage.removeItem("refresh_token");
+          this.authenticated$.next(false);
+          // localStorage.removeItem("username");
+          return this.router.navigateByUrl("/home");
+        })
+      )
+      .toPromise();
   }
 
-  ensureAuthenticated(_access_token): Promise<any> {
+  ensureAuthorized(_access_token): Promise<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/user/info`;
     return this.http.get(url, { headers: this.headers }).toPromise();
   }
@@ -80,7 +83,9 @@ export class AuthService {
     );
     return this.http.post<TokenRefresh>(url, refresh_token, {
       headers: headers
-    }); /*.pipe(
+    });
+    /*
+    .pipe(
       tap(data =>
         console.debug("[AuthService.performTokenRefresh] result", data)
       ),
@@ -132,7 +137,7 @@ export class AuthService {
   decodeToken(token: string): JWT {
     if (!token) return;
     const parts: any[] = token.split(".");
-    if (parts.length < 3) return;
+    if (parts.length != 3) return;
     try {
       return {
         header: JSON.parse(atob(parts[0])),

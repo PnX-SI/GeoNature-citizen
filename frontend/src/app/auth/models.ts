@@ -14,10 +14,14 @@ export interface LoginUser {
 }
 
 export interface LoginPayload {
-  access_token: string;
   message: string;
-  refresh_token: string;
-  username: string;
+  access_token?: string;
+  refresh_token?: string;
+  username?: string;
+}
+
+export interface LogoutPayload {
+  msg: string;
 }
 
 export interface JWT {
@@ -40,4 +44,9 @@ export interface JWTPayload {
 
 export interface TokenRefresh {
   access_token: string;
+}
+
+export interface UserInfo {
+  message: string;
+  features?: any; // TODO: verif backend updated field: time ? should be datetime!
 }
