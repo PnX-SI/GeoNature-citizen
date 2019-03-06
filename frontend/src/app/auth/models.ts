@@ -48,5 +48,5 @@ export interface TokenRefresh {
 
 export interface UserInfo {
   message: string;
-  features?: any; // TODO: verif backend updated field: time ? should be datetime!
+  features?: any;
 }

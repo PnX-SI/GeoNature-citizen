@@ -17,3 +17,11 @@ export class Observation {
   ) { }
   */
 }
+
+export interface TaxonomyList {
+  [index: number]: {
+    medias: any;
+    nom: Object;
+    taxref: Object;
+  };
+}

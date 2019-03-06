@@ -1,12 +1,12 @@
 <div class="row">
   <!-- LA PLATEFORME -->
   <section *ngIf="programs.length === 1" id="welcome" class="row">
-    <h1>
+    <h1 i18n>
       Bienvenue<br />
       sur Geonature Citizen
     </h1>
-    <a class="btn-big">Participer au programme</a>
-    <span>Scrollez pour en voir plus !</span>
+    <a class="btn-big" i18n>Participer au programme</a>
+    <span i18n>Scrollez pour en voir plus !</span>
     <img class="d-block scroll" src="assets/scroll.svg" />
   </section>
 </div>
@@ -16,19 +16,21 @@
   <section id="slide">
     <div id="slider" class="carousel slide">
       <div class="carousel-inner">
-        <h2>Le programme {{ program.title }}</h2>
+        <h2 i18n>
+          Le programme <span>{{ program.title }}</span>
+        </h2>
         <div class="carousel-item active">
           <img
             class="d-block w-100"
             [src]="program.image || 'assets/Azure-Commun-019.JPG'"
-            alt="First slide"
+            alt="program image (fixme context)"
           />
           <div class="carousel-text-container">
             <div class="carousel-text">
-              <h3>{{ program.title }}</h3>
+              <h3 i18n>{{ program.title }}</h3>
               <p [innerHTML]="program.html_short_desc"></p>
               <div [innerHTML]="program.html_long_desc"></div>
-              <a class="btn-big" [routerLink]="" fragment="program"
+              <a class="btn-big" [routerLink]="" fragment="program" i18n
                 >Partager une observation</a
               >
             </div>

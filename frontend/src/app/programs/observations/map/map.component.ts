@@ -13,14 +13,15 @@ import { GeoJsonObject, FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import "leaflet.markercluster";
 
-// import { AppConfig } from "../../../../conf/app.config";
+import { AppConfig } from "../../../../conf/app.config";
+import { MAP_CONFIG } from "../../../../conf/map.config";
 
 declare let $: any;
 
 /*
  PLAN:
     migrate layer logic to parent component/service, rm inputs
-    instance config (element_id, {tilehost, attribution})
+    instance config (element_id, tilehost, attribution, ... std leaflet options)
       @outputs:
         onLayerAdded
         onLayerRemoved
@@ -31,24 +32,20 @@ declare let $: any;
       panTo(layer)
       geolocate(boolean)
 */
-export const DEFAULT_TILES = {
-  url: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  attribution: "OpenStreetMap"
-};
 
-// export const DEFAULT_TILES = {
-//   // url: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
-//   url: "https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg",
-//   // url: "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg",
-//   attribution: "maps.stamen.com"
-// };
-
-// export const DEFAULT_TILES = {
-//   url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
-//   // url: "https://mt1.google.com/vt/lyrs=t&x={x}&y={y}&z={z}",
-//   // url: "https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={z}",
-//   attribution: "maps.google.com"
-// };
+const BASE_LAYERS = MAP_CONFIG["BASEMAP"].reduce((acc, baseLayer: Object) => {
+  acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
+    attribution: baseLayer["attribution"],
+    subdomains: baseLayer["subdomains"]
+  });
+  return acc;
+}, {});
+const DEFAULT_BASE_MAP =
+  BASE_LAYERS[
+    Object.keys(BASE_LAYERS)[
+      (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
+    ]
+  ];
 
 const newObsMarkerIcon = () =>
   L.icon({
@@ -86,6 +83,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
   @Input("geolocate") geolocate = true;
+
   @Output() onClick: EventEmitter<any> = new EventEmitter();
   programMaxBounds: L.LatLngBounds;
   coords: string;
@@ -96,7 +94,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit() {
-    this.initMap("obsMap", {}, DEFAULT_TILES);
+    this.initMap("obsMap", {});
   }
 
   ngOnChanges(_changes: SimpleChanges) {
@@ -107,18 +105,23 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   initMap(
-    element: string | HTMLElement = "obsMap",
-    options: L.MapOptions = {},
-    tiles: Object = DEFAULT_TILES
+    element: string | HTMLElement,
+    LeafletOptions: L.MapOptions = {}
   ): void {
-    this.obsMap = L.map(element, options);
+    this.obsMap = L.map(element, {
+      layers: [DEFAULT_BASE_MAP],
+      ...LeafletOptions
+    });
+    // zoom
     this.obsMap.zoomControl.setPosition("topright");
+    // scale
     L.control
       .scale({ position: "bottomleft", imperial: false })
       .addTo(this.obsMap);
-    L.tileLayer(tiles["url"], {
-      attribution: tiles["attribution"]
-    }).addTo(this.obsMap);
+    // Base layers control
+    L.control
+      .layers(BASE_LAYERS, null, { collapsed: false })
+      .addTo(this.obsMap);
     this.map_init = true;
     if (this.geolocate) {
       this.initTracking();

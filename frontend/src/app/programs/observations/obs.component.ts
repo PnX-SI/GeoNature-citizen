@@ -2,16 +2,17 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  AfterViewChecked
+  AfterViewInit
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { forkJoin } from "rxjs";
 
 import { FeatureCollection } from "geojson";
 
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { Program } from "../programs.models";
-// import { Observation } from "./observation.model";
 import { ModalFlowService } from "./modalflow/modalflow.service";
+import { TaxonomyList } from "./observation.model";
 
 @Component({
   selector: "app-observations",
@@ -19,8 +20,7 @@ import { ModalFlowService } from "./modalflow/modalflow.service";
   styleUrls: ["./obs.component.css", "../../home/home.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class ObsComponent implements OnInit, AfterViewChecked {
-  title = "Observations";
+export class ObsComponent implements OnInit, AfterViewInit {
   fragment: string;
   program_id: any;
   coords: any;
@@ -28,7 +28,7 @@ export class ObsComponent implements OnInit, AfterViewChecked {
   program: Program;
   observations: FeatureCollection;
   programFeature: FeatureCollection;
-  surveySpecies: any[];
+  surveySpecies: TaxonomyList;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,26 +43,21 @@ export class ObsComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     this.route.data.subscribe((data: { programs: Program[] }) => {
-      // TODO: merge observables
       this.programs = data.programs;
       this.program = this.programs.find(p => p.id_program == this.program_id);
-      this.programService
-        .getProgramObservations(this.program_id)
-        .subscribe(observations => {
-          this.observations = observations;
-        });
-      this.programService
-        .getProgramTaxonomyList(this.program_id)
-        .subscribe(taxa => {
-          this.surveySpecies = taxa;
-        });
-      this.programService
-        .getProgram(this.program_id)
-        .subscribe(program => (this.programFeature = program));
+      forkJoin(
+        this.programService.getProgramObservations(this.program_id),
+        this.programService.getProgramTaxonomyList(this.program_id),
+        this.programService.getProgram(this.program_id)
+      ).subscribe(([observations, taxa, program]) => {
+        this.observations = observations;
+        this.surveySpecies = taxa;
+        this.programFeature = program;
+      });
     });
   }
 
-  ngAfterViewChecked(): void {
+  ngAfterViewInit(): void {
     try {
       if (this.fragment) {
         document
