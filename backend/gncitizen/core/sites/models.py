@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
+import enum
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
@@ -21,22 +21,15 @@ def create_schema(db):
     db.session.commit()
 
 
-@serializable
-class SiteTypeModel(TimestampMixinModel, db.Model):
-    """Table des types de sites
-    Formulaire généré par la lib https://github.com/dschnelldavis/angular2-json-schema-form
-    json de création de formulaire enregistré dans le champ json_schema_form"""
+class SiteType(enum.Enum):
+    """Liste et paramêtres des types de sites supportés
+    (pour l'instant seulement "mare").
+    """
 
-    __tablename__ = "t_typesite"
-    __table_args__ = {"schema": "gnc_sites"}
-    id_typesite = db.Column(db.Integer, primary_key=True, unique=True)
-    category = db.Column(db.String(200))
-    type = db.Column(db.String(200))
-    json_schema_form = db.Column(JSONB, nullable=True)
-    pictogram = db.Column(db.Text)
+    mare = "..."  #TODO: json_schema file path goes here
 
-    def __repr__(self):
-        return "<TypeSite {0}>".format(self.id_typesite)
+    def __init__(self, form_schema):
+        self.form_schema = form_schema
 
 
 @serializable
@@ -52,9 +45,7 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
         db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
     )
     name = db.Column(db.String(250))
-    id_type = db.Column(
-        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False
-    )
+    site_type = db.Column(db.Enum(SiteType), nullable=False)
     geom = db.Column(Geometry("POINT", 4326))
 
     def __repr__(self):
@@ -71,9 +62,7 @@ class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE")
     )
-    id_typesite = db.Column(
-        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE")
-    )
+    site_type = db.Column(db.Enum(SiteType))
 
 
 class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):

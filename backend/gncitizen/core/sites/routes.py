@@ -1,5 +1,5 @@
 from flask import Blueprint, request, current_app
-from .models import SiteTypeModel, SiteModel, VisitModel
+from .models import SiteType, SiteModel, VisitModel
 from gncitizen.core.users.models import UserModel
 import uuid
 import datetime
@@ -31,13 +31,10 @@ def get_types():
             description: A list of all site types
     """
     try:
-        modules = SiteTypeModel.query.all()
-        count = len(modules)
-        datas = []
-        for m in modules:
-            d = m.as_dict()
-            datas.append(d)
-        return {"count": count, "datas": datas}, 200
+        data = []
+        for t in SiteType:
+            data.append(t.name)
+        return {"count": len(data), "site_types": data}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
 

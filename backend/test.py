@@ -73,7 +73,7 @@ def getrequest(url):
     response = requests.get(myUrl, headers=headers, data=params)
     return response
 
-
+@unittest.skip
 class TestAuthFlaskApiUsingRequests(unittest.TestCase):
 
     def test_login(self):
@@ -92,7 +92,7 @@ class TestAuthFlaskApiUsingRequests(unittest.TestCase):
         response = postrequest("logout", auth())
         self.assertEqual(response.status_code, 200)
 
-
+@unittest.skip
 class ObservationsTestCase(unittest.TestCase):
     def setUp(self):
         """Define test variables and initialize app."""
@@ -105,8 +105,8 @@ class ObservationsTestCase(unittest.TestCase):
             'geometry': {"type": "Point", "coordinates": [5, 45]}
         }
 
-    def login_user(self, data):
-        return self.client().post(mainUrl + 'login', data=data)
+    # def login_user(self, data):
+    #     return self.client().post(mainUrl + 'login', data=data)
 
     def test_get_observations(self):
         response = getrequest("observations")
@@ -122,6 +122,49 @@ class ObservationsTestCase(unittest.TestCase):
     #     print(data)
     #     self.assertEqual(response.status_code, 200)
 
+
+class SitesTestCase(unittest.TestCase):
+
+    def test_get_sites(self):
+        resp = getrequest("sites")
+        data = resp.json()
+        self.assertEqual(data['type'], "FeatureCollection")
+
+    def test_site_types(self):
+        response = getrequest('sites/types')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertGreaterEqual(data['count'], 1)
+        self.assertTrue('mare' in data['site_types'])
+
+    def test_create_site(self):
+        body = {
+            'id_program': 2,
+            'name': 'la mare au fond de mon jardin',
+            'geometry': {
+                'type': 'point',
+                'coordinates': [5.644226074218751, 45.08709642547449],
+            }
+        }
+        # Should fail when no site_type provided
+        response = postrequest("sites/", json.dumps(body))
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertTrue('not-null constraint' in data['error_message'])
+
+        # Should fail with incorrect site_type
+        body['site_type'] = 'wrong'
+        response = postrequest("sites/", json.dumps(body))
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertTrue('invalid input value for enum sitetype' in data['error_message'])
+
+        # Success for mare
+        body['site_type'] = 'mare'
+        response = postrequest("sites/", json.dumps(body))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        print(data)
 
 if __name__ == "__main__":
     unittest.main()
