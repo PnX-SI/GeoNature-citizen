@@ -27,15 +27,18 @@ export const MAP_CONFIG = {
     },
     {
       name: "OpenStreetMapBZH",
-      maxZoom: 19,
+      maxZoom: 18,
       layer: "//tile.openstreetmap.bzh/br/{z}/{x}/{y}.png",
+      subdomains: "",
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles courtesy of <a href="http://www.openstreetmap.bzh/" target="_blank">Breton OpenStreetMap Team</a>',
       bounds: [[46.2, -5.5], [50, 0.7]]
     },
     {
       name: "OpenTopoMap",
+      maxZoom: 17,
       layer: "//{s}.opentopomap.org/{z}/{x}/{y}.png",
+      subdomains: "abc",
       attribution: "© OpenTopoMap"
     },
     {
