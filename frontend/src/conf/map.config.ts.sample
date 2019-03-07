@@ -51,6 +51,7 @@ export const MAP_CONFIG = {
     },
     {
       name: "Stamen",
+      maxZoom: 22,
       // url: "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg",
       // url: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
       layer:

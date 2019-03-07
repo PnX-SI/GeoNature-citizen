@@ -14,10 +14,8 @@ import * as L from "leaflet";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
 
-import { AppConfig } from "../../../../conf/app.config";
+// import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
-
-declare let $: any;
 
 const conf = {
   ELEMENT: "obsMap",
@@ -33,14 +31,12 @@ const conf = {
     return acc;
   }, {}),
   DEFAULT_BASE_MAP: () => {
-    /*
-    Get a random base map to test
-    BASE_LAYERS[
-      Object.keys(BASE_LAYERS)[
-        (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
-      ]
-    ];
-    */
+    // Get a random base map to test
+    // return conf.BASE_LAYERS[
+    //   Object.keys(conf.BASE_LAYERS)[
+    //     (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
+    //   ]
+    // ];
     return conf.BASE_LAYERS["OpenStreetMapFRHot"];
   },
   ZOOM_CONTROL_POSITION: "topright",
@@ -150,8 +146,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
   observationsLayer: L.FeatureGroup;
   newObsMarker: L.Marker<any>;
 
-  constructor() {}
-
   ngOnInit() {
     this.initMap(conf);
   }
@@ -172,18 +166,21 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
     // zoom
     this.obsMap.zoomControl.setPosition(this.options.ZOOM_CONTROL_POSITION);
+
     // scale
     L.control
       .scale({ position: this.options.SCALE_CONTROL_POSITION })
       .addTo(this.obsMap);
-    // Base layers control
+
+    // Base layers
     L.control
       .layers(this.options.BASE_LAYERS, null, {
         collapsed: this.options.BASE_LAYER_CONTROL_INIT_COLLAPSED,
         position: this.options.BASE_LAYER_CONTROL_POSITION
       })
       .addTo(this.obsMap);
-    // geolocation control
+
+    // geolocation
     L.control
       .locate({
         position: this.options.GEOLOCATION_CONTROL_POSITION,
