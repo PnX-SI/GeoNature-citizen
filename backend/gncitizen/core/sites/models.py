@@ -62,7 +62,7 @@ class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE")
     )
-    site_type = db.Column(db.Enum(SiteType))
+    site_type = db.Column(db.Enum(SiteType), nullable=False)
 
 
 class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
