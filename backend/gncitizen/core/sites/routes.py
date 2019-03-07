@@ -77,19 +77,23 @@ def get_site(pk):
         return {"error_message": str(e)}, 400
 
 
+def format_site(site):
+    feature = get_geojson_feature(site.geom)
+    site_dict = site.as_dict(True)
+    for k in site_dict:
+        if k not in ("id_role", "geom"):
+            feature["properties"][k] = site_dict[k]
+    return feature
+
+
 def format_sites(sites):
     count = len(sites)
     features = []
     for site in sites:
-        feature = get_geojson_feature(site.geom)
-        site_dict = site.as_dict(True)
-        for k in site_dict:
-            if k not in ("id_role", "geom"):
-                feature["properties"][k] = site_dict[k]
-        features.append(feature)
-    datas = FeatureCollection(features)
-    datas["count"] = count
-    return datas
+        features.append(format_site(site))
+    data = FeatureCollection(features)
+    data["count"] = count
+    return data
 
 
 @routes.route("/", methods=["GET"])
@@ -247,14 +251,10 @@ def post_site():
         db.session.commit()
         # Réponse en retour
         result = SiteModel.query.get(newsite.id_site)
-        result_dict = result.as_dict(True)
-        features = []
-        feature = get_geojson_feature(result.geom)
-        for k in result_dict:
-            if k not in ("id_role", "geom"):
-                feature["properties"][k] = result_dict[k]
-        features.append(feature)
-        return {"message": "New site created.", "features": features}, 200
+        return {
+                   "message": "New site created.",
+                   "features": [format_site(result)]
+               }, 200
     except Exception as e:
         current_app.logger.warning("Error: %s", str(e))
         return {"error_message": str(e)}, 400
