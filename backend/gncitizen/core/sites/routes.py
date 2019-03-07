@@ -1,5 +1,5 @@
 from flask import Blueprint, request, current_app
-from .models import SiteTypeModel, SiteModel, VisitModel
+from .models import SiteType, SiteModel, VisitModel
 from gncitizen.core.users.models import UserModel
 import uuid
 import datetime
@@ -31,13 +31,10 @@ def get_types():
             description: A list of all site types
     """
     try:
-        modules = SiteTypeModel.query.all()
-        count = len(modules)
-        datas = []
-        for m in modules:
-            d = m.as_dict()
-            datas.append(d)
-        return {"count": count, "datas": datas}, 200
+        data = []
+        for t in SiteType:
+            data.append(t.name)
+        return {"count": len(data), "site_types": data}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
 
@@ -80,6 +77,21 @@ def get_site(pk):
         return {"error_message": str(e)}, 400
 
 
+def format_sites(sites):
+    count = len(sites)
+    features = []
+    for site in sites:
+        feature = get_geojson_feature(site.geom)
+        site_dict = site.as_dict(True)
+        for k in site_dict:
+            if k not in ("id_role", "geom"):
+                feature["properties"][k] = site_dict[k]
+        features.append(feature)
+    datas = FeatureCollection(features)
+    datas["count"] = count
+    return datas
+
+
 @routes.route("/", methods=["GET"])
 @json_resp
 def get_sites():
@@ -101,18 +113,7 @@ def get_sites():
     """
     try:
         sites = SiteModel.query.all()
-        count = len(sites)
-        features = []
-        for site in sites:
-            feature = get_geojson_feature(site.geom)
-            site_dict = site.as_dict(True)
-            for k in site_dict:
-                if k not in ("id_role", "geom"):
-                    feature["properties"][k] = site_dict[k]
-            features.append(feature)
-        datas = FeatureCollection(features)
-        datas["count"] = count
-        return datas
+        return format_sites(sites)
     except Exception as e:
         return {"error_message": str(e)}, 400
 
@@ -137,19 +138,8 @@ def get_program_sites(id):
         description: List of all sites
     """
     try:
-        sites = SiteModel.query.filter_by(id_program=id)
-        count = len(sites.all())
-        features = []
-        for site in sites:
-            feature = get_geojson_feature(site.geom)
-            site_dict = site.as_dict(True)
-            for k in site_dict:
-                if k not in ("id_role", "geom"):
-                    feature["properties"][k] = site_dict[k]
-            features.append(feature)
-        datas = FeatureCollection(features)
-        datas["count"] = count
-        return datas
+        sites = SiteModel.query.filter_by(id_program=id).all()
+        return format_sites(sites)
     except Exception as e:
         return {"error_message": str(e)}, 400
 
@@ -186,10 +176,11 @@ def post_site():
                   description: Site name
                   default:  none
                   example: "Site 1"
-                id_type:
-                  type: integer
-                  default:  Type foreign key
-                  example: 1
+                site_type:
+                  type: string
+                  description: must be one of the supported site types
+                  required: True
+                  example: "mare"
                 geometry:
                   type: string
                   example: {"type":"Point", "coordinates":[5,45]}
