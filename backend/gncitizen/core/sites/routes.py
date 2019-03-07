@@ -77,6 +77,21 @@ def get_site(pk):
         return {"error_message": str(e)}, 400
 
 
+def format_sites(sites):
+    count = len(sites)
+    features = []
+    for site in sites:
+        feature = get_geojson_feature(site.geom)
+        site_dict = site.as_dict(True)
+        for k in site_dict:
+            if k not in ("id_role", "geom"):
+                feature["properties"][k] = site_dict[k]
+        features.append(feature)
+    datas = FeatureCollection(features)
+    datas["count"] = count
+    return datas
+
+
 @routes.route("/", methods=["GET"])
 @json_resp
 def get_sites():
@@ -98,18 +113,7 @@ def get_sites():
     """
     try:
         sites = SiteModel.query.all()
-        count = len(sites)
-        features = []
-        for site in sites:
-            feature = get_geojson_feature(site.geom)
-            site_dict = site.as_dict(True)
-            for k in site_dict:
-                if k not in ("id_role", "geom"):
-                    feature["properties"][k] = site_dict[k]
-            features.append(feature)
-        datas = FeatureCollection(features)
-        datas["count"] = count
-        return datas
+        return format_sites(sites)
     except Exception as e:
         return {"error_message": str(e)}, 400
 
@@ -134,19 +138,8 @@ def get_program_sites(id):
         description: List of all sites
     """
     try:
-        sites = SiteModel.query.filter_by(id_program=id)
-        count = len(sites.all())
-        features = []
-        for site in sites:
-            feature = get_geojson_feature(site.geom)
-            site_dict = site.as_dict(True)
-            for k in site_dict:
-                if k not in ("id_role", "geom"):
-                    feature["properties"][k] = site_dict[k]
-            features.append(feature)
-        datas = FeatureCollection(features)
-        datas["count"] = count
-        return datas
+        sites = SiteModel.query.filter_by(id_program=id).all()
+        return format_sites(sites)
     except Exception as e:
         return {"error_message": str(e)}, 400
 
