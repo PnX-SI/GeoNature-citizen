@@ -35,7 +35,7 @@ export const MAP_CONFIG = {
     },
     {
       name: "OpenTopoMap",
-      layer: "//opentopomap.org/{z}/{x}/{y}.png",
+      layer: "//{s}.opentopomap.org/{z}/{x}/{y}.png",
       attribution: "© OpenTopoMap"
     },
     {
