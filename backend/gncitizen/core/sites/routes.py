@@ -64,15 +64,14 @@ def get_site(pk):
         description: A site detail
     """
     try:
-        result = SiteModel.query.get(pk)
-        result_dict = result.as_dict(True)
-        features = []
-        feature = get_geojson_feature(result.geom)
-        for k in result_dict:
-            if k not in ("id_creator", "geom"):
-                feature["properties"][k] = result_dict[k]
-        features.append(feature)
-        return {"features": features}, 200
+        site = SiteModel.query.get(pk)
+        last_visit = VisitModel.query\
+            .filter_by(id_site=pk)\
+            .order_by(VisitModel.timestamp_update.desc())\
+            .first()
+        formatted_site = format_site(site)
+        formatted_site['properties']['last_visit'] = last_visit.as_dict()
+        return {"features": [formatted_site]}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
 

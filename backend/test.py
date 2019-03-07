@@ -212,5 +212,14 @@ class SitesTestCase(unittest.TestCase):
 
         self.assertNotEqual(visit1['id_visit'], visit2['id_visit'])
 
+        # Query site and check last_visit
+        response = getrequest('sites/{}'.format(site_id))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        print(data)
+        site = data['features'][0]['properties']
+        self.assertEqual(site['last_visit']['id_visit'], visit2['id_visit'])
+
+
 if __name__ == "__main__":
     unittest.main()
