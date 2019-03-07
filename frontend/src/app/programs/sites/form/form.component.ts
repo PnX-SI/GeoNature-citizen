@@ -41,7 +41,7 @@ export const myMarkerTitle =
   styleUrls: ["./form.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class SiteFormComponent implements AfterViewInit {
+export class SiteFormComponent implements OnInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   currentStep: number = 1;
   currentMode: string = "basic";
@@ -296,39 +296,35 @@ export class SiteFormComponent implements AfterViewInit {
         }
       }
     },
-    // "layout": [
-    //   { "key": "environnement", "mode": "basic", "step": 1 },
-    //   { "key": "presenceCorridor", "mode": "advanced", "step": 1 },
-    //   { "key": "corridorFonctionnel", "mode": "advanced", "step": 1 },
-    //   { "key": "natureFond", "mode": "basic", "step": 2 },
-    //   { "key": "longueur", "mode": "advanced", "step": 2 },
-    //   { "key": "largeur", "mode": "advanced", "step": 2 },
-    //   { "key": "surface", "mode": "advanced", "step": 2 },
-    //   { "key": "profondeurMax", "mode": "advanced", "step": 2 },
-    //   { "key": "presenceEau", "mode": "basic", "step": 3 },
-    //   { "key": "turbiditeEau", "mode": "basic", "step": 3 },
-    //   { "key": "regimeHydro", "mode": "advanced", "step": 3 },
-    //   { "key": "alimentationEau", "mode": "advanced", "step": 3 },
-    //   { "key": "ouvrageRegulationHydraulique", "mode": "advanced", "step": 3 },
-    //   { "type": 'submit', "title": 'Submit', "mode": "basic", "step": 3 }
-    // ]
     "steps": [
       {
         "title": "Environnement de la mare",
         "layout": [
           { "key": "environnement", "mode": "basic" },
-          { "key": "presenceCorridor", "mode": "advanced" },
-          { "key": "corridorFonctionnel", "mode": "advanced" },
+          { "type": "section",
+            "title": "Description avancée",
+            "expandable": true,
+            "items": [
+              { "key": "presenceCorridor", "mode": "advanced" },
+              { "key": "corridorFonctionnel", "mode": "advanced" },
+            ]
+          }
         ]
       },
       {
         "title": "Caractéristiques physiques de la mare",
         "layout": [
           { "key": "natureFond", "mode": "basic" },
-          { "key": "longueur", "mode": "advanced" },
-          { "key": "largeur", "mode": "advanced" },
-          { "key": "surface", "mode": "advanced" },
-          { "key": "profondeurMax", "mode": "advanced" },
+          { "type": "section",
+            "title": "Description avancée",
+            "expandable": true,
+            "items": [
+              { "key": "longueur", "mode": "advanced" },
+              { "key": "largeur", "mode": "advanced" },
+              { "key": "surface", "mode": "advanced" },
+              { "key": "profondeurMax", "mode": "advanced" }
+            ]
+          }
         ]
       },
       {
@@ -336,9 +332,15 @@ export class SiteFormComponent implements AfterViewInit {
         "layout": [
           { "key": "presenceEau", "mode": "basic" },
           { "key": "turbiditeEau", "mode": "basic" },
-          { "key": "regimeHydro", "mode": "advanced" },
-          { "key": "alimentationEau", "mode": "advanced" },
-          { "key": "ouvrageRegulationHydraulique", "mode": "advanced" },
+          { "type": "section",
+            "title": "Description avancée",
+            "expandable": true,
+            "items": [
+              { "key": "regimeHydro", "mode": "advanced" },
+              { "key": "alimentationEau", "mode": "advanced" },
+              { "key": "ouvrageRegulationHydraulique", "mode": "advanced" }
+            ]
+          }
         ]
       },
       {
@@ -346,19 +348,31 @@ export class SiteFormComponent implements AfterViewInit {
         "layout": [
           { "key": "presencePoissons", "mode": "basic" },
           { "key": "dechets", "mode": "basic" },
-          { "key": "pollution", "mode": "advanced" },
-          { "key": "usages", "mode": "advanced" }
+          { "type": "section",
+            "title": "Description avancée",
+            "expandable": true,
+            "items": [
+              { "key": "pollution", "mode": "advanced" },
+              { "key": "usages", "mode": "advanced" }
+            ]
+          }
         ]
       },
       {
         "title": "Berges et végétation",
         "layout": [
-          { "key": "penteBerges", "mode": "advanced" },
-          { "key": "boisementBerges", "mode": "advanced" },
-          { "key": "ombrage", "mode": "advanced" },
-          { "key": "vegetationHelophyte", "mode": "advanced" },
-          { "key": "vegetationHydrophyte", "mode": "advanced" },
-          { "key": "eauLibre", "mode": "advanced" },
+          { "type": "section",
+            "title": "Description avancée",
+            "expandable": true,
+            "items": [
+              { "key": "penteBerges", "mode": "advanced" },
+              { "key": "eauLibre", "mode": "advanced" },
+              { "key": "boisementBerges", "mode": "advanced" },
+              { "key": "ombrage", "mode": "advanced" },
+              { "key": "vegetationHelophyte", "mode": "advanced" },
+              { "key": "vegetationHydrophyte", "mode": "advanced" },
+            ]
+          }
         ]
       },
       {
@@ -373,7 +387,7 @@ export class SiteFormComponent implements AfterViewInit {
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
-  ngAfterViewInit() {
+  ngOnInit() {
     this.updatePartialLayout();
   }
 
@@ -386,10 +400,8 @@ export class SiteFormComponent implements AfterViewInit {
     this.updatePartialLayout();
   }
   updatePartialLayout() {
-    var that = this;
-    this.partialLayout = this.jsonSchema.steps[this.currentStep-1].layout.filter(function (e) {
-      return that.advancedMode || e.mode === "basic";
-    });
+    this.partialLayout = this.jsonSchema.steps[this.currentStep - 1].layout;
+    this.partialLayout[this.partialLayout.length - 1].expanded = this.advancedMode;
   }
   isFirstStep() {
     return this.currentStep === 1;
