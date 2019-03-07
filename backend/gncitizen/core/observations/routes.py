@@ -18,7 +18,7 @@ from shapely.geometry import Point, asShape
 from werkzeug import FileStorage
 from werkzeug.datastructures import ImmutableMultiDict
 
-from gncitizen.core.commons.models import MediaModel
+from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import UserModel
@@ -178,7 +178,8 @@ def post_observation():
     try:
         request_datas = request.form
         current_app.logger.debug(
-            '[post_observation] request data:', request_datas)
+            "[post_observation] request data:", request_datas
+        )
 
         datas2db = {}
         for field in request_datas:
@@ -192,7 +193,8 @@ def post_observation():
                 current_app.logger.debug("request.files: %s", request.files)
                 file = request.files.get("file", None)
                 current_app.logger.debug(
-                    "[post_observation] request.files: %s", request.files)
+                    "[post_observation] request.files: %s", request.files
+                )
                 # if file and allowed_file(file.filename):
                 #     ext = file.filename.rsplit(".", 1)[1].lower()
                 #     timestamp = datetime.now().strftime(
@@ -408,10 +410,15 @@ def get_program_observations(id):
                     "municipality"
                 ),
             )
-            .filter_by(id_program=id)
+            .filter(ObservationModel.id_program == id, ProgramsModel.is_active)
             .join(
                 LAreas,
                 LAreas.id_area == ObservationModel.municipality,
+                isouter=True,
+            )
+            .join(
+                ProgramsModel,
+                ProgramsModel.id_program == ObservationModel.id_program,
                 isouter=True,
             )
             .all()

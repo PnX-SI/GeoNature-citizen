@@ -83,7 +83,9 @@ def get_program(pk):
              description: A list of all programs
          """
     try:
-        datas = ProgramsModel.query.filter_by(id_program=pk).limit(1)
+        datas = ProgramsModel.query.filter_by(
+            id_program=pk, is_active=True
+        ).limit(1)
         features = []
         for data in datas:
             feature = data.get_geofeature()
@@ -118,7 +120,7 @@ def get_programs():
             with_geom = json.loads(arg_with_geom.lower())
         else:
             with_geom = False
-        programs = ProgramsModel.query.all()
+        programs = ProgramsModel.query.filter_by(is_active=True).all()
         count = len(programs)
         features = []
         for program in programs:
@@ -222,7 +224,10 @@ def post_program():
         db.session.commit()
         # Réponse en retour
         return (
-            {"message": "New observation created.", "features": newprogram.as_dict()},
+            {
+                "message": "New observation created.",
+                "features": newprogram.as_dict(),
+            },
             200,
         )
     except Exception as e:
