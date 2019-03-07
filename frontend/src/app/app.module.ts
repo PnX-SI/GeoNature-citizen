@@ -27,6 +27,7 @@ import { ObsFormComponent } from "./programs/observations/form/form.component";
 import { ObsListComponent } from "./programs/observations/list/list.component";
 import { ObsMapComponent } from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
+import { SitesComponent } from "./programs/sites/sites.component";
 import { SiteFormComponent } from "./programs/sites/form/form.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
@@ -41,10 +42,13 @@ import { FlowComponent } from "./programs/observations/modalflow/flow/flow.compo
 import { FlowDirective } from "./programs/observations/modalflow/flow/flow.directive";
 import { OnboardComponent } from "./programs/observations/modalflow/steps/onboard/onboard.component";
 import { CommittedComponent } from "./programs/observations/modalflow/steps/committed/committed.component";
+import { SiteCommittedComponent } from "./programs/sites/modalflow/steps/committed/committed.component";
 import { CongratsComponent } from "./programs/observations/modalflow/steps/congrats/congrats.component";
 import { ModalFlowComponent } from "./programs/observations/modalflow/modalflow.component";
+import { SiteModalFlowComponent } from "./programs/sites/modalflow/modalflow.component";
 import { RewardComponent } from "./programs/observations/modalflow/steps/reward/reward.component";
 import { ModalFlowService } from "./programs/observations/modalflow/modalflow.service";
+import { SiteModalFlowService } from "./programs/sites/modalflow/modalflow.service";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { AppConfig } from "../conf/app.config";
 
@@ -73,6 +77,7 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     ObsMapComponent,
     ObsFormComponent,
     ObsListComponent,
+    SitesComponent,
     SiteFormComponent,
     HomeComponent,
     HomeCustomComponent,
@@ -94,8 +99,10 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     FlowDirective,
     OnboardComponent,
     CommittedComponent,
+    SiteCommittedComponent,
     CongratsComponent,
     ModalFlowComponent,
+    SiteModalFlowComponent,
     RewardComponent
   ],
   providers: [
@@ -104,6 +111,7 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     GncProgramsService,
     // FlowService,
     ModalFlowService,
+    SiteModalFlowService,
     ProgramsResolve,
     {
       provide: HTTP_INTERCEPTORS,
@@ -120,6 +128,7 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     RegisterComponent,
     OnboardComponent,
     CommittedComponent,
+    SiteCommittedComponent,
     CongratsComponent,
     RewardComponent
   ]

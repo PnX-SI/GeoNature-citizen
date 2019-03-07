@@ -1,8 +1,9 @@
 import {
   Component,
   ViewEncapsulation,
-  AfterViewInit,
+  OnInit,
   ViewChild,
+  Input,
   ElementRef
 } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -41,7 +42,7 @@ export const myMarkerTitle =
   styleUrls: ["./form.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class SiteFormComponent implements OnInit {
+export class SiteFormComponent implements OnInit, AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   currentStep: number = 1;
   currentMode: string = "basic";
@@ -49,10 +50,53 @@ export class SiteFormComponent implements OnInit {
   advancedMode: boolean = false;
   jsonData: object = {};
   formOptions: any = {
+    "loadExternalAssets": false,
     "debug": true,
     "returnEmptyFields": false,
     "addSubmit": false
   }
+
+  constructor(private http: HttpClient, private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    this.updatePartialLayout();
+  }
+
+  nextStep() {
+    this.currentStep += 1;
+    this.updatePartialLayout();
+  }
+  previousStep() {
+    this.currentStep -= 1;
+    this.updatePartialLayout();
+  }
+  updatePartialLayout() {
+    this.partialLayout = this.jsonSchema.steps[this.currentStep - 1].layout;
+    this.partialLayout[this.partialLayout.length - 1].expanded = this.advancedMode;
+  }
+  isFirstStep() {
+    return this.currentStep === 1;
+  }
+  isLastStep() {
+    return this.currentStep === this.jsonSchema.steps.length;
+  }
+  yourOnChangesFn(e) {
+    // console.log(e)
+  }
+  toogleAdvancedMode() {
+    this.advancedMode = !this.advancedMode;
+    this.updatePartialLayout();
+  }
+  onFormSubmit(): void {
+    // console.debug("formValues:", this.obsForm.value);
+    // this.postObservation().subscribe(
+    //   data => console.debug(data),
+    //   err => console.error(err),
+    //   () => console.log("done")
+    //   // TODO: queue obs in list
+    // );
+  }
+
   jsonSchema: any = {
     "schema": {
       "title": "Mare",
@@ -384,36 +428,4 @@ export class SiteFormComponent implements OnInit {
       }
     ]
   };
-
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
-
-  ngOnInit() {
-    this.updatePartialLayout();
-  }
-
-  nextStep() {
-    this.currentStep += 1;
-    this.updatePartialLayout();
-  }
-  previousStep() {
-    this.currentStep -= 1;
-    this.updatePartialLayout();
-  }
-  updatePartialLayout() {
-    this.partialLayout = this.jsonSchema.steps[this.currentStep - 1].layout;
-    this.partialLayout[this.partialLayout.length - 1].expanded = this.advancedMode;
-  }
-  isFirstStep() {
-    return this.currentStep === 1;
-  }
-  isLastStep() {
-    return this.currentStep === this.jsonSchema.steps.length;
-  }
-  yourOnChangesFn(e) {
-    // console.log(e)
-  }
-  toogleAdvancedMode() {
-    this.advancedMode = !this.advancedMode;
-    this.updatePartialLayout();
-  }
  }

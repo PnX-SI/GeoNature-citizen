@@ -9,16 +9,17 @@
     <button class="btn btn-primary" (click)="previousStep()" *ngIf="!isFirstStep()">Etape précédente</button>
     <button class="btn btn-primary" (click)="nextStep()" *ngIf="!isLastStep()">Etape suivante</button>
   </p>
-  <json-schema-form
-  loadExternalAssets="true"
-  [schema]="jsonSchema.schema"
-  [layout]="partialLayout"
-  [(data)]="jsonData"
-  [options]="formOptions"
-  framework="bootstrap-4"
-  (onSubmit)="onFormSubmit($event)"
-  (onChanges)="yourOnChangesFn($event)">
-  </json-schema-form>
+  <form>
+    <json-schema-form
+    loadExternalAssets="false"
+    [schema]="jsonSchema.schema"
+    [layout]="partialLayout"
+    [(data)]="jsonData"
+    [options]="formOptions"
+    (onSubmit)="onFormSubmit($event)"
+    framework="bootstrap-4">
+    </json-schema-form>
+  </form>
   <p>
     <button class="btn btn-link" (click)="toogleAdvancedMode()">{{ advancedMode ? "Masquer" : "Afficher" }} par défaut les champs avancés</button>
   </p>

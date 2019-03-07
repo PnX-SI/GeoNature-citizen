@@ -1,0 +1,36 @@
+<div class="row">
+  <!-- LA PLATEFORME -->
+  <section *ngIf="programs.length === 1" id="welcome" class="row">
+    <h1>
+      Bienvenue<br />
+      sur Geonature Citizen
+    </h1>
+    <a class="btn-big">Participer au programme</a>
+    <span>Scrollez pour en voir plus !</span>
+    <img class="d-block scroll" src="../../assets/scroll.svg" />
+  </section>
+</div>
+
+<div class="row">
+  <!-- LES OBSERVATIONS -->
+  <section id="program" class="observations row">
+    <input id="slide-sidebar" type="checkbox" role="button" />
+    <label class="toggle" for="slide-sidebar"
+      ><i class="fa fa-chevron-left"></i
+    ></label>
+    <div class="col-lg-4 col-md-12 side-bar" id="list">
+      <app-obs-list
+        [observations]="observations"
+        [taxa]="surveySpecies"
+      ></app-obs-list>
+    </div>
+
+    <div class="map col-lg-12 col-md-12" id="map">
+      <app-obs-map
+        [observations]="observations"
+        [program]="programFeature"
+      ></app-obs-map>
+      <div class="btn-groups"><app-sitemodalflow></app-sitemodalflow></div>
+    </div>
+  </section>
+</div>

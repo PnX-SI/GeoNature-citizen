@@ -4,6 +4,7 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { HomeComponent } from "./home/home.component";
 import { ObsComponent } from "./programs/observations/obs.component";
+import { SitesComponent } from "./programs/sites/sites.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { ProgramsComponent } from "./programs/programs.component";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
@@ -43,7 +44,8 @@ const appRoutes: Routes = [
   },
   {
     path: "programs/:id/sites",
-    component: SiteFormComponent,
+    // component: SiteFormComponent,
+    component: SitesComponent,
     resolve: { programs: ProgramsResolve }
   },
   { path: "synthesis/species/:id", component: SpeciesComponent },

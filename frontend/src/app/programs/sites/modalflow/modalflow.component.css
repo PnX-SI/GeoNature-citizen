@@ -1,0 +1,15 @@
+app-sitemodalflow  {
+    position: absolute;
+    bottom: 30px;
+    left: 240px;
+}
+
+@media screen and (max-width: 450px){
+    app-sitemodalflow  {
+        right: 0px;
+        left: 0px;
+    }
+    app-sitemodalflow button:first-child{
+        margin: 0px !important;
+    }
+}
