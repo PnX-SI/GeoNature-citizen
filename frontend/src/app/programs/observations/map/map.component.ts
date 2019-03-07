@@ -166,11 +166,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     }
   }
 
-  initMap(
-    // element: string | HTMLElement,
-    options: any,
-    LeafletOptions: L.MapOptions = {}
-  ): void {
+  initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
     this.options = options;
     this.obsMap = L.map(this.options.ELEMENT, {
       layers: [this.options.DEFAULT_BASE_MAP()],
@@ -193,17 +189,14 @@ export class ObsMapComponent implements OnInit, OnChanges {
     // geolocation control
     L.control
       .locate({
+        position: this.options.GEOLOCATION_CONTROL_POSITION,
+        getLocationBounds: locationEvent =>
+          locationEvent.bounds.extend(this.programMaxBounds),
         locateOptions: {
           enableHighAccuracy: this.options.GEOLOCATION_HIGH_ACCURACY
-        },
-        position: this.options.GEOLOCATION_CONTROL_POSITION
-        // FIXME: recover program/location fitBounds behavior
-        // getLocationBounds: function(locationEvent) {
-        //   return this.programMaxBounds.extend(locationEvent.bounds);
-        // }
+        }
       })
       .addTo(this.obsMap);
-    // this.obsMap.on("locationfound", this.onLocationFound.bind(this));
   }
 
   loadObservations(): void {
@@ -223,19 +216,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.obsMap.addLayer(this.observationsLayer);
     }
   }
-
-  // onLocationFound(e): void {
-  //   const radius = e.accuracy / 2;
-  //   // L.marker(e.latlng, {
-  //   //   icon: NEW_OBS_MARKER_ICON()
-  //   // }).addTo(this.obsMap);
-  //   // geolocation.bindPopup("You are within " + radius + " meters from this point").openPopup()
-  //   const disk = L.circle(e.latlng, radius).addTo(this.obsMap);
-  //   console.debug("Geolocation", e.latlng);
-  //   if (this.programMaxBounds) {
-  //     this.obsMap.fitBounds(disk.getBounds().extend(this.programMaxBounds));
-  //   }
-  // }
 
   loadProgramArea(canSubmit = true): void {
     if (this.program) {
