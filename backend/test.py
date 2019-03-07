@@ -150,14 +150,14 @@ class SitesTestCase(unittest.TestCase):
         response = postrequest("sites/", json.dumps(body))
         self.assertEqual(response.status_code, 400)
         data = response.json()
-        self.assertTrue('not-null constraint' in data['error_message'])
+        self.assertIn('not-null constraint', data['error_message'])
 
         # Should fail with incorrect site_type
         body['site_type'] = 'wrong'
         response = postrequest("sites/", json.dumps(body))
         self.assertEqual(response.status_code, 400)
         data = response.json()
-        self.assertTrue('invalid input value for enum sitetype' in data['error_message'])
+        self.assertIn('invalid input value for enum sitetype', data['error_message'])
 
         # Success for mare
         body['site_type'] = 'mare'
@@ -165,6 +165,15 @@ class SitesTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = response.json()
         print(data)
+
+        # Test that site is now getting returned
+        site_id = data['features'][0]['properties']['id_site']
+        response = getrequest('sites/')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        sites_ids = [f['properties']['id_site'] for f in data['features']]
+        self.assertIn(site_id, sites_ids)
+
 
 if __name__ == "__main__":
     unittest.main()
