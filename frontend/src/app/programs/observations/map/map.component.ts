@@ -31,12 +31,14 @@ const conf = {
     return acc;
   }, {}),
   DEFAULT_BASE_MAP: () => {
-    // Get a random base map to test
-    // BASE_LAYERS[
-    //   Object.keys(BASE_LAYERS)[
-    //     (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
-    //   ]
-    // ];
+    /*
+    Get a random base map to test
+    BASE_LAYERS[
+      Object.keys(BASE_LAYERS)[
+        (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
+      ]
+    ];
+    */
     return conf.BASE_LAYERS["OpenStreetMap"];
   },
   ZOOM_CONTROL_POSITION: "topright",
@@ -126,23 +128,16 @@ const conf = {
 })
 export class ObsMapComponent implements OnInit, OnChanges {
   /*
-   PLAN:
-      migrate layer logic to parent component/service, rm inputs
-      instance config (element_id, tilehost, attribution, ... std leaflet options)
-        @outputs:
-          onLayerAdded
-          onLayerRemoved
-          onClick
-
-        fitBounds(layer)
-        setMaxBounds(layer)
-        panTo(layer)
-        geolocate(boolean)
+   PLAN: migrate layer logic to parent component/service, rm inputs
+    instance config (element_id, tilehost, attribution, ... std leaflet options)
+      @outputs:
+        onLayerAdded
+        onLayerRemoved
+        onClick
   */
 
   @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
-  @Input("geolocate") geolocate = true;
 
   @Output() onClick: EventEmitter<any> = new EventEmitter();
   programMaxBounds: L.LatLngBounds;
