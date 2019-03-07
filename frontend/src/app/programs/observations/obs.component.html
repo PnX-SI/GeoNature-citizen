@@ -59,6 +59,7 @@
       <app-obs-map
         [observations]="observations"
         [program]="programFeature"
+        (onClick)="onMapClicked($event)"
       ></app-obs-map>
       <div class="btn-groups"><app-modalflow></app-modalflow></div>
     </div>

@@ -137,10 +137,9 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
 
-  @Output() onClick: EventEmitter<any> = new EventEmitter();
+  @Output() onClick: EventEmitter<string> = new EventEmitter();
   options: any;
   obsMap: L.Map;
-  coords: string;
 
   programMaxBounds: L.LatLngBounds;
   observationsLayer: L.FeatureGroup;
@@ -223,8 +222,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.newObsMarker = null;
       if (canSubmit) {
         this.obsMap.on("click", (e: L.LeafletMouseEvent) => {
-          this.onClick.emit();
-
           let coords = JSON.stringify({
             type: "Point",
             coordinates: [e.latlng.lng, e.latlng.lat]
@@ -237,13 +234,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
           if (programBounds.contains([e.latlng.lat, e.latlng.lng])) {
-            this.coords = coords;
-            console.debug(coords);
-            // emit new coordinates
             this.newObsMarker = L.marker(e.latlng, {
               icon: this.options.NEW_OBS_MARKER_ICON()
             }).addTo(this.obsMap);
           }
+          console.debug(coords);
+          // emit new coordinates
+          this.onClick.emit(coords);
         });
       }
       this.programMaxBounds = programBounds;

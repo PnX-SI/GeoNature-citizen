@@ -68,4 +68,12 @@ export class ObsComponent implements OnInit, AfterViewInit {
       alert(e);
     }
   }
+
+  onMapClicked(something: string): void {
+    console.debug("map clicked", something);
+  }
+
+  onObservationSumitted(something: any): void {
+    console.debug("Observation submitted", something);
+  }
 }

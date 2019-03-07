@@ -9,10 +9,9 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
-import { map, tap } from "rxjs/operators";
+import { map } from "rxjs/operators";
 
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
-import { Position, Point } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
 
@@ -55,7 +54,7 @@ export class ObsFormComponent implements AfterViewInit {
   program_id: any;
   formMap: any;
   // FIXME: issue #72 date validation
-  // isDisabled = (date: NgbDate, current: { month: number }) => !(date <= today());
+  // isDisabled = (date: NgbDate, current: { month: number }) => (date > today());
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
@@ -92,11 +91,9 @@ export class ObsFormComponent implements AfterViewInit {
 
         let myMarker = null;
 
-        formMap.on("click", <LeafletMouseEvent>(e) => {
-          let coords = <Point>{
-            type: "Point",
-            coordinates: <Position>[e.latlng.lng, e.latlng.lat]
-          };
+        formMap.on("click", (e: LeafletMouseEvent) => {
+          let coords = L.point(e.latlng.lng, e.latlng.lat);
+
           this.obsForm.patchValue({ geometry: coords });
           // TODO: this.obsForm.patchValue({ municipality: municipality });
           console.debug(coords);
@@ -120,13 +117,16 @@ export class ObsFormComponent implements AfterViewInit {
       });
   }
 
-  onFormSubmit(): void {
+  onFormSubmit(): any {
     console.debug("formValues:", this.obsForm.value);
     this.postObservation().subscribe(
       data => console.debug(data),
       err => console.error(err),
-      () => console.log("done")
-      // TODO: queue obs in list
+      () => {
+        console.log("done");
+        // TODO: queue obs in list
+        return this.obsForm.value;
+      }
     );
   }
 
@@ -137,14 +137,14 @@ export class ObsFormComponent implements AfterViewInit {
       })
     };
 
-    this.obsForm.patchValue({ id_program: this.program_id });
+    this.obsForm.controls["id_program"].patchValue(this.program_id);
 
     let obsDate = NgbDate.from(this.obsForm.controls.date.value);
-    this.obsForm.patchValue({
-      date: new Date(obsDate.year, obsDate.month, obsDate.day)
+    this.obsForm.controls["date"].patchValue(
+      new Date(obsDate.year, obsDate.month, obsDate.day)
         .toISOString()
         .match(/\d{4}-\d{2}-\d{2}/)[0]
-    });
+    );
 
     let formData: FormData = new FormData();
 
@@ -189,9 +189,9 @@ export class ObsFormComponent implements AfterViewInit {
   }
 
   restItemsServiceGetSurveySpeciesItems(taxlist) {
-    return this.http
-      .get(`${AppConfig.API_ENDPOINT}/taxonomy/lists/${taxlist}/species`)
-      .pipe(map(data => data));
+    return this.http.get(
+      `${AppConfig.API_ENDPOINT}/taxonomy/lists/${taxlist}/species`
+    );
   }
 
   getSurveySpeciesItems(taxlist): void {

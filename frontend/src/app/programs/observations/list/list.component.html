@@ -18,10 +18,10 @@
     </select>
   </div>
   <div class="obs-found">
-    <p>{{ observations?.length }} observations trouvées !</p>
+    <p i18n>{{ observationList?.length }} observations trouvées !</p>
   </div>
   <div id="list">
-    <div *ngFor="let o of observations">
+    <div *ngFor="let o of observationList">
       <div class="espece">
         <a
           [routerLink]="['/synthesis/species', o.properties.cd_nom]"
@@ -31,10 +31,10 @@
           <img src="assets/Azure-Commun-019.JPG" />
           <div class="infos">
             <h5>{{ o.properties.common_name }}</h5>
-            <p>
+            <p i18n>
               Observé par <span>{{ o.properties.sci_name }}</span>
             </p>
-            <p>
+            <p i18n>
               le <span>{{ o.properties.date }}</span>
             </p>
           </div>
