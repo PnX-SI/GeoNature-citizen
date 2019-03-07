@@ -23,6 +23,7 @@ SERIALIZERS = {
     "timestamp": lambda x: str(x) if x else None,
     "uuid": lambda x: str(x) if x else None,
     "numeric": lambda x: str(x) if x else None,
+    "enum": lambda x: x.name if x else None,
 }
 
 
