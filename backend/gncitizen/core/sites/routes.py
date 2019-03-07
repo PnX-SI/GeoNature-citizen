@@ -176,10 +176,11 @@ def post_site():
                   description: Site name
                   default:  none
                   example: "Site 1"
-                id_type:
-                  type: integer
-                  default:  Type foreign key
-                  example: 1
+                site_type:
+                  type: string
+                  description: must be one of the supported site types
+                  required: True
+                  example: "mare"
                 geometry:
                   type: string
                   example: {"type":"Point", "coordinates":[5,45]}
