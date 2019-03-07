@@ -26,7 +26,9 @@ const conf = {
     acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
       attribution: baseLayer["attribution"],
       subdomains: baseLayer["subdomains"],
-      detectRetina: baseLayer["detectRetina"]
+      detectRetina: baseLayer["detectRetina"],
+      maxZoom: baseLayer["maxZoom"],
+      bounds: baseLayer["bounds"]
     });
     return acc;
   }, {}),
@@ -39,7 +41,7 @@ const conf = {
       ]
     ];
     */
-    return conf.BASE_LAYERS["OpenStreetMap"];
+    return conf.BASE_LAYERS["OpenStreetMapFRHot"];
   },
   ZOOM_CONTROL_POSITION: "topright",
   BASE_LAYER_CONTROL_POSITION: "topright",
@@ -131,22 +133,22 @@ export class ObsMapComponent implements OnInit, OnChanges {
    PLAN: migrate layer logic to parent component/service, rm inputs
     instance config (element_id, tilehost, attribution, ... std leaflet options)
       @outputs:
+        onClick
         onLayerAdded
         onLayerRemoved
-        onClick
   */
 
   @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
 
   @Output() onClick: EventEmitter<any> = new EventEmitter();
-  programMaxBounds: L.LatLngBounds;
-  coords: string;
-  obsMap: L.Map;
-  observationsLayer: L.FeatureGroup;
-  map_init = false;
-  newObsMarker: L.Marker<any>;
   options: any;
+  obsMap: L.Map;
+  coords: string;
+
+  programMaxBounds: L.LatLngBounds;
+  observationsLayer: L.FeatureGroup;
+  newObsMarker: L.Marker<any>;
 
   constructor() {}
 
