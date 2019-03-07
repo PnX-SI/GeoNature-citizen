@@ -5,6 +5,7 @@ from datetime import datetime
 
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
+from sqlalchemy.sql import expression
 from sqlalchemy.ext.declarative import declared_attr
 
 from gncitizen.core.taxonomy.models import BibListes
@@ -64,6 +65,9 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     )
     taxonomy_list = db.Column(
         db.Integer, ForeignKey(BibListes.id_liste), nullable=True
+    )
+    is_active = db.Column(
+        db.Boolean(), server_default=expression.true(), default=True
     )
     geom = db.Column(Geometry("GEOMETRY", 4326))
 
