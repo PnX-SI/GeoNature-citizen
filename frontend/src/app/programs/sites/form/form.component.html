@@ -1,7 +1,7 @@
 <div>
-  <p>
+  <div class="alert alert-primary rounded-0" role="alert">
     {{ jsonData | json }}
-  </p>
+  </div>
   <h3>
     Etape {{ currentStep }} : {{ jsonSchema.steps[currentStep-1].title }}
   </h3>
@@ -11,7 +11,7 @@
   </p>
   <form>
     <json-schema-form
-    loadExternalAssets="false"
+    loadExternalAssets="true"
     [schema]="jsonSchema.schema"
     [layout]="partialLayout"
     [(data)]="jsonData"
@@ -20,8 +20,8 @@
     framework="bootstrap-4">
     </json-schema-form>
   </form>
-  <p>
+  <!-- <p>
     <button class="btn btn-link" (click)="toogleAdvancedMode()">{{ advancedMode ? "Masquer" : "Afficher" }} par défaut les champs avancés</button>
-  </p>
+  </p> -->
 </div>
 

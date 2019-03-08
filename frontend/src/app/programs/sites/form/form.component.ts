@@ -2,6 +2,7 @@ import {
   Component,
   ViewEncapsulation,
   OnInit,
+  AfterViewInit,
   ViewChild,
   Input,
   ElementRef
@@ -24,6 +25,7 @@ import { AppConfig } from "../../../../conf/app.config";
 // constructor(frameworkLibrary: FrameworkLibraryService) { }
 // frameworkLibrary.setFramework(GNCBootstrap4Framework);
 import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
+import MaresJson from '../../../../../../config/custom/form/mares.json';
 
 declare let $: any;
 
@@ -55,11 +57,77 @@ export class SiteFormComponent implements OnInit, AfterViewInit {
     "returnEmptyFields": false,
     "addSubmit": false
   }
+  jsonSchema: any;
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
   ngOnInit() {
+    console.debug("ngOnInit");
+    console.debug(MaresJson);
+    this.jsonSchema = MaresJson;
     this.updatePartialLayout();
+  }
+
+  ngAfterViewInit() {
+    console.debug("AfterViewInit", MaresJson);
+    // this.route.params.subscribe(params => (this.program_id = params["id"]));
+    // this.http
+    //   .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
+    //   .subscribe(result => {
+    //     this.program = result;
+    //     this.taxonomyList = this.program.features[0].properties.taxonomy_list;
+    //     this.getSurveySpeciesItems(this.taxonomyList);
+
+    //     const formMap = L.map("formMap");
+
+    //     L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    //       attribution: "OpenStreetMap"
+    //     }).addTo(formMap);
+
+    //     const programArea = L.geoJSON(this.program, {
+    //       style: function(_feature) {
+    //         return {
+    //           fillColor: "transparent",
+    //           weight: 2,
+    //           opacity: 0.8,
+    //           color: "red",
+    //           dashArray: "4"
+    //         };
+    //       }
+    //     }).addTo(formMap);
+
+    //     const maxBounds: L.LatLngBounds = programArea.getBounds();
+    //     formMap.fitBounds(maxBounds);
+    //     formMap.setMaxBounds(maxBounds);
+
+    //     let myMarker = null;
+
+    //     formMap.on("click", <LeafletMouseEvent>(e) => {
+    //       let coords = <Point>{
+    //         type: "Point",
+    //         coordinates: <Position>[e.latlng.lng, e.latlng.lat]
+    //       };
+    //       this.obsForm.patchValue({ geometry: coords });
+    //       // TODO: this.obsForm.patchValue({ municipality: municipality });
+    //       console.debug(coords);
+
+    //       if (myMarker !== null) {
+    //         formMap.removeLayer(myMarker);
+    //       }
+
+    //       // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
+    //       // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
+    //       if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
+    //         myMarker = L.marker(e.latlng, { icon: obsFormMarkerIcon }).addTo(
+    //           formMap
+    //         );
+    //         $("#feature-title").html(myMarkerTitle);
+    //         $("#feature-coords").html(coords);
+    //         // $("#feature-info").html(myMarkerContent);
+    //         $("#featureModal").modal("show");
+    //       }
+    //     });
+    //   });
   }
 
   nextStep() {
@@ -96,336 +164,3 @@ export class SiteFormComponent implements OnInit, AfterViewInit {
     //   // TODO: queue obs in list
     // );
   }
-
-  jsonSchema: any = {
-    "schema": {
-      "title": "Mare",
-      "description": "Données associées à une mare",
-      "type": "object",
-      "properties": {
-        "environnement": {
-          "title": "Environnement Immédiat",
-          "description": "Quel est le type de milieu représentant le mieux (milieu dominant) l’occupation du sol sur la parcelle où se situe la mare",
-          "type": "string",
-          "enum": [
-            "Prairie",
-            "Champs cultivé",
-            "Bois de feuillus",
-            "Bois de résineux",
-            "Friche / lande",
-            "Zone humide",
-            "Zone urbanisé",
-            "Parc de loisirs / jardin"
-          ]
-        },
-        "presenceCorridor": {
-          "title": "Présence d’un corridor linéaire",
-          "description": "Existe-t-il un corridor linéaire naturel facilitant le déplacement des espèces animales à proximité de la mare (à moins de 5 mètres) ? Ce corridor peut être aquatique (fossé, ruisseau) ou végétal (haie).",
-          "type": "string",
-          "enum": [
-            "Fossé / ruisseau",
-            "Haie",
-            "Fossé / ruisseau ET haie",
-            "Aucun corridor"
-          ],
-        },
-        "corridorFonctionnel": {
-          "title": "Si oui, le corridor est-il fonctionnel ?",
-          "description": "La fonctionnalité du corridor pour le déplacement de la faune peut être altérée par la présence d’obstacles ou une structure défavorable : présence d’une buse sur un fossé, haie discontinue, haie sans strate arbustive…",
-          "type": "string",
-          "enum": [
-            "Fonctionnel",
-            "Altéré"
-          ],
-        },
-        "natureFond": {
-          "title": "Nature du fond",
-          "description": "La bâche en caoutchouc se distingue de la bâche en plastique par son élasticité. Les bâches peuvent être recouvertes par de la sédimentation naturelle (vase), elles sont cependant généralement visibles sur les berges.",
-          "type": "string",
-          "enum": [
-            "Naturel",
-            "Béton / pierre",
-            "Bâche en caoutchouc synthétique",
-            "Bâche en plastique (PVC)"
-          ]
-        },
-        "longueur": {
-          "title": "Longueur",
-          "description": "Vous pouvez l’estimer en comptant le nombre de pas nécessaire pour couvrir sa plus grande longueur : un pas allongé par rapport à la foulée normale représente environ 1 m.",
-          "type": "integer"
-        },
-        "largeur": {
-          "title": "Largeur",
-          "description": "Vous pouvez l’estimer en comptant le nombre de pas nécessaire pour couvrir sa plus grande largeur : un pas allongé par rapport à la foulée normale représente environ 1 m.",
-          "type": "integer"
-        },
-        "surface": {
-          "title": "Surface en m²",
-          "description": "Vous pouvez l’estimer en multipliant les longueurs et largeurs maximales relevées. Comme la mare n’est que rarement un rectangle parfait, la surface réelle sera inférieure au résultat trouvé.",
-          "type": "integer"
-        },
-        "profondeurMax": {
-          "title": "Profondeur maximale",
-          "description": "La profondeur varie en fonction de la saison, elle n’est pas souvent facile à mesurer. Elle correspond à la hauteur entre le fond et la crête de berge. Pour l’estimer, vous pouvez utiliser un bâton planté à l’endroit le plus profond de la mare (en général au centre), s’il est accessible (mare petite et peu profonde, utilisation de bottes ou cuissardes). À défaut, cette estimation peut se faire à vue : la visibilité du fond (si l’eau est limpide), la taille de la mare ainsi que le profil et la pente observés sur les berges peuvent vous aider à réaliser cette estimation",
-          "type": "string",
-          "enum": [
-            "≤ 50 cm",
-            "Entre 51 et 100 cm",
-            "Entre 101 et 150 cm",
-            "> 150 cm"
-          ]
-        },
-        "presenceEau": {
-          "title": "Présence d’eau lors de la visite",
-          // "description": "",
-          "type": "string",
-          "enum": [
-            "Oui",
-            "Non",
-            "Eau limpide",
-            "Eau trouble"
-          ]
-        },
-        "turbiditeEau": {
-          "title": "Turbidité de l’eau",
-          "description": "Une eau limpide permet d’observer le fond de la mare.",
-          "type": "string",
-          "enum": [
-            "Eau limpide",
-            "Eau trouble",
-          ]
-        },
-        "regimeHydro": {
-          "title": "Régime hydrologique",
-          "description": "La mare s’assèche t-elle en été ? Dans ce cas on parle de mare temporaire. Pour répondre à cette question, il faut pouvoir observer la niveau d’eau dans la mare en période de plus basses eaux (généralement août-septembre). Si vous ne savez pas, vous pouvez répondre « indéterminé ».",
-          "type": "string",
-          "enum": [
-            "Permanent",
-            "Temporaire",
-            "Indéterminé"
-          ]
-        },
-        "alimentationEau": {
-          "title": "Alimentation en eau",
-          "description": "Les mares sont en général alimentées par de l’eau d’origine pluviale (alimentation directe et ruissellement). Elles peuvent également être alimentées par une nappe superficielle, ou encore par captation de l’eau d’un cours d’eau ou d’un fossé. Si vous ne savez pas vous pouvez répondre « indéterminé ».",
-          "type": "string",
-          "enum": [
-            "Eau pluviale",
-            "Cours d’eau ou fossé",
-            "Nappe",
-            "Indéterminé"
-          ]
-        },
-        "ouvrageRegulationHydraulique": {
-          "title": "Présence d’un ouvrage de régulation hydraulique",
-          "description": "Dans le cas de petits plans d’eau alimentés par un cours d’eau ou un fossé, la gestion du niveau d’eau est parfois possible grâce à l’implantation d’un ouvrage de type vanne, martelière, moine…",
-          "type": "string",
-          "enum": [
-            "Oui",
-            "Non"
-          ]
-        },
-        "presencePoissons": {
-          "title": "Présence de poissons",
-          "description": "Si la présence de poissons n’est directement observée (avérée), elle peut cependant être suspectée (présence probable) : la nature et la taille du plan d’eau, la turbidité de l’eau, des traces d’activité piscicole (bouchons, flotteurs)… sont des indices de présence potentielle",
-          "type": "string",
-          "enum": [
-            "Absence",
-            "Probable",
-            "Avérée"
-          ]
-        },
-        "dechets": {
-          "title": "Déchets",
-          "description": "Notez si des déchets sont présents en faible quantité (quelques petits détritus de type bouteilles, ferrailles et plastiques divers …) ou en grande quantité (déchets de toute nature en quantité importante, souvent déposés dans le cadre d’un comblement de la mare).",
-          "type": "string",
-          "enum": [
-            "Absence",
-            "Faible quantité",
-            "Quantité importante"
-          ]
-        },
-        "pollution": {
-          "title": "Pollution",
-          "description": "Notez si des traces visibles de pollutions chimique ou organique sont observées : nappe d’hydrocarbure, bouse de vache…).",
-          "type": "string",
-          "enum": [
-            "Absence de traces visibles",
-            "Avérée"
-          ]
-        },
-        "usages": {
-          "title": "Usages (plusieurs choix possibles)",
-          "description": "Les mares peuvent avoir plusieurs fonctions : agricole (abreuvement du bétail, avec aménagements ou non : clôtures, pompe à museau….), traitement de l’eau (lagunage), stockage des eaux de ruissellement (rétention), loisirs (pêche, chasse), pédagogique, écologique (protection de la biodiversité) … cochez le ou les usages observés sur la mare.",
-          "type": "string",
-          "enum": [
-            "Abreuvoir aménagé",
-            "Abreuvoir non aménagé",
-            "Collecte ruissellement (rétention)",
-            "Lagunage",
-            "Pêche",
-            "Chasse",
-            "Ornemental",
-            "Pédagogique",
-            "Écologique",
-            "Autre",
-            "Abandonné",
-            "Indéterminé"
-          ]
-        },
-        "penteBerges": {
-          "title": "Berges en pente douce",
-          "description": "On considère qu’une berge est en pente douce lorsque le rapport  hauteur / longueur de la pente est de 1 sur 3 (33%). Quel est le pourcentage du linéaire total de berge qui comprend des pentes douces ?",
-          "type": "string",
-          "enum": [
-            "0 %",
-            ">0-50 %",
-            "51-100 %"
-          ]
-        },
-        "boisementBerges": {
-          "title": "Boisement / embroussaillement des berges",
-          "description": "Quel est le pourcentage du linéaire total de berge qui comprend une végétation arbustive ou arborée ?",
-          "type": "string",
-          "enum": [
-            "0 %",
-            ">0-50 %",
-            "51-100 %"
-          ]
-        },
-        "ombrage": {
-          "title": "Ombrage",
-          "description": "Quand le soleil est au zénith, quel est le pourcentage de la surface de la mare qui est à l’ombre du fait de la végétation (arbres, arbustes) située sur les berges ?",
-          "type": "string",
-          "enum": [
-            "0 %",
-            ">0-50 %",
-            "51-100 %"
-          ]
-        },
-        "vegetationHelophyte": {
-          "title": "Végétation hélophytes",
-          "description": "La végétation hélophytes est composée d’espèces qui poussent les pieds dans l’eau mais dont les feuilles se situent au dessus du niveau de l’eau (par exemple : le roseau). Quel est le pourcentage de la surface de la mare occupé par la végétation d’hélophytes ?",
-          "type": "string",
-          "enum": [
-            "0 %",
-            ">0-50 %",
-            "51-100 %"
-          ]
-        },
-        "vegetationHydrophyte": {
-          "title": "Végétation hydrophytes",
-          "description": "La végétation hydrophyte est composée d’espèces aquatiques dont les feuilles se situent sous ou à la surface de l’eau (par exemple : le nénuphar). Quel est le pourcentage de la surface de la mare occupé par la végétation d’hydrophytes ?",
-          "type": "string",
-          "enum": [
-            "0 %",
-            ">0-50 %",
-            "51-100 %"
-          ]
-        },
-        "eauLibre": {
-          "title": "Eau libre",
-          "description": "Quel est le pourcentage de la surface de la mare sans végétation ?",
-          "type": "string",
-          "enum": [
-            "0 %",
-            ">0-50 %",
-            "51-100 %"
-          ]
-        },
-        "remarques": {
-          "title": "Remarques",
-          "description": "",
-          "type": "string"
-        }
-      }
-    },
-    "steps": [
-      {
-        "title": "Environnement de la mare",
-        "layout": [
-          { "key": "environnement", "mode": "basic" },
-          { "type": "section",
-            "title": "Description avancée",
-            "expandable": true,
-            "items": [
-              { "key": "presenceCorridor", "mode": "advanced" },
-              { "key": "corridorFonctionnel", "mode": "advanced" },
-            ]
-          }
-        ]
-      },
-      {
-        "title": "Caractéristiques physiques de la mare",
-        "layout": [
-          { "key": "natureFond", "mode": "basic" },
-          { "type": "section",
-            "title": "Description avancée",
-            "expandable": true,
-            "items": [
-              { "key": "longueur", "mode": "advanced" },
-              { "key": "largeur", "mode": "advanced" },
-              { "key": "surface", "mode": "advanced" },
-              { "key": "profondeurMax", "mode": "advanced" }
-            ]
-          }
-        ]
-      },
-      {
-        "title": "Hydrologie de la mare",
-        "layout": [
-          { "key": "presenceEau", "mode": "basic" },
-          { "key": "turbiditeEau", "mode": "basic" },
-          { "type": "section",
-            "title": "Description avancée",
-            "expandable": true,
-            "items": [
-              { "key": "regimeHydro", "mode": "advanced" },
-              { "key": "alimentationEau", "mode": "advanced" },
-              { "key": "ouvrageRegulationHydraulique", "mode": "advanced" }
-            ]
-          }
-        ]
-      },
-      {
-        "title": "Usages et perturbations",
-        "layout": [
-          { "key": "presencePoissons", "mode": "basic" },
-          { "key": "dechets", "mode": "basic" },
-          { "type": "section",
-            "title": "Description avancée",
-            "expandable": true,
-            "items": [
-              { "key": "pollution", "mode": "advanced" },
-              { "key": "usages", "mode": "advanced" }
-            ]
-          }
-        ]
-      },
-      {
-        "title": "Berges et végétation",
-        "layout": [
-          { "type": "section",
-            "title": "Description avancée",
-            "expandable": true,
-            "items": [
-              { "key": "penteBerges", "mode": "advanced" },
-              { "key": "eauLibre", "mode": "advanced" },
-              { "key": "boisementBerges", "mode": "advanced" },
-              { "key": "ombrage", "mode": "advanced" },
-              { "key": "vegetationHelophyte", "mode": "advanced" },
-              { "key": "vegetationHydrophyte", "mode": "advanced" },
-            ]
-          }
-        ]
-      },
-      {
-        "title": "Remarques",
-        "layout": [
-          { "key": "remarques", "type": "textarea", "notitle": true, "mode": "basic" },
-          { "type": 'submit', "title": 'Submit', "mode": "basic" }
-        ]
-      }
-    ]
-  };
- }
