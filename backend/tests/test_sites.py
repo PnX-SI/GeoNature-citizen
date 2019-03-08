@@ -4,17 +4,18 @@ import unittest
 from tests.common import postrequest, getrequest
 
 
-class SitesTestCase(unittest.TestCase):
-
-    create_site_body = {
-        'id_program': 2,
-        'site_type': 'mare',
-        'name': 'la mare au fond de mon jardin',
-        'geometry': {
-            'type': 'point',
-            'coordinates': [5.644226074218751, 45.08709642547449],
-        }
+CREATE_SITE_BODY = {
+    'id_program': 2,
+    'site_type': 'mare',
+    'name': 'la mare au fond de mon jardin',
+    'geometry': {
+        'type': 'point',
+        'coordinates': [5.644226074218751, 45.08709642547449],
     }
+}
+
+
+class SitesTestCase(unittest.TestCase):
 
     def test_get_sites(self):
         resp = getrequest("sites")
@@ -29,7 +30,7 @@ class SitesTestCase(unittest.TestCase):
         self.assertTrue('mare' in data['site_types'])
 
     def test_create_site(self):
-        body = self.create_site_body.copy()
+        body = CREATE_SITE_BODY.copy()
 
         # Should fail when no site_type provided
         del body['site_type']
@@ -50,7 +51,6 @@ class SitesTestCase(unittest.TestCase):
         response = postrequest("sites/", json.dumps(body))
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        print(data)
 
         # Test that site is now getting returned
         site_id = data['features'][0]['properties']['id_site']
@@ -60,41 +60,41 @@ class SitesTestCase(unittest.TestCase):
         sites_ids = [f['properties']['id_site'] for f in data['features']]
         self.assertIn(site_id, sites_ids)
 
+
+class VisitsTestCase(unittest.TestCase):
+    create_visit_body = {
+        'date': '2019-03-06',
+        'data': {}
+    }
+
+    def setUp(self):
+        # Create a site to get a site_id
+        response = postrequest("sites/", json.dumps(CREATE_SITE_BODY))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.site_id = data['features'][0]['properties']['id_site']
+
+    def create_visit(self):
+        response = postrequest("sites/{}/visits".format(self.site_id),
+                               json.dumps(self.create_visit_body))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data['features']), 1)
+        visit = data['features'][0]
+        self.assertEqual(visit['id_site'], self.site_id)
+        return visit
+
     def test_create_visit(self):
-        # First create a site to get a site_id
-        response = postrequest("sites/", json.dumps(self.create_site_body))
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        site_id = data['features'][0]['properties']['id_site']
-
-        body = {
-            'date': '2019-03-06',
-            'data': {}
-        }
-        response = postrequest("sites/{}/visits".format(site_id), json.dumps(body))
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        print(data)
-        self.assertEqual(len(data['features']), 1)
-        visit1 = data['features'][0]
-        self.assertEqual(visit1['id_site'], site_id)
-
-        # Create 2nd visit on same site
-        response = postrequest("sites/{}/visits".format(site_id), json.dumps(body))
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        print(data)
-        self.assertEqual(len(data['features']), 1)
-        visit2 = data['features'][0]
-        self.assertEqual(visit2['id_site'], site_id)
+        # Create 2 visits on same site
+        visit1 = self.create_visit()
+        visit2 = self.create_visit()
 
         self.assertNotEqual(visit1['id_visit'], visit2['id_visit'])
 
         # Query site and check last_visit
-        response = getrequest('sites/{}'.format(site_id))
+        response = getrequest('sites/{}'.format(self.site_id))
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        print(data)
         site = data['features'][0]['properties']
         self.assertEqual(site['last_visit']['id_visit'], visit2['id_visit'])
 
