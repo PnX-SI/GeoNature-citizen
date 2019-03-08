@@ -244,13 +244,13 @@
     {
       "title": "Environnement de la mare",
       "layout": [
-        { "key": "environnement", "mode": "basic" },
+        { "key": "environnement" },
         { "type": "section",
           "title": "Description avancée",
           "expandable": true,
           "items": [
-            { "key": "presenceCorridor", "mode": "advanced" },
-            { "key": "corridorFonctionnel", "mode": "advanced" }
+            { "key": "presenceCorridor" },
+            { "key": "corridorFonctionnel" }
           ]
         }
       ]
@@ -258,15 +258,15 @@
     {
       "title": "Caractéristiques physiques de la mare",
       "layout": [
-        { "key": "natureFond", "mode": "basic" },
+        { "key": "natureFond" },
         { "type": "section",
           "title": "Description avancée",
           "expandable": true,
           "items": [
-            { "key": "longueur", "mode": "advanced" },
-            { "key": "largeur", "mode": "advanced" },
-            { "key": "surface", "mode": "advanced" },
-            { "key": "profondeurMax", "mode": "advanced" }
+            { "key": "longueur" },
+            { "key": "largeur" },
+            { "key": "surface" },
+            { "key": "profondeurMax" }
           ]
         }
       ]
@@ -274,15 +274,15 @@
     {
       "title": "Hydrologie de la mare",
       "layout": [
-        { "key": "presenceEau", "mode": "basic" },
-        { "key": "turbiditeEau", "mode": "basic" },
+        { "key": "presenceEau" },
+        { "key": "turbiditeEau" },
         { "type": "section",
           "title": "Description avancée",
           "expandable": true,
           "items": [
-            { "key": "regimeHydro", "mode": "advanced" },
-            { "key": "alimentationEau", "mode": "advanced" },
-            { "key": "ouvrageRegulationHydraulique", "mode": "advanced" }
+            { "key": "regimeHydro" },
+            { "key": "alimentationEau" },
+            { "key": "ouvrageRegulationHydraulique" }
           ]
         }
       ]
@@ -290,14 +290,14 @@
     {
       "title": "Usages et perturbations",
       "layout": [
-        { "key": "presencePoissons", "mode": "basic" },
-        { "key": "dechets", "mode": "basic" },
+        { "key": "presencePoissons" },
+        { "key": "dechets" },
         { "type": "section",
           "title": "Description avancée",
           "expandable": true,
           "items": [
-            { "key": "pollution", "mode": "advanced" },
-            { "key": "usages", "mode": "advanced" }
+            { "key": "pollution" },
+            { "key": "usages" }
           ]
         }
       ]
@@ -309,12 +309,12 @@
           "title": "Description avancée",
           "expandable": true,
           "items": [
-            { "key": "penteBerges", "mode": "advanced" },
-            { "key": "eauLibre", "mode": "advanced" },
-            { "key": "boisementBerges", "mode": "advanced" },
-            { "key": "ombrage", "mode": "advanced" },
-            { "key": "vegetationHelophyte", "mode": "advanced" },
-            { "key": "vegetationHydrophyte", "mode": "advanced" }
+            { "key": "penteBerges" },
+            { "key": "eauLibre" },
+            { "key": "boisementBerges" },
+            { "key": "ombrage" },
+            { "key": "vegetationHelophyte" },
+            { "key": "vegetationHydrophyte" }
           ]
         }
       ]
@@ -322,8 +322,8 @@
     {
       "title": "Remarques",
       "layout": [
-        { "key": "remarques", "type": "textarea", "notitle": true, "mode": "basic" },
-        { "type": "submit", "title": "Submit", "mode": "basic" }
+        { "key": "remarques", "type": "textarea", "notitle": true },
+        { "type": "submit", "title": "Submit" }
       ]
     }
   ]
