@@ -53,8 +53,11 @@ export class ObsFormComponent implements AfterViewInit {
   program: any;
   program_id: any;
   formMap: any;
-  // FIXME: issue #72 date validation
-  // isDisabled = (date: NgbDate, current: { month: number }) => (date > today());
+  private today = new Date();
+  isDisabled = (date: NgbDate, current: { month: number }) => {
+    const date_impl = new Date(date.year, date.month - 1, date.day);
+    return date_impl > this.today;
+  };
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
