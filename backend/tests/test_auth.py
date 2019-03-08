@@ -2,7 +2,7 @@ import unittest
 
 from tests.common import auth, postrequest, set_tokens
 
-@unittest.skip
+
 class TestAuthFlaskApiUsingRequests(unittest.TestCase):
 
     def test_login(self):

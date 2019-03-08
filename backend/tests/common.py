@@ -68,9 +68,10 @@ def auth():
 
 def postrequest(url, params=None):
     myUrl = mainUrl + url
+    h = headers.copy()
     if access_token:
-        headers.update({'Authorization': 'Bearer {}'.format(access_token)})
-    response = requests.post(myUrl, headers=headers, data=params)
+        h.update({'Authorization': 'Bearer {}'.format(access_token)})
+    response = requests.post(myUrl, headers=h, data=params)
     return response
 
 

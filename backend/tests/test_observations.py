@@ -4,7 +4,7 @@ from gncitizen.utils.env import load_config
 from server import get_app
 from tests.common import getrequest
 
-@unittest.skip
+
 class ObservationsTestCase(unittest.TestCase):
     def setUp(self):
         """Define test variables and initialize app."""

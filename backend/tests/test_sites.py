@@ -16,13 +16,11 @@ class SitesTestCase(unittest.TestCase):
         }
     }
 
-    @unittest.skip
     def test_get_sites(self):
         resp = getrequest("sites")
         data = resp.json()
         self.assertEqual(data['type'], "FeatureCollection")
 
-    @unittest.skip
     def test_site_types(self):
         response = getrequest('sites/types')
         self.assertEqual(response.status_code, 200)
@@ -30,7 +28,6 @@ class SitesTestCase(unittest.TestCase):
         self.assertGreaterEqual(data['count'], 1)
         self.assertTrue('mare' in data['site_types'])
 
-    @unittest.skip
     def test_create_site(self):
         body = self.create_site_body.copy()
 
