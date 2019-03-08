@@ -65,6 +65,7 @@ class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     site_type = db.Column(db.Enum(SiteType), nullable=False)
 
 
+@serializable
 class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     """Table des sessions de suivis des sites"""
 
@@ -75,7 +76,7 @@ class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
         db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE")
     )
     date = db.Column(db.Date)
-    json_datas = db.Column(JSONB, nullable=True)
+    json_data = db.Column(JSONB, nullable=True)
 
     def __repr__(self):
         return "<Visit {0}>".format(self.id_visit)

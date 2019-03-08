@@ -64,32 +64,35 @@ def get_site(pk):
         description: A site detail
     """
     try:
-        result = SiteModel.query.get(pk)
-        result_dict = result.as_dict(True)
-        features = []
-        feature = get_geojson_feature(result.geom)
-        for k in result_dict:
-            if k not in ("id_creator", "geom"):
-                feature["properties"][k] = result_dict[k]
-        features.append(feature)
-        return {"features": features}, 200
+        site = SiteModel.query.get(pk)
+        last_visit = VisitModel.query\
+            .filter_by(id_site=pk)\
+            .order_by(VisitModel.timestamp_update.desc())\
+            .first()
+        formatted_site = format_site(site)
+        formatted_site['properties']['last_visit'] = last_visit.as_dict()
+        return {"features": [formatted_site]}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
+
+
+def format_site(site):
+    feature = get_geojson_feature(site.geom)
+    site_dict = site.as_dict(True)
+    for k in site_dict:
+        if k not in ("id_role", "geom"):
+            feature["properties"][k] = site_dict[k]
+    return feature
 
 
 def format_sites(sites):
     count = len(sites)
     features = []
     for site in sites:
-        feature = get_geojson_feature(site.geom)
-        site_dict = site.as_dict(True)
-        for k in site_dict:
-            if k not in ("id_role", "geom"):
-                feature["properties"][k] = site_dict[k]
-        features.append(feature)
-    datas = FeatureCollection(features)
-    datas["count"] = count
-    return datas
+        features.append(format_site(site))
+    data = FeatureCollection(features)
+    data["count"] = count
+    return data
 
 
 @routes.route("/", methods=["GET"])
@@ -189,35 +192,13 @@ def post_site():
             description: Site created
         """
     try:
-        request_datas = dict(request.get_json())
+        request_data = dict(request.get_json())
 
         datas2db = {}
-        for field in request_datas:
+        for field in request_data:
             if hasattr(SiteModel, field):
-                datas2db[field] = request_datas[field]
+                datas2db[field] = request_data[field]
         current_app.logger.debug("datas2db: %s", datas2db)
-        try:
-            if request.files:
-                current_app.logger.debug("request.files: %s", request.files)
-                file = request.files.get("photo", None)
-                current_app.logger.debug("file: %s", file)
-                if file and allowed_file(file):
-                    ext = file.rsplit(".", 1).lower()
-                    timestamp = datetime.datetime.now().strftime(
-                        "%Y%m%d_%H%M%S"
-                    )  # noqa: E501
-                    filename = "site_" + "_" + timestamp + ext
-                    path = MEDIA_DIR + "/" + filename
-                    file.save(path)
-                    current_app.logger.debug("path: %s", path)
-                    datas2db["photo"] = filename
-        except Exception as e:
-            current_app.logger.debug("file ", e)
-            raise GeonatureApiError(e)
-
-        else:
-            file = None
-
         try:
             newsite = SiteModel(**datas2db)
         except Exception as e:
@@ -225,7 +206,7 @@ def post_site():
             raise GeonatureApiError(e)
 
         try:
-            shape = asShape(request_datas["geometry"])
+            shape = asShape(request_data["geometry"])
             newsite.geom = from_shape(Point(shape), srid=4326)
         except Exception as e:
             current_app.logger.debug(e)
@@ -247,14 +228,66 @@ def post_site():
         db.session.commit()
         # Réponse en retour
         result = SiteModel.query.get(newsite.id_site)
-        result_dict = result.as_dict(True)
-        features = []
-        feature = get_geojson_feature(result.geom)
-        for k in result_dict:
-            if k not in ("id_role", "geom"):
-                feature["properties"][k] = result_dict[k]
-        features.append(feature)
-        return {"message": "New site created.", "features": features}, 200
+        return {
+                   "message": "New site created.",
+                   "features": [format_site(result)]
+               }, 200
+    except Exception as e:
+        current_app.logger.warning("Error: %s", str(e))
+        return {"error_message": str(e)}, 400
+
+
+@routes.route("/<int:site_id>/visits", methods=["POST"])
+@json_resp
+@jwt_optional
+def post_visit(site_id):
+    try:
+        request_data = request.get_json()
+
+        new_visit = VisitModel(
+            id_site=site_id,
+            date=request_data['date'],
+            json_data=request_data['data']
+        )
+
+        id_role = get_id_role_if_exists()
+        if id_role:
+            new_visit.id_role = id_role
+            role = UserModel.query.get(id_role)
+            new_visit.obs_txt = role.username
+            new_visit.email = role.email
+        else:
+            if new_visit.obs_txt is None or len(new_visit.obs_txt) == 0:
+                new_visit.obs_txt = "Anonyme"
+
+        try:
+            if request.files:
+                current_app.logger.debug("request.files: %s", request.files)
+                file = request.files.get("photo", None)
+                current_app.logger.debug("file: %s", file)
+                if file and allowed_file(file):
+                    ext = file.rsplit(".", 1).lower()
+                    timestamp = datetime.datetime.now().strftime(
+                        "%Y%m%d_%H%M%S"
+                    )  # noqa: E501
+                    filename = "site_" + "_" + timestamp + ext
+                    path = MEDIA_DIR + "/" + filename
+                    file.save(path)
+                    current_app.logger.debug("path: %s", path)
+                    #TODO: save with MediaOnVisitModel
+        except Exception as e:
+            current_app.logger.debug("file ", e)
+            raise GeonatureApiError(e)
+
+        db.session.add(new_visit)
+        db.session.commit()
+
+        # Réponse en retour
+        result = VisitModel.query.get(new_visit.id_visit)
+        return {
+                   "message": "New visit created.",
+                   "features": [result.as_dict()]
+               }, 200
     except Exception as e:
         current_app.logger.warning("Error: %s", str(e))
         return {"error_message": str(e)}, 400
