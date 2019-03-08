@@ -283,20 +283,45 @@
         <target>Password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/login/login.component.html</context>
-          <context context-type="linenumber">44</context>
+          <context context-type="linenumber">45</context>
         </context-group>
         <note priority="1" from="description">mdp</note>
         <note priority="1" from="meaning">login</note>
       </trans-unit>
       <trans-unit id="eee3b33b84001a787eb07b2092be9e55d83c6abf" datatype="html">
-        <source>Se connecter</source>
-        <target>Login</target>
+        <source>
+      Se connecter
+    </source>
+        <target>
+      Sign in
+    </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/login/login.component.html</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">69</context>
         </context-group>
         <note priority="1" from="description">login</note>
         <note priority="1" from="meaning">login</note>
+      </trans-unit>
+      <trans-unit id="88619d86db4d3bd9954ca03bfdc88d69c76d1f4d" datatype="html">
+        <source>AJOUTER UNE OBSERVATION</source>
+        <target>ADD AN OBSERVATION</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="c5c01b73689cc048f371314e26a59272551d5c8b" datatype="html">
+        <source>
+    Valider l&apos;observation
+  </source>
+        <target>
+    Submit observation
+  </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+        <note priority="1" from="description">Valider l&apos;observation</note>
       </trans-unit>
       <trans-unit id="a3a89bb8b6c93b00c5a1c774318fcfeffe3e4853" datatype="html">
         <source>
@@ -308,6 +333,10 @@
       to Geonature Citizen
     </target>
         <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">app/home/home.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
@@ -318,6 +347,10 @@
         <source>Participer au programme</source>
         <target>Participate</target>
         <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">app/home/home.component.html</context>
           <context context-type="linenumber">16</context>
         </context-group>
@@ -327,10 +360,106 @@
         <source>Scrollez pour en voir plus !</source>
         <target>Scroll to see more !</target>
         <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">app/home/home.component.html</context>
           <context context-type="linenumber">20</context>
         </context-group>
         <note priority="1" from="description">Scrollez pour en voir plus !</note>
+      </trans-unit>
+      <trans-unit id="1ea56336eb10d8efdfdcf941a81905448219361c" datatype="html">
+        <source>
+          Le programme <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ program.title }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+        </source>
+        <target>
+          Survey <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ program.title }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bef55119df4860955bcedb46afbd326481de3d5d" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ program.title }}"/></source>
+        <target><x id="INTERPOLATION" equiv-text="{{ program.title }}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1c417a3d1fd71e13781f21cc781275589904eefd" datatype="html">
+        <source>Partager une observation</source>
+        <target>Share an observation</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+        <note priority="1" from="description">Partager une observation</note>
+      </trans-unit>
+      <trans-unit id="ed57d1e0a5e8b2f4ee06f517473be738665b4b0f" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ observationList?.length }}"/> observations trouvées !</source>
+        <target>Found <x id="INTERPOLATION" equiv-text="{{ observationList?.length }}"/> observations !</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9f351df485ad8da2b771a77f5689f9bada1b12c7" datatype="html">
+        <source>
+              Observé par <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ o.properties.sci_name }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+            </source>
+        <target>
+              Observed by <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ o.properties.sci_name }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="77810f04783e3dafc8d0feca1ce16a8b22287afc" datatype="html">
+        <source>
+              le <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ o.properties.date }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+            </source>
+        <target>
+              on <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ o.properties.date }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ee62171bb5bf618165113912714b8adf22e656b0" datatype="html">
+        <source>Les programmes du moment</source>
+        <target>Active surveys</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <note priority="1" from="description">Les programmes du moment</note>
+      </trans-unit>
+      <trans-unit id="7ecc7b021f51be9b07f3cfd42ab046d52b8f920f" datatype="html">
+        <source>Précédent</source>
+        <target>Previous</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+        <note priority="1" from="description">ngb.carousel.previous</note>
+      </trans-unit>
+      <trans-unit id="c75b382210f32e0041179da4ec54102b39b8a37d" datatype="html">
+        <source>Prochain</source>
+        <target>Next</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+        <note priority="1" from="description">ngb.carousel.next</note>
       </trans-unit>
     </body>
   </file>

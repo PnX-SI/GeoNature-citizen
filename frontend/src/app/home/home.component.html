@@ -36,7 +36,7 @@
           [class.active]="isFirst"
         ></li>
       </ol>
-      <h2>Les programmes du moment</h2>
+      <h2 i18n="Les programmes du moment">Les programmes du moment</h2>
       <div class="carousel-inner">
         <div
           *ngFor="let p of programs; first as isFirst"
@@ -55,6 +55,7 @@
               <a
                 class="btn-big"
                 [routerLink]="['/programs', p.id_program, 'observations']"
+                i18n="Partager une observation"
                 >Partager une observation</a
               >
             </div>
@@ -68,7 +69,7 @@
         data-slide="prev"
       >
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
+        <span class="sr-only" i18n="ngb.carousel.previous">Précédent</span>
       </a>
       <a
         class="carousel-control-next"
@@ -77,7 +78,7 @@
         data-slide="next"
       >
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
+        <span class="sr-only" i18n="ngb.carousel.next">Prochain</span>
       </a>
     </div>
   </section>
