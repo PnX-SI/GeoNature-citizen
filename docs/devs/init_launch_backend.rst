@@ -39,4 +39,4 @@ depuis l'environnement virtuel python:
     source venv/bin/activate
     python -m wsgi.py
 
-Vous pouvez alors aller sur la page de documentation de l'API à l'adresse suivant ``http://VOTRE_HOTE:5001/apidocs``, en local, ce sera `http://localhost:5001/apidocs <http://localhost:5001/apidocs>`_.
+Vous pouvez alors aller sur la page de documentation de l'API à l'adresse suivant ``http://VOTRE_HOTE:5002/apidocs``, en local, ce sera `http://localhost:5002/apidocs <http://localhost:5002/apidocs>`_.
