@@ -23,8 +23,8 @@ import * as L from "leaflet";
 })
 export class ObsComponent implements OnInit, AfterViewInit {
   fragment: string;
-  program_id: any;
   coords: any;
+  program_id: any;
   programs: Program[];
   program: Program;
   observations: FeatureCollection;

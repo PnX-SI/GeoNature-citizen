@@ -139,10 +139,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   @Output() onClick: EventEmitter<string> = new EventEmitter();
   options: any;
-  obsMap: L.Map;
+  observationMap: L.Map;
 
   programMaxBounds: L.LatLngBounds;
-  observationsLayer: L.FeatureGroup;
+  observationLayer: L.FeatureGroup;
   newObsMarker: L.Marker<any>;
 
   ngOnInit() {
@@ -150,7 +150,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(_changes: SimpleChanges) {
-    if (this.obsMap) {
+    if (this.observationMap) {
       this.loadProgramArea();
       this.loadObservations();
     }
@@ -158,18 +158,20 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
     this.options = options;
-    this.obsMap = L.map(this.options.ELEMENT, {
+    this.observationMap = L.map(this.options.ELEMENT, {
       layers: [this.options.DEFAULT_BASE_MAP()],
       ...LeafletOptions
     });
 
     // zoom
-    this.obsMap.zoomControl.setPosition(this.options.ZOOM_CONTROL_POSITION);
+    this.observationMap.zoomControl.setPosition(
+      this.options.ZOOM_CONTROL_POSITION
+    );
 
     // scale
     L.control
       .scale({ position: this.options.SCALE_CONTROL_POSITION })
-      .addTo(this.obsMap);
+      .addTo(this.observationMap);
 
     // Base layers
     L.control
@@ -177,7 +179,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
         collapsed: this.options.BASE_LAYER_CONTROL_INIT_COLLAPSED,
         position: this.options.BASE_LAYER_CONTROL_POSITION
       })
-      .addTo(this.obsMap);
+      .addTo(this.observationMap);
 
     // geolocation
     L.control
@@ -189,24 +191,24 @@ export class ObsMapComponent implements OnInit, OnChanges {
           enableHighAccuracy: this.options.GEOLOCATION_HIGH_ACCURACY
         }
       })
-      .addTo(this.obsMap);
+      .addTo(this.observationMap);
   }
 
   loadObservations(): void {
     if (this.observations) {
-      if (this.observationsLayer) {
-        this.obsMap.removeLayer(this.observationsLayer);
+      if (this.observationLayer) {
+        this.observationMap.removeLayer(this.observationLayer);
       }
-      this.observationsLayer = this.options.OBSERVATION_LAYER();
+      this.observationLayer = this.options.OBSERVATION_LAYER();
 
-      this.observationsLayer.addLayer(
+      this.observationLayer.addLayer(
         L.geoJSON(<GeoJsonObject>this.observations, {
           onEachFeature: this.options.ON_EACH_FEATURE,
           pointToLayer: this.options.POINT_TO_LAYER
         })
       );
 
-      this.obsMap.addLayer(this.observationsLayer);
+      this.observationMap.addLayer(this.observationLayer);
     }
   }
 
@@ -214,17 +216,17 @@ export class ObsMapComponent implements OnInit, OnChanges {
     if (this.program) {
       const programArea = L.geoJSON(this.program, {
         style: _feature => this.options.PROGRAM_AREA_STYLE(_feature)
-      }).addTo(this.obsMap);
+      }).addTo(this.observationMap);
       const programBounds = programArea.getBounds();
-      this.obsMap.fitBounds(programBounds);
-      // this.obsMap.setMaxBounds(programBounds)
+      this.observationMap.fitBounds(programBounds);
+      // this.observationMap.setMaxBounds(programBounds)
 
       this.newObsMarker = null;
       if (canSubmit) {
-        this.obsMap.on("click", (e: L.LeafletMouseEvent) => {
+        this.observationMap.on("click", (e: L.LeafletMouseEvent) => {
           let coords = L.point(e.latlng.lng, e.latlng.lat);
           if (this.newObsMarker !== null) {
-            this.obsMap.removeLayer(this.newObsMarker);
+            this.observationMap.removeLayer(this.newObsMarker);
           }
 
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
@@ -232,7 +234,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
           if (programBounds.contains([e.latlng.lat, e.latlng.lng])) {
             this.newObsMarker = L.marker(e.latlng, {
               icon: this.options.NEW_OBS_MARKER_ICON()
-            }).addTo(this.obsMap);
+            }).addTo(this.observationMap);
           }
           console.debug(coords);
           // emit new coordinates

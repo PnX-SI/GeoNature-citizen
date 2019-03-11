@@ -7,7 +7,13 @@ import {
 } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidatorFn
+} from "@angular/forms";
 import { Observable } from "rxjs";
 
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
@@ -31,6 +37,15 @@ export const obsFormMarkerIcon = L.icon({
 export const myMarkerTitle =
   '<i class="fa fa-eye"></i> Partagez votre observation';
 
+export function validObservationNgbDate(): ValidatorFn {
+  const today = new Date();
+  return (control: AbstractControl): { [key: string]: any } => {
+    let selected = NgbDate.from(control.value);
+    const date_impl = new Date(selected.year, selected.month - 1, selected.day);
+    return date_impl <= today ? { "Parsed a date in the future": true } : null;
+  };
+}
+
 @Component({
   selector: "app-obs-form",
   templateUrl: "./form.component.html",
@@ -44,7 +59,10 @@ export class ObsFormComponent implements AfterViewInit {
     cd_nom: new FormControl("", Validators.required),
     count: new FormControl("1", Validators.required),
     comment: new FormControl("", Validators.required),
-    date: new FormControl("2019-03-05", Validators.required),
+    date: new FormControl(
+      "2019-03-05",
+      Validators.compose([Validators.required, validObservationNgbDate()])
+    ),
     photo: new FormControl("", Validators.required),
     municipality: new FormControl(),
     geometry: new FormControl("", Validators.required),
