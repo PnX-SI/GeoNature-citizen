@@ -1,7 +1,6 @@
 import {
   Component,
   OnInit,
-  AfterViewChecked,
   OnDestroy,
   ViewEncapsulation,
   Input,
@@ -22,10 +21,10 @@ import { LoginComponent } from "../../../../../auth/login/login.component";
   styleUrls: ["./onboard.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class OnboardComponent
-  implements IFlowComponent, OnInit, AfterViewChecked, OnDestroy {
+export class OnboardComponent implements IFlowComponent, OnInit, OnDestroy {
   RegistrationModalRef: NgbModalRef;
   LoginModalRef: NgbModalRef;
+  timeout: any;
   @Input() data: any;
   @ViewChild("RegisterComponent") RegisterComponent: ElementRef;
   @ViewChild("LoginComponent") LoginComponent: ElementRef;
@@ -36,15 +35,13 @@ export class OnboardComponent
 
   ngOnInit(): void {
     let user = localStorage.getItem("username");
+    // TOOD: auth
     if (user) {
       this.ref.detach();
-      this.data.next();
-    }
-  }
-
-  ngAfterViewChecked() {
-    if (!(this.ref as ViewRef).destroyed) {
-      this.ref.detectChanges();
+      this.timeout = setTimeout(() => {
+        this.data.next();
+        clearTimeout(this.timeout);
+      }, 0);
     }
   }
 

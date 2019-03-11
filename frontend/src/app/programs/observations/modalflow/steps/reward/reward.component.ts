@@ -35,7 +35,6 @@ import { IFlowComponent } from "../../flow/flow";
 export class RewardComponent
   implements IFlowComponent, OnInit, OnDestroy, AfterViewChecked {
   @Input() data: any;
-  // interval: any
   timeout: any;
   rewarded: boolean = Math.random() >= 0.5;
   username: string;
