@@ -2,10 +2,10 @@ import { Feature, FeatureCollection } from "geojson";
 
 export interface PostObservationResponse extends FeatureCollection {
   message: string;
-  features: Observation[];
+  features: ObservationFeature[];
 }
 
-export interface Observation extends Feature {
+export interface ObservationFeature extends Feature {
   cd_nom: number;
   comment: string;
   common_name: string;

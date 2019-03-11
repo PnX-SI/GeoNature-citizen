@@ -15,6 +15,10 @@ import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
 
 import { AppConfig } from "../../../../conf/app.config";
+import {
+  PostObservationResponse,
+  ObservationFeature
+} from "../observation.model";
 
 declare let $: any;
 
@@ -52,7 +56,7 @@ export class ObsFormComponent implements AfterViewInit {
   program: any;
   program_id: any;
   formMap: any;
-  private today = new Date();
+  today = new Date();
   isDisabled = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
     return date_impl > this.today;
@@ -120,14 +124,15 @@ export class ObsFormComponent implements AfterViewInit {
   }
 
   onFormSubmit(): any {
-    console.debug("formValues:", this.obsForm.value);
+    let newObservation: ObservationFeature;
     this.postObservation().subscribe(
-      data => console.debug(data),
-      err => console.error(err),
+      (data: PostObservationResponse) => {
+        console.debug(<ObservationFeature>data.features[0]);
+        newObservation = <ObservationFeature>data.features[0];
+      },
+      err => alert(err),
       () => {
-        console.log("done");
-        // TODO: queue obs in list
-        return this.obsForm.value;
+        return newObservation;
       }
     );
   }
@@ -171,13 +176,11 @@ export class ObsFormComponent implements AfterViewInit {
       formData.append(item, this.obsForm.get(item).value);
     }
 
-    console.debug("formData:", formData);
     return this.http.post<any>(
       `${this.URL}/observations`,
       formData,
       httpOptions
     );
-    // .pipe(tap(data => console.debug(data)));
   }
 
   // TODO: call GncProgramsService

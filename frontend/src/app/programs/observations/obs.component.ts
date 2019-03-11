@@ -12,7 +12,8 @@ import { FeatureCollection } from "geojson";
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { Program } from "../programs.models";
 import { ModalFlowService } from "./modalflow/modalflow.service";
-import { TaxonomyList } from "./observation.model";
+import { TaxonomyList, ObservationFeature } from "./observation.model";
+import * as L from "leaflet";
 
 @Component({
   selector: "app-observations",
@@ -69,11 +70,14 @@ export class ObsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onMapClicked(something: string): void {
-    console.debug("map clicked", something);
+  onMapClicked(p: string): void {
+    let _point = JSON.parse(p);
+    this.coords = L.point(_point);
+    console.debug("map clicked", this.coords);
   }
 
-  onObservationSumitted(something: any): void {
+  onObservationSubmitted(something: ObservationFeature): void {
+    // TODO: queue obs in list
     console.debug("Observation submitted", something);
   }
 }

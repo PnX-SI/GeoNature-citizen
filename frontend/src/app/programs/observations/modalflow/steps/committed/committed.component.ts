@@ -3,7 +3,8 @@ import {
   Input,
   Output,
   ViewChild,
-  ViewEncapsulation
+  ViewEncapsulation,
+  EventEmitter
 } from "@angular/core";
 
 import { IFlowComponent } from "../../flow/flow";
@@ -16,13 +17,13 @@ import { ObsFormComponent } from "../../../form/form.component";
 })
 export class CommittedComponent implements IFlowComponent {
   @Input() data: any;
-  @Output() obsData: any;
+  @Output() newObservation: EventEmitter<string> = new EventEmitter();
   @ViewChild(ObsFormComponent) form: ObsFormComponent;
 
   committed() {
     console.debug("committed action > data:", this.data);
-    // this.obsData.emit(this.form.onFormSubmit());
-    this.form.onFormSubmit();
+    let formValue = this.form.onFormSubmit();
+    this.newObservation.emit(JSON.stringify(formValue));
     this.data.next();
   }
 }

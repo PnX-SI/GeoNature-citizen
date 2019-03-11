@@ -70,13 +70,11 @@
               #d="ngbDatepicker"
               [markDisabled]="isDisabled"
               (click)="d.toggle()"
+              [value]="today"
             />
           </div>
         </div>
         <div class="form-group col-lg-6">
-          <!--
-            <pre class="card card-block card-header mb-3">Model: {{selected | json}}</pre>
-          -->
           <label for="counting">Dénombrement</label>
           <input
             type="number"
