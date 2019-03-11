@@ -29,7 +29,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
     )
     cd_nom = db.Column(db.Integer, db.ForeignKey(Taxref.cd_nom), nullable=False)
-    specie = db.Column(db.String(200))
+    # specie = db.Column(db.String(200))
     date = db.Column(db.Date, nullable=False)
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))

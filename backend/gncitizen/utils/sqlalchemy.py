@@ -51,8 +51,12 @@ def geom_from_geojson(data):
     try:
         geojson = asShape(data)
         geom = from_shape(geojson, srid=4326)
-    except Exception as e :
-        current_app.logger.debug("[geom_from_geojson] Can't convert geojson geometry to wkb: {}".format(str(e)))
+    except Exception as e:
+        current_app.logger.error(
+            "[geom_from_geojson] Can't convert geojson geometry to wkb: {}".format(
+                str(e)
+            )
+        )
     return geom
 
 
@@ -68,9 +72,14 @@ def get_geojson_feature(wkb):
     try:
         geometry = to_shape(wkb)
         feature = Feature(geometry=geometry, properties={})
-    except Exception as e :
-        current_app.logger.debug("[get_geojson_feature] Can't convert wkb geometry to geojson: {}".format(str(e)))
+    except Exception as e:
+        current_app.logger.error(
+            "[get_geojson_feature] Can't convert wkb geometry to geojson: {}".format(
+                str(e)
+            )
+        )
     return feature
+
 
 def serializable(cls):
     """
