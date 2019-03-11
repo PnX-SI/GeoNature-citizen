@@ -222,11 +222,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.newObsMarker = null;
       if (canSubmit) {
         this.obsMap.on("click", (e: L.LeafletMouseEvent) => {
-          let coords = JSON.stringify({
-            type: "Point",
-            coordinates: [e.latlng.lng, e.latlng.lat]
-          });
-
+          let coords = L.point(e.latlng.lng, e.latlng.lat);
           if (this.newObsMarker !== null) {
             this.obsMap.removeLayer(this.newObsMarker);
           }
@@ -240,7 +236,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
           }
           console.debug(coords);
           // emit new coordinates
-          this.onClick.emit(coords);
+          this.onClick.emit(JSON.stringify(coords));
         });
       }
       this.programMaxBounds = programBounds;

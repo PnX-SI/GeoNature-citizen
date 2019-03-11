@@ -1,21 +1,21 @@
-export class Observation {
-  id_observation: number;
+import { Feature, FeatureCollection } from "geojson";
+
+export interface PostObservationResponse extends FeatureCollection {
+  message: string;
+  features: Observation[];
+}
+
+export interface Observation extends Feature {
   cd_nom: number;
+  comment: string;
   common_name: string;
-  sci_name: string;
   count: number;
   date: Date;
-  comment: string;
+  id_observation: number;
+  images: string[];
   obs_txt: string;
-
-  /*
-  constructor(
-    public species: number,
-    public date: string,
-    public comment: string,
-    public count: number
-  ) { }
-  */
+  sci_name: string;
+  timestamp_create: Date;
 }
 
 export interface TaxonomyList {

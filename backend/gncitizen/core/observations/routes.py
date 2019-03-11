@@ -2,31 +2,27 @@
 # -*- coding: utf-8 -*-
 
 
-from datetime import datetime
 import uuid
-import json
-import os
-import uuid
-from pprint import pprint
-
+# from datetime import datetime
 import requests
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request, json
 from flask_jwt_extended import jwt_optional
-from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
-from shapely.geometry import Point, asShape
-from werkzeug import FileStorage
-from werkzeug.datastructures import ImmutableMultiDict
+from geoalchemy2.shape import from_shape
+from shapely.geometry import shape, mapping, Point, asShape
 
-from gncitizen.core.commons.models import MediaModel, ProgramsModel
+from gncitizen.core.commons.models import (
+    # MediaModel,
+    ProgramsModel,
+)
 from gncitizen.core.ref_geo.models import LAreas
-from gncitizen.core.taxonomy.models import Taxref
-from gncitizen.core.users.models import UserModel
+# from gncitizen.core.taxonomy.models import Taxref
+# from gncitizen.core.users.models import UserModel
 
-from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
+from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
-from gncitizen.utils.media import allowed_file, save_upload_files
+from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
@@ -219,20 +215,24 @@ def post_observation():
         try:
             newobs = ObservationModel(**datas2db)
         except Exception as e:
-            current_app.logger.debug(e)
+            current_app.logger.debug("[post_observation] data2db ", e)
             raise GeonatureApiError(e)
 
         try:
-            shape = asShape(json.loads(request_datas["geometry"]))
-            newobs.geom = from_shape(Point(shape), srid=4326)
+            _coordinates = json.loads(request_datas["geometry"])
+            _point = Point(_coordinates["x"], _coordinates["y"])
+            _shape = asShape(_point)
+            newobs.geom = from_shape(Point(_shape), srid=4326)
         except Exception as e:
-            current_app.logger.debug(e)
+            current_app.logger.debug("[post_observation] coords ", e)
             raise GeonatureApiError(e)
 
         id_role = get_id_role_if_exists()
         if id_role:
             newobs.id_role = id_role
-            # for GDPR compatibility, we can't update obs_txt and email fields with user informations, user name will be be automaticaly must be added from user model
+            # for GDPR compatibility:
+            # we can't update obs_txt and email fields with user informations,
+            # user name will be be automaticaly must be added from user model
             # role = UserModel.query.get(id_role)
             # newobs.obs_txt = role.username
             # newobs.email = role.email

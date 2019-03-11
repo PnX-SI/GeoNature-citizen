@@ -9,7 +9,6 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
 
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import * as L from "leaflet";
@@ -144,7 +143,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     let obsDate = NgbDate.from(this.obsForm.controls.date.value);
     this.obsForm.controls["date"].patchValue(
-      new Date(obsDate.year, obsDate.month, obsDate.day)
+      new Date(obsDate.year, obsDate.month - 1, obsDate.day)
         .toISOString()
         .match(/\d{4}-\d{2}-\d{2}/)[0]
     );
