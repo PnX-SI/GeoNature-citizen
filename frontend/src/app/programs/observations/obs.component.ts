@@ -75,9 +75,4 @@ export class ObsComponent implements OnInit, AfterViewInit {
     this.coords = L.point(_point);
     console.debug("map clicked", this.coords);
   }
-
-  onObservationSubmitted(something: ObservationFeature): void {
-    // TODO: queue obs in list
-    console.debug("Observation submitted", something);
-  }
 }

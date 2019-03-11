@@ -55,8 +55,8 @@ export class RewardComponent
 
   ngOnInit(): void {
     console.debug("reward init data:", this.data);
-    if (localStorage.getItem("username")) {
-      this.username = localStorage.getItem("username").replace(/\"/g, "");
+    this.username = localStorage.getItem("username").replace(/\"/g, "");
+    if (this.username) {
       this.ref.detach();
     } else {
       this.close("ANONYMOUS_SOURCE");
@@ -64,7 +64,7 @@ export class RewardComponent
   }
 
   ngAfterViewChecked() {
-    if (!(this.ref as ViewRef).destroyed) {
+    if (!(this.ref as ViewRef).destroyed && !this.timeout) {
       this.ref.detectChanges();
       this.timeout = setTimeout(
         () => this.close(this.rewarded ? "timeout" : "noreward"),

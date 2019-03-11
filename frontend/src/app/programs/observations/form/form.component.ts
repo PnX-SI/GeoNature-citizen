@@ -3,7 +3,8 @@ import {
   ViewEncapsulation,
   AfterViewInit,
   ViewChild,
-  ElementRef
+  ElementRef,
+  Input
 } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
@@ -37,12 +38,12 @@ export const obsFormMarkerIcon = L.icon({
 export const myMarkerTitle =
   '<i class="fa fa-eye"></i> Partagez votre observation';
 
-export function validObservationNgbDate(): ValidatorFn {
-  const today = new Date();
-  return (control: AbstractControl): { [key: string]: any } => {
-    let selected = NgbDate.from(control.value);
+export function ngbDateMaxIsToday(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const today = new Date();
+    const selected = NgbDate.from(control.value);
     const date_impl = new Date(selected.year, selected.month - 1, selected.day);
-    return date_impl <= today ? { "Parsed a date in the future": true } : null;
+    return date_impl > today ? { "Parsed a date in the future": true } : null;
   };
 }
 
@@ -54,27 +55,28 @@ export function validObservationNgbDate(): ValidatorFn {
 })
 export class ObsFormComponent implements AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
+  @Input("marker") marker: L.Marker;
   @ViewChild("photo") photo: ElementRef;
+  today = new Date();
+  program_id: any;
   obsForm = new FormGroup({
     cd_nom: new FormControl("", Validators.required),
     count: new FormControl("1", Validators.required),
     comment: new FormControl("", Validators.required),
-    date: new FormControl(
-      "2019-03-05",
-      Validators.compose([Validators.required, validObservationNgbDate()])
-    ),
+    date: new FormControl(this.today, [
+      Validators.required,
+      ngbDateMaxIsToday()
+    ]),
     photo: new FormControl("", Validators.required),
     municipality: new FormControl(),
     geometry: new FormControl("", Validators.required),
-    id_program: new FormControl("", Validators.required)
+    id_program: new FormControl(this.program_id, Validators.required)
   });
   taxonListThreshold = taxonListThreshold;
   surveySpecies: any;
   taxonomyList: any;
   program: any;
-  program_id: any;
   formMap: any;
-  today = new Date();
   isDisabled = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
     return date_impl > this.today;
@@ -113,6 +115,10 @@ export class ObsFormComponent implements AfterViewInit {
         formMap.fitBounds(maxBounds);
         formMap.setMaxBounds(maxBounds);
 
+        if (this.marker) {
+          this.marker.addTo(formMap);
+        }
+
         let myMarker = null;
 
         formMap.on("click", (e: LeafletMouseEvent) => {
@@ -122,7 +128,7 @@ export class ObsFormComponent implements AfterViewInit {
           // TODO: this.obsForm.patchValue({ municipality: municipality });
           console.debug(coords);
 
-          if (myMarker !== null) {
+          if (myMarker !== null && myMarker !== this.marker) {
             formMap.removeLayer(myMarker);
           }
 
@@ -141,8 +147,9 @@ export class ObsFormComponent implements AfterViewInit {
       });
   }
 
-  onFormSubmit(): any {
+  onFormSubmit(): ObservationFeature {
     let newObservation: ObservationFeature;
+    let result = null;
     this.postObservation().subscribe(
       (data: PostObservationResponse) => {
         console.debug(<ObservationFeature>data.features[0]);
@@ -150,9 +157,10 @@ export class ObsFormComponent implements AfterViewInit {
       },
       err => alert(err),
       () => {
-        return newObservation;
+        result = newObservation;
       }
     );
+    return result;
   }
 
   postObservation(): Observable<any> {
