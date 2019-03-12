@@ -159,7 +159,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
     this.options = options;
     this.observationMap = L.map(this.options.ELEMENT, {
-      layers: [this.options.DEFAULT_BASE_MAP()],
+      layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay ?
       ...LeafletOptions
     });
 

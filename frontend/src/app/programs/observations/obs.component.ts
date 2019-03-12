@@ -12,7 +12,7 @@ import { FeatureCollection } from "geojson";
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { Program } from "../programs.models";
 import { ModalFlowService } from "./modalflow/modalflow.service";
-import { TaxonomyList, ObservationFeature } from "./observation.model";
+import { TaxonomyList } from "./observation.model";
 import * as L from "leaflet";
 
 @Component({

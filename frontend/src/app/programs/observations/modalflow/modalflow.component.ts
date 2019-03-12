@@ -1,5 +1,6 @@
 import {
   Component,
+  Input,
   ViewChild,
   ElementRef,
   ViewEncapsulation
@@ -25,6 +26,7 @@ import { ModalFlowService } from "./modalflow.service";
   encapsulation: ViewEncapsulation.None
 })
 export class ModalFlowComponent {
+  @Input("coords") coords;
   @ViewChild("content") content: ElementRef;
   flowitems: FlowItem[];
   timeout: any;

@@ -72,7 +72,9 @@
         [program]="programFeature"
         (onClick)="onMapClicked($event)"
       ></app-obs-map>
-      <div class="btn-groups"><app-modalflow></app-modalflow></div>
+      <div class="btn-groups">
+        <app-modalflow [coords]="coords"></app-modalflow>
+      </div>
     </div>
   </section>
 </div>

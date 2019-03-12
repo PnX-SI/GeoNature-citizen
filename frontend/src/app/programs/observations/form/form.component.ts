@@ -18,14 +18,17 @@ import {
 import { Observable } from "rxjs";
 
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
 
 import { AppConfig } from "../../../../conf/app.config";
 import {
   PostObservationResponse,
-  ObservationFeature
+  ObservationFeature,
+  TaxonomyList
 } from "../observation.model";
+import { GncProgramsService } from "src/app/api/gnc-programs.service";
 
 declare let $: any;
 
@@ -55,7 +58,7 @@ export function ngbDateMaxIsToday(): ValidatorFn {
 })
 export class ObsFormComponent implements AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
-  @Input("marker") marker: L.Marker;
+  @Input("coords") coords: L.Point;
   @ViewChild("photo") photo: ElementRef;
   today = new Date();
   program_id: any;
@@ -63,37 +66,51 @@ export class ObsFormComponent implements AfterViewInit {
     cd_nom: new FormControl("", Validators.required),
     count: new FormControl("1", Validators.required),
     comment: new FormControl("", Validators.required),
-    date: new FormControl(this.today, [
-      Validators.required,
-      ngbDateMaxIsToday()
-    ]),
+    date: new FormControl(
+      {
+        year: this.today.getFullYear(),
+        month: this.today.getMonth() + 1,
+        day: this.today.getDate()
+      },
+      [Validators.required, ngbDateMaxIsToday()]
+    ),
     photo: new FormControl("", Validators.required),
     municipality: new FormControl(),
-    geometry: new FormControl("", Validators.required),
+    geometry: new FormControl(
+      this.coords ? this.coords : "",
+      Validators.required
+    ),
     id_program: new FormControl(this.program_id, Validators.required)
   });
   taxonListThreshold = taxonListThreshold;
-  surveySpecies: any;
-  taxonomyList: any;
-  program: any;
-  formMap: any;
+  surveySpecies: TaxonomyList;
+  taxonomyListID: number;
+  program: FeatureCollection;
+  formMap: L.Map;
   isDisabled = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
     return date_impl > this.today;
   };
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
+  constructor(
+    private http: HttpClient,
+    private programService: GncProgramsService,
+    private route: ActivatedRoute
+  ) {}
 
   ngAfterViewInit() {
     this.route.params.subscribe(params => (this.program_id = params["id"]));
     this.http
       .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
-      .subscribe(result => {
+      .subscribe((result: FeatureCollection) => {
         this.program = result;
-        this.taxonomyList = this.program.features[0].properties.taxonomy_list;
-        this.getSurveySpeciesItems(this.taxonomyList);
+        this.taxonomyListID = this.program.features[0].properties.taxonomy_list;
+        this.programService
+          .getProgramTaxonomyList(this.program_id)
+          .subscribe(species => (this.surveySpecies = species));
 
         const formMap = L.map("formMap");
+        this.formMap = formMap;
 
         L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "OpenStreetMap"
@@ -115,20 +132,29 @@ export class ObsFormComponent implements AfterViewInit {
         formMap.fitBounds(maxBounds);
         formMap.setMaxBounds(maxBounds);
 
-        if (this.marker) {
-          this.marker.addTo(formMap);
+        // Set initial observation marker from main map if already spotted
+        let myMarker = null;
+        if (this.coords) {
+          this.obsForm.patchValue({ geometry: this.coords });
+
+          // wtf coord
+          myMarker = L.marker([this.coords.y, this.coords.x], {
+            icon: obsFormMarkerIcon
+          }).addTo(formMap);
+
+          console.debug("coords", this.coords);
+          console.debug("marker", myMarker);
         }
 
-        let myMarker = null;
-
+        // Update marker on click event
         formMap.on("click", (e: LeafletMouseEvent) => {
-          let coords = L.point(e.latlng.lng, e.latlng.lat);
+          this.coords = L.point(e.latlng.lng, e.latlng.lat);
 
-          this.obsForm.patchValue({ geometry: coords });
+          this.obsForm.patchValue({ geometry: this.coords });
           // TODO: this.obsForm.patchValue({ municipality: municipality });
-          console.debug(coords);
+          console.debug(this.coords);
 
-          if (myMarker !== null && myMarker !== this.marker) {
+          if (myMarker) {
             formMap.removeLayer(myMarker);
           }
 
@@ -138,10 +164,6 @@ export class ObsFormComponent implements AfterViewInit {
             myMarker = L.marker(e.latlng, { icon: obsFormMarkerIcon }).addTo(
               formMap
             );
-            $("#feature-title").html(myMarkerTitle);
-            $("#feature-coords").html(coords);
-            // $("#feature-info").html(myMarkerContent);
-            $("#featureModal").modal("show");
           }
         });
       });
@@ -202,32 +224,10 @@ export class ObsFormComponent implements AfterViewInit {
       formData.append(item, this.obsForm.get(item).value);
     }
 
-    return this.http.post<any>(
+    return this.http.post<PostObservationResponse>(
       `${this.URL}/observations`,
       formData,
       httpOptions
-    );
-  }
-
-  // TODO: call GncProgramsService
-  restItemsServiceGetTaxonomyList(program_id) {
-    this.http
-      .get(`${AppConfig.API_ENDPOINT}/programs/` + program_id)
-      .subscribe(result => {
-        this.program = result;
-        this.taxonomyList = this.program.features[0].properties.taxonomy_list;
-      });
-  }
-
-  restItemsServiceGetSurveySpeciesItems(taxlist) {
-    return this.http.get(
-      `${AppConfig.API_ENDPOINT}/taxonomy/lists/${taxlist}/species`
-    );
-  }
-
-  getSurveySpeciesItems(taxlist): void {
-    this.restItemsServiceGetSurveySpeciesItems(taxlist).subscribe(
-      species => (this.surveySpecies = species)
     );
   }
 }
