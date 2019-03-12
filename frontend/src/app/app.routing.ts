@@ -4,6 +4,7 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { HomeComponent } from "./home/home.component";
 import { ObsComponent } from "./programs/observations/obs.component";
+import { SitesComponent } from "./programs/sites/sites.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { ProgramsComponent } from "./programs/programs.component";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
@@ -11,6 +12,7 @@ import { UniqueProgramGuard } from "./programs/default-program.guard";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { AuthGuard } from "./auth/auth.guard";
+import { SiteFormComponent } from "./programs/sites/form/form.component";
 
 const appRoutes: Routes = [
   {
@@ -38,6 +40,12 @@ const appRoutes: Routes = [
   {
     path: "programs/:id/observations",
     component: ObsComponent,
+    resolve: { programs: ProgramsResolve }
+  },
+  {
+    path: "programs/:id/sites",
+    // component: SiteFormComponent,
+    component: SitesComponent,
     resolve: { programs: ProgramsResolve }
   },
   { path: "synthesis/species/:id", component: SpeciesComponent },
