@@ -18,10 +18,10 @@
     </select>
   </div>
   <div class="obs-found">
-    <p>{{ observations?.length }} observations aaa trouvées !</p>
+    <p>{{ sites?.length }} sites trouvés !</p>
   </div>
   <div id="list">
-    <div *ngFor="let o of observations">
+    <div *ngFor="let o of sites">
       <div class="espece">
         <a
           [routerLink]="['/synthesis/species', o.properties.cd_nom]"

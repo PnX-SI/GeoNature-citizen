@@ -8,16 +8,16 @@ import { FeatureCollection, Feature } from "geojson";
   styleUrls: ["./list.component.css"]
 })
 export class SitesListComponent implements OnChanges {
-  @Input("observations") obs: FeatureCollection;
+  @Input("sites") obs: FeatureCollection;
   @Input("taxa") surveySpecies: any[];
   municipalities: string[];
-  observations: Feature[] = [];
+  sites: Feature[] = [];
   program_id: number;
   taxa: any[];
 
   ngOnChanges() {
     if (this.obs) {
-      this.observations = this.obs["features"];
+      this.sites = this.obs["features"];
       this.municipalities = this.obs.features
         .map(features => features.properties)
         .map(property => property.municipality)

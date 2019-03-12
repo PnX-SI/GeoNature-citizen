@@ -65,7 +65,7 @@ const obsMarkerIcon = () =>
     iconAnchor: [16, 42]
   });
 
-const myMarkerTitle = '<i class="fa fa-eye"></i> Partagez votre observation';
+const myMarkerTitle = '<i class="fa fa-eye"></i> Partagez votre site';
 
 const programAreaStyle = {
   fillColor: "transparent",
@@ -84,7 +84,7 @@ const programAreaStyle = {
   encapsulation: ViewEncapsulation.None
 })
 export class SitesMapComponent implements OnInit, OnChanges {
-  @Input("observations") observations: FeatureCollection;
+  @Input("sites") sites: FeatureCollection;
   @Input("program") program: FeatureCollection;
   @Input("geolocate") geolocate = true;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
@@ -103,7 +103,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
   ngOnChanges(_changes: SimpleChanges) {
     if (this.obsMap) {
       this.loadProgramArea();
-      this.loadObservations();
+      this.loadSites();
     }
   }
 
@@ -126,8 +126,8 @@ export class SitesMapComponent implements OnInit, OnChanges {
     }
   }
 
-  loadObservations(): void {
-    if (this.observations) {
+  loadSites(): void {
+    if (this.sites) {
       // if (this.clusterLayer) { this.obsMap.remove this.clustersLayer }
       this.clustersLayer = L.markerClusterGroup({
         iconCreateFunction: clusters => {
@@ -150,7 +150,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
       });
 
       this.clustersLayer.addLayer(
-        L.geoJSON(<GeoJsonObject>this.observations, {
+        L.geoJSON(<GeoJsonObject>this.sites, {
           onEachFeature: this.onEachFeature,
           pointToLayer: this.pointToLayer
         })

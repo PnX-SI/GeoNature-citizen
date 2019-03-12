@@ -12,7 +12,7 @@
 </div>
 
 <div class="row">
-  <!-- LES OBSERVATIONS -->
+  <!-- LES SITES -->
   <section id="program" class="observations row">
     <input id="slide-sidebar" type="checkbox" role="button" />
     <label class="toggle" for="slide-sidebar"
@@ -20,14 +20,14 @@
     ></label>
     <div class="col-lg-4 col-md-12 side-bar" id="list">
       <app-sites-list
-        [observations]="observations"
+        [sites]="sites"
         [taxa]="surveySpecies"
       ></app-sites-list>
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
       <app-sites-map
-        [observations]="observations"
+        [sites]="sites"
         [program]="programFeature"
       ></app-sites-map>
       <div class="btn-groups"><app-sitemodalflow></app-sitemodalflow></div>
