@@ -12,24 +12,24 @@
 </div>
 
 <div class="row">
-  <!-- LES OBSERVATIONS -->
+  <!-- LES SITES -->
   <section id="program" class="observations row">
     <input id="slide-sidebar" type="checkbox" role="button" />
     <label class="toggle" for="slide-sidebar"
       ><i class="fa fa-chevron-left"></i
     ></label>
     <div class="col-lg-4 col-md-12 side-bar" id="list">
-      <app-obs-list
-        [observations]="observations"
+      <app-sites-list
+        [sites]="sites"
         [taxa]="surveySpecies"
-      ></app-obs-list>
+      ></app-sites-list>
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
-      <app-obs-map
-        [observations]="observations"
+      <app-sites-map
+        [sites]="sites"
         [program]="programFeature"
-      ></app-obs-map>
+      ></app-sites-map>
       <div class="btn-groups"><app-sitemodalflow></app-sitemodalflow></div>
     </div>
   </section>

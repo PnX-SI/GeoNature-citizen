@@ -27,6 +27,8 @@ import { ObsFormComponent } from "./programs/observations/form/form.component";
 import { ObsListComponent } from "./programs/observations/list/list.component";
 import { ObsMapComponent } from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
+import { SitesListComponent } from "./programs/sites/list/list.component";
+import { SitesMapComponent } from "./programs/sites/map/map.component";
 import { SitesComponent } from "./programs/sites/sites.component";
 import { SiteFormComponent } from "./programs/sites/form/form.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
@@ -79,6 +81,8 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     ObsListComponent,
     SitesComponent,
     SiteFormComponent,
+    SitesListComponent,
+    SitesMapComponent,
     HomeComponent,
     HomeCustomComponent,
     ProgramsComponent,

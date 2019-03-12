@@ -4,34 +4,26 @@ import {
   HttpClientTestingModule,
   HttpTestingController
 } from '@angular/common/http/testing'
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import {
-  NgbModule ,
-  NgbModal,
-} from "@ng-bootstrap/ng-bootstrap";
 
-import { ObsListComponent } from './list.component';
+import { ObsMapComponent } from './map.component';
 
-describe('SitesListComponent', () => {
-  let component: ObsListComponent;
-  let fixture: ComponentFixture<ObsListComponent>;
+describe('ObsMapComponent', () => {
+  let component: ObsMapComponent;
+  let fixture: ComponentFixture<ObsMapComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgbModule.forRoot(),
         HttpClientTestingModule,
-        RouterTestingModule,],
-      providers: [
-        NgbModal,
+        RouterTestingModule,
       ],
-      declarations: [ ObsListComponent ]
+      declarations: [ ObsMapComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ObsListComponent);
+    fixture = TestBed.createComponent(ObsMapComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
