@@ -10,7 +10,6 @@ import { FeatureCollection } from "geojson";
 
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { Program } from "../programs.models";
-// import { Observation } from "./observation.model";
 import { SiteModalFlowService } from "./modalflow/modalflow.service";
 
 @Component({
@@ -20,13 +19,13 @@ import { SiteModalFlowService } from "./modalflow/modalflow.service";
   encapsulation: ViewEncapsulation.None
 })
 export class SitesComponent implements OnInit, AfterViewChecked {
-  title = "Observations";
+  title = "Sites";
   fragment: string;
   program_id: any;
   coords: any;
   programs: Program[];
   program: Program;
-  observations: FeatureCollection;
+  sites: FeatureCollection;
   programFeature: FeatureCollection;
   surveySpecies: any[];
 
@@ -47,9 +46,9 @@ export class SitesComponent implements OnInit, AfterViewChecked {
       this.programs = data.programs;
       this.program = this.programs.find(p => p.id_program == this.program_id);
       this.programService
-        .getProgramObservations(this.program_id)
-        .subscribe(observations => {
-          this.observations = observations;
+        .getProgramSites(this.program_id)
+        .subscribe(sites => {
+          this.sites = sites;
         });
       this.programService
         .getProgramTaxonomyList(this.program_id)

@@ -1,0 +1,29 @@
+<div id="mapList">
+  <div class="obs-found">
+    <p>{{ sites?.length }} sites trouvés !</p>
+  </div>
+  <div id="list">
+    <div *ngFor="let o of sites">
+      <div class="espece">
+        <a
+          [routerLink]="['/synthesis/species', o.properties.cd_nom]"
+          style="cursor:pointer"
+        >
+          <img src="../../assets/Azure-Commun-019.JPG" />
+          <div class="infos">
+            <h5>{{ o.properties.name }}</h5>
+            <p>
+              Ajoutée par <span>{{ o.properties.obs_txt }}</span>
+            </p>
+            <p>
+              le <span>{{ o.properties.timestamp_create | date : longDate }}</span>
+            </p>
+          </div>
+          <div class="hide">
+            <img src="../../../../assets/binoculars.png" />
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

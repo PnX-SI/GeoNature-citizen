@@ -36,7 +36,7 @@ export const obsFormMarkerIcon = L.icon({
   iconAnchor: [16, 42]
 });
 export const myMarkerTitle =
-  '<i class="fa fa-eye"></i> Partagez votre observation';
+  '<i class="fa fa-eye"></i> Partagez votre site';
 
 @Component({
   selector: "app-site-form",
