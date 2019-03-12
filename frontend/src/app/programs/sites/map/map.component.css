@@ -1,4 +1,4 @@
-#obsMap {
+#sitesMap {
   height: calc(100vh - var(--router-outlet-offset));
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
@@ -44,7 +44,7 @@
   .btn-group .btn-big{
     opacity: 1 !important;
   }
-  #obsMap{
+  #sitesMap{
     margin: 0;
     width: 100%;
   }

@@ -78,7 +78,7 @@ const programAreaStyle = {
 @Component({
   selector: "app-sites-map",
   template: `
-    <div id="obsMap"></div>
+    <div id="sitesMap"></div>
   `,
   styleUrls: ["./map.component.css"],
   encapsulation: ViewEncapsulation.None
@@ -90,36 +90,36 @@ export class SitesMapComponent implements OnInit, OnChanges {
   @Output() onClick: EventEmitter<any> = new EventEmitter();
   programMaxBounds: L.LatLngBounds;
   coords: string;
-  obsMap: L.Map;
+  sitesMap: L.Map;
   clustersLayer: L.FeatureGroup;
   map_init = false;
 
   constructor() {}
 
   ngOnInit() {
-    this.initMap("obsMap", {}, DEFAULT_TILES);
+    this.initMap("sitesMap", {}, DEFAULT_TILES);
   }
 
   ngOnChanges(_changes: SimpleChanges) {
-    if (this.obsMap) {
+    if (this.sitesMap) {
       this.loadProgramArea();
       this.loadSites();
     }
   }
 
   initMap(
-    element: string | HTMLElement = "obsMap",
+    element: string | HTMLElement = "sitesMap",
     options: L.MapOptions = {},
     tiles: Object = DEFAULT_TILES
   ): void {
-    this.obsMap = L.map(element, options);
-    this.obsMap.zoomControl.setPosition("topright");
+    this.sitesMap = L.map(element, options);
+    this.sitesMap.zoomControl.setPosition("topright");
     L.control
       .scale({ position: "bottomleft", imperial: false })
-      .addTo(this.obsMap);
+      .addTo(this.sitesMap);
     L.tileLayer(tiles["url"], {
       attribution: tiles["attribution"]
-    }).addTo(this.obsMap);
+    }).addTo(this.sitesMap);
     this.map_init = true;
     if (this.geolocate) {
       this.initTracking();
@@ -128,7 +128,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
 
   loadSites(): void {
     if (this.sites) {
-      // if (this.clusterLayer) { this.obsMap.remove this.clustersLayer }
+      // if (this.clusterLayer) { this.sitesMap.remove this.clustersLayer }
       this.clustersLayer = L.markerClusterGroup({
         iconCreateFunction: clusters => {
           const childCount = clusters.getChildCount();
@@ -156,17 +156,17 @@ export class SitesMapComponent implements OnInit, OnChanges {
         })
       );
 
-      this.obsMap.addLayer(this.clustersLayer);
+      this.sitesMap.addLayer(this.clustersLayer);
     }
   }
 
   initTracking(watch = true, enableHighAccuracy = true): void {
-    this.obsMap.locate({
+    this.sitesMap.locate({
       watch: watch,
       enableHighAccuracy: enableHighAccuracy
     });
-    this.obsMap.on("locationfound", this.onLocationFound.bind(this));
-    this.obsMap.on("locationerror", this.onLocationError.bind(this));
+    this.sitesMap.on("locationfound", this.onLocationFound.bind(this));
+    this.sitesMap.on("locationerror", this.onLocationError.bind(this));
   }
 
   onEachFeature(feature, layer): void {
@@ -194,12 +194,12 @@ export class SitesMapComponent implements OnInit, OnChanges {
     const radius = e.accuracy / 2;
     L.marker(e.latlng, {
       icon: newObsMarkerIcon()
-    }).addTo(this.obsMap);
+    }).addTo(this.sitesMap);
     // geolocation.bindPopup("You are within " + radius + " meters from this point").openPopup()
-    const disk = L.circle(e.latlng, radius).addTo(this.obsMap);
+    const disk = L.circle(e.latlng, radius).addTo(this.sitesMap);
     console.debug("Geolocation", e.latlng);
     if (this.programMaxBounds) {
-      this.obsMap.fitBounds(disk.getBounds().extend(this.programMaxBounds));
+      this.sitesMap.fitBounds(disk.getBounds().extend(this.programMaxBounds));
     }
   }
 
@@ -214,13 +214,13 @@ export class SitesMapComponent implements OnInit, OnChanges {
         style: function(_feature) {
           return programAreaStyle;
         }
-      }).addTo(this.obsMap);
+      }).addTo(this.sitesMap);
       const programBounds = programArea.getBounds();
-      this.obsMap.fitBounds(programBounds);
-      // this.obsMap.setMaxBounds(programBounds)
+      this.sitesMap.fitBounds(programBounds);
+      // this.sitesMap.setMaxBounds(programBounds)
 
       let myNewObsMarker = null;
-      this.obsMap.on("click", (e: L.LeafletMouseEvent) => {
+      this.sitesMap.on("click", (e: L.LeafletMouseEvent) => {
         this.onClick.emit();
         let coords = JSON.stringify({
           type: "Point",
@@ -228,7 +228,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
         });
 
         if (myNewObsMarker !== null) {
-          this.obsMap.removeLayer(myNewObsMarker);
+          this.sitesMap.removeLayer(myNewObsMarker);
         }
 
         // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
@@ -239,7 +239,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
           // emit new coordinates
           myNewObsMarker = L.marker(e.latlng, {
             icon: newObsMarkerIcon()
-          }).addTo(this.obsMap);
+          }).addTo(this.sitesMap);
           $("#feature-title").html(myMarkerTitle);
           $("#feature-coords").html(coords);
           // $("#feature-info").html(myMarkerContent);
