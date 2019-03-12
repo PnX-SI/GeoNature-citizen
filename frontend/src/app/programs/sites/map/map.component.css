@@ -1,0 +1,51 @@
+#obsMap {
+  height: calc(100vh - var(--router-outlet-offset));
+  margin-left: var(--list-toggler-width);
+  width: calc(100% - var(--list-toggler-width));
+}
+
+.marker-cluster {
+  background-image: url(/assets/marker2.svg);
+}
+
+.marker-cluster span {
+  color: var(--primary);
+  font-size: .9em;
+  font-weight: bold;
+  line-height: 45px;
+}
+
+.marker-cluster-small {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+.marker-cluster-small div {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+.marker-cluster-medium {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+.marker-cluster-medium div {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+
+.marker-cluster-large {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+.marker-cluster-large div {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+
+.leaflet-right {
+  left: 15px;
+  right: inherit !important;
+}
+
+@media screen and (max-width: 991px){
+  .btn-group .btn-big{
+    opacity: 1 !important;
+  }
+  #obsMap{
+    margin: 0;
+    width: 100%;
+  }
+}
