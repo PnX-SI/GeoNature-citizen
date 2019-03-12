@@ -12,6 +12,7 @@ import {
 import { GeoJsonObject, FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import "leaflet.markercluster";
+import {formatDate} from "@angular/common";
 
 // import { AppConfig } from "../../../../conf/app.config";
 
@@ -172,11 +173,11 @@ export class SitesMapComponent implements OnInit, OnChanges {
   onEachFeature(feature, layer): void {
     let popupContent =
       '<img src="../../../assets/Azure-Commun-019.JPG"><p><b>' +
-      feature.properties.common_name +
-      "</b></br><span>Observé par " +
-      feature.properties.sci_name +
+      feature.properties.name +
+      "</b></br><span>Ajoutée par " +
+      feature.properties.obs_txt +
       "</br>le " +
-      feature.properties.date +
+      formatDate(feature.properties.timestamp_create, "longDate", "fr-FR") +
       '</span></p><div><img class="icon" src="../../../../assets/binoculars.png"></div>';
 
     if (feature.properties && feature.properties.popupContent) {
