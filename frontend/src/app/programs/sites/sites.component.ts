@@ -46,7 +46,7 @@ export class SitesComponent implements OnInit, AfterViewChecked {
       this.programs = data.programs;
       this.program = this.programs.find(p => p.id_program == this.program_id);
       this.programService
-        .getProgramObservations(this.program_id)
+        .getProgramSites(this.program_id)
         .subscribe(sites => {
           this.sites = sites;
         });
