@@ -11,12 +11,12 @@
         >
           <img src="../../assets/Azure-Commun-019.JPG" />
           <div class="infos">
-            <h5>{{ o.properties.common_name }}</h5>
+            <h5>{{ o.properties.name }}</h5>
             <p>
-              Observé par <span>{{ o.properties.sci_name }}</span>
+              Ajoutée par <span>{{ o.properties.obs_txt }}</span>
             </p>
             <p>
-              le <span>{{ o.properties.date }}</span>
+              le <span>{{ o.properties.timestamp_create | date : longDate }}</span>
             </p>
           </div>
           <div class="hide">
