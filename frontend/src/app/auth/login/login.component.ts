@@ -47,7 +47,10 @@ export class LoginComponent {
         }
       })
       .catch(err => {
-        const message = err.error.message;
+        let message = "Utilisateur ou mot de passe invalide";
+        if (err.error) {
+          message = err.error.message;
+        }
         setTimeout(() => (this.staticAlertClosed = true), 20000);
         this._error.subscribe(message => (this.errorMessage = message));
         this._error
