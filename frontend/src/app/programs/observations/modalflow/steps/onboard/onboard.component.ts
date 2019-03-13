@@ -15,13 +15,14 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { IFlowComponent } from "../../flow/flow";
 import { RegisterComponent } from "../../../../../auth/register/register.component";
 import { LoginComponent } from "../../../../../auth/login/login.component";
+import { AuthService } from "src/app/auth/auth.service";
 
 @Component({
   templateUrl: "./onboard.component.html",
   styleUrls: ["./onboard.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class OnboardComponent implements IFlowComponent, OnInit, OnDestroy {
+export class OnboardComponent implements IFlowComponent, OnDestroy {
   RegistrationModalRef: NgbModalRef;
   LoginModalRef: NgbModalRef;
   timeout: any;
@@ -29,14 +30,12 @@ export class OnboardComponent implements IFlowComponent, OnInit, OnDestroy {
   @ViewChild("RegisterComponent") RegisterComponent: ElementRef;
   @ViewChild("LoginComponent") LoginComponent: ElementRef;
 
-  constructor(private modalService: NgbModal, private ref: ChangeDetectorRef) {
-    this.ref.detach();
-  }
-
-  ngOnInit(): void {
-    let user = localStorage.getItem("username");
-    // TOOD: auth
-    if (user) {
+  constructor(
+    private modalService: NgbModal,
+    private ref: ChangeDetectorRef,
+    private authService: AuthService
+  ) {
+    if (this.authService.authorized$) {
       this.ref.detach();
       this.timeout = setTimeout(() => {
         this.data.next();
@@ -95,7 +94,6 @@ export class OnboardComponent implements IFlowComponent, OnInit, OnDestroy {
     console.debug("continue");
     // Continue to Submission form as Anonymous|Registered user
     // TODO: authenticated, anonymous check ... deserves notification ?
-    // FIXME: should convey context: create a model/state/store/source of truth
     this.data.next();
   }
 }

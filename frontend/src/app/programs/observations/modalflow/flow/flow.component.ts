@@ -33,7 +33,7 @@ export class FlowComponent implements OnInit {
     this.loadComponent();
   }
 
-  loadComponent() {
+  loadComponent(data?) {
     // really, cycle ?
     this.currentFlowIndex = (this.currentFlowIndex + 1) % this.flowItems.length;
     // resolve factory for current flow-item component
@@ -46,7 +46,8 @@ export class FlowComponent implements OnInit {
     viewContainerRef.clear();
     // fill app-flow view with flow-item content
     let componentRef = viewContainerRef.createComponent(componentFactory);
-    (<IFlowComponent>componentRef.instance).data = flowItem.data;
+    // make data/state follow
+    (<IFlowComponent>componentRef.instance).data = data || flowItem.data;
     // Be verbose about it ... noop
     this.step.emit(this.flowItems[this.currentFlowIndex].component.name);
     // tie current flow-item to the next until the last
@@ -54,13 +55,15 @@ export class FlowComponent implements OnInit {
       !(<IFlowComponent>componentRef.instance).data.next &&
       !(<IFlowComponent>componentRef.instance).data.final
     ) {
-      (<IFlowComponent>componentRef.instance).data.next = () => {
+      (<IFlowComponent>componentRef.instance).data.next = data => {
         console.debug(
           "loadComponent",
           this.flowItems[this.currentFlowIndex].component.name,
+          "data:",
+          data,
           this
         );
-        this.loadComponent();
+        this.loadComponent(data || flowItem.data);
       };
     }
   }

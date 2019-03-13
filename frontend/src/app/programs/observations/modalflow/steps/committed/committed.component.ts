@@ -1,35 +1,27 @@
-import {
-  Component,
-  Input,
-  ViewChild,
-  ViewEncapsulation,
-  OnInit
-} from "@angular/core";
+import { Component, Input, ViewChild, ViewEncapsulation } from "@angular/core";
 
 import { IFlowComponent } from "../../flow/flow";
 import { ObsFormComponent } from "../../../form/form.component";
+import { ObservationFeature } from "../../../observation.model";
 
 @Component({
   templateUrl: "./committed.component.html",
   styleUrls: ["./committed.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class CommittedComponent implements IFlowComponent, OnInit {
+export class CommittedComponent implements IFlowComponent {
   @Input() data: any;
   @ViewChild(ObsFormComponent) form: ObsFormComponent;
 
-  ngOnInit() {
-    console.debug("before committed action > data:", this.data);
-    console.debug(
-      "before committed action > supplying obs coords",
-      this.data.coords
-    );
-    // this.form.coords = this.data.coords;
+  onNewObservation(observation: ObservationFeature) {
+    this.data.obs = observation;
+    console.debug("committed action > onNewObservation data:", this.data);
+    this.data.next(this.data);
   }
 
   committed() {
-    this.data.obs = this.form.onFormSubmit();
+    this.form.onFormSubmit();
     console.debug("committed action > data:", this.data);
-    this.data.next();
+    console.debug("committed action > obs:", this.form.newObservation);
   }
 }

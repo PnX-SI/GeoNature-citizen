@@ -4,7 +4,9 @@ import {
   AfterViewInit,
   ViewChild,
   ElementRef,
-  Input
+  Input,
+  Output,
+  EventEmitter
 } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
@@ -59,13 +61,16 @@ export function ngbDateMaxIsToday(): ValidatorFn {
 export class ObsFormComponent implements AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   @Input("coords") coords: L.Point;
+  @Output("newObservation") newObservation: EventEmitter<
+    ObservationFeature
+  > = new EventEmitter();
   @ViewChild("photo") photo: ElementRef;
   today = new Date();
   program_id: any;
   obsForm = new FormGroup({
     cd_nom: new FormControl("", Validators.required),
     count: new FormControl("1", Validators.required),
-    comment: new FormControl("", Validators.required),
+    comment: new FormControl(""),
     date: new FormControl(
       {
         year: this.today.getFullYear(),
@@ -74,13 +79,13 @@ export class ObsFormComponent implements AfterViewInit {
       },
       [Validators.required, ngbDateMaxIsToday()]
     ),
-    photo: new FormControl("", Validators.required),
+    photo: new FormControl(""),
     municipality: new FormControl(),
     geometry: new FormControl(
       this.coords ? this.coords : "",
       Validators.required
     ),
-    id_program: new FormControl(this.program_id, Validators.required)
+    id_program: new FormControl(this.program_id)
   });
   taxonListThreshold = taxonListThreshold;
   surveySpecies: TaxonomyList;
@@ -170,20 +175,18 @@ export class ObsFormComponent implements AfterViewInit {
       });
   }
 
-  onFormSubmit(): ObservationFeature {
-    let newObservation: ObservationFeature;
-    let result = null;
+  onFormSubmit(): void {
+    let obs: ObservationFeature;
     this.postObservation().subscribe(
       (data: PostObservationResponse) => {
-        newObservation = data.features[0];
-        console.debug(newObservation);
+        obs = data.features[0];
       },
       err => alert(err),
       () => {
-        result = newObservation;
+        console.debug("[obsForm emit newObservation]", obs);
+        this.newObservation.emit(obs);
       }
     );
-    return result;
   }
 
   postObservation(): Observable<PostObservationResponse> {

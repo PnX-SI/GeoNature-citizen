@@ -1,13 +1,13 @@
 <!-- Observation ajoutée -->
 <div class="modal-body obs-added">
-  <!-- TODO: {{ obs?.photo || "assets/Azure-Commun-019.JPG" }} -->
-  <div><img src="assets/Azure-Commun-019.JPG" /></div>
-  <h5>Félicitations !</h5>
-  <h6>Votre observation a bien été ajoutée !</h6>
-  <p>{{ obs?.taxon || "Azurée commun" }}</p>
-  <!-- FIXME: real obs -->
-  <span
+  <div><img [src]="obs.images[0] || 'assets/Azure-Commun-019.JPG'" /></div>
+  <h5 i18n="Congrats|Félicitations !">Félicitations !</h5>
+  <h6 i18n="Congrats|Votre observation a bien été ajoutée !">
+    Votre observation a bien été ajoutée !
+  </h6>
+  <p>{{ obs.common_name }}</p>
+  <span i18n="Congrats|observé par OBSERVATEUR le DATE "
     >Observé par {{ username || "Anonyme" }} <br />
-    le {{ obs?.date || data.date }}</span
+    le {{ obs.date }}</span
   >
 </div>

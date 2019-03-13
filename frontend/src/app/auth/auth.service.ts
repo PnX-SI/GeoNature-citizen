@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, BehaviorSubject, of, from } from "rxjs";
-import { share, map, tap, take, catchError, finalize } from "rxjs/operators";
+import { Observable, BehaviorSubject } from "rxjs";
+import { share, map, catchError } from "rxjs/operators";
 
 import { AppConfig } from "../../conf/app.config";
 import {
@@ -22,7 +22,9 @@ export class AuthService {
 
   redirectUrl: string;
   authenticated$ = new BehaviorSubject<boolean>(this.hasRefreshToken());
-  authorized$ = new BehaviorSubject<boolean>(this.hasAccessToken());
+  authorized$ = new BehaviorSubject<boolean>(
+    this.hasAccessToken() && this.tokenExpiration(this.getAccessToken()) > 0
+  );
   timeoutID: any = null;
 
   constructor(private http: HttpClient, private router: Router) {}

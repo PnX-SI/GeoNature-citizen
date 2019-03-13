@@ -4,12 +4,16 @@
 </div>
 
 <div class="modal-body add-obs">
-  <app-obs-form [coords]="data.coords"></app-obs-form>
+  <app-obs-form
+    [coords]="data.coords"
+    (newObservation)="onNewObservation($event)"
+  ></app-obs-form>
 </div>
 
 <div class="modal-footer">
   <button
     type="submit"
+    [disabled]="!form.obsForm.valid"
     class="btn btn-default btn-outline-primary rounded-0"
     (click)="committed()"
     i18n="Valider l'observation"

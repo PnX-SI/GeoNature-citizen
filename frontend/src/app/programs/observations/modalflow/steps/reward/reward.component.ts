@@ -17,16 +17,12 @@ import { IFlowComponent } from "../../flow/flow";
     <div *ngIf="rewarded">
       <div class="modal-body new-badge" (click)="clicked('background')">
         <div><img src="assets/user.jpg" /></div>
-        <h5>Félicitation !</h5>
-        <h6>Vous venez d'obtenir ce badge</h6>
-        <p>Observateur confirmé</p>
+        <h5 i18n="Reward|Félicitations !">Félicitation !</h5>
+        <h6 i18n="Reward|Vous venez d'obtenir ce badge">
+          Vous venez d'obtenir ce badge
+        </h6>
+        <p>{{ "Observateur confirmé" }}</p>
       </div>
-      <!--
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-dark"
-                  (click)="close('closing')">Close</button>
-        </div>
-      -->
     </div>
   `,
   styleUrls: ["./reward.component.css"],

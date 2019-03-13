@@ -10,7 +10,7 @@ import { IFlowComponent } from "../../flow/flow";
 export class CongratsComponent implements IFlowComponent {
   @Input() data: any;
   timeout: any;
-  username: any;
+  username: string;
   obs: any;
 
   ngOnDestroy(): void {
@@ -22,10 +22,9 @@ export class CongratsComponent implements IFlowComponent {
   ngOnInit(): void {
     if (localStorage.getItem("username")) {
       this.username = localStorage.getItem("username").replace(/\"/g, "");
-      console.debug("username:", this.username);
     }
     console.debug("congrats action > data:", this.data);
-    this.obs = this.data.obs;
+    this.obs = this.data.obs.properties;
     this.timeout = setTimeout(() => {
       this.data.next();
     }, 2000);

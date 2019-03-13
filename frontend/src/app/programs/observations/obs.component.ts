@@ -70,9 +70,8 @@ export class ObsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onMapClicked(p: string): void {
-    let _point = JSON.parse(p);
-    this.coords = L.point(_point);
+  onMapClicked(p: L.Point): void {
+    this.coords = p;
     console.debug("map clicked", this.coords);
   }
 }

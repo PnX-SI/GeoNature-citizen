@@ -137,7 +137,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
 
-  @Output() onClick: EventEmitter<string> = new EventEmitter();
+  @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
   options: any;
   observationMap: L.Map;
 
@@ -238,7 +238,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
           }
           console.debug(coords);
           // emit new coordinates
-          this.onClick.emit(JSON.stringify(coords));
+          this.onClick.emit(coords);
         });
       }
       this.programMaxBounds = programBounds;
