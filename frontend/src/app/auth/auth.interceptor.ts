@@ -110,15 +110,14 @@ export class AuthInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     let errorMessage = "";
     let expired = this.auth.tokenExpiration(this.auth.getAccessToken());
-    if (expired && expired <= 10.0 && expired > 0.5) {
-      // renew
+    // renew two min before expiration
+    if (expired && expired <= 120.0 && expired > 0.5) {
       console.debug(
         `[AuthInterceptor.intercept] token is about to expire: ${expired}`
       );
       return this.handle401(request, next);
     } else {
-      console.warn(`[AuthInterceptor.intercept] expiring token: ${expired}`);
-      // do login
+      // console.warn(`[AuthInterceptor.intercept] expiring token: ${expired}`);
     }
 
     return next.handle(this.addToken(request, this.auth.getAccessToken())).pipe(

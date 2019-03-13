@@ -155,7 +155,7 @@ export class AuthService {
     if (!jwt) return;
     const now: number = new Date().getTime();
     const delta: number = (jwt.payload.exp * 1000 - now) / 1000.0;
-    console.debug(`[token] expiration in ${delta} sec`);
+    // console.debug(`[token] expiration in ${delta} sec`);
     return delta;
   }
 }
