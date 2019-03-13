@@ -1,7 +1,7 @@
 <div class="container programs">
   <div class="row">
-    <h1>
-      {{ title }}&nbsp;<span class="badge badge-pill badge-primary">{{
+    <h1 i18n="Programs modal title|PROGRAMMES">
+      PROGRAMMES<span class="badge badge-pill badge-primary">{{
         programCount
       }}</span>
     </h1>
@@ -22,7 +22,7 @@
                   alt="p.title"
                   width="300"
                   height="300"
-                  src="assets/prog1.jpg"
+                  [src]="p.image || 'assets/prog1.jpg'"
                 />
               </div>
               <h5 class="card-title">
