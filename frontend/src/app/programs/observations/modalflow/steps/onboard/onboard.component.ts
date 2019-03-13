@@ -1,4 +1,6 @@
-import { Component, Input, ViewEncapsulation, OnDestroy, ViewChild, ElementRef } from '@angular/core'
+import {
+  Component, Input, ViewEncapsulation, OnDestroy, ViewChild, ElementRef, OnInit
+} from '@angular/core'
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap'
 
@@ -11,7 +13,7 @@ import { LoginComponent } from '../../../../../auth/login/login.component';
   styleUrls: ['./onboard.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class OnboardComponent implements IFlowComponent, OnDestroy {
+export class OnboardComponent implements IFlowComponent, OnDestroy, OnInit {
   RegistrationModalRef: NgbModalRef
   LoginModalRef: NgbModalRef
   @Input() data: any
@@ -23,6 +25,14 @@ export class OnboardComponent implements IFlowComponent, OnDestroy {
   ngOnDestroy(): void {
     if (this.data.timeout) {
       clearTimeout(this.data.timeout)
+    }
+  }
+
+  ngOnInit() {
+    // Skip login/register step if already logged in
+    let username = localStorage.getItem("username");
+    if (username) {
+      this.data.next()
     }
   }
 
