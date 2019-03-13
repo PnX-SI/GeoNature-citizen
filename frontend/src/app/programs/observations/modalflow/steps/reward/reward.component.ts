@@ -1,15 +1,7 @@
-import {
-  Component,
-  Input,
-  ViewEncapsulation,
-  OnInit,
-  OnDestroy,
-  AfterViewChecked,
-  ChangeDetectorRef,
-  ViewRef
-} from "@angular/core";
+import { Component, Input, ViewEncapsulation, OnInit } from "@angular/core";
 
 import { IFlowComponent } from "../../flow/flow";
+import { AuthService } from "src/app/auth/auth.service";
 
 @Component({
   selector: "app-reward",
@@ -28,44 +20,25 @@ import { IFlowComponent } from "../../flow/flow";
   styleUrls: ["./reward.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class RewardComponent
-  implements IFlowComponent, OnInit, OnDestroy, AfterViewChecked {
+export class RewardComponent implements IFlowComponent, OnInit {
   @Input() data: any;
   timeout: any;
   rewarded: boolean = Math.random() >= 0.5;
   username: string;
 
-  constructor(private ref: ChangeDetectorRef) {
-    this.ref.detach();
-  }
-
-  ngOnDestroy(): void {
-    if (!(this.ref as ViewRef).destroyed) {
-      this.ref.detectChanges();
-      if (this.timeout) {
-        clearTimeout(this.timeout);
-      }
+  constructor(private authService: AuthService) {
+    if (this.authService.authorized$.value) {
+      this.username = localStorage.getItem("username");
     }
   }
 
   ngOnInit(): void {
     console.debug("reward init data:", this.data);
-    this.username = localStorage.getItem("username").replace(/\"/g, "");
-    if (this.username) {
-      this.ref.detach();
-    } else {
-      this.close("ANONYMOUS_SOURCE");
-    }
-  }
-
-  ngAfterViewChecked() {
-    if (!(this.ref as ViewRef).destroyed && !this.timeout) {
-      this.ref.detectChanges();
-      this.timeout = setTimeout(
-        () => this.close(this.rewarded ? "timeout" : "noreward"),
-        this.rewarded ? 3000 : 0
-      );
-    }
+    const cond = this.username && this.rewarded;
+    this.timeout = setTimeout(
+      () => this.close(cond ? "timeout" : "noreward"),
+      cond ? 3000 : 0
+    );
   }
 
   close(d) {

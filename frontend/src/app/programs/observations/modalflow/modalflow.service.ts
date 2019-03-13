@@ -13,7 +13,6 @@ import { OnboardComponent } from "./steps/onboard/onboard.component";
 import { CommittedComponent } from "./steps/committed/committed.component";
 import { CongratsComponent } from "./steps/congrats/congrats.component";
 import { RewardComponent } from "./steps/reward/reward.component";
-import { ObservationFeature } from "../observation.model";
 
 export const MODAL_DEFAULTS: NgbModalOptions = {
   size: "lg",
@@ -73,6 +72,4 @@ export class ModalFlowService extends FlowService {
       new FlowItem(RewardComponent, { ...initialState, service: this })
     ];
   }
-
-  // onNewObservation(newObservation: ObservationFeature) {}
 }

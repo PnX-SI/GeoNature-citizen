@@ -1,13 +1,9 @@
 import {
   Component,
-  OnInit,
-  OnDestroy,
   ViewEncapsulation,
   Input,
   ViewChild,
-  ElementRef,
-  ViewRef,
-  ChangeDetectorRef
+  ElementRef
 } from "@angular/core";
 
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -22,7 +18,7 @@ import { AuthService } from "src/app/auth/auth.service";
   styleUrls: ["./onboard.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class OnboardComponent implements IFlowComponent, OnDestroy {
+export class OnboardComponent implements IFlowComponent {
   RegistrationModalRef: NgbModalRef;
   LoginModalRef: NgbModalRef;
   timeout: any;
@@ -32,21 +28,10 @@ export class OnboardComponent implements IFlowComponent, OnDestroy {
 
   constructor(
     private modalService: NgbModal,
-    private ref: ChangeDetectorRef,
     private authService: AuthService
   ) {
-    if (this.authService.authorized$) {
-      this.ref.detach();
-      this.timeout = setTimeout(() => {
-        this.data.next();
-        clearTimeout(this.timeout);
-      }, 0);
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (!(this.ref as ViewRef).destroyed) {
-      this.ref.detectChanges();
+    if (this.authService.authorized$.value) {
+      this.data.next(this.data);
     }
   }
 
