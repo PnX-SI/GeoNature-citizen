@@ -134,6 +134,7 @@ export class ObsFormComponent implements AfterViewInit {
 
         // Set initial observation marker from main map if already spotted
         let myMarker = null;
+        console.debug("supplied marker coords", this.coords);
         if (this.coords) {
           this.obsForm.patchValue({ geometry: this.coords });
 
@@ -174,8 +175,8 @@ export class ObsFormComponent implements AfterViewInit {
     let result = null;
     this.postObservation().subscribe(
       (data: PostObservationResponse) => {
-        console.debug(<ObservationFeature>data.features[0]);
-        newObservation = <ObservationFeature>data.features[0];
+        newObservation = data.features[0];
+        console.debug(newObservation);
       },
       err => alert(err),
       () => {
@@ -185,7 +186,7 @@ export class ObsFormComponent implements AfterViewInit {
     return result;
   }
 
-  postObservation(): Observable<any> {
+  postObservation(): Observable<PostObservationResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
         Accept: "application/json"

@@ -64,15 +64,12 @@ export class ModalFlowService extends FlowService {
     this.modalRef.close(data);
   }
 
-  getFlowItems() {
+  getFlowItems(initialState) {
     return [
-      new FlowItem(OnboardComponent, { service: this }),
-      new FlowItem(CommittedComponent, { service: this }),
-      new FlowItem(CongratsComponent, {
-        service: this,
-        date: new Date().toLocaleDateString()
-      }),
-      new FlowItem(RewardComponent, { service: this })
+      new FlowItem(OnboardComponent, { ...initialState, service: this }),
+      new FlowItem(CommittedComponent, { ...initialState, service: this }),
+      new FlowItem(CongratsComponent, { ...initialState, service: this }),
+      new FlowItem(RewardComponent, { ...initialState, service: this })
     ];
   }
 }

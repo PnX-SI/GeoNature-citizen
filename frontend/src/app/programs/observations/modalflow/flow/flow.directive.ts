@@ -1,12 +1,8 @@
-import { Directive, ViewContainerRef } from '@angular/core'
+import { Directive, ViewContainerRef } from "@angular/core";
 
 @Directive({
-  selector: '[user-flow]'
+  selector: "[user-flow]"
 })
 export class FlowDirective {
-
-  constructor(
-    public viewContainerRef: ViewContainerRef,
-  ) { }
-
+  constructor(public viewContainerRef: ViewContainerRef) {}
 }
