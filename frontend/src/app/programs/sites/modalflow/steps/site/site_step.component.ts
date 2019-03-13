@@ -7,14 +7,14 @@ import {
 } from "@angular/core";
 
 import { IFlowComponent } from "../../../../observations/modalflow/flow/flow";
-import { SiteFormComponent } from "../../../form/form.component";
+import { SiteFormComponent } from "../../../siteform/siteform.component";
 
 @Component({
-  templateUrl: "./committed.component.html",
-  styleUrls: ["./committed.component.css"],
+  templateUrl: "./site_step.component.html",
+  styleUrls: ["./site_step.component.css"],
   // encapsulation: ViewEncapsulation.None
 })
-export class SiteCommittedComponent implements IFlowComponent {
+export class SiteStepComponent implements IFlowComponent {
   @Input() data: any;
   @ViewChild(SiteFormComponent) form: SiteFormComponent;
 

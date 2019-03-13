@@ -30,7 +30,8 @@ import { ObsComponent } from "./programs/observations/obs.component";
 import { SitesListComponent } from "./programs/sites/list/list.component";
 import { SitesMapComponent } from "./programs/sites/map/map.component";
 import { SitesComponent } from "./programs/sites/sites.component";
-import { SiteFormComponent } from "./programs/sites/form/form.component";
+import { SiteFormComponent } from "./programs/sites/siteform/siteform.component";
+import { SiteVisitFormComponent } from "./programs/sites/form/form.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { GncService } from "./api/gnc.service";
@@ -44,7 +45,8 @@ import { FlowComponent } from "./programs/observations/modalflow/flow/flow.compo
 import { FlowDirective } from "./programs/observations/modalflow/flow/flow.directive";
 import { OnboardComponent } from "./programs/observations/modalflow/steps/onboard/onboard.component";
 import { CommittedComponent } from "./programs/observations/modalflow/steps/committed/committed.component";
-import { SiteCommittedComponent } from "./programs/sites/modalflow/steps/committed/committed.component";
+import { VisitStepComponent } from "./programs/sites/modalflow/steps/visit/visit_step.component";
+import { SiteStepComponent } from "./programs/sites/modalflow/steps/site/site_step.component";
 import { CongratsComponent } from "./programs/observations/modalflow/steps/congrats/congrats.component";
 import { ModalFlowComponent } from "./programs/observations/modalflow/modalflow.component";
 import { SiteModalFlowComponent } from "./programs/sites/modalflow/modalflow.component";
@@ -81,6 +83,7 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     ObsListComponent,
     SitesComponent,
     SiteFormComponent,
+    SiteVisitFormComponent,
     SitesListComponent,
     SitesMapComponent,
     HomeComponent,
@@ -103,7 +106,8 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     FlowDirective,
     OnboardComponent,
     CommittedComponent,
-    SiteCommittedComponent,
+    VisitStepComponent,
+    SiteStepComponent,
     CongratsComponent,
     ModalFlowComponent,
     SiteModalFlowComponent,
@@ -132,7 +136,8 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     RegisterComponent,
     OnboardComponent,
     CommittedComponent,
-    SiteCommittedComponent,
+    VisitStepComponent,
+    SiteStepComponent,
     CongratsComponent,
     RewardComponent
   ]

@@ -31,7 +31,7 @@ declare let $: any;
 
 // TODO: migrate to conf
 export const taxonListThreshold = 10;
-export const obsFormMarkerIcon = L.icon({
+export const siteFormMarkerIcon = L.icon({
   iconUrl: "../../../../assets/pointer-blue2.png", // TODO: Asset path should be normalized, conf ?
   iconAnchor: [16, 42]
 });
@@ -39,12 +39,12 @@ export const myMarkerTitle =
   '<i class="fa fa-eye"></i> Partagez votre site';
 
 @Component({
-  selector: "app-site-form",
+  selector: "app-site-visit-form",
   templateUrl: "./form.component.html",
   styleUrls: ["./form.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class SiteFormComponent implements OnInit, AfterViewInit {
+export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   currentStep: number = 1;
   currentMode: string = "basic";
@@ -107,8 +107,8 @@ export class SiteFormComponent implements OnInit, AfterViewInit {
     //         type: "Point",
     //         coordinates: <Position>[e.latlng.lng, e.latlng.lat]
     //       };
-    //       this.obsForm.patchValue({ geometry: coords });
-    //       // TODO: this.obsForm.patchValue({ municipality: municipality });
+    //       this.siteForm.patchValue({ geometry: coords });
+    //       // TODO: this.siteForm.patchValue({ municipality: municipality });
     //       console.debug(coords);
 
     //       if (myMarker !== null) {
@@ -118,7 +118,7 @@ export class SiteFormComponent implements OnInit, AfterViewInit {
     //       // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
     //       // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
     //       if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
-    //         myMarker = L.marker(e.latlng, { icon: obsFormMarkerIcon }).addTo(
+    //         myMarker = L.marker(e.latlng, { icon: siteFormMarkerIcon }).addTo(
     //           formMap
     //         );
     //         $("#feature-title").html(myMarkerTitle);
@@ -156,7 +156,7 @@ export class SiteFormComponent implements OnInit, AfterViewInit {
     this.updatePartialLayout();
   }
   onFormSubmit(): void {
-    // console.debug("formValues:", this.obsForm.value);
+    // console.debug("formValues:", this.siteForm.value);
     // this.postObservation().subscribe(
     //   data => console.debug(data),
     //   err => console.error(err),

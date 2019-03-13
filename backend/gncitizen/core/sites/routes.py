@@ -15,6 +15,7 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
 from server import db
 from flask_jwt_extended import jwt_optional
+import json
 
 routes = Blueprint("sites_url", __name__)
 
@@ -192,7 +193,7 @@ def post_site():
             description: Site created
         """
     try:
-        request_data = dict(request.get_json())
+        request_data = request.form
 
         datas2db = {}
         for field in request_data:
@@ -206,7 +207,7 @@ def post_site():
             raise GeonatureApiError(e)
 
         try:
-            shape = asShape(request_data["geometry"])
+            shape = asShape(json.loads(request_data["geometry"]))
             newsite.geom = from_shape(Point(shape), srid=4326)
         except Exception as e:
             current_app.logger.debug(e)
