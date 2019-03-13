@@ -29,7 +29,12 @@
     <div class="navbar-nav mr-auto"></div>
     <div>
       <form class="form-inline mt-2 mt-md-0">
-        <ul class="btn-group" role="group" aria-label="auth">
+        <ul
+          *ngIf="(programs$ | async); let _programs"
+          class="btn-group"
+          role="group"
+          aria-label="auth"
+        >
           <li>
             <a
               routerLink="home"
@@ -38,7 +43,7 @@
               >Accueil</a
             >
           </li>
-          <li>
+          <li *ngIf="_programs.length > 1">
             <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()"
               >Les programmes</a
             >

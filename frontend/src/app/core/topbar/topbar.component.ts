@@ -10,6 +10,8 @@ import { LoginComponent } from "../../auth/login/login.component";
 import { LogoutComponent } from "../../auth/logout/logout.component";
 import { RegisterComponent } from "../../auth/register/register.component";
 import { ProgramsComponent } from "../../programs/programs.component";
+import { Program } from "src/app/programs/programs.models";
+import { GncProgramsService } from "src/app/api/gnc-programs.service";
 
 @Component({
   selector: "app-topbar",
@@ -21,17 +23,23 @@ export class TopbarComponent implements OnInit {
   // isLoggedIn: boolean = false;
   username: any;
   modalRef: NgbModalRef;
+  programs$: Observable<Program[]>;
 
-  constructor(private auth: AuthService, private modalService: NgbModal) {
+  constructor(
+    private programService: GncProgramsService,
+    private auth: AuthService,
+    private modalService: NgbModal
+  ) {
     const tmp = localStorage.getItem("username");
     this.username = tmp ? tmp.replace(/\"/g, "") : "Anonymous";
+    this.programs$ = this.programService.getAllPrograms();
   }
 
   isLoggedIn(): Observable<boolean> {
     return this.auth.authorized$.pipe(
       map(value => {
         if (value === true) {
-          this.username = localStorage.getItem("username").replace(/\"/g, "");
+          this.username = localStorage.getItem("username");
         }
         return value;
       })
