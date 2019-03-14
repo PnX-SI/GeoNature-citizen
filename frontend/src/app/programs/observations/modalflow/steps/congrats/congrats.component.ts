@@ -1,6 +1,7 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core";
 
 import { IFlowComponent } from "../../flow/flow";
+import { AppConfig } from "../../../../../../conf/app.config";
 
 @Component({
   templateUrl: "./congrats.component.html",
@@ -12,6 +13,7 @@ export class CongratsComponent implements IFlowComponent {
   timeout: any;
   username: string;
   obs: any;
+  AppConfig = AppConfig;
 
   ngOnDestroy(): void {
     if (this.timeout) {
@@ -20,9 +22,7 @@ export class CongratsComponent implements IFlowComponent {
   }
 
   ngOnInit(): void {
-    if (localStorage.getItem("username")) {
-      this.username = localStorage.getItem("username").replace(/\"/g, "");
-    }
+    this.username = localStorage.getItem("username");
     console.debug("congrats action > data:", this.data);
     this.obs = this.data.obs.properties;
     this.timeout = setTimeout(() => {

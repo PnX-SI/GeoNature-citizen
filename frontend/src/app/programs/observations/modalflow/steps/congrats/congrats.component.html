@@ -1,8 +1,12 @@
 <!-- Observation ajoutée -->
 <div class="modal-body obs-added">
   <div>
+    <!-- FIXME: hardcoded backend media url -->
     <img
-      src="`${AppConfig.API_ENDPOINT}/${obs.images[0]}` || 'assets/Azure-Commun-019.JPG'"
+      [src]="
+        AppConfig.API_ENDPOINT + '/media/' + obs.images[0] ||
+        'assets/Azure-Commun-019.JPG'
+      "
     />
   </div>
   <h5 i18n="Congrats|Félicitations !">Félicitations !</h5>
