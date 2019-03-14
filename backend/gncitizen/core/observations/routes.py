@@ -190,35 +190,6 @@ def post_observation():
         current_app.logger.debug("[post_observation] datas2db: %s", datas2db)
 
         try:
-            if request.files:
-
-                current_app.logger.debug("request.files: %s", request.files)
-                file = request.files.get("file", None)
-                current_app.logger.debug(
-                    "[post_observation] request.files: %s", request.files
-                )
-                # if file and allowed_file(file.filename):
-                #     ext = file.filename.rsplit(".", 1)[1].lower()
-                #     timestamp = datetime.now().strftime(
-                #         "%Y%m%d_%H%M%S"
-                #     )
-                #     filename = (
-                #         "obstax_" + datas2db["cd_nom"] + "_" + timestamp + ext
-                #     )
-                #     path = MEDIA_DIR / filename
-                #     file.save(str(path))
-                #     current_app.logger.debug("path: %s", path)
-                #     # datas2db["photo"] = filename
-                # save_upload_files(request.files)
-
-        except Exception as e:
-            current_app.logger.debug("[post_observation] file ", e)
-            raise GeonatureApiError(e)
-
-        else:
-            file = None
-
-        try:
             newobs = ObservationModel(**datas2db)
         except Exception as e:
             current_app.logger.debug("[post_observation] data2db ", e)
@@ -236,12 +207,6 @@ def post_observation():
         id_role = get_id_role_if_exists()
         if id_role:
             newobs.id_role = id_role
-            # for GDPR compatibility:
-            # we can't update obs_txt and email fields with user informations,
-            # user name will be be automaticaly must be added from user model
-            # role = UserModel.query.get(id_role)
-            # newobs.obs_txt = role.username
-            # newobs.email = role.email
         else:
             if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
                 newobs.obs_txt = "Anonyme"
@@ -302,7 +267,9 @@ def get_observations():
             description: A list of all observations
         """
     try:
-        observations = ObservationModel.query.all()
+        observations = ObservationModel.query.order_by(
+            ObservationModel.timestamp_create.desc()
+        ).all()
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.geom)
@@ -359,9 +326,11 @@ def get_observations_from_list(id):  # noqa: A002
             features = []
             for t in taxa:
                 current_app.logger.debug("R", t["cd_nom"])
-                datas = ObservationModel.query.filter_by(
-                    cd_nom=t["cd_nom"]
-                ).all()
+                datas = (
+                    ObservationModel.query.filter_by(cd_nom=t["cd_nom"])
+                    .order_by(ObservationModel.timestamp_create.desc())
+                    .all()
+                )
                 for d in datas:
                     feature = get_geojson_feature(d.geom)
                     observation_dict = d.as_dict(True)
@@ -438,6 +407,7 @@ def get_program_observations(id):
                 ObservationMediaModel.id_media == MediaModel.id_media,
                 isouter=True
             )
+            .order_by(ObservationModel.timestamp_create.desc())
             .all()
         )
         features = []
