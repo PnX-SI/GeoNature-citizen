@@ -2,6 +2,8 @@ import { Component, Input, ViewEncapsulation, OnInit } from "@angular/core";
 
 import { IFlowComponent } from "../../flow/flow";
 import { AuthService } from "src/app/auth/auth.service";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "app-reward",
@@ -23,22 +25,25 @@ import { AuthService } from "src/app/auth/auth.service";
 export class RewardComponent implements IFlowComponent, OnInit {
   @Input() data: any;
   timeout: any;
-  rewarded: boolean = Math.random() >= 0.5;
+  rewarded: boolean = true; // Math.random() >= 0.5;
   username: string;
 
-  constructor(private authService: AuthService) {
-    if (this.authService.authorized$.value) {
-      this.username = localStorage.getItem("username");
-    }
-  }
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
     console.debug("reward init data:", this.data);
-    const cond = this.username && this.rewarded;
-    this.timeout = setTimeout(
-      () => this.close(cond ? "timeout" : "noreward"),
-      cond ? 3000 : 0
-    );
+    this.authService.isLoggedIn().subscribe(value => {
+      if (value) {
+        this.username = localStorage.getItem("username");
+        const condition = value && this.username && this.rewarded;
+        this.timeout = setTimeout(
+          () => this.close(condition ? "timeout" : "noreward"),
+          condition ? 3000 : 0
+        );
+      } else {
+        this.timeout = setTimeout(() => this.close("noreward"), 0);
+      }
+    });
   }
 
   close(d) {

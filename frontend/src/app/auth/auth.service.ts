@@ -23,7 +23,7 @@ export class AuthService {
   redirectUrl: string;
   authenticated$ = new BehaviorSubject<boolean>(this.hasRefreshToken());
   authorized$ = new BehaviorSubject<boolean>(
-    this.hasAccessToken() && this.tokenExpiration(this.getAccessToken()) > 0
+    this.hasAccessToken() && this.tokenExpiration(this.getAccessToken()) > 1
   );
   timeoutID: any = null;
 

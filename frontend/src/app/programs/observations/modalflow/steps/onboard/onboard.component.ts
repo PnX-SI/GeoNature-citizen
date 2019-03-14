@@ -3,7 +3,8 @@ import {
   ViewEncapsulation,
   Input,
   ViewChild,
-  ElementRef
+  ElementRef,
+  OnInit
 } from "@angular/core";
 
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -12,27 +13,32 @@ import { IFlowComponent } from "../../flow/flow";
 import { RegisterComponent } from "../../../../../auth/register/register.component";
 import { LoginComponent } from "../../../../../auth/login/login.component";
 import { AuthService } from "src/app/auth/auth.service";
+import { Subject } from "rxjs";
 
 @Component({
   templateUrl: "./onboard.component.html",
   styleUrls: ["./onboard.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class OnboardComponent implements IFlowComponent {
+export class OnboardComponent implements IFlowComponent, OnInit {
   RegistrationModalRef: NgbModalRef;
   LoginModalRef: NgbModalRef;
   timeout: any;
-  @Input() data: any;
+  @Input("data") data: any;
   @ViewChild("RegisterComponent") RegisterComponent: ElementRef;
   @ViewChild("LoginComponent") LoginComponent: ElementRef;
 
   constructor(
     private modalService: NgbModal,
     private authService: AuthService
-  ) {
-    if (this.authService.authorized$.value) {
-      this.data.next(this.data);
-    }
+  ) {}
+
+  ngOnInit() {
+    this.authService.authorized$.subscribe(value => {
+      if (value) {
+        this.timeout = setTimeout(() => this.data.next(), 0);
+      }
+    });
   }
 
   // Actions
