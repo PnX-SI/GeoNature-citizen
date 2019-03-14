@@ -41,7 +41,8 @@ export class SiteFormComponent implements AfterViewInit {
   siteForm = new FormGroup({
     name: new FormControl("", Validators.required),
     geometry: new FormControl("", Validators.required),
-    id_program: new FormControl("", Validators.required)
+    id_program: new FormControl("", Validators.required),
+    site_type: new FormControl("", Validators.required)
   });
   program: any;
   program_id: any;
@@ -124,29 +125,12 @@ export class SiteFormComponent implements AfterViewInit {
         Accept: "application/json"
       })
     };
-
     this.siteForm.patchValue({ id_program: this.program_id });
+    this.siteForm.patchValue({ site_type: "mare" });
 
-    let formData: FormData = new FormData();
-
-    formData.append(
-      "geometry",
-      JSON.stringify(this.siteForm.get("geometry").value)
-    );
-
-    for (let item of [
-      "name",
-      "id_program"
-    ]) {
-      formData.append(item, this.siteForm.get(item).value);
-    }
-
-    formData.append("site_type", "mare");
-
-    console.debug("formData:", formData);
     return this.http.post<any>(
       `${this.URL}/sites/`,
-      formData,
+      this.siteForm.value,
       httpOptions
     );
   }
