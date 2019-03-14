@@ -446,10 +446,12 @@ def get_program_observations(id):
             feature["properties"]["municipality"] = observation.municipality
             # FIXME: Media endpoint
             feature["properties"]["image"] = (
-                "http://localhost:5002/api/media/{}".format(
+                "{}/api/media/{}".format(  # FIXME: medias url
+                    current_app.config["API_ENDPOINT"],
                     observation.image
                 ) if observation.image else None
             )
+            current_app.logger.warning(feature["properties"]["image"])
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys:
@@ -466,4 +468,4 @@ def get_program_observations(id):
 
 @routes.route("media/<item>")
 def get_media(item):
-    return send_from_directory(MEDIA_DIR, item)
+    return send_from_directory(str(MEDIA_DIR), item)
