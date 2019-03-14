@@ -18,7 +18,7 @@ import "leaflet.locatecontrol";
 import { MAP_CONFIG } from "../../../../conf/map.config";
 
 const conf = {
-  ELEMENT: "obsMap",
+  MAP_ID: "obsMap",
   GEOLOCATION_HIGH_ACCURACY: false,
   BASE_LAYERS: MAP_CONFIG["BASEMAP"].reduce((acc, baseLayer: Object) => {
     acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
@@ -119,6 +119,7 @@ const conf = {
 @Component({
   selector: "app-obs-map",
   template: `
+    <!-- <div [id]="options.MAP_ID"></div> -->
     <div id="obsMap"></div>
   `,
   styleUrls: ["./map.component.css"],
@@ -143,7 +144,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   programMaxBounds: L.LatLngBounds;
   observationLayer: L.FeatureGroup;
-  newObsMarker: L.Marker<any>;
+  newObsMarker: L.Marker;
 
   ngOnInit() {
     this.initMap(conf);
@@ -158,7 +159,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
     this.options = options;
-    this.observationMap = L.map(this.options.ELEMENT, {
+    this.observationMap = L.map(this.options.MAP_ID, {
       layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay ?
       ...LeafletOptions
     });
