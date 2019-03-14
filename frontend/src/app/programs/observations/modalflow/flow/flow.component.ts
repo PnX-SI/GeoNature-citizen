@@ -57,10 +57,8 @@ export class FlowComponent implements OnInit {
     ) {
       (<IFlowComponent>componentRef.instance).data.next = data => {
         console.debug(
-          "loadComponent",
+          "unloading ",
           this.flowItems[this.currentFlowIndex].component.name,
-          "data:",
-          data,
           this
         );
         this.loadComponent(data || flowItem.data);

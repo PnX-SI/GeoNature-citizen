@@ -46,17 +46,18 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     this.RegistrationModalRef = this.modalService.open(RegisterComponent, {
       centered: true
     });
-    this.RegistrationModalRef.result.then(
-      _ => {
-        console.debug("registration resolved");
-
-        // TODO: registered check
-        this.data.next();
-      },
-      reason => {
-        console.debug("registration dismissed:", reason);
-      }
-    );
+    this.RegistrationModalRef.result.then(_ => {
+      console.debug("[obs-flow] registration resolved");
+      this.authService.isLoggedIn().subscribe(
+        value => {
+          if (value) {
+          }
+        },
+        reason => {
+          console.debug("registration dismissed:", reason);
+        }
+      );
+    });
   }
 
   login() {
@@ -65,23 +66,25 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     this.LoginModalRef = this.modalService.open(LoginComponent, {
       centered: true
     });
-    this.LoginModalRef.result.then(
-      result => {
-        console.debug("login resolved:", result);
-
-        // TODO: authenticated check
-        this.data.next();
-      },
-      reason => {
-        console.debug("login dismissed:", reason);
-      }
-    );
+    this.LoginModalRef.result.then(_ => {
+      console.debug("[obs-flow] login resolved");
+      this.authService.isLoggedIn().subscribe(
+        value => {
+          if (value) {
+            // assert login
+          }
+        },
+        reason => {
+          console.debug("login dismissed:", reason);
+        }
+      );
+    });
   }
 
   continue() {
     console.debug("continue");
     // Continue to Submission form as Anonymous|Registered user
-    // TODO: authenticated, anonymous check ... deserves notification ?
+    // authenticated but not logged in ... deserves notification ?
     this.data.next();
   }
 }
