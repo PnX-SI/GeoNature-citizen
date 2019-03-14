@@ -33,7 +33,7 @@ export class FlowComponent implements OnInit {
     this.loadComponent();
   }
 
-  loadComponent() {
+  loadComponent(extra_data?: object) {
     this.currentFlowIndex = (this.currentFlowIndex + 1) % this.flowItems.length;
     let flowItem = this.flowItems[this.currentFlowIndex];
     let componentFactory = this.componentFactoryResolver.resolveComponentFactory(
@@ -42,7 +42,8 @@ export class FlowComponent implements OnInit {
     let viewContainerRef = this.flowitem.viewContainerRef;
     viewContainerRef.clear();
     let componentRef = viewContainerRef.createComponent(componentFactory);
-    (<IFlowComponent>componentRef.instance).data = flowItem.data;
+    let item_data = {...flowItem.data, ...extra_data};
+    (<IFlowComponent>componentRef.instance).data = item_data;
 
     this.step.emit(this.flowItems[this.currentFlowIndex].component.name);
     const self = this;
@@ -51,9 +52,9 @@ export class FlowComponent implements OnInit {
       !(<IFlowComponent>componentRef.instance).data.next &&
       !(<IFlowComponent>componentRef.instance).data.final
     ) {
-      (<IFlowComponent>componentRef.instance).data.next = () => {
+      (<IFlowComponent>componentRef.instance).data.next = (extra_data={}) => {
         console.debug("loadComponent this:", self);
-        this.loadComponent();
+        this.loadComponent(extra_data);
       };
     }
   }

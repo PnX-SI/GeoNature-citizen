@@ -20,11 +20,11 @@ import { ModalFlowService } from '../../observations/modalflow/modalflow.service
   providedIn: 'root'
 })
 export class SiteModalFlowService extends ModalFlowService {
-  getFlowItems() {
+  getFlowItems(site_id?: number) {
     return [
       new FlowItem(OnboardComponent, {service: this}),
-      new FlowItem(SiteStepComponent, {service: this}),
-      new FlowItem(VisitStepComponent, {service: this}),
+      new FlowItem(SiteStepComponent, {service: this }),
+      new FlowItem(VisitStepComponent, {service: this }),
       new FlowItem(CongratsComponent, {service: this, date: new Date().toLocaleDateString()}),
       new FlowItem(RewardComponent, {service: this}),
     ]

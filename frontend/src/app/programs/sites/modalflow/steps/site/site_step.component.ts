@@ -19,8 +19,16 @@ export class SiteStepComponent implements IFlowComponent {
   @ViewChild(SiteFormComponent) form: SiteFormComponent;
 
   committed() {
-    this.form.onFormSubmit();
+    console.log("data :", this.data);
+    let resp: any;
+    resp = this.form.onFormSubmit();
     console.debug("committed action > data:", this.data);
-    this.data.next();
+    // Wait for resolution of http promise "resp"
+    // to get new created site's id and pass it to next step as extra_data
+    let that = this;
+    resp.then( function(result) {
+      let site_id = result.features[0].properties.id_site;
+      that.data.next({ site_id: site_id });
+    })
   }
 }

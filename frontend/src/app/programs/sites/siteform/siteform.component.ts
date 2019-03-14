@@ -109,13 +109,11 @@ export class SiteFormComponent implements AfterViewInit {
       });
   }
 
-  onFormSubmit(): void {
+  onFormSubmit(): Promise<object>  {
     console.debug("formValues:", this.siteForm.value);
-    this.postSite().subscribe(
-      data => console.debug(data),
-      err => console.error(err),
-      () => console.log("done")
-      // TODO: queue obs in list
+    return this.postSite().toPromise().then(
+      data => { console.debug(data); return data; },
+      err => console.error(err)
     );
   }
 
@@ -125,8 +123,10 @@ export class SiteFormComponent implements AfterViewInit {
         Accept: "application/json"
       })
     };
-    this.siteForm.patchValue({ id_program: this.program_id });
-    this.siteForm.patchValue({ site_type: "mare" });
+    this.siteForm.patchValue({
+        id_program: this.program_id,
+        site_type: "mare"
+    });
 
     return this.http.post<any>(
       `${this.URL}/sites/`,

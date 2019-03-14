@@ -46,8 +46,12 @@ export const myMarkerTitle =
 })
 export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
+  @Input() site_id: number;
+  visitForm = new FormGroup({
+    date: new FormControl("", Validators.required),
+    data: new FormControl("", Validators.required)
+  });
   currentStep: number = 1;
-  currentMode: string = "basic";
   partialLayout: any;
   advancedMode: boolean = false;
   jsonData: object = {};
@@ -66,68 +70,10 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     console.debug(MaresJson);
     this.jsonSchema = MaresJson;
     this.updatePartialLayout();
+    console.debug("site_id:", this.site_id);
   }
 
   ngAfterViewInit() {
-    console.debug("AfterViewInit", MaresJson);
-    // this.route.params.subscribe(params => (this.program_id = params["id"]));
-    // this.http
-    //   .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
-    //   .subscribe(result => {
-    //     this.program = result;
-    //     this.taxonomyList = this.program.features[0].properties.taxonomy_list;
-    //     this.getSurveySpeciesItems(this.taxonomyList);
-
-    //     const formMap = L.map("formMap");
-
-    //     L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    //       attribution: "OpenStreetMap"
-    //     }).addTo(formMap);
-
-    //     const programArea = L.geoJSON(this.program, {
-    //       style: function(_feature) {
-    //         return {
-    //           fillColor: "transparent",
-    //           weight: 2,
-    //           opacity: 0.8,
-    //           color: "red",
-    //           dashArray: "4"
-    //         };
-    //       }
-    //     }).addTo(formMap);
-
-    //     const maxBounds: L.LatLngBounds = programArea.getBounds();
-    //     formMap.fitBounds(maxBounds);
-    //     formMap.setMaxBounds(maxBounds);
-
-    //     let myMarker = null;
-
-    //     formMap.on("click", <LeafletMouseEvent>(e) => {
-    //       let coords = <Point>{
-    //         type: "Point",
-    //         coordinates: <Position>[e.latlng.lng, e.latlng.lat]
-    //       };
-    //       this.siteForm.patchValue({ geometry: coords });
-    //       // TODO: this.siteForm.patchValue({ municipality: municipality });
-    //       console.debug(coords);
-
-    //       if (myMarker !== null) {
-    //         formMap.removeLayer(myMarker);
-    //       }
-
-    //       // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
-    //       // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
-    //       if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
-    //         myMarker = L.marker(e.latlng, { icon: siteFormMarkerIcon }).addTo(
-    //           formMap
-    //         );
-    //         $("#feature-title").html(myMarkerTitle);
-    //         $("#feature-coords").html(coords);
-    //         // $("#feature-info").html(myMarkerContent);
-    //         $("#featureModal").modal("show");
-    //       }
-    //     });
-    //   });
   }
 
   nextStep() {
@@ -156,12 +102,32 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     this.updatePartialLayout();
   }
   onFormSubmit(): void {
-    // console.debug("formValues:", this.siteForm.value);
-    // this.postObservation().subscribe(
-    //   data => console.debug(data),
-    //   err => console.error(err),
-    //   () => console.log("done")
-    //   // TODO: queue obs in list
-    // );
+    console.debug("formValues:", this.visitForm.value);
+    this.postSiteVisit().subscribe(
+      data => console.debug(data),
+      err => console.error(err),
+      () => console.log("done")
+      // TODO: queue obs in list
+    );
+  }
+
+  postSiteVisit(): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Accept: "application/json"
+      })
+    };
+    let visitDate = NgbDate.from(this.visitForm.controls.date.value);
+    this.visitForm.patchValue({
+      data: this.jsonData,
+      date: new Date(visitDate.year, visitDate.month, visitDate.day)
+        .toISOString()
+        .match(/\d{4}-\d{2}-\d{2}/)[0]
+    });
+    return this.http.post<any>(
+      `${this.URL}/sites/${this.site_id}/visits`,
+      this.visitForm.value,
+      httpOptions
+    );
   }
 }

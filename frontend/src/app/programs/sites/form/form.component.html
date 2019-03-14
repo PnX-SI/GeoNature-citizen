@@ -9,6 +9,20 @@
     <button class="btn btn-primary" (click)="previousStep()" *ngIf="!isFirstStep()">Etape précédente</button>
     <button class="btn btn-primary" (click)="nextStep()" *ngIf="!isLastStep()">Etape suivante</button>
   </p>
+  <form id="visitForm" [formGroup]="visitForm">
+    <div class="input-group" *ngIf="currentStep === 1">
+      <label for="date" >Date de la visite</label>
+      <input
+        formControlName="date"
+        type="text"
+        class="form-control rounded-0"
+        placeholder="yyyy-mm-dd"
+        ngbDatepicker
+        #d="ngbDatepicker"
+        (click)="d.toggle()"
+      />
+    </div>
+  </form>
   <json-schema-form
   loadExternalAssets="true"
   [schema]="jsonSchema.schema"
