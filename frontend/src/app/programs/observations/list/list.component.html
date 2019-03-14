@@ -28,7 +28,13 @@
           style="cursor:pointer"
         >
           <!-- FIXME: Aggregate medias with backend response -->
-          <img src="assets/Azure-Commun-019.JPG" />
+          <img
+            [src]="
+              o.properties.image
+                ? o.properties.image
+                : 'assets/Azure-Commun-019.JPG'
+            "
+          />
           <div class="infos">
             <h5>{{ o.properties.common_name }}</h5>
             <p i18n>

@@ -83,7 +83,12 @@ const conf = {
   },
   ON_EACH_FEATURE: (feature, layer) => {
     let popupContent = `
-      <img src="assets/Azure-Commun-019.JPG">
+       <!-- FIXME: backend aggregate -->
+      <img src="${
+        feature.properties.image
+          ? feature.properties.image
+          : "assets/Azure-Commun-019.JPG"
+      }">
       <p>
         <b>${feature.properties.common_name}</b>
         </br>
@@ -135,7 +140,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
         onLayerRemoved
   */
 
-  @Input("observations") observations: FeatureCollection;
+  @Input("observations") observations: FeatureCollection; // L.Marker[] ?
   @Input("program") program: FeatureCollection;
 
   @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
@@ -151,10 +156,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(_changes: SimpleChanges) {
+    // ? if (_changes.observations) {
     if (this.observationMap) {
       this.loadProgramArea();
       this.loadObservations();
     }
+    // ? if (_changes.program) {
   }
 
   initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
@@ -211,6 +218,17 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
       this.observationMap.addLayer(this.observationLayer);
     }
+
+    // TEST layers walk
+    // this.observationMap.eachLayer(layer => {
+    //   console.debug(layer);
+    //   if (layer.hasOwnProperty("feature")) {
+    //     console.debug(layer["feature"].properties.id_observation);
+    //     return layer["feature"].properties.id_observation;
+    //   } else if (layer.hasOwnProperty("_layers")) {
+    //     console.debug(layer["_layers"]);
+    //   }
+    // });
   }
 
   loadProgramArea(canSubmit = true): void {

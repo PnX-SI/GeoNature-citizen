@@ -5,21 +5,27 @@
 import uuid
 # from datetime import datetime
 import requests
-from flask import Blueprint, current_app, request, json
+from flask import (
+    Blueprint,
+    current_app,
+    request,
+    json,
+    send_from_directory
+)
 from flask_jwt_extended import jwt_optional
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
-from shapely.geometry import shape, mapping, Point, asShape
+from shapely.geometry import Point, asShape
 
 from gncitizen.core.commons.models import (
-    # MediaModel,
+    MediaModel,
     ProgramsModel,
 )
 from gncitizen.core.ref_geo.models import LAreas
 # from gncitizen.core.taxonomy.models import Taxref
 # from gncitizen.core.users.models import UserModel
 
-from gncitizen.utils.env import taxhub_lists_url
+from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.media import save_upload_files
@@ -406,9 +412,10 @@ def get_program_observations(id):
         observations = (
             db.session.query(
                 ObservationModel,
+                MediaModel.filename.label("image"),
                 (LAreas.area_name + " (" + LAreas.area_code + ")").label(
                     "municipality"
-                ),
+                )
             )
             .filter(ObservationModel.id_program == id, ProgramsModel.is_active)
             .join(
@@ -421,12 +428,28 @@ def get_program_observations(id):
                 ProgramsModel.id_program == ObservationModel.id_program,
                 isouter=True,
             )
+            .join(
+                ObservationMediaModel,
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,  # noqa: E501
+                isouter=True
+            )
+            .join(
+                MediaModel,
+                ObservationMediaModel.id_media == MediaModel.id_media,
+                isouter=True
+            )
             .all()
         )
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
             feature["properties"]["municipality"] = observation.municipality
+            # FIXME: Media endpoint
+            feature["properties"]["image"] = (
+                "http://localhost:5002/api/media/{}".format(
+                    observation.image
+                ) if observation.image else None
+            )
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys:
@@ -439,3 +462,8 @@ def get_program_observations(id):
         return FeatureCollection(features)
     except Exception as e:
         return {"error_message": str(e)}, 400
+
+
+@routes.route("media/<item>")
+def get_media(item):
+    return send_from_directory(MEDIA_DIR, item)

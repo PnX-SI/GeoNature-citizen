@@ -19,7 +19,7 @@
               <div class="img-hover" [ngbTooltip]="p.short_desc">
                 <img
                   class="rounded-circle img-responsive img-rounded"
-                  alt="p.title"
+                  [alt]="p.title"
                   width="300"
                   height="300"
                   [src]="p.image || 'assets/prog1.jpg'"
