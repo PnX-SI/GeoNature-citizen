@@ -13,7 +13,6 @@ import { IFlowComponent } from "../../flow/flow";
 import { RegisterComponent } from "../../../../../auth/register/register.component";
 import { LoginComponent } from "../../../../../auth/login/login.component";
 import { AuthService } from "src/app/auth/auth.service";
-import { Subject } from "rxjs";
 
 @Component({
   templateUrl: "./onboard.component.html",
@@ -43,15 +42,13 @@ export class OnboardComponent implements IFlowComponent, OnInit {
 
   // Actions
   register() {
-    // if not logged_in then stack Register modal dialog ... for now (?)
-    // QUESTION: by the end of the registration process, is the user logged in ?
     console.debug("register action > data:", this.data);
     this.RegistrationModalRef = this.modalService.open(RegisterComponent, {
       centered: true
     });
     this.RegistrationModalRef.result.then(
-      result => {
-        console.debug("registration resolved:", result);
+      _ => {
+        console.debug("registration resolved");
 
         // TODO: registered check
         this.data.next();

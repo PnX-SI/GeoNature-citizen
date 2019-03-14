@@ -83,7 +83,6 @@ const conf = {
   },
   ON_EACH_FEATURE: (feature, layer) => {
     let popupContent = `
-       <!-- FIXME: backend aggregate -->
       <img src="${
         feature.properties.image
           ? feature.properties.image
@@ -156,12 +155,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(_changes: SimpleChanges) {
-    // ? if (_changes.observations) {
+    // if (_changes.program) {}
+    // if (_changes.observations) {}
     if (this.observationMap) {
       this.loadProgramArea();
       this.loadObservations();
     }
-    // ? if (_changes.program) {
   }
 
   initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
@@ -181,7 +180,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       .scale({ position: this.options.SCALE_CONTROL_POSITION })
       .addTo(this.observationMap);
 
-    // Base layers
+    // base layers
     L.control
       .layers(this.options.BASE_LAYERS, null, {
         collapsed: this.options.BASE_LAYER_CONTROL_INIT_COLLAPSED,
@@ -218,17 +217,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
       this.observationMap.addLayer(this.observationLayer);
     }
-
-    // TEST layers walk
-    // this.observationMap.eachLayer(layer => {
-    //   console.debug(layer);
-    //   if (layer.hasOwnProperty("feature")) {
-    //     console.debug(layer["feature"].properties.id_observation);
-    //     return layer["feature"].properties.id_observation;
-    //   } else if (layer.hasOwnProperty("_layers")) {
-    //     console.debug(layer["_layers"]);
-    //   }
-    // });
   }
 
   loadProgramArea(canSubmit = true): void {

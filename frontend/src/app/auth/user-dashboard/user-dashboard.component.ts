@@ -29,13 +29,12 @@ export class UserDashboardComponent implements OnInit {
       this.auth
         .ensureAuthorized(access_token)
         .then(user => {
-          console.debug(user["features"]["username"]);
           if (user["features"]["id_role"]) {
             this.isLoggedIn = true;
             this.username = user["features"]["username"];
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => alert(err));
     }
   }
 
@@ -44,7 +43,6 @@ export class UserDashboardComponent implements OnInit {
     this.auth
       .selfDeleteAccount(access_token)
       .then(data => {
-        console.debug(data);
         let getBackHome = confirm(
           data.hasOwnProperty("message")
             ? `${data.message}\nRevenir à l'accueil ?`
@@ -54,16 +52,15 @@ export class UserDashboardComponent implements OnInit {
           this.router.navigate(["/home"]);
         }
       })
-      .catch(err => console.error(err));
+      .catch(err => alert(err));
   }
 
   exportPersonalData() {
     let url = `${AppConfig.API_ENDPOINT}/user/info`;
     const data = this.http.get(url, { headers: this.headers });
     data.subscribe(data => {
-      console.debug(data);
       alert(JSON.stringify(data));
-      // TODO: need decision over data format: csv, geojson ? Link observations and associated medias ?
+      // TODO: data format: csv, geojson ? Link observations and associated medias ?
     });
   }
 }
