@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter, Output } from '@angular/core';
 
 // import {
 //   NgbModal,
@@ -20,13 +20,23 @@ import { ModalFlowService } from '../../observations/modalflow/modalflow.service
   providedIn: 'root'
 })
 export class SiteModalFlowService extends ModalFlowService {
+  @Output() siteVisitClick: EventEmitter<number> = new EventEmitter();
+
   getFlowItems(site_id?: number) {
-    return [
-      new FlowItem(OnboardComponent, {service: this}),
-      new FlowItem(SiteStepComponent, {service: this }),
-      new FlowItem(VisitStepComponent, {service: this }),
-      new FlowItem(CongratsComponent, {service: this, date: new Date().toLocaleDateString()}),
-      new FlowItem(RewardComponent, {service: this}),
-    ]
+    let items = [];
+    items.push(new FlowItem(OnboardComponent, {service: this}));
+    if (site_id) {
+      items.push(new FlowItem(VisitStepComponent, {service: this, site_id: site_id }));
+    } else {
+      items.push(new FlowItem(SiteStepComponent, {service: this }));
+      items.push(new FlowItem(VisitStepComponent, {service: this }));
+    }
+    items.push(new FlowItem(CongratsComponent, {service: this, date: new Date().toLocaleDateString()}));
+    items.push(new FlowItem(RewardComponent, {service: this}));
+    return items;
+  }
+
+  addSiteVisit(site_id) {
+    this.siteVisitClick.emit(site_id);
   }
 }
