@@ -21,7 +21,7 @@ import { LeafletMouseEvent } from "leaflet";
 import { AppConfig } from "../../../../conf/app.config";
 
 import { GNCBootstrap4FrameworkComponent } from './gnc-bootstrap-4-framework/gnc-bootstrap-4-framework.component';
-// import { GNCFrameworkComponent } from './framework/framework.component';
+import { GNCFrameworkComponent } from './framework/framework.component';
 import MaresJson from '../../../../../../config/custom/form/mares.json';
 
 declare let $: any;
@@ -60,7 +60,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   }
   jsonSchema: any;
   GNCBootstrap4Framework: any = {
-    framework: GNCBootstrap4FrameworkComponent,
+    framework: GNCFrameworkComponent,
   };
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
