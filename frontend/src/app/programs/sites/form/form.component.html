@@ -5,21 +5,29 @@
   <h3>
     Etape {{ currentStep }} : {{ jsonSchema.steps[currentStep-1].title }}
   </h3>
-  <p>
-    <button class="btn btn-primary" (click)="previousStep()" *ngIf="!isFirstStep()">Etape précédente</button>
-    <button class="btn btn-primary" (click)="nextStep()" *ngIf="!isLastStep()">Etape suivante</button>
-  </p>
-  <form>
-    <json-schema-form
-    loadExternalAssets="true"
-    [schema]="jsonSchema.schema"
-    [layout]="partialLayout"
-    [(data)]="jsonData"
-    [options]="formOptions"
-    (onSubmit)="onFormSubmit($event)"
-    framework="bootstrap-4">
-    </json-schema-form>
+  <form id="visitForm" [formGroup]="visitForm">
+    <div class="input-group" *ngIf="currentStep === 1">
+      <label for="date" >Date de la visite</label>
+      <input
+        formControlName="date"
+        type="text"
+        class="form-control rounded-0"
+        placeholder="yyyy-mm-dd"
+        ngbDatepicker
+        #d="ngbDatepicker"
+        (click)="d.toggle()"
+      />
+    </div>
   </form>
+  <json-schema-form
+  [schema]="jsonSchema.schema"
+  [layout]="partialLayout"
+  [(data)]="jsonData"
+  [options]="formOptions"
+  (onSubmit)="onFormSubmit($event)"
+  [framework]="GNCBootstrap4Framework"
+  >
+  </json-schema-form>
   <!-- <p>
     <button class="btn btn-link" (click)="toogleAdvancedMode()">{{ advancedMode ? "Masquer" : "Afficher" }} par défaut les champs avancés</button>
   </p> -->

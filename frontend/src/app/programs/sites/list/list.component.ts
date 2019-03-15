@@ -1,6 +1,7 @@
 import { Component, OnChanges, Input } from "@angular/core";
 
 import { FeatureCollection, Feature } from "geojson";
+import { SiteModalFlowService } from "../modalflow/modalflow.service";
 
 @Component({
   selector: "app-sites-list",
@@ -15,6 +16,8 @@ export class SitesListComponent implements OnChanges {
   program_id: number;
   taxa: any[];
 
+  constructor(public flowService: SiteModalFlowService) {}
+
   ngOnChanges() {
     if (this.sitesCollection) {
       this.sites = this.sitesCollection["features"];
@@ -26,5 +29,8 @@ export class SitesListComponent implements OnChanges {
         )
         .filter((v, i, a) => a.indexOf(v) === i);
     }
+  }
+  addSiteVisit(site_id) {
+    this.flowService.addSiteVisit(site_id);
   }
 }

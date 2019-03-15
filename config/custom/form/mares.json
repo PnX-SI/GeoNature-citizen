@@ -322,8 +322,7 @@
     {
       "title": "Remarques",
       "layout": [
-        { "key": "remarques", "type": "textarea", "notitle": true },
-        { "type": "submit", "title": "Submit" }
+        { "key": "remarques", "type": "textarea", "notitle": true }
       ]
     }
   ]
