@@ -416,7 +416,7 @@ def get_program_observations(id):
             feature["properties"]["municipality"] = observation.municipality
             # FIXME: Media endpoint
             feature["properties"]["image"] = (
-                "{}/api/media/{}".format(  # FIXME: medias url
+                "{}/media/{}".format(  # FIXME: medias url
                     current_app.config["API_ENDPOINT"],
                     observation.image
                 ) if observation.image else None
