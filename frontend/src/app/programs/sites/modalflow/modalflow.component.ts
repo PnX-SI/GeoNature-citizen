@@ -34,7 +34,7 @@ export class SiteModalFlowComponent implements OnInit {
 
   ngOnInit() {
     this.flowService.siteVisitClick.subscribe(
-        site_id => this.addSiteVisit(site_id):
+        site_id => this.addSiteVisit(site_id)
     );
   }
 
