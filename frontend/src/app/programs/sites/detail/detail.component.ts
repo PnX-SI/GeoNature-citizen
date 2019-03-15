@@ -6,7 +6,7 @@ import MaresJson from '../../../../../../config/custom/form/mares.json';
 
 declare let $: any;
 
-export const obsFormMarkerIcon = L.icon({
+export const markerIcon = L.icon({
   iconUrl: "../../../../assets/pointer-blue2.png", // TODO: Asset path should be normalized, conf ?
   iconAnchor: [16, 42]
 });
@@ -52,17 +52,17 @@ export class SiteDetailComponent implements AfterViewInit {
         this.site = sites['features'][0];
 
         // setup map
-        const formMap = L.map("formMap");
+        const map = L.map("map");
         L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "OpenStreetMap"
-        }).addTo(formMap);
+        }).addTo(map);
 
         let coord = this.site.geometry.coordinates;
         let latLng = L.latLng(coord[1], coord[0]);
-        formMap.setView(latLng, 13);
+        map.setView(latLng, 13);
 
-        L.marker(latLng, { icon: obsFormMarkerIcon })
-          .addTo(formMap);
+        L.marker(latLng, { icon: markerIcon })
+          .addTo(map);
 
         // prepare data
         let data = this.site.properties.last_visit.json_data;

@@ -15,7 +15,6 @@ export class SitesListComponent implements OnChanges {
   sites: Feature[] = [];
   taxa: any[];
 
-
   ngOnChanges() {
     if (this.sitesCollection) {
       this.sites = this.sitesCollection["features"];
