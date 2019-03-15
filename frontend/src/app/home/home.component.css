@@ -77,7 +77,7 @@ section {
   background-color: var(--primary);
 }
 
-#welcome a[fragment="programs"].scroll {
+#welcome a.scroll {
   position: absolute;
   bottom: 0px;
   left: 50%;

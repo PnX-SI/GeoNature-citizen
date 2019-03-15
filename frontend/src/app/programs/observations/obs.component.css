@@ -394,6 +394,21 @@ span.input-group-text {
   padding: 2px 5px;
 }
 
+.add-obs .form-group.btn {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 0px;
+}
+
+.add-obs .form-group.btn i{
+  margin-right: 10px;
+}
+
+.add-obs .form-group.btn label{
+  margin: 0;
+}
+
 .half #obsMap {
   height: 228px;
   overflow: hidden;
@@ -672,8 +687,8 @@ input:checked ~ .map {
   width: 100%;
 }
 
-input:checked ~ .map {
-  left: 0;
+input:not(:checked) ~ .map {
+  width: 67%;
 }
 
 .toggle {
@@ -721,4 +736,13 @@ input:checked ~ .toggle i {
 
   -moz-transition: left 0.5s ease;
   transition: left 0.5s ease;
+}
+
+@media screen and (max-width: 991px){
+  .observations{
+    height: inherit;
+  }
+  .leaflet-touch .leaflet-control-attribution{
+    display: none;
+  }
 }
