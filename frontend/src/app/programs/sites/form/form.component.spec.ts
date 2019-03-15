@@ -12,11 +12,11 @@ import {
   NgbDateStruct
 } from "@ng-bootstrap/ng-bootstrap";
 
-import { ObsFormComponent } from './form.component';
+import { SiteFormComponent } from './form.component';
 
-describe('ObsFormComponent', () => {
-  let component: ObsFormComponent;
-  let fixture: ComponentFixture<ObsFormComponent>;
+describe('SiteFormComponent', () => {
+  let component: SiteFormComponent;
+  let fixture: ComponentFixture<SiteFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,13 +31,13 @@ describe('ObsFormComponent', () => {
         NgbActiveModal,
       ],
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [ ObsFormComponent ]
+      declarations: [ SiteFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ObsFormComponent);
+    fixture = TestBed.createComponent(SiteFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

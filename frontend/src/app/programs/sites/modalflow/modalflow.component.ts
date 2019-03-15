@@ -1,5 +1,6 @@
 import {
   Component,
+  OnInit,
   ViewChild,
   ElementRef,
   ViewEncapsulation
@@ -24,12 +25,18 @@ import { SiteModalFlowService } from "./modalflow.service";
   styleUrls: ["./modalflow.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class SiteModalFlowComponent {
+export class SiteModalFlowComponent implements OnInit {
   @ViewChild("content") content: ElementRef;
   flowitems: FlowItem[];
   timeout: any;
 
   constructor(public flowService: SiteModalFlowService) {}
+
+  ngOnInit() {
+    this.flowService.siteVisitClick.subscribe(
+        site_id => this.addSiteVisit(site_id)
+    );
+  }
 
   clicked() {
     this.flowitems = this.flowService.getFlowItems();
@@ -43,5 +50,11 @@ export class SiteModalFlowComponent {
 
   step(data) {
     console.debug("modalflow step:", data);
+  }
+
+  addSiteVisit(site_id) {
+    this.flowitems = this.flowService.getFlowItems(site_id);
+    console.debug("flow items: ", this.flowitems);
+    this.flowService.open(this.content);
   }
 }

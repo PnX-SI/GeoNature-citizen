@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter, Output } from '@angular/core';
 
 // import {
 //   NgbModal,
@@ -9,7 +9,8 @@ import { Injectable } from '@angular/core';
 
 import { FlowItem } from '../../observations/modalflow/flow/flow-item'
 import { OnboardComponent } from '../../observations/modalflow/steps/onboard/onboard.component'
-import { SiteCommittedComponent } from './steps/committed/committed.component'
+import { SiteStepComponent } from "./steps/site/site_step.component";
+import { VisitStepComponent } from './steps/visit/visit_step.component'
 import { CongratsComponent } from '../../observations/modalflow/steps/congrats/congrats.component'
 import { RewardComponent } from '../../observations/modalflow/steps/reward/reward.component';
 import { ModalFlowService } from '../../observations/modalflow/modalflow.service'
@@ -19,12 +20,23 @@ import { ModalFlowService } from '../../observations/modalflow/modalflow.service
   providedIn: 'root'
 })
 export class SiteModalFlowService extends ModalFlowService {
-  getFlowItems() {
-    return [
-      new FlowItem(OnboardComponent, {service: this}),
-      new FlowItem(SiteCommittedComponent, {service: this}),
-      new FlowItem(CongratsComponent, {service: this, date: new Date().toLocaleDateString()}),
-      new FlowItem(RewardComponent, {service: this}),
-    ]
+  @Output() siteVisitClick: EventEmitter<number> = new EventEmitter();
+
+  getFlowItems(site_id?: number) {
+    let items = [];
+    items.push(new FlowItem(OnboardComponent, {service: this}));
+    if (site_id) {
+      items.push(new FlowItem(VisitStepComponent, {service: this, site_id: site_id }));
+    } else {
+      items.push(new FlowItem(SiteStepComponent, {service: this }));
+      items.push(new FlowItem(VisitStepComponent, {service: this }));
+    }
+    items.push(new FlowItem(CongratsComponent, {service: this, date: new Date().toLocaleDateString()}));
+    items.push(new FlowItem(RewardComponent, {service: this}));
+    return items;
+  }
+
+  addSiteVisit(site_id) {
+    this.siteVisitClick.emit(site_id);
   }
 }
