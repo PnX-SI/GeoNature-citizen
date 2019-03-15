@@ -31,6 +31,7 @@ import { SitesListComponent } from "./programs/sites/list/list.component";
 import { SitesMapComponent } from "./programs/sites/map/map.component";
 import { SitesComponent } from "./programs/sites/sites.component";
 import { SiteFormComponent } from "./programs/sites/form/form.component";
+import { SiteDetailComponent } from "./programs/sites/detail/detail.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { GncService } from "./api/gnc.service";
@@ -83,6 +84,7 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     SiteFormComponent,
     SitesListComponent,
     SitesMapComponent,
+    SiteDetailComponent,
     HomeComponent,
     HomeCustomComponent,
     ProgramsComponent,

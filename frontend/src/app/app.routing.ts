@@ -13,6 +13,7 @@ import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.com
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { AuthGuard } from "./auth/auth.guard";
 import { SiteFormComponent } from "./programs/sites/form/form.component";
+import {SiteDetailComponent} from "./programs/sites/detail/detail.component";
 
 const appRoutes: Routes = [
   {
@@ -49,6 +50,7 @@ const appRoutes: Routes = [
     resolve: { programs: ProgramsResolve }
   },
   { path: "synthesis/species/:id", component: SpeciesComponent },
+  { path: "sites/detail/:id", component: SiteDetailComponent },
   { path: "**", component: PageNotFoundComponent }
 ];
 
