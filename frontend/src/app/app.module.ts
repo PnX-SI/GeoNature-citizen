@@ -62,6 +62,7 @@ registerLocaleData(localeFr, "fr");
 // import localeFrExtra from "@angular/common/locales/extra/fr";
 // registerLocaleData(localeFr, "fr-FR", localeFrExtra);
 import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
+import { GNCBootstrap4FrameworkComponent } from "./programs/sites/form/gnc-bootstrap-4-framework/gnc-bootstrap-4-framework.component"
 
 @NgModule({
   imports: [
@@ -111,7 +112,8 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     CongratsComponent,
     ModalFlowComponent,
     SiteModalFlowComponent,
-    RewardComponent
+    RewardComponent,
+    GNCBootstrap4FrameworkComponent
   ],
   providers: [
     AuthService,
@@ -139,7 +141,8 @@ import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
     VisitStepComponent,
     SiteStepComponent,
     CongratsComponent,
-    RewardComponent
+    RewardComponent,
+    GNCBootstrap4FrameworkComponent
   ]
 })
 export class AppModule {}

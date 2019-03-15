@@ -20,11 +20,8 @@ import { LeafletMouseEvent } from "leaflet";
 
 import { AppConfig } from "../../../../conf/app.config";
 
-// import { GNCBootstrap4Framework } from './framework/framework.ts';
-// import { FrameworkLibraryService } from 'angular6-json-schema-form';
-// constructor(frameworkLibrary: FrameworkLibraryService) { }
-// frameworkLibrary.setFramework(GNCBootstrap4Framework);
-import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
+import { GNCBootstrap4FrameworkComponent } from './gnc-bootstrap-4-framework/gnc-bootstrap-4-framework.component';
+// import { GNCFrameworkComponent } from './framework/framework.component';
 import MaresJson from '../../../../../../config/custom/form/mares.json';
 
 declare let $: any;
@@ -62,6 +59,9 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     "addSubmit": false
   }
   jsonSchema: any;
+  GNCBootstrap4Framework: any = {
+    framework: GNCBootstrap4FrameworkComponent,
+  };
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
