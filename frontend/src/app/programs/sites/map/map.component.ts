@@ -178,7 +178,11 @@ export class SitesMapComponent implements OnInit, OnChanges {
       feature.properties.obs_txt +
       "</br>le " +
       formatDate(feature.properties.timestamp_create, "longDate", "fr-FR") +
-      '</span></p><div><img class="icon" src="../../../../assets/binoculars.png"></div>';
+      '</span><br>' +
+      '<a href="/programs/' + feature.properties.id_program + '/sites/' +
+      feature.properties.id_site + '">>>> details</a>' +
+      '</p>' +
+      '<div><img class="icon" src="../../../../assets/binoculars.png"></div>';
 
     if (feature.properties && feature.properties.popupContent) {
       popupContent += feature.properties.popupContent;
