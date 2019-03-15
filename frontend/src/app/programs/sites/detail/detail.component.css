@@ -7,3 +7,8 @@
 .photo {
     cursor: pointer;
 }
+
+#back_link {
+  padding-top: 1rem;
+  color: var(--primary);
+}

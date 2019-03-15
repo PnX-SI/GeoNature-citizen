@@ -10,10 +10,11 @@ import { FeatureCollection, Feature } from "geojson";
 export class SitesListComponent implements OnChanges {
   @Input("sites") sitesCollection: FeatureCollection;
   @Input("taxa") surveySpecies: any[];
+  @Input("program_id") program_id: number;
   municipalities: string[];
   sites: Feature[] = [];
-  program_id: number;
   taxa: any[];
+
 
   ngOnChanges() {
     if (this.sitesCollection) {

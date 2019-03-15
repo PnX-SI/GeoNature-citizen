@@ -50,7 +50,7 @@ const appRoutes: Routes = [
     resolve: { programs: ProgramsResolve }
   },
   { path: "synthesis/species/:id", component: SpeciesComponent },
-  { path: "sites/detail/:id", component: SiteDetailComponent },
+  { path: "programs/:program_id/sites/:site_id", component: SiteDetailComponent },
   { path: "**", component: PageNotFoundComponent }
 ];
 

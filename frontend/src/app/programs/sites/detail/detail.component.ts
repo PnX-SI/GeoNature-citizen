@@ -18,6 +18,7 @@ export const obsFormMarkerIcon = L.icon({
 })
 export class SiteDetailComponent implements AfterViewInit {
   site_id: any;
+  program_id: any;
   site: any;
   attributes = [];
   photos = [{
@@ -37,7 +38,8 @@ export class SiteDetailComponent implements AfterViewInit {
     private programService: GncProgramsService,
   ) {
     this.route.params.subscribe(params => {
-      this.site_id = params["id"];
+      this.site_id = params["site_id"];
+      this.program_id = params["program_id"];
     });
   }
 
