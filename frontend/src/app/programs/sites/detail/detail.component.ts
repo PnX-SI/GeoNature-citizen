@@ -23,9 +23,11 @@ export class SiteDetailComponent implements AfterViewInit {
   photos = [{
     url: "../../assets/Azure-Commun-019.JPG",
     description: "Photo - Anonyme",
+    date: "15 mars 2019"
   }, {
     url: "../../assets/faune-mercantour.jpg",
     description: "des bébêtes - Anonyme",
+    date: "15 mars 2019"
   }
   ];
   clickedPhoto: any;
