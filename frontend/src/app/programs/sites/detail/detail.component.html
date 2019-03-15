@@ -1,4 +1,54 @@
-Details for site {{ site_id }}<br>
-{{ site?.properties.name }}<br>
-
+<div class="container">
+  <div class="jumbotron bg-white pb-3">
+  <div class="row">
+    <h1>{{ site?.properties.name }}</h1>
+  </div>
+  <div class="row">
+    <div class="col-md-4 pt-4">
+      <i>Mare #{{ site_id }}</i><br><br>
+      <!--<table class="table">-->
+        <!--<tbody>-->
+        <!--<tr><td>Ajoutée par</td><td>{{ site?.properties.obs_txt }}</td></tr>-->
+        <!--</tbody>-->
+      <!--</table>-->
+      Inventoriée par {{ site?.properties.obs_txt }}<br>
+      Ajoutée le {{ site?.properties.timestamp_create | date : longDate }}<br>
+      <br>
+      Dernière visite: {{ site?.properties.last_visit.timestamp_create | date : longDate }}
+    </div>
+    <div class="col-md-8">
+      <div class="card mb-4 box-shadow">
       <div id="formMap" class="col-lg-12"></div>
+        </div>
+    </div>
+  </div>
+    </div>
+  <div class="row">
+    <h2 class="mt-2 mb-4">Photos</h2>
+  </div>
+  <div class="row">
+    <div *ngFor="let photo of photos" class="col-md-4 photo">
+      <div class="card mb-4 box-shadow">
+        <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;"
+             src="{{ photo.url }}" data-holder-rendered="true">
+        <div class="card-body">
+          <p class="card-text">{{ photo.description }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="row">
+    <h2 class="mt-4 mb-4">Description</h2>
+  </div>
+  <div class="row bg-light">
+    <table class="table table-striped">
+      <tbody>
+      <tr *ngFor="let d of attributes" class="d-flex">
+        <td class="col-4">{{ d.name }}</td>
+        <td class="col-8">{{ d.value }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
