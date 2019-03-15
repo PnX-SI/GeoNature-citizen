@@ -6,11 +6,14 @@
 <div class="modal-body add-obs"><app-site-visit-form [site_id]="data.site_id"></app-site-visit-form></div>
 
 <div class="modal-footer">
+  <button class="btn btn-danger rounded-0" (click)="form.previousStep()" *ngIf="!form.isFirstStep()">Etape précédente</button>
+  <button class="btn btn-warning rounded-0" (click)="form.nextStep()" *ngIf="!form.isLastStep()">Etape suivante</button>
   <button
     type="submit"
     class="btn btn-default btn-outline-primary rounded-0"
     (click)="committed()"
+    *ngIf="form.isLastStep()"
   >
-    Valider la mare
+    Valider la visite
   </button>
 </div>

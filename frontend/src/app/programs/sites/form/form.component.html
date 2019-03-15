@@ -5,10 +5,6 @@
   <h3>
     Etape {{ currentStep }} : {{ jsonSchema.steps[currentStep-1].title }}
   </h3>
-  <p>
-    <button class="btn btn-primary" (click)="previousStep()" *ngIf="!isFirstStep()">Etape précédente</button>
-    <button class="btn btn-primary" (click)="nextStep()" *ngIf="!isLastStep()">Etape suivante</button>
-  </p>
   <form id="visitForm" [formGroup]="visitForm">
     <div class="input-group" *ngIf="currentStep === 1">
       <label for="date" >Date de la visite</label>
