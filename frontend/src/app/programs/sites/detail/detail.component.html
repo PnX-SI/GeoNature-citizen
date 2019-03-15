@@ -17,7 +17,7 @@
        <h6 class="card-subtitle mb-2 text-muted">Ajoutée le {{ site?.properties.timestamp_create | date : longDate }}</h6>
         <p class="card-text">Inventoriée par {{ site?.properties.obs_txt }}</p>
         <p class="card-text"><small class="text-muted">
-          Dernière visite: {{ site?.properties.last_visit.timestamp_create | date : longDate }}
+          Dernière visite: {{ site?.properties.last_visit.date | date : longDate }}
         </small></p>
       </div>
     </div>
