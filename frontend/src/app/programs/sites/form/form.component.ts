@@ -54,7 +54,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   jsonData: object = {};
   formOptions: any = {
     "loadExternalAssets": false,
-    "debug": true,
+    "debug": false,
     "returnEmptyFields": false,
     "addSubmit": false
   }
