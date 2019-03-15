@@ -3,3 +3,7 @@
   min-height: 250px; /*50vh*/
   /*width: 100%;*/
 }
+
+.photo {
+    cursor: pointer;
+}

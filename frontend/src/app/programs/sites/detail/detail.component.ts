@@ -22,12 +22,13 @@ export class SiteDetailComponent implements AfterViewInit {
   attributes = [];
   photos = [{
     url: "../../assets/Azure-Commun-019.JPG",
-    description: "Photo - Anonyme"
+    description: "Photo - Anonyme",
   }, {
     url: "../../assets/faune-mercantour.jpg",
-    description: "des bébêtes - Anonyme"
+    description: "des bébêtes - Anonyme",
   }
   ];
+  clickedPhoto: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,4 +70,10 @@ export class SiteDetailComponent implements AfterViewInit {
       });
   }
 
+  showPhoto(photo) {
+    console.log("opening photo:");
+    console.log(photo);
+    this.clickedPhoto = photo;
+    $("#photoModal").modal('show');
+  }
 }
