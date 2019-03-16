@@ -127,6 +127,9 @@ section {
   transform: translateX(-125%);
   background: #fff;
 }
+#slider ol {
+  width: 15%;
+}
 
 #slider ol.carousel-indicators li {
   margin-top: 20px;
@@ -155,6 +158,12 @@ section {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+#slider .carousel-text div {
+  max-height: 50%;
+  overflow-y: auto;
+  margin-bottom: 1em;
 }
 
 #slider .carousel-text h3 {
