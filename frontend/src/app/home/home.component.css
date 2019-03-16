@@ -185,7 +185,7 @@ section {
 }
 
 .mobile-hidden {
-  overflow: hidden;
+  /* overflow: hidden; */
   line-height: 22px;
 }
 
@@ -233,9 +233,9 @@ app-observations {
     transform: translateX(50%) !important;
   }
   /* SCND SECT */
-  .mobile-hidden {
+  /* .mobile-hidden {
     display: none;
-  }
+  } */
 
   #slider .carousel-text {
     /* height: 350px; */
