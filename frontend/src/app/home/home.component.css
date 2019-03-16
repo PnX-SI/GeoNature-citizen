@@ -171,7 +171,7 @@ section {
   color: var(--ternary);
 }
 
-#slider .carousel-text p {
+#slider .carousel-text > p {
   font-style: italic;
   font-size: 14px;
   overflow: hidden;

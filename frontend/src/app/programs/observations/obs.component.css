@@ -109,7 +109,7 @@ section {
   max-height: 20%;
 }
 
-#slider .carousel-text div{
+#slider .carousel-text div {
   max-height: 50%;
   overflow-y: auto;
   margin-bottom: 15px;
@@ -401,11 +401,11 @@ span.input-group-text {
   border-radius: 0px;
 }
 
-.add-obs .form-group.btn i{
+.add-obs .form-group.btn i {
   margin-right: 10px;
 }
 
-.add-obs .form-group.btn label{
+.add-obs .form-group.btn label {
   margin: 0;
 }
 
@@ -478,7 +478,10 @@ form .d-inline-flex {
   background: #a1a1a1;
 }
 
-.obs-add-img input:hover, .obs-add-img i:hover,.obs-add-img label:hover, .obs-add-img:hover {
+.obs-add-img input:hover,
+.obs-add-img i:hover,
+.obs-add-img label:hover,
+.obs-add-img:hover {
   cursor: pointer !important;
 }
 
@@ -486,7 +489,7 @@ form .d-inline-flex {
   font-size: 30px;
 }
 
-.obs-add-img input{
+.obs-add-img input {
   height: 120px;
   width: 120px;
 }
@@ -659,7 +662,8 @@ form .d-inline-flex {
   .sign {
     padding: 0px 40px 20px 40px !important;
   }
-  .obs-img span, .obs-img img {
+  .obs-img span,
+  .obs-img img {
     opacity: 1;
   }
 }
@@ -738,11 +742,11 @@ input:checked ~ .toggle i {
   transition: left 0.5s ease;
 }
 
-@media screen and (max-width: 991px){
-  .observations{
+@media screen and (max-width: 991px) {
+  .observations {
     height: inherit;
   }
-  .leaflet-touch .leaflet-control-attribution{
+  .leaflet-touch .leaflet-control-attribution {
     display: none;
   }
 }

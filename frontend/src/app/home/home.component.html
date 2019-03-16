@@ -48,7 +48,7 @@
             alt="Programme {{ p.title }}"
           />
           <div class="carousel-text-container">
-            <div class="carousel-text">
+            <div class="carousel-text" tabindex="0">
               <h3>{{ p.title }}</h3>
               <p [innerHTML]="p.short_desc"></p>
               <div class="mobile-hidden" [innerHTML]="p.long_desc"></div>
