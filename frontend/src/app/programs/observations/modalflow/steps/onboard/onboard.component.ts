@@ -6,6 +6,7 @@ import {
   ElementRef,
   OnInit
 } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
@@ -29,7 +30,8 @@ export class OnboardComponent implements IFlowComponent, OnInit {
 
   constructor(
     private modalService: NgbModal,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -63,6 +65,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
   login() {
     // if not logged_in then stack Login modal dialog
     console.debug("login action > data:", this.data);
+    // this.authService.redirectUrl = this.route.snapshot.url[0].path;
     this.LoginModalRef = this.modalService.open(LoginComponent, {
       centered: true
     });
