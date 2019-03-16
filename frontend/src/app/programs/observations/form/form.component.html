@@ -6,10 +6,7 @@
     <div class="form-group col-lg-8">
       <label for="cd_nom">Sélectionnez une espèce</label>
       <div class="d-inline-flex toolbar">
-        <select
-          formControlName="cd_nom"
-          class="form-control rounded-0 col-lg-6"
-        >
+        <select formControlName="cd_nom" class="form-control rounded-0">
           <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
             {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
             >)
@@ -17,7 +14,7 @@
         </select>
 
         <input
-          type="text"
+          type="hidden"
           class="form-control rounded-0 col-lg-6"
           formControlName="municipality"
         />
@@ -89,18 +86,18 @@
         <i class="fa fa-camera"></i>
         <label for="photo">Ajouter une photo</label>
         <input
-        #photo
-        id="photo"
-        name="photo"
-        formControlName="photo"
-        class="inputfile"
-        type="file"
-        accept="image/*"
-        capture="environment"
-      />
+          #photo
+          id="photo"
+          name="photo"
+          formControlName="photo"
+          class="inputfile"
+          type="file"
+          accept="image/*"
+          capture="environment"
+        />
       </div>
     </div>
-    
+
     <div class="form-group col-lg-6 col-md-12 half">
       <h5>Où avez-vous observé cette espèce ?</h5>
       <div id="formMap" class="col-lg-12"></div>

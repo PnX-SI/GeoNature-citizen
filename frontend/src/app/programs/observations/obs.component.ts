@@ -2,18 +2,20 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  AfterViewInit
+  AfterViewInit,
+  ViewChild
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { forkJoin } from "rxjs";
 
 import { FeatureCollection } from "geojson";
+import * as L from "leaflet";
 
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { Program } from "../programs.models";
 import { ModalFlowService } from "./modalflow/modalflow.service";
 import { TaxonomyList } from "./observation.model";
-import * as L from "leaflet";
+import { ObsMapComponent } from "./map/map.component";
 
 @Component({
   selector: "app-observations",
@@ -30,6 +32,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
   observations: FeatureCollection;
   programFeature: FeatureCollection;
   surveySpecies: TaxonomyList;
+  @ViewChild(ObsMapComponent) obsMap: ObsMapComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -73,5 +76,9 @@ export class ObsComponent implements OnInit, AfterViewInit {
   onMapClicked(p: L.Point): void {
     this.coords = p;
     console.debug("map clicked", this.coords);
+  }
+
+  toggleList() {
+    this.obsMap.observationMap.invalidateSize();
   }
 }
