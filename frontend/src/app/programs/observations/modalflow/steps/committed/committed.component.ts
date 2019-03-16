@@ -26,12 +26,12 @@ export class CommittedComponent implements IFlowComponent {
   onNewObservation(observation: ObservationFeature) {
     this.data.obs = observation;
     console.debug("committed action > onNewObservation data:", this.data);
-    const event: CustomEvent = new CustomEvent("NewObservationEvent", {
-      bubbles: true,
-      cancelable: true,
-      detail: observation
-    });
-    this.obsSubmit.nativeElement.dispatchEvent(event);
+    // const event: CustomEvent = new CustomEvent("NewObservationEvent", {
+    //   bubbles: true,
+    //   cancelable: true,
+    //   detail: observation
+    // });
+    // this.obsSubmit.nativeElement.dispatchEvent(event);
     this.data.next(this.data);
   }
 
