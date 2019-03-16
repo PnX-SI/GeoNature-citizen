@@ -4,8 +4,9 @@
     <!-- FIXME: hardcoded backend media url -->
     <img
       [src]="
-        AppConfig.API_ENDPOINT + '/media/' + obs.images[0] ||
-        'assets/Azure-Commun-019.JPG'
+        obs.images[0]
+          ? AppConfig.API_ENDPOINT + '/media/' + obs.images[0]
+          : 'assets/Azure-Commun-019.JPG'
       "
     />
   </div>
