@@ -31,8 +31,8 @@ export class SiteModalFlowService extends ModalFlowService {
       items.push(new FlowItem(SiteStepComponent, {service: this }));
       items.push(new FlowItem(VisitStepComponent, {service: this }));
     }
-    items.push(new FlowItem(CongratsComponent, {service: this, date: new Date().toLocaleDateString()}));
-    items.push(new FlowItem(RewardComponent, {service: this}));
+    // items.push(new FlowItem(CongratsComponent, {service: this, date: new Date().toLocaleDateString()}));
+    // items.push(new FlowItem(RewardComponent, {service: this}));
     return items;
   }
 
