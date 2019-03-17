@@ -6,16 +6,18 @@ export interface PostObservationResponse extends FeatureCollection {
 }
 
 export interface ObservationFeature extends Feature {
-  cd_nom: number;
-  comment: string;
-  common_name: string;
-  count: number;
-  date: Date;
-  id_observation: number;
-  images: string[];
-  obs_txt: string;
-  sci_name: string;
-  timestamp_create: Date;
+  properties: {
+    cd_nom: number;
+    comment: string;
+    common_name: string;
+    count: number;
+    date: Date;
+    id_observation: number;
+    images: string[];
+    obs_txt: string;
+    sci_name: string;
+    timestamp_create: Date;
+  };
 }
 
 export interface TaxonomyList {
