@@ -213,7 +213,7 @@ def post_site():
             raise GeonatureApiError(e)
 
         id_role = get_id_role_if_exists()
-        if id_role:
+        if id_role is not None:
             newsite.id_role = id_role
             role = UserModel.query.get(id_role)
             newsite.obs_txt = role.username
@@ -251,7 +251,7 @@ def post_visit(site_id):
         )
 
         id_role = get_id_role_if_exists()
-        if id_role:
+        if id_role is not None:
             new_visit.id_role = id_role
             role = UserModel.query.get(id_role)
             new_visit.obs_txt = role.username
