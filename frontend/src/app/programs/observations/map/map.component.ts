@@ -6,7 +6,9 @@ import {
   Output,
   OnChanges,
   SimpleChanges,
-  EventEmitter
+  EventEmitter,
+  ViewChild,
+  ElementRef
 } from "@angular/core";
 
 import { GeoJsonObject, FeatureCollection } from "geojson";
@@ -123,8 +125,7 @@ const conf = {
 @Component({
   selector: "app-obs-map",
   template: `
-    <!-- <div [id]="options.MAP_ID"></div> -->
-    <div id="obsMap"></div>
+    <div [id]="options.MAP_ID" #map></div>
   `,
   styleUrls: ["./map.component.css"],
   encapsulation: ViewEncapsulation.None
@@ -138,14 +139,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
         onLayerAdded
         onLayerRemoved
   */
-
-  @Input("observations") observations: FeatureCollection; // L.Marker[] ?
+  @ViewChild("map") map: ElementRef;
+  @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
-
   @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
   options: any;
   observationMap: L.Map;
-
   programMaxBounds: L.LatLngBounds;
   observationLayer: L.FeatureGroup;
   newObsMarker: L.Marker;
@@ -165,11 +164,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
     this.options = options;
-    this.observationMap = L.map(this.options.MAP_ID, {
+    this.observationMap = L.map(this.map.nativeElement, {
       layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay ?
       ...LeafletOptions
     });
 
+    // TODO: inject control list setup with options
     // zoom
     this.observationMap.zoomControl.setPosition(
       this.options.ZOOM_CONTROL_POSITION
