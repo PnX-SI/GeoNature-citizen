@@ -183,7 +183,6 @@ export class ObsFormComponent implements AfterViewInit {
       },
       err => alert(err),
       () => {
-        console.debug("[obsForm emit newObservation]", obs);
         this.newObservation.emit(obs);
       }
     );

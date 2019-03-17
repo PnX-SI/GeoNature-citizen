@@ -34,7 +34,9 @@
         >
           <img
             [src]="
-              o.properties.image
+              o.properties.images && o.properties.images[0]
+                ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
+                : o.properties.image
                 ? o.properties.image
                 : 'assets/Azure-Commun-019.JPG'
             "

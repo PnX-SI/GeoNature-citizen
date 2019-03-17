@@ -3,19 +3,21 @@ import {
   OnInit,
   ViewEncapsulation,
   AfterViewInit,
-  ViewChild
+  ViewChild,
+  HostListener
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { forkJoin } from "rxjs";
 
-import { FeatureCollection } from "geojson";
+import { Feature, FeatureCollection } from "geojson";
 import * as L from "leaflet";
 
-import { GncProgramsService } from "../../api/gnc-programs.service";
 import { Program } from "../programs.models";
+import { GncProgramsService } from "../../api/gnc-programs.service";
 import { ModalFlowService } from "./modalflow/modalflow.service";
 import { TaxonomyList } from "./observation.model";
 import { ObsMapComponent } from "./map/map.component";
+import { ObsListComponent } from "./list/list.component";
 
 @Component({
   selector: "app-observations",
@@ -33,6 +35,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
   programFeature: FeatureCollection;
   surveySpecies: TaxonomyList;
   @ViewChild(ObsMapComponent) obsMap: ObsMapComponent;
+  @ViewChild(ObsListComponent) obsList: ObsListComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -80,5 +83,15 @@ export class ObsComponent implements OnInit, AfterViewInit {
 
   toggleList() {
     this.obsMap.observationMap.invalidateSize();
+  }
+
+  @HostListener("document:NewObservationEvent", ["$event"])
+  newObservationEventHandler(e: CustomEvent) {
+    console.debug("[ObsComponent.newObservationEventHandler]", e.detail);
+    // const obsFeature: Feature = e.detail;
+    // this.obsList.observations = {
+    //   type: "FeatureCollection",
+    //   features: [obsFeature, ...this.observations.features]
+    // };
   }
 }

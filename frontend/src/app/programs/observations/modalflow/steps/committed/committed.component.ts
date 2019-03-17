@@ -1,17 +1,8 @@
-import {
-  Component,
-  Input,
-  ViewChild,
-  ViewEncapsulation,
-  ElementRef,
-  HostListener
-} from "@angular/core";
+import { Component, Input, ViewChild, ViewEncapsulation } from "@angular/core";
 
 import { IFlowComponent } from "../../flow/flow";
 import { ObsFormComponent } from "../../../form/form.component";
 import { ObservationFeature } from "../../../observation.model";
-
-interface NewObservationEvent extends CustomEvent {}
 
 @Component({
   templateUrl: "./committed.component.html",
@@ -21,26 +12,20 @@ interface NewObservationEvent extends CustomEvent {}
 export class CommittedComponent implements IFlowComponent {
   @Input() data: any;
   @ViewChild(ObsFormComponent) form: ObsFormComponent;
-  obsSubmit: ElementRef;
 
   onNewObservation(observation: ObservationFeature) {
     this.data.obs = observation;
-    console.debug("committed action > onNewObservation data:", this.data);
-    // const event: CustomEvent = new CustomEvent("NewObservationEvent", {
-    //   bubbles: true,
-    //   cancelable: true,
-    //   detail: observation
-    // });
-    // this.obsSubmit.nativeElement.dispatchEvent(event);
+
+    const event: CustomEvent = new CustomEvent("NewObservationEvent", {
+      bubbles: true,
+      cancelable: true,
+      detail: this.data.obs
+    });
+    document.dispatchEvent(event);
+
+    console.debug("committed > next:", this.data);
     this.data.next(this.data);
   }
-
-  // @HostListener("NewObservationEvent", ["$event"])
-  // public NewObservationEventHandler(e: CustomEvent) {
-  //   const customEvent: NewObservationEvent =
-  //     e instanceof NewObservationEvent ? e : <NewObservationEvent>e.detail;
-  //   // ...
-  // }
 
   committed() {
     this.form.onFormSubmit();
