@@ -65,11 +65,13 @@ export class SiteDetailComponent implements AfterViewInit {
           .addTo(map);
 
         // prepare data
-        let data = this.site.properties.last_visit.json_data;
-        let schema = MaresJson.schema.properties;
-        for (const k in data) {
-          let v = data[k];
-          this.attributes.push({name: schema[k].title, value: v.toString()})
+        if (this.site.properties.last_visit) {
+          let data = this.site.properties.last_visit.json_data;
+          let schema = MaresJson.schema.properties;
+          for (const k in data) {
+            let v = data[k];
+            this.attributes.push({name: schema[k].title, value: v.toString()})
+          }
         }
       });
   }

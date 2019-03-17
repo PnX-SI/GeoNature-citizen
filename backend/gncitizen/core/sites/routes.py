@@ -70,7 +70,8 @@ def get_site(pk):
             .order_by(VisitModel.timestamp_update.desc())\
             .first()
         formatted_site = format_site(site)
-        formatted_site['properties']['last_visit'] = last_visit.as_dict()
+        if last_visit is not None:
+            formatted_site['properties']['last_visit'] = last_visit.as_dict()
         return {"features": [formatted_site]}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
