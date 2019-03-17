@@ -32,6 +32,7 @@ import { SitesMapComponent } from "./programs/sites/map/map.component";
 import { SitesComponent } from "./programs/sites/sites.component";
 import { SiteFormComponent } from "./programs/sites/siteform/siteform.component";
 import { SiteVisitFormComponent } from "./programs/sites/form/form.component";
+import { SiteDetailComponent } from "./programs/sites/detail/detail.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { GncService } from "./api/gnc.service";
@@ -87,6 +88,7 @@ import { GNCBootstrap4FrameworkComponent } from "./programs/sites/form/gnc-boots
     SiteVisitFormComponent,
     SitesListComponent,
     SitesMapComponent,
+    SiteDetailComponent,
     HomeComponent,
     HomeCustomComponent,
     ProgramsComponent,

@@ -11,9 +11,9 @@ import { SiteModalFlowService } from "../modalflow/modalflow.service";
 export class SitesListComponent implements OnChanges {
   @Input("sites") sitesCollection: FeatureCollection;
   @Input("taxa") surveySpecies: any[];
+  @Input("program_id") program_id: number;
   municipalities: string[];
   sites: Feature[] = [];
-  program_id: number;
   taxa: any[];
 
   constructor(public flowService: SiteModalFlowService) {}

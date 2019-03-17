@@ -1,0 +1,13 @@
+#map {
+  min-height: 250px; /*50vh*/
+  /*width: 100%;*/
+}
+
+.photo {
+    cursor: pointer;
+}
+
+#back_link {
+  padding-top: 1rem;
+  color: var(--primary);
+}

@@ -12,6 +12,7 @@ import { UniqueProgramGuard } from "./programs/default-program.guard";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { AuthGuard } from "./auth/auth.guard";
+import {SiteDetailComponent} from "./programs/sites/detail/detail.component";
 import { SiteVisitFormComponent } from "./programs/sites/form/form.component";
 
 const appRoutes: Routes = [
@@ -49,6 +50,7 @@ const appRoutes: Routes = [
     resolve: { programs: ProgramsResolve }
   },
   { path: "synthesis/species/:id", component: SpeciesComponent },
+  { path: "programs/:program_id/sites/:site_id", component: SiteDetailComponent },
   { path: "**", component: PageNotFoundComponent }
 ];
 

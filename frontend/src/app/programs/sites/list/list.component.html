@@ -6,7 +6,7 @@
     <div *ngFor="let o of sites">
       <div class="espece">
         <a
-          [routerLink]="['/synthesis/species', o.properties.cd_nom]"
+          [routerLink]="['/programs', program_id, 'sites', o.properties.id_site]"
           style="cursor:pointer"
         >
           <img src="../../assets/Azure-Commun-019.JPG" />
