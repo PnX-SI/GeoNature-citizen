@@ -15,6 +15,7 @@ from server import db
 
 from .models import ModulesModel, ProgramsModel
 
+
 routes = Blueprint("commons", __name__)
 
 
