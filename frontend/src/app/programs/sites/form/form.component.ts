@@ -20,7 +20,6 @@ import { LeafletMouseEvent } from "leaflet";
 
 import { AppConfig } from "../../../../conf/app.config";
 
-import { GNCBootstrap4FrameworkComponent } from './gnc-bootstrap-4-framework/gnc-bootstrap-4-framework.component';
 import { GNCFrameworkComponent } from './framework/framework.component';
 import MaresJson from '../../../../../../config/custom/form/mares.json';
 
