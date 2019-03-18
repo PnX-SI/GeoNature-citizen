@@ -9,7 +9,10 @@
       <label for="cd_nom">Sélectionnez une espèce</label>
       <div class="d-inline-flex toolbar">
         <select formControlName="cd_nom" class="form-control rounded-0">
-          <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
+          <option
+            *ngFor="let s of (surveySpecies$ | async)"
+            [value]="s.taxref.cd_nom"
+          >
             {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
             >)
           </option>
@@ -27,7 +30,7 @@
 
     <div class="form-group col-lg-12 d-inline-flex obs-images">
       <div class="scroll-img">
-        <div *ngFor="let s of surveySpecies?.slice(-taxonListThreshold)">
+        <div *ngFor="let s of (surveySpecies$ | async)">
           <div class="obs-img">
             <!-- checkbox/onclick ? -->
             <img

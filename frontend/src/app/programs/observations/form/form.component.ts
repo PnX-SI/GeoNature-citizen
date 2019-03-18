@@ -31,6 +31,7 @@ import {
   TaxonomyList
 } from "../observation.model";
 import { GncProgramsService } from "src/app/api/gnc-programs.service";
+import { share } from "rxjs/operators";
 
 declare let $: any;
 
@@ -88,7 +89,7 @@ export class ObsFormComponent implements AfterViewInit {
     id_program: new FormControl(this.program_id)
   });
   taxonListThreshold = taxonListThreshold;
-  surveySpecies: TaxonomyList;
+  surveySpecies$: Observable<TaxonomyList>;
   taxonomyListID: number;
   program: FeatureCollection;
   formMap: L.Map;
@@ -110,9 +111,9 @@ export class ObsFormComponent implements AfterViewInit {
       .subscribe((result: FeatureCollection) => {
         this.program = result;
         this.taxonomyListID = this.program.features[0].properties.taxonomy_list;
-        this.programService
+        this.surveySpecies$ = this.programService
           .getProgramTaxonomyList(this.program_id)
-          .subscribe(species => (this.surveySpecies = species));
+          .pipe(share());
 
         const formMap = L.map("formMap");
         this.formMap = formMap;
