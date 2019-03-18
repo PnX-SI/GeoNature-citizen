@@ -70,7 +70,8 @@ def get_site(pk):
             .order_by(VisitModel.timestamp_update.desc())\
             .first()
         formatted_site = format_site(site)
-        formatted_site['properties']['last_visit'] = last_visit.as_dict()
+        if last_visit is not None:
+            formatted_site['properties']['last_visit'] = last_visit.as_dict()
         return {"features": [formatted_site]}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
@@ -213,7 +214,7 @@ def post_site():
             raise GeonatureApiError(e)
 
         id_role = get_id_role_if_exists()
-        if id_role:
+        if id_role is not None:
             newsite.id_role = id_role
             role = UserModel.query.get(id_role)
             newsite.obs_txt = role.username
@@ -251,7 +252,7 @@ def post_visit(site_id):
         )
 
         id_role = get_id_role_if_exists()
-        if id_role:
+        if id_role is not None:
             new_visit.id_role = id_role
             role = UserModel.query.get(id_role)
             new_visit.obs_txt = role.username
