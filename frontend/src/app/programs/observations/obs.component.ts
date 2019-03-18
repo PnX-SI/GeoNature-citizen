@@ -9,7 +9,7 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import { forkJoin } from "rxjs";
 
-import { Feature, FeatureCollection } from "geojson";
+import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 
 import { Program } from "../programs.models";

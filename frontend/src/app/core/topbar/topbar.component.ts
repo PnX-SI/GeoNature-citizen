@@ -10,8 +10,8 @@ import { LoginComponent } from "../../auth/login/login.component";
 import { LogoutComponent } from "../../auth/logout/logout.component";
 import { RegisterComponent } from "../../auth/register/register.component";
 import { ProgramsComponent } from "../../programs/programs.component";
-import { Program } from "src/app/programs/programs.models";
-import { GncProgramsService } from "src/app/api/gnc-programs.service";
+import { Program } from "../../programs/programs.models";
+import { GncProgramsService } from "../../api/gnc-programs.service";
 
 @Component({
   selector: "app-topbar",

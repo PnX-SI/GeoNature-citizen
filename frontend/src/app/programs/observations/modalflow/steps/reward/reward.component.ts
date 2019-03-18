@@ -1,9 +1,7 @@
 import { Component, Input, ViewEncapsulation, OnInit } from "@angular/core";
 
 import { IFlowComponent } from "../../flow/flow";
-import { AuthService } from "src/app/auth/auth.service";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { AuthService } from "../../../../../auth/auth.service";
 
 @Component({
   selector: "app-reward",

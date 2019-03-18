@@ -30,7 +30,7 @@ import {
   ObservationFeature,
   TaxonomyList
 } from "../observation.model";
-import { GncProgramsService } from "src/app/api/gnc-programs.service";
+import { GncProgramsService } from "../../../api/gnc-programs.service";
 import { share } from "rxjs/operators";
 
 declare let $: any;

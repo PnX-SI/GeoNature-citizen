@@ -13,7 +13,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { IFlowComponent } from "../../flow/flow";
 import { RegisterComponent } from "../../../../../auth/register/register.component";
 import { LoginComponent } from "../../../../../auth/login/login.component";
-import { AuthService } from "src/app/auth/auth.service";
+import { AuthService } from "../../../../../auth/auth.service";
 
 @Component({
   templateUrl: "./onboard.component.html",
