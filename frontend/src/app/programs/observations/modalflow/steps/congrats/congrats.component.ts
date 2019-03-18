@@ -1,33 +1,32 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core'
+import { Component, Input, ViewEncapsulation } from "@angular/core";
 
-import { IFlowComponent } from '../../flow/flow'
+import { IFlowComponent } from "../../flow/flow";
+import { AppConfig } from "../../../../../../conf/app.config";
 
 @Component({
-  templateUrl: './congrats.component.html',
-  styleUrls: ['./congrats.component.css'],
-  encapsulation: ViewEncapsulation.None,
+  templateUrl: "./congrats.component.html",
+  styleUrls: ["./congrats.component.css"],
+  encapsulation: ViewEncapsulation.None
 })
 export class CongratsComponent implements IFlowComponent {
-  @Input() data: any
-  timeout: any
-  username: any
-  obs: any
+  @Input() data: any;
+  timeout: any;
+  username: string;
+  obs: any;
+  AppConfig = AppConfig;
 
   ngOnDestroy(): void {
     if (this.timeout) {
-      clearTimeout(this.timeout)
+      clearTimeout(this.timeout);
     }
   }
 
   ngOnInit(): void {
-    if (localStorage.getItem("username")) {
-      this.username = localStorage.getItem("username").replace(/\"/g, "");
-      console.debug('username:', this.username)
-    }
-    console.debug('congrats action > data:', this.data)
+    this.username = localStorage.getItem("username");
+    console.debug("congrats action > data:", this.data);
+    this.obs = this.data.obs.properties;
     this.timeout = setTimeout(() => {
-        this.data.obs = this.obs
-        this.data.next()
-      }, 2000)
+      this.data.next();
+    }, 2000);
   }
 }

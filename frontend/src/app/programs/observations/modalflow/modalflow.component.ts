@@ -1,5 +1,6 @@
 import {
   Component,
+  Input,
   ViewChild,
   ElementRef,
   ViewEncapsulation
@@ -25,6 +26,7 @@ import { ModalFlowService } from "./modalflow.service";
   encapsulation: ViewEncapsulation.None
 })
 export class ModalFlowComponent {
+  @Input("coords") coords;
   @ViewChild("content") content: ElementRef;
   flowitems: FlowItem[];
   timeout: any;
@@ -32,7 +34,8 @@ export class ModalFlowComponent {
   constructor(public flowService: ModalFlowService) {}
 
   clicked() {
-    this.flowitems = this.flowService.getFlowItems();
+    console.debug("coords:", this.coords);
+    this.flowitems = this.flowService.getFlowItems({ coords: this.coords });
     console.debug("flow items: ", this.flowitems);
     this.flowService.open(this.content);
   }
@@ -41,7 +44,7 @@ export class ModalFlowComponent {
     console.debug("destroyed");
   }
 
-  step(data) {
-    console.debug("modalflow step:", data);
+  step(componentName) {
+    console.debug("modalflow step:", componentName);
   }
 }

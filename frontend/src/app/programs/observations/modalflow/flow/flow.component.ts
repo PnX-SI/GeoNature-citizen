@@ -33,27 +33,35 @@ export class FlowComponent implements OnInit {
     this.loadComponent();
   }
 
-  loadComponent() {
+  loadComponent(data?) {
+    // really, cycle ?
     this.currentFlowIndex = (this.currentFlowIndex + 1) % this.flowItems.length;
+    // resolve factory for current flow-item component
     let flowItem = this.flowItems[this.currentFlowIndex];
     let componentFactory = this.componentFactoryResolver.resolveComponentFactory(
       flowItem.component
     );
+    // clear app-flow view
     let viewContainerRef = this.flowitem.viewContainerRef;
     viewContainerRef.clear();
+    // fill app-flow view with flow-item content
     let componentRef = viewContainerRef.createComponent(componentFactory);
-    (<IFlowComponent>componentRef.instance).data = flowItem.data;
-
+    // make data/state follow
+    (<IFlowComponent>componentRef.instance).data = data || flowItem.data;
+    // Be verbose about it ... noop
     this.step.emit(this.flowItems[this.currentFlowIndex].component.name);
-    const self = this;
-
+    // tie current flow-item to the next until the last
     if (
       !(<IFlowComponent>componentRef.instance).data.next &&
       !(<IFlowComponent>componentRef.instance).data.final
     ) {
-      (<IFlowComponent>componentRef.instance).data.next = () => {
-        console.debug("loadComponent this:", self);
-        this.loadComponent();
+      (<IFlowComponent>componentRef.instance).data.next = data => {
+        console.debug(
+          "unloading ",
+          this.flowItems[this.currentFlowIndex].component.name,
+          this
+        );
+        this.loadComponent(data || flowItem.data);
       };
     }
   }

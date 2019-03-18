@@ -44,7 +44,7 @@ Editez alors les différents paramètres de ce fichier.
 
     URL_APPLICATION = 'http://url.com/gncitizen'         # Replace my_url.com by your domain or IP
     API_ENDPOINT = 'http://url.com/gncitizen/api'        # Replace my_url.com by your domain or IP
-    API_PORT = 5001 # 5000 déjà utilisé par taxhub
+    API_PORT = 5002 # 5000 déjà utilisé par taxhub
     API_TAXHUB ='http://127.0.0.1:5000/api/'
 
     SESSION_TYPE = 'filesystem'
@@ -102,7 +102,7 @@ Editez alors les différents paramètres de ce fichier.
 
     export const AppConfig = {
         "appName": "GeoNature-citizen",
-        "API_ENDPOINT":"http://localhost:5001/api",
+        "API_ENDPOINT":"http://localhost:5002/api",
         "API_TAXHUB":"http://localhost:5000/api",
         "FRONTEND":{
             "PROD_MOD":true,

@@ -1,56 +1,40 @@
 <form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
-  <div class="alert alert-primary rounded-0" role="alert">
-    {{ obsForm.value | json }}
-  </div>
+  <!--
+    <div class="alert alert-primary rounded-0" role="alert">
+      {{ obsForm.value | json }}
+    </div>
+  -->
   <div class="form-row">
     <div class="form-group col-lg-8">
       <label for="cd_nom">Sélectionnez une espèce</label>
       <div class="d-inline-flex toolbar">
-        <select
-          formControlName="cd_nom"
-          class="form-control rounded-0 col-lg-6"
-        >
-          <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
+        <select formControlName="cd_nom" class="form-control rounded-0">
+          <option
+            *ngFor="let s of (surveySpecies$ | async)"
+            [value]="s.taxref.cd_nom"
+          >
             {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
             >)
           </option>
         </select>
 
         <input
-          type="text"
+          type="hidden"
           class="form-control rounded-0 col-lg-6"
           formControlName="municipality"
         />
 
-        <input
-          formControlName="id_program"
-          type="hidden"
-          [value]="program_id"
-        />
+        <input formControlName="id_program" type="hidden" />
       </div>
     </div>
 
     <div class="form-group col-lg-12 d-inline-flex obs-images">
-      <div class="obs-add-img">
-        <i class="fa fa-camera"></i>
-        <input
-          #photo
-          id="photo"
-          name="photo"
-          formControlName="photo"
-          class="inputfile"
-          type="file"
-          accept="image/*"
-          capture="environment"
-        />
-        <label for="photo">Ajouter une photo</label>
-      </div>
       <div class="scroll-img">
-        <div *ngFor="let s of surveySpecies?.slice(-taxonListThreshold)">
+        <div *ngFor="let s of (surveySpecies$ | async)">
           <div class="obs-img">
             <!-- checkbox/onclick ? -->
             <img
-              src="{{(s.media?.url)?s.media.url:'../../assets/Azure-Commun-019.JPG'}}"
+              src="{{(s.media?.url)?s.media.url:'assets/Azure-Commun-019.JPG'}}"
               alt="{{s.nom.nom_francais}}"
             />
             <span>{{ s.nom.nom_francais }}</span>
@@ -67,28 +51,27 @@
             <label for="date">Date de l'observation</label>
             <input
               formControlName="date"
-              type="text"
+              type="date"
               class="form-control rounded-0"
               placeholder="yyyy-mm-dd"
               ngbDatepicker
               #d="ngbDatepicker"
+              [markDisabled]="isDisabled"
               (click)="d.toggle()"
             />
           </div>
         </div>
         <div class="form-group col-lg-6">
-          <!--
-            <pre class="card card-block card-header mb-3">Model: {{selected | json}}</pre>
-          -->
           <label for="counting">Dénombrement</label>
           <input
             type="number"
-            min="0"
+            min="1"
             placeholder="Nombre"
             data-bind="value:replyNumber"
             class="form-control rounded-0"
             formControlName="count"
             id="counting"
+            required
           />
         </div>
       </div>
@@ -103,7 +86,23 @@
           formControlName="comment"
         ></textarea>
       </div>
+
+      <div class="form-group col-lg-12 btn">
+        <i class="fa fa-camera"></i>
+        <label for="photo">Ajouter une photo</label>
+        <input
+          #photo
+          id="photo"
+          name="photo"
+          formControlName="photo"
+          class="inputfile"
+          type="file"
+          accept="image/*"
+          capture="environment"
+        />
+      </div>
     </div>
+
     <div class="form-group col-lg-6 col-md-12 half">
       <h5>Où avez-vous observé cette espèce ?</h5>
       <div id="formMap" class="col-lg-12"></div>

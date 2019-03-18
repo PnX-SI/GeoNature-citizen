@@ -19,7 +19,7 @@
       <span i18n="Scrollez pour en voir plus !"
         >Scrollez pour en voir plus !</span
       >
-      <img class="d-block" src="../../assets/scroll.svg" />
+      <img class="d-block" src="assets/scroll.svg" />
     </a>
   </section>
 </div>
@@ -36,7 +36,7 @@
           [class.active]="isFirst"
         ></li>
       </ol>
-      <h2>Les programmes du moment</h2>
+      <h2 i18n="Les programmes du moment">Les programmes du moment</h2>
       <div class="carousel-inner">
         <div
           *ngFor="let p of programs; first as isFirst"
@@ -44,17 +44,18 @@
         >
           <img
             class="d-block w-100"
-            [src]="p.image || '../../assets/Azure-Commun-019.JPG'"
+            [src]="p.image || 'assets/Azure-Commun-019.JPG'"
             alt="Programme {{ p.title }}"
           />
           <div class="carousel-text-container">
-            <div class="carousel-text">
+            <div class="carousel-text" tabindex="0">
               <h3>{{ p.title }}</h3>
-              <p [innerHTML]="p.short_desc"></p>
-              <div class="mobile-hidden" [innerHTML]="p.long_desc"></div>
+              <p [innerHTML]="p.html_short_desc"></p>
+              <div class="mobile-hidden" [innerHTML]="p.html_long_desc"></div>
               <a
                 class="btn-big"
                 [routerLink]="['/programs', p.id_program, 'observations']"
+                i18n="Partager une observation"
                 >Partager une observation</a
               >
             </div>
@@ -68,7 +69,7 @@
         data-slide="prev"
       >
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
+        <span class="sr-only" i18n="ngb.carousel.previous">Précédent</span>
       </a>
       <a
         class="carousel-control-next"
@@ -77,7 +78,7 @@
         data-slide="next"
       >
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
+        <span class="sr-only" i18n="ngb.carousel.next">Prochain</span>
       </a>
     </div>
   </section>

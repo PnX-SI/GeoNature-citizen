@@ -1,45 +1,56 @@
 <div id="mapList">
   <div class="toolbar">
-    <select class="form-control rounded-0 col-lg-6" id="sel1">
+    <!-- <select class="form-control rounded-0 col-lg-6" id="inputSpecies"> -->
+    <select class="form-control rounded-0" id="inputSpecies">
       <!-- formControlName="species" -->
       <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
         {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
         >)
       </option>
     </select>
-    <select
-      id="municipality"
-      name="municipality"
-      type="text"
-      class="form-control rounded-0 col-lg-6"
-    >
-      <!-- formControlName="municipalities" -->
+    <!--
+      <select
+        id="municipality"
+        name="municipality"
+        type="text"
+        class="form-control rounded-0 col-lg-6"
+      >
+    -->
+    <!-- formControlName="municipalities" -->
+    <!--
       <option *ngFor="let t of municipalities">{{ t }}</option>
-    </select>
+      </select>
+    -->
   </div>
   <div class="obs-found">
-    <p>{{ observations?.length }} observations trouvées !</p>
+    <p i18n>{{ observationList?.length }} observations trouvées !</p>
   </div>
   <div id="list">
-    <div *ngFor="let o of observations">
+    <div *ngFor="let o of observationList">
       <div class="espece">
         <a
           [routerLink]="['/synthesis/species', o.properties.cd_nom]"
           style="cursor:pointer"
         >
-          <img src="../../assets/Azure-Commun-019.JPG" />
+          <img
+            [src]="
+              o.properties.images && o.properties.images[0]
+                ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
+                : o.properties.image
+                ? o.properties.image
+                : 'assets/Azure-Commun-019.JPG'
+            "
+          />
           <div class="infos">
             <h5>{{ o.properties.common_name }}</h5>
-            <p>
+            <p i18n>
               Observé par <span>{{ o.properties.sci_name }}</span>
             </p>
-            <p>
+            <p i18n>
               le <span>{{ o.properties.date }}</span>
             </p>
           </div>
-          <div class="hide">
-            <img src="../../../../assets/binoculars.png" />
-          </div>
+          <div class="hide"><img src="assets/binoculars.png" /></div>
         </a>
       </div>
     </div>

@@ -85,8 +85,8 @@ div.btn-group a:first-child{
   ul.btn-group{
     padding: 0px;
   }
-  ul.btn-group li{
-    min-width: 120px !important;
+  ul.btn-group li{/* 
+    min-width: 120px !important; */
     max-width: 120px !important;
   }
 } 
@@ -98,6 +98,7 @@ div.btn-group a:first-child{
 } 
 
 @media screen and (max-width: 767px) {
+
   .navbar form{
     flex-direction: column;
     align-items: flex-end;
@@ -120,4 +121,15 @@ div.btn-group a:first-child{
   .navbar form ul li a, .navbar form div.btn-group a{
     text-align: right;
   }
+
+  
+}
+
+@media screen and (max-width: 576px) {
+  .navbar {
+    min-height: 80px !important;
+  }
+  .navbar img{
+    height: 50px
+  } 
 }

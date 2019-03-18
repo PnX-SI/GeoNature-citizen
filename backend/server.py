@@ -1,5 +1,6 @@
 import logging
 import os
+import datetime
 
 
 from flask import Flask, current_app
@@ -33,7 +34,7 @@ class ReverseProxied(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]
+                environ["PATH_INFO"] = path_info[len(script_name):]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -56,6 +57,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     # JWT Auth
     jwt.init_app(app)
+    # wip token refresh
+    # app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=30)
 
     # Swagger for api documentation
     swagger.init_app(app)

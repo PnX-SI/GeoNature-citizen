@@ -12,7 +12,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ["./login.component.css"]
 })
 export class LoginComponent {
-  user: LoginUser = new LoginUser();
+  user: LoginUser = { username: "", password: "" };
   private _error = new Subject<string>();
   private _success = new Subject<string>();
   staticAlertClosed = false;
@@ -30,9 +30,6 @@ export class LoginComponent {
       .login(this.user)
       .then(user => {
         console.log("USER STATUS", user);
-        localStorage.setItem("access_token", user.access_token);
-        localStorage.setItem("refresh_token", user.refresh_token);
-        localStorage.setItem("username", user.username);
         if (user) {
           const message = user.message;
           setTimeout(() => (this.staticAlertClosed = true), 20000);

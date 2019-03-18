@@ -1,73 +1,93 @@
-import { Component, Input, ViewEncapsulation, OnDestroy, ViewChild, ElementRef } from '@angular/core'
+import {
+  Component,
+  ViewEncapsulation,
+  Input,
+  ViewChild,
+  ElementRef,
+  OnInit
+} from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap'
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
-import { IFlowComponent } from '../../flow/flow'
-import { RegisterComponent } from '../../../../../auth/register/register.component';
-import { LoginComponent } from '../../../../../auth/login/login.component';
+import { IFlowComponent } from "../../flow/flow";
+import { RegisterComponent } from "../../../../../auth/register/register.component";
+import { LoginComponent } from "../../../../../auth/login/login.component";
+import { AuthService } from "../../../../../auth/auth.service";
 
 @Component({
-  templateUrl: './onboard.component.html',
-  styleUrls: ['./onboard.component.css'],
-  encapsulation: ViewEncapsulation.None,
+  templateUrl: "./onboard.component.html",
+  styleUrls: ["./onboard.component.css"],
+  encapsulation: ViewEncapsulation.None
 })
-export class OnboardComponent implements IFlowComponent, OnDestroy {
-  RegistrationModalRef: NgbModalRef
-  LoginModalRef: NgbModalRef
-  @Input() data: any
-  @ViewChild('RegisterComponent') RegisterComponent: ElementRef
-  @ViewChild('LoginComponent') LoginComponent: ElementRef
+export class OnboardComponent implements IFlowComponent, OnInit {
+  RegistrationModalRef: NgbModalRef;
+  LoginModalRef: NgbModalRef;
+  timeout: any;
+  @Input("data") data: any;
+  @ViewChild("RegisterComponent") RegisterComponent: ElementRef;
+  @ViewChild("LoginComponent") LoginComponent: ElementRef;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(
+    private modalService: NgbModal,
+    private authService: AuthService,
+    private route: ActivatedRoute
+  ) {}
 
-  ngOnDestroy(): void {
-    if (this.data.timeout) {
-      clearTimeout(this.data.timeout)
-    }
+  ngOnInit() {
+    this.authService.authorized$.subscribe(value => {
+      if (value) {
+        this.timeout = setTimeout(() => this.data.next(), 0);
+      }
+    });
   }
 
   // Actions
   register() {
-    // if not logged_in then stack Register modal dialog ... for now (?)
-    // QUESTION: by the end of the registration process, is the user logged in ?
-    console.debug('register action > data:', this.data)
-    this.RegistrationModalRef = this.modalService.open(RegisterComponent, { centered: true })
-    this.RegistrationModalRef.result.then(
-      (result) => {
-        console.debug('registration resolved:', result)
-
-        // TODO: registered check
-        this.data.next()
-      },
-      (reason) => {
-        console.debug('registration dismissed:', reason)
-      }
-    )
+    console.debug("register action > data:", this.data);
+    this.RegistrationModalRef = this.modalService.open(RegisterComponent, {
+      centered: true
+    });
+    this.RegistrationModalRef.result.then(_ => {
+      console.debug("[obs-flow] registration resolved");
+      this.authService.isLoggedIn().subscribe(
+        value => {
+          if (value) {
+          }
+        },
+        reason => {
+          console.debug("registration dismissed:", reason);
+        }
+      );
+    });
   }
 
   login() {
     // if not logged_in then stack Login modal dialog
-    console.debug('login action > data:', this.data)
-    this.LoginModalRef = this.modalService.open(LoginComponent, { centered: true })
-    this.LoginModalRef.result.then(
-      (result) => {
-        console.debug('login resolved:', result)
-
-        // TODO: authenticated check
-        this.data.next()
-
-      },
-      (reason) => {
-        console.debug('login dismissed:', reason)
-      }
-    )
+    console.debug("login action > data:", this.data);
+    // this.authService.redirectUrl = this.route.snapshot.url[0].path;
+    this.LoginModalRef = this.modalService.open(LoginComponent, {
+      centered: true
+    });
+    this.LoginModalRef.result.then(_ => {
+      console.debug("[obs-flow] login resolved");
+      this.authService.isLoggedIn().subscribe(
+        value => {
+          if (value) {
+            // assert login
+          }
+        },
+        reason => {
+          console.debug("login dismissed:", reason);
+        }
+      );
+    });
   }
 
   continue() {
-    console.debug('continue')
+    console.debug("continue");
     // Continue to Submission form as Anonymous|Registered user
-    // TODO: authenticated, anonymous check ... deserves notification ?
-    // FIXME: should convey context: create a model/state/store/source of truth
-    this.data.next()
+    // authenticated but not logged in ... deserves notification ?
+    this.data.next();
   }
 }
