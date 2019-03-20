@@ -1,12 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 @font-face {
   font-family: "Satisfy";
+  font-display: auto;
   src: url("assets/Satisfy-Regular.ttf") format("truetype");
 }
 
 :root {
   --primary: #00a99d;
-  --dark-primary : #0a998f;
+  --dark-primary: #0a998f;
   --secondary: #60b15c;
   --secondary-gradient: #57a154;
   --ternary: #45765c;
