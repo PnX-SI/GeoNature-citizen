@@ -2,6 +2,7 @@
 
 @font-face {
     font-family: "Satisfy";
+    font-display: auto;
     src: url("assets/Satisfy-Regular.ttf") format("truetype");
 }
 
