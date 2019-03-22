@@ -429,7 +429,7 @@ truncate table gnc_obstax.t_obstax
 restart identity cascade
 ;
 
-insert into gnc_obstax.t_obstax(uuid_sinp, id_program, cd_nom, specie, date, id_role, count, timestamp_create, geom)
+insert into gnc_obstax.t_obstax(uuid_sinp, id_program, cd_nom, date, id_role, count, timestamp_create, geom)
 
 with g as (select row_number()
     over (
@@ -447,7 +447,6 @@ with g as (select row_number()
                  , t.*
             from (
                  select bib_noms.cd_nom
-                      , bib_noms.nom_francais specie
                       , (timestamp '2018-06-01' +
                          random() * (timestamp '2018-12-11 20:00:00' -
                                      timestamp '2018-06-01 10:00:00')) :: date as date
@@ -468,7 +467,6 @@ with g as (select row_number()
 select uuid_generate_v4()
      , g.id_program
      , d.cd_nom
-     , d.specie
      , d.date
      , d.id_user
      , d.count
