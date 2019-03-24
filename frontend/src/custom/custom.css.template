@@ -4,17 +4,10 @@
  *************************************/
 
 
-/* FONT */
-
-@font-face {
-    font-family: "Satisfy";
-    src: url("../assets/Satisfy-Regular.ttf") format("truetype");
-}
-
-
 /* COLORS */
 
 :root {
+    --default-font-color: #5d6970;
     --primary: #00a99d;
     --dark-primary: #0a998f;
     --secondary: #60b15c;
@@ -23,54 +16,7 @@
     --list-toggler-width: 21px;
     --list-obs-offset: 170px;
     --router-outlet-offset: 113px;
-}
-
-
-/* COULEUR DE TEXTE GLOBALE */
-
-html,
-body {
-    color: #5d6970;
-}
-
-
-/* TITRES */
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: "Open Sans", Helvetica, Arial, sans-serif;
-}
-
-
-/* BUTTON FONTS */
-
-button,
-.btn {
-    font-family: "Open Sans", Helvetica, Arial, sans-serif;
-}
-
-
-/* BIG BUTTON */
-
-.btn-big {
-    text-transform: uppercase;
-    color: #fff !important;
-    padding: 20px 30px;
-    border: none;
-    font-weight: 500;
-    font-size: 18px;
-    width: fit-content;
-    transition: all 0.2s ease-in-out;
-}
-
-.btn-big:hover {
-    -webkit-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
-    -moz-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
-    box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
-    color: #fff !important;
-    transform: translateY(-5px);
+    --modal-header-bg-moz: moz-linear-gradient(top, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
+    --modal-header-bg-webkit: moz-linear-gradient(top, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
+    --modal-header-bg-linear: linear-gradient(to bottom, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
 }
