@@ -1,10 +1,10 @@
-.modal-header{
-    background: #60b15c;
-    background: -moz-linear-gradient(top, #60b15c 0%, #60b15c 50%, #57a154 51%, #57a154 100%); 
-    background: -webkit-linear-gradient(top, #60b15c 0%,#60b15c 50%,#57a154 51%,#57a154 100%); 
-    background: linear-gradient(to bottom, #60b15c 0%,#60b15c 50%,#57a154 51%,#57a154 100%);
+.modal-header {
+    background: var(--secondary);
+    background: var(--modal-header-bg-moz);
+    background: var(--modal-header-bg-webkit);
+    background: var(--modal-header-bg-linear);
     border-radius: 0px;
-    align-items : center;
+    align-items: center;
     max-height: 61px;
 }
 
@@ -15,7 +15,7 @@
 }
 
 .modal-header button {
-    margin:  0;
+    margin: 0;
 }
 
 .modal-body {
@@ -23,44 +23,45 @@
 }
 
 span.input-group-text {
-    background: #60b15c;
+    background: var(--secondary);
     color: #fff;
 }
 
-.modal-body input{
+.modal-body input {
     border: solid 1px transparent;
-    border : solid 1px #bbb;
+    border: solid 1px #bbb;
     transition: all .2s ease-in-out;
 }
 
-.modal-body input::placeholder{
+.modal-body input::placeholder {
     font-style: italic;
 }
 
-.modal-body .form-row{
+.modal-body .form-row {
     margin-bottom: 10px;
 }
 
-.modal-body .form-row:first-child, .modal-body .form-row:nth-child(2n) {
-    border-bottom: solid 1px #60b15c;
+.modal-body .form-row:first-child,
+.modal-body .form-row:nth-child(2n) {
+    border-bottom: solid 1px var(--secondary);
 }
 
 .modal-body button {
-    background: #60b15c;
+    background: var(--secondary);
     color: #fff;
     border: solid 1px transparent;
     display: flex;
     margin: 0 auto;
 }
 
-.modal-body button:hover{
+.modal-body button:hover {
     background: transparent;
     color: var(--secondary);
-    border: solid 1px #60b15c;
+    border: solid 1px var(--secondary);
 }
 
 @media screen and (max-width: 576px) {
-    .modal-body .form-row{
+    .modal-body .form-row {
         flex-direction: column;
         width: 95%;
         align-items: center;
