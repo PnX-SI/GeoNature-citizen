@@ -225,19 +225,20 @@ def post_observation():
             current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
             raise GeonatureApiError(e)
 
-        # if current_app.config['REWARDS'] and current_app.config['BADGESET']:
-        # 1. harvest base_props:
-        #   - attendance,
-        #   - seniority,
-        #   - mission_success
-        # and program props:
-        #   - program_attendance,
-        #   - program_taxo_dist,
-        #   - ref taxon,
-        #   - submitted_taxon,
-        #   - submission_date
-        # 2. map result to BADGESET
-        # 3. return reward selection with new observation feature
+        if current_app.config["REWARDS"] and current_app.config["BADGESET"]:
+            # 1. harvest base_props:
+            #   - attendance,
+            #   - seniority,
+            #   - mission_success
+            #  and program props:
+            #   - program_attendance,
+            #   - program_taxo_dist,
+            #   - ref taxon,
+            #   - submitted_taxon,
+            #   - submission_date
+            # 2. map result to BADGESET
+            # 3. return reward selection with new observation feature
+            pass
         return ({"message": "New observation created", "features": features}, 200)
 
     except Exception as e:
