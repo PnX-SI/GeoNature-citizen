@@ -3,25 +3,18 @@
 
 
 import uuid
+
 # from datetime import datetime
 import requests
-from flask import (
-    Blueprint,
-    current_app,
-    request,
-    json,
-    send_from_directory
-)
+from flask import Blueprint, current_app, request, json, send_from_directory
 from flask_jwt_extended import jwt_optional
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
 
-from gncitizen.core.commons.models import (
-    MediaModel,
-    ProgramsModel,
-)
+from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
+
 # from gncitizen.core.taxonomy.models import Taxref
 # from gncitizen.core.users.models import UserModel
 
@@ -179,9 +172,7 @@ def post_observation():
         """
     try:
         request_datas = request.form
-        current_app.logger.debug(
-            "[post_observation] request data:", request_datas
-        )
+        current_app.logger.debug("[post_observation] request data:", request_datas)
 
         datas2db = {}
         for field in request_datas:
@@ -234,10 +225,20 @@ def post_observation():
             current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
             raise GeonatureApiError(e)
 
-        return (
-            {"message": "New observation created", "features": features},
-            200,
-        )
+        # if current_app.config['REWARDS'] and current_app.config['BADGESET']:
+        # 1. harvest base_props:
+        #   - attendance,
+        #   - seniority,
+        #   - mission_success
+        # and program props:
+        #   - program_attendance,
+        #   - program_taxo_dist,
+        #   - ref taxon,
+        #   - submitted_taxon,
+        #   - submission_date
+        # 2. map result to BADGESET
+        # 3. return reward selection with new observation feature
+        return ({"message": "New observation created", "features": features}, 200)
 
     except Exception as e:
         current_app.logger.warning("[post_observation] Error: %s", str(e))
@@ -337,9 +338,7 @@ def get_observations_from_list(id):  # noqa: A002
                     for k in observation_dict:
                         if k in obs_keys:
                             feature["properties"][k] = observation_dict[k]
-                    taxref = get_specie_from_cd_nom(
-                        feature["properties"]["cd_nom"]
-                    )
+                    taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
                     for k in taxref:
                         feature["properties"][k] = taxref[k]
                     features.append(feature)
@@ -384,14 +383,10 @@ def get_program_observations(id):
                 MediaModel.filename.label("image"),
                 (LAreas.area_name + " (" + LAreas.area_code + ")").label(
                     "municipality"
-                )
+                ),
             )
             .filter(ObservationModel.id_program == id, ProgramsModel.is_active)
-            .join(
-                LAreas,
-                LAreas.id_area == ObservationModel.municipality,
-                isouter=True,
-            )
+            .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
             .join(
                 ProgramsModel,
                 ProgramsModel.id_program == ObservationModel.id_program,
@@ -399,13 +394,14 @@ def get_program_observations(id):
             )
             .join(
                 ObservationMediaModel,
-                ObservationMediaModel.id_data_source == ObservationModel.id_observation,  # noqa: E501
-                isouter=True
+                ObservationMediaModel.id_data_source
+                == ObservationModel.id_observation,  # noqa: E501
+                isouter=True,
             )
             .join(
                 MediaModel,
                 ObservationMediaModel.id_media == MediaModel.id_media,
-                isouter=True
+                isouter=True,
             )
             .order_by(ObservationModel.timestamp_create.desc())
             .all()
@@ -417,9 +413,10 @@ def get_program_observations(id):
             # FIXME: Media endpoint
             feature["properties"]["image"] = (
                 "{}/media/{}".format(  # FIXME: medias url
-                    current_app.config["API_ENDPOINT"],
-                    observation.image
-                ) if observation.image else None
+                    current_app.config["API_ENDPOINT"], observation.image
+                )
+                if observation.image
+                else None
             )
             current_app.logger.warning(feature["properties"]["image"])
             observation_dict = observation.ObservationModel.as_dict(True)
