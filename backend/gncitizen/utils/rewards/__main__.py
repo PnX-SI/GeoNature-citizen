@@ -15,13 +15,13 @@ from rules import (
 default_ruleset = {
     attendance_rule,
     seniority_rule,
-    # FIXME: mission_success
+    # QUESTION: what is mission_success ? (constraint on the number of) obs submitted within program date bounds ?
+    # QUESTION: program_taxo_distance: mono specie/genus/family/... program only, isn't it ?
     program_taxo_distance_rule,
     program_attendance_rule,
     program_date_bounds_rule,
 }
 
-# ############################## TESTING #####################################
 if __name__ == "__main__":
     # PROPERTIES
     base_props = {
