@@ -50,3 +50,19 @@ program_date_bounds_model = (
     (datetime.datetime.now() - datetime.timedelta(days=7)).timestamp(),
     (datetime.datetime.now()).timestamp(),
 )
+
+
+# MODEL QUERIES
+# base props:
+#   UserModel {
+#       id_role,
+#       timestamp_create -> seniority
+# }
+#   ObserverMixinModel {
+#       id_role
+# }
+#   ObservationModel {
+#       id_role,
+#       id_program
+# }
+#
