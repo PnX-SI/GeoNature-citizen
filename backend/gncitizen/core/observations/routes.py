@@ -442,3 +442,12 @@ def get_program_observations(id):
 @routes.route("media/<item>")
 def get_media(item):
     return send_from_directory(str(MEDIA_DIR), item)
+
+
+@routes.route("/dev_rewards")
+@json_resp
+def get_rewards():
+    from gncitizen.utils.rewards.config import reward
+
+    current_app.logger.debug("reward: %s", json.dumps(reward, indent=4))
+    return {"rewards": reward}, 200
