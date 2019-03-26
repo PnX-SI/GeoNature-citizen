@@ -1,12 +1,7 @@
 <div class="row">
   <section id="welcome">
-    <h1
-      i18n="Bienvenue<br />
-    sur Geonature Citizen"
-    >
-      Bienvenue<br />
-      sur Geonature Citizen
-    </h1>
+    <h1 [innerHTML]="platform_teaser"></h1>
+    <p [innerHTML]="platform_intro"></p>
     <a
       [routerLink]="['/home']"
       fragment="programs"
