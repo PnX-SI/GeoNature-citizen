@@ -1,10 +1,10 @@
-.modal-header{
-    background-color: var(--secondary);
-    background-image: -moz-linear-gradient(to bottom, var(--secondary), var(--secondary-gradient));
-    background-image: -webkit-linear-gradient(to bottom, var(--secondary), var(--secondary-gradient));
-    background-image: linear-gradient(to bottom, var(--secondary), var(--secondary-gradient));
+.modal-header {
+    background: var(--secondary);
+    background: var(--modal-header-bg-moz);
+    background: var(--modal-header-bg-webkit);
+    background: var(--modal-header-bg-linear);
     border-radius: 0px;
-    align-items : center;
+    align-items: center;
     max-height: 61px;
 }
 
@@ -15,7 +15,7 @@
 }
 
 .modal-header button {
-    margin:  0;
+    margin: 0;
 }
 
 .modal-body {
@@ -27,17 +27,18 @@ span.input-group-text {
     color: #fff;
 }
 
-.modal-body input{
+.modal-body input {
     border: solid 1px transparent;
-    border : solid 1px #bbb;
+    border: solid 1px #bbb;
     transition: all .2s ease-in-out;
 }
 
-.modal-body input::placeholder{
+.modal-body input::placeholder {
     font-style: italic;
 }
 
-.modal-body .form-row:first-child, .modal-body .form-row:nth-child(2n) {
+.modal-body .form-row:first-child,
+.modal-body .form-row:nth-child(2n) {
     border-bottom: solid 1px;
     border-bottom-color: var(--secondary);
     margin-bottom: 10px;
@@ -51,7 +52,7 @@ span.input-group-text {
     margin: 0 auto;
 }
 
-.modal-body button:hover{
+.modal-body button:hover {
     background: transparent;
     color: var(--secondary);
     border: solid 1px;
