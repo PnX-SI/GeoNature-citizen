@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
-from rule import Rule
-from config import (
+from .rule import Rule
+from .config import (
     attendance_model,
     seniority_model,
     taxo_error_weight_conf,
