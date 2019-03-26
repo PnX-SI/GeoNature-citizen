@@ -5,8 +5,9 @@ import {
   AfterViewChecked
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Meta } from "@angular/platform-browser";
+import { Meta, SafeHtml } from "@angular/platform-browser";
 
+import { AppConfig } from '../../conf/app.config'
 import { ProgramsResolve } from "../programs/programs-resolve.service";
 import { Program } from "../programs/programs.models";
 
@@ -20,6 +21,9 @@ import { Program } from "../programs/programs.models";
 export class HomeComponent implements OnInit, AfterViewChecked {
   programs: Program[];
   fragment: string;
+
+  platform_teaser: SafeHtml = AppConfig.platform_teaser
+  platform_intro: SafeHtml = AppConfig.platform_intro
 
   constructor(private route: ActivatedRoute, private meta: Meta) {}
 
