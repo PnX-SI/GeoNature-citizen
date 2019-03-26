@@ -8,7 +8,6 @@ JWT_BLACKLIST_ENABLED = true
 JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
 
 # Application
-
 appName = 'GeoNature-citizen'                               # Application name in the home page
 DEFAULT_LANGUAGE = 'fr'
 
@@ -35,15 +34,15 @@ UPLOAD_FOLDER = 'static/medias'
 
 # Front end configuration
 [FRONTEND]
-PROD_MOD = false
-DISPLAY_HEADER = false
-DISPLAY_FOOTER = false
-MULTILINGUAL = false
+    PROD_MOD = false
+    DISPLAY_HEADER = false
+    DISPLAY_FOOTER = false
+    MULTILINGUAL = false
 
 [MAILERROR]
     MAIL_ON_ERROR = false
     MAIL_HOST = 'host mail'
-    HOST_PORT = host mail port
+    HOST_PORT = 493
     MAIL_FROM = 'Email from'
     MAIL_USERNAME = 'email username'
     MAIL_PASS = 'email to'
