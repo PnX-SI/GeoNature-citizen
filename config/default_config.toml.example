@@ -33,7 +33,7 @@ MEDIA_FOLDER = 'static/medias'
 UPLOAD_FOLDER = 'static/medias'
 
 [REWARDS]
-  [REWARDS.BADGESET]
+  [[REWARDS.BADGESET]]
     [REWARDS.BADGESET.Seniority]
       papillon = '/media/badge_papillon.png'
     [REWARDS.BADGESET.Attendance]
