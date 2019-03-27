@@ -27,7 +27,6 @@ base_props = {
 
 program_props = {
     "program_attendance": 3,
-    "program_taxo_dist": 1,
     "submission_date": (
         datetime.datetime.now() - datetime.timedelta(days=3)
     ).timestamp(),
