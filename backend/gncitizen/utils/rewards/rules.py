@@ -54,20 +54,17 @@ def taxo_distance_error(ref, sub):
 
 def taxo_distance_condition(context):
     return (
-        context["program_taxo_dist"]
-        and context["reference_taxon"]
+        context["reference_taxon"]
         and context["submitted_taxon"]
     )
 
 
 def taxo_distance_action(data):
     taxo_error = taxo_distance_error(data["reference_taxon"], data["submitted_taxon"])
-    result = max(taxo_distance_model, key=lambda k: taxo_distance_model[k])
     for category, threshold in taxo_distance_model.items():
-        if taxo_error <= threshold:
-            result = category
-        break
-    return result
+        if taxo_error >= threshold:
+            return category
+    return max(taxo_distance_model, key=lambda k: taxo_distance_model[k])
 
 
 program_taxo_distance_rule = Rule(taxo_distance_condition, taxo_distance_action)
