@@ -2,7 +2,7 @@ from .rule import Rule
 from .models import (
     attendance_model,
     seniority_model,
-    taxo_error_weight,
+    taxo_error_binary_weights,
     taxo_distance_model,
     program_attendance_model,
     program_date_bounds_model
@@ -31,7 +31,7 @@ def seniority_condition(context):
 
 def seniority_action(data):
     for category, threshold in seniority_model.items():
-        if data["seniority"] >= float(threshold):
+        if data["seniority"] >= threshold:
             return category
     return "Seniority.None"
 
@@ -44,7 +44,7 @@ def taxo_distance_error(ref, sub):
     if ref["id"] == sub["id"]:
         return 0
     counter = 1
-    for k in taxo_error_weight.keys():
+    for k in taxo_error_binary_weights.keys():
         if ref[k] == sub[k]:
             continue
         else:
@@ -66,6 +66,7 @@ def taxo_distance_action(data):
     for category, threshold in taxo_distance_model.items():
         if taxo_error <= threshold:
             result = category
+        break
     return result
 
 
@@ -94,13 +95,13 @@ def program_date_bounds_condition(context):
 
 def program_date_bounds_action(data):
     return (
-        "Program_Date_Bounds.True"
+        "Program_Date_Bounds.1"
         if (
             program_date_bounds_model["start"]
             <= data["submission_date"]
             <= program_date_bounds_model["end"]
         )
-        else "Program_Date_Bounds.False"
+        else "Program_Date_Bounds.0"
     )
 
 

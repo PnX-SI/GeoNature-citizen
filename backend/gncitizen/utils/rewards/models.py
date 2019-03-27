@@ -23,7 +23,7 @@ def human_date_delta(s: str) -> float:
         [r'(\d+)', r'(', r'|'.join([hours, days, weeks, months, years]), r')'])
     matched = re.match(rgx, str(s))
     matches = matched.groups() if matched else None
-    if matched and len(matches) == 2:
+    if matches and len(matches) == 2:
         if re.match(hours, matches[1]):
             dt = datetime.timedelta(hours=float(matches[0]))
         if re.match(days, matches[1]):
@@ -40,7 +40,7 @@ def human_date_delta(s: str) -> float:
             # _d = _d.replace(tzinfo=datetime.timezone.utc)
             dt = datetime.datetime.now() - _d
         except Exception as e:
-            print(str(s), e)
+            current_app.logger.error(str(s), e)
             return None
     return (datetime.datetime.now() - dt).timestamp()
 
@@ -59,10 +59,10 @@ seniority_model = OrderedDict(
             key=lambda t: t[1]))
 )
 
-taxo_error_weight = OrderedDict(
+taxo_error_binary_weights = OrderedDict(
     reversed(
         sorted(
-            conf["taxo_error_weight"].items(), key=lambda t: t[1]))
+            conf["taxo_error_binary_weights"].items(), key=lambda t: t[1]))
 )
 
 
