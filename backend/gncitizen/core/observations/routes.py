@@ -230,7 +230,7 @@ def post_observation():
             current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
             raise GeonatureApiError(e)
 
-        if current_app.config["REWARDS"] and current_app.config["BADGESET"]:
+        if current_app.config["REWARDS"] and current_app.config["REWARDS.BADGESET"]:
             # 1. harvest base_props:
             #   - attendance,
             #   - seniority,
@@ -447,7 +447,10 @@ def get_media(item):
 @routes.route("/dev_rewards")
 @json_resp
 def get_rewards():
-    from gncitizen.utils.rewards.config import reward
+    from gncitizen.utils.rewards import reward
 
     current_app.logger.debug("reward: %s", json.dumps(reward, indent=4))
-    return {"rewards": reward}, 200
+    return {
+        "rewards": reward,
+        "REWARDS": current_app.config['REWARDS']
+    }, 200
