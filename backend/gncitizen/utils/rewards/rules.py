@@ -40,12 +40,12 @@ seniority_rule = Rule(seniority_condition, seniority_action)
 
 
 # TAXON
-def taxo_distance_error(ref, sub):
-    if ref["id"] == sub["id"]:
+def taxo_distance_error(reference, submitted):
+    if reference["cd_nom"] == submitted["cd_nom"]:
         return 0
     counter = 1
     for k in taxo_error_binary_weights.keys():
-        if ref[k] == sub[k]:
+        if reference[k] == submitted[k]:
             continue
         else:
             counter <<= 1

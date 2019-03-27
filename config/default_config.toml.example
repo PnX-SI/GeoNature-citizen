@@ -48,7 +48,7 @@ UPLOAD_FOLDER = 'static/medias'
   [REWARDS.CONF]
     "attendance" = { "Attendance.Au" = 5000, "Attendance.Ar" = 1000, "Attendance.CuSn" = 100 }
     "seniority" = { "Seniority.oeuf" = "7days", "Seniority.chenille" = "6months", "Seniority.papillon" = "1an" }
-    "taxo_error_weight" = { "Kingdom" = 64, "Phylum" = 32, "Class" = 16, "Order" = 8, "Family" = 4, "Genus" = 2, "Species" = 1 }
+    "taxo_error_binary_weights" = { "Kingdom" = 64, "Phylum" = 32, "Class" = 16, "Order" = 8, "Family" = 4, "Genus" = 2, "Species" = 1 }
     "taxo_distance" = { "Observateur.None" = 4, "Observateur.Amateur" = 2, "Observateur.Chevronné" = 1, "Observateur.SuperFort" = 0 }
     "program_attendance" = { "Program_Attendance.Au" = 7, "Program_Attendance.Ar" = 5, "Program_Attendance.CuSn" = 3 }
     "program_date_bounds" = { "start" = "2019-03-20", "end" = "" }
