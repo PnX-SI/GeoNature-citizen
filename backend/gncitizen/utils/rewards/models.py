@@ -2,7 +2,10 @@ import datetime
 import re
 from collections import OrderedDict
 
-from .config import conf
+from flask import current_app
+
+
+conf = current_app.config['REWARDS']['CONF']
 
 
 def human_date_delta(s: str) -> float:
