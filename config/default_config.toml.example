@@ -55,7 +55,7 @@ UPLOAD_FOLDER = 'static/medias'
 
 # Front end configuration
 [FRONTEND]
-    PROD_MOD = false
+    PROD_MOD = true
     DISPLAY_HEADER = false
     DISPLAY_FOOTER = false
     MULTILINGUAL = false
