@@ -39,7 +39,7 @@ program_props = {
         "Genus": "Phoenicurus",
         "Species": "Phoenicurus phoenicurus",
         "sci_name": "Phoenicurus phoenicurus (Linnaeus, 1758)",
-        "id": 1235,
+        "cd_nom": 1235,
     },
     "submitted_taxon": {
         "Kingdom": "Animalia",
@@ -50,7 +50,7 @@ program_props = {
         "Genus": "Phoenicurus",
         "Species": "Heteroxenicus",
         "sci_name": "Heteroxenicus stellatus (Gould, 1868)",
-        "id": 1243,
+        "cd_nom": 1243,
     },
     # "submitted_taxon": {
     #     "Kingdom": "Animalia",
@@ -61,7 +61,7 @@ program_props = {
     #     "Genus": "Apteryx",
     #     "Species": "Apteryx australis",
     #     "sci_name": "Apteryx australis (Shaw 1813)",
-    #     "id": 1250,
+    #     "cd_nom": 1250,
     # },
 }
 
