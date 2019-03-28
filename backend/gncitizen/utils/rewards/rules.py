@@ -5,7 +5,7 @@ from .models import (
     taxo_error_binary_weights,
     taxo_distance_model,
     program_attendance_model,
-    program_date_bounds_model
+    program_date_bounds_model,
 )
 
 
@@ -53,14 +53,19 @@ def taxo_distance_error(reference, submitted):
 
 
 def taxo_distance_condition(context):
-    return (
-        context["reference_taxon"]
-        and context["submitted_taxon"]
-    )
+    return context["reference_taxon"] and context["submitted_taxon"]
 
 
 def taxo_distance_action(data):
-    taxo_error = taxo_distance_error(data["reference_taxon"], data["submitted_taxon"])
+    # DOING: migrate data["reference_taxon"] to taxa list
+    # DONE: **adapt corresponding error check process**
+    # TODO: smoke tests
+    taxo_error = min(
+        [
+            taxo_distance_error(ref_taxon, data["submitted_taxon"])
+            for ref_taxon in data["reference_taxa_list"]
+        ]
+    )
     for category, threshold in taxo_distance_model.items():
         if taxo_error >= threshold:
             return category
