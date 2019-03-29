@@ -41,11 +41,18 @@ seniority_rule = Rule(seniority_condition, seniority_action)
 
 # TAXON
 def taxo_distance_error(reference, submitted):
-    if reference["cd_nom"] == submitted["cd_nom"]:
+    if (
+        reference
+        and submitted
+        and submitted.get("cd_nom", False)
+        and reference.get("taxref", False)
+        and reference["taxref"].get("cd_nom", False)
+        and reference["taxref"]["cd_nom"] == submitted["cd_nom"]
+    ):
         return 0
     counter = 1
     for k in taxo_error_binary_weights.keys():
-        if reference[k] == submitted[k]:
+        if reference["taxref"][k] == submitted[k]:
             continue
         else:
             counter <<= 1
@@ -57,9 +64,6 @@ def taxo_distance_condition(context):
 
 
 def taxo_distance_action(data):
-    # DOING: migrate data["reference_taxon"] to taxa list
-    # DONE: **adapt corresponding error check process**
-    # TODO: smoke tests
     taxo_error = min(
         [
             taxo_distance_error(ref_taxon, data["submitted_taxon"])
