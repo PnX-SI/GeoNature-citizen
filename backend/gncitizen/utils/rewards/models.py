@@ -89,14 +89,11 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
         return (datetime.datetime.now() - dt).timestamp() if dt else None
     else:
         try:
-            # parse iso formatted datetime,
-            # eventually into a naive datetime object.
-            # naive and aware datetime objects are not comparable.
-            dt = datetime.datetime(
-                *map(int, re.findall(r"\d+", str(s)))).timestamp()
-            return dt
+            # parse Y M D
+            dt = datetime.datetime(*map(int, re.findall(r"\d+", str(s))))
+            return dt.timestamp()
         except Exception as e:
-            logging.critical(e)
+            logger.critical(e)
             return None
 
 
