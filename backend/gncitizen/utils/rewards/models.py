@@ -1,51 +1,107 @@
 import datetime
 import re
 from collections import OrderedDict
+from typing import Optional
 
-from flask import current_app
+try:
+    from flask import current_app
+    conf = current_app.config["REWARDS"]["CONF"]
+    logger = current_app.logger
+except ImportError:
+    # standalone __main__ / dev mode
+    import logging
+    logger = logging.getLogger()
+    _dev_conf = {
+        "attendance": {
+            "Attendance.Au": 5000,
+            "Attendance.Ar": 1000,
+            "Attendance.CuSn": 100
+        },
+        "seniority": {
+            "Seniority.oeuf": "7days",
+            "Seniority.chenille": "6months",
+            "Seniority.papillon": "1an"
+        },
+        "taxo_error_binary_weights": {
+            "regne": 64,
+            "phylum": 32,
+            "classe": 16,
+            "ordre": 8,
+            "famille": 4,
+            "sous_famille": 2,
+            "tribu": 1
+        },
+        "taxo_distance": {
+            "Observateur.None": 4,
+            "Observateur.Amateur": 2,
+            "Observateur.Chevronné": 1,
+            "Observateur.SuperFort": 0
+        },
+        "program_attendance": {
+            "Program_Attendance.Au": 7,
+            "Program_Attendance.Ar": 5,
+            "Program_Attendance.CuSn": 3
+        },
+        "program_date_bounds": {
+            "start": "2019-03-20", "end": ""
+        }
+    }
+    conf = _dev_conf
 
 
-conf = current_app.config["REWARDS"]["CONF"]
+Timestamp = float
 
 
-def human_date_delta(s: str) -> float:
-    if s in set(["", None]):
+def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
+    if s is None or s == '':
         return (datetime.datetime.now()).timestamp()
+
+    # 3months, 365days
     dt = None
-    weeks_in_months = 4.345
-    months_in_year = 52.143
-    hours = r"hours?|heures?"
-    days = r"days?|jours?"
-    weeks = r"weeks?|semaines?"
-    months = r"months?|mois"
-    years = r"years?|ans?"
-    rgx = r"".join(
-        [r"(\d+)", r"(", r"|".join([hours, days, weeks, months, years]), r")"]
-    )
-    matched = re.match(rgx, str(s))
-    matches = matched.groups() if matched else None
-    if matches and len(matches) == 2:
-        if re.match(hours, matches[1]):
-            dt = datetime.timedelta(hours=float(matches[0]))
-        if re.match(days, matches[1]):
-            dt = datetime.timedelta(days=float(matches[0]))
-        if re.match(weeks, matches[1]):
-            dt = datetime.timedelta(weeks=float(matches[0]))
-        if re.match(months, matches[1]):
-            dt = datetime.timedelta(weeks=float(matches[0]) * weeks_in_months)
-        if re.match(years, matches[1]):
-            dt = datetime.timedelta(
-                weeks=float(matches[0]) * weeks_in_months * months_in_year
-            )
-    else:
+    weeks_in_month = 4.345
+    weeks_in_year = 52.143
+    units = [
+        ('HOURS', r"hours?|heures?"),
+        ('DAYS', r"days?|jours?"),
+        ('WEEKS', r"weeks?|semaines?"),
+        ('MONTHS', r"months?|mois"),
+        ('YEARS', r"years?|ans?")
+    ]
+    tok_regex = ''.join([
+        r'(?P<QUANTITY>\d+)\s*(',
+        '|'.join('(?P<%s>%s)' % pair for pair in units),
+        r')'
+    ])
+    for mo in re.finditer(tok_regex, s):
+        value = mo.group('QUANTITY')
+        if mo.group('HOURS'):
+            dt = datetime.timedelta(hours=float(value))
+        if mo.group('DAYS'):
+            dt = datetime.timedelta(days=float(value))
+        if mo.group('WEEKS'):
+            dt = datetime.timedelta(weeks=float(value))
+        if mo.group('MONTHS'):
+            dt = datetime.timedelta(weeks=float(value) * weeks_in_month)
+        if mo.group('YEARS'):
+            dt = datetime.timedelta(weeks=float(value) * weeks_in_year)
+
+    if not dt:
         try:
+            # try to parse iso formatted datetime,
+            # eventually into a naive datetime object.
+            # Naive and aware datetime objects are not comparable.
             _d = datetime.datetime(*map(int, re.findall(r"\d+", str(s))))
+            # fortuitously tz aware
+            # if _d.get('tzinfo', False):
+            #     _d = _d.replace(tzinfo=None)
             # _d = _d.replace(tzinfo=datetime.timezone.utc)
             dt = datetime.datetime.now() - _d
+            # dt = datetime.datetime.utcnow().replace(
+            #     tzinfo=datetime.timezone.utc) - _d
         except Exception as e:
-            current_app.logger.error(str(s), e)
+            logging.critical(e)
             return None
-    return (datetime.datetime.now() - dt).timestamp()
+    return (datetime.datetime.now() - dt).timestamp() if dt else None
 
 
 attendance_model = OrderedDict(
@@ -55,14 +111,16 @@ attendance_model = OrderedDict(
 seniority_model = OrderedDict(
     reversed(
         sorted(
-            [(k, human_date_delta(v)) for k, v in conf["seniority"].items()],
+            [(k, config_duration2timestamp(v))
+             for k, v in conf["seniority"].items()],
             key=lambda t: t[1],
         )
     )
 )
 
 taxo_error_binary_weights = OrderedDict(
-    reversed(sorted(conf["taxo_error_binary_weights"].items(), key=lambda t: t[1]))
+    reversed(
+        sorted(conf["taxo_error_binary_weights"].items(), key=lambda t: t[1]))
 )
 
 
@@ -75,6 +133,29 @@ program_attendance_model = OrderedDict(
 )
 
 program_date_bounds_model = {
-    "start": human_date_delta(conf["program_date_bounds"]["start"]),
-    "end": human_date_delta(conf["program_date_bounds"]["end"]),
+    "start": config_duration2timestamp(conf["program_date_bounds"]["start"]),
+    "end": config_duration2timestamp(conf["program_date_bounds"]["end"]),
 }
+
+
+test_config_duration2timestamp = '''
+>>> datetime.date.fromtimestamp(config_duration2timestamp("3 months")) == (datetime.datetime.now() - datetime.timedelta(weeks=3 * 4.345)).date()
+True
+>>> datetime.date.fromtimestamp(config_duration2timestamp("28days")) == (datetime.datetime.now() - datetime.timedelta(days=28)).date()
+True
+>>> datetime.date.fromtimestamp(config_duration2timestamp("1year")) == (datetime.datetime.now() - datetime.timedelta(weeks=52.143)).date()
+True
+'''  # noqa: E501
+
+__test__ = {
+    'test_config_duration2timestamp': test_config_duration2timestamp
+}
+
+
+def test():
+    import doctest
+    doctest.testmod(verbose=1)
+
+
+if __name__ == "__main__":
+    test()
