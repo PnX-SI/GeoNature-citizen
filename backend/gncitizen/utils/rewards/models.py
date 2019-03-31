@@ -56,7 +56,7 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
     if s is None or s == '':
         return (datetime.datetime.now()).timestamp()
 
-    # 3months, 365days
+    # int hours -> years
     dt = None
     weeks_in_month = 4.345
     weeks_in_year = 52.143
@@ -86,7 +86,7 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
             dt = datetime.timedelta(weeks=float(value) * weeks_in_year)
 
     if dt:
-        return (datetime.datetime.now() - dt).timestamp() if dt else None
+        return (datetime.datetime.now() - dt).timestamp()
     else:
         try:
             # parse Y M D
