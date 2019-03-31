@@ -60,7 +60,7 @@ def taxo_distance_error(reference, submitted):
 
 
 def taxo_distance_condition(context):
-    return context["reference_taxon"] and context["submitted_taxon"]
+    return context["reference_taxa_list"] and context["submitted_taxon"]
 
 
 def taxo_distance_action(data):
@@ -76,7 +76,8 @@ def taxo_distance_action(data):
     return max(taxo_distance_model, key=lambda k: taxo_distance_model[k])
 
 
-program_taxo_distance_rule = Rule(taxo_distance_condition, taxo_distance_action)
+program_taxo_distance_rule = Rule(
+    taxo_distance_condition, taxo_distance_action)
 
 
 # PROGRAM_ATTENDANCE
@@ -91,7 +92,8 @@ def program_attendance_action(data):
     return "Program_Attendance.None"
 
 
-program_attendance_rule = Rule(program_attendance_condition, program_attendance_action)
+program_attendance_rule = Rule(
+    program_attendance_condition, program_attendance_action)
 
 
 # PROGRAM_DATE_BOUNDS
