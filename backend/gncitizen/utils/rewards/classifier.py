@@ -1,4 +1,4 @@
-from typing import Any, List, Union
+from typing import Any, List, Optional
 from .rule import Rule
 
 
@@ -8,7 +8,7 @@ def find_match(rules: List[Rule], body: Any) -> List[Rule]:
 
 class Classifier:
     @staticmethod
-    def tag(ruleset, search_body) -> Union[List[str], None]:
+    def tag(ruleset, search_body) -> Optional(List[str]):
         matching_rules = find_match(ruleset, search_body)
         if matching_rules:
             return [rule.action(search_body) for rule in matching_rules]
