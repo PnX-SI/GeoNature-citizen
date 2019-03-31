@@ -85,23 +85,19 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
         if mo.group('YEARS'):
             dt = datetime.timedelta(weeks=float(value) * weeks_in_year)
 
-    if not dt:
+    if dt:
+        return (datetime.datetime.now() - dt).timestamp() if dt else None
+    else:
         try:
-            # try to parse iso formatted datetime,
+            # parse iso formatted datetime,
             # eventually into a naive datetime object.
-            # Naive and aware datetime objects are not comparable.
-            _d = datetime.datetime(*map(int, re.findall(r"\d+", str(s))))
-            # fortuitously tz aware
-            # if _d.get('tzinfo', False):
-            #     _d = _d.replace(tzinfo=None)
-            # _d = _d.replace(tzinfo=datetime.timezone.utc)
-            dt = datetime.datetime.now() - _d
-            # dt = datetime.datetime.utcnow().replace(
-            #     tzinfo=datetime.timezone.utc) - _d
+            # naive and aware datetime objects are not comparable.
+            dt = datetime.datetime(
+                *map(int, re.findall(r"\d+", str(s)))).timestamp()
+            return dt
         except Exception as e:
             logging.critical(e)
             return None
-    return (datetime.datetime.now() - dt).timestamp() if dt else None
 
 
 attendance_model = OrderedDict(
@@ -144,6 +140,10 @@ True
 >>> datetime.date.fromtimestamp(config_duration2timestamp("28days")) == (datetime.datetime.now() - datetime.timedelta(days=28)).date()
 True
 >>> datetime.date.fromtimestamp(config_duration2timestamp("1year")) == (datetime.datetime.now() - datetime.timedelta(weeks=52.143)).date()
+True
+>>> config_duration2timestamp("52elephants") is None
+True
+>>> config_duration2timestamp("1969-08-18") == datetime.datetime.strptime("1969-08-18", "%Y-%m-%d").timestamp()
 True
 '''  # noqa: E501
 
