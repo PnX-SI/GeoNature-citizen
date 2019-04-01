@@ -230,7 +230,7 @@ def post_observation():
             current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
             raise GeonatureApiError(e)
 
-        if current_app.config["REWARDS"] and current_app.config["REWARDS.BADGESET"]:
+        if current_app.config["REWARDS"] and current_app.config["REWARDS"]["BADGESET"]:
             # 1. harvest base_props:
             #   - attendance,
             #   - seniority,

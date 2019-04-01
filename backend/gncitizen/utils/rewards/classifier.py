@@ -8,7 +8,7 @@ def find_match(rules: List[Rule], body: Any) -> List[Rule]:
 
 class Classifier:
     @staticmethod
-    def tag(ruleset, search_body) -> Optional(List[str]):
+    def tag(ruleset, search_body) -> Optional[List[str]]:
         matching_rules = find_match(ruleset, search_body)
         if matching_rules:
             return [rule.action(search_body) for rule in matching_rules]
