@@ -10,10 +10,7 @@ Francais:
 GéoNature Citoyen est une plate-forme gratuite et à code source ouvert pour les projets de science citoyenne destinés à la collecte de données sur la biodiversité. C'est entièrement personnalisable. Votre programme peut être un programme unique ou un programme multiple et être basé sur une liste d'espèces existante ou adoc.
 La collecte de données est ludifiée pour améliorer la gestion des utilisateurs à l’aide de badges et de scores. Je peux également être personnalisé pour accepter que de nouveaux utilisateurs soient créés ou non.
 
-
-[https://user-images.githubusercontent.com/45397017/49574639-3019fc80-f941-11e8-8117-5efd7803ff8e.png]
-
-
+![Home](https://user-images.githubusercontent.com/45397017/49574639-3019fc80-f941-11e8-8117-5efd7803ff8e.png)
 
 
 :bangbang: **git Attention, projet en cours de développement, non fonctionnel**
