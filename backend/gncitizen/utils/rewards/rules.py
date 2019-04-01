@@ -18,7 +18,7 @@ def attendance_action(data):
     for category, threshold in attendance_model.items():
         if data["attendance"] >= threshold:
             return category
-    return None
+    return "Attendance.None"
 
 
 attendance_rule = Rule(attendance_condition, attendance_action)
@@ -76,8 +76,7 @@ def taxo_distance_action(data):
     return max(taxo_distance_model, key=lambda k: taxo_distance_model[k])
 
 
-program_taxo_distance_rule = Rule(
-    taxo_distance_condition, taxo_distance_action)
+program_taxo_distance_rule = Rule(taxo_distance_condition, taxo_distance_action)
 
 
 # PROGRAM_ATTENDANCE
@@ -92,8 +91,7 @@ def program_attendance_action(data):
     return "Program_Attendance.None"
 
 
-program_attendance_rule = Rule(
-    program_attendance_condition, program_attendance_action)
+program_attendance_rule = Rule(program_attendance_condition, program_attendance_action)
 
 
 # PROGRAM_DATE_BOUNDS

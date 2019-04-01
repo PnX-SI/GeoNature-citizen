@@ -1,26 +1,33 @@
-import datetime
+# import datetime
 from sqlalchemy import func
 
 from server import db
-from gncitizen.core.commons.models import MediaModel, ProgramsModel
-from gncitizen.core.observations.models import ObservationModel, ObservationMediaModel
+
+# from gncitizen.core.commons.models import (
+#     MediaModel,
+#     ProgramsModel
+# )
+from gncitizen.core.observations.models import (
+    # ObservationMediaModel,
+    ObservationModel,
+)
 from gncitizen.core.taxonomy.models import (
     BibNoms,
-    BibListes,
+    # BibListes,
     CorNomListe,
-    TMedias,
+    # TMedias,
     Taxref,
 )
 from gncitizen.core.users.models import (
+    # ObserverMixinModel,
+    # UserGroupsModel,
+    # GroupsModel,
     UserModel,
-    GroupsModel,
-    UserGroupsModel,
-    ObserverMixinModel,
 )
 
 # id_role = UserModel.id_user
 role_id = 5
-program_id = 3
+program_id = 2
 taxo_list_id = 55
 
 # Platform Attendance:
@@ -38,10 +45,12 @@ program_attendance = attendance_data.filter(
 
 # Seniority:
 seniority_data = (
-    db.session.query(UserModel.timestamp_create)
-    .filter(UserModel.id_user == role_id)
-    .first()
-)[0].timestamp()
+    (
+        db.session.query(UserModel.timestamp_create)
+        .filter(UserModel.id_user == role_id)
+        .first()
+    )[0]
+).timestamp()
 
 
 # Taxon Distance
@@ -62,7 +71,7 @@ results = {
     "seniority": seniority_data,
     "attendance": platform_attendance,
     "program_attendance": program_attendance,
-    "reference_taxa_list": reference_taxa_list,
+    "reference_taxa_list": reference_taxa_list
     # Program date bounds
     # Mission Success
 }
