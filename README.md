@@ -1,5 +1,12 @@
 # GeoNature-citizen
 
+English:
+
+GeoNature citizen is a free and Open Source platform for citizen science projects for biodiversity data collection. It is fully customizable. Your program may be a single or a multiple program and be based on existing or adoc list of species.
+The data collection is gamified to improve the user management using badges and scores. I can also be customized to accept new user to be created or not.
+It is based on a fully open Source stack from PostgreSQL to Angular.
+
+
 :bangbang: **git Attention, projet en cours de développement, non fonctionnel**
 
 Portail d'inventaire participatif de la biodiversité à destination du grand public
