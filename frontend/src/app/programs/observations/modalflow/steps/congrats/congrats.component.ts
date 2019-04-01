@@ -26,7 +26,7 @@ export class CongratsComponent implements IFlowComponent {
     console.debug("congrats action > data:", this.data);
     this.obs = this.data.obs.properties;
     this.timeout = setTimeout(() => {
-      this.data.next();
+      this.data.next(this.data);
     }, 2000);
   }
 }
