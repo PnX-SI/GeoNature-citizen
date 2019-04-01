@@ -1,6 +1,6 @@
 import datetime
+import json
 
-# import json
 
 from .classifier import Classifier
 from .rules import (
@@ -29,21 +29,21 @@ base_props = {
 }
 
 program_props = {
-    "program_attendance": 3,
+    # "program_attendance": 3,
     "submission_date": (
         datetime.datetime.now() - datetime.timedelta(days=3)
     ).timestamp(),
-    "reference_taxon": {
-        "regne": "Animalia",
-        "phylum": "Chordata",
-        "classe": "Aves",
-        "ordre": "Passeriformes",
-        "famille": "Muscicapidae",
-        "sous_famille": "Phoenicurus",
-        "tribu": "Phoenicurus phoenicurus",
-        "sci_name": "Phoenicurus phoenicurus (Linnaeus, 1758)",
-        "cd_nom": 1235,
-    },
+    # "reference_taxon": {
+    #     "regne": "Animalia",
+    #     "phylum": "Chordata",
+    #     "classe": "Aves",
+    #     "ordre": "Passeriformes",
+    #     "famille": "Muscicapidae",
+    #     "sous_famille": "Phoenicurus",
+    #     "tribu": "Phoenicurus phoenicurus",
+    #     "sci_name": "Phoenicurus phoenicurus (Linnaeus, 1758)",
+    #     "cd_nom": 1235,
+    # },
     "submitted_taxon": {
         "regne": "Animalia",
         "phylum": "Chordata",
@@ -71,7 +71,7 @@ program_props = {
 reward = []
 results = queries.results
 merged = {**base_props, **program_props, **results}
-print("query result:", merged)
+print("query result:", json.dumps(merged, indent=4, sort_keys=True))
 reward = Classifier().tag(default_ruleset, merged)
 # print("reward:", json.dumps(reward, indent=4))
 # print("query result:", json.dumps(results, indent=4))
