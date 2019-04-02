@@ -1,14 +1,15 @@
 # GeoNature-citizen
 
-English:
+**English:**
 
-GeoNature citizen is a free and Open Source platform for citizen science projects for biodiversity data collection. It is fully customizable. Your program may be a single or a multiple program and be based on existing or adoc list of species.
-The data collection is gamified to improve the user management using badges and scores. I can also be customized to accept new user to be created or not.
+GeoNature-citizen is a free and Open Source web solution for citizen science projects for biodiversity data collection. It is fully customizable. Your platform may be a single or a multiple program and be based on existing or adoc list of species.
+The data collection is gamified to improve the user management using badges and scores. It can also be customized to accept new user to be created or not.
 It is based on a fully open Source stack from PostgreSQL to Angular.
 
-Francais:
-GéoNature Citoyen est une plate-forme gratuite et à code source ouvert pour les projets de science citoyenne destinés à la collecte de données sur la biodiversité. C'est entièrement personnalisable. Votre programme peut être un programme unique ou un programme multiple et être basé sur une liste d'espèces existante ou adoc.
-La collecte de données est ludifiée pour améliorer la gestion des utilisateurs à l’aide de badges et de scores. Je peux également être personnalisé pour accepter que de nouveaux utilisateurs soient créés ou non.
+**Francais:**
+
+GeoNature-citizen est une solution web gratuite et à code source ouvert pour les projets de science citoyenne destinés à la collecte de données sur la biodiversité. L'outil est entièrement personnalisable. Votre plateforme peut être constituée d'un programme unique ou de plusieurs programmes de collecte et être basée sur une liste d'espèces existante ou adoc.
+La collecte de données est ludifiée pour améliorer la gestion des utilisateurs à l’aide de badges et de scores. Elle peut également être personnalisée pour accepter que de nouveaux utilisateurs soient créés ou non.
 
 ![Home](https://user-images.githubusercontent.com/45397017/49574639-3019fc80-f941-11e8-8117-5efd7803ff8e.png)
 
