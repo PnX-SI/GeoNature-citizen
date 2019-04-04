@@ -47,7 +47,7 @@ import { ModalFlowService } from "./programs/observations/modalflow/modalflow.se
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { AppConfig } from "../conf/app.config";
 
-import { registerLocaleData } from "@angular/common";
+import { APP_BASE_HREF, registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
 registerLocaleData(localeFr, "fr");
 // import localeFrExtra from "@angular/common/locales/extra/fr";
@@ -106,7 +106,8 @@ registerLocaleData(localeFr, "fr");
       useClass: AuthInterceptor,
       multi: true
     },
-    { provide: LOCALE_ID, useValue: "fr" }
+    { provide: LOCALE_ID, useValue: "fr" },
+    { provide: APP_BASE_HREF, useValue: AppConfig.BASE_HREF }
   ],
   bootstrap: [AppComponent],
   entryComponents: [
