@@ -5,22 +5,24 @@ from typing import Optional
 
 try:
     from flask import current_app
+
     conf = current_app.config["REWARDS"]["CONF"]
     logger = current_app.logger
 except ImportError:
     # standalone __main__ / dev mode
     import logging
+
     logger = logging.getLogger()
     _dev_conf = {
         "attendance": {
             "Attendance.Au": 5000,
             "Attendance.Ar": 1000,
-            "Attendance.CuSn": 100
+            "Attendance.CuSn": 100,
         },
         "seniority": {
             "Seniority.oeuf": "7days",
             "Seniority.chenille": "6months",
-            "Seniority.papillon": "1an"
+            "Seniority.papillon": "1an",
         },
         "taxo_error_binary_weights": {
             "regne": 64,
@@ -29,22 +31,20 @@ except ImportError:
             "ordre": 8,
             "famille": 4,
             "sous_famille": 2,
-            "tribu": 1
+            "tribu": 1,
         },
         "taxo_distance": {
             "Observateur.None": 4,
             "Observateur.Amateur": 2,
             "Observateur.Chevronné": 1,
-            "Observateur.SuperFort": 0
+            "Observateur.SuperFort": 0,
         },
         "program_attendance": {
             "Program_Attendance.Au": 7,
             "Program_Attendance.Ar": 5,
-            "Program_Attendance.CuSn": 3
+            "Program_Attendance.CuSn": 3,
         },
-        "program_date_bounds": {
-            "start": "2019-03-20", "end": ""
-        }
+        "program_date_bounds": {"start": "2019-03-20", "end": ""},
     }
     conf = _dev_conf
 
@@ -53,7 +53,7 @@ Timestamp = float
 
 
 def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
-    if s is None or s == '':
+    if s is None or s == "":
         return (datetime.datetime.now()).timestamp()
 
     # int hours -> years
@@ -61,28 +61,30 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
     weeks_in_month = 4.345
     weeks_in_year = 52.143
     units = [
-        ('HOURS', r"hours?|heures?"),
-        ('DAYS', r"days?|jours?"),
-        ('WEEKS', r"weeks?|semaines?"),
-        ('MONTHS', r"months?|mois"),
-        ('YEARS', r"years?|ans?")
+        ("HOURS", r"hours?|heures?"),
+        ("DAYS", r"days?|jours?"),
+        ("WEEKS", r"weeks?|semaines?"),
+        ("MONTHS", r"months?|mois"),
+        ("YEARS", r"years?|ans?"),
     ]
-    tok_regex = ''.join([
-        r'(?P<QUANTITY>\d+)\s*(',
-        '|'.join('(?P<%s>%s)' % pair for pair in units),
-        r')'
-    ])
+    tok_regex = "".join(
+        [
+            r"(?P<QUANTITY>\d+)\s*(",
+            "|".join("(?P<%s>%s)" % pair for pair in units),
+            r")",
+        ]
+    )
     for mo in re.finditer(tok_regex, s):
-        value = mo.group('QUANTITY')
-        if mo.group('HOURS'):
+        value = mo.group("QUANTITY")
+        if mo.group("HOURS"):
             dt = datetime.timedelta(hours=float(value))
-        if mo.group('DAYS'):
+        if mo.group("DAYS"):
             dt = datetime.timedelta(days=float(value))
-        if mo.group('WEEKS'):
+        if mo.group("WEEKS"):
             dt = datetime.timedelta(weeks=float(value))
-        if mo.group('MONTHS'):
+        if mo.group("MONTHS"):
             dt = datetime.timedelta(weeks=float(value) * weeks_in_month)
-        if mo.group('YEARS'):
+        if mo.group("YEARS"):
             dt = datetime.timedelta(weeks=float(value) * weeks_in_year)
 
     if dt:
@@ -104,16 +106,14 @@ attendance_model = OrderedDict(
 seniority_model = OrderedDict(
     reversed(
         sorted(
-            [(k, config_duration2timestamp(v))
-             for k, v in conf["seniority"].items()],
+            [(k, config_duration2timestamp(v)) for k, v in conf["seniority"].items()],
             key=lambda t: t[1],
         )
     )
 )
 
 taxo_error_binary_weights = OrderedDict(
-    reversed(
-        sorted(conf["taxo_error_binary_weights"].items(), key=lambda t: t[1]))
+    reversed(sorted(conf["taxo_error_binary_weights"].items(), key=lambda t: t[1]))
 )
 
 
@@ -131,7 +131,7 @@ program_date_bounds_model = {
 }
 
 
-test_config_duration2timestamp = '''
+test_config_duration2timestamp = """
 >>> datetime.date.fromtimestamp(config_duration2timestamp("3 months")) == (datetime.datetime.now() - datetime.timedelta(weeks=3 * 4.345)).date()
 True
 >>> datetime.date.fromtimestamp(config_duration2timestamp("28days")) == (datetime.datetime.now() - datetime.timedelta(days=28)).date()
@@ -142,15 +142,14 @@ True
 True
 >>> config_duration2timestamp("1969-08-18") == datetime.datetime.strptime("1969-08-18", "%Y-%m-%d").timestamp()
 True
-'''  # noqa: E501
+"""  # noqa: E501
 
-__test__ = {
-    'test_config_duration2timestamp': test_config_duration2timestamp
-}
+__test__ = {"test_config_duration2timestamp": test_config_duration2timestamp}
 
 
 def test():
     import doctest
+
     doctest.testmod(verbose=1)
 
 
