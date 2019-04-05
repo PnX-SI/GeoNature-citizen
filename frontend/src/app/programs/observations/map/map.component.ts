@@ -159,6 +159,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
     if (this.observationMap) {
       this.loadProgramArea();
       this.loadObservations();
+      // TO REVISIT: fix for disappearing base layer when back in navigation history.
+      this.observationMap.removeLayer(this.observationMap.options.layers[0])
+      conf.DEFAULT_BASE_MAP().addTo(this.observationMap)
+      this.observationMap.invalidateSize();
     }
   }
 
@@ -209,7 +213,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.observationLayer = this.options.OBSERVATION_LAYER();
 
       this.observationLayer.addLayer(
-        L.geoJSON(<GeoJsonObject>this.observations, {
+        L.geoJSON(this.observations, {
           onEachFeature: this.options.ON_EACH_FEATURE,
           pointToLayer: this.options.POINT_TO_LAYER
         })
