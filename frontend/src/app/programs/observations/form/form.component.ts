@@ -31,12 +31,13 @@ import {
   TaxonomyList
 } from "../observation.model";
 import { GncProgramsService } from "../../../api/gnc-programs.service";
-import { share } from "rxjs/operators";
+import { share, take } from "rxjs/operators";
 
 declare let $: any;
 
 // TODO: migrate to conf
-export const taxonListThreshold = 10;
+export const taxonListSelectInputThreshold = 9;
+export const taxonListAutocompleteInputThreshold = 10;
 export const obsFormMarkerIcon = L.icon({
   iconUrl: "assets/pointer-blue2.png",
   iconAnchor: [16, 42]
@@ -88,8 +89,13 @@ export class ObsFormComponent implements AfterViewInit {
     ),
     id_program: new FormControl(this.program_id)
   });
-  taxonListThreshold = taxonListThreshold;
+  conf = {
+    taxonListSelectInputThreshold: 7,
+    taxonListAutocompleteInputThreshold: 10
+  }
   surveySpecies$: Observable<TaxonomyList>;
+  taxa: TaxonomyList;
+  taxaCount: number;
   taxonomyListID: number;
   program: FeatureCollection;
   formMap: L.Map;
@@ -114,7 +120,20 @@ export class ObsFormComponent implements AfterViewInit {
         this.surveySpecies$ = this.programService
           .getProgramTaxonomyList(this.program_id)
           .pipe(share());
-
+        this.surveySpecies$.pipe(take(1)).subscribe(
+          speciesList => {
+            this.taxa = speciesList
+            let count = () => {
+              let k = 0
+              for (let _i in this.taxa) {
+                k += 1
+              }
+              return k
+            }
+            this.taxaCount = count()
+            console.debug('taxa', count(), (this.taxaCount < taxonListSelectInputThreshold))
+          }
+        )
         const formMap = L.map("formMap");
         this.formMap = formMap;
 
