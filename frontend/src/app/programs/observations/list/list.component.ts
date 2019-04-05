@@ -3,7 +3,8 @@ import {
   OnChanges,
   Input,
   HostListener,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  SimpleChanges,
 } from "@angular/core";
 
 import { AppConfig } from "../../../../conf/app.config";
@@ -26,7 +27,7 @@ export class ObsListComponent implements OnChanges {
 
   constructor(private cd: ChangeDetectorRef) {}
 
-  ngOnChanges() {
+  ngOnChanges(_changes: SimpleChanges) {
     if (this.observations) {
       console.debug("ObsListComponent::observations OnChanges");
       this.observationList = this.observations["features"];

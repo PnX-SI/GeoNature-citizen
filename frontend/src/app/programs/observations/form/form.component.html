@@ -7,7 +7,9 @@
   <div class="form-row">
     <div class="form-group col-lg-8">
       <label for="cd_nom">Sélectionnez une espèce</label>
-      <div class="d-inline-flex toolbar">
+
+      <!-- INPUT SELECT (n>7)-->
+      <div *ngIf="taxaCount >= conf.taxonListSelectInputThreshold" class="d-inline-flex toolbar">
         <select formControlName="cd_nom" class="form-control rounded-0">
           <option
             *ngFor="let s of (surveySpecies$ | async)"
@@ -28,20 +30,17 @@
       </div>
     </div>
 
-    <div class="form-group col-lg-12 d-inline-flex obs-images">
-      <div class="scroll-img">
-        <div *ngFor="let s of (surveySpecies$ | async)">
-          <div class="obs-img">
-            <!-- checkbox/onclick ? -->
-            <img
-              src="{{(s.media?.url)?s.media.url:'assets/Azure-Commun-019.JPG'}}"
-              alt="{{s.nom.nom_francais}}"
-            />
-            <span>{{ s.nom.nom_francais }}</span>
-          </div>
-        </div>
-      </div>
+    <!-- GALLERY (n<=7)-->
+    <div *ngIf="taxaCount < conf.taxonListSelectInputThreshold" class="form-group col-lg-12 d-inline-flex obs-images">
+      <select class="scroll-img">
+        <option *ngFor="let s of (surveySpecies$ | async)" [ngStyle]="{'background-image': 'url(assets/Azure-Commun-019.JPG)'}">
+          {{ s.nom.nom_francais }}
+        </option>
+      </select>
+      <!-- class:obs-img; -->
     </div>
+
+    <!-- TODO: INPUT AUTOCOMPLETE (n>taxonListAutocompleteInputThreshold) -->
 
     <div class="form-group col-lg-6 col-md-12 half">
       <h5>Informations complémentaires</h5>
