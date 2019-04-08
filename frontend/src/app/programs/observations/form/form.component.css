@@ -19,3 +19,7 @@
   min-height: 225px; /*50vh*/
   width: 100%;
 }
+
+.dropdown-menu.show {
+  z-index: 1001 !important;
+}

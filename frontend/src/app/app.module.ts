@@ -23,7 +23,10 @@ import { HomeComponent } from "./home/home.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { DescModalComponent } from "./programs/desc-modal/desc-modal.component";
 import { ProgramsComponent } from "./programs/programs.component";
-import { ObsFormComponent } from "./programs/observations/form/form.component";
+import {
+  ObsFormComponent,
+  NgbdTypeaheadTemplate
+} from "./programs/observations/form/form.component";
 import { ObsListComponent } from "./programs/observations/list/list.component";
 import { ObsMapComponent } from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
@@ -92,7 +95,8 @@ registerLocaleData(localeFr, "fr");
     CommittedComponent,
     CongratsComponent,
     ModalFlowComponent,
-    RewardComponent
+    RewardComponent,
+    NgbdTypeaheadTemplate
   ],
   providers: [
     AuthService,
@@ -117,7 +121,8 @@ registerLocaleData(localeFr, "fr");
     OnboardComponent,
     CommittedComponent,
     CongratsComponent,
-    RewardComponent
+    RewardComponent,
+    NgbdTypeaheadTemplate
   ]
 })
 export class AppModule {}
