@@ -36,15 +36,12 @@ import { GncProgramsService } from "../../../api/gnc-programs.service";
 
 declare let $: any;
 
-// TODO: migrate to conf
-export const taxonSelectInputThreshold = 5;
-export const taxonAutocompleteInputThreshold = 6;
-export const taxonAutocompleteFields = [
-  "nom_complet",
-  "nom_vern",
-  "nom_vern_eng"
-];
+const taxonSelectInputThreshold = AppConfig.taxonSelectInputThreshold;
+const taxonAutocompleteInputThreshold =
+  AppConfig.taxonAutocompleteInputThreshold;
+const taxonAutocompleteFields = AppConfig.taxonAutocompleteFields;
 
+// TODO: migrate to conf
 export const obsFormMarkerIcon = L.icon({
   iconUrl: "assets/pointer-blue2.png",
   iconAnchor: [16, 42]
@@ -157,16 +154,12 @@ export class ObsFormComponent implements AfterViewInit {
 
         // Set initial observation marker from main map if already spotted
         let myMarker = null;
-        console.debug("supplied marker coords", this.coords);
         if (this.coords) {
           this.obsForm.patchValue({ geometry: this.coords });
 
           myMarker = L.marker([this.coords.y, this.coords.x], {
             icon: obsFormMarkerIcon
           }).addTo(formMap);
-
-          console.debug("coords", this.coords);
-          console.debug("marker", myMarker);
         }
 
         // Update marker on click event
@@ -282,7 +275,6 @@ export class NgbdTypeaheadTemplate implements OnChanges {
   ngOnChanges(_changes) {
     let r: Object[] = [];
     for (let taxon in this.taxa) {
-      console.debug(this.taxa[taxon]);
       for (let field of taxonAutocompleteFields) {
         if (this.taxa[taxon]["taxref"][field]) {
           r.push({
@@ -295,7 +287,6 @@ export class NgbdTypeaheadTemplate implements OnChanges {
       }
     }
     this.species = r;
-    console.debug(this.species);
   }
 
   search = (text$: Observable<string>) =>
