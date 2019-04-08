@@ -78,7 +78,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
 
   onMapClicked(p: L.Point): void {
     this.coords = p;
-    console.debug("map clicked", this.coords);
+    console.debug("map clicked", this.coords, this.obsMap.observationMap);
   }
 
   toggleList() {
