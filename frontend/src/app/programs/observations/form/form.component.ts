@@ -19,7 +19,13 @@ import {
   ValidatorFn
 } from "@angular/forms";
 import { Observable } from "rxjs";
-import { share, take, debounceTime, map } from "rxjs/operators";
+import {
+  share,
+  take,
+  debounceTime,
+  map,
+  distinctUntilChanged
+} from "rxjs/operators";
 
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
@@ -265,7 +271,8 @@ export class ObsFormComponent implements AfterViewInit {
       [resultTemplate]="rt"
       [inputFormatter]="formatter"
     />
-  `
+  `,
+  encapsulation: ViewEncapsulation.None
 })
 export class NgbdTypeaheadTemplate implements OnChanges {
   model: any;
@@ -279,6 +286,7 @@ export class NgbdTypeaheadTemplate implements OnChanges {
         if (this.taxa[taxon]["taxref"][field]) {
           r.push({
             name: this.taxa[taxon]["taxref"][field],
+            cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
             icon: this.taxa[taxon]["media"]
               ? this.taxa[taxon]["media"]["url"]
               : "assets/Azure-Commun-019.JPG"
@@ -292,6 +300,7 @@ export class NgbdTypeaheadTemplate implements OnChanges {
   search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
+      distinctUntilChanged(),
       map(term =>
         term === ""
           ? []
@@ -304,4 +313,12 @@ export class NgbdTypeaheadTemplate implements OnChanges {
     );
 
   formatter = (x: { name: string }) => x.name;
+
+  selectItem(event: any) {
+    const item = event.item;
+    if (item.type === "cd_nom") {
+      // DOING
+      // this.obsForm.cd_nom = item.value;
+    }
+  }
 }

@@ -1,9 +1,10 @@
 <form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
-  <!--
-    <div class="alert alert-primary rounded-0" role="alert">
-      {{ obsForm.value | json }}
-    </div>
-  -->
+  <div class="alert alert-primary rounded-0" role="alert">
+    {{ obsForm.value | json }}
+  </div>
+  <hr />
+  <pre>Model: {{ model | json }}</pre>
+
   <div class="form-row">
     <div class="form-group col-lg-8">
       <input formControlName="id_program" type="hidden" />
@@ -58,7 +59,12 @@
       *ngIf="taxaCount >= taxonAutocompleteInputThreshold"
       class="form-group col-lg-8"
     >
-      <ngbd-typeahead-template [taxa]="taxa"></ngbd-typeahead-template>
+      <ngbd-typeahead-template
+        [taxa]="taxa"
+        (selectItem)="selectedItem($event)"
+        (focus)="focus$.next($event.target.value)"
+        (click)="click$.next($event.target.value)"
+      ></ngbd-typeahead-template>
     </div>
 
     <div class="form-group col-lg-6 col-md-12 half">
