@@ -6,10 +6,16 @@
   -->
   <div class="form-row">
     <div class="form-group col-lg-8">
+      <input formControlName="id_program" type="hidden" />
       <label for="cd_nom">Sélectionnez une espèce</label>
-
-      <!-- INPUT SELECT (n>7)-->
-      <div *ngIf="taxaCount >= conf.taxonListSelectInputThreshold" class="d-inline-flex toolbar">
+      <!-- TAXON SELECT -->
+      <div
+        *ngIf="
+          taxaCount >= taxonSelectInputThreshold &&
+          taxaCount < taxonAutocompleteInputThreshold
+        "
+        class="d-inline-flex toolbar"
+      >
         <select formControlName="cd_nom" class="form-control rounded-0">
           <option
             *ngFor="let s of (surveySpecies$ | async)"
@@ -25,22 +31,35 @@
           class="form-control rounded-0 col-lg-6"
           formControlName="municipality"
         />
-
-        <input formControlName="id_program" type="hidden" />
       </div>
     </div>
 
-    <!-- GALLERY (n<=7)-->
-    <div *ngIf="taxaCount < conf.taxonListSelectInputThreshold" class="form-group col-lg-12 d-inline-flex obs-images">
-      <select class="scroll-img">
-        <option *ngFor="let s of (surveySpecies$ | async)" [ngStyle]="{'background-image': 'url(assets/Azure-Commun-019.JPG)'}">
-          {{ s.nom.nom_francais }}
-        </option>
-      </select>
-      <!-- class:obs-img; -->
+    <!-- TAXON PICKER -->
+    <div
+      *ngIf="taxaCount < taxonSelectInputThreshold"
+      class="form-group col-lg-12 d-inline-flex obs-images"
+    >
+      <div class="scroll-img">
+        <div *ngFor="let s of (surveySpecies$ | async)">
+          <div class="obs-img">
+            <img
+              src="{{(s.media?.url)?s.media.url:'assets/Azure-Commun-019.JPG'}}"
+              alt="{{s.nom.nom_francais}}"
+              (click)="onTaxonSelected(s.taxref.cd_nom)"
+            />
+            <span>{{ s.nom.nom_francais }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- TODO: INPUT AUTOCOMPLETE (n>taxonListAutocompleteInputThreshold) -->
+    <!-- TAXON AUTOCOMPLETE -->
+    <div
+      *ngIf="taxaCount >= taxonAutocompleteInputThreshold"
+      class="form-group col-lg-8"
+    >
+      <ngbd-typeahead-template [taxa]="taxa"></ngbd-typeahead-template>
+    </div>
 
     <div class="form-group col-lg-6 col-md-12 half">
       <h5>Informations complémentaires</h5>

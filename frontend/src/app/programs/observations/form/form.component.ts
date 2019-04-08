@@ -6,7 +6,8 @@ import {
   ElementRef,
   Input,
   Output,
-  EventEmitter
+  EventEmitter,
+  OnChanges
 } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
@@ -18,6 +19,7 @@ import {
   ValidatorFn
 } from "@angular/forms";
 import { Observable } from "rxjs";
+import { share, take, debounceTime, map } from "rxjs/operators";
 
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
@@ -31,13 +33,18 @@ import {
   TaxonomyList
 } from "../observation.model";
 import { GncProgramsService } from "../../../api/gnc-programs.service";
-import { share, take } from "rxjs/operators";
 
 declare let $: any;
 
 // TODO: migrate to conf
-export const taxonListSelectInputThreshold = 9;
-export const taxonListAutocompleteInputThreshold = 10;
+export const taxonSelectInputThreshold = 5;
+export const taxonAutocompleteInputThreshold = 6;
+export const taxonAutocompleteFields = [
+  "nom_complet",
+  "nom_vern",
+  "nom_vern_eng"
+];
+
 export const obsFormMarkerIcon = L.icon({
   iconUrl: "assets/pointer-blue2.png",
   iconAnchor: [16, 42]
@@ -89,10 +96,8 @@ export class ObsFormComponent implements AfterViewInit {
     ),
     id_program: new FormControl(this.program_id)
   });
-  conf = {
-    taxonListSelectInputThreshold: 7,
-    taxonListAutocompleteInputThreshold: 10
-  }
+  taxonSelectInputThreshold = taxonSelectInputThreshold;
+  taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
   surveySpecies$: Observable<TaxonomyList>;
   taxa: TaxonomyList;
   taxaCount: number;
@@ -120,20 +125,13 @@ export class ObsFormComponent implements AfterViewInit {
         this.surveySpecies$ = this.programService
           .getProgramTaxonomyList(this.program_id)
           .pipe(share());
-        this.surveySpecies$.pipe(take(1)).subscribe(
-          speciesList => {
-            this.taxa = speciesList
-            let count = () => {
-              let k = 0
-              for (let _i in this.taxa) {
-                k += 1
-              }
-              return k
-            }
-            this.taxaCount = count()
-            console.debug('taxa', count(), (this.taxaCount < taxonListSelectInputThreshold))
-          }
-        )
+        this.surveySpecies$.pipe(take(1)).subscribe(speciesList => {
+          this.taxa = speciesList;
+          this.taxaCount = Object.keys(this.taxa).length;
+          console.debug("taxa", this.taxaCount);
+        });
+
+        // build map control
         const formMap = L.map("formMap");
         this.formMap = formMap;
 
@@ -163,7 +161,6 @@ export class ObsFormComponent implements AfterViewInit {
         if (this.coords) {
           this.obsForm.patchValue({ geometry: this.coords });
 
-          // wtf coord
           myMarker = L.marker([this.coords.y, this.coords.x], {
             icon: obsFormMarkerIcon
           }).addTo(formMap);
@@ -193,6 +190,10 @@ export class ObsFormComponent implements AfterViewInit {
           }
         });
       });
+  }
+
+  onTaxonSelected(cd_nom: number): void {
+    this.obsForm.controls["cd_nom"].patchValue(cd_nom);
   }
 
   onFormSubmit(): void {
@@ -253,4 +254,63 @@ export class ObsFormComponent implements AfterViewInit {
       httpOptions
     );
   }
+}
+
+@Component({
+  selector: "ngbd-typeahead-template",
+  template: `
+    <ng-template #rt let-r="result" let-t="term">
+      <img [src]="r.icon" class="mr-1" style="height: 1em;" />
+      <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+    </ng-template>
+    <input
+      id="cd_nom"
+      type="text"
+      class="form-control"
+      [(ngModel)]="model"
+      [ngbTypeahead]="search"
+      [resultTemplate]="rt"
+      [inputFormatter]="formatter"
+    />
+  `
+})
+export class NgbdTypeaheadTemplate implements OnChanges {
+  model: any;
+  species: Object[] = [];
+  @Input("taxa") taxa: TaxonomyList;
+
+  ngOnChanges(_changes) {
+    let r: Object[] = [];
+    for (let taxon in this.taxa) {
+      console.debug(this.taxa[taxon]);
+      for (let field of taxonAutocompleteFields) {
+        if (this.taxa[taxon]["taxref"][field]) {
+          r.push({
+            name: this.taxa[taxon]["taxref"][field],
+            icon: this.taxa[taxon]["media"]
+              ? this.taxa[taxon]["media"]["url"]
+              : "assets/Azure-Commun-019.JPG"
+          });
+        }
+      }
+    }
+    this.species = r;
+    console.debug(this.species);
+  }
+
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      map(term =>
+        term === ""
+          ? []
+          : this.species
+              .filter(
+                v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
+              )
+              .slice(0, 10)
+      )
+    );
+
+  formatter = (x: { name: string }) => x.name;
 }
