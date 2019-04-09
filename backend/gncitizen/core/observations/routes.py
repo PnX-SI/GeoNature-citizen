@@ -3,31 +3,25 @@
 
 
 import uuid
+
 # from datetime import datetime
 import requests
-from flask import (
-    Blueprint,
-    current_app,
-    request,
-    json,
-    send_from_directory
-)
+from flask import Blueprint, current_app, request, json, send_from_directory
 from flask_jwt_extended import jwt_optional
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
 
-from gncitizen.core.commons.models import (
-    MediaModel,
-    ProgramsModel,
-)
+from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
+
 # from gncitizen.core.taxonomy.models import Taxref
 # from gncitizen.core.users.models import UserModel
 
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
+from gncitizen.utils.geo import get_municipality_id_from_wkb, get_area_informations
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
@@ -213,6 +207,9 @@ def post_observation():
 
         newobs.uuid_sinp = uuid.uuid4()
 
+        newobs.municipality = get_municipality_id_from_wkb(newobs.geom)
+        print('geom',newobs.geom)
+
         db.session.add(newobs)
         db.session.commit()
         # Réponse en retour
@@ -382,9 +379,7 @@ def get_program_observations(id):
             db.session.query(
                 ObservationModel,
                 MediaModel.filename.label("image"),
-                (LAreas.area_name + " (" + LAreas.area_code + ")").label(
-                    "municipality"
-                )
+                LAreas.area_name, LAreas.area_code
             )
             .filter(ObservationModel.id_program == id, ProgramsModel.is_active)
             .join(
@@ -399,13 +394,14 @@ def get_program_observations(id):
             )
             .join(
                 ObservationMediaModel,
-                ObservationMediaModel.id_data_source == ObservationModel.id_observation,  # noqa: E501
-                isouter=True
+                ObservationMediaModel.id_data_source
+                == ObservationModel.id_observation,  # noqa: E501
+                isouter=True,
             )
             .join(
                 MediaModel,
                 ObservationMediaModel.id_media == MediaModel.id_media,
-                isouter=True
+                isouter=True,
             )
             .order_by(ObservationModel.timestamp_create.desc())
             .all()
@@ -413,13 +409,14 @@ def get_program_observations(id):
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
-            feature["properties"]["municipality"] = observation.municipality
+            feature["properties"]["municipality"] = {"name":observation.area_name, "code":observation.area_code}
             # FIXME: Media endpoint
             feature["properties"]["image"] = (
                 "{}/media/{}".format(  # FIXME: medias url
-                    current_app.config["API_ENDPOINT"],
-                    observation.image
-                ) if observation.image else None
+                    current_app.config["API_ENDPOINT"], observation.image
+                )
+                if observation.image
+                else None
             )
             current_app.logger.warning(feature["properties"]["image"])
             observation_dict = observation.ObservationModel.as_dict(True)
