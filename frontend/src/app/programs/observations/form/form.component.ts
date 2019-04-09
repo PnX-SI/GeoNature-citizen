@@ -27,7 +27,10 @@ import {
   distinctUntilChanged
 } from "rxjs/operators";
 
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbDate,
+  NgbTypeaheadSelectItemEvent
+} from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
@@ -111,6 +114,7 @@ export class ObsFormComponent implements AfterViewInit {
     const date_impl = new Date(date.year, date.month - 1, date.day);
     return date_impl > this.today;
   };
+  species: Object[] = [];
 
   constructor(
     private http: HttpClient,
@@ -132,6 +136,21 @@ export class ObsFormComponent implements AfterViewInit {
           this.taxa = speciesList;
           this.taxaCount = Object.keys(this.taxa).length;
           console.debug("taxa", this.taxaCount);
+          // autocomplete test setup
+          for (let taxon in this.taxa) {
+            for (let field of taxonAutocompleteFields) {
+              if (this.taxa[taxon]["taxref"][field]) {
+                this.species.push({
+                  name: this.taxa[taxon]["taxref"][field],
+                  cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
+                  icon: this.taxa[taxon]["media"]
+                    ? this.taxa[taxon]["media"]["url"]
+                    : "assets/Azure-Commun-019.JPG"
+                });
+              }
+            }
+          }
+          console.debug(this.species);
         });
 
         // build map control
@@ -195,6 +214,37 @@ export class ObsFormComponent implements AfterViewInit {
     this.obsForm.controls["cd_nom"].patchValue(cd_nom);
   }
 
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(
+        term =>
+          term === "" // term.length < n
+            ? []
+            : this.species
+                .filter(
+                  v => new RegExp(term, "gi").test(v["name"])
+                  // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
+                )
+                .slice(0, 10) // max results
+      )
+    );
+
+  formatter = (x: { name: string }) => x.name;
+
+  selectedItem(event: NgbTypeaheadSelectItemEvent) {
+    // event.preventDefault();
+    const item = event.item;
+    console.debug("selectedItem", item.cd_nom);
+    setTimeout(() => {
+      this.onTaxonSelected(item.cd_nom);
+      const widget = document.querySelector("cd_nom");
+      widget.setAttribute("value", item.name);
+      // = item.name
+    }, 0);
+  }
+
   onFormSubmit(): void {
     let obs: ObservationFeature;
     this.postObservation().subscribe(
@@ -252,73 +302,5 @@ export class ObsFormComponent implements AfterViewInit {
       formData,
       httpOptions
     );
-  }
-}
-
-@Component({
-  selector: "ngbd-typeahead-template",
-  template: `
-    <ng-template #rt let-r="result" let-t="term">
-      <img [src]="r.icon" class="mr-1" style="height: 1em;" />
-      <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
-    </ng-template>
-    <input
-      id="cd_nom"
-      type="text"
-      class="form-control"
-      [(ngModel)]="model"
-      [ngbTypeahead]="search"
-      [resultTemplate]="rt"
-      [inputFormatter]="formatter"
-    />
-  `,
-  encapsulation: ViewEncapsulation.None
-})
-export class NgbdTypeaheadTemplate implements OnChanges {
-  model: any;
-  species: Object[] = [];
-  @Input("taxa") taxa: TaxonomyList;
-
-  ngOnChanges(_changes) {
-    let r: Object[] = [];
-    for (let taxon in this.taxa) {
-      for (let field of taxonAutocompleteFields) {
-        if (this.taxa[taxon]["taxref"][field]) {
-          r.push({
-            name: this.taxa[taxon]["taxref"][field],
-            cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
-            icon: this.taxa[taxon]["media"]
-              ? this.taxa[taxon]["media"]["url"]
-              : "assets/Azure-Commun-019.JPG"
-          });
-        }
-      }
-    }
-    this.species = r;
-  }
-
-  search = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(term =>
-        term === ""
-          ? []
-          : this.species
-              .filter(
-                v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
-              )
-              .slice(0, 10)
-      )
-    );
-
-  formatter = (x: { name: string }) => x.name;
-
-  selectItem(event: any) {
-    const item = event.item;
-    if (item.type === "cd_nom") {
-      // DOING
-      // this.obsForm.cd_nom = item.value;
-    }
   }
 }

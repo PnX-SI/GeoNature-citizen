@@ -8,8 +8,8 @@ import {
   SimpleChanges,
   EventEmitter,
   ViewChild,
-  ElementRef
-  HostListener,
+  ElementRef,
+  HostListener
 } from "@angular/core";
 
 import { FeatureCollection } from "geojson";
