@@ -2,8 +2,6 @@
   <div class="alert alert-primary rounded-0" role="alert">
     {{ obsForm.value | json }}
   </div>
-  <hr />
-  <pre>Model: {{ model | json }}</pre>
 
   <div class="form-row">
     <div class="form-group col-lg-8">
@@ -59,13 +57,23 @@
       *ngIf="taxaCount >= taxonAutocompleteInputThreshold"
       class="form-group col-lg-8"
     >
-      <ngbd-typeahead-template
-        [taxa]="taxa"
+      <ng-template #rt let-r="result" let-t="term">
+        <img [src]="r.icon" class="mr-1" style="height: 1em;" />
+        <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+      </ng-template>
+      <input
+        id="cd_nom"
+        type="text"
+        class="form-control rounded-0"
+        formControlName="cd_nom"
+        [editable]="false"
+        [ngbTypeahead]="search"
+        [resultTemplate]="rt"
+        [inputFormatter]="formatter"
         (selectItem)="selectedItem($event)"
-        (focus)="focus$.next($event.target.value)"
-        (click)="click$.next($event.target.value)"
-      ></ngbd-typeahead-template>
+      />
     </div>
+    <!-- END TAXON SELECTION -->
 
     <div class="form-group col-lg-6 col-md-12 half">
       <h5>Informations complémentaires</h5>
