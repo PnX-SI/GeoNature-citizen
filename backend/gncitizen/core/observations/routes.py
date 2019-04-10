@@ -206,8 +206,8 @@ def post_observation():
 
         newobs.uuid_sinp = uuid.uuid4()
 
-        newobs.municipality = get_municipality_id_from_wkb(newobs.geom)
         print('geom', newobs.geom)
+        newobs.municipality = get_municipality_id_from_wkb(newobs.geom)
 
         db.session.add(newobs)
         db.session.commit()

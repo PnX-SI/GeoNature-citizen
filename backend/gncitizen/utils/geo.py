@@ -3,7 +3,7 @@
 
 from flask import current_app
 
-from gncitizen.core.ref_geo.models import LAreas
+from gncitizen.core.ref_geo.models import (LAreas, BibAreasTypes)
 from gncitizen.utils.env import db
 
 
@@ -14,7 +14,7 @@ from gncitizen.utils.env import db
 
 
 def get_municipality_id_from_wkb(wkb):
-    """Return municipality id from wkb geometry     
+    """Return municipality id from wkb geometry
 
     :param wkb: WKB geometry (epsg 4326)
     :type wkb: str
@@ -23,8 +23,10 @@ def get_municipality_id_from_wkb(wkb):
     :rtype: int
     """
     try:
-        query = db.session.query(LAreas).filter(LAreas.geom.ST_Transform(4326).ST_Intersects(wkb),
-                                                LAreas.id_type == 101).first()
+        query = db.session.query(LAreas).join(BibAreasTypes).filter(
+            LAreas.geom.ST_Transform(4326).ST_Intersects(wkb),
+            BibAreasTypes.type_name == "Communes"
+        ).first()
         current_app.logger.debug(
             "[get_municipality_id_from_wkb_point] Query: {}".format(
                 query
@@ -46,13 +48,14 @@ def get_municipality_id_from_wkb(wkb):
         municipality_id = None
     return municipality_id
 
+
 def get_area_informations(id_area):
     try:
-        query = db.session.query(LAreas).filter(LAreas.id_area==id_area)
-        result=query.first()
-        area={}
-        area['name']=result.area_name
-        area['code']=result.area_code
+        query = db.session.query(LAreas).filter(LAreas.id_area == id_area)
+        result = query.first()
+        area = {}
+        area['name'] = result.area_name
+        area['code'] = result.area_code
     except Exception as e:
         current_app.logger.debug(
             "[get_municipality_id_from_wkb_point] Can't get municipality id: {}".format(
@@ -60,5 +63,5 @@ def get_area_informations(id_area):
             )
         )
         raise
-        area=None
+        area = None
     return area
