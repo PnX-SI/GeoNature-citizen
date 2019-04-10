@@ -304,7 +304,7 @@ export class ObsFormComponent implements AfterViewInit {
     if (isNaN(cd_nom)) {
       cd_nom = Number.parseInt(taxon.cd_nom);
     }
-    formData.append("cd_nom", cd_nom);
+    formData.append("cd_nom", cd_nom.toString());
 
     for (let item of ["count", "comment", "date", "id_program"]) {
       formData.append(item, this.obsForm.get(item).value);
