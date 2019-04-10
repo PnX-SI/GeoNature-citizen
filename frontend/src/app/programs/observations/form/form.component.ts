@@ -49,6 +49,7 @@ const taxonSelectInputThreshold = AppConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold =
   AppConfig.taxonAutocompleteInputThreshold;
 const taxonAutocompleteFields = AppConfig.taxonAutocompleteFields;
+const taxonAutocompleteMaxResults = 10;
 
 // TODO: migrate to conf
 export const obsFormMarkerIcon = L.icon({
@@ -64,6 +65,15 @@ export function ngbDateMaxIsToday(): ValidatorFn {
     const selected = NgbDate.from(control.value);
     const date_impl = new Date(selected.year, selected.month - 1, selected.day);
     return date_impl > today ? { "Parsed a date in the future": true } : null;
+  };
+}
+
+export function geometryValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const validGeometry = /Point\(\d{1,3}(|\.\d{1,7}),(|\s)\d{1,3}(|\.\d{1,7})\)$/.test(
+      control.value
+    );
+    return validGeometry ? null : { geometry: { value: control.value } };
   };
 }
 
@@ -96,25 +106,66 @@ export class ObsFormComponent implements AfterViewInit {
     ),
     photo: new FormControl(""),
     municipality: new FormControl(),
-    geometry: new FormControl(
-      this.coords ? this.coords : "",
-      Validators.required
-    ),
+    geometry: new FormControl(this.coords ? this.coords : "", [
+      Validators.required,
+      geometryValidator()
+    ]),
     id_program: new FormControl(this.program_id)
   });
   taxonSelectInputThreshold = taxonSelectInputThreshold;
   taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
-  surveySpecies$: Observable<TaxonomyList>;
-  taxa: TaxonomyList;
-  taxaCount: number;
-  taxonomyListID: number;
-  program: FeatureCollection;
   formMap: L.Map;
-  isDisabled = (date: NgbDate, current: { month: number }) => {
+  program: FeatureCollection;
+  taxonomyListID: number;
+  taxa: TaxonomyList;
+  surveySpecies$: Observable<TaxonomyList>;
+  species: Object[] = [];
+  taxaCount: number;
+
+  disabledDates = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
     return date_impl > this.today;
   };
-  species: Object[] = [];
+
+  inputAutoCompleteSearch = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term =>
+        term === "" // term.length < n
+          ? []
+          : this.species
+              .filter(
+                v => new RegExp(term, "gi").test(v["name"])
+                // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
+              )
+              .slice(0, taxonAutocompleteMaxResults)
+      )
+    );
+
+  inputAutoCompleteFormatter = (x: { name: string }) => x.name;
+
+  inputAutoCompleteSetup = () => {
+    for (let taxon in this.taxa) {
+      for (let field of taxonAutocompleteFields) {
+        if (this.taxa[taxon]["taxref"][field]) {
+          this.species.push({
+            name:
+              field === "cd_nom"
+                ? `${this.taxa[taxon]["taxref"]["cd_nom"]} - ${
+                    this.taxa[taxon]["taxref"]["nom_complet"]
+                  }`
+                : this.taxa[taxon]["taxref"][field],
+            cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
+            icon: this.taxa[taxon]["media"]
+              ? this.taxa[taxon]["media"]["url"]
+              : "assets/Azure-Commun-019.JPG"
+          });
+        }
+      }
+    }
+    // console.debug(this.species);
+  };
 
   constructor(
     private http: HttpClient,
@@ -135,22 +186,9 @@ export class ObsFormComponent implements AfterViewInit {
         this.surveySpecies$.pipe(take(1)).subscribe(speciesList => {
           this.taxa = speciesList;
           this.taxaCount = Object.keys(this.taxa).length;
-          console.debug("taxa", this.taxaCount);
-          // autocomplete test setup
-          for (let taxon in this.taxa) {
-            for (let field of taxonAutocompleteFields) {
-              if (this.taxa[taxon]["taxref"][field]) {
-                this.species.push({
-                  name: this.taxa[taxon]["taxref"][field],
-                  cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
-                  icon: this.taxa[taxon]["media"]
-                    ? this.taxa[taxon]["media"]["url"]
-                    : "assets/Azure-Commun-019.JPG"
-                });
-              }
-            }
+          if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
+            this.inputAutoCompleteSetup();
           }
-          console.debug(this.species);
         });
 
         // build map control
@@ -189,22 +227,18 @@ export class ObsFormComponent implements AfterViewInit {
 
         // Update marker on click event
         formMap.on("click", (e: LeafletMouseEvent) => {
-          this.coords = L.point(e.latlng.lng, e.latlng.lat);
-
-          this.obsForm.patchValue({ geometry: this.coords });
-          // TODO: this.obsForm.patchValue({ municipality: municipality });
-          console.debug(this.coords);
-
-          if (myMarker) {
-            formMap.removeLayer(myMarker);
-          }
-
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
           if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
+            if (myMarker) {
+              formMap.removeLayer(myMarker);
+            }
             myMarker = L.marker(e.latlng, { icon: obsFormMarkerIcon }).addTo(
               formMap
             );
+            this.coords = L.point(e.latlng.lng, e.latlng.lat);
+            this.obsForm.patchValue({ geometry: this.coords });
+            // TODO: this.obsForm.patchValue({ municipality: municipality });
           }
         });
       });
@@ -214,35 +248,14 @@ export class ObsFormComponent implements AfterViewInit {
     this.obsForm.controls["cd_nom"].patchValue(cd_nom);
   }
 
-  search = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(
-        term =>
-          term === "" // term.length < n
-            ? []
-            : this.species
-                .filter(
-                  v => new RegExp(term, "gi").test(v["name"])
-                  // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
-                )
-                .slice(0, 10) // max results
-      )
-    );
-
-  formatter = (x: { name: string }) => x.name;
-
   selectedItem(event: NgbTypeaheadSelectItemEvent) {
     // event.preventDefault();
     const item = event.item;
-    console.debug("selectedItem", item.cd_nom);
-    setTimeout(() => {
-      this.onTaxonSelected(item.cd_nom);
-      const widget = document.querySelector("cd_nom");
-      widget.setAttribute("value", item.name);
-      // = item.name
-    }, 0);
+    console.debug("selectedItem", item.cd_nom, item.name);
+    // clears the input unfortunately
+    // setTimeout(() => {
+    //   this.onTaxonSelected(item.cd_nom);
+    // }, 0);
   }
 
   onFormSubmit(): void {
@@ -267,7 +280,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     this.obsForm.controls["id_program"].patchValue(this.program_id);
 
-    let obsDate = NgbDate.from(this.obsForm.controls.date.value);
+    const obsDate = NgbDate.from(this.obsForm.controls.date.value);
     this.obsForm.controls["date"].patchValue(
       new Date(obsDate.year, obsDate.month - 1, obsDate.day)
         .toISOString()
@@ -286,14 +299,14 @@ export class ObsFormComponent implements AfterViewInit {
       JSON.stringify(this.obsForm.get("geometry").value)
     );
 
-    for (let item of [
-      "cd_nom",
-      "count",
-      "comment",
-      "date",
-      // "municipality",
-      "id_program"
-    ]) {
+    const taxon = this.obsForm.get("cd_nom").value;
+    let cd_nom = Number.parseInt(taxon);
+    if (isNaN(cd_nom)) {
+      cd_nom = Number.parseInt(taxon.cd_nom);
+    }
+    formData.append("cd_nom", cd_nom);
+
+    for (let item of ["count", "comment", "date", "id_program"]) {
       formData.append(item, this.obsForm.get(item).value);
     }
 
