@@ -67,9 +67,9 @@
         class="form-control rounded-0"
         formControlName="cd_nom"
         [editable]="false"
-        [ngbTypeahead]="search"
+        [ngbTypeahead]="inputAutoCompleteSearch"
         [resultTemplate]="rt"
-        [inputFormatter]="formatter"
+        [inputFormatter]="inputAutoCompleteFormatter"
         (selectItem)="selectedItem($event)"
       />
     </div>
@@ -88,7 +88,7 @@
               placeholder="yyyy-mm-dd"
               ngbDatepicker
               #d="ngbDatepicker"
-              [markDisabled]="isDisabled"
+              [markDisabled]="disabledDates"
               (click)="d.toggle()"
             />
           </div>
@@ -138,7 +138,18 @@
     <div class="form-group col-lg-6 col-md-12 half">
       <h5>Où avez-vous observé cette espèce ?</h5>
       <div id="formMap" class="col-lg-12"></div>
-      <input formControlName="geometry" type="hidden" />
+      <input
+        formControlName="geometry"
+        type="hidden"
+        id="geometry"
+        name="geometry"
+        #geometry
+      />
+      <div *ngIf="geometry.invalid" class="alert alert-danger">
+        <div *ngIf="geometry.errors.required">
+          Spotting the observation on the map is required.
+        </div>
+      </div>
     </div>
   </div>
 </form>
