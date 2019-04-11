@@ -1,13 +1,20 @@
 <form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
-  <!--
-    <div class="alert alert-primary rounded-0" role="alert">
-      {{ obsForm.value | json }}
-    </div>
-  -->
+  <div class="alert alert-primary rounded-0" role="alert">
+    {{ obsForm.value | json }}
+  </div>
+
   <div class="form-row">
     <div class="form-group col-lg-8">
-      <label for="cd_nom">Sélectionnez une espèce</label>
-      <div class="d-inline-flex toolbar">
+      <input formControlName="id_program" type="hidden" />
+      <label for="cd_nom" i18n>Sélectionnez une espèce</label>
+      <!-- TAXON SELECT -->
+      <div
+        *ngIf="
+          taxaCount >= taxonSelectInputThreshold &&
+          taxaCount < taxonAutocompleteInputThreshold
+        "
+        class="d-inline-flex toolbar"
+      >
         <select formControlName="cd_nom" class="form-control rounded-0">
           <option
             *ngFor="let s of (surveySpecies$ | async)"
@@ -17,25 +24,21 @@
             >)
           </option>
         </select>
-
-        <input
-          type="hidden"
-          class="form-control rounded-0 col-lg-6"
-          formControlName="municipality"
-        />
-
-        <input formControlName="id_program" type="hidden" />
       </div>
     </div>
 
-    <div class="form-group col-lg-12 d-inline-flex obs-images">
+    <!-- TAXON PICKER -->
+    <div
+      *ngIf="taxaCount < taxonSelectInputThreshold"
+      class="form-group col-lg-12 d-inline-flex obs-images"
+    >
       <div class="scroll-img">
         <div *ngFor="let s of (surveySpecies$ | async)">
           <div class="obs-img">
-            <!-- checkbox/onclick ? -->
             <img
               src="{{(s.media?.url)?s.media.url:'assets/Azure-Commun-019.JPG'}}"
               alt="{{s.nom.nom_francais}}"
+              (click)="onTaxonSelected(s.taxref.cd_nom)"
             />
             <span>{{ s.nom.nom_francais }}</span>
           </div>
@@ -43,12 +46,34 @@
       </div>
     </div>
 
+    <!-- TAXON AUTOCOMPLETE -->
+    <div
+      *ngIf="taxaCount >= taxonAutocompleteInputThreshold"
+      class="form-group col-lg-8"
+    >
+      <ng-template #rt let-r="result" let-t="term">
+        <img [src]="r.icon" class="mr-1" style="height: 1em;" />
+        <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+      </ng-template>
+      <input
+        id="cd_nom"
+        type="text"
+        class="form-control rounded-0"
+        formControlName="cd_nom"
+        [editable]="false"
+        [ngbTypeahead]="inputAutoCompleteSearch"
+        [resultTemplate]="rt"
+        [inputFormatter]="inputAutoCompleteFormatter"
+      />
+    </div>
+    <!-- END TAXON SELECTION -->
+
     <div class="form-group col-lg-6 col-md-12 half">
-      <h5>Informations complémentaires</h5>
+      <h5 i18n>Informations complémentaires</h5>
       <div class="row">
         <div class="form-group col-lg-6">
           <div class="input-group">
-            <label for="date">Date de l'observation</label>
+            <label for="date" i18n>Date de l'observation</label>
             <input
               formControlName="date"
               type="date"
@@ -56,13 +81,13 @@
               placeholder="yyyy-mm-dd"
               ngbDatepicker
               #d="ngbDatepicker"
-              [markDisabled]="isDisabled"
+              [markDisabled]="disabledDates"
               (click)="d.toggle()"
             />
           </div>
         </div>
         <div class="form-group col-lg-6">
-          <label for="counting">Dénombrement</label>
+          <label for="counting" i18n>Dénombrement</label>
           <input
             type="number"
             min="1"
@@ -77,7 +102,7 @@
       </div>
 
       <div class="form-group col-lg-12">
-        <label for="comment">Commentaire</label>
+        <label for="comment" i18n>Commentaire</label>
         <textarea
           placeholder="Votre commentaire"
           class="form-control rounded-0"
@@ -89,7 +114,7 @@
 
       <div class="form-group col-lg-12 btn">
         <i class="fa fa-camera"></i>
-        <label for="photo">Ajouter une photo</label>
+        <label for="photo" i18n>Ajouter une photo</label>
         <input
           #photo
           id="photo"
@@ -104,9 +129,20 @@
     </div>
 
     <div class="form-group col-lg-6 col-md-12 half">
-      <h5>Où avez-vous observé cette espèce ?</h5>
+      <h5 i18n>Où avez-vous observé cette espèce ?</h5>
       <div id="formMap" class="col-lg-12"></div>
-      <input formControlName="geometry" type="hidden" />
+      <input
+        formControlName="geometry"
+        type="hidden"
+        id="geometry"
+        name="geometry"
+        #geometry
+      />
+      <div *ngIf="geometry.invalid" class="alert alert-danger">
+        <div *ngIf="geometry.errors.required" i18n>
+          Cliquer sur la carte pour déposer un marqueur
+        </div>
+      </div>
     </div>
   </div>
 </form>

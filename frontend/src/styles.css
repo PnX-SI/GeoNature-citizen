@@ -1,7 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
 @font-face {
+    font-display: auto;
     font-family: "Satisfy";
+    font-display: auto;
     src: url("assets/Satisfy-Regular.ttf") format("truetype");
 }
 

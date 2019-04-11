@@ -173,9 +173,7 @@ def post_observation():
         """
     try:
         request_datas = request.form
-        current_app.logger.debug(
-            "[post_observation] request data:", request_datas
-        )
+        current_app.logger.debug("[post_observation] request data:", request_datas)
 
         datas2db = {}
         for field in request_datas:
@@ -207,8 +205,8 @@ def post_observation():
 
         newobs.uuid_sinp = uuid.uuid4()
 
+        print("geom", newobs.geom)
         newobs.municipality = get_municipality_id_from_wkb(newobs.geom)
-        print('geom',newobs.geom)
 
         db.session.add(newobs)
         db.session.commit()
@@ -231,10 +229,21 @@ def post_observation():
             current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
             raise GeonatureApiError(e)
 
-        return (
-            {"message": "New observation created", "features": features},
-            200,
-        )
+        if current_app.config["REWARDS"] and current_app.config["REWARDS"]["BADGESET"]:
+            # 1. harvest base_props:
+            #   - attendance,
+            #   - seniority,
+            #   - mission_success
+            #  and program props:
+            #   - program_attendance,
+            #   - program_taxo_dist,
+            #   - ref taxon,
+            #   - submitted_taxon,
+            #   - submission_date
+            # 2. map result to BADGESET
+            # 3. return reward selection with new observation feature
+            pass
+        return ({"message": "New observation created", "features": features}, 200)
 
     except Exception as e:
         current_app.logger.warning("[post_observation] Error: %s", str(e))
@@ -334,9 +343,7 @@ def get_observations_from_list(id):  # noqa: A002
                     for k in observation_dict:
                         if k in obs_keys:
                             feature["properties"][k] = observation_dict[k]
-                    taxref = get_specie_from_cd_nom(
-                        feature["properties"]["cd_nom"]
-                    )
+                    taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
                     for k in taxref:
                         feature["properties"][k] = taxref[k]
                     features.append(feature)
@@ -379,14 +386,11 @@ def get_program_observations(id):
             db.session.query(
                 ObservationModel,
                 MediaModel.filename.label("image"),
-                LAreas.area_name, LAreas.area_code
+                LAreas.area_name,
+                LAreas.area_code,
             )
             .filter(ObservationModel.id_program == id, ProgramsModel.is_active)
-            .join(
-                LAreas,
-                LAreas.id_area == ObservationModel.municipality,
-                isouter=True,
-            )
+            .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
             .join(
                 ProgramsModel,
                 ProgramsModel.id_program == ObservationModel.id_program,
@@ -409,7 +413,10 @@ def get_program_observations(id):
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
-            feature["properties"]["municipality"] = {"name":observation.area_name, "code":observation.area_code}
+            feature["properties"]["municipality"] = {
+                "name": observation.area_name,
+                "code": observation.area_code,
+            }
             # FIXME: Media endpoint
             feature["properties"]["image"] = (
                 "{}/media/{}".format(  # FIXME: medias url
@@ -436,3 +443,19 @@ def get_program_observations(id):
 @routes.route("media/<item>")
 def get_media(item):
     return send_from_directory(str(MEDIA_DIR), item)
+
+
+@routes.route("/dev_rewards")
+@json_resp
+def get_rewards():
+    from gncitizen.utils.rewards import reward, results
+
+    current_app.logger.debug("reward: %s", json.dumps(reward, indent=4))
+    return (
+        {
+            "results": results,
+            "rewards": reward,
+            "REWARDS": current_app.config["REWARDS"],
+        },
+        200,
+    )

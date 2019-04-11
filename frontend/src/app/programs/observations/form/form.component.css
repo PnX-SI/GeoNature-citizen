@@ -19,3 +19,15 @@
   min-height: 225px; /*50vh*/
   width: 100%;
 }
+
+.dropdown-menu.show {
+  z-index: 1001 !important;
+}
+
+#obsForm .ng-valid:not(form) {
+  border-left: 5px solid #42a948; /* green */
+}
+
+#obsForm .ng-invalid:not(form) {
+  border-left: 5px solid #a94442; /* red */
+}

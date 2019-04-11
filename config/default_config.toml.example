@@ -8,7 +8,6 @@ JWT_BLACKLIST_ENABLED = true
 JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
 
 # Application
-
 appName = 'GeoNature-citizen'                               # Application name in the home page
 DEFAULT_LANGUAGE = 'fr'
 
@@ -33,17 +32,38 @@ MEDIA_FOLDER = 'static/medias'
 # BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = 'static/medias'
 
+[REWARDS]
+  [[REWARDS.BADGESET]]
+    [REWARDS.BADGESET.Seniority]
+      papillon = '/media/badge_papillon.png'
+    [REWARDS.BADGESET.Attendance]
+      Ar = '/media/badge_argent.png'
+    [REWARDS.BADGESET.Observateur]
+      Amateur = '/media/badge_amateur.png'
+    [REWARDS.BADGESET.Program_Attendance]
+      CuSn = '/media/badge_bronze.png'
+    [REWARDS.BADGESET.Program_Date_Bounds]
+      1 = '/media/badge_mission_success.png'
+
+  [REWARDS.CONF]
+    "attendance" = { "Attendance.Au" = 5000, "Attendance.Ar" = 1000, "Attendance.CuSn" = 100 }
+    "seniority" = { "Seniority.oeuf" = "7days", "Seniority.chenille" = "6months", "Seniority.papillon" = "1an" }
+    "taxo_error_binary_weights" = { "regne" = 64, "phylum" = 32, "classe" = 16, "ordre" = 8, "famille" = 4, "sous_famille" = 2, "tribu" = 1 }
+    "taxo_distance" = { "Observateur.None" = 4, "Observateur.Amateur" = 2, "Observateur.Chevronné" = 1, "Observateur.SuperFort" = 0 }
+    "program_attendance" = { "Program_Attendance.Au" = 7, "Program_Attendance.Ar" = 5, "Program_Attendance.CuSn" = 3 }
+    "program_date_bounds" = { "start" = "2019-03-20", "end" = "" }
+
 # Front end configuration
 [FRONTEND]
-PROD_MOD = false
-DISPLAY_HEADER = false
-DISPLAY_FOOTER = false
-MULTILINGUAL = false
+    PROD_MOD = true
+    DISPLAY_HEADER = false
+    DISPLAY_FOOTER = false
+    MULTILINGUAL = false
 
 [MAILERROR]
     MAIL_ON_ERROR = false
     MAIL_HOST = 'host mail'
-    HOST_PORT = host mail port
+    HOST_PORT = 493
     MAIL_FROM = 'Email from'
     MAIL_USERNAME = 'email username'
     MAIL_PASS = 'email to'

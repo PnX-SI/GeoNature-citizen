@@ -18,8 +18,18 @@ import {
   ValidatorFn
 } from "@angular/forms";
 import { Observable } from "rxjs";
+import {
+  share,
+  take,
+  debounceTime,
+  map,
+  distinctUntilChanged
+} from "rxjs/operators";
 
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbDate,
+  NgbTypeaheadSelectItemEvent
+} from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
@@ -31,18 +41,20 @@ import {
   TaxonomyList
 } from "../observation.model";
 import { GncProgramsService } from "../../../api/gnc-programs.service";
-import { share } from "rxjs/operators";
 
 declare let $: any;
 
+const taxonSelectInputThreshold = AppConfig.taxonSelectInputThreshold;
+const taxonAutocompleteInputThreshold =
+  AppConfig.taxonAutocompleteInputThreshold;
+const taxonAutocompleteFields = AppConfig.taxonAutocompleteFields;
+const taxonAutocompleteMaxResults = 10;
+
 // TODO: migrate to conf
-export const taxonListThreshold = 10;
 export const obsFormMarkerIcon = L.icon({
   iconUrl: "assets/pointer-blue2.png",
   iconAnchor: [16, 42]
 });
-export const myMarkerTitle =
-  '<i class="fa fa-eye"></i> Partagez votre observation';
 
 export function ngbDateMaxIsToday(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -50,6 +62,15 @@ export function ngbDateMaxIsToday(): ValidatorFn {
     const selected = NgbDate.from(control.value);
     const date_impl = new Date(selected.year, selected.month - 1, selected.day);
     return date_impl > today ? { "Parsed a date in the future": true } : null;
+  };
+}
+
+export function geometryValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const validGeometry = /Point\(\d{1,3}(|\.\d{1,7}),(|\s)\d{1,3}(|\.\d{1,7})\)$/.test(
+      control.value
+    );
+    return validGeometry ? null : { geometry: { value: control.value } };
   };
 }
 
@@ -81,21 +102,65 @@ export class ObsFormComponent implements AfterViewInit {
       [Validators.required, ngbDateMaxIsToday()]
     ),
     photo: new FormControl(""),
-    municipality: new FormControl(),
-    geometry: new FormControl(
-      this.coords ? this.coords : "",
-      Validators.required
-    ),
+    geometry: new FormControl(this.coords ? this.coords : "", [
+      Validators.required,
+      geometryValidator()
+    ]),
     id_program: new FormControl(this.program_id)
   });
-  taxonListThreshold = taxonListThreshold;
-  surveySpecies$: Observable<TaxonomyList>;
-  taxonomyListID: number;
-  program: FeatureCollection;
+  taxonSelectInputThreshold = taxonSelectInputThreshold;
+  taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
   formMap: L.Map;
-  isDisabled = (date: NgbDate, current: { month: number }) => {
+  program: FeatureCollection;
+  taxonomyListID: number;
+  taxa: TaxonomyList;
+  surveySpecies$: Observable<TaxonomyList>;
+  species: Object[] = [];
+  taxaCount: number;
+
+  disabledDates = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
     return date_impl > this.today;
+  };
+
+  inputAutoCompleteSearch = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term =>
+        term === "" // term.length < n
+          ? []
+          : this.species
+              .filter(
+                v => new RegExp(term, "gi").test(v["name"])
+                // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
+              )
+              .slice(0, taxonAutocompleteMaxResults)
+      )
+    );
+
+  inputAutoCompleteFormatter = (x: { name: string }) => x.name;
+
+  inputAutoCompleteSetup = () => {
+    for (let taxon in this.taxa) {
+      for (let field of taxonAutocompleteFields) {
+        if (this.taxa[taxon]["taxref"][field]) {
+          this.species.push({
+            name:
+              field === "cd_nom"
+                ? `${this.taxa[taxon]["taxref"]["cd_nom"]} - ${
+                    this.taxa[taxon]["taxref"]["nom_complet"]
+                  }`
+                : this.taxa[taxon]["taxref"][field],
+            cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
+            icon: this.taxa[taxon]["media"]
+              ? this.taxa[taxon]["media"]["url"]
+              : "assets/Azure-Commun-019.JPG"
+          });
+        }
+      }
+    }
+    // console.debug(this.species);
   };
 
   constructor(
@@ -114,7 +179,15 @@ export class ObsFormComponent implements AfterViewInit {
         this.surveySpecies$ = this.programService
           .getProgramTaxonomyList(this.program_id)
           .pipe(share());
+        this.surveySpecies$.pipe(take(1)).subscribe(speciesList => {
+          this.taxa = speciesList;
+          this.taxaCount = Object.keys(this.taxa).length;
+          if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
+            this.inputAutoCompleteSetup();
+          }
+        });
 
+        // build map control
         const formMap = L.map("formMap");
         this.formMap = formMap;
 
@@ -140,40 +213,34 @@ export class ObsFormComponent implements AfterViewInit {
 
         // Set initial observation marker from main map if already spotted
         let myMarker = null;
-        console.debug("supplied marker coords", this.coords);
         if (this.coords) {
           this.obsForm.patchValue({ geometry: this.coords });
 
-          // wtf coord
           myMarker = L.marker([this.coords.y, this.coords.x], {
             icon: obsFormMarkerIcon
           }).addTo(formMap);
-
-          console.debug("coords", this.coords);
-          console.debug("marker", myMarker);
         }
 
         // Update marker on click event
         formMap.on("click", (e: LeafletMouseEvent) => {
-          this.coords = L.point(e.latlng.lng, e.latlng.lat);
-
-          this.obsForm.patchValue({ geometry: this.coords });
-          // TODO: this.obsForm.patchValue({ municipality: municipality });
-          console.debug(this.coords);
-
-          if (myMarker) {
-            formMap.removeLayer(myMarker);
-          }
-
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
           if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
+            if (myMarker) {
+              formMap.removeLayer(myMarker);
+            }
             myMarker = L.marker(e.latlng, { icon: obsFormMarkerIcon }).addTo(
               formMap
             );
+            this.coords = L.point(e.latlng.lng, e.latlng.lat);
+            this.obsForm.patchValue({ geometry: this.coords });
           }
         });
       });
+  }
+
+  onTaxonSelected(cd_nom: number): void {
+    this.obsForm.controls["cd_nom"].patchValue(cd_nom);
   }
 
   onFormSubmit(): void {
@@ -198,7 +265,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     this.obsForm.controls["id_program"].patchValue(this.program_id);
 
-    let obsDate = NgbDate.from(this.obsForm.controls.date.value);
+    const obsDate = NgbDate.from(this.obsForm.controls.date.value);
     this.obsForm.controls["date"].patchValue(
       new Date(obsDate.year, obsDate.month - 1, obsDate.day)
         .toISOString()
@@ -217,14 +284,14 @@ export class ObsFormComponent implements AfterViewInit {
       JSON.stringify(this.obsForm.get("geometry").value)
     );
 
-    for (let item of [
-      "cd_nom",
-      "count",
-      "comment",
-      "date",
-      // "municipality",
-      "id_program"
-    ]) {
+    const taxon = this.obsForm.get("cd_nom").value;
+    let cd_nom = Number.parseInt(taxon);
+    if (isNaN(cd_nom)) {
+      cd_nom = Number.parseInt(taxon.cd_nom);
+    }
+    formData.append("cd_nom", cd_nom.toString());
+
+    for (let item of ["count", "comment", "date", "id_program"]) {
       formData.append(item, this.obsForm.get(item).value);
     }
 

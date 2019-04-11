@@ -8,10 +8,11 @@ import {
   SimpleChanges,
   EventEmitter,
   ViewChild,
-  ElementRef
+  ElementRef,
+  HostListener
 } from "@angular/core";
 
-import { GeoJsonObject, FeatureCollection } from "geojson";
+import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
@@ -24,6 +25,7 @@ const conf = {
   GEOLOCATION_HIGH_ACCURACY: false,
   BASE_LAYERS: MAP_CONFIG["BASEMAP"].reduce((acc, baseLayer: Object) => {
     acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
+      name: baseLayer["name"],
       attribution: baseLayer["attribution"],
       subdomains: baseLayer["subdomains"],
       detectRetina: baseLayer["detectRetina"],
@@ -154,11 +156,19 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(_changes: SimpleChanges) {
-    // if (_changes.program) {}
-    // if (_changes.observations) {}
     if (this.observationMap) {
       this.loadProgramArea();
       this.loadObservations();
+      // TODO: revisit fix for disappearing base layer when back in navigation history.
+      // update when switching layers from control.
+      // save configured map state (base_layer, center, zoom) in localStorage ?
+      let base_layer = this.observationMap.options.layers[0];
+      // console.debug(base_layer["options"]["name"]);
+      this.observationMap.removeLayer(this.observationMap.options.layers[0]);
+      conf.BASE_LAYERS[base_layer["options"]["name"]].addTo(
+        this.observationMap
+      );
+      this.observationMap.invalidateSize();
     }
   }
 
@@ -169,18 +179,15 @@ export class ObsMapComponent implements OnInit, OnChanges {
       ...LeafletOptions
     });
 
-    // TODO: inject control list setup with options
-    // zoom
+    // TODO: inject controls with options
     this.observationMap.zoomControl.setPosition(
       this.options.ZOOM_CONTROL_POSITION
     );
 
-    // scale
     L.control
       .scale({ position: this.options.SCALE_CONTROL_POSITION })
       .addTo(this.observationMap);
 
-    // base layers
     L.control
       .layers(this.options.BASE_LAYERS, null, {
         collapsed: this.options.BASE_LAYER_CONTROL_INIT_COLLAPSED,
@@ -188,7 +195,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
       })
       .addTo(this.observationMap);
 
-    // geolocation
     L.control
       .locate({
         position: this.options.GEOLOCATION_CONTROL_POSITION,
@@ -209,7 +215,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.observationLayer = this.options.OBSERVATION_LAYER();
 
       this.observationLayer.addLayer(
-        L.geoJSON(<GeoJsonObject>this.observations, {
+        L.geoJSON(this.observations, {
           onEachFeature: this.options.ON_EACH_FEATURE,
           pointToLayer: this.options.POINT_TO_LAYER
         })
@@ -250,5 +256,11 @@ export class ObsMapComponent implements OnInit, OnChanges {
       }
       this.programMaxBounds = programBounds;
     }
+  }
+
+  @HostListener("document:NewObservationEvent", ["$event"])
+  newObservationEventHandler(e: CustomEvent) {
+    e.stopPropagation();
+    console.debug("[ObsMapComponent.newObservationEventHandler]", e.detail);
   }
 }
