@@ -6,8 +6,7 @@ import {
   ElementRef,
   Input,
   Output,
-  EventEmitter,
-  OnChanges
+  EventEmitter
 } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
@@ -56,8 +55,6 @@ export const obsFormMarkerIcon = L.icon({
   iconUrl: "assets/pointer-blue2.png",
   iconAnchor: [16, 42]
 });
-export const myMarkerTitle =
-  '<i class="fa fa-eye"></i> Partagez votre observation';
 
 export function ngbDateMaxIsToday(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -105,7 +102,6 @@ export class ObsFormComponent implements AfterViewInit {
       [Validators.required, ngbDateMaxIsToday()]
     ),
     photo: new FormControl(""),
-    municipality: new FormControl(),
     geometry: new FormControl(this.coords ? this.coords : "", [
       Validators.required,
       geometryValidator()
@@ -238,7 +234,6 @@ export class ObsFormComponent implements AfterViewInit {
             );
             this.coords = L.point(e.latlng.lng, e.latlng.lat);
             this.obsForm.patchValue({ geometry: this.coords });
-            // TODO: this.obsForm.patchValue({ municipality: municipality });
           }
         });
       });
@@ -246,16 +241,6 @@ export class ObsFormComponent implements AfterViewInit {
 
   onTaxonSelected(cd_nom: number): void {
     this.obsForm.controls["cd_nom"].patchValue(cd_nom);
-  }
-
-  selectedItem(event: NgbTypeaheadSelectItemEvent) {
-    // event.preventDefault();
-    const item = event.item;
-    console.debug("selectedItem", item.cd_nom, item.name);
-    // clears the input unfortunately
-    // setTimeout(() => {
-    //   this.onTaxonSelected(item.cd_nom);
-    // }, 0);
   }
 
   onFormSubmit(): void {
