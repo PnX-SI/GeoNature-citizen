@@ -26,10 +26,7 @@ import {
   distinctUntilChanged
 } from "rxjs/operators";
 
-import {
-  NgbDate,
-  NgbTypeaheadSelectItemEvent
-} from "@ng-bootstrap/ng-bootstrap";
+import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
@@ -265,13 +262,6 @@ export class ObsFormComponent implements AfterViewInit {
 
     this.obsForm.controls["id_program"].patchValue(this.program_id);
 
-    const obsDate = NgbDate.from(this.obsForm.controls.date.value);
-    this.obsForm.controls["date"].patchValue(
-      new Date(obsDate.year, obsDate.month - 1, obsDate.day)
-        .toISOString()
-        .match(/\d{4}-\d{2}-\d{2}/)[0]
-    );
-
     let formData: FormData = new FormData();
 
     const files: FileList = this.photo.nativeElement.files;
@@ -291,7 +281,20 @@ export class ObsFormComponent implements AfterViewInit {
     }
     formData.append("cd_nom", cd_nom.toString());
 
-    for (let item of ["count", "comment", "date", "id_program"]) {
+    const obsDateControlValue = NgbDate.from(this.obsForm.controls.date.value);
+    const obsDate = new Date(
+      obsDateControlValue.year,
+      obsDateControlValue.month - 1,
+      obsDateControlValue.day
+    );
+    const normDate = new Date(
+      obsDate.getTime() - obsDate.getTimezoneOffset() * 60 * 1000
+    )
+      .toISOString()
+      .match(/\d{4}-\d{2}-\d{2}/)[0];
+    formData.append("date", normDate);
+
+    for (let item of ["count", "comment", "id_program"]) {
       formData.append(item, this.obsForm.get(item).value);
     }
 
