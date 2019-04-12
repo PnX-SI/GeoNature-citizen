@@ -129,12 +129,14 @@ La fonctionnalité i18n a été intégrée selon `la recette originale<https://a
 
 L'interface est paramétrée par défaut en langue française.
 
+
 Si l'on souhaitait la servir en langue anglaise:
 
 .. code-block:: sh
 
     npm run ng serve -- --configuration=en
 
+La stratégie en cas de traduction manquante est de faire remonter une erreur.
 
 (Ré)génération des fichiers de traduction:
 ******************************************
@@ -261,4 +263,4 @@ Utiliser PgAdmin pour la gestion de la BDD distante (production):
 
 Se logguer en SSH (``ssh nom_du_raccourci``) sur l'hôte distant va opérer une redirection de port et rendre la BDD distante accessible sur le port local ``5433`` pour un client PostgreSQL.
 
-Il suffit alors d'ajuster les paramètres de ``pgsql`` en CLI ou ceux de l'assistant de configuration de PgAdmin pour son interface graphique.
+Il suffit alors d'ajuster les paramètres de ``psql`` en CLI ou ceux de l'assistant de configuration de PgAdmin pour son interface graphique.
