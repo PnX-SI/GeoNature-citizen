@@ -4,7 +4,7 @@ import {
   Input,
   HostListener,
   ChangeDetectorRef,
-  SimpleChanges,
+  SimpleChanges
 } from "@angular/core";
 
 import { AppConfig } from "../../../../conf/app.config";

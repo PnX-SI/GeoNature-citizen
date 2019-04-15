@@ -4,6 +4,7 @@
       {{ obsForm.value | json }}
     </div>
   -->
+
   <div class="form-row">
     <div class="form-group col-lg-8">
       <input formControlName="id_program" type="hidden" />
@@ -33,13 +34,17 @@
       *ngIf="taxaCount < taxonSelectInputThreshold"
       class="form-group col-lg-12 d-inline-flex obs-images"
     >
-      <div class="scroll-img">
+      <div
+        class="scroll-img"
+        [class.ng-valid]="selectedTaxon"
+        [class.ng-invalid]="!selectedTaxon"
+      >
         <div *ngFor="let s of (surveySpecies$ | async)">
-          <div class="obs-img">
+          <div class="obs-img" [class.selected]="isTaxonSelected(s)">
             <img
               src="{{(s.media?.url)?s.media.url:'assets/Azure-Commun-019.JPG'}}"
               alt="{{s.nom.nom_francais}}"
-              (click)="onTaxonSelected(s.taxref.cd_nom)"
+              (click)="onTaxonSelected(s)"
             />
             <span>{{ s.nom.nom_francais }}</span>
           </div>
@@ -131,19 +136,20 @@
 
     <div class="form-group col-lg-6 col-md-12 half">
       <h5 i18n>Où avez-vous observé cette espèce ?</h5>
-      <div id="formMap" class="col-lg-12"></div>
+      <div
+        id="formMap"
+        class="col-lg-12"
+        [class.ng-invalid]="obsForm.get('geometry').invalid"
+        [class.ng-valid]="obsForm.get('geometry').valid"
+      ></div>
       <input
         formControlName="geometry"
         type="hidden"
         id="geometry"
         name="geometry"
         #geometry
+        class="col-lg-12"
       />
-      <div *ngIf="geometry.invalid" class="alert alert-danger">
-        <div *ngIf="geometry.errors.required" i18n>
-          Cliquer sur la carte pour déposer un marqueur
-        </div>
-      </div>
     </div>
   </div>
 </form>

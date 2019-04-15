@@ -35,7 +35,8 @@ import { AppConfig } from "../../../../conf/app.config";
 import {
   PostObservationResponse,
   ObservationFeature,
-  TaxonomyList
+  TaxonomyList,
+  TaxonomyListItem
 } from "../observation.model";
 import { GncProgramsService } from "../../../api/gnc-programs.service";
 
@@ -115,6 +116,7 @@ export class ObsFormComponent implements AfterViewInit {
   surveySpecies$: Observable<TaxonomyList>;
   species: Object[] = [];
   taxaCount: number;
+  selectedTaxon: any;
 
   disabledDates = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
@@ -237,8 +239,13 @@ export class ObsFormComponent implements AfterViewInit {
       });
   }
 
-  onTaxonSelected(cd_nom: number): void {
-    this.obsForm.controls["cd_nom"].patchValue(cd_nom);
+  onTaxonSelected(taxon: TaxonomyListItem): void {
+    this.selectedTaxon = taxon;
+    this.obsForm.controls["cd_nom"].patchValue(taxon.taxref["cd_nom"]);
+  }
+
+  isTaxonSelected(taxon: TaxonomyListItem): boolean {
+    return this.selectedTaxon === taxon;
   }
 
   onFormSubmit(): void {

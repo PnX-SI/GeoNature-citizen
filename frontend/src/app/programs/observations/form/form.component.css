@@ -24,10 +24,12 @@
   z-index: 1001 !important;
 }
 
-#obsForm .ng-valid:not(form) {
+#obsForm .ng-valid:not(form),
+#formMap.ng-valid {
   border-left: 5px solid #42a948; /* green */
 }
 
-#obsForm .ng-invalid:not(form) {
+#obsForm .ng-invalid:not(form),
+#formMap.ng-invalid {
   border-left: 5px solid #a94442; /* red */
 }
