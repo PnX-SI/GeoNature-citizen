@@ -207,8 +207,8 @@ Exemple de fichier de configuration serveur Apache2:
       ProxyPassReverse  http://127.0.0.1:5002/api
     </Location>
 
-Exemple de fichier .htaccess (Apache2) , à placer dans le répertoire racine (≡``dist``) du site:
-************************************************************************************************
+Exemple de fichier .htaccess (Apache2) , à placer dans le répertoire racine (≡ dist/browser) du site:
+*****************************************************************************************************
 
 .. code-block:: conf
 
