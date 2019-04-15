@@ -351,7 +351,7 @@
         <target>Select species</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="f312db469126382e45a6fd27b1dc184dd8874475" datatype="html">
@@ -359,7 +359,7 @@
         <target>Further information</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">78</context>
         </context-group>
       </trans-unit>
       <trans-unit id="795e2656ad62ca76c3398619f693621e5e94ef5f" datatype="html">
@@ -367,7 +367,7 @@
         <target>Observation date</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">82</context>
         </context-group>
       </trans-unit>
       <trans-unit id="67a0a02419575b54eed6b27101ae0a30c635029f" datatype="html">
@@ -375,7 +375,7 @@
         <target>Counting</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">96</context>
         </context-group>
       </trans-unit>
       <trans-unit id="688190149c303fc5438d194a57d73b2b16943b6f" datatype="html">
@@ -383,7 +383,7 @@
         <target>Comment</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">105</context>
+          <context context-type="linenumber">111</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fb8b4b6668befda8fc42e047c9b246d4777a881b" datatype="html">
@@ -391,7 +391,7 @@
         <target>Submit a picture</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">117</context>
+          <context context-type="linenumber">123</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1ca6b9fd976db3087d536ed5c02e83d4eb791a56" datatype="html">
@@ -399,19 +399,7 @@
         <target>Where did you observe this species?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">132</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="633939a41f58c6ec41eff43200f0243915282a01" datatype="html">
-        <source>
-          Cliquer sur la carte pour déposer un marqueur
-        </source>
-        <target>
-          Click on the map to drop a marker
-        </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">142</context>
+          <context context-type="linenumber">138</context>
         </context-group>
       </trans-unit>
       <trans-unit id="88619d86db4d3bd9954ca03bfdc88d69c76d1f4d" datatype="html">
@@ -593,19 +581,6 @@
           <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1c417a3d1fd71e13781f21cc781275589904eefd" datatype="html">
-        <source>Partager une observation</source>
-        <target>Share an observation</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
-          <context context-type="linenumber">45</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/home/home.component.html</context>
-          <context context-type="linenumber">54</context>
-        </context-group>
-        <note priority="1" from="description">Partager une observation</note>
-      </trans-unit>
       <trans-unit id="ee62171bb5bf618165113912714b8adf22e656b0" datatype="html">
         <source>Les programmes du moment</source>
         <target>Active surveys</target>
@@ -620,7 +595,7 @@
         <target>Previous</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/home/home.component.html</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">66</context>
         </context-group>
         <note priority="1" from="description">ngb.carousel.previous</note>
       </trans-unit>
@@ -629,7 +604,7 @@
         <target>Next</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/home/home.component.html</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">75</context>
         </context-group>
         <note priority="1" from="description">ngb.carousel.next</note>
       </trans-unit>

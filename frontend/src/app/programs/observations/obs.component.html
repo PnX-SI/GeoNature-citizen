@@ -37,13 +37,9 @@
               <h3>{{ program.title }}</h3>
               <p [innerHTML]="program.html_short_desc"></p>
               <div [innerHTML]="program.html_long_desc"></div>
-              <a
-                class="btn-big"
-                [routerLink]=""
-                fragment="program"
-                i18n="Partager une observation"
-                >Partager une observation</a
-              >
+              <a class="btn-big" [routerLink]="" fragment="program">{{
+                AppConfig.program_share_an_observation[localeId]
+              }}</a>
             </div>
           </div>
         </div>
