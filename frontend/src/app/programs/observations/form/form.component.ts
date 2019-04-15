@@ -30,6 +30,7 @@ import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
+import "leaflet-fullscreen/dist/Leaflet.fullscreen";
 
 import { AppConfig } from "../../../../conf/app.config";
 import {
@@ -193,6 +194,14 @@ export class ObsFormComponent implements AfterViewInit {
 
         L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "OpenStreetMap"
+        }).addTo(formMap);
+
+        L.control["fullscreen"]({
+          position: "topright",
+          title: {
+            false: "View Fullscreen",
+            true: "Exit Fullscreen"
+          }
         }).addTo(formMap);
 
         const programArea = L.geoJSON(this.program, {
