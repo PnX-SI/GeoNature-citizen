@@ -104,10 +104,48 @@ section {
   margin: auto;
 }
 
+/* CARDS */
+
+#programs{
+  display: flex;
+  justify-content: center;
+  min-height: inherit;
+}
+
+#programs-cards{
+  display: inline-flex;
+  width: 80%;
+}
+
+#programs-cards .card{
+  flex: 1 1 0;
+  margin: 20px;
+  border-radius: 0px;
+}
+#programs-cards .card h3, #programs-cards .card p{
+  padding: 0px 10px;
+}
+
+
+#programs-cards .card .card-content{
+  flex-grow: 1;
+}
+#programs-cards .card a{
+  background: var(--primary);
+  margin: 0 auto;
+  margin-bottom: 10px;
+  flex-grow: 0;
+  text-align: center;
+}
+
 /* SLIDER */
 #slide {
   min-height: inherit !important;
   /* height: calc(100vh - var(--router-outlet-offset)); */
+}
+
+#slider{
+  display: none;
 }
 
 #slider .carousel-inner,
@@ -251,6 +289,12 @@ app-observations {
   }
   #slider .carousel-text a {
     font-size: 16px;
+  }
+  #slider {
+    display: block;
+  }
+  #programs-cards{
+    display: none !important;
   }
 }
 
