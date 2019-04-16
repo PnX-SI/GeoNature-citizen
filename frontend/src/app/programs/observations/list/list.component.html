@@ -44,7 +44,12 @@
           <div class="infos">
             <h5>{{ o.properties.common_name }}</h5>
             <p i18n>
-              Observé par <span>{{ o.properties.sci_name }}</span>
+              Observé par
+              <span>{{
+                o.properties.observer.username
+                  ? o.properties.observer.username
+                  : "Anonyme"
+              }}</span>
             </p>
             <p i18n>
               le <span>{{ o.properties.date }}</span>

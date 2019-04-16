@@ -96,7 +96,7 @@ const conf = {
         <b>${feature.properties.common_name}</b>
         </br>
         <span i18n>
-          Observé par ${feature.properties.sci_name}
+          Observé par ${feature.properties.observer.username}
           </br>
           le ${feature.properties.date}
         </span>
