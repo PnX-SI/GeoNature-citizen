@@ -288,12 +288,15 @@ app-observations {
     /* height: 350px; */
     /* width: 350px; */
   }
+
   #slider .carousel-text a {
     font-size: 16px;
   }
+
   #slider {
     display: block;
   }
+
   #programs-cards {
     display: none !important;
   }
