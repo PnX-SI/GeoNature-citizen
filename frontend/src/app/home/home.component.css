@@ -71,7 +71,8 @@ section {
   font-size: 30px;
 }
 
-#welcome > h1, #welcome > p {
+#welcome > h1,
+#welcome > p {
   font-family: "Satisfy";
   margin-top: 30px;
   color: #fff;
@@ -106,31 +107,31 @@ section {
 
 /* CARDS */
 
-#programs{
+#programs {
   display: flex;
   justify-content: center;
   min-height: inherit;
 }
 
-#programs-cards{
+#programs-cards {
   display: inline-flex;
   width: 80%;
 }
 
-#programs-cards .card{
+#programs-cards .card {
   flex: 1 1 0;
   margin: 20px;
   border-radius: 0px;
 }
-#programs-cards .card h3, #programs-cards .card p{
+#programs-cards .card h3,
+#programs-cards .card p {
   padding: 0px 10px;
 }
 
-
-#programs-cards .card .card-content{
+#programs-cards .card .card-content {
   flex-grow: 1;
 }
-#programs-cards .card a{
+#programs-cards .card a {
   background: var(--primary);
   margin: 0 auto;
   margin-bottom: 10px;
@@ -144,7 +145,7 @@ section {
   /* height: calc(100vh - var(--router-outlet-offset)); */
 }
 
-#slider{
+#programs #slider {
   display: none;
 }
 
@@ -293,7 +294,7 @@ app-observations {
   #slider {
     display: block;
   }
-  #programs-cards{
+  #programs-cards {
     display: none !important;
   }
 }
