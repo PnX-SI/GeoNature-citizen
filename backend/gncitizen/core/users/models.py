@@ -65,7 +65,9 @@ class UserModel(TimestampMixinModel, db.Model):
             "organism": self.organism,
             "full_name": name + " " + surname,
             "timestamp_create": self.timestamp_create.isoformat(),
-            "timestamp_update": self.timestamp_update.isoformat(),
+            "timestamp_update": self.timestamp_update.isoformat()
+            if self.timestamp_update
+            else None,
         }
 
     @staticmethod
