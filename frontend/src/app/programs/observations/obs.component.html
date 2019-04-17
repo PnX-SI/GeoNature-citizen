@@ -62,12 +62,14 @@
       <app-obs-list
         [observations]="observations"
         [taxa]="surveySpecies"
+        (obsSelect)="obsMapRef.showPopup($event)"
       ></app-obs-list>
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
       <!-- feed our map observations input with markers ? -->
       <app-obs-map
+        #obsMapRef
         [observations]="observations"
         [program]="programFeature"
         (onClick)="onMapClicked($event)"

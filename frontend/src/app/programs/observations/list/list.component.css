@@ -9,7 +9,7 @@
   height: calc(100vh - var(--list-obs-offset));
 }
 
-#list .espece a {
+#list .espece {
   background: #fff;
   margin-bottom: 5px;
   display: flex;
@@ -20,17 +20,17 @@
   background-size: 100% 100%;
 }
 
-#list .espece a:hover {
+#list .espece {
   border: solid 2px;
   border-color: var(--primary);
   cursor: pointer;
 }
 
-.espece a:hover .hide {
+.espece .hide {
   transform: translateX(0);
 }
 
-#list .espece a img {
+#list .espece img {
   object-fit: cover;
   min-width: 80px !important;
   max-width: 80px !important;
@@ -62,13 +62,13 @@
   width: 100%;
 }
 
-#list .espece a div h5 {
+#list .espece div h5 {
   font-size: 16px;
   margin-bottom: 0px;
 }
 
-#list .espece a div p,
-#list .espece a div span {
+#list .espece div p,
+#list .espece div span {
   font-style: italic;
   color: var(--primary);
   margin-bottom: 0px;

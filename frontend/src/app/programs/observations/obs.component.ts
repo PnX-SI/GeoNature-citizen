@@ -11,7 +11,7 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import { forkJoin } from "rxjs";
 
-import { FeatureCollection } from "geojson";
+import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 
 import { Program } from "../programs.models";
@@ -40,6 +40,8 @@ export class ObsComponent implements OnInit, AfterViewInit {
   surveySpecies: TaxonomyList;
   @ViewChild(ObsMapComponent) obsMap: ObsMapComponent;
   @ViewChild(ObsListComponent) obsList: ObsListComponent;
+
+  selectedObs: Feature;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,

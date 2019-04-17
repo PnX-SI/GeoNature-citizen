@@ -12,13 +12,14 @@ import {
   HostListener
 } from "@angular/core";
 
-import { FeatureCollection } from "geojson";
+import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
 
 // import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
+import { MarkerClusterGroup } from "leaflet";
 
 const conf = {
   MAP_ID: "obsMap",
@@ -85,34 +86,36 @@ const conf = {
       iconSize: new L.Point(40, 40)
     });
   },
-  ON_EACH_FEATURE: (feature, layer) => {
-    let popupContent = `
-      <img src="${
-        feature.properties.image
-          ? feature.properties.image
-          : "assets/Azure-Commun-019.JPG"
-      }">
-      <p>
-        <b>${feature.properties.common_name}</b>
-        </br>
-        <span i18n>
-          Observé par ${feature.properties.observer.username}
-          </br>
-          le ${feature.properties.date}
-        </span>
-      </p>
-      <div>
-        <img class="icon" src="assets/binoculars.png">
-      </div>`;
-
-    if (feature.properties && feature.properties.popupContent) {
-      popupContent += feature.properties.popupContent;
-    }
-
-    layer.bindPopup(popupContent);
-  },
-  POINT_TO_LAYER: (_feature, latlng): L.Marker =>
-    L.marker(latlng, { icon: conf.OBS_MARKER_ICON() }),
+  // ON_EACH_FEATURE: (feature, layer) => {
+  //   let popupContent = `
+  //     <img src="${
+  //       feature.properties.image
+  //         ? feature.properties.image
+  //         : "assets/Azure-Commun-019.JPG"
+  //     }">
+  //     <p>
+  //       <b>${feature.properties.common_name}</b>
+  //       </br>
+  //       <span i18n>
+  //         Observé par ${feature.properties.observer.username}
+  //         </br>
+  //         le ${feature.properties.date}
+  //       </span>
+  //     </p>
+  //     <div>
+  //       <img class="icon" src="assets/binoculars.png">
+  //     </div>`;
+  //
+  //   if (feature.properties && feature.properties.popupContent) {
+  //     popupContent += feature.properties.popupContent;
+  //   }
+  //
+  //   layer.bindPopup(popupContent);
+  // },
+  // POINT_TO_LAYER: (_feature, latlng): L.Marker => {
+  //   console.log(_feature);
+  //   return L.marker(latlng, { icon: conf.OBS_MARKER_ICON() });
+  // },
   PROGRAM_AREA_STYLE: _feature => {
     return {
       fillColor: "transparent",
@@ -148,15 +151,22 @@ export class ObsMapComponent implements OnInit, OnChanges {
   options: any;
   observationMap: L.Map;
   programMaxBounds: L.LatLngBounds;
-  observationLayer: L.FeatureGroup;
+  observationLayer: MarkerClusterGroup;
   newObsMarker: L.Marker;
+
+  markers: {
+    feature: Feature;
+    marker: L.Marker<any>;
+  }[] = [];
 
   ngOnInit() {
     this.initMap(conf);
   }
 
   ngOnChanges(_changes: SimpleChanges) {
+    console.log(_changes);
     if (this.observationMap) {
+      console.log("la");
       this.loadProgramArea();
       this.loadObservations();
       // TODO: revisit fix for disappearing base layer when back in navigation history.
@@ -207,22 +217,105 @@ export class ObsMapComponent implements OnInit, OnChanges {
       .addTo(this.observationMap);
   }
 
+  getPopupContent(feature): string {
+    return `
+      <img src="${
+        feature.properties.image
+          ? feature.properties.image
+          : "assets/Azure-Commun-019.JPG"
+      }">
+      <p>
+        <b>${feature.properties.common_name}</b>
+        </br>
+        <span i18n>
+          Observé par ${feature.properties.observer.username || "Anonyme"}
+          </br>
+          le ${feature.properties.date}
+        </span>
+      </p>
+      <div>
+        <img class="icon" src="assets/binoculars.png">
+      </div>`;
+  }
+
   loadObservations(): void {
     if (this.observations) {
       if (this.observationLayer) {
         this.observationMap.removeLayer(this.observationLayer);
       }
       this.observationLayer = this.options.OBSERVATION_LAYER();
+      this.markers = [];
 
-      this.observationLayer.addLayer(
-        L.geoJSON(this.observations, {
-          onEachFeature: this.options.ON_EACH_FEATURE,
-          pointToLayer: this.options.POINT_TO_LAYER
-        })
-      );
+      let options = {
+        onEachFeature: (feature, layer) => {
+          let popupContent = this.getPopupContent(feature);
+          layer["toto"] = "toto";
+
+          if (feature.properties && feature.properties.popupContent) {
+            popupContent += feature.properties.popupContent;
+          }
+
+          layer.bindPopup(popupContent);
+        },
+        pointToLayer: (_feature, latlng): L.Marker => {
+          let marker: L.Marker<any> = L.marker(latlng, {
+            icon: conf.OBS_MARKER_ICON()
+          });
+          marker.on("click", () => {
+            console.log(marker);
+          });
+          this.markers.push({
+            feature: _feature,
+            marker: marker
+          });
+          return marker;
+        }
+      };
+
+      this.observationLayer.addLayer(L.geoJSON(this.observations, options));
 
       this.observationMap.addLayer(this.observationLayer);
+
+      //
+      this.observationLayer.on("animationend", e => {
+        console.log("animationend");
+        if (this.obsPopup) {
+          console.log("ok");
+          this.popupClosedAfterAnimationEnd = true;
+          //this.observationMap.closePopup();
+          this.showPopup(this.obsPopup);
+        }
+      });
+      this.observationMap.on("popupclose", e => {
+        console.log(e);
+        console.log(this.popupClosedAfterAnimationEnd);
+        if (!this.popupClosedAfterAnimationEnd) {
+          this.obsPopup = null;
+        }
+        this.popupClosedAfterAnimationEnd = false;
+      });
     }
+  }
+
+  obsPopup: Feature;
+  curPopup: any;
+  popupClosedAfterAnimationEnd: boolean;
+  showPopup(obs: Feature): void {
+    this.obsPopup = obs;
+    let marker = this.markers.find(marker => {
+      return (
+        marker.feature.properties.id_observation ==
+        obs.properties.id_observation
+      );
+    });
+    let popup = L.popup()
+      .setLatLng(
+        this.observationLayer.getVisibleParent(marker.marker).getLatLng()
+      )
+      .setContent(this.getPopupContent(obs))
+      .openOn(this.observationMap);
+
+    this.curPopup = popup;
   }
 
   loadProgramArea(canSubmit = true): void {
