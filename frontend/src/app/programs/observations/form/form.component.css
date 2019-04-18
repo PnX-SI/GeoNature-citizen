@@ -1,5 +1,6 @@
 .form-group .input-group {
   flex-direction: row;
+  flex-wrap: nowrap;
 }
 
 .input-group input {
