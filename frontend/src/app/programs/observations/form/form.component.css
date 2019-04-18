@@ -1,5 +1,6 @@
 app-obs-form .form-group .input-group {
   flex-direction: row;
+  flex-wrap: nowrap;
 }
 
 app-obs-form .input-group input {

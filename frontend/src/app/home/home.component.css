@@ -115,13 +115,16 @@ section {
 
 #programs-cards {
   display: inline-flex;
+  flex-wrap: wrap;
   width: 80%;
 }
 
 #programs-cards .card {
-  flex: 1 1 0;
-  margin: 20px;
+  /* flex: 1 1 0; */
+  margin: 10px auto; /*20px*/
   border-radius: 0px;
+  width: 365px !important;
+  height: 500px !important;
 }
 #programs-cards .card h3,
 #programs-cards .card p {
@@ -130,6 +133,22 @@ section {
 
 #programs-cards .card .card-content {
   flex-grow: 1;
+}
+
+#programs-cards .card .card-body{
+  height: 180px !important;
+  overflow-y: auto;
+  margin-bottom: 5px;
+}
+#programs-cards .card .card-body h1, #programs-cards .card .card-body h3{
+  font-size: 16px;
+}
+#programs-cards .card img{
+  max-height: 250px;
+  object-fit: cover;
+}
+#programs-cards .card h3{
+  font-size: 1.2em;
 }
 #programs-cards .card a {
   background: var(--primary);
@@ -268,11 +287,14 @@ app-observations {
   }
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1023px) {
   /* FIRST SECT */
   #welcome h1 {
     font-size: 44px !important;
     padding-left: 10% !important;
+  }
+  #welcome p{
+    display: none;
   }
   #welcome a:first-child {
     padding: 10px 20px;
@@ -294,7 +316,7 @@ app-observations {
   }
 
   #slider {
-    display: block;
+    display: block !important;
   }
 
   #programs-cards {
@@ -312,6 +334,8 @@ app-observations {
   }
   .map {
     height: auto;
+    position: relative;
+    left: 0%;
   }
   #list {
     /* top: 50% !important; */
@@ -332,7 +356,7 @@ app-observations {
   }
   #slider .carousel-control-next,
   #slider .carousel-control-prev {
-    height: 60%;
+    height: 260px;
   }
   #slider .carousel-text-container {
     position: relative;
