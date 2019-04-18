@@ -103,4 +103,16 @@ export class ObsComponent implements OnInit, AfterViewInit {
     //   features: [obsFeature, ...this.observations.features]
     // };
   }
+
+  // DOING
+  @HostListener("document:NewObservationFilterEvent", ["$event"])
+  newObservationFilterEventHandler(e: CustomEvent) {
+    e.stopPropagation();
+    console.debug("[ObsComponent.newObservationFilterEventHandler]", e.detail);
+    this.obsList.observations = {
+      type: "FeatureCollection",
+      features: this.observations.features
+      // features: this.observations.features.filter(MUNICIPALITY AND|OR TAXON)
+    };
+  }
 }

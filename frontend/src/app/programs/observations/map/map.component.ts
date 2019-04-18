@@ -159,16 +159,33 @@ export class ObsMapComponent implements OnInit, OnChanges {
     marker: L.Marker<any>;
   }[] = [];
 
+  obsPopup: Feature;
+  openPopupAfterClose: boolean;
+
   ngOnInit() {
+    console.log("map ngOnInit");
     this.initMap(conf);
   }
 
   ngOnChanges(_changes: SimpleChanges) {
-    console.log(_changes);
-    if (this.observationMap) {
-      console.log("la");
+    console.log("_changes", _changes);
+
+    if (
+      this.observationMap &&
+      _changes.program &&
+      _changes.program.currentValue
+    ) {
       this.loadProgramArea();
+    }
+
+    if (
+      this.observationMap &&
+      _changes.observations &&
+      _changes.observations.currentValue
+    ) {
       this.loadObservations();
+
+      /*
       // TODO: revisit fix for disappearing base layer when back in navigation history.
       // update when switching layers from control.
       // save configured map state (base_layer, center, zoom) in localStorage ?
@@ -179,6 +196,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
         this.observationMap
       );
       this.observationMap.invalidateSize();
+      */
     }
   }
 
@@ -215,6 +233,16 @@ export class ObsMapComponent implements OnInit, OnChanges {
         }
       })
       .addTo(this.observationMap);
+
+    this.observationMap.scrollWheelZoom.disable();
+    this.observationMap.on("popupclose", e => {
+      if (this.openPopupAfterClose && this.obsPopup) {
+        this.showPopup(this.obsPopup);
+      } else {
+        this.obsPopup = null;
+      }
+      this.openPopupAfterClose = false;
+    });
   }
 
   getPopupContent(feature): string {
@@ -273,33 +301,18 @@ export class ObsMapComponent implements OnInit, OnChanges {
       };
 
       this.observationLayer.addLayer(L.geoJSON(this.observations, options));
-
       this.observationMap.addLayer(this.observationLayer);
 
-      //
       this.observationLayer.on("animationend", e => {
         console.log("animationend");
         if (this.obsPopup) {
-          console.log("ok");
-          this.popupClosedAfterAnimationEnd = true;
-          //this.observationMap.closePopup();
-          this.showPopup(this.obsPopup);
+          this.openPopupAfterClose = true;
+          this.observationMap.closePopup();
         }
-      });
-      this.observationMap.on("popupclose", e => {
-        console.log(e);
-        console.log(this.popupClosedAfterAnimationEnd);
-        if (!this.popupClosedAfterAnimationEnd) {
-          this.obsPopup = null;
-        }
-        this.popupClosedAfterAnimationEnd = false;
       });
     }
   }
 
-  obsPopup: Feature;
-  curPopup: any;
-  popupClosedAfterAnimationEnd: boolean;
   showPopup(obs: Feature): void {
     this.obsPopup = obs;
     let marker = this.markers.find(marker => {
@@ -308,14 +321,18 @@ export class ObsMapComponent implements OnInit, OnChanges {
         obs.properties.id_observation
       );
     });
+    let visibleParent: L.Marker = this.observationLayer.getVisibleParent(
+      marker.marker
+    );
+    if (!visibleParent) {
+      console.log("showPopup pan");
+      this.observationMap.panTo(marker.marker.getLatLng());
+      visibleParent = marker.marker;
+    }
     let popup = L.popup()
-      .setLatLng(
-        this.observationLayer.getVisibleParent(marker.marker).getLatLng()
-      )
+      .setLatLng(visibleParent.getLatLng())
       .setContent(this.getPopupContent(obs))
       .openOn(this.observationMap);
-
-    this.curPopup = popup;
   }
 
   loadProgramArea(canSubmit = true): void {
@@ -336,7 +353,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
           }
 
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
-          // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
+          // POSSIBLE SOLUTION: See ray casting algorithm for inspiration
+          // https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
           if (programBounds.contains([e.latlng.lat, e.latlng.lng])) {
             this.newObsMarker = L.marker(e.latlng, {
               icon: this.options.NEW_OBS_MARKER_ICON()
@@ -350,6 +368,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.programMaxBounds = programBounds;
     }
   }
+
+  canStart(): void {}
 
   @HostListener("document:NewObservationEvent", ["$event"])
   newObservationEventHandler(e: CustomEvent) {

@@ -136,12 +136,18 @@
 
     <div class="form-group col-lg-6 col-md-12 half">
       <h5 i18n>Où avez-vous observé cette espèce ?</h5>
-      <div
-        id="formMap"
-        class="col-lg-12"
-        [class.ng-invalid]="obsForm.get('geometry').invalid"
-        [class.ng-valid]="obsForm.get('geometry').valid"
-      ></div>
+      <div class="position-relative">
+        <div class="zoom-alert" *ngIf="hasZoomAlert">
+          <div class="mb-2">Un zoom minimum de 14 est requis.</div>
+          <button class="btn" (click)="hasZoomAlert = false">OK</button>
+        </div>
+        <div
+          id="formMap"
+          class="col-lg-12"
+          [class.ng-invalid]="obsForm.get('geometry').invalid"
+          [class.ng-valid]="obsForm.get('geometry').valid"
+        ></div>
+      </div>
       <input
         formControlName="geometry"
         type="hidden"

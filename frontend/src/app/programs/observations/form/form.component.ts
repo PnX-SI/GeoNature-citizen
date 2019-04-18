@@ -26,7 +26,7 @@ import {
   distinctUntilChanged
 } from "rxjs/operators";
 
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDate, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
@@ -163,11 +163,13 @@ export class ObsFormComponent implements AfterViewInit {
     }
     // console.debug(this.species);
   };
+  hasZoomAlert: boolean;
 
   constructor(
     private http: HttpClient,
     private programService: GncProgramsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private modalSrv: NgbModal
   ) {}
 
   ngAfterViewInit() {
@@ -204,6 +206,26 @@ export class ObsFormComponent implements AfterViewInit {
           }
         }).addTo(formMap);
 
+        let ZoomViewer = L.Control.extend({
+          onAdd: () => {
+            let container = L.DomUtil.create("div");
+            let gauge = L.DomUtil.create("div");
+            container.style.width = "200px";
+            container.style.background = "rgba(255,255,255,0.5)";
+            container.style.textAlign = "left";
+            container.className = "mb-0";
+            formMap.on("zoomstart zoom zoomend", function(_ev) {
+              gauge.innerHTML = "Zoom level: " + formMap.getZoom();
+            });
+            container.appendChild(gauge);
+
+            return container;
+          }
+        });
+        let zv = new ZoomViewer();
+        zv.addTo(formMap);
+        zv.setPosition("bottomleft");
+
         const programArea = L.geoJSON(this.program, {
           style: function(_feature) {
             return {
@@ -219,6 +241,7 @@ export class ObsFormComponent implements AfterViewInit {
         const maxBounds: L.LatLngBounds = programArea.getBounds();
         formMap.fitBounds(maxBounds);
         formMap.setMaxBounds(maxBounds);
+        formMap.scrollWheelZoom.disable();
 
         // Set initial observation marker from main map if already spotted
         let myMarker = null;
@@ -232,6 +255,12 @@ export class ObsFormComponent implements AfterViewInit {
 
         // Update marker on click event
         formMap.on("click", (e: LeafletMouseEvent) => {
+          let z = formMap.getZoom();
+
+          if (z < 14) {
+            this.hasZoomAlert = true;
+            return;
+          }
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
           if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {

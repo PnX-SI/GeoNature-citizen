@@ -62,20 +62,35 @@ export class ObsListComponent implements OnChanges {
   }
 
   onFilterChange(): void {
+    let filters: { taxon: string; municipality: string } = {
+      taxon: null,
+      municipality: null
+    };
     this.observationList = this.observations["features"].filter(obs => {
       let results: boolean[] = [];
       if (this.selectedMunicipality) {
         results.push(
           obs.properties.municipality.code == this.selectedMunicipality.code
         );
+        filters.municipality = this.selectedMunicipality.code;
       }
       if (this.selectedTaxon) {
         results.push(
           obs.properties.cd_nom == this.selectedTaxon.taxref["cd_nom"]
         );
+        filters.taxon = this.selectedTaxon.taxref["cd_nom"];
       }
       return results.indexOf(false) < 0;
     });
+
+    if (filters.taxon || filters.municipality) {
+      const event: CustomEvent = new CustomEvent("NewObservationFilterEvent", {
+        bubbles: true,
+        cancelable: true,
+        detail: filters
+      });
+      document.dispatchEvent(event);
+    }
   }
 
   onObsClick(e): void {
