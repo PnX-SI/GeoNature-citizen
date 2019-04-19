@@ -26,13 +26,14 @@ import {
   distinctUntilChanged
 } from "rxjs/operators";
 
-import { NgbDate, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
 import "leaflet-fullscreen/dist/Leaflet.fullscreen";
 
 import { AppConfig } from "../../../../conf/app.config";
+import { MAP_CONFIG } from "../../../../conf/map.config";
 import {
   PostObservationResponse,
   ObservationFeature,
@@ -110,6 +111,7 @@ export class ObsFormComponent implements AfterViewInit {
   });
   taxonSelectInputThreshold = taxonSelectInputThreshold;
   taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
+  MAP_CONFIG = MAP_CONFIG;
   formMap: L.Map;
   program: FeatureCollection;
   taxonomyListID: number;
@@ -118,6 +120,7 @@ export class ObsFormComponent implements AfterViewInit {
   species: Object[] = [];
   taxaCount: number;
   selectedTaxon: any;
+  hasZoomAlert: boolean;
 
   disabledDates = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
@@ -161,15 +164,12 @@ export class ObsFormComponent implements AfterViewInit {
         }
       }
     }
-    // console.debug(this.species);
   };
-  hasZoomAlert: boolean;
 
   constructor(
     private http: HttpClient,
     private programService: GncProgramsService,
-    private route: ActivatedRoute,
-    private modalSrv: NgbModal
+    private route: ActivatedRoute
   ) {}
 
   ngAfterViewInit() {
@@ -214,7 +214,7 @@ export class ObsFormComponent implements AfterViewInit {
             container.style.background = "rgba(255,255,255,0.5)";
             container.style.textAlign = "left";
             container.className = "mb-0";
-            formMap.on("zoomstart zoom zoomend", function(_ev) {
+            formMap.on("zoomstart zoom zoomend", function(_e) {
               gauge.innerHTML = "Zoom level: " + formMap.getZoom();
             });
             container.appendChild(gauge);
@@ -257,7 +257,7 @@ export class ObsFormComponent implements AfterViewInit {
         formMap.on("click", (e: LeafletMouseEvent) => {
           let z = formMap.getZoom();
 
-          if (z < 14) {
+          if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
             this.hasZoomAlert = true;
             return;
           }

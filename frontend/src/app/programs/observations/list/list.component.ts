@@ -42,9 +42,8 @@ export class ObsListComponent implements OnChanges {
         .map(property => property.municipality)
         .filter(municipality => {
           return municipality.name && municipality.code;
-          //return (municipality != null ? <any>municipality : "")
         })
-        .filter((v, i, a) => {
+        .filter((v, _i, a) => {
           let exists = a.find(exist => {
             return exist.code == v.code;
           });

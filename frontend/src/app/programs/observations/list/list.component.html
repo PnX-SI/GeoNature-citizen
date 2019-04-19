@@ -1,6 +1,5 @@
 <div id="mapList">
   <div class="toolbar">
-    <!-- <select class="form-control rounded-0 col-lg-6" id="inputSpecies"> -->
     <select
       class="form-control rounded-0"
       id="inputSpecies"
@@ -24,7 +23,7 @@
     >
       <option [ngValue]="null">Toutes communes</option>
       <option *ngFor="let t of municipalities" [ngValue]="t">{{
-        t.name
+        t?.name || "?"
       }}</option>
     </select>
   </div>
@@ -51,14 +50,14 @@
         <p i18n>
           Observé par
           <span>{{
-            o.properties.observer.username
+            o.properties.observer?.username
               ? o.properties.observer.username
               : "Anonyme"
           }}</span>
         </p>
         <p i18n>
           le <span>{{ o.properties.date }}</span> à
-          <span>{{ o.properties.municipality.name || "?" }}</span>
+          <span>{{ o.properties.municipality?.name || "?" }}</span>
         </p>
       </div>
       <div class="hide"><img src="assets/binoculars.png" /></div>

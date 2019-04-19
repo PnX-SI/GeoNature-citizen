@@ -37,11 +37,13 @@ const conf = {
   }, {}),
   DEFAULT_BASE_MAP: () => {
     // Get a random base map to test
-    // return conf.BASE_LAYERS[
-    //   Object.keys(conf.BASE_LAYERS)[
-    //     (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
-    //   ]
-    // ];
+    /*
+    return conf.BASE_LAYERS[
+      Object.keys(conf.BASE_LAYERS)[
+        (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
+      ]
+    ];
+    */
     return conf.BASE_LAYERS["OpenStreetMapFRHot"];
   },
   ZOOM_CONTROL_POSITION: "topright",
@@ -86,36 +88,6 @@ const conf = {
       iconSize: new L.Point(40, 40)
     });
   },
-  // ON_EACH_FEATURE: (feature, layer) => {
-  //   let popupContent = `
-  //     <img src="${
-  //       feature.properties.image
-  //         ? feature.properties.image
-  //         : "assets/Azure-Commun-019.JPG"
-  //     }">
-  //     <p>
-  //       <b>${feature.properties.common_name}</b>
-  //       </br>
-  //       <span i18n>
-  //         Observé par ${feature.properties.observer.username}
-  //         </br>
-  //         le ${feature.properties.date}
-  //       </span>
-  //     </p>
-  //     <div>
-  //       <img class="icon" src="assets/binoculars.png">
-  //     </div>`;
-  //
-  //   if (feature.properties && feature.properties.popupContent) {
-  //     popupContent += feature.properties.popupContent;
-  //   }
-  //
-  //   layer.bindPopup(popupContent);
-  // },
-  // POINT_TO_LAYER: (_feature, latlng): L.Marker => {
-  //   console.log(_feature);
-  //   return L.marker(latlng, { icon: conf.OBS_MARKER_ICON() });
-  // },
   PROGRAM_AREA_STYLE: _feature => {
     return {
       fillColor: "transparent",
@@ -136,14 +108,6 @@ const conf = {
   encapsulation: ViewEncapsulation.None
 })
 export class ObsMapComponent implements OnInit, OnChanges {
-  /*
-   PLAN: migrate layer logic to parent component/service, rm inputs
-    instance config (element_id, tilehost, attribution, ... std leaflet options)
-      @outputs:
-        onClick
-        onLayerAdded
-        onLayerRemoved
-  */
   @ViewChild("map") map: ElementRef;
   @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
@@ -167,21 +131,19 @@ export class ObsMapComponent implements OnInit, OnChanges {
     this.initMap(conf);
   }
 
-  ngOnChanges(_changes: SimpleChanges) {
-    console.log("_changes", _changes);
-
+  ngOnChanges(changes: SimpleChanges) {
     if (
       this.observationMap &&
-      _changes.program &&
-      _changes.program.currentValue
+      changes.program &&
+      changes.program.currentValue
     ) {
       this.loadProgramArea();
     }
 
     if (
       this.observationMap &&
-      _changes.observations &&
-      _changes.observations.currentValue
+      changes.observations &&
+      changes.observations.currentValue
     ) {
       this.loadObservations();
 
@@ -235,7 +197,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       .addTo(this.observationMap);
 
     this.observationMap.scrollWheelZoom.disable();
-    this.observationMap.on("popupclose", e => {
+    this.observationMap.on("popupclose", _e => {
       if (this.openPopupAfterClose && this.obsPopup) {
         this.showPopup(this.obsPopup);
       } else {
@@ -256,7 +218,11 @@ export class ObsMapComponent implements OnInit, OnChanges {
         <b>${feature.properties.common_name}</b>
         </br>
         <span i18n>
-          Observé par ${feature.properties.observer.username || "Anonyme"}
+          Observé par ${
+            feature.properties.observer
+              ? feature.properties.observer.username
+              : "Anonyme"
+          }
           </br>
           le ${feature.properties.date}
         </span>
@@ -274,10 +240,9 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.observationLayer = this.options.OBSERVATION_LAYER();
       this.markers = [];
 
-      let options = {
+      const layerOptions = {
         onEachFeature: (feature, layer) => {
           let popupContent = this.getPopupContent(feature);
-          layer["toto"] = "toto";
 
           if (feature.properties && feature.properties.popupContent) {
             popupContent += feature.properties.popupContent;
@@ -300,10 +265,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
         }
       };
 
-      this.observationLayer.addLayer(L.geoJSON(this.observations, options));
+      this.observationLayer.addLayer(
+        L.geoJSON(this.observations, layerOptions)
+      );
       this.observationMap.addLayer(this.observationLayer);
 
-      this.observationLayer.on("animationend", e => {
+      this.observationLayer.on("animationend", _e => {
         console.log("animationend");
         if (this.obsPopup) {
           this.openPopupAfterClose = true;
@@ -325,11 +292,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
       marker.marker
     );
     if (!visibleParent) {
-      console.log("showPopup pan");
       this.observationMap.panTo(marker.marker.getLatLng());
       visibleParent = marker.marker;
     }
-    let popup = L.popup()
+    const popup = L.popup()
       .setLatLng(visibleParent.getLatLng())
       .setContent(this.getPopupContent(obs))
       .openOn(this.observationMap);

@@ -1,6 +1,5 @@
 app-obs-form .form-group .input-group {
   flex-direction: row;
-  flex-wrap: nowrap;
 }
 
 app-obs-form .input-group input {
@@ -8,12 +7,13 @@ app-obs-form .input-group input {
 }
 
 app-obs-form .inputfile {
-  width: 0.1px;
-  height: 0.1px;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   overflow: hidden;
+  top: 0;
+  left: 0;
   position: absolute;
-  z-index: -1;
 }
 
 app-obs-form #formMap {
