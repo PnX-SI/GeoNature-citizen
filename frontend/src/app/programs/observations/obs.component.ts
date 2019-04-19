@@ -96,15 +96,8 @@ export class ObsComponent implements OnInit, AfterViewInit {
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
     console.debug("[ObsComponent.newObservationEventHandler]", e.detail);
-    // const obsFeature: Feature = e.detail;
-    // setTimeout() ?
-    // this.obsList.observations = {
-    //   type: "FeatureCollection",
-    //   features: [obsFeature, ...this.observations.features]
-    // };
   }
 
-  // DOING
   @HostListener("document:NewObservationFilterEvent", ["$event"])
   newObservationFilterEventHandler(e: CustomEvent) {
     e.stopPropagation();
@@ -112,7 +105,6 @@ export class ObsComponent implements OnInit, AfterViewInit {
     this.obsList.observations = {
       type: "FeatureCollection",
       features: this.observations.features
-      // features: this.observations.features.filter(MUNICIPALITY AND|OR TAXON)
     };
   }
 }
