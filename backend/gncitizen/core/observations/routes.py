@@ -28,6 +28,7 @@ from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
 
 from .models import ObservationMediaModel, ObservationModel
+from gncitizen.core.users.models import UserModel
 
 routes = Blueprint("observations", __name__)
 
@@ -385,6 +386,9 @@ def get_program_observations(id):
         observations = (
             db.session.query(
                 ObservationModel,
+                UserModel.username.label("observer_username"),
+                # UserModel.name.label("observer_name"),
+                # UserModel.username.label("observer_surname"),
                 MediaModel.filename.label("image"),
                 LAreas.area_name,
                 LAreas.area_code,
@@ -407,6 +411,7 @@ def get_program_observations(id):
                 ObservationMediaModel.id_media == MediaModel.id_media,
                 isouter=True,
             )
+            .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
             .order_by(ObservationModel.timestamp_create.desc())
             .all()
         )
@@ -417,6 +422,14 @@ def get_program_observations(id):
                 "name": observation.area_name,
                 "code": observation.area_code,
             }
+
+            # Observer
+            feature["properties"]["observer"] = {
+                "username": observation.observer_username,
+                # "name": observation.observer_name,
+                # "surname": observation.observer_surname,
+            }
+
             # FIXME: Media endpoint
             feature["properties"]["image"] = (
                 "{}/media/{}".format(  # FIXME: medias url

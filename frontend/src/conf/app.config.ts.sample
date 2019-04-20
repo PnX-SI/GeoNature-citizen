@@ -13,6 +13,18 @@ export const AppConfig = {
     platform_intro: "Bienvenue<br /> sur GeoNature Citizen",
     platform_teaser:
       "Hae duae provinciae bello quondam piratico catervis mixtae praedonum a Servilio pro consule missae sub iugum factae sunt vectigales. et hae quidem regiones velut in prominenti terrarum lingua positae ob orbe eoo monte Amano disparantur.",
+      platform_participate: {
+        fr: "PARTICIPER AU PROGRAMME",
+        en: "PARTICIPATE"
+      },
+      program_share_an_observation: {
+        fr: "PARTAGER UNE OBSERVATION",
+        en: "SHARE AN OBSERVATION"
+      },
+      program_add_an_observation: {
+        fr: "AJOUTER UNE OBSERVATION",
+        en: "CONTRIBUTE AN OBSERVATION"
+      },
     taxonSelectInputThreshold: 7,
     taxonAutocompleteInputThreshold: 12,
     taxonAutocompleteFields: ["nom_complet", "nom_vern", "nom_vern_eng"]

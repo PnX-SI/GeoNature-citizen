@@ -20,10 +20,12 @@ export interface ObservationFeature extends Feature {
   };
 }
 
+export interface TaxonomyListItem {
+  medias: any;
+  nom: Object;
+  taxref: Object;
+}
+
 export interface TaxonomyList {
-  [index: number]: {
-    medias: any;
-    nom: Object;
-    taxref: Object;
-  };
+  [index: number]: TaxonomyListItem;
 }

@@ -4,6 +4,7 @@
       {{ obsForm.value | json }}
     </div>
   -->
+
   <div class="form-row">
     <div class="form-group col-lg-8">
       <input formControlName="id_program" type="hidden" />
@@ -33,13 +34,17 @@
       *ngIf="taxaCount < taxonSelectInputThreshold"
       class="form-group col-lg-12 d-inline-flex obs-images"
     >
-      <div class="scroll-img">
+      <div
+        class="scroll-img"
+        [class.ng-valid]="selectedTaxon"
+        [class.ng-invalid]="!selectedTaxon"
+      >
         <div *ngFor="let s of (surveySpecies$ | async)">
-          <div class="obs-img">
+          <div class="obs-img" [class.selected]="isTaxonSelected(s)">
             <img
               src="{{(s.media?.url)?s.media.url:'assets/Azure-Commun-019.JPG'}}"
               alt="{{s.nom.nom_francais}}"
-              (click)="onTaxonSelected(s.taxref.cd_nom)"
+              (click)="onTaxonSelected(s)"
             />
             <span>{{ s.nom.nom_francais }}</span>
           </div>
@@ -61,6 +66,8 @@
         type="text"
         class="form-control rounded-0"
         formControlName="cd_nom"
+        i18n-placeholder
+        placeholder="Rechercher une espèce"
         [editable]="false"
         [ngbTypeahead]="inputAutoCompleteSearch"
         [resultTemplate]="rt"
@@ -79,7 +86,8 @@
               formControlName="date"
               type="date"
               class="form-control rounded-0"
-              placeholder="yyyy-mm-dd"
+              i18n-placeholder
+              placeholder="jj/mm/aaaa"
               ngbDatepicker
               #d="ngbDatepicker"
               [markDisabled]="disabledDates"
@@ -92,6 +100,7 @@
           <input
             type="number"
             min="1"
+            i18n-placeholder
             placeholder="Nombre"
             data-bind="value:replyNumber"
             class="form-control rounded-0"
@@ -105,6 +114,7 @@
       <div class="form-group col-lg-12">
         <label for="comment" i18n>Commentaire</label>
         <textarea
+          i18n-placeholder
           placeholder="Votre commentaire"
           class="form-control rounded-0"
           rows="4"
@@ -113,9 +123,10 @@
         ></textarea>
       </div>
 
-      <div class="form-group col-lg-12 btn">
-        <i class="fa fa-camera"></i>
-        <label for="photo" i18n>Ajouter une photo</label>
+      <div class="form-group col-lg-12 btn position-relative">
+        <label for="photo" i18n
+          ><i class="fa fa-camera"></i>Ajouter une photo</label
+        >
         <input
           #photo
           id="photo"
@@ -131,19 +142,28 @@
 
     <div class="form-group col-lg-6 col-md-12 half">
       <h5 i18n>Où avez-vous observé cette espèce ?</h5>
-      <div id="formMap" class="col-lg-12"></div>
+      <div class="position-relative">
+        <div class="zoom-alert" *ngIf="hasZoomAlert">
+          <div class="mb-2" i18n>
+            Un zoom minimum de {{ MAP_CONFIG.ZOOM_LEVEL_RELEVE }} est requis.
+          </div>
+          <button class="btn" (click)="hasZoomAlert = false">OK</button>
+        </div>
+        <div
+          id="formMap"
+          class="col-lg-12"
+          [class.ng-invalid]="obsForm.get('geometry').invalid"
+          [class.ng-valid]="obsForm.get('geometry').valid"
+        ></div>
+      </div>
       <input
         formControlName="geometry"
         type="hidden"
         id="geometry"
         name="geometry"
         #geometry
+        class="col-lg-12"
       />
-      <div *ngIf="geometry.invalid" class="alert alert-danger">
-        <div *ngIf="geometry.errors.required" i18n>
-          Cliquer sur la carte pour déposer un marqueur
-        </div>
-      </div>
     </div>
   </div>
 </form>

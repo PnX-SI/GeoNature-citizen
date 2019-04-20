@@ -3,7 +3,7 @@
 
 from flask import current_app
 
-from gncitizen.core.ref_geo.models import (LAreas, BibAreasTypes)
+from gncitizen.core.ref_geo.models import LAreas, BibAreasTypes
 from gncitizen.utils.env import db
 
 
@@ -23,14 +23,17 @@ def get_municipality_id_from_wkb(wkb):
     :rtype: int
     """
     try:
-        query = db.session.query(LAreas).join(BibAreasTypes).filter(
-            LAreas.geom.ST_Transform(4326).ST_Intersects(wkb),
-            BibAreasTypes.type_name == "Communes"
-        ).first()
-        current_app.logger.debug(
-            "[get_municipality_id_from_wkb_point] Query: {}".format(
-                query
+        query = (
+            db.session.query(LAreas)
+            .join(BibAreasTypes)
+            .filter(
+                LAreas.geom.ST_Intersects(wkb.ST_Transform(2154)),
+                BibAreasTypes.type_name == "Communes",
             )
+            .first()
+        )
+        current_app.logger.debug(
+            "[get_municipality_id_from_wkb_point] Query: {}".format(query)
         )
         municipality_id = query.id_area
         current_app.logger.debug(
@@ -54,8 +57,8 @@ def get_area_informations(id_area):
         query = db.session.query(LAreas).filter(LAreas.id_area == id_area)
         result = query.first()
         area = {}
-        area['name'] = result.area_name
-        area['code'] = result.area_code
+        area["name"] = result.area_name
+        area["code"] = result.area_code
     except Exception as e:
         current_app.logger.debug(
             "[get_municipality_id_from_wkb_point] Can't get municipality id: {}".format(

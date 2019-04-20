@@ -83,7 +83,7 @@ export class AuthService {
       "Authorization",
       `Bearer ${refresh_token}`
     );
-    return this.http.post<TokenRefresh>(url, refresh_token, {
+    return this.http.post<TokenRefresh>(url, null, {
       headers: headers
     });
     /*

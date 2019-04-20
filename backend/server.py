@@ -57,8 +57,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     # JWT Auth
     jwt.init_app(app)
-    # wip token refresh
-    # app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=30)
+    # wip token refresh Warning not < 130 (see frontend/auth/interceptor)!!!!
+    # app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=130)
 
     # Swagger for api documentation
     swagger.init_app(app)

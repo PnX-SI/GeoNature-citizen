@@ -8,9 +8,7 @@
       Bienvenue<br />
       sur Geonature Citizen
     </h1>
-    <a class="btn-big" i18n="Participer au programme"
-      >Participer au programme</a
-    >
+    <a class="btn-big">{{ AppConfig.platform_participate[localeId] }}</a>
     <span i18n="Scrollez pour en voir plus !"
       >Scrollez pour en voir plus !</span
     >
@@ -37,13 +35,9 @@
               <h3>{{ program.title }}</h3>
               <p [innerHTML]="program.html_short_desc"></p>
               <div [innerHTML]="program.html_long_desc"></div>
-              <a
-                class="btn-big"
-                [routerLink]=""
-                fragment="program"
-                i18n="Partager une observation"
-                >Partager une observation</a
-              >
+              <a class="btn-big" [routerLink]="" fragment="program">{{
+                AppConfig.program_share_an_observation[localeId]
+              }}</a>
             </div>
           </div>
         </div>
@@ -66,15 +60,17 @@
     ></label>
     <div class="col-lg-4 col-md-12 side-bar" id="list">
       <app-obs-list
+        #obsListRef
         [observations]="observations"
         [taxa]="surveySpecies"
+        (obsSelect)="obsMapRef.showPopup($event)"
       ></app-obs-list>
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
-      <!-- feed our map observations input with markers ? -->
       <app-obs-map
-        [observations]="observations"
+        #obsMapRef
+        [observations]="obsListRef.observationList"
         [program]="programFeature"
         (onClick)="onMapClicked($event)"
       ></app-obs-map>
