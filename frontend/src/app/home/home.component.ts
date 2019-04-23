@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   AppConfig = AppConfig;
 
   constructor(
-    @Inject(LOCALE_ID) protected localeId: string,
+    @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
     private meta: Meta,
     protected domSanitizer: DomSanitizer
