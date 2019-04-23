@@ -354,35 +354,36 @@ def delete_user():
 
 @routes.route("/user/resetpasswd", methods=["POST"])
 @json_resp
-# @jwt_required  # refresh_token mandatory for authentification OR admin
 def reset_user_password():
     request_datas = dict(request.get_json())
     email = request_datas["email"]
 
     try:
         user = UserModel.query.filter_by(email=email).one()
-    except Exception as e:
-        return ({"error": email + " not exists"}, 400)
+    except Exception:
+        return ({"error": "{} does not exists".format(email)}, 400)
 
     passwd = uuid.uuid4().hex[0:6]
     passwd_hash = UserModel.generate_hash(passwd)
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = "Link"
-    msg["From"] = "vincent_bourgeois@natural-solutions.eu"
+    msg["Subject"] = current_app.config["RESET_PASSWD"]["SUBJECT"]
+    msg["From"] = current_app.config["RESET_PASSWD"]["FROM"]
     msg["To"] = user.email
 
-    text = "Bonjour,\r\nVoici votre nouveau mot de passe :\r\n" + passwd + "\r\n"
-    text += "http://localhost:4200"
-
-    html = "Bonjour,<br /><br />Voici votre nouveau mot de passe :<br />"
-    html += passwd
-    html += "<br /><br />"
-    html += '<a href="http://localhost:4200">Connexion</a>'
-
     # Record the MIME types of both parts - text/plain and text/html.
-    part1 = MIMEText(text, "plain")
-    part2 = MIMEText(html, "html")
+    part1 = MIMEText(
+        current_app.config["RESET_PASSWD"]["TEXT_TEMPLATE"].format(
+            passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
+        ),
+        "plain",
+    )
+    part2 = MIMEText(
+        current_app.config["RESET_PASSWD"]["HTML_TEMPLATE"].format(
+            passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
+        ),
+        "html",
+    )
 
     # Attach parts into message container.
     # According to RFC 2046, the last part of a multipart message, in this case
@@ -390,23 +391,17 @@ def reset_user_password():
     msg.attach(part1)
     msg.attach(part2)
 
-    # Send the message via our own SMTP server.
-    # s = smtplib.SMTP(
-    #     current_app.config.get("MAIL_HOST"), current_app.config.get("MAIL_PORT")
-    # )
     try:
         with smtplib.SMTP_SSL(
-            current_app.config["MAILERROR"]["MAIL_HOST"],
-            int(current_app.config["MAILERROR"]["HOST_PORT"]),
+            current_app.config["MAIL"]["MAIL_HOST"],
+            int(current_app.config["MAIL"]["MAIL_PORT"]),
         ) as server:
             server.login(
-                str(current_app.config["MAILERROR"]["MAIL_USERNAME"]),
-                str(current_app.config["MAILERROR"]["MAIL_PASS"]),
+                str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
+                str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
             )
             server.sendmail(
-                current_app.config["MAILERROR"]["MAIL_FROM"],
-                user.email,
-                msg.as_string(),
+                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
             )
             server.quit()
     except Exception as e:

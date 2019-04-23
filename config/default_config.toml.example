@@ -60,6 +60,28 @@ UPLOAD_FOLDER = 'static/medias'
     DISPLAY_FOOTER = false
     MULTILINGUAL = false
 
+
+[RESET_PASSWD]
+    SUBJECT = "Link"
+    FROM = 'contact@geonature-citizen.fr'
+    TEXT_TEMPLATE = '''
+    Bonjour,\r\nVoici votre nouveau mot de passe :\r\n{passwd}\r\n"{app_url}
+    '''
+    HTML_TEMPLATE = '''
+    Bonjour,<br /><br />Voici votre nouveau mot de passe :<br />
+    {passwd}
+    <br /><br />"
+    <a href="{app_url}">Connexion</a>'
+    '''
+
+
+[MAIL]
+    MAIL_HOST = 'smtpd host'
+    MAIL_PORT = 493   # mandatory SSL port
+    MAIL_AUTH_LOGIN = 'smtpd/relay host username'
+    MAIL_AUTH_PASSWD = 'smtpd/relay host password'
+
+
 [MAILERROR]
     MAIL_ON_ERROR = false
     MAIL_HOST = 'host mail'
