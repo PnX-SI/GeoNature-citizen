@@ -144,8 +144,9 @@
       <h5 i18n>Où avez-vous observé cette espèce ?</h5>
       <div class="position-relative">
         <div class="zoom-alert" *ngIf="hasZoomAlert">
-          <div class="mb-2" i18n>
-            Un zoom minimum de {{ MAP_CONFIG.ZOOM_LEVEL_RELEVE }} est requis.
+          <div class="mb-2 text-center" i18n>
+            Veuillez zoomer pour localiser votre observation.<br />
+            <span>(zoom min: {{ MAP_CONFIG.ZOOM_LEVEL_RELEVE }})</span>
           </div>
           <button class="btn" (click)="hasZoomAlert = false">OK</button>
         </div>

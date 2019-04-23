@@ -33,7 +33,6 @@ app-obs-form .zoom-alert {
   z-index: 1001;
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
   justify-content: center;
 }
@@ -45,14 +44,4 @@ app-obs-form .zoom-alert .btn {
 
 app-obs-form .dropdown-menu.show {
   z-index: 1001 !important;
-}
-
-app-obs-form #obsForm .ng-valid:not(form),
-app-obs-form #formMap.ng-valid {
-  border-left: 5px solid #42a948; /* green */
-}
-
-app-obs-form #obsForm .ng-invalid:not(form),
-app-obs-form #formMap.ng-invalid {
-  border-left: 5px solid #a94442; /* red */
 }

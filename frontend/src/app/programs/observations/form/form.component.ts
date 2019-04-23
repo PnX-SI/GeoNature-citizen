@@ -44,6 +44,13 @@ import { GncProgramsService } from "../../../api/gnc-programs.service";
 
 declare let $: any;
 
+const PROGRAM_AREA_STYLE = {
+  fillColor: "transparent",
+  weight: 2,
+  opacity: 0.8,
+  color: "red",
+  dashArray: "4"
+};
 const taxonSelectInputThreshold = AppConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold =
   AppConfig.taxonAutocompleteInputThreshold;
@@ -53,6 +60,7 @@ const taxonAutocompleteMaxResults = 10;
 // TODO: migrate to conf
 export const obsFormMarkerIcon = L.icon({
   iconUrl: "assets/pointer-blue2.png",
+  iconSize: [33, 42],
   iconAnchor: [16, 42]
 });
 
@@ -228,13 +236,7 @@ export class ObsFormComponent implements AfterViewInit {
 
         const programArea = L.geoJSON(this.program, {
           style: function(_feature) {
-            return {
-              fillColor: "transparent",
-              weight: 2,
-              opacity: 0.8,
-              color: "red",
-              dashArray: "4"
-            };
+            return PROGRAM_AREA_STYLE;
           }
         }).addTo(formMap);
 
@@ -265,6 +267,8 @@ export class ObsFormComponent implements AfterViewInit {
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
           if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
             if (myMarker) {
+              // TODO: update marker coods inplace.
+              // Implement draggable marker
               formMap.removeLayer(myMarker);
             }
             myMarker = L.marker(e.latlng, { icon: obsFormMarkerIcon }).addTo(

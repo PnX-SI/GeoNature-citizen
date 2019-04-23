@@ -1,33 +1,79 @@
 <div class="modal-header">
-  <h4><!-- <i class="fa fa-fw fa-user-circle-o"></i> -->Créez votre compte</h4>
-  <button type="button" class="close rounded-0" aria-label="Close" (click)="activeModal.dismiss('Cross click')">&times;</button>
+  <h4 i18n>Créez votre compte</h4>
+  <button
+    type="button"
+    class="close rounded-0"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    &times;
+  </button>
 </div>
 <div class="modal-body">
-  <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}</ngb-alert>
-  <form (ngSubmit)="onRegister()" novalidate>
+  <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{
+    errorMessage
+  }}</ngb-alert>
+  <form
+    #registerForm="ngForm"
+    (ngSubmit)="registerForm.form.valid && onRegister()"
+  >
     <div class="form-row">
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label for="username">Votre nom d'utilisateur</label>
-          <div class="input-group">
+          <label for="username" i18n>Votre nom d'utilisateur</label>
+          <div
+            class="input-group"
+            [ngClass]="{
+              'ng-invalid': username.invalid
+            }"
+          >
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1"><i class="fa fa-user"></i></span>
+              <span class="input-group-text" id="basic-addon1"
+                ><i class="fa fa-user"></i
+              ></span>
             </div>
-            <input type="text" class="form-control rounded-0" id="username" placeholder="Entrez votre nom d'utilisateur"
-                   [(ngModel)]="user.username" name="username" required>
+            <input
+              type="text"
+              class="form-control rounded-0"
+              id="username"
+              i18n-placeholder
+              placeholder="Entrez votre nom d'utilisateur"
+              [(ngModel)]="user.username"
+              name="username"
+              autocomplete="username"
+              required
+              #username="ngModel"
+            />
           </div>
         </div>
       </div>
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label for="email">Votre email</label>
-          <div class="input-group">
+          <label for="email" i18n>Votre email</label>
+          <div
+            class="input-group"
+            [ngClass]="{
+              'ng-invalid': email.invalid
+            }"
+          >
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1"><i class="fa fa-envelope"></i></span>
+              <span class="input-group-text" id="basic-addon1"
+                ><i class="fa fa-envelope"></i
+              ></span>
             </div>
-            <input type="email" class="form-control rounded-0" id="email" placeholder="Entrez votre email"
-                   [(ngModel)]="user.email"
-                   name="email" required>
+            <input
+              type="email"
+              class="form-control rounded-0"
+              name="email"
+              id="email"
+              i18n-placeholder
+              placeholder="Entrez votre email"
+              [(ngModel)]="user.email"
+              autocomplete="email"
+              required
+              pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+              #email="ngModel"
+            />
           </div>
         </div>
       </div>
@@ -35,38 +81,90 @@
     <div class="form-row">
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label for="name">Votre prénom</label>
-          <input type="text" class="form-control rounded-0" id="name" placeholder="Entrez votre prénom" [(ngModel)]="user.name"
-                 name="name" required>
+          <label for="name" i18n>Votre prénom</label>
+          <input
+            type="text"
+            class="form-control rounded-0"
+            id="name"
+            i18n-placeholder
+            placeholder="Entrez votre prénom"
+            [(ngModel)]="user.name"
+            name="name"
+            autocomplete="fname"
+            required
+            #fname="ngModel"
+          />
         </div>
       </div>
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label for="surname">Votre nom</label>
-          <input type="text" class="form-control rounded-0" id="surname" placeholder="Entrez votre nom"
-                 [(ngModel)]="user.surname"
-                 name="surname" required>
+          <label for="surname" i18n>Votre nom</label>
+          <input
+            type="text"
+            class="form-control rounded-0"
+            id="surname"
+            i18n-placeholder
+            placeholder="Entrez votre nom"
+            [(ngModel)]="user.surname"
+            name="surname"
+            autocomplete="lname"
+            pattern="[A-Za-z]+"
+            required
+            #lname="ngModel"
+            [ngClass]="{
+              'ng-invalid': lname.invalid
+            }"
+          />
         </div>
       </div>
     </div>
     <div class="form-row">
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label for="surname">Votre mot de passe</label>
-          <input type="password" class="form-control rounded-0" id="password" placeholder="Votre mot de passe"
-                 [(ngModel)]="user.password" name="password" required>
+          <label for="surname" i18n>Votre mot de passe</label>
+          <input
+            type="password"
+            class="form-control rounded-0"
+            id="password"
+            i18n-placeholder
+            placeholder="Votre mot de passe"
+            [(ngModel)]="user.password"
+            name="password"
+            autocomplete="new-password"
+            minlength="6"
+            required
+            #password="ngModel"
+          />
         </div>
       </div>
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label for="surname">Confirmez votre mot de passe</label>
-          <input type="password" class="form-control rounded-0" id="PasswordConfirm" placeholder="Confirmez le mot de passe"
-                 required>
+          <label for="confirm-password">Confirmez votre mot de passe</label>
+          <input
+            type="password"
+            class="form-control rounded-0"
+            [(ngModel)]="user.password"
+            id="confirm-password"
+            i18n-placeholder
+            placeholder="Confirmez le mot de passe"
+            autocomplete="new-password"
+            required
+            #confirm_password="ngModel"
+          />
         </div>
       </div>
-      <span><input type="checkbox" required> J'accepte les <a href="#"><u>conditions d'utilisation</u></a></span>
+      <span
+        ><input type="checkbox" required i18n /> J'accepte les
+        <a href="#"><u>conditions d'utilisation</u></a></span
+      >
     </div>
-    <button type="submit" class="btn btn-outline-primary text-right rounded-0">S'enregistrer</button>
+    <button
+      type="submit"
+      class="btn btn-outline-primary text-right rounded-0"
+      i18n
+      [disabled]="registerForm.invalid"
+    >
+      S'enregistrer
+    </button>
   </form>
 </div>
-

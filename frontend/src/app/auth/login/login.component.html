@@ -19,7 +19,7 @@
     (close)="successMessage = null"
     >{{ successMessage }}</ngb-alert
   >
-  <form (ngSubmit)="onLogin()" novalidate>
+  <form #loginForm="ngForm" (ngSubmit)="loginForm.form.valid && onLogin()">
     <div class="form-group">
       <label for="username" i18n="login|username">Utilisateur</label>
       <div class="input-group">
@@ -66,6 +66,8 @@
       type="submit"
       class="btn btn-outline-primary rounded-0"
       i18n="login|login"
+      [disabled]="loginForm.invalid"
+      expand="block"
     >
       Se connecter
     </button>

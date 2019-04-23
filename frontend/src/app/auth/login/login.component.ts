@@ -1,10 +1,12 @@
-import { AuthService } from "./../auth.service";
-import { Subject } from "rxjs";
 import { Component } from "@angular/core";
-import { LoginUser } from "./../models";
 import { Router } from "@angular/router";
+import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+
+import { LoginUser } from "./../models";
+import { AuthService } from "./../auth.service";
 
 @Component({
   selector: "app-login",
