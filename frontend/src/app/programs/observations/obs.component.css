@@ -303,7 +303,8 @@ span.input-group-text {
   color: #fff;
 }
 
-.modal-body input {
+.modal-body input.ng-valid,
+.modal-body input.pristine {
   border: solid 1px rgb(206, 212, 218);
 }
 

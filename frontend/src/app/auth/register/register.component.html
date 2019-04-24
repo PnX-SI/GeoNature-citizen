@@ -10,39 +10,32 @@
   </button>
 </div>
 <div class="modal-body">
-  <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{
-    errorMessage
-  }}</ngb-alert>
-  <form
-    #registerForm="ngForm"
-    (ngSubmit)="registerForm.form.valid && onRegister()"
-  >
+  <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null"
+    >{{ errorMessage }}
+  </ngb-alert>
+  <form #registerForm="ngForm" (ngSubmit)="registerForm.valid && onRegister()">
+    <ngb-alert [dismissible]="false" type="danger" *ngIf="email.errors" i18n>
+      Impossible de valider votre email.
+    </ngb-alert>
     <div class="form-row">
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
           <label for="username" i18n>Votre nom d'utilisateur</label>
-          <div
-            class="input-group"
-            [ngClass]="{
-              'ng-invalid': username.invalid
-            }"
-          >
+          <div class="input-group">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1"
-                ><i class="fa fa-user"></i
-              ></span>
+              <span class="input-group-text"><i class="fa fa-user"></i></span>
             </div>
             <input
               type="text"
-              class="form-control rounded-0"
               id="username"
+              name="username"
+              class="form-control rounded-0"
               i18n-placeholder
               placeholder="Entrez votre nom d'utilisateur"
               [(ngModel)]="user.username"
-              name="username"
+              #username="ngModel"
               autocomplete="username"
               required
-              #username="ngModel"
             />
           </div>
         </div>
@@ -50,14 +43,9 @@
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
           <label for="email" i18n>Votre email</label>
-          <div
-            class="input-group"
-            [ngClass]="{
-              'ng-invalid': email.invalid
-            }"
-          >
+          <div class="input-group">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1"
+              <span class="input-group-text"
                 ><i class="fa fa-envelope"></i
               ></span>
             </div>
@@ -69,10 +57,10 @@
               i18n-placeholder
               placeholder="Entrez votre email"
               [(ngModel)]="user.email"
+              #email="ngModel"
               autocomplete="email"
               required
               pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-              #email="ngModel"
             />
           </div>
         </div>
@@ -85,14 +73,13 @@
           <input
             type="text"
             class="form-control rounded-0"
-            id="name"
+            id="fname"
+            name="fname"
             i18n-placeholder
             placeholder="Entrez votre prénom"
             [(ngModel)]="user.name"
-            name="name"
-            autocomplete="fname"
-            required
             #fname="ngModel"
+            autocomplete="fname"
           />
         </div>
       </div>
@@ -103,25 +90,28 @@
             type="text"
             class="form-control rounded-0"
             id="surname"
+            name="surname"
             i18n-placeholder
             placeholder="Entrez votre nom"
             [(ngModel)]="user.surname"
-            name="surname"
+            #surname="ngModel"
             autocomplete="lname"
-            pattern="[A-Za-z]+"
-            required
-            #lname="ngModel"
-            [ngClass]="{
-              'ng-invalid': lname.invalid
-            }"
           />
         </div>
       </div>
     </div>
+    <ngb-alert
+      [dismissible]="false"
+      type="danger"
+      *ngIf="confirm_password.errors || password.errors"
+      i18n
+    >
+      Les mots de passe diffèrent.
+    </ngb-alert>
     <div class="form-row">
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label for="surname" i18n>Votre mot de passe</label>
+          <label for="password" i18n>Votre mot de passe</label>
           <input
             type="password"
             class="form-control rounded-0"
@@ -130,7 +120,8 @@
             placeholder="Votre mot de passe"
             [(ngModel)]="user.password"
             name="password"
-            autocomplete="new-password"
+            #password="ngModel"
+            autocomplete="current-password"
             minlength="6"
             required
             #password="ngModel"
@@ -139,25 +130,41 @@
       </div>
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label for="confirm-password">Confirmez votre mot de passe</label>
+          <label for="confirm-password" i18n
+            >Confirmez votre mot de passe</label
+          >
           <input
             type="password"
-            class="form-control rounded-0"
-            [(ngModel)]="user.password"
             id="confirm-password"
+            name="confirm-password"
+            class="form-control rounded-0"
+            ngModel
+            #confirm_password="ngModel"
             i18n-placeholder
             placeholder="Confirmez le mot de passe"
             autocomplete="new-password"
             required
-            #confirm_password="ngModel"
+            pattern="^{{ password.value }}$"
           />
         </div>
       </div>
-      <span
-        ><input type="checkbox" required i18n /> J'accepte les
-        <a href="#"><u>conditions d'utilisation</u></a></span
+      <span>
+        <ngb-alert [dismissible]="false" type="danger" *ngIf="cgu.errors" i18n>
+          Veuillez accepter les conditions d'utilisation.
+        </ngb-alert>
+        <input
+          type="checkbox"
+          id="cgu"
+          name="cgu"
+          #cgu="ngModel"
+          ngModel
+          required
+          i18n
+        />
+        J'accepte les <a href="#"><u>conditions d'utilisation</u></a></span
       >
     </div>
+
     <button
       type="submit"
       class="btn btn-outline-primary text-right rounded-0"

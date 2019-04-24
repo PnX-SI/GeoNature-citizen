@@ -1,10 +1,12 @@
 import { Component } from "@angular/core";
-import { AuthService } from "./../auth.service";
 import { Router } from "@angular/router";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { debounceTime } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { debounceTime } from "rxjs/operators";
+
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+
 import { RegisterUser } from "../models";
+import { AuthService } from "./../auth.service";
 
 @Component({
   selector: "register",
