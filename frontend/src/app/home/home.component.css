@@ -196,7 +196,9 @@ section {
 #slider ol {
   width: 15%;
 }
-
+#slider ol.carousel-indicators li:not(.active):not(:first-child):not(:nth-child(2)):not(:nth-child(3)){
+  display: none !important;
+}
 #slider ol.carousel-indicators li {
   margin-top: 20px;
   width: 10px;
@@ -412,7 +414,6 @@ app-observations {
     height: fit-content;
     transform: translateY(-50%);
   }
-
   #slider ol.carousel-indicators li:first-child {
     margin-top: 0px;
   }
