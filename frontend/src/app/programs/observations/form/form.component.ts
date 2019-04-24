@@ -33,6 +33,7 @@ import { LeafletMouseEvent } from "leaflet";
 import "leaflet-fullscreen/dist/Leaflet.fullscreen";
 
 import { AppConfig } from "../../../../conf/app.config";
+import { MAP_CONFIG } from "../../../../conf/map.config";
 import {
   PostObservationResponse,
   ObservationFeature,
@@ -43,6 +44,13 @@ import { GncProgramsService } from "../../../api/gnc-programs.service";
 
 declare let $: any;
 
+const PROGRAM_AREA_STYLE = {
+  fillColor: "transparent",
+  weight: 2,
+  opacity: 0.8,
+  color: "red",
+  dashArray: "4"
+};
 const taxonSelectInputThreshold = AppConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold =
   AppConfig.taxonAutocompleteInputThreshold;
@@ -52,6 +60,7 @@ const taxonAutocompleteMaxResults = 10;
 // TODO: migrate to conf
 export const obsFormMarkerIcon = L.icon({
   iconUrl: "assets/pointer-blue2.png",
+  iconSize: [33, 42],
   iconAnchor: [16, 42]
 });
 
@@ -110,6 +119,7 @@ export class ObsFormComponent implements AfterViewInit {
   });
   taxonSelectInputThreshold = taxonSelectInputThreshold;
   taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
+  MAP_CONFIG = MAP_CONFIG;
   formMap: L.Map;
   program: FeatureCollection;
   taxonomyListID: number;
@@ -118,6 +128,7 @@ export class ObsFormComponent implements AfterViewInit {
   species: Object[] = [];
   taxaCount: number;
   selectedTaxon: any;
+  hasZoomAlert: boolean;
 
   disabledDates = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
@@ -161,7 +172,6 @@ export class ObsFormComponent implements AfterViewInit {
         }
       }
     }
-    // console.debug(this.species);
   };
 
   constructor(
@@ -204,21 +214,36 @@ export class ObsFormComponent implements AfterViewInit {
           }
         }).addTo(formMap);
 
+        let ZoomViewer = L.Control.extend({
+          onAdd: () => {
+            let container = L.DomUtil.create("div");
+            let gauge = L.DomUtil.create("div");
+            container.style.width = "200px";
+            container.style.background = "rgba(255,255,255,0.5)";
+            container.style.textAlign = "left";
+            container.className = "mb-0";
+            formMap.on("zoomstart zoom zoomend", function(_e) {
+              gauge.innerHTML = "Zoom level: " + formMap.getZoom();
+            });
+            container.appendChild(gauge);
+
+            return container;
+          }
+        });
+        let zv = new ZoomViewer();
+        zv.addTo(formMap);
+        zv.setPosition("bottomleft");
+
         const programArea = L.geoJSON(this.program, {
           style: function(_feature) {
-            return {
-              fillColor: "transparent",
-              weight: 2,
-              opacity: 0.8,
-              color: "red",
-              dashArray: "4"
-            };
+            return PROGRAM_AREA_STYLE;
           }
         }).addTo(formMap);
 
         const maxBounds: L.LatLngBounds = programArea.getBounds();
         formMap.fitBounds(maxBounds);
         formMap.setMaxBounds(maxBounds);
+        formMap.scrollWheelZoom.disable();
 
         // Set initial observation marker from main map if already spotted
         let myMarker = null;
@@ -232,10 +257,18 @@ export class ObsFormComponent implements AfterViewInit {
 
         // Update marker on click event
         formMap.on("click", (e: LeafletMouseEvent) => {
+          let z = formMap.getZoom();
+
+          if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+            this.hasZoomAlert = true;
+            return;
+          }
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
           if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
             if (myMarker) {
+              // TODO: update marker coods inplace.
+              // Implement draggable marker
               formMap.removeLayer(myMarker);
             }
             myMarker = L.marker(e.latlng, { icon: obsFormMarkerIcon }).addTo(

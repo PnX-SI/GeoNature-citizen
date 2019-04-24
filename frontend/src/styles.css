@@ -106,6 +106,14 @@ select:focus {
   border: solid 2px var(--primary) !important;
 }
 
+.ng-valid:not(form) {
+  border-left: 5px solid #42a948; /* green */
+}
+
+.ng-invalid:not(form) {
+  border-left: 5px solid #a94442; /* red */
+}
+
 .modal-content {
   border-radius: 0px !important;
   border: none !important;

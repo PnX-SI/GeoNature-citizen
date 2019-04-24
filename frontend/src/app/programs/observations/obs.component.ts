@@ -11,7 +11,7 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import { forkJoin } from "rxjs";
 
-import { FeatureCollection } from "geojson";
+import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 
 import { Program } from "../programs.models";
@@ -40,6 +40,8 @@ export class ObsComponent implements OnInit, AfterViewInit {
   surveySpecies: TaxonomyList;
   @ViewChild(ObsMapComponent) obsMap: ObsMapComponent;
   @ViewChild(ObsListComponent) obsList: ObsListComponent;
+
+  selectedObs: Feature;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -94,11 +96,15 @@ export class ObsComponent implements OnInit, AfterViewInit {
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
     console.debug("[ObsComponent.newObservationEventHandler]", e.detail);
-    // const obsFeature: Feature = e.detail;
-    // setTimeout() ?
-    // this.obsList.observations = {
-    //   type: "FeatureCollection",
-    //   features: [obsFeature, ...this.observations.features]
-    // };
+  }
+
+  @HostListener("document:NewObservationFilterEvent", ["$event"])
+  newObservationFilterEventHandler(e: CustomEvent) {
+    e.stopPropagation();
+    console.debug("[ObsComponent.newObservationFilterEventHandler]", e.detail);
+    this.obsList.observations = {
+      type: "FeatureCollection",
+      features: this.observations.features
+    };
   }
 }

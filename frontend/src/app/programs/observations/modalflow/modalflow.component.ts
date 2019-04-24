@@ -16,7 +16,10 @@ import { AppConfig } from "../../../../conf/app.config";
   selector: "app-modalflow",
   template: `
     <div class="btn-group">
-      <button class="btn-big" (click)="clicked()">
+      <button
+        class="btn-big text-center text-nowrap text-uppercase"
+        (click)="clicked()"
+      >
         {{ AppConfig.program_add_an_observation[localeId] }}
       </button>
       <!-- <button class="btn-big">Réaliser un programme</button> -->
