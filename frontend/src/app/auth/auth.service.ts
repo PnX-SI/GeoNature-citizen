@@ -29,9 +29,9 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(user: LoginUser): Promise<any> {
+  async login(user: LoginUser): Promise<any> {
     let url = `${AppConfig.API_ENDPOINT}/login`;
-    return this.http
+    return await this.http
       .post<LoginPayload>(url, user, { headers: this.headers })
       .pipe(
         map(user => {
@@ -43,6 +43,11 @@ export class AuthService {
             localStorage.setItem("username", user.username);
           }
           return user;
+        }),
+        catchError(err => {
+          console.error(err);
+          throw new Error(err);
+          // return Promise.reject(new Error(err));
         })
       )
       .toPromise();
