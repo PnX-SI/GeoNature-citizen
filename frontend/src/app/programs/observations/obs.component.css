@@ -288,6 +288,11 @@ section .observations {
   text-align: center;
 }
 
+.modal-content{
+  max-height: 95vh;
+  overflow-y: auto;
+}
+
 .modal-body,
 .modal-content {
   border-radius: 0px !important;
@@ -317,7 +322,7 @@ span.input-group-text {
 }
 
 .modal-footer button {
-  background-color: var(--secondary);
+  background-color: var(--secondary) !important;
   color: #fff;
   border: solid 1px transparent;
   display: flex;
@@ -385,10 +390,10 @@ form .d-inline-flex {
   width: 100%;
 }
 
-.add-obs .col-lg-8 {
+/* .add-obs .col-lg-8 {
   margin: 0 auto;
   margin-bottom: 20px;
-}
+} */
 
 .add-obs .form-group .form-group {
   margin-bottom: 0;
@@ -426,7 +431,7 @@ form .d-inline-flex {
 
 .scroll-img {
   display: inline-flex;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .obs-add-img {

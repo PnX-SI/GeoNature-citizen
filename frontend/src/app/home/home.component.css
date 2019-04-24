@@ -255,6 +255,11 @@ section {
   line-height: 22px;
 }
 
+.mobile-hidden h1, .mobile-hidden h2, .mobile-hidden h4, .mobile-hidden h5, .mobile-hidden h6{
+  font-size: 1rem;
+  font-weight: normal;
+}
+
 app-observations {
   min-width: 100%;
 }
@@ -307,8 +312,7 @@ app-observations {
   } */
 
   #slider .carousel-text {
-    /* height: 350px; */
-    /* width: 350px; */
+    padding: 10px;
   }
 
   #slider .carousel-text a {

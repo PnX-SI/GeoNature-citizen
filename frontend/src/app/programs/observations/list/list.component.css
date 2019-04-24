@@ -139,7 +139,7 @@
 @media screen and (max-width: 992px) {
   #list {
     /* height: 230px; */
-    height: 30vh;
+    height: 40vh;
   }
   .toggle {
     display: none;

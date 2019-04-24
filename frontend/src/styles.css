@@ -78,6 +78,12 @@ button,
   transform: translateY(-5px);
 }
 
+button:disabled:hover{
+  transform: none;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
 ul {
   list-style-type: none;
 }
