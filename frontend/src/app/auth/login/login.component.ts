@@ -30,6 +30,7 @@ export class LoginComponent {
   onLogin(): void {
     this.auth
       .login(this.user)
+      .toPromise()
       .then(user => {
         console.log("USER STATUS", user);
         if (user) {
