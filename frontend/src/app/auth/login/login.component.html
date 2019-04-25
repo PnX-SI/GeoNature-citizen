@@ -10,9 +10,12 @@
   </button>
 </div>
 <div class="modal-body">
-  <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{
-    errorMessage
-  }}</ngb-alert>
+  <ngb-alert
+    *ngIf="errorMessage && !successMessage"
+    type="danger"
+    (close)="errorMessage = null"
+    >{{ errorMessage }}</ngb-alert
+  >
   <ngb-alert
     *ngIf="successMessage"
     type="success"
