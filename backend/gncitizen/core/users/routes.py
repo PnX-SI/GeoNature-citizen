@@ -1,3 +1,4 @@
+import flask
 from flask import request, Blueprint, current_app
 from flask_jwt_extended import (
     create_access_token,
@@ -270,7 +271,7 @@ def get_allusers():
     return allusers, 200
 
 
-@routes.route("/user/info", methods=["GET"])
+@routes.route("/user/info", methods=["GET", "POST"])
 @json_resp
 @jwt_required
 def logged_user():
@@ -285,23 +286,37 @@ def logged_user():
       200:
         description: current user model
     """
-    current_app.logger.debug("[logged_user] Get current user personnal datas")
     try:
         current_user = get_jwt_identity()
         user = UserModel.query.filter_by(username=current_user).one()
         current_app.logger.debug(
             "[logged_user] current user is {}".format(user.as_secured_dict())
         )
-        return (
-            {
-                "message": "Vos données personelles",
-                "features": user.as_secured_dict(True),
-            },
-            200,
-        )
+        if flask.request.method == "GET":
+            current_app.logger.debug("[logged_user] Get current user personnal data")
+            return (
+                {
+                    "message": "Vos données personelles",
+                    "features": user.as_secured_dict(True),
+                },
+                200,
+            )
+        if flask.request.method == "POST":
+            current_app.logger.debug("[logged_user] Update current user personnal data")
+            request_data = dict(request.get_json())
+            for data in request_data:
+                if hasattr(UserModel, data) and data != "password":
+                    user[data] = request_data[data]
+
+            user["password"] = UserModel.generate_hash(request_data["password"])
+            user["admin"] = False
+            user.update()
+            current_app.logger.debug(user)
+            return {"message": "Personal info updated."}, 200
+
     except Exception as e:
         raise GeonatureApiError(e)
-        return ({"error_message": "You must log in to get your personal datas"}, 200)
+        return ({"error_message": "You must log in to get your personal data"}, 200)
 
 
 @routes.route("/user/delete", methods=["DELETE"])

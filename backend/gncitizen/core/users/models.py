@@ -52,6 +52,9 @@ class UserModel(TimestampMixinModel, db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self):
+        db.session.commit()
+
     def as_secured_dict(self, recursif=False, columns=()):
         surname = self.username or ""
         name = self.name or ""
