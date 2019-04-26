@@ -302,21 +302,21 @@ def logged_user():
                 200,
             )
         if flask.request.method == "POST":
+            isAdmin = user.admin
             current_app.logger.debug("[logged_user] Update current user personnal data")
             request_data = dict(request.get_json())
             for data in request_data:
                 if hasattr(UserModel, data) and data != "password":
-                    user[data] = request_data[data]
+                    setattr(user, data, request_data[data])
 
-            user["password"] = UserModel.generate_hash(request_data["password"])
-            user["admin"] = False
+            user.password = UserModel.generate_hash(request_data["password"])
+            user.admin = isAdmin
             user.update()
-            current_app.logger.debug(user)
             return {"message": "Personal info updated."}, 200
 
     except Exception as e:
         raise GeonatureApiError(e)
-        return ({"error_message": "You must log in to get your personal data"}, 200)
+        return ({"error_message": "You must log in to get your personal data"}, 400)
 
 
 @routes.route("/user/delete", methods=["DELETE"])
