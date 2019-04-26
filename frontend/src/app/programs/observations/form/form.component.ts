@@ -31,6 +31,7 @@ import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
 import "leaflet-fullscreen/dist/Leaflet.fullscreen";
+import "leaflet-gesture-handling";
 
 import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
@@ -129,6 +130,7 @@ export class ObsFormComponent implements AfterViewInit {
   taxaCount: number;
   selectedTaxon: any;
   hasZoomAlert: boolean;
+  zoomAlertTimeout: any;
 
   disabledDates = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
@@ -199,7 +201,7 @@ export class ObsFormComponent implements AfterViewInit {
         });
 
         // build map control
-        const formMap = L.map("formMap");
+        const formMap = L.map("formMap", { gestureHandling: true });
         this.formMap = formMap;
 
         L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -243,7 +245,6 @@ export class ObsFormComponent implements AfterViewInit {
         const maxBounds: L.LatLngBounds = programArea.getBounds();
         formMap.fitBounds(maxBounds);
         formMap.setMaxBounds(maxBounds);
-        formMap.scrollWheelZoom.disable();
 
         // Set initial observation marker from main map if already spotted
         let myMarker = null;
@@ -260,7 +261,22 @@ export class ObsFormComponent implements AfterViewInit {
           let z = formMap.getZoom();
 
           if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
-            this.hasZoomAlert = true;
+            // this.hasZoomAlert = true;
+            console.debug("ZOOM ALERT", formMap);
+            L.DomUtil.addClass(
+              formMap.getContainer(),
+              "observation-zoom-statement-warning"
+            );
+            if (this.zoomAlertTimeout) {
+              clearTimeout(this.zoomAlertTimeout);
+            }
+            this.zoomAlertTimeout = setTimeout(() => {
+              L.DomUtil.removeClass(
+                formMap.getContainer(),
+                "observation-zoom-statement-warning"
+              );
+              console.debug("Deactivating overlay", formMap);
+            }, 2000);
             return;
           }
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.

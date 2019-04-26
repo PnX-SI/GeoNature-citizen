@@ -45,3 +45,17 @@ app-obs-form .zoom-alert .btn {
 app-obs-form .dropdown-menu.show {
   z-index: 1001 !important;
 }
+
+.observation-zoom-statement-warning::after {
+  position: absolute;
+  color: darkred;
+  display: flex;
+  align-items: center;
+  padding: 1em;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  content: attr(data-observation-zoom-statement-warning);
+}

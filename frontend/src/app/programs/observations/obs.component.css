@@ -288,7 +288,7 @@ section .observations {
   text-align: center;
 }
 
-.modal-content{
+.modal-content {
   max-height: 95vh;
   overflow-y: auto;
 }
@@ -713,6 +713,20 @@ input:checked ~ .toggle i {
   bottom: 0;
   -moz-transition: left 0.5s ease;
   transition: left 0.5s ease;
+}
+
+.observation-zoom-statement-warning::after {
+  position: absolute;
+  color: darkred;
+  display: flex;
+  align-items: center;
+  padding: 1em;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  content: attr(data-observation-zoom-statement-warning);
 }
 
 @media screen and (max-width: 991px) {

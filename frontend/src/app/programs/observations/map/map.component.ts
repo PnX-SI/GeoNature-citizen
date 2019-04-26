@@ -16,6 +16,7 @@ import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
+import "leaflet-gesture-handling";
 
 // import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
@@ -102,7 +103,12 @@ const conf = {
 @Component({
   selector: "app-obs-map",
   template: `
-    <div [id]="options.MAP_ID" #map></div>
+    <div
+      [id]="options.MAP_ID"
+      #map
+      i18n-data-observation-zoom-statement-warning
+      data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
+    ></div>
   `,
   styleUrls: ["./map.component.css"],
   encapsulation: ViewEncapsulation.None
@@ -117,17 +123,15 @@ export class ObsMapComponent implements OnInit, OnChanges {
   programMaxBounds: L.LatLngBounds;
   observationLayer: MarkerClusterGroup;
   newObsMarker: L.Marker;
-
   markers: {
     feature: Feature;
     marker: L.Marker<any>;
   }[] = [];
-
   obsPopup: Feature;
   openPopupAfterClose: boolean;
+  zoomAlertTimeout: any;
 
   ngOnInit() {
-    console.log("map ngOnInit");
     this.initMap(conf);
   }
 
@@ -166,6 +170,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     this.options = options;
     this.observationMap = L.map(this.map.nativeElement, {
       layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay ?
+      gestureHandling: true,
       ...LeafletOptions
     });
 
@@ -196,7 +201,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       })
       .addTo(this.observationMap);
 
-    this.observationMap.scrollWheelZoom.disable();
+    // this.observationMap.scrollWheelZoom.disable();
     this.observationMap.on("popupclose", _e => {
       if (this.openPopupAfterClose && this.obsPopup) {
         this.showPopup(this.obsPopup);
@@ -254,9 +259,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
           let marker: L.Marker<any> = L.marker(latlng, {
             icon: conf.OBS_MARKER_ICON()
           });
-          marker.on("click", () => {
-            console.log(marker);
-          });
           this.markers.push({
             feature: _feature,
             marker: marker
@@ -271,7 +273,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.observationMap.addLayer(this.observationLayer);
 
       this.observationLayer.on("animationend", _e => {
-        console.log("animationend");
         if (this.obsPopup) {
           this.openPopupAfterClose = true;
           this.observationMap.closePopup();
@@ -317,7 +318,27 @@ export class ObsMapComponent implements OnInit, OnChanges {
           if (this.newObsMarker !== null) {
             this.observationMap.removeLayer(this.newObsMarker);
           }
+          let z = this.observationMap.getZoom();
 
+          if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+            // this.hasZoomAlert = true;
+            console.debug("ZOOM ALERT", this.observationMap);
+            L.DomUtil.addClass(
+              this.observationMap.getContainer(),
+              "observation-zoom-statement-warning"
+            );
+            if (this.zoomAlertTimeout) {
+              clearTimeout(this.zoomAlertTimeout);
+            }
+            this.zoomAlertTimeout = setTimeout(() => {
+              L.DomUtil.removeClass(
+                this.observationMap.getContainer(),
+                "observation-zoom-statement-warning"
+              );
+              console.debug("Deactivating overlay", this.observationMap);
+            }, 2000);
+            return;
+          }
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration
           // https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
@@ -326,7 +347,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
               icon: this.options.NEW_OBS_MARKER_ICON()
             }).addTo(this.observationMap);
           }
-          console.debug(coords);
           // emit new coordinates
           this.onClick.emit(coords);
         });
