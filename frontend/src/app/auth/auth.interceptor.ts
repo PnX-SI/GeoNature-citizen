@@ -100,6 +100,7 @@ export class AuthInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     if (
       request.url.includes("token_refresh") ||
+      request.url.includes("registration") ||
       request.url.includes("login") ||
       request.url.includes("logout")
     ) {

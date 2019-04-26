@@ -10,9 +10,18 @@
   </button>
 </div>
 <div class="modal-body">
-  <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null"
+  <ngb-alert
+    *ngIf="errorMessage && !successMessage"
+    type="danger"
+    (close)="errorMessage = null"
     >{{ errorMessage }}
   </ngb-alert>
+  <ngb-alert
+    *ngIf="successMessage"
+    type="success"
+    (close)="successMessage = null"
+    >{{ successMessage }}</ngb-alert
+  >
   <form #registerForm="ngForm" (ngSubmit)="registerForm.valid && onRegister()">
     <ngb-alert [dismissible]="false" type="danger" *ngIf="email.errors" i18n>
       Impossible de valider votre email.
@@ -121,7 +130,7 @@
             [(ngModel)]="user.password"
             name="password"
             #password="ngModel"
-            autocomplete="current-password"
+            autocomplete="new-password"
             minlength="6"
             required
             #password="ngModel"

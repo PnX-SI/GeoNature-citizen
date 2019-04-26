@@ -47,9 +47,9 @@ export class AuthService {
       );
   }
 
-  register(user: RegisterUser): Promise<any> {
+  register(user: RegisterUser): Observable<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/registration`;
-    return this.http.post(url, user, { headers: this.headers }).toPromise();
+    return this.http.post(url, user, { headers: this.headers });
   }
 
   logout(): Promise<any> {
