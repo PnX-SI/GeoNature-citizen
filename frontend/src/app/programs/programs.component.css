@@ -112,3 +112,16 @@
     margin: 0 auto;
   }
 }
+
+
+@media screen and (max-width: 576px) {
+  .text-center h5.card-title{
+    min-height: inherit;
+  }
+  .programs .text-center{
+    margin-top: 0px;
+  }
+  .programs .text-center img {
+    margin-bottom: 15px;
+  }
+}

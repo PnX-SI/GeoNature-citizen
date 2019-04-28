@@ -46,16 +46,6 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     // error.error.msg === "Token has expired";
-    if (
-      request.url.includes("token_refresh") ||
-      request.url.includes("login") ||
-      request.url.includes("logout")
-    ) {
-      if (request.url.includes("token_refresh")) {
-        this.auth.logout();
-      }
-      return throwError("Not authenticated");
-    }
     if (!this.refreshing) {
       this.refreshing = true;
       this.token$.next(null);
@@ -108,7 +98,16 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    if (
+      request.url.includes("token_refresh") ||
+      request.url.includes("registration") ||
+      request.url.includes("login") ||
+      request.url.includes("logout")
+    ) {
+      return next.handle(request.clone());
+    }
     let errorMessage = "";
+
     let expired = this.auth.tokenExpiration(this.auth.getAccessToken());
     // renew two min before expiration
     if (expired && expired <= 120.0 && expired > 0.5) {
@@ -143,7 +142,7 @@ export class AuthInterceptor implements HttpInterceptor {
           }
         }
         // window.alert(errorMessage);
-        console.error(errorMessage);
+        // console.error(errorMessage);
         return throwError(errorMessage);
       })
     );

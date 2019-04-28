@@ -52,6 +52,6 @@ a.leaflet-control-layers-toggle {
   }
   #map {
     width: 100%;
-    min-height: 80vh;
+    max-height: 40vh;
   }
 }

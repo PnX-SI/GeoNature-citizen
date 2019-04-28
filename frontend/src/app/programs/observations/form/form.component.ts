@@ -30,17 +30,28 @@ import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
+import "leaflet-fullscreen/dist/Leaflet.fullscreen";
+import "leaflet-gesture-handling";
 
 import { AppConfig } from "../../../../conf/app.config";
+import { MAP_CONFIG } from "../../../../conf/map.config";
 import {
   PostObservationResponse,
   ObservationFeature,
-  TaxonomyList
+  TaxonomyList,
+  TaxonomyListItem
 } from "../observation.model";
 import { GncProgramsService } from "../../../api/gnc-programs.service";
 
 declare let $: any;
 
+const PROGRAM_AREA_STYLE = {
+  fillColor: "transparent",
+  weight: 2,
+  opacity: 0.8,
+  color: "red",
+  dashArray: "4"
+};
 const taxonSelectInputThreshold = AppConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold =
   AppConfig.taxonAutocompleteInputThreshold;
@@ -50,6 +61,7 @@ const taxonAutocompleteMaxResults = 10;
 // TODO: migrate to conf
 export const obsFormMarkerIcon = L.icon({
   iconUrl: "assets/pointer-blue2.png",
+  iconSize: [33, 42],
   iconAnchor: [16, 42]
 });
 
@@ -108,6 +120,7 @@ export class ObsFormComponent implements AfterViewInit {
   });
   taxonSelectInputThreshold = taxonSelectInputThreshold;
   taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
+  MAP_CONFIG = MAP_CONFIG;
   formMap: L.Map;
   program: FeatureCollection;
   taxonomyListID: number;
@@ -115,6 +128,9 @@ export class ObsFormComponent implements AfterViewInit {
   surveySpecies$: Observable<TaxonomyList>;
   species: Object[] = [];
   taxaCount: number;
+  selectedTaxon: any;
+  hasZoomAlert: boolean;
+  zoomAlertTimeout: any;
 
   disabledDates = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
@@ -158,7 +174,6 @@ export class ObsFormComponent implements AfterViewInit {
         }
       }
     }
-    // console.debug(this.species);
   };
 
   constructor(
@@ -186,22 +201,44 @@ export class ObsFormComponent implements AfterViewInit {
         });
 
         // build map control
-        const formMap = L.map("formMap");
+        const formMap = L.map("formMap", { gestureHandling: true });
         this.formMap = formMap;
 
         L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "OpenStreetMap"
         }).addTo(formMap);
 
+        L.control["fullscreen"]({
+          position: "topright",
+          title: {
+            false: "View Fullscreen",
+            true: "Exit Fullscreen"
+          }
+        }).addTo(formMap);
+
+        let ZoomViewer = L.Control.extend({
+          onAdd: () => {
+            let container = L.DomUtil.create("div");
+            let gauge = L.DomUtil.create("div");
+            container.style.width = "200px";
+            container.style.background = "rgba(255,255,255,0.5)";
+            container.style.textAlign = "left";
+            container.className = "mb-0";
+            formMap.on("zoomstart zoom zoomend", function(_e) {
+              gauge.innerHTML = "Zoom level: " + formMap.getZoom();
+            });
+            container.appendChild(gauge);
+
+            return container;
+          }
+        });
+        let zv = new ZoomViewer();
+        zv.addTo(formMap);
+        zv.setPosition("bottomleft");
+
         const programArea = L.geoJSON(this.program, {
           style: function(_feature) {
-            return {
-              fillColor: "transparent",
-              weight: 2,
-              opacity: 0.8,
-              color: "red",
-              dashArray: "4"
-            };
+            return PROGRAM_AREA_STYLE;
           }
         }).addTo(formMap);
 
@@ -221,10 +258,33 @@ export class ObsFormComponent implements AfterViewInit {
 
         // Update marker on click event
         formMap.on("click", (e: LeafletMouseEvent) => {
+          let z = formMap.getZoom();
+
+          if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+            // this.hasZoomAlert = true;
+            console.debug("ZOOM ALERT", formMap);
+            L.DomUtil.addClass(
+              formMap.getContainer(),
+              "observation-zoom-statement-warning"
+            );
+            if (this.zoomAlertTimeout) {
+              clearTimeout(this.zoomAlertTimeout);
+            }
+            this.zoomAlertTimeout = setTimeout(() => {
+              L.DomUtil.removeClass(
+                formMap.getContainer(),
+                "observation-zoom-statement-warning"
+              );
+              console.debug("Deactivating overlay", formMap);
+            }, 2000);
+            return;
+          }
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
           if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
             if (myMarker) {
+              // TODO: update marker coods inplace.
+              // Implement draggable marker
               formMap.removeLayer(myMarker);
             }
             myMarker = L.marker(e.latlng, { icon: obsFormMarkerIcon }).addTo(
@@ -237,8 +297,13 @@ export class ObsFormComponent implements AfterViewInit {
       });
   }
 
-  onTaxonSelected(cd_nom: number): void {
-    this.obsForm.controls["cd_nom"].patchValue(cd_nom);
+  onTaxonSelected(taxon: TaxonomyListItem): void {
+    this.selectedTaxon = taxon;
+    this.obsForm.controls["cd_nom"].patchValue(taxon.taxref["cd_nom"]);
+  }
+
+  isTaxonSelected(taxon: TaxonomyListItem): boolean {
+    return this.selectedTaxon === taxon;
   }
 
   onFormSubmit(): void {

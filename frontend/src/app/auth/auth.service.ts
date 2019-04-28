@@ -29,7 +29,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(user: LoginUser): Promise<any> {
+  login(user: LoginUser): Observable<LoginPayload> {
     let url = `${AppConfig.API_ENDPOINT}/login`;
     return this.http
       .post<LoginPayload>(url, user, { headers: this.headers })
@@ -44,13 +44,12 @@ export class AuthService {
           }
           return user;
         })
-      )
-      .toPromise();
+      );
   }
 
-  register(user: RegisterUser): Promise<any> {
+  register(user: RegisterUser): Observable<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/registration`;
-    return this.http.post(url, user, { headers: this.headers }).toPromise();
+    return this.http.post(url, user, { headers: this.headers });
   }
 
   logout(): Promise<any> {
@@ -83,7 +82,7 @@ export class AuthService {
       "Authorization",
       `Bearer ${refresh_token}`
     );
-    return this.http.post<TokenRefresh>(url, refresh_token, {
+    return this.http.post<TokenRefresh>(url, null, {
       headers: headers
     });
     /*

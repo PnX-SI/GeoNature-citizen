@@ -26,6 +26,8 @@
               "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.css",
+              "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
+              "node_modules/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css",
               "src/styles.css"
             ],
             "scripts": [
@@ -33,7 +35,9 @@
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "node_modules/leaflet/dist/leaflet.js",
               "node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js",
-              "node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.js"
+              "node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.js",
+              "node_modules/leaflet-fullscreen/dist/Leaflet.fullscreen.min.js",
+              "node_modules/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.js"
             ]
           },
           "configurations": {

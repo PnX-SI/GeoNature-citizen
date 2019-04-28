@@ -7,8 +7,7 @@
       fragment="programs"
       class="btn-big"
       role="button"
-      i18n="Participer au programme"
-      >Participer au programme</a
+      >{{ AppConfig.platform_participate[localeId] }}</a
     >
     <a [routerLink]="['/home']" fragment="programs" class="scroll">
       <span i18n="Scrollez pour en voir plus !"
@@ -22,6 +21,26 @@
 <div class="row">
   <!-- LES PROGRAMMES -->
   <section id="programs" *ngIf="programs.length > 1">
+    <div id="programs-cards">
+      <div class="card" *ngFor="let p of programs">
+        <div class="card-content">
+          <img
+            class="d-block w-100"
+            [src]="p.image || 'assets/Azure-Commun-019.JPG'"
+            alt="Programme {{ p.title }}"
+          />
+          <h3>{{ p.title }}</h3>
+          <p [innerHTML]="p.html_long_desc" class="card-body"></p>
+        </div>
+        <a
+          class="btn-big"
+          [routerLink]="['/programs', p.id_program, 'observations']"
+        >
+          {{ AppConfig.platform_participate[localeId] }}
+        </a>
+      </div>
+    </div>
+
     <div id="slider" class="carousel slide" data-ride="carousel">
       <ol class="carousel-indicators">
         <li
@@ -50,8 +69,7 @@
               <a
                 class="btn-big"
                 [routerLink]="['/programs', p.id_program, 'observations']"
-                i18n="Partager une observation"
-                >Partager une observation</a
+                >{{ AppConfig.platform_participate[localeId] }}</a
               >
             </div>
           </div>

@@ -52,6 +52,9 @@ class UserModel(TimestampMixinModel, db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self):
+        db.session.commit()
+
     def as_secured_dict(self, recursif=False, columns=()):
         surname = self.username or ""
         name = self.name or ""
@@ -65,7 +68,9 @@ class UserModel(TimestampMixinModel, db.Model):
             "organism": self.organism,
             "full_name": name + " " + surname,
             "timestamp_create": self.timestamp_create.isoformat(),
-            "timestamp_update": self.timestamp_update.isoformat(),
+            "timestamp_update": self.timestamp_update.isoformat()
+            if self.timestamp_update
+            else None,
         }
 
     @staticmethod

@@ -3,18 +3,24 @@ import {
   Input,
   ViewChild,
   ElementRef,
-  ViewEncapsulation
+  ViewEncapsulation,
+  Inject,
+  LOCALE_ID
 } from "@angular/core";
 
 import { FlowItem } from "./flow/flow-item";
 import { ModalFlowService } from "./modalflow.service";
+import { AppConfig } from "../../../../conf/app.config";
 
 @Component({
   selector: "app-modalflow",
   template: `
     <div class="btn-group">
-      <button class="btn-big" (click)="clicked()">
-        Ajouter une observation
+      <button
+        class="btn-big text-center text-nowrap text-uppercase"
+        (click)="clicked()"
+      >
+        {{ AppConfig.program_add_an_observation[localeId] }}
       </button>
       <!-- <button class="btn-big">Réaliser un programme</button> -->
     </div>
@@ -28,10 +34,14 @@ import { ModalFlowService } from "./modalflow.service";
 export class ModalFlowComponent {
   @Input("coords") coords;
   @ViewChild("content") content: ElementRef;
+  AppConfig = AppConfig;
   flowitems: FlowItem[];
   timeout: any;
 
-  constructor(public flowService: ModalFlowService) {}
+  constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
+    public flowService: ModalFlowService
+  ) {}
 
   clicked() {
     console.debug("coords:", this.coords);

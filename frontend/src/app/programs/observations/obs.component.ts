@@ -4,12 +4,14 @@ import {
   ViewEncapsulation,
   AfterViewInit,
   ViewChild,
-  HostListener
+  HostListener,
+  Inject,
+  LOCALE_ID
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { forkJoin } from "rxjs";
 
-import { FeatureCollection } from "geojson";
+import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 
 import { Program } from "../programs.models";
@@ -18,6 +20,7 @@ import { ModalFlowService } from "./modalflow/modalflow.service";
 import { TaxonomyList } from "./observation.model";
 import { ObsMapComponent } from "./map/map.component";
 import { ObsListComponent } from "./list/list.component";
+import { AppConfig } from "../../../conf/app.config";
 
 @Component({
   selector: "app-observations",
@@ -26,6 +29,7 @@ import { ObsListComponent } from "./list/list.component";
   encapsulation: ViewEncapsulation.None
 })
 export class ObsComponent implements OnInit, AfterViewInit {
+  AppConfig = AppConfig;
   fragment: string;
   coords: L.Point;
   program_id: any;
@@ -37,7 +41,10 @@ export class ObsComponent implements OnInit, AfterViewInit {
   @ViewChild(ObsMapComponent) obsMap: ObsMapComponent;
   @ViewChild(ObsListComponent) obsList: ObsListComponent;
 
+  selectedObs: Feature;
+
   constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     public flowService: ModalFlowService
@@ -89,11 +96,15 @@ export class ObsComponent implements OnInit, AfterViewInit {
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
     console.debug("[ObsComponent.newObservationEventHandler]", e.detail);
-    // const obsFeature: Feature = e.detail;
-    // setTimeout() ?
-    // this.obsList.observations = {
-    //   type: "FeatureCollection",
-    //   features: [obsFeature, ...this.observations.features]
-    // };
+  }
+
+  @HostListener("document:ObservationFilterEvent", ["$event"])
+  observationFilterEventHandler(e: CustomEvent) {
+    e.stopPropagation();
+    console.debug("[ObsComponent.observationFilterEventHandler]", e.detail);
+    this.obsList.observations = {
+      type: "FeatureCollection",
+      features: this.observations.features
+    };
   }
 }
