@@ -656,7 +656,7 @@ form .d-inline-flex {
   bottom: 0;
 }
 
-input[type="checkbox"] {
+input#slide-sidebar[type="checkbox"] {
   display: none;
 }
 
