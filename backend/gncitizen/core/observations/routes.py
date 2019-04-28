@@ -36,6 +36,8 @@ routes = Blueprint("observations", __name__)
 obs_keys = (
     "cd_nom",
     "id_observation",
+    "observer",
+    "municipality",
     "obs_txt",
     "count",
     "date",
@@ -55,12 +57,25 @@ def generate_observation_geojson(id_observation):
     """
 
     # Crée le dictionnaire de l'observation
-    result = ObservationModel.query.get(id_observation)
-    result_dict = result.as_dict(True)
+    result = (
+        db.session.query(
+            ObservationModel,
+            UserModel.username.label("observer_username"),
+            LAreas.area_name,
+            LAreas.area_code,
+        )
+        .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
+        .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
+        .filter(ObservationModel.id_observation == id_observation)
+        .one()
+    )
+    result_dict = result.ObservationModel.as_dict(True)
+    result_dict["observer"] = {"username": result.observer_username}
+    result_dict["municipality"] = {"name": result.area_name, "code": result.area_code}
 
     # Populate "geometry"
     features = []
-    feature = get_geojson_feature(result.geom)
+    feature = get_geojson_feature(result.ObservationModel.geom)
 
     # Populate "properties"
     for k in result_dict:
@@ -402,8 +417,7 @@ def get_program_observations(id):
             )
             .join(
                 ObservationMediaModel,
-                ObservationMediaModel.id_data_source
-                == ObservationModel.id_observation,  # noqa: E501
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
                 isouter=True,
             )
             .join(
@@ -441,7 +455,7 @@ def get_program_observations(id):
             current_app.logger.warning(feature["properties"]["image"])
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
-                if k in obs_keys:
+                if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
             taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
             for k in taxref:

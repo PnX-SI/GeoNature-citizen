@@ -83,7 +83,7 @@ export class ObsListComponent implements OnChanges {
     });
 
     if (filters.taxon || filters.municipality) {
-      const event: CustomEvent = new CustomEvent("NewObservationFilterEvent", {
+      const event: CustomEvent = new CustomEvent("ObservationFilterEvent", {
         bubbles: true,
         cancelable: true,
         detail: filters

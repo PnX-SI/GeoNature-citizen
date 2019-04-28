@@ -98,10 +98,10 @@ export class ObsComponent implements OnInit, AfterViewInit {
     console.debug("[ObsComponent.newObservationEventHandler]", e.detail);
   }
 
-  @HostListener("document:NewObservationFilterEvent", ["$event"])
-  newObservationFilterEventHandler(e: CustomEvent) {
+  @HostListener("document:ObservationFilterEvent", ["$event"])
+  observationFilterEventHandler(e: CustomEvent) {
     e.stopPropagation();
-    console.debug("[ObsComponent.newObservationFilterEventHandler]", e.detail);
+    console.debug("[ObsComponent.observationFilterEventHandler]", e.detail);
     this.obsList.observations = {
       type: "FeatureCollection",
       features: this.observations.features

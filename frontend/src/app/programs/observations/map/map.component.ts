@@ -210,6 +210,28 @@ export class ObsMapComponent implements OnInit, OnChanges {
       }
       this.openPopupAfterClose = false;
     });
+
+    const ZoomViewer = L.Control.extend({
+      onAdd: () => {
+        let container = L.DomUtil.create("div");
+        let gauge = L.DomUtil.create("div");
+        container.style.width = "200px";
+        container.style.background = "rgba(255,255,255,0.5)";
+        container.style.textAlign = "left";
+        container.className = "mb-0";
+        this.observationMap.on(
+          "zoomstart zoom zoomend",
+          _e =>
+            (gauge.innerHTML = "Zoom level: " + this.observationMap.getZoom())
+        );
+        container.appendChild(gauge);
+
+        return container;
+      }
+    });
+    let zv = new ZoomViewer();
+    zv.addTo(this.observationMap);
+    zv.setPosition("bottomright");
   }
 
   getPopupContent(feature): string {
