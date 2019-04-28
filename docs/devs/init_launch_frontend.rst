@@ -37,7 +37,7 @@ Dans son incarnation actuelle, quelques fichiers de dépendances doivent être p
                onLocationOutsideMapBounds?: any;
                showPopup?: boolean;
                strings?: any;
-    +            getLocationBounds?: Function;
+    +          getLocationBounds?: Function;
                locateOptions?: L.LocateOptions;
            }
        }
@@ -55,6 +55,15 @@ Dans son incarnation actuelle, quelques fichiers de dépendances doivent être p
          // You are able add additional properties, but it makes this interface unchackable.
          // See: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/15313
          // Example:
+    @@ -1025,6 +1025,7 @@
+          tapTolerance?: number;
+          touchZoom?: Zoom;
+          bounceAtZoomLimits?: boolean;
+     +    gestureHandling?: boolean;
+      }
+
+      export type ControlPosition = 'topleft' | 'topright' | 'bottomleft' |
+     'bottomright';
 
 Lancer du frontend
 ##################
