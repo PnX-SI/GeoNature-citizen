@@ -28,7 +28,8 @@
               "node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.css",
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
               "node_modules/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css",
-              "src/styles.css"
+              "src/styles.css",
+              "src/custom/custom.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
