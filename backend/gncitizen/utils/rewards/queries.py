@@ -45,11 +45,9 @@ program_attendance = attendance_data.filter(
 
 # Seniority:
 seniority_data = (
-    (
-        db.session.query(UserModel.timestamp_create)
-        .filter(UserModel.id_user == role_id)
-        .first()
-    )[0]
+    db.session.query(UserModel.timestamp_create)
+    .filter(UserModel.id_user == role_id)
+    .first()[0]
 ).timestamp()
 
 

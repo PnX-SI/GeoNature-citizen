@@ -55,7 +55,7 @@ def taxo_distance_error(reference, submitted):
         if reference["taxref"][k] == submitted[k]:
             continue
         else:
-            counter <<= 1
+            counter <<= taxo_error_binary_weights[k]
     return counter
 
 
@@ -114,3 +114,15 @@ def program_date_bounds_action(data):
 program_date_bounds_rule = Rule(
     program_date_bounds_condition, program_date_bounds_action
 )
+
+
+#
+# définir le nombre d'observations par classe (aves, mammalia, reptilia) ou par ordre (odonata, lepidoptera).
+# Cela permettra ainsi de débloquer des niveaux de badges de "spécialistes"
+# - ornithologue, lépidoptériste, odonatologue.
+#
+# Nous souhaitons également ajouter une règle permettant d'attribuer un nombre d'observations par communes (ABC).
+#
+# SI 10 observations d'oiseaux ALORS déclenche badge ornithologue bronze.
+# SI 100 observations d'oiseaux ALORS déclenche badge ornithologue argent.
+# SI 500 observations d'oiseaux ALORS déclenche badge ornithologue or.
