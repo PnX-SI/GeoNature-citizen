@@ -59,10 +59,7 @@ def generate_observation_geojson(id_observation):
     # Crée le dictionnaire de l'observation
     result = (
         db.session.query(
-            ObservationModel,
-            UserModel.username.label("observer_username"),
-            LAreas.area_name,
-            LAreas.area_code,
+            ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code
         )
         .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
@@ -70,7 +67,7 @@ def generate_observation_geojson(id_observation):
         .one()
     )
     result_dict = result.ObservationModel.as_dict(True)
-    result_dict["observer"] = {"username": result.observer_username}
+    result_dict["observer"] = {"username": result.username}
     result_dict["municipality"] = {"name": result.area_name, "code": result.area_code}
 
     # Populate "geometry"
@@ -401,9 +398,7 @@ def get_program_observations(id):
         observations = (
             db.session.query(
                 ObservationModel,
-                UserModel.username.label("observer_username"),
-                # UserModel.name.label("observer_name"),
-                # UserModel.username.label("observer_surname"),
+                UserModel.username,
                 MediaModel.filename.label("image"),
                 LAreas.area_name,
                 LAreas.area_code,
@@ -437,26 +432,33 @@ def get_program_observations(id):
                 "code": observation.area_code,
             }
 
+            current_app.logger.debug(observations[0])
+
             # Observer
             feature["properties"]["observer"] = {
-                "username": observation.observer_username,
+                "username": observation.username,
                 # "name": observation.observer_name,
                 # "surname": observation.observer_surname,
             }
+            current_app.logger.warning(feature["properties"]["observer"])
 
-            # FIXME: Media endpoint
             feature["properties"]["image"] = (
-                "{}/media/{}".format(  # FIXME: medias url
-                    current_app.config["API_ENDPOINT"], observation.image
+                "/".join(
+                    [
+                        current_app.config["API_ENDPOINT"],
+                        current_app.config["MEDIA_FOLDER"],
+                        observation.image,
+                    ]
                 )
                 if observation.image
                 else None
             )
-            current_app.logger.warning(feature["properties"]["image"])
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
+                # TODO: refact leveraging generate_observation_geojson()
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
+
             taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
             for k in taxref:
                 feature["properties"][k] = taxref[k]

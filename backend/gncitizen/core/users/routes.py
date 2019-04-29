@@ -302,7 +302,7 @@ def logged_user():
                 200,
             )
         if flask.request.method == "POST":
-            isAdmin = user.admin
+            isAdmin = user.admin or False
             current_app.logger.debug("[logged_user] Update current user personnal data")
             request_data = dict(request.get_json())
             for data in request_data:
@@ -311,6 +311,7 @@ def logged_user():
 
             user.password = UserModel.generate_hash(request_data["password"])
             user.admin = isAdmin
+            # FIXME: update corresponding obs IDs ... in any case ?
             user.update()
             return {"message": "Personal info updated."}, 200
 

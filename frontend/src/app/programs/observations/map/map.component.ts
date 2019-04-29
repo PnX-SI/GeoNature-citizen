@@ -246,7 +246,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
         </br>
         <span i18n>
           Observé par ${
-            feature.properties.observer
+            feature.properties.observer && feature.properties.observer.username
               ? feature.properties.observer.username
               : "Anonyme"
           }
