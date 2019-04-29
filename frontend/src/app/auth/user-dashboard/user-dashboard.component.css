@@ -121,6 +121,13 @@
   padding: 0px;
 }
 
+form > button {
+  background: var(--primary);
+  padding: 10px 30px;
+  margin: 10px 25px;
+  max-height: 115px;
+}
+
 @media screen and (min-width: 992px) {
   #badges .row div:nth-child(2):before {
     content: " ";
