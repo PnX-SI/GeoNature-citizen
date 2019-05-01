@@ -32,6 +32,13 @@
   width: 100%;
 }
 
+.user-infos img:hover,
+.user-infos svg:hover,
+.user-infos p:hover,
+.user-infos i:hover {
+  cursor: pointer;
+}
+
 .user-infos span {
   color: #fff;
   background-color: rgba(255, 255, 255, 0.212);

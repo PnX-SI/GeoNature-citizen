@@ -1,9 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { AuthService } from "./../auth.service";
+import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+
 import { AppConfig } from "../../../conf/app.config";
-import { Router } from "@angular/router";
+import { AuthService } from "./../auth.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-user-dashboard",
@@ -16,11 +19,14 @@ export class UserDashboardComponent implements OnInit {
   private headers: HttpHeaders = new HttpHeaders({
     "Content-Type": "application/json"
   });
+  modalRef: NgbModalRef;
+  personalInfo: any = {};
 
   constructor(
     private auth: AuthService,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -55,12 +61,40 @@ export class UserDashboardComponent implements OnInit {
       .catch(err => alert(err));
   }
 
-  exportPersonalData() {
+  getPersonalInfo(): Observable<any> {
     let url = `${AppConfig.API_ENDPOINT}/user/info`;
-    const data = this.http.get(url, { headers: this.headers });
-    data.subscribe(data => {
+    return this.http.get(url, { headers: this.headers });
+  }
+
+  exportPersonalData() {
+    this.getPersonalInfo().subscribe(data => {
       alert(JSON.stringify(data));
       // TODO: data format: csv, geojson ? Link observations and associated medias ?
     });
+  }
+
+  editInfos(content) {
+    this.getPersonalInfo().subscribe(data => {
+      this.personalInfo = data;
+      this.modalRef = this.modalService.open(content, {
+        size: "lg",
+        centered: true
+      });
+    });
+  }
+
+  onUpdatePersonalData() {
+    this.http
+      .post(`${AppConfig.API_ENDPOINT}/user/info`, this.personalInfo, {
+        headers: this.headers
+      })
+      .subscribe(
+        data => console.debug(data),
+        error => console.error(error),
+        () => {
+          // update PI
+          this.modalRef.close();
+        }
+      );
   }
 }

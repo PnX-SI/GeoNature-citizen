@@ -14,16 +14,20 @@ export interface ObservationFeature extends Feature {
     date: Date;
     id_observation: number;
     images: string[];
+    municipality?: any;
     obs_txt: string;
+    observer?: any;
     sci_name: string;
     timestamp_create: Date;
   };
 }
 
+export interface TaxonomyListItem {
+  medias: any;
+  nom: Object;
+  taxref: Object;
+}
+
 export interface TaxonomyList {
-  [index: number]: {
-    medias: any;
-    nom: Object;
-    taxref: Object;
-  };
+  [index: number]: TaxonomyListItem;
 }

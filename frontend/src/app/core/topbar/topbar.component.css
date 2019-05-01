@@ -127,9 +127,9 @@ div.btn-group a:first-child{
 
 @media screen and (max-width: 576px) {
   .navbar {
-    min-height: 80px !important;
+    min-height: 65px !important;
   }
   .navbar img{
-    height: 50px
+    height: 40px
   } 
 }

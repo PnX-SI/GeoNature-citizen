@@ -3,12 +3,15 @@ import {
   OnChanges,
   Input,
   HostListener,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  SimpleChanges,
+  Output,
+  EventEmitter
 } from "@angular/core";
 
 import { AppConfig } from "../../../../conf/app.config";
 import { FeatureCollection, Feature } from "geojson";
-import { TaxonomyList } from "../observation.model";
+import { TaxonomyList, TaxonomyListItem } from "../observation.model";
 
 @Component({
   selector: "app-obs-list",
@@ -18,25 +21,34 @@ import { TaxonomyList } from "../observation.model";
 export class ObsListComponent implements OnChanges {
   @Input("observations") observations: FeatureCollection;
   @Input("taxa") surveySpecies: TaxonomyList;
-  municipalities: string[];
+  @Output("obsSelect") obsSelect: EventEmitter<Feature> = new EventEmitter();
+  municipalities: any[];
   observationList: Feature[] = [];
   program_id: number;
   taxa: any[];
   AppConfig = AppConfig;
 
+  selectedTaxon: TaxonomyListItem = null;
+  selectedMunicipality: any = null;
+
   constructor(private cd: ChangeDetectorRef) {}
 
-  ngOnChanges() {
+  ngOnChanges(_changes: SimpleChanges) {
     if (this.observations) {
       console.debug("ObsListComponent::observations OnChanges");
       this.observationList = this.observations["features"];
       this.municipalities = this.observations.features
         .map(features => features.properties)
         .map(property => property.municipality)
-        .filter(municipality =>
-          municipality != null ? <string>municipality : ""
-        )
-        .filter((v, i, a) => a.indexOf(v) === i);
+        .filter(municipality => {
+          return municipality.name && municipality.code;
+        })
+        .filter((v, _i, a) => {
+          let exists = a.find(exist => {
+            return exist.code == v.code;
+          });
+          return !exists || a.indexOf(exists) == a.indexOf(v);
+        });
     }
   }
 
@@ -46,5 +58,41 @@ export class ObsListComponent implements OnChanges {
     console.debug("[ObsListComponent.newObservationEventHandler]", obsFeature);
     this.observationList = [obsFeature, ...this.observations.features];
     this.cd.detectChanges();
+  }
+
+  onFilterChange(): void {
+    let filters: { taxon: string; municipality: string } = {
+      taxon: null,
+      municipality: null
+    };
+    this.observationList = this.observations["features"].filter(obs => {
+      let results: boolean[] = [];
+      if (this.selectedMunicipality) {
+        results.push(
+          obs.properties.municipality.code == this.selectedMunicipality.code
+        );
+        filters.municipality = this.selectedMunicipality.code;
+      }
+      if (this.selectedTaxon) {
+        results.push(
+          obs.properties.cd_nom == this.selectedTaxon.taxref["cd_nom"]
+        );
+        filters.taxon = this.selectedTaxon.taxref["cd_nom"];
+      }
+      return results.indexOf(false) < 0;
+    });
+
+    if (filters.taxon || filters.municipality) {
+      const event: CustomEvent = new CustomEvent("ObservationFilterEvent", {
+        bubbles: true,
+        cancelable: true,
+        detail: filters
+      });
+      document.dispatchEvent(event);
+    }
+  }
+
+  onObsClick(e): void {
+    this.obsSelect.emit(e);
   }
 }

@@ -3,7 +3,6 @@ import {
   BrowserModule,
   BrowserTransferStateModule
 } from "@angular/platform-browser";
-import { HttpModule } from "@angular/http";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
@@ -58,7 +57,6 @@ registerLocaleData(localeFr, "fr");
     BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserTransferStateModule,
     HttpClientModule,
-    HttpModule,
     ReactiveFormsModule,
     FormsModule,
     NgbModule,

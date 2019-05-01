@@ -28,6 +28,7 @@ from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
 
 from .models import ObservationMediaModel, ObservationModel
+from gncitizen.core.users.models import UserModel
 
 routes = Blueprint("observations", __name__)
 
@@ -35,6 +36,8 @@ routes = Blueprint("observations", __name__)
 obs_keys = (
     "cd_nom",
     "id_observation",
+    "observer",
+    "municipality",
     "obs_txt",
     "count",
     "date",
@@ -54,12 +57,25 @@ def generate_observation_geojson(id_observation):
     """
 
     # Crée le dictionnaire de l'observation
-    result = ObservationModel.query.get(id_observation)
-    result_dict = result.as_dict(True)
+    result = (
+        db.session.query(
+            ObservationModel,
+            UserModel.username.label("observer_username"),
+            LAreas.area_name,
+            LAreas.area_code,
+        )
+        .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
+        .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
+        .filter(ObservationModel.id_observation == id_observation)
+        .one()
+    )
+    result_dict = result.ObservationModel.as_dict(True)
+    result_dict["observer"] = {"username": result.observer_username}
+    result_dict["municipality"] = {"name": result.area_name, "code": result.area_code}
 
     # Populate "geometry"
     features = []
-    feature = get_geojson_feature(result.geom)
+    feature = get_geojson_feature(result.ObservationModel.geom)
 
     # Populate "properties"
     for k in result_dict:
@@ -173,9 +189,7 @@ def post_observation():
         """
     try:
         request_datas = request.form
-        current_app.logger.debug(
-            "[post_observation] request data:", request_datas
-        )
+        current_app.logger.debug("[post_observation] request data:", request_datas)
 
         datas2db = {}
         for field in request_datas:
@@ -207,8 +221,8 @@ def post_observation():
 
         newobs.uuid_sinp = uuid.uuid4()
 
+        print("geom", newobs.geom)
         newobs.municipality = get_municipality_id_from_wkb(newobs.geom)
-        print('geom',newobs.geom)
 
         db.session.add(newobs)
         db.session.commit()
@@ -231,10 +245,21 @@ def post_observation():
             current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
             raise GeonatureApiError(e)
 
-        return (
-            {"message": "New observation created", "features": features},
-            200,
-        )
+        if current_app.config["REWARDS"] and current_app.config["REWARDS"]["BADGESET"]:
+            # 1. harvest base_props:
+            #   - attendance,
+            #   - seniority,
+            #   - mission_success
+            #  and program props:
+            #   - program_attendance,
+            #   - program_taxo_dist,
+            #   - ref taxon,
+            #   - submitted_taxon,
+            #   - submission_date
+            # 2. map result to BADGESET
+            # 3. return reward selection with new observation feature
+            pass
+        return ({"message": "New observation created", "features": features}, 200)
 
     except Exception as e:
         current_app.logger.warning("[post_observation] Error: %s", str(e))
@@ -334,9 +359,7 @@ def get_observations_from_list(id):  # noqa: A002
                     for k in observation_dict:
                         if k in obs_keys:
                             feature["properties"][k] = observation_dict[k]
-                    taxref = get_specie_from_cd_nom(
-                        feature["properties"]["cd_nom"]
-                    )
+                    taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
                     for k in taxref:
                         feature["properties"][k] = taxref[k]
                     features.append(feature)
@@ -378,15 +401,15 @@ def get_program_observations(id):
         observations = (
             db.session.query(
                 ObservationModel,
+                UserModel.username.label("observer_username"),
+                # UserModel.name.label("observer_name"),
+                # UserModel.username.label("observer_surname"),
                 MediaModel.filename.label("image"),
-                LAreas.area_name, LAreas.area_code
+                LAreas.area_name,
+                LAreas.area_code,
             )
             .filter(ObservationModel.id_program == id, ProgramsModel.is_active)
-            .join(
-                LAreas,
-                LAreas.id_area == ObservationModel.municipality,
-                isouter=True,
-            )
+            .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
             .join(
                 ProgramsModel,
                 ProgramsModel.id_program == ObservationModel.id_program,
@@ -394,8 +417,7 @@ def get_program_observations(id):
             )
             .join(
                 ObservationMediaModel,
-                ObservationMediaModel.id_data_source
-                == ObservationModel.id_observation,  # noqa: E501
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
                 isouter=True,
             )
             .join(
@@ -403,13 +425,25 @@ def get_program_observations(id):
                 ObservationMediaModel.id_media == MediaModel.id_media,
                 isouter=True,
             )
+            .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
             .order_by(ObservationModel.timestamp_create.desc())
             .all()
         )
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
-            feature["properties"]["municipality"] = {"name":observation.area_name, "code":observation.area_code}
+            feature["properties"]["municipality"] = {
+                "name": observation.area_name,
+                "code": observation.area_code,
+            }
+
+            # Observer
+            feature["properties"]["observer"] = {
+                "username": observation.observer_username,
+                # "name": observation.observer_name,
+                # "surname": observation.observer_surname,
+            }
+
             # FIXME: Media endpoint
             feature["properties"]["image"] = (
                 "{}/media/{}".format(  # FIXME: medias url
@@ -421,7 +455,7 @@ def get_program_observations(id):
             current_app.logger.warning(feature["properties"]["image"])
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
-                if k in obs_keys:
+                if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
             taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
             for k in taxref:
@@ -436,3 +470,19 @@ def get_program_observations(id):
 @routes.route("media/<item>")
 def get_media(item):
     return send_from_directory(str(MEDIA_DIR), item)
+
+
+@routes.route("/dev_rewards")
+@json_resp
+def get_rewards():
+    from gncitizen.utils.rewards import reward, results
+
+    current_app.logger.debug("reward: %s", json.dumps(reward, indent=4))
+    return (
+        {
+            "results": results,
+            "rewards": reward,
+            "REWARDS": current_app.config["REWARDS"],
+        },
+        200,
+    )

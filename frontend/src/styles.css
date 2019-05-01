@@ -1,29 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
 
 @font-face {
-    font-family: "Satisfy";
-    src: url("assets/Satisfy-Regular.ttf") format("truetype");
+  font-display: auto;
+  font-family: "Satisfy";
+  src: url("assets/Satisfy-Regular.ttf") format("truetype");
 }
 
 :root {
-    --default-font-color: #5d6970;
-    --primary: #00a99d;
-    --dark-primary: #0a998f;
-    --secondary: #60b15c;
-    --secondary-gradient: #57a154;
-    --ternary: #45765c;
-    --list-toggler-width: 21px;
-    --list-obs-offset: 170px;
-    --router-outlet-offset: 113px;
-    --modal-header-bg-moz: moz-linear-gradient(top, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
-    --modal-header-bg-webkit: moz-linear-gradient(top, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
-    --modal-header-bg-linear: linear-gradient(to bottom, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
+  --default-font-color: #5d6970;
+  --primary: #00a99d;
+  --dark-primary: #0a998f;
+  --secondary: #60b15c;
+  --secondary-gradient: #57a154;
+  --ternary: #45765c;
+  --list-toggler-width: 21px;
+  --list-obs-offset: 170px;
+  --router-outlet-offset: 113px;
+  --modal-header-bg-moz: moz-linear-gradient(
+    top,
+    var(--secondary) 0%,
+    var(--secondary) 50%,
+    var(--secondary-gradient) 51%,
+    var(--secondary-gradient) 100%
+  );
+  --modal-header-bg-webkit: moz-linear-gradient(
+    top,
+    var(--secondary) 0%,
+    var(--secondary) 50%,
+    var(--secondary-gradient) 51%,
+    var(--secondary-gradient) 100%
+  );
+  --modal-header-bg-linear: linear-gradient(
+    to bottom,
+    var(--secondary) 0%,
+    var(--secondary) 50%,
+    var(--secondary-gradient) 51%,
+    var(--secondary-gradient) 100%
+  );
 }
 
 html,
 body {
-    height: 100%;
-    color: var(--default-font-color);
+  height: 100%;
+  color: var(--default-font-color);
 }
 
 h1,
@@ -32,66 +51,81 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
 
 button,
 .btn {
-    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
 
 .btn-big {
-    text-transform: uppercase;
-    color: #fff !important;
-    padding: 20px 30px;
-    border: none;
-    font-weight: 500;
-    font-size: 18px;
-    width: fit-content;
-    transition: all 0.2s ease-in-out;
+  text-transform: uppercase;
+  color: #fff !important;
+  padding: 20px 30px;
+  border: none;
+  font-weight: 500;
+  font-size: 18px;
+  width: fit-content;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn-big:hover {
-    -webkit-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
-    -moz-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
-    box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
-    color: #fff !important;
-    transform: translateY(-5px);
+  -webkit-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
+  -moz-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
+  box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
+  color: #fff !important;
+  transform: translateY(-5px);
+}
+
+button:disabled:hover{
+  transform: none;
+  box-shadow: none !important;
+  cursor: not-allowed;
 }
 
 ul {
-    list-style-type: none;
+  list-style-type: none;
 }
 
 a,
 button,
 *:focus {
-    color: #000;
-    box-shadow: none !important;
-    cursor: pointer;
-    outline: none;
+  color: #000;
+  box-shadow: none !important;
+  cursor: pointer;
+  outline: none;
 }
 
 a:hover,
 a:focus,
 a:active {
-    text-decoration: none !important;
-    color: #555;
+  text-decoration: none !important;
+  color: #555;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-    outline: none !important;
-    box-shadow: none !important;
-    border: solid 2px var(--primary) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border: solid 2px var(--primary) !important;
+}
+
+.ng-valid[required],
+.ng-valid.required,
+.ng-valid:not(form) {
+  border-left: 5px solid #42a948; /* green */
+}
+
+.ng-invalid:not(form) {
+  border-left: 5px solid #a94442; /* red */
 }
 
 .modal-content {
-    border-radius: 0px !important;
-    border: none !important;
+  border-radius: 0px !important;
+  border: none !important;
 }
-
 
 /* .toolbar {
   position: relative;
@@ -109,35 +143,32 @@ select:focus {
 } */
 
 @media screen and (max-width: 1024px) {
-    .btn-big {
-        padding: 10px 20px;
-    }
+  .btn-big {
+    padding: 10px 20px;
+  }
 }
 
-
 /* scroll bar theming */
-
 
 /* firefox */
 
 * {
-    scrollbar-color: var(--primary) var(--light);
+  scrollbar-color: var(--primary) var(--light);
 }
-
 
 /* blink scroll bar custom design */
 
 ::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    width: 10px;
-    border: 1px solid #eee;
-    margin: 5px;
+  background: var(--primary);
+  width: 10px;
+  border: 1px solid #eee;
+  margin: 5px;
 }
 
 ::-webkit-scrollbar {
-    background: #eee;
-    width: 10px;
-    height: 10px;
-    margin: 5px;
-    cursor: pointer;
+  background: #eee;
+  width: 10px;
+  height: 10px;
+  margin: 5px;
+  cursor: pointer;
 }
