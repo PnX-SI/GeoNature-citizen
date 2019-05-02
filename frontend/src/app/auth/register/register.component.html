@@ -22,7 +22,11 @@
     (close)="successMessage = null"
     >{{ successMessage }}</ngb-alert
   >
-  <form #registerForm="ngForm" (ngSubmit)="registerForm.valid && onRegister()">
+  <form
+    *ngIf="errorMessage || !successMessage"
+    #registerForm="ngForm"
+    (ngSubmit)="registerForm.valid && onRegister()"
+  >
     <ngb-alert [dismissible]="false" type="danger" *ngIf="email.errors" i18n>
       Impossible de valider votre email.
     </ngb-alert>
@@ -175,6 +179,7 @@
     </div>
 
     <button
+      *ngIf="errorMessage || !successMessage"
       type="submit"
       class="btn btn-outline-primary text-right rounded-0"
       i18n
@@ -183,4 +188,14 @@
       S'enregistrer
     </button>
   </form>
+  <button
+    *ngIf="successMessage"
+    class="btn btn-outline-primary rounded-0"
+    [disabled]="registerForm.invalid"
+    expand="block"
+    (click)="activeModal.dismiss('Cross click')"
+    i18n="Fermer"
+  >
+    Fermer
+  </button>
 </div>

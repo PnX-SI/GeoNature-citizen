@@ -22,7 +22,11 @@
     (close)="successMessage = null"
     >{{ successMessage }}</ngb-alert
   >
-  <form #loginForm="ngForm" (ngSubmit)="loginForm.form.valid && onLogin()">
+  <form
+    *ngIf="errorMessage || !successMessage"
+    #loginForm="ngForm"
+    (ngSubmit)="loginForm.form.valid && onLogin()"
+  >
     <div class="form-group">
       <label for="username" i18n="login|username">Utilisateur</label>
       <div class="input-group">
@@ -76,6 +80,7 @@
       </div>
     </div>
     <button
+      *ngIf="errorMessage || !successMessage"
       type="submit"
       class="btn btn-outline-primary rounded-0"
       i18n="login|login"
@@ -85,4 +90,14 @@
       Se connecter
     </button>
   </form>
+  <button
+    *ngIf="successMessage"
+    class="btn btn-outline-primary rounded-0"
+    [disabled]="loginForm.invalid"
+    expand="block"
+    (click)="activeModal.dismiss('Cross click')"
+    i18n="Fermer"
+  >
+    Fermer
+  </button>
 </div>
