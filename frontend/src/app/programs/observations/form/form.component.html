@@ -8,7 +8,14 @@
   <div class="form-row">
     <div class="form-group col-lg-8">
       <input formControlName="id_program" type="hidden" />
-      <label for="cd_nom" i18n>Sélectionnez une espèce</label>
+      <label for="cd_nom" i18n
+        >{{
+          taxaCount >= taxonAutocompleteInputThreshold
+            ? "Rechercher"
+            : "Sélectionnez"
+        }}
+        une espèce</label
+      >
       <!-- TAXON SELECT -->
       <div
         *ngIf="
@@ -67,7 +74,7 @@
         class="form-control rounded-0"
         formControlName="cd_nom"
         i18n-placeholder
-        placeholder="Rechercher une espèce"
+        placeholder="Nom latin ou vernaculaire ou cd_ref"
         [editable]="false"
         [ngbTypeahead]="inputAutoCompleteSearch"
         [resultTemplate]="rt"
