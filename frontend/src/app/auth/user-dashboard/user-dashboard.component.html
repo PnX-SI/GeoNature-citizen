@@ -5,7 +5,12 @@
         <div class="user"></div>
         <div class="user-infos" (click)="editInfos(personalInfos)">
           <!-- FIXME: mocked observation count -->
-          <span>{{ "30" }} observations</span> <img src="assets/user.jpg" />
+          <span i18n
+            >{ +stats?.platform_attendance, plural, =0 {observation} =1
+            {observation} other {{{stats?.platform_attendance}} observations}
+            }</span
+          >
+          <img src="assets/user.jpg" />
           <p>{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>

@@ -25,6 +25,21 @@ export interface IGncFeatures extends FeatureCollection {
   count: number;
 }
 
+const sorted = property => {
+  let sortOrder = 1;
+
+  if (property[0] === "-") {
+    sortOrder = -1;
+    property = property.substr(1);
+  }
+
+  return (a, b) => {
+    return sortOrder === -1
+      ? b[property].localeCompare(a[property])
+      : a[property].localeCompare(b[property]);
+  };
+};
+
 @Injectable({
   deps: [
     [new Optional(), new SkipSelf(), GncProgramsService],
@@ -75,7 +90,7 @@ export class GncProgramsService implements OnInit {
         ),
         map(programs => {
           this.state.set(PROGRAMS_KEY, programs as any);
-          return programs;
+          return programs.sort(sorted(AppConfig["program_list_sort"]));
         }),
         take(1),
         catchError(this.handleError<Program[]>("getAllPrograms"))

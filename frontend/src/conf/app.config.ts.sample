@@ -14,7 +14,7 @@ export const AppConfig = {
     platform_teaser:
       "Hae duae provinciae bello quondam piratico catervis mixtae praedonum a Servilio pro consule missae sub iugum factae sunt vectigales. et hae quidem regiones velut in prominenti terrarum lingua positae ob orbe eoo monte Amano disparantur.",
     platform_participate: {
-      fr: "PARTICIPER AU PROGRAMME",
+      fr: "PARTICIPER AUX PROGRAMMES",
       en: "PARTICIPATE"
     },
     program_share_an_observation: {
@@ -27,5 +27,6 @@ export const AppConfig = {
     },
     taxonSelectInputThreshold: 7,
     taxonAutocompleteInputThreshold: 12,
-    taxonAutocompleteFields: ["nom_complet", "nom_vern", "nom_vern_eng"]
+    taxonAutocompleteFields: ["nom_complet", "nom_vern", "nom_vern_eng"],
+    program_list_sort: "-timestamp_create"
 }
