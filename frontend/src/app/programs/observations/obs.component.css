@@ -167,6 +167,10 @@ section .observations {
   overflow: hidden;
 }
 
+.observations #map {
+  overflow: hidden;
+}
+
 .observations #map,
 .observations #list {
   padding: 0px;
@@ -727,13 +731,19 @@ input:checked ~ .toggle i {
   bottom: 0;
   background: rgba(255, 255, 255, 0.8);
   content: attr(data-observation-zoom-statement-warning);
+  z-index: 9999;
 }
 
 @media screen and (max-width: 991px) {
   .observations {
     height: inherit;
   }
+
   .leaflet-touch .leaflet-control-attribution {
     display: none;
+  }
+
+  .observation-zoom-statement-warning::after {
+    max-height: 40vh;
   }
 }

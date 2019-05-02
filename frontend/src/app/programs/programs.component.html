@@ -16,15 +16,15 @@
               class="text-center"
               (click)="activeModal.close('PROGRAM_SELECTED')"
             >
-              <div class="img-hover" [ngbTooltip]="p.short_desc">
-                <img
-                  class="rounded-circle img-responsive img-rounded"
-                  [alt]="p.title"
-                  width="300"
-                  height="300"
-                  [src]="p.image || 'assets/prog1.jpg'"
-                />
-              </div>
+              <div
+                class="img-hover"
+                [ngbTooltip]="p.short_desc"
+                [ngStyle]="{
+                  'background-image': p.image
+                    ? 'url(' + p.image + ')'
+                    : 'url(' + 'assets/prog1.jpg' + ')'
+                }"
+              ></div>
               <h5 class="card-title">
                 {{ p.title }}&nbsp; <span class="badge badge-info"> </span>
               </h5>
