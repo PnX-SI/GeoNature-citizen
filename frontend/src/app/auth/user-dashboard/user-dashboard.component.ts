@@ -14,6 +14,7 @@ import { Observable } from "rxjs";
   styleUrls: ["./user-dashboard.component.css"]
 })
 export class UserDashboardComponent implements OnInit {
+  readonly AppConfig = AppConfig;
   isLoggedIn: boolean = false;
   username: string = "not defined";
   stats: any;

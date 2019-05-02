@@ -14,7 +14,7 @@
   background: url(../../../assets/faune-mercantour.jpg) no-repeat;
   background-size: cover;
   background-position: top;
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
   position: relative;
   min-height: 280px;
