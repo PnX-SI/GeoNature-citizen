@@ -26,6 +26,7 @@ export interface IGncFeatures extends FeatureCollection {
 }
 
 const sorted = property => {
+  if (!property) return undefined;
   let sortOrder = 1;
 
   if (property[0] === "-") {
