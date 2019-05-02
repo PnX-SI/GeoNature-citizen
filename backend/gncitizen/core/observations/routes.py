@@ -4,6 +4,8 @@
 
 import uuid
 
+# from sqlalchemy import func
+
 # from datetime import datetime
 import requests
 from flask import Blueprint, current_app, request, json, send_from_directory
@@ -14,9 +16,10 @@ from shapely.geometry import Point, asShape
 
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
+from .models import ObservationMediaModel, ObservationModel
+from gncitizen.core.users.models import UserModel
 
 # from gncitizen.core.taxonomy.models import Taxref
-# from gncitizen.core.users.models import UserModel
 
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
@@ -27,8 +30,6 @@ from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
 
-from .models import ObservationMediaModel, ObservationModel
-from gncitizen.core.users.models import UserModel
 
 routes = Blueprint("observations", __name__)
 
@@ -455,7 +456,7 @@ def get_program_observations(id):
             )
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
-                # TODO: refact leveraging generate_observation_geojson()
+                # TODO: refact, leveraging generate_observation_geojson()
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
 

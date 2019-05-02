@@ -16,6 +16,8 @@ import { Observable } from "rxjs";
 export class UserDashboardComponent implements OnInit {
   isLoggedIn: boolean = false;
   username: string = "not defined";
+  stats: any;
+  role_id: number;
   private headers: HttpHeaders = new HttpHeaders({
     "Content-Type": "application/json"
   });
@@ -38,6 +40,8 @@ export class UserDashboardComponent implements OnInit {
           if (user["features"]["id_role"]) {
             this.isLoggedIn = true;
             this.username = user["features"]["username"];
+            this.stats = user["features"]["stats"];
+            this.role_id = user["features"]["role_id"];
           }
         })
         .catch(err => alert(err));

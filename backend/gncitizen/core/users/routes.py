@@ -8,9 +8,12 @@ from flask_jwt_extended import (
     jwt_refresh_token_required,
     jwt_required,
 )
+from sqlalchemy import func
+
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
 from server import db, jwt
+from gncitizen.core.observations.models import ObservationModel
 from .models import UserModel, RevokedTokenModel
 from gncitizen.utils.jwt import admin_required
 import uuid
@@ -289,20 +292,20 @@ def logged_user():
     try:
         current_user = get_jwt_identity()
         user = UserModel.query.filter_by(username=current_user).one()
-        current_app.logger.debug(
-            "[logged_user] current user is {}".format(user.as_secured_dict())
-        )
         if flask.request.method == "GET":
-            current_app.logger.debug("[logged_user] Get current user personnal data")
-            return (
-                {
-                    "message": "Vos données personelles",
-                    "features": user.as_secured_dict(True),
-                },
-                200,
-            )
+            # base stats, to enhance as we go
+            result = user.as_secured_dict(True)
+            result["stats"] = {
+                "platform_attendance": db.session.query(
+                    func.count(ObservationModel.id_role)
+                )
+                .filter(ObservationModel.id_role == user.id_user)
+                .one()[0]
+            }
+
+            return ({"message": "Vos données personelles", "features": result}, 200)
         if flask.request.method == "POST":
-            isAdmin = user.admin or False
+            is_admin = user.admin or False
             current_app.logger.debug("[logged_user] Update current user personnal data")
             request_data = dict(request.get_json())
             for data in request_data:
@@ -310,8 +313,8 @@ def logged_user():
                     setattr(user, data, request_data[data])
 
             user.password = UserModel.generate_hash(request_data["password"])
-            user.admin = isAdmin
-            # FIXME: update corresponding obs IDs ... in any case ?
+            user.admin = is_admin
+            # QUESTION: do we want to update corresponding obs IDs ... in any case ?
             user.update()
             return {"message": "Personal info updated."}, 200
 
