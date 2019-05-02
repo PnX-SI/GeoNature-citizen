@@ -304,19 +304,30 @@ def logged_user():
             }
 
             return ({"message": "Vos données personelles", "features": result}, 200)
+
         if flask.request.method == "POST":
             is_admin = user.admin or False
             current_app.logger.debug("[logged_user] Update current user personnal data")
             request_data = dict(request.get_json())
             for data in request_data:
-                if hasattr(UserModel, data) and data != "password":
+                if hasattr(UserModel, data) and data not in {
+                    "id_user",
+                    "password",
+                    "admin",
+                }:
                     setattr(user, data, request_data[data])
 
             user.password = UserModel.generate_hash(request_data["password"])
             user.admin = is_admin
             # QUESTION: do we want to update corresponding obs IDs ... in any case ?
             user.update()
-            return {"message": "Personal info updated."}, 200
+            return (
+                {
+                    "message": "Personal info updated.",
+                    "features": user.as_secured_dict(True),
+                },
+                200,
+            )
 
     except Exception as e:
         raise GeonatureApiError(e)
