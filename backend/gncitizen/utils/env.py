@@ -2,9 +2,12 @@ import os
 import sys
 from pathlib import Path
 
+from flask import current_app
 from flasgger import Swagger
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_admin import Admin
+
 
 from gncitizen.utils.toml import load_toml
 
@@ -56,6 +59,10 @@ swagger_template = {
 }
 
 swagger = Swagger(template=swagger_template)
+
+admin = Admin(
+    name="GN-Citizen: Backoffice d'administration", template_mode="bootstrap3"
+)
 
 taxhub_url = load_config()["API_TAXHUB"]
 taxhub_lists_url = taxhub_url + "biblistes/"

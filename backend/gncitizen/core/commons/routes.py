@@ -5,17 +5,20 @@ import json
 
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_optional
+from flask_admin.contrib.sqla import ModelView
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
 
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
+from gncitizen.utils.env import admin
 from server import db
 
 from .models import ModulesModel, ProgramsModel
 
 routes = Blueprint("commons", __name__)
+admin.add_view(ModelView(ProgramsModel, db.session))
 
 
 @routes.route("/modules/<int:pk>", methods=["GET"])
@@ -83,9 +86,7 @@ def get_program(pk):
              description: A list of all programs
          """
     try:
-        datas = ProgramsModel.query.filter_by(
-            id_program=pk, is_active=True
-        ).limit(1)
+        datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
         features = []
         for data in datas:
             feature = data.get_geofeature()
@@ -224,10 +225,7 @@ def post_program():
         db.session.commit()
         # Réponse en retour
         return (
-            {
-                "message": "New observation created.",
-                "features": newprogram.as_dict(),
-            },
+            {"message": "New observation created.", "features": newprogram.as_dict()},
             200,
         )
     except Exception as e:
