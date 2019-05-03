@@ -25,7 +25,7 @@ export interface IGncFeatures extends FeatureCollection {
   count: number;
 }
 
-const sorted = property => {
+const sorted = (property: string) => {
   if (!property) return undefined;
   let sortOrder = 1;
 
