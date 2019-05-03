@@ -3,8 +3,9 @@
 
 import json
 
-from flask import Blueprint, request
-from flask_jwt_extended import jwt_optional
+from flask import Blueprint, request, current_app
+from flask_jwt_extended import jwt_optional, get_jwt_identity, verify_jwt_in_request
+from flask_admin.form import SecureForm
 from flask_admin.contrib.sqla import ModelView
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
@@ -18,7 +19,21 @@ from server import db
 from .models import ModulesModel, ProgramsModel
 
 routes = Blueprint("commons", __name__)
-admin.add_view(ModelView(ProgramsModel, db.session))
+
+
+class ProgramView(ModelView):
+    form_base_class = SecureForm
+
+    # def is_accessible(self):
+    #     try ...except
+    #     verify_jwt_in_request()
+    #     current_user = get_jwt_identity()
+    #     current_app.logger.debug('current_user:', current_user)
+    #     return current_user and current_user.admin
+
+
+# admin.add_view(ProgramView(ProgramsModel, db.session, endpoint='api/admin'))
+admin.add_view(ProgramView(ProgramsModel, db.session))
 
 
 @routes.route("/modules/<int:pk>", methods=["GET"])
