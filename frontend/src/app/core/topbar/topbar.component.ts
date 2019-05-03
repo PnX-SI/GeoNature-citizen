@@ -88,7 +88,7 @@ export class TopbarComponent implements OnInit {
       this.auth
         .ensureAuthorized(access_token)
         .then(user => {
-          if (user.id_role) {
+          if (user && user.id_role) {
             // this.isLoggedIn = true;
             this.username = user.username;
           }

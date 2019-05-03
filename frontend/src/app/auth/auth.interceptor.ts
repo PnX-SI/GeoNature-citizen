@@ -19,6 +19,7 @@ import {
 } from "rxjs/operators";
 import { Observable, throwError, BehaviorSubject, from } from "rxjs";
 
+import { AppConfig } from "../../conf/app.config";
 import { AuthService } from "./auth.service";
 import { TokenRefresh } from "./models";
 
@@ -99,16 +100,17 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (
-      request.url.includes("token_refresh") ||
-      request.url.includes("registration") ||
-      request.url.includes("login") ||
-      request.url.includes("logout")
+      (request.url.match(AppConfig.API_ENDPOINT) &&
+        (request.url.includes("token_refresh") ||
+          request.url.includes("registration") ||
+          request.url.includes("login"))) ||
+      !request.url.match(AppConfig.API_ENDPOINT)
     ) {
-      return next.handle(request.clone());
+      return next.handle(request);
     }
     let errorMessage = "";
 
-    let expired = this.auth.tokenExpiration(this.auth.getAccessToken());
+    const expired = this.auth.tokenExpiration(this.auth.getAccessToken());
     // renew two min before expiration
     if (expired && expired <= 120.0 && expired > 0.5) {
       console.debug(

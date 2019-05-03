@@ -36,8 +36,8 @@ export class LoginComponent {
           if (user) {
             const message = user.message;
             this._success.subscribe(message => (this.successMessage = message));
-            this._success.pipe(debounceTime(5000)).subscribe(() => {
-              this.successMessage = null;
+            this._success.pipe(debounceTime(1800)).subscribe(() => {
+              // this.errorMessage = null;
               this.activeModal.close();
             });
             this.displaySuccessMessage(message);
@@ -59,6 +59,7 @@ export class LoginComponent {
         errorMessage => {
           // console.debug("errorMessage", errorMessage);
           // window.alert(errorMessage);
+          this.successMessage = null;
           this.errorMessage = errorMessage;
           this.displayErrorMessage(errorMessage);
         }

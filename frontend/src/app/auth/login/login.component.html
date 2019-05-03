@@ -23,7 +23,7 @@
     >{{ successMessage }}</ngb-alert
   >
   <form
-    *ngIf="errorMessage || !successMessage"
+    *ngIf="!successMessage"
     #loginForm="ngForm"
     (ngSubmit)="loginForm.form.valid && onLogin()"
   >
@@ -94,7 +94,7 @@
   <button
     *ngIf="successMessage"
     class="btn btn-outline-primary rounded-0"
-    [disabled]="loginForm.invalid"
+    [disabled]="errorMessage || !successMessage"
     expand="block"
     (click)="activeModal.dismiss('Cross click')"
     i18n="Fermer"
