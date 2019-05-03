@@ -3,7 +3,6 @@ import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
-from flask import current_app
 from flasgger import Swagger
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
@@ -65,7 +64,7 @@ swagger = Swagger(template=swagger_template)
 admin = Admin(
     name="GN-Citizen: Backoffice d'administration",
     template_mode="bootstrap3",
-    url="/".join([urlparse(app_conf["API_ENDPOINT"]).path, "admin", ""]),
+    url="/".join([urlparse(app_conf["API_ENDPOINT"]).path, "admin"]),
 )
 
 taxhub_url = load_config()["API_TAXHUB"]

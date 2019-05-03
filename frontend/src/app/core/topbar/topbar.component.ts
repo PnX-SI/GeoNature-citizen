@@ -46,14 +46,6 @@ export class TopbarComponent implements OnInit {
     );
   }
 
-  get userLoggedIn() {
-    if (localStorage.getItem("username")) {
-      this.username = localStorage.getItem("username").replace(/\"/g, "");
-      return true;
-    }
-    return false;
-  }
-
   login() {
     this.modalRef = this.modalService.open(LoginComponent, {
       size: "lg",

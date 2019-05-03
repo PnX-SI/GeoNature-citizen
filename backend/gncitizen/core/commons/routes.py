@@ -25,14 +25,14 @@ class ProgramView(ModelView):
     form_base_class = SecureForm
 
     # def is_accessible(self):
-    #     try ...except
-    #     verify_jwt_in_request()
+    #     # try:
+    #     # verify_jwt_in_request()
     #     current_user = get_jwt_identity()
-    #     current_app.logger.debug('current_user:', current_user)
+    #     current_app.logger.debug("current_user: %s", current_user)
     #     return current_user and current_user.admin
+    #     # except JWT_Exception...
 
 
-# admin.add_view(ProgramView(ProgramsModel, db.session, endpoint='api/admin'))
 admin.add_view(ProgramView(ProgramsModel, db.session))
 
 
