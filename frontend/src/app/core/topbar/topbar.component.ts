@@ -24,6 +24,7 @@ export class TopbarComponent implements OnInit {
   username: any;
   modalRef: NgbModalRef;
   programs$: Observable<Program[]>;
+  isAdmin: boolean = false;
 
   constructor(
     private programService: GncProgramsService,
@@ -80,9 +81,14 @@ export class TopbarComponent implements OnInit {
       this.auth
         .ensureAuthorized(access_token)
         .then(user => {
-          if (user && user.id_role) {
-            // this.isLoggedIn = true;
-            this.username = user.username;
+          if (user) {
+            if (user.id_role) {
+              // this.isLoggedIn = true;
+              this.username = user.username;
+            }
+            if (user.admin) {
+              this.isAdmin = user.admin;
+            }
           }
         })
         .catch(err => {

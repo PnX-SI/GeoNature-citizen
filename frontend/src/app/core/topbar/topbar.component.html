@@ -43,6 +43,15 @@
               >Accueil</a
             >
           </li>
+          <li>
+            <!-- ngIf="isAdmin" -->
+            <a
+              routerLink="/api/admin"
+              routerLinkActive="active"
+              class="btn my-2 my-sm-0 rounded-0"
+              >Admin</a
+            >
+          </li>
           <li *ngIf="_programs.length > 1">
             <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()"
               >Les programmes</a

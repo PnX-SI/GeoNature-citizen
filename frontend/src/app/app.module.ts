@@ -46,6 +46,8 @@ import { ModalFlowService } from "./programs/observations/modalflow/modalflow.se
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { AppConfig } from "../conf/app.config";
 
+import { AdminComponent } from "./auth/admin/admin.component";
+
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
 registerLocaleData(localeFr, "fr");
@@ -90,7 +92,8 @@ registerLocaleData(localeFr, "fr");
     CommittedComponent,
     CongratsComponent,
     ModalFlowComponent,
-    RewardComponent
+    RewardComponent,
+    AdminComponent
   ],
   providers: [
     AuthService,
@@ -116,6 +119,7 @@ registerLocaleData(localeFr, "fr");
     CommittedComponent,
     CongratsComponent,
     RewardComponent
-  ]
+  ],
+  exports: [AdminComponent]
 })
 export class AppModule {}
