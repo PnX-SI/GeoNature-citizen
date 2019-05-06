@@ -43,8 +43,7 @@
               >Accueil</a
             >
           </li>
-          <li>
-            <!-- ngIf="isAdmin" -->
+          <li *ngIf="isAdmin">
             <a
               routerLink="/api/admin"
               routerLinkActive="active"
