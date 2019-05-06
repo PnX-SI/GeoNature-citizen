@@ -54,9 +54,7 @@ export class RegisterComponent {
         catchError(this.handleError)
       )
       .subscribe(
-        data => {
-          // console.debug("login data:", data)
-        },
+        _data => {},
         errorMessage => {
           // console.debug("errorMessage", errorMessage);
           // window.alert(errorMessage);

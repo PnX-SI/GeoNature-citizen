@@ -22,8 +22,48 @@
     (close)="successMessage = null"
     >{{ successMessage }}</ngb-alert
   >
+  <!-- DOING: Recover password -->
   <form
-    *ngIf="!successMessage"
+    *ngIf="!successMessage && recoverPassword"
+    #recoverForm="ngForm"
+    (ngSubmit)="recoverForm.valid && onRecoverPassword()"
+  >
+    <div class="form-group">
+      <label for="Email" i18n>Votre Email</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+        </div>
+        <input
+          type="email"
+          class="form-control rounded-0"
+          name="email"
+          id="email"
+          i18n-placeholder
+          placeholder="Entrez votre email"
+          [(ngModel)]="recovery.email"
+          #email="ngModel"
+          autocomplete="email"
+          required
+          pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+        />
+      </div>
+    </div>
+  </form>
+  <button
+    *ngIf="(errorMessage || !successMessage) && recoverPassword"
+    class="btn btn-outline-primary rounded-0"
+    expand="block"
+    type="submit"
+    i18n
+    (click)="onRecoverPassword()"
+  >
+    <!-- [disabled]="!recoverForm.valid" -->
+    Récupérer le compte
+  </button>
+  <!-- End recover password -->
+  <form
+    *ngIf="!successMessage && !recoverPassword"
     #loginForm="ngForm"
     (ngSubmit)="loginForm.form.valid && onLogin()"
   >
@@ -79,14 +119,16 @@
         />
       </div>
     </div>
-    <a href="#">Mot de passe oublié ?</a>
+    <span id="recoverPassword" (click)="recoverPassword = true"
+      >Mot de passe oublié ?</span
+    >
     <button
       *ngIf="errorMessage || !successMessage"
       type="submit"
       class="btn btn-outline-primary rounded-0"
-      i18n="login|login"
       [disabled]="loginForm.invalid"
       expand="block"
+      i18n
     >
       Se connecter
     </button>
@@ -96,8 +138,8 @@
     class="btn btn-outline-primary rounded-0"
     [disabled]="errorMessage || !successMessage"
     expand="block"
-    (click)="activeModal.dismiss('Cross click')"
-    i18n="Fermer"
+    i18n
+    (click)="activeModal.dismiss('Success')"
   >
     Fermer
   </button>

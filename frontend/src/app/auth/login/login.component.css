@@ -22,7 +22,7 @@
   border-radius: 0px;
 }
 
-.modal-body form a {
+#recoverPassword {
   text-align: right;
   font-style: italic;
   display: flex;
