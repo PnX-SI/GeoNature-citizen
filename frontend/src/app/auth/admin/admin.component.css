@@ -1,5 +1,4 @@
-#admin,
-#section3 {
+#admin {
   height: calc(100vh - var(--router-outlet-offset));
-  width: calc(100vw - 30px);
+  width: 100%;
 }

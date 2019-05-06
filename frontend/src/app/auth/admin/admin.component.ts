@@ -1,67 +1,33 @@
-import {
-  Component,
-  OnInit,
-  ViewEncapsulation,
-  ElementRef,
-  ViewChild
-} from "@angular/core";
-import { ActivatedRoute, ParamMap } from "@angular/router";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { DomSanitizer, SafeUrl, SafeHtml } from "@angular/platform-browser";
-import { Observable } from "rxjs";
-import { tap, map, share, takeWhile } from "rxjs/operators";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 
 import { AppConfig } from "../../../conf/app.config";
+import { AuthService } from "../auth.service";
 
 const ADMIN_ENDPOINT = AppConfig.API_ENDPOINT + "/admin/";
 const PROGRAM_ENDPOINT = ADMIN_ENDPOINT + "programsmodel/";
 
 @Component({
   selector: "app-admin",
-  // <section><iframe id="admin" [src]="trustedUrl"></iframe></section>
   template: `
-    <section [innerHTML]="trustedContent"></section>
-    <section><iframe id="section3" #section3></iframe></section>
+    <section><iframe id="admin" [src]="adminUrl"></iframe></section>
   `,
   styleUrls: ["./admin.component.css"],
   encapsulation: ViewEncapsulation.None
 })
 export class AdminComponent implements OnInit {
-  @ViewChild("section3") blobDisplay: ElementRef;
-  routeParams: Observable<ParamMap>;
-  trustedUrl: SafeUrl;
-  trustedContent: SafeHtml;
-  private alive = true;
+  adminUrl: SafeUrl;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
+    private auth: AuthService,
     private sanitizer: DomSanitizer,
     protected http: HttpClient
-  ) {
-    this.routeParams = this.activatedRoute.paramMap.pipe(
-      takeWhile(() => this.alive),
-      tap(params => console.debug(params)),
-      share()
-    );
-  }
-
-  ngOnDestroy() {
-    this.alive = false;
-  }
+  ) {}
 
   ngOnInit() {
-    this.trustedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      PROGRAM_ENDPOINT
+    this.adminUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+      PROGRAM_ENDPOINT + "?jwt=" + this.auth.getAccessToken()
     );
-
-    this.http
-      .get(PROGRAM_ENDPOINT, {
-        responseType: "blob"
-      })
-      .subscribe(
-        blob =>
-          (this.blobDisplay.nativeElement.src = URL.createObjectURL(blob)),
-        err => (this.trustedContent = err)
-      );
   }
 }

@@ -4,7 +4,7 @@
 import json
 
 from flask import Blueprint, request, current_app
-from flask_jwt_extended import jwt_optional, get_jwt_identity, verify_jwt_in_request
+from flask_jwt_extended import jwt_optional, get_jwt_identity
 from flask_admin.form import SecureForm
 from flask_admin.contrib.sqla import ModelView
 from geoalchemy2.shape import from_shape
@@ -17,6 +17,20 @@ from gncitizen.utils.env import admin
 from server import db
 
 from .models import ModulesModel, ProgramsModel
+from gncitizen.core.users.models import UserModel
+
+try:
+    from flask import _app_ctx_stack as ctx_stack
+except ImportError:  # pragma: no cover
+    from flask import _request_ctx_stack as ctx_stack
+from flask_jwt_extended.utils import (
+    decode_token,
+    has_user_loader,
+    user_loader,
+    verify_token_not_blacklisted,
+)
+from flask_jwt_extended.exceptions import UserLoadError
+
 
 routes = Blueprint("commons", __name__)
 
@@ -24,13 +38,26 @@ routes = Blueprint("commons", __name__)
 class ProgramView(ModelView):
     form_base_class = SecureForm
 
-    # def is_accessible(self):
-    #     # try:
-    #     # verify_jwt_in_request()
-    #     current_user = get_jwt_identity()
-    #     current_app.logger.debug("current_user: %s", current_user)
-    #     return current_user and current_user.admin
-    #     # except JWT_Exception...
+    def is_accessible(self):
+        try:
+            token = request.args.get("jwt")
+            decoded_token = decode_token(token)
+            verify_token_not_blacklisted(decoded_token, request_type="access")
+            ctx_stack.top.jwt = decoded_token
+            if has_user_loader():
+                user = user_loader(ctx_stack.top.jwt["identity"])
+                if user is None:
+                    raise UserLoadError("user_loader returned None for {}".format(user))
+                else:
+                    ctx_stack.top.jwt_user = user
+
+            current_user = get_jwt_identity()
+            is_admin = UserModel.query.filter_by(username=current_user).first().admin
+            # current_app.logger.debug("current_user: %s, admin: %s", current_user, is_admin)
+            return current_user and is_admin
+        except Exception as e:
+            current_app.logger.critical("FAULTY ADMIN UI ACCESS: %s", str(e))
+            return False
 
 
 admin.add_view(ProgramView(ProgramsModel, db.session))
