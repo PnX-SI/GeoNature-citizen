@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import json
-
+import urllib.parse
 from flask import Blueprint, request, current_app
 from flask_jwt_extended import jwt_optional, get_jwt_identity
 from flask_admin.form import SecureForm
@@ -40,7 +40,10 @@ class ProgramView(ModelView):
 
     def is_accessible(self):
         try:
+
             token = request.args.get("jwt")
+            if not token:
+                token = urllib.parse.parse_qsl(request.args.get("url"))[0][1]
             decoded_token = decode_token(token)
             verify_token_not_blacklisted(decoded_token, request_type="access")
             ctx_stack.top.jwt = decoded_token
@@ -53,7 +56,6 @@ class ProgramView(ModelView):
 
             current_user = get_jwt_identity()
             is_admin = UserModel.query.filter_by(username=current_user).first().admin
-            # current_app.logger.debug("current_user: %s, admin: %s", current_user, is_admin)
             return current_user and is_admin
         except Exception as e:
             current_app.logger.critical("FAULTY ADMIN UI ACCESS: %s", str(e))
