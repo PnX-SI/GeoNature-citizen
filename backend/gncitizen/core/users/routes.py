@@ -387,11 +387,12 @@ def delete_user():
 def reset_user_password():
     request_datas = dict(request.get_json())
     email = request_datas["email"]
+    username = request_datas["username"]
 
     try:
-        user = UserModel.query.filter_by(email=email).one()
+        user = UserModel.query.filter_by(username=username, email=email).one()
     except Exception:
-        return ({"error": "{} does not exists".format(email)}, 400)
+        return ({"error_message": "{} does not exists".format(email)}, 400)
 
     passwd = uuid.uuid4().hex[0:6]
     passwd_hash = UserModel.generate_hash(passwd)
@@ -434,10 +435,14 @@ def reset_user_password():
                 current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
             )
             server.quit()
+        user.password = passwd_hash
+        db.session.commit()
+        return (
+            {"message": "Check your email, you credentials have been updated."},
+            200,
+        )
     except Exception as e:
-        return ({"error": str(e)}, 500)
-
-    user.password = passwd_hash
-    db.session.commit()
-
-    return ({"message": "success"}, 200)
+        current_app.logger.warning(
+            "reset_password: failled to send new credentials. %s", str(e)
+        )
+        return ({"message": "failled to send new credentials. {}".format(str(e))}, 500)

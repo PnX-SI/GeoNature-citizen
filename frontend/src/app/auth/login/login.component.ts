@@ -22,7 +22,7 @@ export class LoginComponent {
   successMessage: string;
   staticAlertClosed = false;
   user: LoginUser = { username: "", password: "" };
-  recovery = { email: "" };
+  recovery = { username: "", email: "" };
   recoverPassword = false;
 
   constructor(
@@ -67,9 +67,29 @@ export class LoginComponent {
       );
   }
 
-  onRecoverPassword() {
-    // this.http.post(`${AppConfig.API_ENDPOINT}/user/resetpassword`);
+  onRecoverPassword(): void {
     console.debug(this.recovery);
+    this.http
+      .post(`${AppConfig.API_ENDPOINT}/user/resetpasswd`, this.recovery)
+      .pipe(catchError(this.handleError))
+      .subscribe(
+        response => {
+          const message = response["message"];
+          console.debug("message: ", message);
+          this._success.subscribe(message => (this.successMessage = message));
+          this._success.pipe(debounceTime(5000)).subscribe(() => {
+            this.activeModal.close();
+          });
+          this.displaySuccessMessage(message);
+        },
+        errorMessage => {
+          console.debug("error", errorMessage);
+          // window.alert(errorMessage);
+          this.successMessage = null;
+          this.errorMessage = errorMessage;
+          this.displayErrorMessage(errorMessage);
+        }
+      );
   }
 
   handleError(error) {
@@ -80,12 +100,14 @@ export class LoginComponent {
       errorMessage = `Error: ${error.error.message}`;
     } else {
       // server-side error
-      console.error("server-side error", error);
+      console.error("server-side error:", error, typeof error);
       if (error.error && error.error.message) {
         // api error
         errorMessage = `Error: ${error.error.message}`;
-      } else {
+      } else if (error.status && error.message) {
         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      } else {
+        errorMessage = error;
       }
     }
     return throwError(errorMessage);
