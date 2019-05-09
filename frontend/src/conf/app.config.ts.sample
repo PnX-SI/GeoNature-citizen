@@ -11,8 +11,8 @@ export const AppConfig = {
     },
     URL_APPLICATION:"http://127.0.0.1:4200",
     termsOfUse: {
-      fr: "/assets/cgu.pdf",
-      en: "/assets/termsOfUse.pdf"
+      fr: "assets/cgu.pdf",
+      en: "assets/termsOfUse.pdf"
     },
     platform_intro: {
       fr: "Bienvenue<br /> sur GeoNature Citizen",
@@ -36,6 +36,11 @@ export const AppConfig = {
     },
     taxonSelectInputThreshold: 7,
     taxonAutocompleteInputThreshold: 12,
-    taxonAutocompleteFields: ["nom_complet", "nom_vern", "nom_vern_eng"],
+    taxonAutocompleteFields: [
+      "nom_complet",
+      "nom_vern",
+      "nom_vern_eng",
+      "cd_nom"
+    ],
     program_list_sort: "-timestamp_create"
 }
