@@ -36,17 +36,6 @@ def check_if_token_in_blacklist(decrypted_token):
 def registration():
     """
     User registration
-    Utiliser le décorateur `@get_jwt_identity()`
-    pour avoir l'identité de l'utilisateur courant. Exemple:
-
-    ``` python
-    @routes.route('/protected', methods=['GET'])
-    @jwt_required
-    def protected():
-        # Access the identity of the current user with get_jwt_identity
-        current_user = get_jwt_identity()
-        return jsonify(current_suer=current_user), 200
-    ```
     ---
     tags:
       - Authentication

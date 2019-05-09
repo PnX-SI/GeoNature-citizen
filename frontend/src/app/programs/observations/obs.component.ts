@@ -15,6 +15,7 @@ import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 
 import { Program } from "../programs.models";
+import { ProgramsResolve } from "../../programs/programs-resolve.service";
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { ModalFlowService } from "./modalflow/modalflow.service";
 import { TaxonomyList } from "./observation.model";
@@ -26,7 +27,8 @@ import { AppConfig } from "../../../conf/app.config";
   selector: "app-observations",
   templateUrl: "./obs.component.html",
   styleUrls: ["./obs.component.css", "../../home/home.component.css"],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [ProgramsResolve]
 })
 export class ObsComponent implements OnInit, AfterViewInit {
   AppConfig = AppConfig;

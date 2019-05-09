@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Inject, LOCALE_ID } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subject, throwError } from "rxjs";
 import { debounceTime, catchError, map } from "rxjs/operators";
@@ -7,6 +7,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 import { RegisterUser } from "../models";
 import { AuthService } from "./../auth.service";
+import { AppConfig } from "../../../conf/app.config";
 
 @Component({
   selector: "register",
@@ -14,6 +15,7 @@ import { AuthService } from "./../auth.service";
   styleUrls: ["./register.component.css"]
 })
 export class RegisterComponent {
+  readonly AppConfig = AppConfig;
   user: RegisterUser = new RegisterUser();
   private _error = new Subject<string>();
   private _success = new Subject<string>();
@@ -22,6 +24,7 @@ export class RegisterComponent {
   successMessage: string;
 
   constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
     private auth: AuthService,
     private router: Router,
     public activeModal: NgbActiveModal

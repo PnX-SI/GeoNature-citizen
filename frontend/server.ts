@@ -18,10 +18,14 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const DIST_FOLDER = join(process.cwd(), "dist/browser");
 
+const supportedLocales = ["en", "fr"];
+const defaultLocale = "fr";
 const MockBrowser = require("mock-browser").mocks.MockBrowser;
 const mock = new MockBrowser();
 const domino = require("domino");
-const template = readFileSync(join(DIST_FOLDER, "index.html")).toString();
+const template = readFileSync(
+  join(DIST_FOLDER, defaultLocale, "index.html")
+).toString();
 const win = domino.createWindow(template);
 win.Object = Object;
 win.Math = Math;
@@ -68,10 +72,6 @@ app.get(
 
 // All regular routes use the Universal engine
 app.get("*", (req, res) => {
-  /*
-  res.render("index", { req });
-  const supportedLocales = ["en", "fr"];
-  const defaultLocale = "fr";
   const matches = req.url.match(/^\/([a-z]{2}(?:-[A-Z]{2})?)\//);
   //check if the requested url has a correct format '/locale' and matches any of the supportedLocales
   const locale =
@@ -79,9 +79,10 @@ app.get("*", (req, res) => {
       ? matches[1]
       : defaultLocale;
 
-  res.render("${locale}/index", { req });
-  */
-  res.render("index", { req });
+  console.log("locale:", locale);
+  res.render(`${locale}/index`, { req });
+
+  // res.render("index", { req });
 });
 
 // Start up the Node server

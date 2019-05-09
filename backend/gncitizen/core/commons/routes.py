@@ -55,7 +55,7 @@ class ProgramView(ModelView):
                     ctx_stack.top.jwt_user = user
 
             current_user = get_jwt_identity()
-            is_admin = UserModel.query.filter_by(username=current_user).first().admin
+            is_admin = UserModel.query.filter_by(username=current_user).one().admin
             return current_user and is_admin
         except Exception as e:
             current_app.logger.critical("FAULTY ADMIN UI ACCESS: %s", str(e))

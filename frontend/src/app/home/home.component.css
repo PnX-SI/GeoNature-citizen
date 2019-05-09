@@ -333,6 +333,7 @@ app-observations {
 
   #slider {
     display: block !important;
+    width: 100%;
   }
 
   #programs-cards {

@@ -16,6 +16,7 @@ import { AuthService } from "./../auth.service";
   styleUrls: ["./login.component.css"]
 })
 export class LoginComponent {
+  AppConfig = AppConfig;
   private _error = new Subject<string>();
   private _success = new Subject<string>();
   errorMessage: string;

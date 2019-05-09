@@ -22,7 +22,7 @@
     (close)="successMessage = null"
     >{{ successMessage }}</ngb-alert
   >
-  <!-- DOING: Recover password -->
+  <!-- Recover password -->
   <form
     *ngIf="!successMessage && recoverPassword"
     #recoverForm="ngForm"
@@ -44,8 +44,8 @@
           type="text"
           class="form-control rounded-0"
           id="username"
+          i18n-placeholder
           placeholder="Entrez votre nom d'utilisateur"
-          i18n="login|Entrez votre nom d'utilisateur"
           [(ngModel)]="recovery.username"
           name="username"
           autocomplete="username"
@@ -89,7 +89,6 @@
       i18n
       [disabled]="!recoverForm.form.valid"
     >
-      <!-- (click)="recoverForm.form.valid && onRecoverPassword()" -->
       Récupérer le compte
     </button>
     <!-- End recover password -->
@@ -116,7 +115,7 @@
           class="form-control rounded-0"
           id="username"
           placeholder="Entrez votre nom d'utilisateur"
-          i18n="login|Entrez votre nom d'utilisateur"
+          i18n-placeholder
           [(ngModel)]="user.username"
           name="username"
           autocomplete="username"
@@ -141,8 +140,8 @@
           type="password"
           class="form-control rounded-0"
           id="password"
+          i18n-placeholder
           placeholder="Entrez votre mot de passe"
-          i18n="login|Entrez votre mot de passe"
           [(ngModel)]="user.password"
           name="password"
           autocomplete="current-password"
@@ -151,7 +150,7 @@
         />
       </div>
     </div>
-    <span id="recoverPassword" (click)="recoverPassword = true"
+    <span id="recoverPassword" (click)="recoverPassword = true" i18n
       >Mot de passe oublié ?</span
     >
     <button

@@ -10,9 +10,18 @@ export const AppConfig = {
         DISPLAY_SIDEBAR: true
     },
     URL_APPLICATION:"http://127.0.0.1:4200",
-    platform_intro: "Bienvenue<br /> sur GeoNature Citizen",
-    platform_teaser:
-      "Hae duae provinciae bello quondam piratico catervis mixtae praedonum a Servilio pro consule missae sub iugum factae sunt vectigales. et hae quidem regiones velut in prominenti terrarum lingua positae ob orbe eoo monte Amano disparantur.",
+    termsOfUse: {
+      fr: "/assets/cgu.pdf",
+      en: "/assets/termsOfUse.pdf"
+    },
+    platform_intro: {
+      fr: "Bienvenue<br /> sur GeoNature Citizen",
+      en: "Welcome<br /> on GeoNature Citizen"
+    },
+    platform_teaser: {
+      fr: "Hae duae provinciae bello quondam piratico catervis mixtae praedonum a Servilio pro consule missae sub iugum factae sunt vectigales. et hae quidem regiones velut in prominenti terrarum lingua positae ob orbe eoo monte Amano disparantur.",
+      en: "Hae duae provinciae bello quondam piratico catervis mixtae praedonum a Servilio pro consule missae sub iugum factae sunt vectigales. et hae quidem regiones velut in prominenti terrarum lingua positae ob orbe eoo monte Amano disparantur."
+      },
     platform_participate: {
       fr: "PARTICIPER AUX PROGRAMMES",
       en: "PARTICIPATE"

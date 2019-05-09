@@ -174,7 +174,10 @@
           required
           i18n
         />
-        J'accepte les <a href="#"><u>conditions d'utilisation</u></a></span
+        J'accepte les
+        <a href="{{AppConfig['termsOfUse'][localeId]}}" i18n
+          >conditions d&apos;utilisation</a
+        ></span
       >
     </div>
 
@@ -194,7 +197,7 @@
     [disabled]="registerForm.invalid"
     expand="block"
     (click)="activeModal.dismiss('Cross click')"
-    i18n="Fermer"
+    i18n
   >
     Fermer
   </button>
