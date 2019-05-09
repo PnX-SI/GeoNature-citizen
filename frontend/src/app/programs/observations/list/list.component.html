@@ -6,7 +6,7 @@
       [(ngModel)]="selectedTaxon"
       (ngModelChange)="onFilterChange()"
     >
-      <option [ngValue]="null">Toutes espèces</option>
+      <option [ngValue]="null" i18n>Toutes espèces</option>
       <option *ngFor="let s of surveySpecies" [ngValue]="s">
         {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
         >)
@@ -21,7 +21,7 @@
       [(ngModel)]="selectedMunicipality"
       (ngModelChange)="onFilterChange()"
     >
-      <option [ngValue]="null">Toutes communes</option>
+      <option [ngValue]="null" i18n>Toutes communes</option>
       <option *ngFor="let t of municipalities" [ngValue]="t">{{
         t?.name || "?"
       }}</option>

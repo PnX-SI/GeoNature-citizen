@@ -6,7 +6,9 @@ import {
   ElementRef,
   Input,
   Output,
-  EventEmitter
+  EventEmitter,
+  Inject,
+  LOCALE_ID
 } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
@@ -120,6 +122,7 @@ export class ObsFormComponent implements AfterViewInit {
   });
   taxonSelectInputThreshold = taxonSelectInputThreshold;
   taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
+  autocomplete = "isOff";
   MAP_CONFIG = MAP_CONFIG;
   formMap: L.Map;
   program: FeatureCollection;
@@ -174,9 +177,11 @@ export class ObsFormComponent implements AfterViewInit {
         }
       }
     }
+    this.autocomplete = "isOn";
   };
 
   constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
     private http: HttpClient,
     private programService: GncProgramsService,
     private route: ActivatedRoute

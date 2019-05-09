@@ -570,63 +570,47 @@
           <context context-type="linenumber">163</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ba85268c3ae99435eb31f4cd9a523c1e38e094af" datatype="html">
-        <source>
-    AJOUTER UNE OBSERVATION
-  </source>
-        <target>
-    AJOUTER UNE OBSERVATION
-  </target>
+      <trans-unit id="88619d86db4d3bd9954ca03bfdc88d69c76d1f4d" datatype="html">
+        <source>AJOUTER UNE OBSERVATION</source>
+        <target>AJOUTER UNE OBSERVATION</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/modalflow/steps/onboard/onboard.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
-        <note priority="1" from="description">AJOUTER UNE OBSERVATION</note>
-        <note priority="1" from="meaning">OnBoard modal title</note>
       </trans-unit>
-      <trans-unit id="1606741ee3c7ad33bd6205b34a4c88caebf41492" datatype="html">
+      <trans-unit id="3b805eb3a19ca6426ff7dfd033b412987c8e11ea" datatype="html">
         <source>S&apos;incrire <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>et contribuer au site</source>
         <target>S&apos;incrire <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>et contribuer au site</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/modalflow/steps/onboard/onboard.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">12</context>
         </context-group>
-        <note priority="1" from="description">S&apos;incrire &lt;br&gt;et contribuer au site</note>
-        <note priority="1" from="meaning">OnBoard</note>
       </trans-unit>
-      <trans-unit id="ba03ce690c46c76c9feba406dc149f0ece26a50e" datatype="html">
+      <trans-unit id="1eeb191c53f2171eb8b0d3a918e7f7d00d4ac9ce" datatype="html">
         <source>Continuer <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>sans s&apos;enregistrer</source>
         <target>Continuer <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>sans s&apos;enregistrer</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/modalflow/steps/onboard/onboard.component.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">20</context>
         </context-group>
-        <note priority="1" from="description">Continuer &lt;br&gt;sans s&apos;enregistrer</note>
-        <note priority="1" from="meaning">OnBoard</note>
       </trans-unit>
-      <trans-unit id="8d119f61b8fa8e165cb031b659970a0365e95ea7" datatype="html">
+      <trans-unit id="c8763fd2b48453b39bfa3036658f0beb4eac7944" datatype="html">
         <source>Vous avez déjà un compte ? Connectez-vous !</source>
         <target>Vous avez déjà un compte ? Connectez-vous !</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/modalflow/steps/onboard/onboard.component.html</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="linenumber">26</context>
         </context-group>
         <note priority="1" from="description">Vous avez déjà un compte ? Connectez-vous !</note>
         <note priority="1" from="meaning">OnBoard</note>
       </trans-unit>
-      <trans-unit id="ee324a823715c50c8744be68675bc455925282e4" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{
-          taxaCount &gt;= taxonAutocompleteInputThreshold
-            ? &quot;Rechercher&quot;
-            : &quot;Sélectionnez&quot;
-        }}"/>
-        une espèce</source>
-        <target><x id="INTERPOLATION" equiv-text="{{
-          taxaCount &gt;= taxonAutocompleteInputThreshold
-            ? &quot;Rechercher&quot;
-            : &quot;Sélectionnez&quot;
-        }}"/>
-        une espèce</target>
+      <trans-unit id="075efb86feee3bcebc3cef406a2bb966c9c6ec6b" datatype="html">
+        <source>{VAR_SELECT, select, isOn {Rechercher une espèce} isOff {Sélectionnez une espèce} }</source>
+        <target>{VAR_SELECT, select, isOn {Rechercher une espèce} isOff {Sélectionnez une espèce} }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
           <context context-type="linenumber">12</context>
@@ -637,7 +621,7 @@
         <target>Nom latin ou vernaculaire ou cd_ref</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">73</context>
         </context-group>
       </trans-unit>
       <trans-unit id="f312db469126382e45a6fd27b1dc184dd8874475" datatype="html">
@@ -645,7 +629,7 @@
         <target>Informations complémentaires</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">87</context>
+          <context context-type="linenumber">83</context>
         </context-group>
       </trans-unit>
       <trans-unit id="795e2656ad62ca76c3398619f693621e5e94ef5f" datatype="html">
@@ -653,7 +637,7 @@
         <target>Date de l&apos;observation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">87</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d7f155db07c7c362fcf9b6f98bbabf8c9815fca0" datatype="html">
@@ -661,7 +645,7 @@
         <target>jj/mm/aaaa</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">97</context>
+          <context context-type="linenumber">93</context>
         </context-group>
       </trans-unit>
       <trans-unit id="67a0a02419575b54eed6b27101ae0a30c635029f" datatype="html">
@@ -669,7 +653,7 @@
         <target>Dénombrement</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">106</context>
+          <context context-type="linenumber">102</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dd2a11ebc737589080ed400dacc33a8c8c84728b" datatype="html">
@@ -677,7 +661,7 @@
         <target>Nombre</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">111</context>
+          <context context-type="linenumber">107</context>
         </context-group>
       </trans-unit>
       <trans-unit id="688190149c303fc5438d194a57d73b2b16943b6f" datatype="html">
@@ -685,7 +669,7 @@
         <target>Commentaire</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">122</context>
+          <context context-type="linenumber">118</context>
         </context-group>
       </trans-unit>
       <trans-unit id="91d25744e097aa7d2be6eb1c90e85bda45d50624" datatype="html">
@@ -693,7 +677,7 @@
         <target>Votre commentaire</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">125</context>
+          <context context-type="linenumber">121</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bfa14a6744dd1c8bc159dfca1cb286f4c7ea8fc6" datatype="html">
@@ -701,7 +685,7 @@
         <target><x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Ajouter une photo</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">135</context>
+          <context context-type="linenumber">131</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1ca6b9fd976db3087d536ed5c02e83d4eb791a56" datatype="html">
@@ -709,7 +693,7 @@
         <target>Où avez-vous observé cette espèce ?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">151</context>
+          <context context-type="linenumber">147</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dc67b08c999905bfad44810acabbaa2c59d43061" datatype="html">
@@ -723,7 +707,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">154</context>
+          <context context-type="linenumber">150</context>
         </context-group>
       </trans-unit>
       <trans-unit id="37bffdf00ec09441168b52d6e0888a2e076aa2a4" datatype="html">
@@ -731,19 +715,11 @@
         <target>Veuillez zoomer pour localiser votre observation.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">166</context>
+          <context context-type="linenumber">162</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/map/map.component.ts</context>
           <context context-type="linenumber">6</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="88619d86db4d3bd9954ca03bfdc88d69c76d1f4d" datatype="html">
-        <source>AJOUTER UNE OBSERVATION</source>
-        <target>AJOUTER UNE OBSERVATION</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
-          <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c5c01b73689cc048f371314e26a59272551d5c8b" datatype="html">
@@ -818,6 +794,22 @@
         </context-group>
         <note priority="1" from="description">Vous venez d&apos;obtenir ce badge</note>
         <note priority="1" from="meaning">Reward</note>
+      </trans-unit>
+      <trans-unit id="e0212155de52e79fd3927a7a0cd0b3e64c4d2e2e" datatype="html">
+        <source>Toutes espèces</source>
+        <target>Toutes espèces</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3d9ec159fb51a28ab5ed26394a718910086471ca" datatype="html">
+        <source>Toutes communes</source>
+        <target>Toutes communes</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="ed57d1e0a5e8b2f4ee06f517473be738665b4b0f" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ observationList?.length }}"/> observations trouvées !</source>

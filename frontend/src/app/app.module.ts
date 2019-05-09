@@ -48,9 +48,9 @@ import { AppConfig } from "../conf/app.config";
 
 import { AdminComponent } from "./auth/admin/admin.component";
 
-// import { registerLocaleData } from "@angular/common";
-// import localeFr from "@angular/common/locales/fr";
-// registerLocaleData(localeFr, "fr");
+import { registerLocaleData } from "@angular/common";
+import localeFr from "@angular/common/locales/fr";
+registerLocaleData(localeFr, "fr");
 // import localeFrExtra from "@angular/common/locales/extra/fr";
 // registerLocaleData(localeFr, "fr-FR", localeFrExtra);
 

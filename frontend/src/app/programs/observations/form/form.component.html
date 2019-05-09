@@ -9,12 +9,8 @@
     <div class="form-group col-lg-8">
       <input formControlName="id_program" type="hidden" />
       <label for="cd_nom" i18n
-        >{{
-          taxaCount >= taxonAutocompleteInputThreshold
-            ? "Rechercher"
-            : "Sélectionnez"
-        }}
-        une espèce</label
+        >{ autocomplete, select, isOn {Rechercher une esp&egrave;ce} isOff
+        {S&eacute;lectionnez une esp&egrave;ce}}</label
       >
       <!-- TAXON SELECT -->
       <div
