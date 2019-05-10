@@ -267,7 +267,6 @@ export class ObsFormComponent implements AfterViewInit {
 
           if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
             // this.hasZoomAlert = true;
-            console.debug("ZOOM ALERT", formMap);
             L.DomUtil.addClass(
               formMap.getContainer(),
               "observation-zoom-statement-warning"
@@ -280,7 +279,6 @@ export class ObsFormComponent implements AfterViewInit {
                 formMap.getContainer(),
                 "observation-zoom-statement-warning"
               );
-              console.debug("Deactivating overlay", formMap);
             }, 2000);
             return;
           }

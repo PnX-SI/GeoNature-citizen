@@ -11,9 +11,7 @@ import {
   ElementRef,
   HostListener,
   ComponentFactoryResolver,
-  ComponentRef,
-  Injector,
-  DoCheck
+  Injector
 } from "@angular/core";
 
 import { FeatureCollection, Feature } from "geojson";
@@ -337,7 +335,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
           if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
             // this.hasZoomAlert = true;
-            console.debug("ZOOM ALERT", this.observationMap);
             L.DomUtil.addClass(
               this.observationMap.getContainer(),
               "observation-zoom-statement-warning"
@@ -350,7 +347,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
                 this.observationMap.getContainer(),
                 "observation-zoom-statement-warning"
               );
-              console.debug("Deactivating overlay", this.observationMap);
             }, 2000);
             return;
           }
