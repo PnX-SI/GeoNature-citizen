@@ -8,9 +8,9 @@ import {
   Output,
   EventEmitter
 } from "@angular/core";
-import { Observable, from, ReplaySubject } from "rxjs";
+import { ReplaySubject } from "rxjs";
 
-import { FeatureCollection, Feature, Geometry } from "geojson";
+import { FeatureCollection, Feature } from "geojson";
 
 import { AppConfig } from "../../../../conf/app.config";
 import {
@@ -39,7 +39,7 @@ export class ObsListComponent implements OnChanges {
   selectedMunicipality: any = null;
 
   constructor(private cd: ChangeDetectorRef) {
-    this.obsCount$ = new ReplaySubject<Feature[]>(this.observationList);
+    this.obsCount$ = new ReplaySubject<Feature[]>(Infinity);
   }
 
   ngOnChanges(_changes: SimpleChanges) {

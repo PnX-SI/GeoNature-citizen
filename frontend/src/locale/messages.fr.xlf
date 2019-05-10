@@ -811,9 +811,9 @@
           <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ed57d1e0a5e8b2f4ee06f517473be738665b4b0f" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ observationList?.length }}"/> observations trouvées !</source>
-        <target><x id="INTERPOLATION" equiv-text="{{ observationList?.length }}"/> observations trouvées !</target>
+      <trans-unit id="29a87d8d8569e0e04fd01d1ba0f6ba6df82b1d35" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ (obsCount$ | async)?.length }}"/> observations trouvées !</source>
+        <target><x id="INTERPOLATION" equiv-text="{{ (obsCount$ | async)?.length }}"/> observations trouvées !</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
           <context context-type="linenumber">31</context>
