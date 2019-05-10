@@ -6,9 +6,9 @@
         <div class="user-infos" (click)="editInfos(personalInfos)">
           <!-- FIXME: mocked observation count -->
           <span i18n
-            >{ +stats?.platform_attendance, plural, =0 {observation} =1
-            {observation} other {{{stats?.platform_attendance}} observations}
-            }</span
+            >{ +stats?.platform_attendance, plural, =0 { aucune observation} =1
+            {une observation} other
+            {{{stats?.platform_attendance}} observations} }</span
           >
           <img src="assets/user.jpg" />
           <p>{{ username }} <i class="fa fa-pencil"></i></p>
