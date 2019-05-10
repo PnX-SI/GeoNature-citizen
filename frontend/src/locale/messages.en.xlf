@@ -793,6 +793,32 @@
         <note priority="1" from="description">Vous venez d&apos;obtenir ce badge</note>
         <note priority="1" from="meaning">Reward</note>
       </trans-unit>
+      <trans-unit id="d49f50c97c1c2592b081e0aeaf0246b5ed5038c3" datatype="html">
+        <source>
+          Observé par
+          <x id="INTERPOLATION" equiv-text="{{
+            data.observer &amp;&amp; data.observer.username
+              ? data.observer.username
+              : &quot;Anonyme&quot;
+          }}"/>
+          <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
+          le <x id="INTERPOLATION_1" equiv-text="{{ data.date }}"/>
+        </source>
+        <target>
+          Observed by
+          <x id="INTERPOLATION" equiv-text="{{
+            data.observer &amp;&amp; data.observer.username
+              ? data.observer.username
+              : &quot;Anonymous&quot;
+          }}"/>
+          <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
+          on <x id="INTERPOLATION_1" equiv-text="{{ data.date }}"/>
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/map/map.component.ts</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="e0212155de52e79fd3927a7a0cd0b3e64c4d2e2e" datatype="html">
         <source>Toutes espèces</source>
         <target>All species</target>

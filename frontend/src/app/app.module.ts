@@ -24,7 +24,10 @@ import { DescModalComponent } from "./programs/desc-modal/desc-modal.component";
 import { ProgramsComponent } from "./programs/programs.component";
 import { ObsFormComponent } from "./programs/observations/form/form.component";
 import { ObsListComponent } from "./programs/observations/list/list.component";
-import { ObsMapComponent } from "./programs/observations/map/map.component";
+import {
+  ObsMapComponent,
+  MarkerPopupComponent
+} from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
@@ -68,6 +71,7 @@ registerLocaleData(localeFr, "fr");
     AppComponent,
     ObsComponent,
     ObsMapComponent,
+    MarkerPopupComponent,
     ObsFormComponent,
     ObsListComponent,
     HomeComponent,
@@ -118,7 +122,8 @@ registerLocaleData(localeFr, "fr");
     OnboardComponent,
     CommittedComponent,
     CongratsComponent,
-    RewardComponent
+    RewardComponent,
+    MarkerPopupComponent
   ],
   exports: [AdminComponent]
 })

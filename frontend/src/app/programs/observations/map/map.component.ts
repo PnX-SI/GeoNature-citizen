@@ -9,7 +9,11 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
-  HostListener
+  HostListener,
+  ComponentFactoryResolver,
+  ComponentRef,
+  Injector,
+  DoCheck
 } from "@angular/core";
 
 import { FeatureCollection, Feature } from "geojson";
@@ -131,6 +135,11 @@ export class ObsMapComponent implements OnInit, OnChanges {
   openPopupAfterClose: boolean;
   zoomAlertTimeout: any;
 
+  constructor(
+    private resolver: ComponentFactoryResolver,
+    private injector: Injector
+  ) {}
+
   ngOnInit() {
     this.initMap(conf);
   }
@@ -234,29 +243,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
     zv.setPosition("bottomright");
   }
 
-  getPopupContent(feature): string {
-    return `
-      <img src="${
-        feature.properties.image
-          ? feature.properties.image
-          : "assets/Azure-Commun-019.JPG"
-      }">
-      <p>
-        <b>${feature.properties.common_name}</b>
-        </br>
-        <span i18n>
-          Observé par ${
-            feature.properties.observer && feature.properties.observer.username
-              ? feature.properties.observer.username
-              : "Anonyme"
-          }
-          </br>
-          le ${feature.properties.date}
-        </span>
-      </p>
-      <div>
-        <img class="icon" src="assets/binoculars.png">
-      </div>`;
+  getPopupContent(feature): any {
+    const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
+    const component = factory.create(this.injector);
+    component.instance.data = feature.properties;
+    component.changeDetectorRef.detectChanges();
+    const popupContent = component.location.nativeElement;
+    return popupContent;
   }
 
   loadObservations(): void {
@@ -271,9 +264,9 @@ export class ObsMapComponent implements OnInit, OnChanges {
         onEachFeature: (feature, layer) => {
           let popupContent = this.getPopupContent(feature);
 
-          if (feature.properties && feature.properties.popupContent) {
-            popupContent += feature.properties.popupContent;
-          }
+          // if (feature.properties && feature.properties.popupContent) {
+          //   popupContent += feature.properties.popupContent;
+          // }
 
           layer.bindPopup(popupContent);
         },
@@ -384,4 +377,30 @@ export class ObsMapComponent implements OnInit, OnChanges {
     e.stopPropagation();
     console.debug("[ObsMapComponent.newObservationEventHandler]", e.detail);
   }
+}
+
+@Component({
+  selector: "popup",
+  template: `
+    <ng-container>
+      <img [src]="data.image || 'assets/Azure-Commun-019.JPG'" />
+      <p>
+        <b>{{ data.common_name }}</b> <br />
+        <span i18n>
+          Observé par
+          {{
+            data.observer && data.observer.username
+              ? data.observer.username
+              : "Anonyme"
+          }}
+          <br />
+          le {{ data.date }}
+        </span>
+      </p>
+      <div><img class="icon" src="assets/binoculars.png" /></div>
+    </ng-container>
+  `
+})
+export class MarkerPopupComponent {
+  @Input() data;
 }

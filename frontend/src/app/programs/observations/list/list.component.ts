@@ -108,6 +108,7 @@ export class ObsListComponent implements OnChanges {
   }
 
   trackByObs(index: number, obs: ObservationFeature): number {
+    console.debug(obs.properties.id_observation);
     return obs.properties.id_observation;
   }
 }

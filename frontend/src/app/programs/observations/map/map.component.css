@@ -1,3 +1,11 @@
+popup {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
 #obsMap {
   height: calc(100vh - var(--router-outlet-offset));
   margin-left: var(--list-toggler-width);

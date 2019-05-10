@@ -32,7 +32,7 @@
   </div>
   <div id="list">
     <div
-      *ngFor="let o of observationList; trackBy: trackByObs"
+      *ngFor="let o of (obsCount$ | async); trackBy: trackByObs"
       class="espece obs-{{ o.properties.id_observation }}"
       (click)="onObsClick(o)"
     >

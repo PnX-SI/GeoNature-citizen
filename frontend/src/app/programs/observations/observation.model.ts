@@ -13,7 +13,7 @@ export interface ObservationFeature extends Feature {
     count: number;
     date: Date;
     id_observation: number;
-    images: string[];
+    images?: string[];
     municipality?: any;
     obs_txt: string;
     observer?: any;
