@@ -28,11 +28,11 @@
     </select>
   </div>
   <div class="obs-found">
-    <p i18n>{{ observationList?.length }} observations trouvées !</p>
+    <p i18n>{{ (obsCount$ | async)?.length }} observations trouvées !</p>
   </div>
   <div id="list">
     <div
-      *ngFor="let o of observationList"
+      *ngFor="let o of observationList; trackBy: trackByObs"
       class="espece obs-{{ o.properties.id_observation }}"
       (click)="onObsClick(o)"
     >

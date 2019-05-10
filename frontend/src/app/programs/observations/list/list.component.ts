@@ -8,10 +8,16 @@ import {
   Output,
   EventEmitter
 } from "@angular/core";
+import { Observable, from, ReplaySubject } from "rxjs";
+
+import { FeatureCollection, Feature, Geometry } from "geojson";
 
 import { AppConfig } from "../../../../conf/app.config";
-import { FeatureCollection, Feature } from "geojson";
-import { TaxonomyList, TaxonomyListItem } from "../observation.model";
+import {
+  TaxonomyList,
+  TaxonomyListItem,
+  ObservationFeature
+} from "../observation.model";
 
 @Component({
   selector: "app-obs-list",
@@ -24,6 +30,7 @@ export class ObsListComponent implements OnChanges {
   @Output("obsSelect") obsSelect: EventEmitter<Feature> = new EventEmitter();
   municipalities: any[];
   observationList: Feature[] = [];
+  obsCount$: ReplaySubject<Feature[]>;
   program_id: number;
   taxa: any[];
   AppConfig = AppConfig;
@@ -31,12 +38,15 @@ export class ObsListComponent implements OnChanges {
   selectedTaxon: TaxonomyListItem = null;
   selectedMunicipality: any = null;
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef) {
+    this.obsCount$ = new ReplaySubject<Feature[]>(this.observationList);
+  }
 
   ngOnChanges(_changes: SimpleChanges) {
     if (this.observations) {
       console.debug("ObsListComponent::observations OnChanges");
       this.observationList = this.observations["features"];
+      this.obsCount$.next(this.observationList);
       this.municipalities = this.observations.features
         .map(features => features.properties)
         .map(property => property.municipality)
@@ -81,6 +91,7 @@ export class ObsListComponent implements OnChanges {
       }
       return results.indexOf(false) < 0;
     });
+    this.obsCount$.next(this.observationList);
 
     if (filters.taxon || filters.municipality) {
       const event: CustomEvent = new CustomEvent("ObservationFilterEvent", {
@@ -94,5 +105,9 @@ export class ObsListComponent implements OnChanges {
 
   onObsClick(e): void {
     this.obsSelect.emit(e);
+  }
+
+  trackByObs(index: number, obs: ObservationFeature): number {
+    return obs.properties.id_observation;
   }
 }
