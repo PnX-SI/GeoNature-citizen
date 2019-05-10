@@ -8,7 +8,8 @@ import {
   Output,
   EventEmitter
 } from "@angular/core";
-import { ReplaySubject } from "rxjs";
+import { BehaviorSubject, merge } from "rxjs";
+import { tap, pluck, share, count } from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 
@@ -30,23 +31,32 @@ export class ObsListComponent implements OnChanges {
   @Output("obsSelect") obsSelect: EventEmitter<Feature> = new EventEmitter();
   municipalities: any[];
   observationList: Feature[] = [];
-  obsCount$: ReplaySubject<Feature[]>;
   program_id: number;
   taxa: any[];
   AppConfig = AppConfig;
 
   selectedTaxon: TaxonomyListItem = null;
   selectedMunicipality: any = null;
+  changes$ = new BehaviorSubject<SimpleChanges>(null);
+  obsObserver = new BehaviorSubject<Feature[]>(this.observationList);
+  features$ = merge(
+    this.obsObserver,
+    this.changes$.pipe(
+      tap(item => console.debug(item)),
+      pluck("observations", "currentValue", "features"),
+      tap((item: Feature[]) => console.debug("plucked", item)),
+      share()
+    )
+  );
 
-  constructor(private cd: ChangeDetectorRef) {
-    this.obsCount$ = new ReplaySubject<Feature[]>(Infinity);
-  }
+  constructor(private cd: ChangeDetectorRef) {}
 
-  ngOnChanges(_changes: SimpleChanges) {
-    if (this.observations) {
-      console.debug("ObsListComponent::observations OnChanges");
+  ngOnChanges(changes: SimpleChanges) {
+    this.changes$.next(changes);
+
+    if (this.observations && changes.observations) {
+      console.debug("ObsListComponent::observations OnChanges:", changes);
       this.observationList = this.observations["features"];
-      this.obsCount$.next(this.observationList);
       this.municipalities = this.observations.features
         .map(features => features.properties)
         .map(property => property.municipality)
@@ -66,7 +76,8 @@ export class ObsListComponent implements OnChanges {
   public newObservationEventHandler(e: CustomEvent) {
     const obsFeature: Feature = e.detail;
     console.debug("[ObsListComponent.newObservationEventHandler]", obsFeature);
-    this.observationList = [obsFeature, ...this.observations.features];
+    this.observationList.unshift(obsFeature);
+    this.obsObserver.next(this.observationList);
     this.cd.detectChanges();
   }
 
@@ -91,7 +102,7 @@ export class ObsListComponent implements OnChanges {
       }
       return results.indexOf(false) < 0;
     });
-    this.obsCount$.next(this.observationList);
+    this.obsObserver.next(this.observationList);
 
     if (filters.taxon || filters.municipality) {
       const event: CustomEvent = new CustomEvent("ObservationFilterEvent", {
@@ -108,7 +119,7 @@ export class ObsListComponent implements OnChanges {
   }
 
   trackByObs(index: number, obs: ObservationFeature): number {
-    console.debug(obs.properties.id_observation);
+    // console.debug(obs.properties.id_observation);
     return obs.properties.id_observation;
   }
 }
