@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
-import { tap, map } from "rxjs/operators";
+import { Observable, Subject, throwError } from "rxjs";
+import { tap, map, catchError } from "rxjs/operators";
 
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
@@ -12,6 +12,7 @@ import { RegisterComponent } from "../../auth/register/register.component";
 import { ProgramsComponent } from "../../programs/programs.component";
 import { Program } from "../../programs/programs.models";
 import { GncProgramsService } from "../../api/gnc-programs.service";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-topbar",
@@ -23,17 +24,36 @@ export class TopbarComponent implements OnInit {
   // isLoggedIn: boolean = false;
   username: any;
   modalRef: NgbModalRef;
-  programs$: Observable<Program[]>;
+  // programs$: Observable<Program[]>;
+  programs$ = new Subject<Program[]>();
   isAdmin = false;
 
   constructor(
+    private route: ActivatedRoute,
     private programService: GncProgramsService,
     private auth: AuthService,
     private modalService: NgbModal
   ) {
     const tmp = localStorage.getItem("username");
     this.username = tmp ? tmp.replace(/\"/g, "") : "Anonymous";
-    this.programs$ = this.programService.getAllPrograms();
+    // this.programs$ = this.programService.getAllPrograms();
+    this.route.data
+      .pipe(
+        tap((data: { programs: Program[] }) => {
+          if (data.programs) {
+            this.programs$.next(data.programs);
+          } else {
+            // console.warn("topbar::getAllPrograms");
+            this.programService.getAllPrograms().subscribe(programs => {
+              this.programs$.next(programs);
+            });
+          }
+        }),
+        catchError(error => throwError(error))
+      )
+      .subscribe(data => {
+        // console.debug("topbar::programs", data);
+      });
   }
 
   isLoggedIn(): Observable<boolean> {

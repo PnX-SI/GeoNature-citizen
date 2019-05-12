@@ -7,6 +7,8 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { Program } from "./programs.models";
 import { GncProgramsService } from "../api/gnc-programs.service";
 import { ProgramsResolve } from "../programs/programs-resolve.service";
+import { Subject } from "rxjs";
+// import { count } from "rxjs/operators";
 
 @Component({
   selector: "app-programs",
@@ -16,8 +18,8 @@ import { ProgramsResolve } from "../programs/programs-resolve.service";
   providers: [ProgramsResolve]
 })
 export class ProgramsComponent implements OnInit {
-  programs: Program[];
-  programCount: number;
+  programs$ = new Subject<Program[]>();
+  // programCount$ = this.programs$.pipe(count());
 
   constructor(
     private route: ActivatedRoute,
@@ -27,13 +29,13 @@ export class ProgramsComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe((data: { programs: Program[] }) => {
-      this.programs = data.programs;
+      if (data.programs) {
+        this.programs$.next(data.programs);
+      } else {
+        this.programService
+          .getAllPrograms()
+          .subscribe(programs => this.programs$.next(programs));
+      }
     });
-    if (!this.programs) {
-      this.programService.getAllPrograms().subscribe(programs => {
-        this.programs = programs;
-        this.programCount = this.programs ? this.programs.length : 0;
-      });
-    }
   }
 }

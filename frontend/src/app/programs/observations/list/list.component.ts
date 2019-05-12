@@ -42,9 +42,9 @@ export class ObsListComponent implements OnChanges {
   features$ = merge(
     this.obsObserver,
     this.changes$.pipe(
-      tap(item => console.debug(item)),
+      // tap(item => console.debug(item)),
       pluck("observations", "currentValue", "features"),
-      tap((item: Feature[]) => console.debug("plucked", item)),
+      // tap((item: Feature[]) => console.debug("plucked", item)),
       share()
     )
   );
@@ -55,7 +55,7 @@ export class ObsListComponent implements OnChanges {
     this.changes$.next(changes);
 
     if (this.observations && changes.observations) {
-      console.debug("ObsListComponent::observations OnChanges:", changes);
+      // console.debug("ObsListComponent::observations OnChanges:", changes);
       this.observationList = this.observations["features"];
       this.municipalities = this.observations.features
         .map(features => features.properties)
@@ -76,8 +76,8 @@ export class ObsListComponent implements OnChanges {
   public newObservationEventHandler(e: CustomEvent) {
     const obsFeature: Feature = e.detail;
     console.debug("[ObsListComponent.newObservationEventHandler]", obsFeature);
-    this.observationList.unshift(obsFeature);
-    this.obsObserver.next(this.observationList);
+    // this.observationList.unshift(obsFeature);
+    // this.obsObserver.next(this.observationList);
     this.cd.detectChanges();
   }
 

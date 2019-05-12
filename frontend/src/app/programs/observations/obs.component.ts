@@ -87,7 +87,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
 
   onMapClicked(p: L.Point): void {
     this.coords = p;
-    console.debug("map clicked", this.coords, this.obsMap.observationMap);
+    // console.debug("map clicked", this.coords, this.obsMap.observationMap);
   }
 
   toggleList() {
@@ -98,6 +98,16 @@ export class ObsComponent implements OnInit, AfterViewInit {
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
     console.debug("[ObsComponent.newObservationEventHandler]", e.detail);
+    const obsFeature: Feature = e.detail;
+    const _ = this.observations.features.unshift(obsFeature);
+    this.observations = {
+      type: "FeatureCollection",
+      features: this.observations.features
+    };
+    this.obsList.observations = {
+      type: "FeatureCollection",
+      features: this.observations.features
+    };
   }
 
   @HostListener("document:ObservationFilterEvent", ["$event"])
