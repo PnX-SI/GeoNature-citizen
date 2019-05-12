@@ -249,7 +249,7 @@ export class ObsFormComponent implements AfterViewInit {
 
         const maxBounds: L.LatLngBounds = programArea.getBounds();
         formMap.fitBounds(maxBounds);
-        formMap.setMaxBounds(maxBounds);
+        formMap.setMaxBounds(maxBounds.pad(0.01));
 
         // Set initial observation marker from main map if already spotted
         let myMarker = null;
