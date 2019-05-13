@@ -124,6 +124,6 @@ export class ObsComponent implements OnInit, AfterViewInit {
     // this.obsMap.observations = {
     //   type: "FeatureCollection",
     //   features: this.observations.features
-    };
+    // };
   }
 }
