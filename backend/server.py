@@ -17,9 +17,19 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 
 app.debug = True
+if app.debug:
+    import colorlog
 
-logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+    handler = colorlog.StreamHandler()
+    handler.setFormatter(
+        colorlog.ColoredFormatter("%(log_color)s%(levelname)s:%(name)s:%(message)s")
+    )
+
+    logger = colorlog.getLogger()
+    logger.addHandler(handler)
+
+    logging.basicConfig()
+    logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
 
 
 class ReverseProxied(object):
