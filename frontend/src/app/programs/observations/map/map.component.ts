@@ -27,7 +27,7 @@ import { MarkerClusterGroup } from "leaflet";
 const conf = {
   MAP_ID: "obsMap",
   GEOLOCATION_HIGH_ACCURACY: false,
-  BASE_LAYERS: MAP_CONFIG["BASEMAP"].reduce((acc, baseLayer: Object) => {
+  BASE_LAYERS: MAP_CONFIG["BASEMAPS"].reduce((acc, baseLayer: Object) => {
     acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
       name: baseLayer["name"],
       attribution: baseLayer["attribution"],
@@ -47,7 +47,8 @@ const conf = {
       ]
     ];
     */
-    return conf.BASE_LAYERS["OpenStreetMapFRHot"];
+    // alert(MAP_CONFIG["DEFAULT_PROVIDER"]);
+    return conf.BASE_LAYERS[MAP_CONFIG["DEFAULT_PROVIDER"]];
   },
   ZOOM_CONTROL_POSITION: "topright",
   BASE_LAYER_CONTROL_POSITION: "topright",
