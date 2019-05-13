@@ -1,18 +1,15 @@
 import {
   Component,
   OnInit,
-  ViewEncapsulation,
-  Inject,
-  LOCALE_ID
+  ViewEncapsulation
+  // Inject,
+  // LOCALE_ID
 } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 
 import { AppConfig } from "../../../conf/app.config";
 import { AuthService } from "../auth.service";
-
-const ADMIN_ENDPOINT = AppConfig.API_ENDPOINT + "/${localeId}/admin/";
-const PROGRAM_ENDPOINT = ADMIN_ENDPOINT + "programsmodel/";
 
 @Component({
   selector: "app-admin",
@@ -26,13 +23,20 @@ export class AdminComponent implements OnInit {
   adminUrl: SafeUrl;
 
   constructor(
-    @Inject(LOCALE_ID) readonly localeId: string,
+    // @Inject(LOCALE_ID) readonly localeId: string,
     private auth: AuthService,
     private sanitizer: DomSanitizer,
     protected http: HttpClient
   ) {}
 
   ngOnInit() {
+    const ADMIN_ENDPOINT = [
+      AppConfig.API_ENDPOINT,
+      // this.localeId,
+      "admin",
+      ""
+    ].join("/");
+    const PROGRAM_ENDPOINT = ADMIN_ENDPOINT + "programsmodel/";
     this.adminUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
       PROGRAM_ENDPOINT + "?jwt=" + this.auth.getAccessToken()
     );
