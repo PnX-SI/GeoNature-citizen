@@ -110,15 +110,13 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     let errorMessage = "";
 
+    // renew access_token 2min before expiration if interacting with backend api.
     const expired = this.auth.tokenExpiration(this.auth.getAccessToken());
-    // renew two min before expiration
-    if (expired && expired <= 120.0 && expired > 0.5) {
+    if (expired && expired <= 120.0) {
       console.debug(
         `[AuthInterceptor.intercept] token is about to expire: ${expired}`
       );
       return this.handle401(request, next);
-    } else {
-      // console.warn(`[AuthInterceptor.intercept] expiring token: ${expired}`);
     }
 
     return next.handle(this.addToken(request, this.auth.getAccessToken())).pipe(
@@ -138,6 +136,10 @@ export class AuthInterceptor implements HttpInterceptor {
               );
               return this.handle401(request, next);
             default:
+              console.error(
+                `[AuthInterceptor.intercept] missing handler for error:`,
+                error
+              );
               errorMessage = `Error Code: ${error.status}\nMessage: ${
                 error.message
               }`;
