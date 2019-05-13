@@ -86,7 +86,7 @@ def get_module(pk):
         datas = ModulesModel.query.filter_by(id_module=pk).first()
         return datas.as_dict(), 200
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/modules", methods=["GET"])
@@ -109,7 +109,7 @@ def get_modules():
             datas.append(d)
         return {"count": count, "datas": datas}, 200
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/programs/<int:pk>", methods=["GET"])
@@ -139,7 +139,7 @@ def get_program(pk):
             features.append(feature)
         return {"features": features}, 200
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/programs", methods=["GET"])
@@ -179,7 +179,7 @@ def get_programs():
         feature_collection["count"] = count
         return feature_collection
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/programs", methods=["POST"])
@@ -269,8 +269,8 @@ def post_program():
         db.session.commit()
         # Réponse en retour
         return (
-            {"message": "New observation created.", "features": newprogram.as_dict()},
+            {"message": "Nouveau programme créé.", "features": newprogram.as_dict()},
             200,
         )
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400

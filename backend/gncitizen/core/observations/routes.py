@@ -120,7 +120,7 @@ def get_observation(pk):
         features = generate_observation_geojson(pk)
         return {"features": features}, 200
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/observations", methods=["POST"])
@@ -257,11 +257,11 @@ def post_observation():
             # 2. map result to BADGESET
             # 3. return reward selection with new observation feature
             pass
-        return ({"message": "New observation created", "features": features}, 200)
+        return ({"message": "Nouvelle observation créée.", "features": features}, 200)
 
     except Exception as e:
         current_app.logger.warning("[post_observation] Error: %s", str(e))
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/observations", methods=["GET"])
@@ -304,7 +304,7 @@ def get_observations():
             features.append(feature)
         return FeatureCollection(features)
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/observations/lists/<int:id>", methods=["GET"])
@@ -363,7 +363,7 @@ def get_observations_from_list(id):  # noqa: A002
                     features.append(feature)
             return FeatureCollection(features)
         except Exception as e:
-            return {"error_message": str(e)}, 400
+            return {"message": str(e)}, 400
 
 
 @routes.route("programs/<int:id>/observations", methods=["GET"])
@@ -467,7 +467,7 @@ def get_program_observations(id):
         current_app.logger.debug(FeatureCollection(features))
         return FeatureCollection(features)
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("media/<item>")

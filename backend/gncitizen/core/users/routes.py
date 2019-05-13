@@ -9,6 +9,7 @@ from flask_jwt_extended import (
     jwt_required,
 )
 from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
 
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
@@ -91,25 +92,49 @@ def registration():
         try:
             newuser = UserModel(**datas_to_save)
         except Exception as e:
-            print(e)
-            raise GeonatureApiError(e)
+            db.session.rollback()
+            current_app.logger.critical(e)
+            # raise GeonatureApiError(e)
+            return ({"message": "La syntaxe de la requête est erronée."}, 400)
 
-        if UserModel.find_by_username(newuser.username):
-            return (
-                {
-                    "error_message": "L'utilisateur {} éxiste déjà".format(
-                        newuser.username
-                    )
-                },
-                400,
-            )
+        try:
+            newuser.save_to_db()
+        except IntegrityError as e:
+            db.session.rollback()
+            # error causality ?
+            current_app.logger.critical("IntegrityError: %s", str(e))
 
-        newuser.save_to_db()
+            if UserModel.find_by_username(newuser.username):
+                return (
+                    {
+                        "message": """L'utilisateur "{}" existe déjà.""".format(
+                            newuser.username
+                        )
+                    },
+                    400,
+                )
+
+            elif (
+                db.session.query(UserModel)
+                .filter(UserModel.email == newuser.email)
+                .one()
+            ):
+                return (
+                    {
+                        "message": """Un email correspondant est déjà enregistré.""".format(
+                            newuser.email
+                        )
+                    },
+                    400,
+                )
+            else:
+                raise GeonatureApiError(e)
+
         access_token = create_access_token(identity=newuser.username)
         refresh_token = create_refresh_token(identity=newuser.username)
         return (
             {
-                "message": "Félicitations, l'utilisateur <b>{}</b> a été créé".format(
+                "message": """Félicitations, l'utilisateur "{}" a été créé""".format(
                     newuser.username
                 ),
                 "username": newuser.username,
@@ -120,7 +145,8 @@ def registration():
         )
 
     except Exception as e:
-        return {"error_message": str(e)}, 500
+        current_app.logger.critical("grab all: %s", str(e))
+        return {"message": str(e)}, 500
 
 
 @routes.route("/login", methods=["POST"])
@@ -162,13 +188,20 @@ def login():
         print(username)
         current_user = UserModel.find_by_username(username)
         if not current_user:
-            return {"message": ("User {} doesn't exist").format(username)}, 400
+            return (
+                {
+                    "message": """L'utilisateur "{}" n'est pas enregistré.""".format(
+                        username
+                    )
+                },
+                400,
+            )
         if UserModel.verify_hash(password, current_user.password):
             access_token = create_access_token(identity=username)
             refresh_token = create_refresh_token(identity=username)
             return (
                 {
-                    "message": "Logged in as {}".format(username),
+                    "message": """Connecté en tant que "{}".""".format(username),
                     "username": username,
                     "access_token": access_token,
                     "refresh_token": refresh_token,
@@ -176,7 +209,7 @@ def login():
                 200,
             )
         else:
-            return {"message": "Wrong credentials"}, 400
+            return {"message": """Mauvaises informations d'identification"""}, 400
     except Exception as e:
         return {"message": str(e)}, 400
 
@@ -312,7 +345,7 @@ def logged_user():
             user.update()
             return (
                 {
-                    "message": "Personal info updated.",
+                    "message": "Informations personnelles mises à jour. Merci.",
                     "features": user.as_secured_dict(True),
                 },
                 200,
@@ -320,7 +353,10 @@ def logged_user():
 
     except Exception as e:
         raise GeonatureApiError(e)
-        return ({"error_message": "You must log in to get your personal data"}, 400)
+        return (
+            {"message": "Connectez vous pour obtenir vos données personnelles."},
+            400,
+        )
 
 
 @routes.route("/user/delete", methods=["DELETE"])
@@ -363,10 +399,14 @@ def delete_user():
         except Exception as e:
             db.session.rollback()
             raise GeonatureApiError(e)
-            return {"error_message": str(e)}, 400
+            return {"message": str(e)}, 400
 
         return (
-            {"message": "Account {} have been successfully deleted".format(username)},
+            {
+                "message": """Account "{}" have been successfully deleted""".format(
+                    username
+                )
+            },
             200,
         )
 
@@ -381,7 +421,10 @@ def reset_user_password():
     try:
         user = UserModel.query.filter_by(username=username, email=email).one()
     except Exception:
-        return ({"error_message": "{} does not exists".format(email)}, 400)
+        return (
+            {"message": """L'email "{}" n'est pas enregistré.""".format(email)},
+            400,
+        )
 
     passwd = uuid.uuid4().hex[0:6]
     passwd_hash = UserModel.generate_hash(passwd)
@@ -434,4 +477,11 @@ def reset_user_password():
         current_app.logger.warning(
             "reset_password: failled to send new credentials. %s", str(e)
         )
-        return ({"message": "failled to send new credentials. {}".format(str(e))}, 500)
+        return (
+            {
+                "message": """Echec d'envoi des informations de connexion: "{}".""".format(
+                    str(e)
+                )
+            },
+            500,
+        )
