@@ -149,6 +149,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       changes.program &&
       changes.program.currentValue
     ) {
+      console.debug("ObsMapComponent::program OnChanges:", changes);
       this.loadProgramArea();
     }
 
@@ -157,6 +158,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       changes.observations &&
       changes.observations.currentValue
     ) {
+      console.debug("ObsMapComponent::observations OnChanges:", changes);
       this.loadObservations();
 
       /*

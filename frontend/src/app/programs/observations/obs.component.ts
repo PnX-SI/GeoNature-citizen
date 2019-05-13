@@ -98,8 +98,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
     console.debug("[ObsComponent.newObservationEventHandler]", e.detail);
-    const obsFeature: Feature = e.detail;
-    const _ = this.observations.features.unshift(obsFeature);
+    const _ = this.observations.features.unshift(e.detail);
     this.observations = {
       type: "FeatureCollection",
       features: this.observations.features
@@ -108,6 +107,10 @@ export class ObsComponent implements OnInit, AfterViewInit {
       type: "FeatureCollection",
       features: this.observations.features
     };
+    // this.obsMap.observations = {
+    //   type: "FeatureCollection",
+    //   features: this.observations.features
+    // };
   }
 
   @HostListener("document:ObservationFilterEvent", ["$event"])
@@ -117,6 +120,10 @@ export class ObsComponent implements OnInit, AfterViewInit {
     this.obsList.observations = {
       type: "FeatureCollection",
       features: this.observations.features
+    };
+    // this.obsMap.observations = {
+    //   type: "FeatureCollection",
+    //   features: this.observations.features
     };
   }
 }
