@@ -20,9 +20,12 @@
                 class="img-hover"
                 [ngbTooltip]="p.short_desc"
                 [ngStyle]="{
-                  'background-image': p.image
+                  'background-image': p.logo
+                    ? 'url(' + p.logo + ')'
+                    : p.image
                     ? 'url(' + p.image + ')'
-                    : 'url(' + 'assets/prog1.jpg' + ')'
+                    : 'url(' + 'assets/prog1.jpg' + ')',
+                  'background-size': 'cover'
                 }"
               ></div>
               <h5 class="card-title">
