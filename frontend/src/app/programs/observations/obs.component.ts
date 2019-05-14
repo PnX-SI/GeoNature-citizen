@@ -113,6 +113,12 @@ export class ObsComponent implements OnInit, AfterViewInit {
     // };
   }
 
+  /*
+    filters subject
+    observations subject
+    filtered observations subject
+  */
+
   @HostListener("document:ObservationFilterEvent", ["$event"])
   observationFilterEventHandler(e: CustomEvent) {
     e.stopPropagation();
