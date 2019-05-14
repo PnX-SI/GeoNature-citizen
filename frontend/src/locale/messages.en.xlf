@@ -367,7 +367,7 @@
         <target>Your lastname</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">101</context>
+          <context context-type="linenumber">102</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
@@ -379,7 +379,7 @@
         <target>Type in tour lastname</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">108</context>
+          <context context-type="linenumber">109</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
@@ -395,7 +395,7 @@
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">121</context>
+          <context context-type="linenumber">123</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a0345ec3898b6b09fdf320d52e2634fb243c3eaf" datatype="html">
@@ -403,11 +403,11 @@
         <target>Your password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">127</context>
+          <context context-type="linenumber">129</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">133</context>
+          <context context-type="linenumber">135</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
@@ -419,7 +419,7 @@
         <target>Confirm your password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">147</context>
+          <context context-type="linenumber">149</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4f5c019e983e5aa1f4b93a3c4aa67ac94cf2ec7d" datatype="html">
@@ -427,7 +427,7 @@
         <target>Please, confirm your password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">157</context>
+          <context context-type="linenumber">159</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
@@ -443,7 +443,7 @@
 .        </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">165</context>
+          <context context-type="linenumber">167</context>
         </context-group>
       </trans-unit>
       <trans-unit id="152a0d336ac1e704ef12fa2b8e44fcc8c634d084" datatype="html">
@@ -451,7 +451,7 @@
         <target>conditions d&apos;utilisation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">179</context>
+          <context context-type="linenumber">181</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a07d84725ccca87d9af1ca9831ab500368066d45" datatype="html">
@@ -463,7 +463,7 @@
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">190</context>
+          <context context-type="linenumber">192</context>
         </context-group>
       </trans-unit>
       <trans-unit id="34ce76a79350dc319bac73eb7bcd8b0c6019a70d" datatype="html">
@@ -475,7 +475,7 @@
   </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">201</context>
+          <context context-type="linenumber">203</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/login/login.component.html</context>
@@ -959,15 +959,15 @@
         </context-group>
         <note priority="1" from="description">ngb.carousel.next</note>
       </trans-unit>
-      <trans-unit id="3e6f60d65c8ab77ab6a35da97ae725907e464162" datatype="html">
+      <trans-unit id="2179961a329c80d7f3a5853e7a2d32c2c7154d68" datatype="html">
         <source>
       PROGRAMMES<x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
-        programCount
+        (programs$ | async)?.length
       }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
     </source>
         <target>
       SURVEYS<x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
-        programCount
+        (programs$ | async)?.length
       }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
     </target>
         <context-group purpose="location">
