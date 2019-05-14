@@ -61,12 +61,13 @@ export const MAP_CONFIG = {
     },
     {
       name: "Stamen",
-      maxZoom: 22,
       // layer: "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg",
       // layer: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
       // layer:
       //   "https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg",
+      // maxZoom: 22,
       layer: "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
+      maxZoom: 20,
       subdomains: "abcd",
       attribution: "maps.stamen.com"
     }
