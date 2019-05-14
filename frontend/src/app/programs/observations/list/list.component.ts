@@ -88,22 +88,20 @@ export class ObsListComponent implements OnChanges {
     };
     // WARNING: map observations are connected to this.observationList
     this.observationList = this.observations["features"].filter(obs => {
-      this.observations["features"].filter(obs => {
-        let results: boolean[] = [];
-        if (this.selectedMunicipality) {
-          results.push(
-            obs.properties.municipality.code == this.selectedMunicipality.code
-          );
-          filters.municipality = this.selectedMunicipality.code;
-        }
-        if (this.selectedTaxon) {
-          results.push(
-            obs.properties.cd_nom == this.selectedTaxon.taxref["cd_nom"]
-          );
-          filters.taxon = this.selectedTaxon.taxref["cd_nom"];
-        }
-        return results.indexOf(false) < 0;
-      });
+      let results: boolean[] = [];
+      if (this.selectedMunicipality) {
+        results.push(
+          obs.properties.municipality.code == this.selectedMunicipality.code
+        );
+        filters.municipality = this.selectedMunicipality.code;
+      }
+      if (this.selectedTaxon) {
+        results.push(
+          obs.properties.cd_nom == this.selectedTaxon.taxref["cd_nom"]
+        );
+        filters.taxon = this.selectedTaxon.taxref["cd_nom"];
+      }
+      return results.indexOf(false) < 0;
     });
     this.observations$.next(this.observationList);
 

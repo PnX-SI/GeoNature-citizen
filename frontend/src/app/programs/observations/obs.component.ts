@@ -116,7 +116,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
   /*
     filters subject
     observations subject
-    filtered observations subject
+    filtered observations subject -> presentation source observable
   */
 
   @HostListener("document:ObservationFilterEvent", ["$event"])
