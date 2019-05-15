@@ -24,27 +24,52 @@ except ImportError:
             "Seniority.chenille": "6months",
             "Seniority.papillon": "1an",
         },
-        "taxo_error_binary_weights": {
-            "regne": 64,
-            "phylum": 32,
-            "classe": 16,
-            "ordre": 8,
-            "famille": 4,
-            "sous_famille": 2,
-            "tribu": 1,
-        },
-        "taxo_distance": {
-            "Observateur.None": 4,
-            "Observateur.Amateur": 2,
-            "Observateur.Chevronné": 1,
-            "Observateur.SuperFort": 0,
-        },
         "program_attendance": {
             "Program_Attendance.Au": 7,
             "Program_Attendance.Ar": 5,
             "Program_Attendance.CuSn": 3,
         },
         "program_date_bounds": {"start": "2019-03-20", "end": ""},
+        # "recognition": {
+        #     # classes
+        #     "aves": {
+        #         "specialization": "ornitologue",
+        #         "attendance": {"Aves.Au": 500, "Aves.Ar": 100, "Aves.CuSn": 10},
+        #     },
+        #     "mammalia": {
+        #         "specialization": "mammalogiste",
+        #         "attendance": {
+        #             "Mammalia.Au": 500,
+        #             "Mammalia.Ar": 100,
+        #             "Mammalia.CuSn": 10,
+        #         },
+        #     },
+        #     "reptilia": {
+        #         "specialization": "herpétologue",
+        #         "attendance": {
+        #             "Reptilia.Au": 500,
+        #             "Reptilia.Ar": 100,
+        #             "Reptilia.CuSn": 10,
+        #         },
+        #     },
+        #     # orders
+        #     "odonata": {
+        #         "specialization": "odonatologue",
+        #         "attendance": {
+        #             "Odonata.Au": 500,
+        #             "Odonata.Ar": 100,
+        #             "Odonata.CuSn": 10,
+        #         },
+        #     },
+        #     "lepidoptera": {
+        #         "specialization": "lépidoptériste",
+        #         "attendance": {
+        #             "Lepidoptera.Au": 500,
+        #             "Lepidoptera.Ar": 100,
+        #             "Lepidoptera.CuSn": 10,
+        #         },
+        #     },
+        # },
     }
     conf = _dev_conf
 
@@ -112,15 +137,6 @@ seniority_model = OrderedDict(
     )
 )
 
-taxo_error_binary_weights = OrderedDict(
-    reversed(sorted(conf["taxo_error_binary_weights"].items(), key=lambda t: t[1]))
-)
-
-
-taxo_distance_model = OrderedDict(
-    reversed(sorted(conf["taxo_distance"].items(), key=lambda t: t[1]))
-)
-
 program_attendance_model = OrderedDict(
     reversed(sorted(conf["program_attendance"].items(), key=lambda t: t[1]))
 )
@@ -130,6 +146,23 @@ program_date_bounds_model = {
     "end": config_duration2timestamp(conf["program_date_bounds"]["end"]),
 }
 
+print(conf)
+recognition_model = [
+    {
+        "class": "aves",
+        "order": "rebla",
+        # if hasattr(item, "class")
+        # else "order": item["class" if hasattr(item, "class") else "order"],
+        "specialization": conf["recognition"][i]["specialization"],
+        "attendance": OrderedDict(
+            reversed(
+                sorted(conf["recognition"][i]["attendance"].items(), key=lambda t: t[1])
+            )
+        ),
+    }
+    for i in range(len(conf["recognition"]))
+    # for i, item in enumerate(conf["recognition"])
+]
 
 test_config_duration2timestamp = """
 >>> datetime.date.fromtimestamp(config_duration2timestamp("3 months")) == (datetime.datetime.now() - datetime.timedelta(weeks=3 * 4.345)).date()

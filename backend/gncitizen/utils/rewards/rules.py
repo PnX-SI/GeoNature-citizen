@@ -2,10 +2,9 @@ from .rule import Rule
 from .models import (
     attendance_model,
     seniority_model,
-    taxo_error_binary_weights,
-    taxo_distance_model,
     program_attendance_model,
     program_date_bounds_model,
+    recognition_model,
 )
 
 
@@ -17,7 +16,7 @@ def attendance_condition(context):
 def attendance_action(data):
     for category, threshold in attendance_model.items():
         if data["attendance"] >= threshold:
-            return category
+            return "Attendance.{}".format(category)
     return "Attendance.None"
 
 
@@ -32,51 +31,11 @@ def seniority_condition(context):
 def seniority_action(data):
     for category, threshold in seniority_model.items():
         if data["seniority"] >= threshold:
-            return category
+            return "Seniority.{}".format(category)
     return "Seniority.None"
 
 
 seniority_rule = Rule(seniority_condition, seniority_action)
-
-
-# TAXON
-def taxo_distance_error(reference, submitted):
-    if (
-        reference
-        and submitted
-        and submitted.get("cd_nom", False)
-        and reference.get("taxref", False)
-        and reference["taxref"].get("cd_nom", False)
-        and reference["taxref"]["cd_nom"] == submitted["cd_nom"]
-    ):
-        return 0
-    counter = 1
-    for k in taxo_error_binary_weights.keys():
-        if reference["taxref"][k] == submitted[k]:
-            continue
-        else:
-            counter <<= taxo_error_binary_weights[k]
-    return counter
-
-
-def taxo_distance_condition(context):
-    return context["reference_taxa_list"] and context["submitted_taxon"]
-
-
-def taxo_distance_action(data):
-    taxo_error = min(
-        [
-            taxo_distance_error(ref_taxon, data["submitted_taxon"])
-            for ref_taxon in data["reference_taxa_list"]
-        ]
-    )
-    for category, threshold in taxo_distance_model.items():
-        if taxo_error >= threshold:
-            return category
-    return max(taxo_distance_model, key=lambda k: taxo_distance_model[k])
-
-
-program_taxo_distance_rule = Rule(taxo_distance_condition, taxo_distance_action)
 
 
 # PROGRAM_ATTENDANCE
@@ -87,7 +46,7 @@ def program_attendance_condition(context):
 def program_attendance_action(data):
     for category, threshold in program_attendance_model.items():
         if data["program_attendance"] >= threshold:
-            return category
+            return "Program_Attendance.{}".format(category)
     return "Program_Attendance.None"
 
 
@@ -116,13 +75,21 @@ program_date_bounds_rule = Rule(
 )
 
 
-#
-# définir le nombre d'observations par classe (aves, mammalia, reptilia) ou par ordre (odonata, lepidoptera).
-# Cela permettra ainsi de débloquer des niveaux de badges de "spécialistes"
-# - ornithologue, lépidoptériste, odonatologue.
-#
-# Nous souhaitons également ajouter une règle permettant d'attribuer un nombre d'observations par communes (ABC).
-#
-# SI 10 observations d'oiseaux ALORS déclenche badge ornithologue bronze.
-# SI 100 observations d'oiseaux ALORS déclenche badge ornithologue argent.
-# SI 500 observations d'oiseaux ALORS déclenche badge ornithologue or.
+def recognition_condition(context):
+    return context["submitted_taxon"]
+
+
+def recognition_action(data):
+    r = []
+    for i, item in enumerate(recognition_model):
+        for category, threshold in recognition_model[i]["attendance"].items():
+            if data["recognition"][i] >= threshold:
+                r.append(
+                    "Recognized.{}.{}".format(
+                        recognition_model[i]["specialization"], category
+                    )
+                )
+    return r if len(r) > 0 else ["Recognition.None"]
+
+
+recognition_rule = Rule(recognition_condition, recognition_action)

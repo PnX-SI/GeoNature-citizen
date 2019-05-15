@@ -6,9 +6,9 @@ from .classifier import Classifier
 from .rules import (
     attendance_rule,
     seniority_rule,
-    program_taxo_distance_rule,
     program_attendance_rule,
     program_date_bounds_rule,
+    recognition_rule,
 )
 from . import queries
 
@@ -16,9 +16,9 @@ from . import queries
 default_ruleset = {
     attendance_rule,
     seniority_rule,
-    program_taxo_distance_rule,
     program_attendance_rule,
     program_date_bounds_rule,
+    recognition_rule,
 }
 
 # PROPERTIES
