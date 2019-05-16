@@ -60,8 +60,8 @@
           }}</span>
         </p>
         <p i18n>
-          le <span>{{ o.properties.date }}</span> à
-          <span>{{ o.properties.municipality?.name || "?" }}</span>
+          le <span>{{ o.properties.date }}</span> 
+          <span *ngIf="o.properties.municipality?.name"> à {{ o.properties.municipality?.name }}</span>
         </p>
       </div>
       <div class="hide"><img src="assets/binoculars.png" /></div>
