@@ -477,14 +477,7 @@ def get_media(item):
 @routes.route("/dev_rewards")
 @json_resp
 def get_rewards():
-    from gncitizen.utils.rewards import reward, results
+    from gncitizen.utils.rewards import rewards
 
-    current_app.logger.debug("reward: %s", json.dumps(reward, indent=4))
-    return (
-        {
-            "results": results,
-            "rewards": reward,
-            "REWARDS": current_app.config["REWARDS"],
-        },
-        200,
-    )
+    current_app.logger.debug("rewards: %s", json.dumps(rewards, indent=4))
+    return ({"rewards": rewards, "REWARDS": current_app.config["REWARDS"]}, 200)

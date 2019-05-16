@@ -1,6 +1,4 @@
 import datetime
-import json
-
 
 from .classifier import Classifier
 from .rules import (
@@ -68,10 +66,15 @@ program_props = {
     # },
 }
 
-reward = []
+
+def flatten(arr):
+    for i in arr:
+        if isinstance(i, list):
+            yield from flatten(i)
+        else:
+            yield i
+
+
 results = queries.results
-merged = {**base_props, **program_props, **results}
-print("query result:", json.dumps(merged, indent=4, sort_keys=True))
-reward = Classifier().tag(default_ruleset, merged)
-# print("reward:", json.dumps(reward, indent=4))
-# print("query result:", json.dumps(results, indent=4))
+rewards = Classifier().tag(default_ruleset, {**base_props, **program_props, **results})
+rewards = [item for item in flatten(rewards)]

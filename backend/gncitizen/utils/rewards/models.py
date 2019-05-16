@@ -30,46 +30,33 @@ except ImportError:
             "Program_Attendance.CuSn": 3,
         },
         "program_date_bounds": {"start": "2019-03-20", "end": ""},
-        # "recognition": {
-        #     # classes
-        #     "aves": {
-        #         "specialization": "ornitologue",
-        #         "attendance": {"Aves.Au": 500, "Aves.Ar": 100, "Aves.CuSn": 10},
-        #     },
-        #     "mammalia": {
-        #         "specialization": "mammalogiste",
-        #         "attendance": {
-        #             "Mammalia.Au": 500,
-        #             "Mammalia.Ar": 100,
-        #             "Mammalia.CuSn": 10,
-        #         },
-        #     },
-        #     "reptilia": {
-        #         "specialization": "herpétologue",
-        #         "attendance": {
-        #             "Reptilia.Au": 500,
-        #             "Reptilia.Ar": 100,
-        #             "Reptilia.CuSn": 10,
-        #         },
-        #     },
-        #     # orders
-        #     "odonata": {
-        #         "specialization": "odonatologue",
-        #         "attendance": {
-        #             "Odonata.Au": 500,
-        #             "Odonata.Ar": 100,
-        #             "Odonata.CuSn": 10,
-        #         },
-        #     },
-        #     "lepidoptera": {
-        #         "specialization": "lépidoptériste",
-        #         "attendance": {
-        #             "Lepidoptera.Au": 500,
-        #             "Lepidoptera.Ar": 100,
-        #             "Lepidoptera.CuSn": 10,
-        #         },
-        #     },
-        # },
+        "recognition": [
+            {
+                "class": "Aves",
+                "specialization": "Ornitologue",
+                "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
+            },
+            {
+                "class": "Mammalia",
+                "specialization": "Mammalogiste",
+                "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
+            },
+            {
+                "class": "Reptilia",
+                "specialization": "Herpétologue",
+                "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
+            },
+            {
+                "order": "Odonata",
+                "specialization": "Odonatologue",
+                "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
+            },
+            {
+                "order": "Lepidptera",
+                "specialization": "Lépidoptériste",
+                "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
+            },
+        ],
     }
     conf = _dev_conf
 
@@ -146,13 +133,13 @@ program_date_bounds_model = {
     "end": config_duration2timestamp(conf["program_date_bounds"]["end"]),
 }
 
-print(conf)
 recognition_model = [
     {
-        "class": "aves",
-        "order": "rebla",
-        # if hasattr(item, "class")
-        # else "order": item["class" if hasattr(item, "class") else "order"],
+        "class"
+        if "class" in conf["recognition"][i]
+        else "order": conf["recognition"][i]["class"]
+        if "class" in conf["recognition"][i]
+        else conf["recognition"][i]["order"],
         "specialization": conf["recognition"][i]["specialization"],
         "attendance": OrderedDict(
             reversed(
@@ -161,7 +148,6 @@ recognition_model = [
         ),
     }
     for i in range(len(conf["recognition"]))
-    # for i, item in enumerate(conf["recognition"])
 ]
 
 test_config_duration2timestamp = """

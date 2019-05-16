@@ -81,15 +81,14 @@ def recognition_condition(context):
 
 def recognition_action(data):
     r = []
+    q = data["get_occ_count"](data["submitted_taxon"])
     for i, item in enumerate(recognition_model):
         for category, threshold in recognition_model[i]["attendance"].items():
-            if data["recognition"][i] >= threshold:
+            if q and q[i] >= threshold:
                 r.append(
-                    "Recognized.{}.{}".format(
-                        recognition_model[i]["specialization"], category
-                    )
+                    "{}.{}".format(recognition_model[i]["specialization"], category)
                 )
-    return r if len(r) > 0 else ["Recognition.None"]
+    return r if len(r) > 0 else "Recognition.None"
 
 
 recognition_rule = Rule(recognition_condition, recognition_action)
