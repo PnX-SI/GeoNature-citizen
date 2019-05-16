@@ -358,7 +358,6 @@ span.input-group-text {
 
 .obs-img span {
   font-size: 11px;
-  opacity: 0;
   color: #222;
   text-align: center;
   font-weight: 700;
@@ -427,11 +426,6 @@ form .d-inline-flex {
   opacity: 1;
   cursor: pointer;
   box-shadow: 0 0 0 3px var(--secondary);
-}
-
-.obs-img:hover span,
-.obs-img img.selected span {
-  opacity: 1 !important;
 }
 
 .scroll-img {
