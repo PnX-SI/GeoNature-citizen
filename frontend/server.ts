@@ -72,6 +72,10 @@ app.get(
 
 // All regular routes use the Universal engine
 app.get("*", (req, res) => {
+  // workaround for '/citizen' path segment addition
+  // if (!req.url.startsWith("/citizen/")) {
+  //   res.redirect(301, "/citizen/fr/home");
+  // }
   const matches = req.url.match(/^\/([a-z]{2}(?:-[A-Z]{2})?)\//);
   //check if the requested url has a correct format '/locale' and matches any of the supportedLocales
   const locale =
@@ -79,7 +83,7 @@ app.get("*", (req, res) => {
       ? matches[1]
       : defaultLocale;
 
-  console.log("locale:", locale);
+  console.log("req.url:", req.url);
   res.render(`${locale}/index`, { req });
 
   // res.render("index", { req });
