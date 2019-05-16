@@ -52,6 +52,7 @@ export class TopbarComponent implements OnInit {
         catchError(error => throwError(error))
       )
       .subscribe(data => {
+        // HELP: triggers "EmptyError: no elements in sequence" right after our token refresh
         // console.debug("topbar::programs", data);
       });
   }
