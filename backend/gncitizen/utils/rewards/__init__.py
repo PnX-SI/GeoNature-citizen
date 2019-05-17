@@ -1,5 +1,5 @@
 import datetime
-
+from flask import current_app
 from .classifier import Classifier
 from .rules import (
     attendance_rule,
@@ -75,6 +75,14 @@ def flatten(arr):
             yield i
 
 
+def badge_image_mapper(item):
+    current_app.critical("badge: %s", item)
+
+
+badge_theme = current_app.config["REWARDS"]["BADGESET"][0]
+
+
 results = queries.results
 rewards = Classifier().tag(default_ruleset, {**base_props, **program_props, **results})
 rewards = [item for item in flatten(rewards)]
+map(badge_image_mapper, rewards)

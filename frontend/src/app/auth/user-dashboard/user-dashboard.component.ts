@@ -6,7 +6,8 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppConfig } from "../../../conf/app.config";
 import { AuthService } from "./../auth.service";
-import { Observable } from "rxjs";
+import { Observable, Subject, throwError } from "rxjs";
+import { tap, catchError } from "rxjs/operators";
 
 @Component({
   selector: "app-user-dashboard",
@@ -24,6 +25,8 @@ export class UserDashboardComponent implements OnInit {
   });
   modalRef: NgbModalRef;
   personalInfo: any = {};
+  badges: string[] = [];
+  badges$: Subject<string[]> = new Subject<string[]>();
 
   constructor(
     private auth: AuthService,
@@ -43,6 +46,7 @@ export class UserDashboardComponent implements OnInit {
             this.username = user["features"]["username"];
             this.stats = user["features"]["stats"];
             this.role_id = user["features"]["role_id"];
+            this.getBadges().subscribe(() => console.debug("badges done."));
           }
         })
         .catch(err => alert(err));
@@ -100,6 +104,22 @@ export class UserDashboardComponent implements OnInit {
           // update PI
           this.modalRef.close();
         }
+      );
+  }
+
+  getBadges(): Observable<string[] | Error> {
+    return this.http
+      .get<string[]>(`${AppConfig.API_ENDPOINT}/dev_rewards`)
+      .pipe(
+        tap(data => {
+          console.debug("badges data:", data["rewards"]);
+          this.badges = data["rewards"];
+          this.badges$.next(this.badges);
+        }),
+        catchError(error => {
+          window.alert(error);
+          return throwError(error);
+        })
       );
   }
 }

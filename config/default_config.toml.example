@@ -48,7 +48,13 @@ UPLOAD_FOLDER = 'static/medias'
     [REWARDS.CONF]
       "attendance" = { "Au" = 5000, "Ar" = 1000, "CuSn" = 100 }
       "seniority" = { "oeuf" = "7days", "chenille" = "6months", "papillon" = "1an" }
+      # [[REWARDS.CONF.program_attendance]]
+      # "id" = 1
+      # "program_attendance" = { "Au" = 7, "Ar" = 5, "CuSn" = 3 }
       "program_attendance" = { "Au" = 7, "Ar" = 5, "CuSn" = 3 }
+      # [[REWARDS.CONF.program_date_bounds]]
+      # "id" = 1
+      # "date_bounds" = { "start" = "2019-03-20", "end" = "" }
       "program_date_bounds" = { "start" = "2019-03-20", "end" = "" }
       [[REWARDS.CONF.recognition]]
         "class" = "Aves"

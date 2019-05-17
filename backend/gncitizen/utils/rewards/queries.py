@@ -25,7 +25,7 @@ from .models import recognition_model
 
 logger = logging.getLogger()
 # id_role = UserModel.id_user
-role_id = 7
+role_id = 4
 program_id = 1
 taxo_list_id = 55
 
