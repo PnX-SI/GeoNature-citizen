@@ -35,15 +35,21 @@ UPLOAD_FOLDER = 'static/medias'
 [REWARDS]
   [[REWARDS.BADGESET]]
     [REWARDS.BADGESET.Seniority]
-      papillon = '/media/badge_papillon.png'
+      chenille = '/media/badges_Montagne.svg'
     [REWARDS.BADGESET.Attendance]
-      Ar = '/media/badge_argent.png'
-    [REWARDS.BADGESET.Observateur]
-      Amateur = '/media/badge_amateur.png'
+      Ar = '/media/badge_Vallee.svg'
     [REWARDS.BADGESET.Program_Attendance]
-      CuSn = '/media/badge_bronze.png'
+      Au = '/media/badges_Confirme.svg'
     [REWARDS.BADGESET.Program_Date_Bounds]
-      1 = '/media/badge_mission_success.png'
+      1 = '/media/badges_Vallee.svg'
+    [REWARDS.BADGESET.Ornitologue]
+      Au = '/media/badges_Oiseau-proie.svg'
+      Ar = '/media/badges_Oiseau.svg'
+      CuSn = '/media/badges_Novice.svg'
+    [REWARDS.BADGESET.Mammalogiste]
+      Au = '/media/badges_Grand-mam.svg'
+      Ar = '/media/badges_Petit-mam.svg'
+      CuSn = '/media/badges_Novice.svg'
 
     [REWARDS.CONF]
       "attendance" = { "Au" = 5000, "Ar" = 1000, "CuSn" = 100 }
@@ -59,11 +65,11 @@ UPLOAD_FOLDER = 'static/medias'
       [[REWARDS.CONF.recognition]]
         "class" = "Aves"
         "specialization" = "Ornitologue"
-        "attendance" = {"Au" = 500, "Ar" = 100, "CuSn" = 10}
+        "attendance" = {"Au" = 500, "Ar" = 43, "CuSn" = 10}
       [[REWARDS.CONF.recognition]]
         "class" = "Mammalia"
         "specialization" = "Mammalogiste"
-        "attendance" = { "Au" = 500, "Ar" = 100, "CuSn" = 10 }
+        "attendance" = { "Au" = 500, "Ar" = 100, "CuSn" = 7 }
       [[REWARDS.CONF.recognition]]
         "class" = "Reptilia"
         "specialization" = "Herpétologue"

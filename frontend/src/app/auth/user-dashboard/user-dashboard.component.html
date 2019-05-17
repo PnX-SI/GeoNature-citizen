@@ -20,7 +20,7 @@
           <div class="col-lg-4 col-sm-12">
             <img
               *ngFor="let b of (badges$ | async)"
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Plante.svg'"
+              [src]="AppConfig.API_ENDPOINT + b"
               [alt]="b"
             />
           </div>

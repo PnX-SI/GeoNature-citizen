@@ -113,7 +113,7 @@ export class UserDashboardComponent implements OnInit {
       .pipe(
         tap(data => {
           console.debug("badges data:", data["rewards"]);
-          this.badges = data["rewards"];
+          this.badges = data["badges"];
           this.badges$.next(this.badges);
         }),
         catchError(error => {
