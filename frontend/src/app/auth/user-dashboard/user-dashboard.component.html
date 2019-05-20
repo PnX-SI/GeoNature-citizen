@@ -20,8 +20,8 @@
           <div class="col-lg-4 col-sm-12">
             <img
               *ngFor="let b of (badges$ | async)"
-              [src]="AppConfig.API_ENDPOINT + b"
-              [alt]="b"
+              [src]="AppConfig.API_ENDPOINT + b['img']"
+              [alt]="b['alt']"
             />
           </div>
         </div>
@@ -126,7 +126,12 @@
       #updatePersonalInfoForm="ngForm"
       (ngSubmit)="updatePersonalInfoForm.valid && onUpdatePersonalData()"
     >
-      <ngb-alert [dismissible]="false" type="danger" *ngIf="email.errors" i18n>
+      <ngb-alert
+        [dismissible]="false"
+        type="danger"
+        *ngIf="email.errors && email.dirty"
+        i18n
+      >
         Impossible de valider votre email.
       </ngb-alert>
       <div class="form-row">
@@ -194,6 +199,7 @@
               [(ngModel)]="personalInfo.name"
               #fname="ngModel"
               autocomplete="fname"
+              required
             />
           </div>
         </div>
@@ -210,6 +216,7 @@
               [(ngModel)]="personalInfo.surname"
               #surname="ngModel"
               autocomplete="lname"
+              required
             />
           </div>
         </div>
@@ -217,7 +224,9 @@
       <ngb-alert
         [dismissible]="false"
         type="danger"
-        *ngIf="confirm_password.errors || password.errors"
+        *ngIf="
+          (confirm_password.errors || password.errors) && confirm_password.dirty
+        "
         i18n
       >
         Les mots de passe diffèrent.

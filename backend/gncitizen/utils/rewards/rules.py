@@ -1,3 +1,5 @@
+import logging
+from typing import Union, List
 from .rule import Rule
 from .models import (
     attendance_model,
@@ -9,11 +11,11 @@ from .models import (
 
 
 # ATTENDANCE
-def attendance_condition(context):
+def attendance_condition(context) -> bool:
     return "attendance" in context.keys()
 
 
-def attendance_action(data):
+def attendance_action(data) -> str:
     for category, threshold in attendance_model.items():
         if data["attendance"] >= threshold:
             return "Attendance.{}".format(category)
@@ -24,11 +26,11 @@ attendance_rule = Rule(attendance_condition, attendance_action)
 
 
 # SENIORITY
-def seniority_condition(context):
+def seniority_condition(context) -> bool:
     return "seniority" in context.keys()
 
 
-def seniority_action(data):
+def seniority_action(data) -> str:
     for category, threshold in seniority_model.items():
         if data["seniority"] >= threshold:
             return "Seniority.{}".format(category)
@@ -39,11 +41,17 @@ seniority_rule = Rule(seniority_condition, seniority_action)
 
 
 # PROGRAM_ATTENDANCE
-def program_attendance_condition(context):
+def program_attendance_condition(context) -> bool:
+    # return (
+    #     context.get('program_attendance')
+    #     and len(context["program_attendance"]) >= 1
+    #     if isinstance(context["program_attendance"], list)
+    #     else True
+    # )
     return "program_attendance" in context.keys()
 
 
-def program_attendance_action(data):
+def program_attendance_action(data) -> str:
     for category, threshold in program_attendance_model.items():
         if data["program_attendance"] >= threshold:
             return "Program_Attendance.{}".format(category)
@@ -54,11 +62,11 @@ program_attendance_rule = Rule(program_attendance_condition, program_attendance_
 
 
 # PROGRAM_DATE_BOUNDS
-def program_date_bounds_condition(context):
+def program_date_bounds_condition(context) -> bool:
     return "submission_date" in context.keys()
 
 
-def program_date_bounds_action(data):
+def program_date_bounds_action(data) -> str:
     return (
         "Program_Date_Bounds.1"
         if (
@@ -75,13 +83,15 @@ program_date_bounds_rule = Rule(
 )
 
 
-def recognition_condition(context):
-    return context["submitted_taxon"]
+def recognition_condition(context) -> bool:
+    # context.get("submitted_taxon")
+    return True  # && app.config["REWARDS"]["CONF"]["recognition"]
 
 
-def recognition_action(data):
+def recognition_action(data) -> Union[List[str], str]:
     r = []
-    q = data["get_occ_count"](data["submitted_taxon"])
+    q = data["get_occ"]()  # data["submitted_taxon"] ?
+    logging.critical("counts: %s", q)
     for i, item in enumerate(recognition_model):
         for category, threshold in recognition_model[i]["attendance"].items():
             if q and q[i] >= threshold:

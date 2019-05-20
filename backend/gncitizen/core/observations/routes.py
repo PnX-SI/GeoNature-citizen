@@ -255,7 +255,7 @@ def post_observation():
             #   - submission_date
             # 2. map result to BADGESET
             # 3. return reward selection with new observation feature
-            pass
+            ...
         return ({"message": "Nouvelle observation créée.", "features": features}, 200)
 
     except Exception as e:

@@ -76,25 +76,19 @@ def flatten(arr):
 
 
 def badge_image_mapper(item):
-    if not item or item.endswith(".None"):
+    if not item or item.endswith(".None") or item.endswith(".0"):
         return
 
-    domain, status = item.split(".")
-    current_app.logger.critical("%s %s", domain, status)
+    domain, status = item.split(".", maxsplit=1)
     theme = current_app.config["REWARDS"].get(
         "DEFAULT_BADGESET", current_app.config["REWARDS"]["BADGESET"][0]
     )
-    img = theme[domain][status]
+    badge = {"img": theme[domain][status], "alt": item}
 
-    current_app.logger.critical("badge: %s", img)
-    return img
-
-
-badge_theme = current_app.config["REWARDS"]["BADGESET"][0]
+    return badge
 
 
 results = queries.results
 rewards = Classifier().tag(default_ruleset, {**base_props, **program_props, **results})
 rewards = [item for item in flatten(rewards)]
 badges = [b for b in map(badge_image_mapper, rewards) if b]
-current_app.logger.critical("badges imgs: %s", [b for b in badges])

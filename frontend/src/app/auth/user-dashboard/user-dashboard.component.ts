@@ -25,8 +25,8 @@ export class UserDashboardComponent implements OnInit {
   });
   modalRef: NgbModalRef;
   personalInfo: any = {};
-  badges: string[] = [];
-  badges$: Subject<string[]> = new Subject<string[]>();
+  badges: Object[] = [];
+  badges$: Subject<Object[]> = new Subject<Object[]>();
 
   constructor(
     private auth: AuthService,
@@ -82,7 +82,7 @@ export class UserDashboardComponent implements OnInit {
     });
   }
 
-  editInfos(content) {
+  editInfos(content): void {
     this.getPersonalInfo().subscribe(data => {
       this.personalInfo = data;
       this.modalRef = this.modalService.open(content, {
@@ -92,24 +92,25 @@ export class UserDashboardComponent implements OnInit {
     });
   }
 
-  onUpdatePersonalData() {
+  onUpdatePersonalData(): void | Error {
     this.http
       .post(`${AppConfig.API_ENDPOINT}/user/info`, this.personalInfo, {
         headers: this.headers
       })
-      .subscribe(
-        data => console.debug(data),
-        error => console.error(error),
-        () => {
-          // update PI
-          this.modalRef.close();
-        }
-      );
+      .pipe(
+        catchError(error => {
+          window.alert(error);
+          return throwError(error);
+        })
+      )
+      .subscribe(() => {
+        this.modalRef.close();
+      });
   }
 
-  getBadges(): Observable<string[] | Error> {
+  getBadges(): Observable<Object[] | Error> {
     return this.http
-      .get<string[]>(`${AppConfig.API_ENDPOINT}/dev_rewards`)
+      .get<Object[]>(`${AppConfig.API_ENDPOINT}/dev_rewards`)
       .pipe(
         tap(data => {
           console.debug("badges data:", data["rewards"]);

@@ -3,64 +3,10 @@ import re
 from collections import OrderedDict
 from typing import Optional
 
-try:
-    from flask import current_app
+from flask import current_app
 
-    conf = current_app.config["REWARDS"]["CONF"]
-    logger = current_app.logger
-except ImportError:
-    # standalone __main__ / dev mode
-    import logging
-
-    logger = logging.getLogger()
-    _dev_conf = {
-        "attendance": {
-            "Attendance.Au": 5000,
-            "Attendance.Ar": 1000,
-            "Attendance.CuSn": 100,
-        },
-        "seniority": {
-            "Seniority.oeuf": "7days",
-            "Seniority.chenille": "6months",
-            "Seniority.papillon": "1an",
-        },
-        "program_attendance": {
-            "Program_Attendance.Au": 7,
-            "Program_Attendance.Ar": 5,
-            "Program_Attendance.CuSn": 3,
-        },
-        "program_date_bounds": {"start": "2019-03-20", "end": ""},
-        "recognition": [
-            {
-                "class": "Aves",
-                "specialization": "Ornitologue",
-                "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
-            },
-            {
-                "class": "Mammalia",
-                "specialization": "Mammalogiste",
-                "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
-            },
-            {
-                "class": "Reptilia",
-                "specialization": "Herpétologue",
-                "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
-            },
-            {
-                "order": "Odonata",
-                "specialization": "Odonatologue",
-                "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
-            },
-            {
-                "order": "Lepidptera",
-                "specialization": "Lépidoptériste",
-                "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
-            },
-        ],
-    }
-    conf = _dev_conf
-
-
+conf = current_app.config["REWARDS"]["CONF"]
+logger = current_app.logger
 Timestamp = float
 
 
