@@ -27,7 +27,12 @@
     #registerForm="ngForm"
     (ngSubmit)="registerForm.valid && onRegister()"
   >
-    <ngb-alert [dismissible]="false" type="danger" *ngIf="email.errors" i18n>
+    <ngb-alert
+      [dismissible]="false"
+      type="danger"
+      *ngIf="email.errors && email.dirty"
+      i18n
+    >
       Impossible de valider votre email.
     </ngb-alert>
     <div class="form-row">
@@ -118,7 +123,10 @@
     <ngb-alert
       [dismissible]="false"
       type="danger"
-      *ngIf="confirm_password.errors || password.errors"
+      *ngIf="
+        (confirm_password.errors && confirm_password.dirty) ||
+        (password.errors && password.dirty)
+      "
       i18n
     >
       Les mots de passe diffèrent.
@@ -164,7 +172,7 @@
         </div>
       </div>
       <span>
-        <ngb-alert [dismissible]="false" type="danger" *ngIf="cgu.errors" i18n>
+        <ngb-alert [dismissible]="false" type="warning" *ngIf="cgu.errors" i18n>
           Veuillez accepter les conditions d'utilisation.
         </ngb-alert>
         <input
