@@ -116,6 +116,7 @@ export class UserDashboardComponent implements OnInit {
           console.debug("badges data:", data["rewards"]);
           this.badges = data["badges"];
           this.badges$.next(this.badges);
+          localStorage.setItem("badges", JSON.stringify(this.badges));
         }),
         catchError(error => {
           window.alert(error);

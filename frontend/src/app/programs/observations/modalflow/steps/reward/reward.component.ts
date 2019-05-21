@@ -1,5 +1,9 @@
 import { Component, Input, ViewEncapsulation, OnInit } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { tap, catchError } from "rxjs/operators";
+import { throwError } from "rxjs";
 
+import { AppConfig } from "../../../../../../conf/app.config";
 import { IFlowComponent } from "../../flow/flow";
 import { AuthService } from "../../../../../auth/auth.service";
 
@@ -22,14 +26,36 @@ import { AuthService } from "../../../../../auth/auth.service";
 })
 export class RewardComponent implements IFlowComponent, OnInit {
   @Input() data: any;
+  username: string;
   timeout: any;
   rewarded: boolean = true; // Math.random() >= 0.5;
-  username: string;
+  badges: Object[] = JSON.parse(localStorage.getItem("badges"));
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private http: HttpClient) {}
 
   ngOnInit(): void {
-    console.debug("reward init data:", this.data);
+    // PLAN:
+    const old_badges = this.badges;
+    this.http
+      .get<Object[]>(`${AppConfig.API_ENDPOINT}/dev_rewards`)
+      .pipe(
+        catchError(error => {
+          window.alert(error);
+          return throwError(error);
+        })
+      )
+      .subscribe(data => {
+        console.debug("old_badges:", old_badges);
+        console.debug("badges data:", data["rewards"]);
+        this.badges = data["badges"];
+        console.debug("new badges:", this.badges);
+        const difference = this.badges.filter(x => !old_badges.includes(x));
+        console.debug("diff:", difference);
+        this.rewarded = difference !== null;
+      });
+
+    console.debug("reward data:", this.data);
+
     this.authService.isLoggedIn().subscribe(value => {
       if (value) {
         this.username = localStorage.getItem("username");

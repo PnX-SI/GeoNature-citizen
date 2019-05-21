@@ -83,7 +83,13 @@ def badge_image_mapper(item):
     theme = current_app.config["REWARDS"].get(
         "DEFAULT_BADGESET", current_app.config["REWARDS"]["BADGESET"][0]
     )
-    badge = {"img": theme[domain][status], "alt": item}
+    badge = None
+    try:
+        badge = {"img": theme[domain][status], "alt": item}
+    except Exception as e:
+        current_app.logger.info("theme[domain] = %s", theme[domain])
+        current_app.logger.info("item = %s ", item)
+        current_app.logger.error("exception caught: %s", str(e))
 
     return badge
 

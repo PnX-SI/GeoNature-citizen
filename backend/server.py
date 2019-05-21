@@ -17,12 +17,14 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 
 app.debug = True
-if app.debug:
+if app.config["DEBUG"]:
     import colorlog
 
     handler = colorlog.StreamHandler()
     handler.setFormatter(
-        colorlog.ColoredFormatter("%(log_color)s%(levelname)s:%(name)s:%(message)s")
+        colorlog.ColoredFormatter(
+            "%(log_color)s %(asctime)s %(levelname)s:%(name)s:%(message)s [in %(pathname)s:%(lineno)d]"
+        )
     )
 
     logger = colorlog.getLogger()
