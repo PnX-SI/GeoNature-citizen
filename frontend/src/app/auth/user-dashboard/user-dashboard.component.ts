@@ -113,7 +113,6 @@ export class UserDashboardComponent implements OnInit {
       .get<Object[]>(`${AppConfig.API_ENDPOINT}/dev_rewards`)
       .pipe(
         tap(data => {
-          console.debug("badges data:", data["rewards"]);
           this.badges = data["badges"];
           this.badges$.next(this.badges);
           localStorage.setItem("badges", JSON.stringify(this.badges));

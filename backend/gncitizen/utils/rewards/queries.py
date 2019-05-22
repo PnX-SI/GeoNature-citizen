@@ -27,7 +27,7 @@ logger = logging.getLogger()
 
 # TEST DATA
 # id_role = UserModel.id_user
-role_id = 4
+role_id = 5
 program_id = 1
 taxo_list_id = 55
 
@@ -35,20 +35,14 @@ taxo_list_id = 55
 # Count observations the current user submitted platform wise
 attendance_data = ObservationModel.query.filter(ObservationModel.id_role == role_id)
 
-platform_attendance = attendance_data.count()
+# platform_attendance = attendance_data.count()
 
 # Program Attendance
 # Count observations the current user submitted Program wise
-program_attendance = attendance_data.filter(
-    ObservationModel.id_program == program_id
-).count()
+program_attendance = attendance_data.filter(ObservationModel.id_program == program_id)
 
 # Seniority:
-seniority_data = (
-    UserModel.query.filter(UserModel.id_user == role_id)
-    .one()
-    .timestamp_create.timestamp()
-)
+seniority_data = UserModel.query.filter(UserModel.id_user == role_id)
 
 
 # RECOGNITION
@@ -68,18 +62,24 @@ def get_occ():
     #     ObservationModel.id_role == role_id,
     #     ObservationModel.id_program == program_id
     # )
-    filtered = [filter_class_or_order(item, base_query) for item in recognition_model]
-    logging.critical("filtered: %s", filtered)
-    return [
+    filtered = [
         filter_class_or_order(item, base_query).count() for item in recognition_model
     ]
 
+    debug_struct = {}
+    for i, f in zip(recognition_model, filtered):
+        debug_struct.update({"item": i["specialization"], "count": f})
+        logging.critical("item: %s", debug_struct)
 
-results = {
-    "seniority": seniority_data,
-    "attendance": platform_attendance,
-    "program_attendance": program_attendance,
-    # Program date bounds
-    # Mission Success
-    "get_occ": get_occ,
-}
+    return filtered
+
+
+def get_stats():
+    return {
+        "seniority": seniority_data,
+        "attendance": attendance_data,
+        "program_attendance": program_attendance,
+        # Program date bounds
+        # Mission Success
+        "get_occ": get_occ,
+    }

@@ -8,7 +8,7 @@ from .rules import (
     program_date_bounds_rule,
     recognition_rule,
 )
-from . import queries
+from .queries import get_stats
 
 
 default_ruleset = {
@@ -94,7 +94,22 @@ def badge_image_mapper(item):
     return badge
 
 
-results = queries.results
-rewards = Classifier().tag(default_ruleset, {**base_props, **program_props, **results})
-rewards = [item for item in flatten(rewards)]
-badges = [b for b in map(badge_image_mapper, rewards) if b]
+def get_rewards():
+    stats = get_stats()
+
+    results = {
+        "seniority": stats["seniority"].one().timestamp_create.timestamp(),
+        "attendance": stats["attendance"].count(),
+        "program_attendance": stats["program_attendance"].count(),
+        # Program date bounds
+        # Mission Success
+        "get_occ": stats["get_occ"],
+    }
+    rewards = Classifier().tag(
+        default_ruleset, {**base_props, **program_props, **results}
+    )
+    return [item for item in flatten(rewards)]
+
+
+def get_badges():
+    return [b for b in map(badge_image_mapper, get_rewards()) if b]

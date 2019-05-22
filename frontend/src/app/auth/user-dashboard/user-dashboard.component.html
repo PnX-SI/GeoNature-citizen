@@ -20,8 +20,9 @@
           <div class="col-lg-4 col-sm-12">
             <img
               *ngFor="let b of (badges$ | async)"
-              [src]="AppConfig.API_ENDPOINT + b['img']"
-              [alt]="b['alt']"
+              [src]="AppConfig.API_ENDPOINT + b.img"
+              [alt]="b.alt"
+              [ngbTooltip]="b.alt"
             />
           </div>
         </div>
