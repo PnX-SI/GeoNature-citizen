@@ -1,11 +1,94 @@
-import { Component, Input, ViewEncapsulation, OnInit } from "@angular/core";
+import {
+  Component,
+  Input,
+  ViewEncapsulation,
+  OnInit,
+  Injectable
+} from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { tap, catchError } from "rxjs/operators";
-import { throwError, Subject } from "rxjs";
+import { throwError, Subject, BehaviorSubject } from "rxjs";
+import { tap, catchError, map, distinctUntilChanged } from "rxjs/operators";
 
 import { AppConfig } from "../../../../../../conf/app.config";
 import { IFlowComponent } from "../../flow/flow";
 import { AuthService } from "../../../../../auth/auth.service";
+
+export interface Badge {
+  img: string;
+  alt: string;
+}
+
+export interface BadgeState {
+  badges: Badge[];
+  changes: Badge[];
+  loading: boolean;
+}
+
+let _state: BadgeState = {
+  badges: [],
+  changes: [],
+  loading: false
+};
+
+@Injectable()
+export class BadgeFacade {
+  private store = new BehaviorSubject<BadgeState>(_state);
+  private state$ = this.store.asObservable();
+
+  badges$ = this.state$.pipe(
+    map(state => state.badges),
+    distinctUntilChanged()
+  );
+  changes$ = this.state$.pipe(
+    map(state => state.changes),
+    distinctUntilChanged()
+  );
+  loading$ = this.state$.pipe(map(state => state.loading));
+
+  constructor(private http: HttpClient) {
+    this.http
+      .get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards`)
+      .pipe(
+        tap(_items => _items["badges"]),
+        catchError(error => {
+          window.alert(error);
+          return throwError(error);
+        })
+      )
+      .subscribe((badges: Badge[]) =>
+        this.updateState({
+          ..._state,
+          badges,
+          changes: this.diff(badges),
+          loading: false
+        })
+      );
+  }
+
+  diff(badges: Badge[]) {
+    function badgeListComparer(otherArray) {
+      return function(current) {
+        return (
+          otherArray.filter(function(other) {
+            return other.img == current.img && other.alt == current.alt;
+          }).length == 0
+        );
+      };
+    }
+    let oldBadges: Badge[];
+    let onlyInOldState: Badge[];
+    this.badges$.subscribe(oldBadges => {
+      oldBadges = oldBadges;
+      onlyInOldState = oldBadges.filter(badgeListComparer(badges));
+    });
+    const onlyInNewState = badges.filter(badgeListComparer(oldBadges));
+    return onlyInOldState.concat(onlyInNewState);
+  }
+
+  private updateState(state: BadgeState) {
+    this.store.next((_state = state));
+  }
+}
 
 @Component({
   selector: "app-reward",
@@ -38,13 +121,15 @@ export class RewardComponent implements IFlowComponent, OnInit {
   username: string;
   timeout: any;
   rewarded: boolean = true; // Math.random() >= 0.5;
-  oldState: { img: string; alt: string }[] = [];
-  newState: { img: string; alt: string }[] = [];
-  rewards$: Subject<{ img: string; alt: string }[]> = new Subject<
-    { img: string; alt: string }[]
-  >();
+  oldState: Badge[] = [];
+  newState: Badge[] = [];
+  rewards$: Subject<Badge[]> = new Subject<Badge[]>();
 
-  constructor(private authService: AuthService, private http: HttpClient) {}
+  constructor(
+    private authService: AuthService,
+    private http: HttpClient,
+    public badges: BadgeFacade
+  ) {}
 
   ngOnInit(): void {
     this.oldState = JSON.parse(localStorage.getItem("badges"));
@@ -94,18 +179,16 @@ export class RewardComponent implements IFlowComponent, OnInit {
   }
 
   fetchCurrentState() {
-    return this.http
-      .get<Object[]>(`${AppConfig.API_ENDPOINT}/dev_rewards`)
-      .pipe(
-        tap(data => {
-          this.newState = data["badges"];
-          localStorage.setItem("badges", JSON.stringify(this.newState));
-        }),
-        catchError(error => {
-          window.alert(error);
-          return throwError(error);
-        })
-      );
+    return this.http.get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards`).pipe(
+      tap(data => {
+        this.newState = data["badges"];
+        localStorage.setItem("badges", JSON.stringify(this.newState));
+      }),
+      catchError(error => {
+        window.alert(error);
+        return throwError(error);
+      })
+    );
   }
 
   getRewards() {
