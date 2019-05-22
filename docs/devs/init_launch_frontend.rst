@@ -134,7 +134,7 @@ La redirection de port pourrait se faire au niveau du serveur web / reverse prox
 Gestion de l'internationalisation (i18n)
 ########################################
 
-La fonctionnalité i18n a été intégrée selon `la recette originale<https://angular.io/guide/i18n>`_.
+La fonctionnalité i18n a été intégrée selon `la recette originale <https://angular.io/guide/i18n>`_.
 
 L'interface est paramétrée par défaut en langue française.
 
