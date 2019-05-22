@@ -7,7 +7,13 @@ import {
 } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { throwError, Subject, BehaviorSubject } from "rxjs";
-import { tap, catchError, map, distinctUntilChanged } from "rxjs/operators";
+import {
+  tap,
+  catchError,
+  map,
+  distinctUntilChanged,
+  take
+} from "rxjs/operators";
 
 import { AppConfig } from "../../../../../../conf/app.config";
 import { IFlowComponent } from "../../flow/flow";
@@ -77,8 +83,8 @@ export class BadgeFacade {
     }
     let oldBadges: Badge[];
     let onlyInOldState: Badge[];
-    this.badges$.subscribe(oldBadges => {
-      oldBadges = oldBadges;
+    this.badges$.pipe(take(1)).subscribe(_oldBadges => {
+      oldBadges = _oldBadges;
       onlyInOldState = oldBadges.filter(badgeListComparer(badges));
     });
     const onlyInNewState = badges.filter(badgeListComparer(oldBadges));
