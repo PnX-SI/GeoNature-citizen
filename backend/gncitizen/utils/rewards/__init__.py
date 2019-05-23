@@ -95,16 +95,18 @@ def badge_image_mapper(item):
     return badge
 
 
-def get_rewards():
-    stats = get_stats()
-
+def get_rewards(id):
+    stats = get_stats(id)
+    attendance = stats["attendance"](id)
     results = {
-        "seniority": stats["seniority"].one().timestamp_create.timestamp(),
-        "attendance": stats["attendance"].count(),
-        "program_attendance": [item.count() for item in stats["program_attendance"]],
+        "seniority": stats["seniority"](id).one().timestamp_create.timestamp(),
+        "attendance": attendance.count(),
+        "program_attendance": [
+            item.count() for item in stats["program_attendance"](attendance)
+        ],
         # Program date bounds
         # Mission Success
-        "get_occ": stats["get_occ"],
+        "get_occ": stats["get_occ"](attendance),
     }
     rewards = Classifier().tag(
         default_ruleset, {**base_props, **program_props, **results}
@@ -112,6 +114,6 @@ def get_rewards():
     return [item for item in flatten(rewards)]
 
 
-def get_badges():
-    rewards = get_rewards()
+def get_badges(id):
+    rewards = get_rewards(id)
     return [b for b in map(badge_image_mapper, rewards) if b]

@@ -1,22 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, Subject, throwError } from "rxjs";
+import { tap, catchError } from "rxjs/operators";
 
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppConfig } from "../../../conf/app.config";
 import { AuthService } from "./../auth.service";
-import { Observable, Subject, throwError } from "rxjs";
-import { tap, catchError } from "rxjs/operators";
-
-// const groupBy = (items, key) =>
-//   items.reduce(
-//     (result, item) => ({
-//       ...result,
-//       [item[key]]: [...(result[item[key]] || []), item]
-//     }),
-//     {}
-//   );
 
 @Component({
   selector: "app-user-dashboard",
@@ -24,15 +15,15 @@ import { tap, catchError } from "rxjs/operators";
   styleUrls: ["./user-dashboard.component.css"]
 })
 export class UserDashboardComponent implements OnInit {
-  readonly AppConfig = AppConfig;
-  isLoggedIn: boolean = false;
-  username: string = "not defined";
-  stats: any;
-  role_id: number;
   private headers: HttpHeaders = new HttpHeaders({
     "Content-Type": "application/json"
   });
+  readonly AppConfig = AppConfig;
   modalRef: NgbModalRef;
+  username: string = "not defined";
+  role_id: number;
+  isLoggedIn: boolean = false;
+  stats: any;
   personalInfo: any = {};
   badges = [];
   badges$: Subject<Object> = new Subject<Object>();
@@ -54,7 +45,7 @@ export class UserDashboardComponent implements OnInit {
             this.isLoggedIn = true;
             this.username = user["features"]["username"];
             this.stats = user["features"]["stats"];
-            this.role_id = user["features"]["role_id"];
+            this.role_id = user["features"]["id_role"];
             this.getBadgeCategories().subscribe(() =>
               console.debug("badges done.")
             );
@@ -120,27 +111,29 @@ export class UserDashboardComponent implements OnInit {
   }
 
   getBadgeCategories(): Observable<Object | Error> {
-    return this.http.get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards`).pipe(
-      tap(data => {
-        const categories = data["badges"].reduce((cat, item) => {
-          const category = item["alt"].split(/\.[^/.]+$/)[0];
-          if (!cat[category]) {
-            cat[category] = data["badges"].filter(item =>
-              item.alt.startsWith(category + ".")
-            );
-          }
-          return cat;
-        }, {});
-        // console.debug(categories);
+    return this.http
+      .get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
+      .pipe(
+        tap(data => {
+          const categories = data["badges"].reduce((acc, item) => {
+            const category = item["alt"].split(/\.[^/.]+$/)[0];
+            if (!acc[category]) {
+              acc[category] = data["badges"].filter(item =>
+                item.alt.startsWith(category + ".")
+              );
+            }
+            return acc;
+          }, {});
+          // console.debug(categories);
 
-        Object.values(categories).map(value => this.badges.push(value));
-        this.badges$.next(this.badges);
-        localStorage.setItem("badges", JSON.stringify(data["badges"]));
-      }),
-      catchError(error => {
-        window.alert(error);
-        return throwError(error);
-      })
-    );
+          Object.values(categories).map(value => this.badges.push(value));
+          this.badges$.next(this.badges);
+          localStorage.setItem("badges", JSON.stringify(data["badges"]));
+        }),
+        catchError(error => {
+          window.alert(error);
+          return throwError(error);
+        })
+      );
   }
 }

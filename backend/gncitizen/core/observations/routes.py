@@ -474,12 +474,12 @@ def get_media(item):
     return send_from_directory(str(MEDIA_DIR), item)
 
 
-@routes.route("/dev_rewards")
+@routes.route("/dev_rewards/<int:id>")
 @json_resp
-def get_rewards():
+def get_rewards(id):
     from gncitizen.utils.rewards import get_rewards, get_badges
 
-    badges, rewards = get_badges(), get_rewards()
+    badges, rewards = get_badges(id), get_rewards(id)
     current_app.logger.debug("rewards: %s", json.dumps(rewards, indent=4))
     return (
         {

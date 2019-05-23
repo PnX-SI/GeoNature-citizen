@@ -6,13 +6,14 @@ import {
   Injectable
 } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { throwError, Subject, BehaviorSubject } from "rxjs";
+import { throwError, BehaviorSubject } from "rxjs";
 import {
   tap,
   catchError,
   map,
   distinctUntilChanged,
-  take
+  take,
+  share
 } from "rxjs/operators";
 
 import { AppConfig } from "../../../../../../conf/app.config";
@@ -40,36 +41,56 @@ let _state: BadgeState = {
 export class BadgeFacade {
   private store = new BehaviorSubject<BadgeState>(_state);
   private state$ = this.store.asObservable();
+  role_id = 0;
+  username = "undefined";
 
   badges$ = this.state$.pipe(
     map(state => state.badges),
-    distinctUntilChanged()
+    distinctUntilChanged(),
+    share()
   );
   changes$ = this.state$.pipe(
     map(state => state.changes),
-    distinctUntilChanged()
+    distinctUntilChanged(),
+    share()
   );
   loading$ = this.state$.pipe(map(state => state.loading));
 
-  constructor(private http: HttpClient) {
-    this.http
-      .get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards`)
-      .pipe(
-        map(_items => _items["badges"]),
-        catchError(error => {
-          window.alert(error);
-          return throwError(error);
-        })
-      )
-      .subscribe((badges: Badge[]) => {
-        this.updateState({
-          ..._state,
-          badges,
-          changes: this.difference(badges),
-          loading: false
-        });
-        localStorage.setItem("badges", JSON.stringify(badges));
-      });
+  constructor(private authService: AuthService, private http: HttpClient) {
+    this.username = localStorage.getItem("username");
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
+      this.authService.ensureAuthorized(access_token).then(user => {
+        if (user["features"]["id_role"]) {
+          this.role_id = user["features"]["id_role"];
+          this.http
+            .get<Object>(
+              `${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`
+            )
+            .pipe(
+              map(_items => _items["badges"]),
+              catchError(error => {
+                window.alert(error);
+                return throwError(error);
+              })
+            )
+            .subscribe((badges: Badge[]) => {
+              this.updateState({
+                ..._state,
+                badges,
+                changes: this.difference(badges),
+                loading: false
+              });
+              localStorage.setItem("badges", JSON.stringify(badges));
+            });
+        }
+      }),
+        error => window.alert(error);
+    }
+  }
+
+  getId(): number {
+    return this.role_id;
   }
 
   difference(badges: Badge[]) {
@@ -104,7 +125,7 @@ export class BadgeFacade {
 @Component({
   selector: "app-reward",
   template: `
-    <div *ngIf="rewarded">
+    <div>
       <div class="modal-body new-badge" (click)="clicked('background')">
         <div><img src="assets/user.jpg" /></div>
         <h5 i18n="Reward|Félicitations !">Félicitation !</h5>
@@ -130,32 +151,24 @@ export class BadgeFacade {
 export class RewardComponent implements IFlowComponent, OnInit {
   readonly AppConfig = AppConfig;
   @Input() data: any;
-  username: string;
   timeout: any;
-  rewarded: boolean = false;
 
-  constructor(private authService: AuthService, public badges: BadgeFacade) {}
+  constructor(public badges: BadgeFacade) {}
 
   ngOnInit(): void {
+    let counter = 0;
     this.badges.changes$.subscribe(changes => {
       console.debug("reward data:", this.data);
       console.debug("badge changes:", changes);
-
-      if (changes && changes.length > 0) {
-        this.rewarded = true;
-      }
-    });
-
-    this.authService.isLoggedIn().subscribe(value => {
-      if (value) {
-        this.username = localStorage.getItem("username");
-        const condition = value && this.username && this.rewarded;
+      // DOING/FIXME: rm counter when debugged
+      counter++;
+      console.debug(counter);
+      const condition = changes && changes.length > 0;
+      if (counter >= 2) {
         this.timeout = setTimeout(
           () => this.close(condition ? "timeout" : "noreward"),
-          condition ? 3000 : 0
+          condition ? 5000 : 0
         );
-      } else {
-        this.timeout = setTimeout(() => this.close("noreward"), 0);
       }
     });
   }

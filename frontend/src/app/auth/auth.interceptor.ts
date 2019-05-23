@@ -140,9 +140,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 `[AuthInterceptor.intercept] missing handler for error:`,
                 error
               );
-              errorMessage = `Error Code: ${error.status}\nMessage: ${
-                error.message
-              }`;
+              errorMessage = `${error}`;
           }
         }
         // window.alert(errorMessage);

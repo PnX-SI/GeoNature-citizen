@@ -93,7 +93,7 @@ def recognition_condition(context) -> bool:
 
 def recognition_action(data) -> Union[List[str], str]:
     r = []
-    q = data["get_occ"]()  # data["submitted_taxon"] ?
+    q = data["get_occ"]  # data["submitted_taxon"] ?
     logging.critical("counts: %s", q)
     for i, item in enumerate(recognition_model):
         for category, threshold in recognition_model[i]["attendance"].items():
