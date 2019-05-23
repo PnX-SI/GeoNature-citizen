@@ -16,10 +16,11 @@ def attendance_condition(context) -> bool:
 
 
 def attendance_action(data) -> str:
-    for category, threshold in attendance_model.items():
-        if data["attendance"] >= threshold:
-            return "Attendance.{}".format(category)
-    return "Attendance.None"
+    return [
+        "Attendance.{}".format(category)
+        for category, threshold in attendance_model.items()
+        if data["attendance"] >= threshold
+    ]
 
 
 attendance_rule = Rule(attendance_condition, attendance_action)
@@ -31,10 +32,11 @@ def seniority_condition(context) -> bool:
 
 
 def seniority_action(data) -> str:
-    for category, threshold in seniority_model.items():
-        if data["seniority"] >= threshold:
-            return "Seniority.{}".format(category)
-    return "Seniority.None"
+    return [
+        "Seniority.{}".format(category)
+        for category, threshold in seniority_model.items()
+        if data["seniority"] >= threshold
+    ]
 
 
 seniority_rule = Rule(seniority_condition, seniority_action)
@@ -52,10 +54,12 @@ def program_attendance_condition(context) -> bool:
 
 
 def program_attendance_action(data) -> str:
-    for category, threshold in program_attendance_model.items():
-        if data["program_attendance"] >= threshold:
-            return "Program_Attendance.{}".format(category)
-    return "Program_Attendance.None"
+    return [
+        "Program_Attendance.{}.{}".format(i, category)
+        for category, threshold in program_attendance_model.items()
+        for i, program_attendance in enumerate(data["program_attendance"])
+        if program_attendance >= threshold
+    ]
 
 
 program_attendance_rule = Rule(program_attendance_condition, program_attendance_action)
@@ -84,7 +88,6 @@ program_date_bounds_rule = Rule(
 
 
 def recognition_condition(context) -> bool:
-    # context.get("submitted_taxon")
     return True  # && app.config["REWARDS"]["CONF"]["recognition"]
 
 

@@ -79,7 +79,7 @@ def badge_image_mapper(item):
     if not item or item.endswith(".None") or item.endswith(".0"):
         return
 
-    domain, status = item.split(".", maxsplit=1)
+    domain, *rest, status = item.split(".")
     theme = current_app.config["REWARDS"].get(
         "DEFAULT_BADGESET", current_app.config["REWARDS"]["BADGESET"][0]
     )
@@ -90,6 +90,7 @@ def badge_image_mapper(item):
         current_app.logger.info("theme[domain] = %s", theme[domain])
         current_app.logger.info("item = %s ", item)
         current_app.logger.error("exception caught: %s", str(e))
+        raise
 
     return badge
 
@@ -100,7 +101,7 @@ def get_rewards():
     results = {
         "seniority": stats["seniority"].one().timestamp_create.timestamp(),
         "attendance": stats["attendance"].count(),
-        "program_attendance": stats["program_attendance"].count(),
+        "program_attendance": [item.count() for item in stats["program_attendance"]],
         # Program date bounds
         # Mission Success
         "get_occ": stats["get_occ"],
@@ -112,4 +113,5 @@ def get_rewards():
 
 
 def get_badges():
-    return [b for b in map(badge_image_mapper, get_rewards()) if b]
+    rewards = get_rewards()
+    return [b for b in map(badge_image_mapper, rewards) if b]

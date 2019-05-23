@@ -31,7 +31,7 @@ export interface BadgeState {
 }
 
 let _state: BadgeState = {
-  badges: [],
+  badges: JSON.parse(localStorage.getItem("badges")),
   changes: [],
   loading: false
 };
@@ -55,36 +55,41 @@ export class BadgeFacade {
     this.http
       .get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards`)
       .pipe(
-        tap(_items => _items["badges"]),
+        map(_items => _items["badges"]),
         catchError(error => {
           window.alert(error);
           return throwError(error);
         })
       )
-      .subscribe((badges: Badge[]) =>
+      .subscribe((badges: Badge[]) => {
         this.updateState({
           ..._state,
           badges,
-          changes: this.diff(badges),
+          changes: this.difference(badges),
           loading: false
-        })
-      );
+        });
+        localStorage.setItem("badges", JSON.stringify(badges));
+      });
   }
 
-  diff(badges: Badge[]) {
+  difference(badges: Badge[]) {
+    if (badges && badges.length === 0) return;
+
+    let oldBadges: Badge[];
+    let onlyInOldState: Badge[];
+
     function badgeListComparer(otherArray) {
       return function(current) {
         return (
           otherArray.filter(function(other) {
-            return other.img == current.img && other.alt == current.alt;
+            return other.alt == current.alt;
           }).length == 0
         );
       };
     }
-    let oldBadges: Badge[];
-    let onlyInOldState: Badge[];
-    this.badges$.pipe(take(1)).subscribe(_oldBadges => {
-      oldBadges = _oldBadges;
+
+    this.badges$.pipe(take(1)).subscribe(oldState => {
+      oldBadges = oldState;
       onlyInOldState = oldBadges.filter(badgeListComparer(badges));
     });
     const onlyInNewState = badges.filter(badgeListComparer(oldBadges));
@@ -104,13 +109,13 @@ export class BadgeFacade {
         <div><img src="assets/user.jpg" /></div>
         <h5 i18n="Reward|Félicitations !">Félicitation !</h5>
         <h6 i18n="Reward|Vous venez d'obtenir ce badge">
-          { +(rewards$ | async)?.length, plural, =1 { Vous venez d'obtenir ce
-          badge } other { Vous venez d'obtenir ces badges } }
+          { +(badges.changes$ | async)?.length, plural, =1 { Vous venez
+          d'obtenir ce badge } other { Vous venez d'obtenir ces badges } }
         </h6>
         <p>
           <img
             [ngbTooltip]="b.alt"
-            *ngFor="let b of (rewards$ | async)"
+            *ngFor="let b of (badges.changes$ | async)"
             [src]="AppConfig.API_ENDPOINT + b.img"
             [alt]="b.alt"
           />
@@ -119,36 +124,27 @@ export class BadgeFacade {
     </div>
   `,
   styleUrls: ["./reward.component.css"],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [BadgeFacade]
 })
 export class RewardComponent implements IFlowComponent, OnInit {
   readonly AppConfig = AppConfig;
   @Input() data: any;
   username: string;
   timeout: any;
-  rewarded: boolean = true; // Math.random() >= 0.5;
-  oldState: Badge[] = [];
-  newState: Badge[] = [];
-  rewards$: Subject<Badge[]> = new Subject<Badge[]>();
+  rewarded: boolean = false;
 
-  constructor(
-    private authService: AuthService,
-    private http: HttpClient,
-    public badges: BadgeFacade
-  ) {}
+  constructor(private authService: AuthService, public badges: BadgeFacade) {}
 
   ngOnInit(): void {
-    this.oldState = JSON.parse(localStorage.getItem("badges"));
+    this.badges.changes$.subscribe(changes => {
+      console.debug("reward data:", this.data);
+      console.debug("badge changes:", changes);
 
-    this.fetchCurrentState().subscribe(data => {
-      console.debug("oldState:", this.oldState);
-      console.debug("badges data:", data["rewards"]);
-      console.debug("new badges:", data["badges"]);
-
-      this.getRewards();
+      if (changes && changes.length > 0) {
+        this.rewarded = true;
+      }
     });
-
-    console.debug("reward data:", this.data);
 
     this.authService.isLoggedIn().subscribe(value => {
       if (value) {
@@ -172,52 +168,5 @@ export class RewardComponent implements IFlowComponent, OnInit {
   clicked(d) {
     console.debug("clicked", d);
     this.close(d);
-  }
-
-  badgeListComparer(otherArray) {
-    return function(current) {
-      return (
-        otherArray.filter(function(other) {
-          return other.img == current.img && other.alt == current.alt;
-        }).length == 0
-      );
-    };
-  }
-
-  fetchCurrentState() {
-    return this.http.get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards`).pipe(
-      tap(data => {
-        this.newState = data["badges"];
-        localStorage.setItem("badges", JSON.stringify(this.newState));
-      }),
-      catchError(error => {
-        window.alert(error);
-        return throwError(error);
-      })
-    );
-  }
-
-  getRewards() {
-    if (this.oldState) {
-      const onlyInOldState = this.oldState.filter(
-        this.badgeListComparer(this.newState)
-      );
-      const onlyInNewState = this.newState.filter(
-        this.badgeListComparer(this.oldState)
-      );
-
-      const difference = onlyInOldState.concat(onlyInNewState);
-      console.debug(
-        "reward difference:",
-        difference,
-        onlyInOldState,
-        onlyInNewState
-      );
-      this.rewarded = difference.length > 0;
-      this.rewards$.next(difference);
-    } else {
-      this.oldState = this.newState;
-      this.rewards$.next(this.newState);
-    }
   }
 }

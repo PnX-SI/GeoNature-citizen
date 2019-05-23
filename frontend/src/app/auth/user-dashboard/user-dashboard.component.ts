@@ -9,6 +9,15 @@ import { AuthService } from "./../auth.service";
 import { Observable, Subject, throwError } from "rxjs";
 import { tap, catchError } from "rxjs/operators";
 
+// const groupBy = (items, key) =>
+//   items.reduce(
+//     (result, item) => ({
+//       ...result,
+//       [item[key]]: [...(result[item[key]] || []), item]
+//     }),
+//     {}
+//   );
+
 @Component({
   selector: "app-user-dashboard",
   templateUrl: "./user-dashboard.component.html",
@@ -25,8 +34,8 @@ export class UserDashboardComponent implements OnInit {
   });
   modalRef: NgbModalRef;
   personalInfo: any = {};
-  badges: Object[] = [];
-  badges$: Subject<Object[]> = new Subject<Object[]>();
+  badges = [];
+  badges$: Subject<Object> = new Subject<Object>();
 
   constructor(
     private auth: AuthService,
@@ -46,7 +55,9 @@ export class UserDashboardComponent implements OnInit {
             this.username = user["features"]["username"];
             this.stats = user["features"]["stats"];
             this.role_id = user["features"]["role_id"];
-            this.getBadges().subscribe(() => console.debug("badges done."));
+            this.getBadgeCategories().subscribe(() =>
+              console.debug("badges done.")
+            );
           }
         })
         .catch(err => alert(err));
@@ -108,19 +119,28 @@ export class UserDashboardComponent implements OnInit {
       });
   }
 
-  getBadges(): Observable<Object[] | Error> {
-    return this.http
-      .get<Object[]>(`${AppConfig.API_ENDPOINT}/dev_rewards`)
-      .pipe(
-        tap(data => {
-          this.badges = data["badges"];
-          this.badges$.next(this.badges);
-          localStorage.setItem("badges", JSON.stringify(this.badges));
-        }),
-        catchError(error => {
-          window.alert(error);
-          return throwError(error);
-        })
-      );
+  getBadgeCategories(): Observable<Object | Error> {
+    return this.http.get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards`).pipe(
+      tap(data => {
+        const categories = data["badges"].reduce((cat, item) => {
+          const category = item["alt"].split(/\.[^/.]+$/)[0];
+          if (!cat[category]) {
+            cat[category] = data["badges"].filter(item =>
+              item.alt.startsWith(category + ".")
+            );
+          }
+          return cat;
+        }, {});
+        // console.debug(categories);
+
+        Object.values(categories).map(value => this.badges.push(value));
+        this.badges$.next(this.badges);
+        localStorage.setItem("badges", JSON.stringify(data["badges"]));
+      }),
+      catchError(error => {
+        window.alert(error);
+        return throwError(error);
+      })
+    );
   }
 }

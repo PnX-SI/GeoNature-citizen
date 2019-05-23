@@ -18,16 +18,16 @@ from gncitizen.core.taxonomy.models import (
 )
 from .models import recognition_model
 
-# from gncitizen.core.commons.models import (
-#     MediaModel,
-#     ProgramsModel
-# )
+from gncitizen.core.commons.models import (
+    #     MediaModel,
+    ProgramsModel,
+)
 
 logger = logging.getLogger()
 
 # TEST DATA
 # id_role = UserModel.id_user
-role_id = 5
+role_id = 7
 program_id = 1
 taxo_list_id = 55
 
@@ -39,7 +39,24 @@ attendance_data = ObservationModel.query.filter(ObservationModel.id_role == role
 
 # Program Attendance
 # Count observations the current user submitted Program wise
-program_attendance = attendance_data.filter(ObservationModel.id_program == program_id)
+# logging.warning(attendance_data.count().group_by(ObservationModel.id_program).all())
+# from sqlalchemy import func
+
+# logging.warning(
+#     ObservationModel.query.with_entities(
+#         ObservationModel.id_program,
+#         # func.count(ObservationModel.id_program)
+#     )
+#     .group_by(ObservationModel.id_observation, ObservationModel.id_program)
+#     .order_by(ObservationModel.id_program)
+#     .all()
+# )
+# programs = ProgramsModel.query.distinct(ProgramsModel.id_program)
+program_attendance = [
+    attendance_data.filter(ObservationModel.id_program == program.id_program)
+    for program in ProgramsModel.query.distinct(ProgramsModel.id_program).all()
+]
+logging.warning("program_attendance: %s", program_attendance)
 
 # Seniority:
 seniority_data = UserModel.query.filter(UserModel.id_user == role_id)

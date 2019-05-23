@@ -17,72 +17,15 @@
       <section id="badges">
         <h3 i18n>Vos badges</h3>
         <div class="row">
-          <div class="col-lg-4 col-sm-12">
+          <div
+            *ngFor="let category of (badges$ | async)"
+            class="col-lg-4 col-sm-12"
+          >
             <img
-              *ngFor="let b of (badges$ | async)"
+              *ngFor="let b of category"
               [src]="AppConfig.API_ENDPOINT + b.img"
               [alt]="b.alt"
               [ngbTooltip]="b.alt"
-            />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-4 col-sm-12">
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Plante.svg'"
-              alt="Badge Plante"
-            />
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Insecte.svg'"
-              alt="Badge Insecte"
-            />
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Petit-mam.svg'"
-              alt="Badge Petit mammifère"
-            />
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Oiseau.svg'"
-              alt="Badge Oiseau"
-            />
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Grand-mam.svg'"
-              alt="Badge Grand mammifère"
-            />
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Oiseau-proie.svg'"
-              alt="Badge Oiseau de proie"
-            />
-          </div>
-          <div class="col-lg-4 col-sm-12">
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Humide.svg'"
-              alt="Badge Zone humide"
-            />
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Vallee.svg'"
-              alt="Badge Vallée"
-            />
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Montagne.svg'"
-              alt="Badge Montagne"
-            />
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Haute.svg'"
-              alt="Badge Haute-montagne"
-            />
-          </div>
-          <div class="col-lg-4 col-sm-12">
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Novice.svg'"
-              alt="Badge Novice"
-            />
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Confirme.svg'"
-              alt="Badge Confirmé"
-            />
-            <img
-              [src]="AppConfig.API_ENDPOINT + '/media/badges_Expert.svg'"
-              alt="Badge Expert"
             />
           </div>
         </div>
