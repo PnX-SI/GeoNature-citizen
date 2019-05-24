@@ -128,8 +128,8 @@ export class BadgeFacade {
     <div>
       <div class="modal-body new-badge" (click)="clicked('background')">
         <div><img src="assets/user.jpg" /></div>
-        <h5 i18n="Reward|Félicitations !">Félicitation !</h5>
-        <h6 i18n="Reward|Vous venez d'obtenir ce badge">
+        <h5 i18n>Félicitation !</h5>
+        <h6 i18n>
           { +(badges.changes$ | async)?.length, plural, =1 { Vous venez
           d'obtenir ce badge } other { Vous venez d'obtenir ces badges } }
         </h6>
@@ -160,7 +160,8 @@ export class RewardComponent implements IFlowComponent, OnInit {
     this.badges.changes$.subscribe(changes => {
       console.debug("reward data:", this.data);
       console.debug("badge changes:", changes);
-      // DOING/FIXME: rm counter when debugged
+      // FIXME: This is consumed twice, 1st to last changes then actual changes, why ?
+      // rm counter when debugged.
       counter++;
       console.debug(counter);
       const condition = changes && changes.length > 0;
