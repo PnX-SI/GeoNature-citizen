@@ -6,7 +6,7 @@
 import datetime
 import os
 
-from flask import current_app, request
+from flask import current_app
 from werkzeug import FileStorage
 
 from gncitizen.core.commons.models import MediaModel
@@ -18,7 +18,7 @@ from server import db
 
 def allowed_file(filename):
     """Check if uploaded file type is allowed
-    
+
     :param filename: file name
     :type filename: str
 
@@ -26,19 +26,12 @@ def allowed_file(filename):
 
     :rtype: bool
     """
-    if (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-    ):
+    if "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS:
         return True
 
 
 def save_upload_files(
-    request_file,
-    prefix="none",
-    cdnom="0",
-    id_data_source=None,
-    matching_model=None,
+    request_file, prefix="none", cdnom="0", id_data_source=None, matching_model=None
 ):
     """Save files on server and filenames in db from POST request
 
@@ -46,8 +39,8 @@ def save_upload_files(
 
         * verify if file type is in allowed medias
         * generate a filename from ``prefix``, ``cdnom``, ``index``, ``timestamp``
-        * save file in ``./media`` dir 
-        * save filename in MediaModel and then in a matching media model 
+        * save file in ``./media`` dir
+        * save filename in MediaModel and then in a matching media model
 
 
     :param request_file: request files from post request.
@@ -81,12 +74,12 @@ def save_upload_files(
                 if allowed_file(filename):
                     # save file
                     current_app.logger.debug(
-                        '[save_upload_files] Preparing file "{}" saving'.format(filename)
+                        '[save_upload_files] Preparing file "{}" saving'.format(
+                            filename
+                        )
                     )
                     ext = filename.rsplit(".", 1)[1].lower()
-                    timestamp = datetime.datetime.now().strftime(
-                        "%Y%m%d_%H%M%S"
-                    )
+                    timestamp = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
                     filename = "{}_{}_{}_{}.{}".format(
                         prefix, str(cdnom), i, timestamp, ext
                     )
@@ -97,7 +90,9 @@ def save_upload_files(
                     # Save media filename to Database
                     try:
                         newmedia = MediaModel(filename=filename)
-                        current_app.logger.debug("[save_upload_files] newmedia {}".format(newmedia))
+                        current_app.logger.debug(
+                            "[save_upload_files] newmedia {}".format(newmedia)
+                        )
                         db.session.add(newmedia)
                         db.session.commit()
                         id_media = newmedia.id_media
@@ -118,7 +113,9 @@ def save_upload_files(
                         db.session.add(newmatch)
                         db.session.commit()
                         id_match = newmatch.id_match
-                        current_app.logger.debug("[save_upload_files] id_match {}".format(id_match))
+                        current_app.logger.debug(
+                            "[save_upload_files] id_match {}".format(id_match)
+                        )
                     except Exception as e:
                         current_app.logger.debug(
                             "[save_upload_files] ERROR MATCH MEDIA: {}".format(e)
@@ -132,7 +129,9 @@ def save_upload_files(
                     files.append(filename)
 
     except Exception as e:
-        current_app.logger.debug("[save_upload_files] ERROR save_upload_file : {}".format(e))
+        current_app.logger.debug(
+            "[save_upload_files] ERROR save_upload_file : {}".format(e)
+        )
         raise GeonatureApiError(e)
 
     return files

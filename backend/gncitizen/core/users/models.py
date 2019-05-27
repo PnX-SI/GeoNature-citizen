@@ -52,6 +52,9 @@ class UserModel(TimestampMixinModel, db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self):
+        db.session.commit()
+
     def as_secured_dict(self, recursif=False, columns=()):
         surname = self.username or ""
         name = self.name or ""
@@ -64,8 +67,10 @@ class UserModel(TimestampMixinModel, db.Model):
             "phone": self.phone,
             "organism": self.organism,
             "full_name": name + " " + surname,
-            "timestamp_create": self.timestamp_create.isoformat() if self.timestamp_create else None,
-            "timestamp_update": self.timestamp_update.isoformat() if self.timestamp_update else None,
+            "timestamp_create": self.timestamp_create.isoformat(),
+            "timestamp_update": self.timestamp_update.isoformat()
+            if self.timestamp_update
+            else None,
         }
 
     @staticmethod
@@ -120,9 +125,7 @@ class UserRightsModel(TimestampMixinModel, db.Model):
     __tablename__ = "t_users_rights"
     __table_args__ = {"schema": "gnc_core"}
     id_user_right = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(
-        db.Integer, db.ForeignKey(UserModel.id_user), nullable=False
-    )
+    id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
     id_module = db.Column(
         db.Integer, db.ForeignKey(ModulesModel.id_module), nullable=True
     )
@@ -142,9 +145,7 @@ class UserGroupsModel(TimestampMixinModel, db.Model):
     __tablename__ = "cor_users_groups"
     __table_args__ = {"schema": "gnc_core"}
     id_user_right = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(
-        db.Integer, db.ForeignKey(UserModel.id_user), nullable=False
-    )
+    id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
     id_group = db.Column(
         db.Integer, db.ForeignKey(GroupsModel.id_group), nullable=False
     )

@@ -249,3 +249,4 @@ Pipfile
 Pipfile.lock
 
 media/
+frontend/src/custom/custom.css

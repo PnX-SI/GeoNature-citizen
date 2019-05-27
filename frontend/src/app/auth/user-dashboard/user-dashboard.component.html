@@ -3,35 +3,42 @@
     <div class="col-lg-12">
       <div class="row">
         <div class="user"></div>
-        <div class="user-infos">
-          <span>{{ "30" }} observations</span>
-          <img src="../../../assets/user.jpg" />
-          <p>
-            {{ username }} <a href="#"><!-- <i class="fa fa-pencil"></i> --></a>
-          </p>
+        <div class="user-infos" (click)="editInfos(personalInfos)">
+          <!-- FIXME: mocked observation count -->
+          <span>{{ "30" }} observations</span> <img src="assets/user.jpg" />
+          <p>{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>
       <section id="badges">
         <h3>Vos badges</h3>
         <div class="row">
           <div class="col-lg-4 col-sm-12">
-            <img src="../../../assets/user.jpg" />
-            <img src="../../../assets/user.jpg" />
-            <img src="../../../assets/user.jpg" />
-            <img src="../../../assets/user.jpg" />
-            <img src="../../../assets/user.jpg" />
-            <img src="../../../assets/user.jpg" />
+            <img src="assets/badges_Plante.svg" alt="Badge Plante" />
+            <img src="assets/badges_Insecte.svg" alt="Badge Insecte" />
+            <img
+              src="assets/badges_Petit-mam.svg"
+              alt="Badge Petit mammifère"
+            />
+            <img src="assets/badges_Oiseau.svg" alt="Badge Oiseau" />
+            <img
+              src="assets/badges_Grand-mam.svg"
+              alt="Badge Grand mammifère"
+            />
+            <img
+              src="assets/badges_Oiseau-proie.svg"
+              alt="Badge Oiseau de proie"
+            />
           </div>
           <div class="col-lg-4 col-sm-12">
-            <img src="../../../assets/user.jpg" />
-            <img src="../../../assets/user.jpg" />
-            <img src="../../../assets/user.jpg" />
-            <img src="../../../assets/user.jpg" />
+            <img src="assets/badges_Humide.svg" alt="Badge Zone humide" />
+            <img src="assets/badges_Vallee.svg" alt="Badge Vallée" />
+            <img src="assets/badges_Montagne.svg" alt="Badge Montagne" />
+            <img src="assets/badges_Haute.svg" alt="Badge Haute-montagne" />
           </div>
           <div class="col-lg-4 col-sm-12">
-            <img src="../../../assets/user.jpg" />
-            <img src="../../../assets/user.jpg" />
-            <img src="../../../assets/user.jpg" />
+            <img src="assets/badges_Novice.svg" alt="Badge Novice" />
+            <img src="assets/badges_Confirme.svg" alt="Badge Confirmé" />
+            <img src="assets/badges_Expert.svg" alt="Badge Expert" />
           </div>
         </div>
       </section>
@@ -53,3 +60,172 @@
     </div>
   </div>
 </div>
+<ng-template #personalInfos let-modal>
+  <div class="modal-header">
+    <h4 i18n>Mettre à jour vos données personnelles</h4>
+    <button
+      type="button"
+      class="close rounded-0"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
+      &times;
+    </button>
+  </div>
+  <div class="modal-body">
+    <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null"
+      >{{ errorMessage }}
+    </ngb-alert>
+    <form
+      #updatePersonalInfoForm="ngForm"
+      (ngSubmit)="updatePersonalInfoForm.valid && onUpdatePersonalData()"
+    >
+      <ngb-alert [dismissible]="false" type="danger" *ngIf="email.errors" i18n>
+        Impossible de valider votre email.
+      </ngb-alert>
+      <div class="form-row">
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="personalInfo.username" i18n
+              >Votre nom d'utilisateur</label
+            >
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-user"></i></span>
+              </div>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-control rounded-0"
+                i18n-placeholder
+                placeholder="Entrez votre nom d'utilisateur"
+                [(ngModel)]="personalInfo.username"
+                #username="ngModel"
+                autocomplete="username"
+                required
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="email" i18n>Votre email</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="fa fa-envelope"></i
+                ></span>
+              </div>
+              <input
+                type="email"
+                class="form-control rounded-0"
+                name="email"
+                id="email"
+                i18n-placeholder
+                placeholder="Entrez votre email"
+                [(ngModel)]="personalInfo.email"
+                #email="ngModel"
+                autocomplete="email"
+                required
+                pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="name" i18n>Votre prénom</label>
+            <input
+              type="text"
+              class="form-control rounded-0"
+              id="fname"
+              name="fname"
+              i18n-placeholder
+              placeholder="Entrez votre prénom"
+              [(ngModel)]="personalInfo.name"
+              #fname="ngModel"
+              autocomplete="fname"
+            />
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="surname" i18n>Votre nom</label>
+            <input
+              type="text"
+              class="form-control rounded-0"
+              id="surname"
+              name="surname"
+              i18n-placeholder
+              placeholder="Entrez votre nom"
+              [(ngModel)]="personalInfo.surname"
+              #surname="ngModel"
+              autocomplete="lname"
+            />
+          </div>
+        </div>
+      </div>
+      <ngb-alert
+        [dismissible]="false"
+        type="danger"
+        *ngIf="confirm_password.errors || password.errors"
+        i18n
+      >
+        Les mots de passe diffèrent.
+      </ngb-alert>
+      <div class="form-row">
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="password" i18n>Votre mot de passe</label>
+            <input
+              type="password"
+              class="form-control rounded-0"
+              id="password"
+              i18n-placeholder
+              placeholder="Votre nouveau mot de passe"
+              [(ngModel)]="personalInfo.password"
+              name="password"
+              #password="ngModel"
+              autocomplete="current-password"
+              minlength="6"
+              required
+              #password="ngModel"
+            />
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="new-password" i18n
+              >Confirmez votre nouveau mot de passe</label
+            >
+            <input
+              type="password"
+              id="new-password"
+              name="new-password"
+              class="form-control rounded-0"
+              ngModel
+              #confirm_password="ngModel"
+              i18n-placeholder
+              placeholder="Confirmez le mot de passe"
+              autocomplete="new-password"
+              required
+              pattern="^{{ password.value }}$"
+            />
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-outline-primary text-right rounded-0"
+        i18n
+        [disabled]="updatePersonalInfoForm.invalid"
+      >
+        Mettre à jour
+      </button>
+    </form>
+  </div>
+</ng-template>

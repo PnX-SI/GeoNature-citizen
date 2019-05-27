@@ -12,6 +12,7 @@ import { FeatureCollection, Feature } from "geojson";
 
 import { AppConfig } from "../../conf/app.config";
 import { Program } from "../programs/programs.models";
+import { TaxonomyList } from "../programs/observations/observation.model";
 
 const PROGRAMS_KEY = makeStateKey("programs");
 
@@ -85,18 +86,17 @@ export class GncProgramsService implements OnInit {
   }
 
   getProgram(id: number): Observable<FeatureCollection> {
-    return this.http.get<FeatureCollection>(`${this.URL}/programs/${id}`).pipe(
-      map(data => data),
-      take(1),
-      catchError(this.handleError<FeatureCollection>(`getProgram id=${id}`))
-    );
+    return this.http
+      .get<FeatureCollection>(`${this.URL}/programs/${id}`)
+      .pipe(
+        catchError(this.handleError<FeatureCollection>(`getProgram id=${id}`))
+      );
   }
 
   getProgramObservations(id: number): Observable<FeatureCollection> {
     return this.http
       .get<FeatureCollection>(`${this.URL}/programs/${id}/observations`)
       .pipe(
-        take(1),
         catchError(
           this.handleError<FeatureCollection>(`getProgramObservations id=${id}`)
         )
@@ -125,17 +125,15 @@ export class GncProgramsService implements OnInit {
       );
   }
 
-
-  getProgramTaxonomyList(program_id: number): Observable<any[]> {
+  getProgramTaxonomyList(program_id: number): Observable<TaxonomyList> {
     return this.getAllPrograms().pipe(
       map(programs => programs.find(p => p.id_program == program_id)),
       mergeMap(program =>
-        this.http.get<any[]>(
+        this.http.get<TaxonomyList>(
           `${this.URL}/taxonomy/lists/${program["taxonomy_list"]}/species`
         )
       ),
-      take(1),
-      catchError(this.handleError<any[]>(`getProgramTaxonomyList`))
+      catchError(this.handleError<TaxonomyList>(`getProgramTaxonomyList`))
     );
   }
 

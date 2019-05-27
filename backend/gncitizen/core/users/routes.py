@@ -1,4 +1,5 @@
-from flask import jsonify, request, Blueprint, current_app
+import flask
+from flask import request, Blueprint, current_app
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -12,6 +13,10 @@ from gncitizen.utils.sqlalchemy import json_resp
 from server import db, jwt
 from .models import UserModel, RevokedTokenModel
 from gncitizen.utils.jwt import admin_required
+import uuid
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 routes = Blueprint("users", __name__)
@@ -86,9 +91,7 @@ def registration():
                 datas_to_save[data] = request_datas[data]
 
         # Hashed password
-        datas_to_save["password"] = UserModel.generate_hash(
-            request_datas["password"]
-        )
+        datas_to_save["password"] = UserModel.generate_hash(request_datas["password"])
 
         # Protection against admin creation from API
         datas_to_save["admin"] = False
@@ -268,7 +271,7 @@ def get_allusers():
     return allusers, 200
 
 
-@routes.route("/user/info", methods=["GET"])
+@routes.route("/user/info", methods=["GET", "POST"])
 @json_resp
 @jwt_required
 def logged_user():
@@ -283,26 +286,37 @@ def logged_user():
       200:
         description: current user model
     """
-    current_app.logger.debug("[logged_user] Get current user personnal datas")
     try:
         current_user = get_jwt_identity()
         user = UserModel.query.filter_by(username=current_user).one()
         current_app.logger.debug(
             "[logged_user] current user is {}".format(user.as_secured_dict())
         )
-        return (
-            {
-                "message": "Vos données personelles",
-                "features": user.as_secured_dict(True),
-            },
-            200,
-        )
+        if flask.request.method == "GET":
+            current_app.logger.debug("[logged_user] Get current user personnal data")
+            return (
+                {
+                    "message": "Vos données personelles",
+                    "features": user.as_secured_dict(True),
+                },
+                200,
+            )
+        if flask.request.method == "POST":
+            isAdmin = user.admin
+            current_app.logger.debug("[logged_user] Update current user personnal data")
+            request_data = dict(request.get_json())
+            for data in request_data:
+                if hasattr(UserModel, data) and data != "password":
+                    setattr(user, data, request_data[data])
+
+            user.password = UserModel.generate_hash(request_data["password"])
+            user.admin = isAdmin
+            user.update()
+            return {"message": "Personal info updated."}, 200
+
     except Exception as e:
         raise GeonatureApiError(e)
-        return (
-            {"error_message": "You must log in to get your personal datas"},
-            200,
-        )
+        return ({"error_message": "You must log in to get your personal data"}, 400)
 
 
 @routes.route("/user/delete", methods=["DELETE"])
@@ -348,10 +362,67 @@ def delete_user():
             return {"error_message": str(e)}, 400
 
         return (
-            {
-                "message": "Account {} have been successfully deleted".format(
-                    username
-                )
-            },
+            {"message": "Account {} have been successfully deleted".format(username)},
             200,
         )
+
+
+@routes.route("/user/resetpasswd", methods=["POST"])
+@json_resp
+def reset_user_password():
+    request_datas = dict(request.get_json())
+    email = request_datas["email"]
+
+    try:
+        user = UserModel.query.filter_by(email=email).one()
+    except Exception:
+        return ({"error": "{} does not exists".format(email)}, 400)
+
+    passwd = uuid.uuid4().hex[0:6]
+    passwd_hash = UserModel.generate_hash(passwd)
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = current_app.config["RESET_PASSWD"]["SUBJECT"]
+    msg["From"] = current_app.config["RESET_PASSWD"]["FROM"]
+    msg["To"] = user.email
+
+    # Record the MIME types of both parts - text/plain and text/html.
+    part1 = MIMEText(
+        current_app.config["RESET_PASSWD"]["TEXT_TEMPLATE"].format(
+            passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
+        ),
+        "plain",
+    )
+    part2 = MIMEText(
+        current_app.config["RESET_PASSWD"]["HTML_TEMPLATE"].format(
+            passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
+        ),
+        "html",
+    )
+
+    # Attach parts into message container.
+    # According to RFC 2046, the last part of a multipart message, in this case
+    # the HTML message, is best and preferred.
+    msg.attach(part1)
+    msg.attach(part2)
+
+    try:
+        with smtplib.SMTP_SSL(
+            current_app.config["MAIL"]["MAIL_HOST"],
+            int(current_app.config["MAIL"]["MAIL_PORT"]),
+        ) as server:
+            server.login(
+                str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
+                str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
+            )
+            server.sendmail(
+                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
+            )
+            server.quit()
+    except Exception as e:
+        return ({"error": str(e)}, 500)
+
+    user.password = passwd_hash
+    db.session.commit()
+
+    return ({"message": "success"}, 200)

@@ -13,7 +13,6 @@ import { GncProgramsService } from "../api/gnc-programs.service";
   encapsulation: ViewEncapsulation.None
 })
 export class ProgramsComponent implements OnInit {
-  title = "Programmes";
   programs: Program[];
   programCount: number;
 

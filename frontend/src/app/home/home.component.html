@@ -1,25 +1,19 @@
 <div class="row">
   <section id="welcome">
-    <h1
-      i18n="Bienvenue<br />
-    sur Geonature Citizen"
-    >
-      Bienvenue<br />
-      sur Geonature Citizen
-    </h1>
+    <h1 [innerHTML]="platform_intro"></h1>
+    <p [innerHTML]="platform_teaser"></p>
     <a
       [routerLink]="['/home']"
       fragment="programs"
       class="btn-big"
       role="button"
-      i18n="Participer au programme"
-      >Participer au programme</a
+      >{{ AppConfig.platform_participate[localeId] }}</a
     >
     <a [routerLink]="['/home']" fragment="programs" class="scroll">
       <span i18n="Scrollez pour en voir plus !"
         >Scrollez pour en voir plus !</span
       >
-      <img class="d-block" src="../../assets/scroll.svg" />
+      <img class="d-block" src="assets/scroll.svg" alt="scroll to #programs" />
     </a>
   </section>
 </div>
@@ -27,6 +21,26 @@
 <div class="row">
   <!-- LES PROGRAMMES -->
   <section id="programs" *ngIf="programs.length > 1">
+    <div id="programs-cards">
+      <div class="card" *ngFor="let p of programs">
+        <div class="card-content">
+          <img
+            class="d-block w-100"
+            [src]="p.image || 'assets/Azure-Commun-019.JPG'"
+            alt="Programme {{ p.title }}"
+          />
+          <h3>{{ p.title }}</h3>
+          <p [innerHTML]="p.html_long_desc" class="card-body"></p>
+        </div>
+        <a
+          class="btn-big"
+          [routerLink]="['/programs', p.id_program, 'observations']"
+        >
+          {{ AppConfig.platform_participate[localeId] }}
+        </a>
+      </div>
+    </div>
+
     <div id="slider" class="carousel slide" data-ride="carousel">
       <ol class="carousel-indicators">
         <li
@@ -36,7 +50,7 @@
           [class.active]="isFirst"
         ></li>
       </ol>
-      <h2>Les programmes du moment</h2>
+      <h2 i18n="Les programmes du moment">Les programmes du moment</h2>
       <div class="carousel-inner">
         <div
           *ngFor="let p of programs; first as isFirst"
@@ -44,18 +58,18 @@
         >
           <img
             class="d-block w-100"
-            [src]="p.image || '../../assets/Azure-Commun-019.JPG'"
+            [src]="p.image || 'assets/Azure-Commun-019.JPG'"
             alt="Programme {{ p.title }}"
           />
           <div class="carousel-text-container">
-            <div class="carousel-text">
+            <div class="carousel-text" tabindex="0">
               <h3>{{ p.title }}</h3>
-              <p [innerHTML]="p.short_desc"></p>
-              <div class="mobile-hidden" [innerHTML]="p.long_desc"></div>
+              <p [innerHTML]="p.html_short_desc"></p>
+              <div class="mobile-hidden" [innerHTML]="p.html_long_desc"></div>
               <a
                 class="btn-big"
                 [routerLink]="['/programs', p.id_program, 'observations']"
-                >Partager une observation</a
+                >{{ AppConfig.platform_participate[localeId] }}</a
               >
             </div>
           </div>
@@ -68,7 +82,7 @@
         data-slide="prev"
       >
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
+        <span class="sr-only" i18n="ngb.carousel.previous">Précédent</span>
       </a>
       <a
         class="carousel-control-next"
@@ -77,7 +91,7 @@
         data-slide="next"
       >
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
+        <span class="sr-only" i18n="ngb.carousel.next">Prochain</span>
       </a>
     </div>
   </section>

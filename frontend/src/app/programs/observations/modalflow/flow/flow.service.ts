@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { Injectable } from "@angular/core";
 
 /*
 import { FlowItem } from './flow-item'
@@ -13,9 +13,8 @@ const Context = {
 
 @Injectable()
 export class FlowService {
-
-  getFlowItems() {
-    throw 'not implemented'
+  getFlowItems(_initialState: any) {
+    throw "not implemented";
     // return [
     //   new FlowItem(SomeComponent1, Context),
     //   new FlowItem(SomeComponent2, Context),
@@ -25,20 +24,7 @@ export class FlowService {
     // ]
   }
 
-/*
-map = [
-    { 'input': 0, 'current_state': 0, 'transition_state': 1 },
-    { 'input': 0, 'current_state': 1, 'transition_state': 0 },
-]
-
-lookup(input, state) {
-  transition_state = None
-  for item in map {
-    if (item.current_state == state and item.input == input) {
-      transition_state = item.transition_state
-    }
-  }
-    return transition_state
-}
-*/
+  /*
+  fsm
+  */
 }

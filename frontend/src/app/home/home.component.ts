@@ -2,11 +2,14 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  AfterViewChecked
+  AfterViewChecked,
+  Inject,
+  LOCALE_ID
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Meta } from "@angular/platform-browser";
+import { Meta, SafeHtml, DomSanitizer } from "@angular/platform-browser";
 
+import { AppConfig } from "../../conf/app.config";
 import { ProgramsResolve } from "../programs/programs-resolve.service";
 import { Program } from "../programs/programs.models";
 
@@ -20,8 +23,16 @@ import { Program } from "../programs/programs.models";
 export class HomeComponent implements OnInit, AfterViewChecked {
   programs: Program[];
   fragment: string;
+  platform_teaser: SafeHtml;
+  platform_intro: SafeHtml;
+  AppConfig = AppConfig;
 
-  constructor(private route: ActivatedRoute, private meta: Meta) {}
+  constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
+    private route: ActivatedRoute,
+    private meta: Meta,
+    protected domSanitizer: DomSanitizer
+  ) {}
 
   ngOnInit() {
     this.route.data.subscribe((data: { programs: Program[] }) => {
@@ -34,8 +45,14 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     this.meta.updateTag({
       name: "description",
       content:
-        "Géonature-citizen est une application de crowdsourcing des données sur la biodiversité."
+        "GeoNature-citizen est une application de crowdsourcing des données sur la biodiversité."
     });
+    this.platform_intro = this.domSanitizer.bypassSecurityTrustHtml(
+      AppConfig["platform_intro"]
+    );
+    this.platform_teaser = this.domSanitizer.bypassSecurityTrustHtml(
+      AppConfig["platform_teaser"]
+    );
   }
 
   ngAfterViewChecked(): void {
