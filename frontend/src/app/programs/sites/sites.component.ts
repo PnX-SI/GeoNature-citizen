@@ -27,7 +27,7 @@ export class SitesComponent implements OnInit, AfterViewChecked {
   program: Program;
   sites: FeatureCollection;
   programFeature: FeatureCollection;
-  surveySpecies: any[];
+  surveySpecies: any;
 
   constructor(
     private route: ActivatedRoute,
