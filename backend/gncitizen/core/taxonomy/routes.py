@@ -5,12 +5,17 @@ from flask import Blueprint
 from gncitizen.utils.env import db
 from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.core.taxonomy.models import (
-    BibNoms, BibListes, CorNomListe, TMedias, Taxref)
+    BibNoms,
+    BibListes,
+    CorNomListe,
+    TMedias,
+    Taxref,
+)
 
-routes = Blueprint('taxonomy', __name__)
+routes = Blueprint("taxonomy", __name__)
 
 
-@routes.route('/taxonomy/lists', methods=['GET'])
+@routes.route("/taxonomy/lists", methods=["GET"])
 @json_resp
 def get_lists():
     """Renvoie toutes liste d'espèces
@@ -48,10 +53,10 @@ def get_lists():
         # current_app.logger.debug([l.as_dict() for l in data])
         return [l.as_dict() for l in data]
     except Exception as e:
-        return {'error_message': str(e)}, 400
+        return {"error_message": str(e)}, 400
 
 
-@routes.route('/taxonomy/lists/<int:id>/species', methods=['GET'])
+@routes.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
 @json_resp
 def get_list(id):
     """Renvoie une liste d'espèces spécifiée par son id
@@ -86,22 +91,27 @@ def get_list(id):
     # else:
     #     return jsonify('Erreur de chargement de l \'API', r.status_code)
     try:
-        data = db.session.query(BibNoms, Taxref, TMedias)\
-                .distinct(BibNoms.cd_ref)\
-                .join(CorNomListe, CorNomListe.id_liste == id)\
-                .join(Taxref, Taxref.cd_ref == BibNoms.cd_ref)\
-                .outerjoin(TMedias, TMedias.cd_ref == BibNoms.cd_ref)\
-                .all()
+        data = (
+            db.session.query(BibNoms, Taxref, TMedias)
+            .distinct(BibNoms.cd_ref)
+            .join(CorNomListe, CorNomListe.id_nom == BibNoms.id_nom)
+            .join(Taxref, Taxref.cd_ref == BibNoms.cd_ref)
+            .outerjoin(TMedias, TMedias.cd_ref == BibNoms.cd_ref)
+            .filter(CorNomListe.id_liste == id)
+            .all()
+        )
         # current_app.logger.debug(
         #     [{'nom': d[0], 'taxref': d[1]} for d in data])
         return [
             {
-                'nom': d[0].as_dict(),
-                'taxref': d[1].as_dict(),
-                'medias': d[2].as_dict() if d[2] else None
-            } for d in data]
+                "nom": d[0].as_dict(),
+                "taxref": d[1].as_dict(),
+                "medias": d[2].as_dict() if d[2] else None,
+            }
+            for d in data
+        ]
     except Exception as e:
-        return {'error_message': str(e)}, 400
+        return {"error_message": str(e)}, 400
 
 
 # @routes.route('/taxonomy/lists/full', methods=['GET'])
@@ -175,7 +185,8 @@ def get_list(id):
 #     except:
 #         return jsonify('Erreur de chargement de l \'API', rtaxa.status_code)
 
-@routes.route('/taxonomy/taxon/<int:cd_nom>', methods=['GET'])
+
+@routes.route("/taxonomy/taxon/<int:cd_nom>", methods=["GET"])
 @json_resp
 def get_taxon_from_cd_nom(cd_nom):
     """Get taxon TaxRef data from cd_nom

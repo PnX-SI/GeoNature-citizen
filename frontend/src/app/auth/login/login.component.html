@@ -10,21 +10,28 @@
   </button>
 </div>
 <div class="modal-body">
-  <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{
-    errorMessage
-  }}</ngb-alert>
+  <ngb-alert
+    *ngIf="errorMessage && !successMessage"
+    type="danger"
+    (close)="errorMessage = null"
+    >{{ errorMessage }}</ngb-alert
+  >
   <ngb-alert
     *ngIf="successMessage"
     type="success"
     (close)="successMessage = null"
     >{{ successMessage }}</ngb-alert
   >
-  <form (ngSubmit)="onLogin()" novalidate>
+  <form #loginForm="ngForm" (ngSubmit)="loginForm.form.valid && onLogin()">
     <div class="form-group">
       <label for="username" i18n="login|username">Utilisateur</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1"
+          <span
+            class="input-group-text"
+            [ngClass]="{
+              'ng-invalid': username.invalid
+            }"
             ><i class="fa fa-user"></i
           ></span>
         </div>
@@ -36,7 +43,9 @@
           i18n="login|Entrez votre nom d'utilisateur"
           [(ngModel)]="user.username"
           name="username"
+          autocomplete="username"
           required
+          #username="ngModel"
         />
       </div>
     </div>
@@ -44,7 +53,11 @@
       <label for="password" i18n="login|mdp">Mot de passe</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1"
+          <span
+            class="input-group-text"
+            [ngClass]="{
+              'ng-invalid': password.invalid
+            }"
             ><i class="fa fa-lock"></i
           ></span>
         </div>
@@ -56,7 +69,9 @@
           i18n="login|Entrez votre mot de passe"
           [(ngModel)]="user.password"
           name="password"
+          autocomplete="current-password"
           required
+          #password="ngModel"
         />
       </div>
     </div>
@@ -64,6 +79,8 @@
       type="submit"
       class="btn btn-outline-primary rounded-0"
       i18n="login|login"
+      [disabled]="loginForm.invalid"
+      expand="block"
     >
       Se connecter
     </button>

@@ -27,19 +27,20 @@ export class AuthGuard implements CanActivate {
     if (token) {
       return new Promise(resolve => {
         this.authService
-          .ensureAuthenticated(token)
+          .ensureAuthorized(token)
           .then((user: LoginUser) => {
-            console.debug("user", user);
             resolve(true);
           })
           .catch(error => {
-            console.error(error);
+            console.error("[AuthGuard] canActivate error", error);
+            this.authService.logout();
             this.router.navigate(["/home"]);
             resolve(false);
           });
       });
     }
 
+    this.authService.logout();
     this.router.navigate(["/home"]);
     return false;
   }

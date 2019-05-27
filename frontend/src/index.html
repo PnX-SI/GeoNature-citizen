@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <title>GeoNature-citizen</title>
-    <meta
-      name="description"
-      content="Géonature-citizen is a crowdsourcing biodiversity data application."
-    />
+    <meta name="description" content="GeoNature-citizen is a crowdsourcing biodiversity data application." />
     <base href="/" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Lobster"
-      rel="stylesheet"
-    />
-  </head>
+    <style>
+        #loading {
+            color: transparent
+        }
+    </style>
+</head>
 
-  <body class="bg-light">
+<body class="bg-light">
+    <noscript i18n="noscript">
+      You need to enable JavaScript to run this app.
+    </noscript>
     <app-root>
-      <div class="container">
-        <div class="text-center p-5" style="height: 100vh; margin: auto 0;">
-          <div class="card">
-            <h1>GeoNature-citizen</h1>
-            <p>
-              <i class="fa fa-spinner fa-spin fa-5x"></i><br />Chargement en
-              cours...
-            </p>
-          </div>
+        <div id=loading>
+            <div class="loading-text">
+                <h1>GeoNature-citizen</h1>
+                <h4>Chargement en cours...</h4>
+                <p i18n="loading app">
+                </p>
+            </div>
+            <div id="spinner">
+                <div class="loader-1"></div>
+                <div class="loader-2"></div>
+                <div class="loader-3"></div>
+            </div>
         </div>
-      </div>
     </app-root>
-  </body>
+</body>
+
 </html>

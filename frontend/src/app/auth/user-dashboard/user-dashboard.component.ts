@@ -1,9 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { AuthService } from "./../auth.service";
+import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+
 import { AppConfig } from "../../../conf/app.config";
-import { Router } from "@angular/router";
+import { AuthService } from "./../auth.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-user-dashboard",
@@ -16,26 +19,28 @@ export class UserDashboardComponent implements OnInit {
   private headers: HttpHeaders = new HttpHeaders({
     "Content-Type": "application/json"
   });
+  modalRef: NgbModalRef;
+  personalInfo: any = {};
 
   constructor(
     private auth: AuthService,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
     if (access_token) {
       this.auth
-        .ensureAuthenticated(access_token)
+        .ensureAuthorized(access_token)
         .then(user => {
-          console.debug(user["features"]["username"]);
           if (user["features"]["id_role"]) {
             this.isLoggedIn = true;
             this.username = user["features"]["username"];
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => alert(err));
     }
   }
 
@@ -44,7 +49,6 @@ export class UserDashboardComponent implements OnInit {
     this.auth
       .selfDeleteAccount(access_token)
       .then(data => {
-        console.debug(data);
         let getBackHome = confirm(
           data.hasOwnProperty("message")
             ? `${data.message}\nRevenir à l'accueil ?`
@@ -54,16 +58,43 @@ export class UserDashboardComponent implements OnInit {
           this.router.navigate(["/home"]);
         }
       })
-      .catch(err => console.error(err));
+      .catch(err => alert(err));
+  }
+
+  getPersonalInfo(): Observable<any> {
+    let url = `${AppConfig.API_ENDPOINT}/user/info`;
+    return this.http.get(url, { headers: this.headers });
   }
 
   exportPersonalData() {
-    let url = `${AppConfig.API_ENDPOINT}/user/info`;
-    const data = this.http.get(url, { headers: this.headers });
-    data.subscribe(data => {
-      console.debug(data);
+    this.getPersonalInfo().subscribe(data => {
       alert(JSON.stringify(data));
-      // TODO: need decision over data format: csv, geojson ? Link observations and associated medias ?
+      // TODO: data format: csv, geojson ? Link observations and associated medias ?
     });
+  }
+
+  editInfos(content) {
+    this.getPersonalInfo().subscribe(data => {
+      this.personalInfo = data;
+      this.modalRef = this.modalService.open(content, {
+        size: "lg",
+        centered: true
+      });
+    });
+  }
+
+  onUpdatePersonalData() {
+    this.http
+      .post(`${AppConfig.API_ENDPOINT}/user/info`, this.personalInfo, {
+        headers: this.headers
+      })
+      .subscribe(
+        data => console.debug(data),
+        error => console.error(error),
+        () => {
+          // update PI
+          this.modalRef.close();
+        }
+      );
   }
 }
