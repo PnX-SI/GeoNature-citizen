@@ -109,10 +109,15 @@ export class BadgeFacade {
       };
     }
 
-    this.badges$.pipe(take(1)).subscribe(oldState => {
-      oldBadges = oldState;
-      onlyInOldState = oldBadges.filter(badgeListComparer(badges));
-    });
+    this.badges$
+      .pipe(
+        take(1),
+        tap(oldState => {
+          oldBadges = oldState;
+          onlyInOldState = oldBadges.filter(badgeListComparer(badges));
+        })
+      )
+      .subscribe();
     const onlyInNewState = badges.filter(badgeListComparer(oldBadges));
     return onlyInOldState.concat(onlyInNewState);
   }
@@ -156,21 +161,17 @@ export class RewardComponent implements IFlowComponent, OnInit {
   constructor(public badges: BadgeFacade) {}
 
   ngOnInit(): void {
-    let counter = 0;
     this.badges.changes$.subscribe(changes => {
       console.debug("reward data:", this.data);
       console.debug("badge changes:", changes);
-      // FIXME: This is consumed twice, 1st to last changes then actual changes, why ?
-      // rm counter when debugged.
-      counter++;
-      console.debug(counter);
-      const condition = changes && changes.length > 0;
-      if (counter >= 2) {
-        this.timeout = setTimeout(
-          () => this.close(condition ? "timeout" : "noreward"),
-          condition ? 5000 : 0
-        );
-      }
+      // FIXME: This is evented twice, 1st to last changes (?) then actual changes
+      const condition =
+        !!changes && !!changes.length && !!Object.keys(changes[0]).length;
+      console.debug("condition:", condition ? "some" : "empty");
+      this.timeout = setTimeout(
+        () => this.close(condition ? "timeout" : "noreward"),
+        condition ? 5000 : 0
+      );
     });
   }
 
