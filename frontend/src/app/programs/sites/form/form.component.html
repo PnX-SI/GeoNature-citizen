@@ -3,7 +3,7 @@
     {{ jsonData | json }}
   </div> -->
   <h3>
-    Etape {{ currentStep }} : {{ jsonSchema.steps[currentStep-1].title }}
+    Etape {{ currentStep }}/{{ totalSteps() }} : {{ jsonSchema.steps[currentStep-1].title }}
   </h3>
   <form id="visitForm" [formGroup]="visitForm">
     <div class="input-group" *ngIf="currentStep === 1">

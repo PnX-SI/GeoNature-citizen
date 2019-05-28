@@ -93,6 +93,9 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   isLastStep() {
     return this.currentStep === this.jsonSchema.steps.length;
   }
+  totalSteps() {
+    return this.jsonSchema.steps.length;
+  }
   yourOnChangesFn(e) {
     // console.log(e)
   }
