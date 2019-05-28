@@ -23,16 +23,6 @@ export class SiteDetailComponent implements AfterViewInit {
   site: any;
   attributes = [];
   photos = [];
-  //   [{
-  //   url: "../../assets/Azure-Commun-019.JPG",
-  //   description: "Photo - Anonyme",
-  //   date: "15 mars 2019"
-  // }, {
-  //   url: "../../assets/faune-mercantour.jpg",
-  //   description: "des bébêtes - Anonyme",
-  //   date: "15 mars 2019"
-  // }
-  // ];
   clickedPhoto: any;
 
   constructor(
@@ -53,11 +43,10 @@ export class SiteDetailComponent implements AfterViewInit {
         console.log(sites);
         this.site = sites['features'][0];
 
-        var photos = this.site.properties.photos;
-        for (var i = 0; i<photos.length; i++){
-          photos[i]['url'] = AppConfig.API_ENDPOINT + photos[i]['url'];
+        this.photos = this.site.properties.photos;
+        for (var i = 0; i<this.photos.length; i++){
+          this.photos[i]['url'] = AppConfig.API_ENDPOINT + this.photos[i]['url'];
         }
-        this.photos = photos;
 
         // setup map
         const map = L.map("map");

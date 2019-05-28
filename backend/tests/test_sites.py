@@ -121,7 +121,7 @@ class VisitsTestCase(unittest.TestCase):
         # check that we now get the photo in the site object
         photos = self.get_photos()
         self.assertEqual(len(photos), 1)
-        self.assertEqual("/api/media/{}".format(data[0]), photos[0])
+        self.assertEqual("/media/{}".format(data[0]), photos[0]['url'])
 
 
 if __name__ == "__main__":
