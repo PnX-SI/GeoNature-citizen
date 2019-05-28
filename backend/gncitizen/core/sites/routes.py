@@ -92,6 +92,7 @@ def get_site_photos(site_id):
     ).all()
     return [{
                 'url': '/media/{}'.format(p.MediaModel.filename),
+                'date': p.VisitModel.as_dict()['date'],
             } for p in photos]
 
 

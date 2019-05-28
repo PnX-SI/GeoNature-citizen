@@ -41,7 +41,7 @@
                src="{{ photo.url }}" data-holder-rendered="true">
           <div class="card-body">
             <p class="card-text">{{ photo.description }}</p>
-            <p class="card-text"><small class="text-muted">{{ photo.date }}</small></p>
+            <p class="card-text"><small class="text-muted">{{ photo.date | date : longDate }}</small></p>
           </div>
         </div>
       </div>
