@@ -1,6 +1,7 @@
 from flask import Blueprint, request, current_app
 from .models import SiteType, SiteModel, VisitModel, MediaOnVisitModel
 from gncitizen.core.users.models import UserModel
+from gncitizen.core.commons.models import MediaModel
 import uuid
 import datetime
 
@@ -64,16 +65,34 @@ def get_site(pk):
     """
     try:
         site = SiteModel.query.get(pk)
+        formatted_site = format_site(site)
         last_visit = VisitModel.query\
             .filter_by(id_site=pk)\
             .order_by(VisitModel.timestamp_update.desc())\
             .first()
-        formatted_site = format_site(site)
         if last_visit is not None:
             formatted_site['properties']['last_visit'] = last_visit.as_dict()
+        photos = get_site_photos(pk)
+        formatted_site['properties']['photos'] = photos
         return {"features": [formatted_site]}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
+
+
+def get_site_photos(site_id):
+    photos = db.session.query(
+        MediaModel
+    ).filter(
+        VisitModel.id_site == site_id
+    ).join(
+        MediaOnVisitModel, MediaOnVisitModel.id_media == MediaModel.id_media
+    ).join(
+        VisitModel, VisitModel.id_visit == MediaOnVisitModel.id_data_source
+    ).all()
+    return [
+        "/api/media/{}".format(p.filename)
+        for p in photos
+    ]
 
 
 def format_site(site):
