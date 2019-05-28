@@ -73,6 +73,7 @@ class VisitsTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.site_id = data['features'][0]['properties']['id_site']
+        self.visit = self.create_visit()
 
     def create_visit(self):
         response = postrequest("sites/{}/visits".format(self.site_id),
@@ -98,6 +99,13 @@ class VisitsTestCase(unittest.TestCase):
         site = data['features'][0]['properties']
         self.assertEqual(site['last_visit']['id_visit'], visit2['id_visit'])
 
+    def test_post_photo(self):
+        response = postrequest(
+            "sites/{}/visits/{}/photos".format(self.site_id, self.visit['id_visit']),
+            None,
+            file="../frontend/src/assets/Azure-Commun-019.JPG")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
 
 if __name__ == "__main__":
     unittest.main()

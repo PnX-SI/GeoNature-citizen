@@ -1,5 +1,5 @@
 from flask import Blueprint, request, current_app
-from .models import SiteType, SiteModel, VisitModel
+from .models import SiteType, SiteModel, VisitModel, MediaOnVisitModel
 from gncitizen.core.users.models import UserModel
 import uuid
 import datetime
@@ -9,8 +9,7 @@ from geoalchemy2.shape import from_shape
 from shapely.geometry import Point
 from shapely.geometry import asShape
 from gncitizen.utils.jwt import get_id_role_if_exists
-from gncitizen.utils.env import MEDIA_DIR
-from gncitizen.utils.media import allowed_file
+from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
 from server import db
@@ -261,25 +260,6 @@ def post_visit(site_id):
             if new_visit.obs_txt is None or len(new_visit.obs_txt) == 0:
                 new_visit.obs_txt = "Anonyme"
 
-        try:
-            if request.files:
-                current_app.logger.debug("request.files: %s", request.files)
-                file = request.files.get("photo", None)
-                current_app.logger.debug("file: %s", file)
-                if file and allowed_file(file):
-                    ext = file.rsplit(".", 1).lower()
-                    timestamp = datetime.datetime.now().strftime(
-                        "%Y%m%d_%H%M%S"
-                    )  # noqa: E501
-                    filename = "site_" + "_" + timestamp + ext
-                    path = MEDIA_DIR + "/" + filename
-                    file.save(path)
-                    current_app.logger.debug("path: %s", path)
-                    #TODO: save with MediaOnVisitModel
-        except Exception as e:
-            current_app.logger.debug("file ", e)
-            raise GeonatureApiError(e)
-
         db.session.add(new_visit)
         db.session.commit()
 
@@ -289,6 +269,28 @@ def post_visit(site_id):
                    "message": "New visit created.",
                    "features": [result.as_dict()]
                }, 200
+    except Exception as e:
+        current_app.logger.warning("Error: %s", str(e))
+        return {"error_message": str(e)}, 400
+
+
+@routes.route("/<int:site_id>/visits/<int:visit_id>/photos", methods=["POST"])
+@json_resp
+@jwt_optional
+def post_photo(site_id, visit_id):
+    try:
+        current_app.logger.debug("UPLOAD FILE? " + str(request.files))
+        if request.files:
+            files = save_upload_files(
+                request.files,
+                "mares",
+                site_id,
+                visit_id,
+                MediaOnVisitModel,
+            )
+            current_app.logger.debug("UPLOAD FILE {}".format(files))
+            return files, 200
+        return [], 200
     except Exception as e:
         current_app.logger.warning("Error: %s", str(e))
         return {"error_message": str(e)}, 400
