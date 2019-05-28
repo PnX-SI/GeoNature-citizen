@@ -81,7 +81,8 @@ def get_site(pk):
 
 def get_site_photos(site_id):
     photos = db.session.query(
-        MediaModel
+        MediaModel,
+        VisitModel,
     ).filter(
         VisitModel.id_site == site_id
     ).join(
@@ -89,10 +90,9 @@ def get_site_photos(site_id):
     ).join(
         VisitModel, VisitModel.id_visit == MediaOnVisitModel.id_data_source
     ).all()
-    return [
-        "/api/media/{}".format(p.filename)
-        for p in photos
-    ]
+    return [{
+                'url': '/media/{}'.format(p.MediaModel.filename),
+            } for p in photos]
 
 
 def format_site(site):
