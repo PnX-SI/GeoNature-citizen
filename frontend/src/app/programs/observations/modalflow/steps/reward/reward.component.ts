@@ -3,7 +3,8 @@ import {
   Input,
   ViewEncapsulation,
   OnInit,
-  Injectable
+  Injectable,
+  AfterViewInit
 } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { throwError, BehaviorSubject } from "rxjs";
@@ -13,7 +14,9 @@ import {
   map,
   distinctUntilChanged,
   take,
-  share
+  share,
+  pluck,
+  filter
 } from "rxjs/operators";
 
 import { AppConfig } from "../../../../../../conf/app.config";
@@ -51,6 +54,7 @@ export class BadgeFacade {
   );
   changes$ = this.state$.pipe(
     map(state => state.changes),
+    filter((_: Badge[]) => !!_ && !!_.length),
     distinctUntilChanged(),
     share()
   );
@@ -68,17 +72,18 @@ export class BadgeFacade {
               `${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`
             )
             .pipe(
-              map(_items => _items["badges"]),
+              pluck("badges"),
               catchError(error => {
                 window.alert(error);
                 return throwError(error);
               })
             )
             .subscribe((badges: Badge[]) => {
+              const changes = this.difference(badges);
               this.updateState({
                 ..._state,
-                badges,
-                changes: this.difference(badges),
+                badges: badges,
+                changes: changes,
                 loading: false
               });
               localStorage.setItem("badges", JSON.stringify(badges));
@@ -119,7 +124,8 @@ export class BadgeFacade {
       )
       .subscribe();
     const onlyInNewState = badges.filter(badgeListComparer(oldBadges));
-    return onlyInOldState.concat(onlyInNewState);
+    // return onlyInOldState.concat(onlyInNewState);
+    return onlyInNewState;
   }
 
   private updateState(state: BadgeState) {
@@ -153,7 +159,7 @@ export class BadgeFacade {
   encapsulation: ViewEncapsulation.None,
   providers: [BadgeFacade]
 })
-export class RewardComponent implements IFlowComponent, OnInit {
+export class RewardComponent implements IFlowComponent, OnInit, AfterViewInit {
   readonly AppConfig = AppConfig;
   @Input() data: any;
   timeout: any;
@@ -161,18 +167,31 @@ export class RewardComponent implements IFlowComponent, OnInit {
   constructor(public badges: BadgeFacade) {}
 
   ngOnInit(): void {
-    this.badges.changes$.subscribe(changes => {
-      console.debug("reward data:", this.data);
-      console.debug("badge changes:", changes);
-      // FIXME: This is evented twice, 1st to last changes (?) then actual changes
-      const condition =
-        !!changes && !!changes.length && !!Object.keys(changes[0]).length;
-      console.debug("condition:", condition ? "some" : "empty");
-      this.timeout = setTimeout(
-        () => this.close(condition ? "timeout" : "noreward"),
-        condition ? 5000 : 0
-      );
-    });
+    console.debug("reward data:", this.data);
+    this.timeout = setTimeout(() => this.close("NOREWARD"), 5000);
+    this.badges.changes$
+      .pipe(
+        tap(changes => {
+          console.debug("badge changes:", changes);
+        })
+        // map(changes => {
+        //   return (
+        //     !!changes && !!changes.length && !!Object.keys(changes[0]).length
+        //   );
+        // })
+      )
+      .subscribe(rewarded => {
+        console.debug("badge changes:", rewarded);
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(
+          () => this.close(rewarded ? "REWARDED" : "NOREWARD"),
+          rewarded ? 5000 : 0
+        );
+      });
+  }
+
+  ngAfterViewInit() {
+    console.debug("rewards  view init.");
   }
 
   close(d) {
