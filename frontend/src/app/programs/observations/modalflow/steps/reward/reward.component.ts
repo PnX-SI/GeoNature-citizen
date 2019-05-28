@@ -54,7 +54,8 @@ export class BadgeFacade {
   );
   changes$ = this.state$.pipe(
     map(state => state.changes),
-    filter((_: Badge[]) => !!_ && !!_.length),
+    tap(c => console.debug(c)),
+    filter((b: Badge[]) => !!b && !!b.length),
     distinctUntilChanged(),
     share()
   );
@@ -62,6 +63,10 @@ export class BadgeFacade {
 
   constructor(private authService: AuthService, private http: HttpClient) {
     this.username = localStorage.getItem("username");
+    this.initialize();
+  }
+
+  initialize(): void {
     const access_token = localStorage.getItem("access_token");
     if (access_token) {
       this.authService.ensureAuthorized(access_token).then(user => {
@@ -76,18 +81,19 @@ export class BadgeFacade {
               catchError(error => {
                 window.alert(error);
                 return throwError(error);
+              }),
+              tap((badges: Badge[]) => {
+                const changes = this.difference(badges);
+                this.updateState({
+                  ..._state,
+                  badges: badges,
+                  changes: changes,
+                  loading: false
+                });
+                localStorage.setItem("badges", JSON.stringify(badges));
               })
             )
-            .subscribe((badges: Badge[]) => {
-              const changes = this.difference(badges);
-              this.updateState({
-                ..._state,
-                badges: badges,
-                changes: changes,
-                loading: false
-              });
-              localStorage.setItem("badges", JSON.stringify(badges));
-            });
+            .subscribe();
         }
       }),
         error => window.alert(error);
@@ -101,17 +107,12 @@ export class BadgeFacade {
   difference(badges: Badge[]) {
     if (badges && badges.length === 0) return;
 
-    let oldBadges: Badge[];
-    let onlyInOldState: Badge[];
+    let oldBadges: Badge[] = [];
+    let onlyInOldState: Badge[] = [];
 
     function badgeListComparer(otherArray) {
-      return function(current) {
-        return (
-          otherArray.filter(function(other) {
-            return other.alt == current.alt;
-          }).length == 0
-        );
-      };
+      return current =>
+        otherArray.filter(other => other.alt == current.alt).length == 0;
     }
 
     this.badges$
