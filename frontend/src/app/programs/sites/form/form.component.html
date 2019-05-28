@@ -5,6 +5,7 @@
   <h3>
     Etape {{ currentStep }}/{{ totalSteps() }} : {{ jsonSchema.steps[currentStep-1].title }}
   </h3>
+  <p class="h6">{{ jsonSchema.steps[currentStep-1].description }}</p>
   <form id="visitForm" [formGroup]="visitForm">
     <div class="input-group" *ngIf="currentStep === 1">
       <label for="date" >Date de la visite</label>

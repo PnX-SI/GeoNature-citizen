@@ -87,6 +87,7 @@
   "steps": [
     {
       "title": "Environnement de la mare",
+      "description": "",
       "layout": [
         { "key": "environnement",
           "title": "Environnement Immédiat",
@@ -137,6 +138,7 @@
     },
     {
       "title": "Caractéristiques physiques de la mare",
+      "description": "",
       "layout": [
         {
           "key": "natureFond",
@@ -187,6 +189,7 @@
     },
     {
       "title": "Hydrologie de la mare",
+      "description": "",
       "layout": [
         {
           "key": "presenceEau",
@@ -252,6 +255,7 @@
     },
     {
       "title": "Usages et perturbations",
+      "description": "",
       "layout": [
         {
           "key": "presencePoissons",
@@ -316,6 +320,7 @@
     },
     {
       "title": "Berges et végétation",
+      "description": "",
       "layout": [
         { "type": "section",
           "title": "Description avancée",
@@ -393,6 +398,7 @@
     },
     {
       "title": "Remarques",
+      "description": "",
       "layout": [
         {
           "key": "remarques",
