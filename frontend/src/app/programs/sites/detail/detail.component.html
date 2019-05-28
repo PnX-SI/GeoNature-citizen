@@ -40,8 +40,8 @@
           <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;"
                src="{{ photo.url }}" data-holder-rendered="true">
           <div class="card-body">
-            <p class="card-text">{{ photo.description }}</p>
-            <p class="card-text"><small class="text-muted">{{ photo.date | date : longDate }}</small></p>
+            <p class="card-text">{{ photo.date | date : longDate }}</p>
+            <p class="card-text"><small class="text-muted">{{ photo.author }}</small></p>
           </div>
         </div>
       </div>
@@ -67,14 +67,14 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{ clickedPhoto?.description }}</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{ clickedPhoto?.date | date : longDate}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <img src="{{ clickedPhoto?.url }}" style="width: 100%;">
-        <p class="card-text"><small class="text-muted">{{ clickedPhoto?.date }}</small></p>
+        <p class="card-text"><small class="text-muted">{{ clickedPhoto?.author }}</small></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
