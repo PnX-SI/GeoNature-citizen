@@ -8,7 +8,10 @@
         "type": "string"
       },
       "presenceCorridor": {
-        "type": "string"
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
       },
       "corridorFonctionnel": {
         "type": "string"
@@ -53,7 +56,10 @@
         "type": "string"
       },
       "usages": {
-        "type": "string"
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
       },
       "penteBerges": {
         "type": "string"
@@ -104,6 +110,7 @@
           "items": [
             { 
               "key": "presenceCorridor",
+              "type": "checkboxes",
               "title": "Présence d’un corridor linéaire",
               "description": "Existe-t-il un corridor linéaire naturel facilitant le déplacement des espèces animales à proximité de la mare (à moins de 5 mètres) ? Ce corridor peut être aquatique (fossé, ruisseau) ou végétal (haie).",
               "titleMap": [
@@ -284,7 +291,8 @@
             },
             {
               "key": "usages",
-              "title": "Usages (plusieurs choix possibles)",
+              "type": "checkboxes",
+              "title": "Usages",
               "description": "Les mares peuvent avoir plusieurs fonctions : agricole (abreuvement du bétail, avec aménagements ou non : clôtures, pompe à museau….), traitement de l’eau (lagunage), stockage des eaux de ruissellement (rétention), loisirs (pêche, chasse), pédagogique, écologique (protection de la biodiversité) … cochez le ou les usages observés sur la mare.",
               "titleMap": [
                 { "name": "inconnu", "value": null },
