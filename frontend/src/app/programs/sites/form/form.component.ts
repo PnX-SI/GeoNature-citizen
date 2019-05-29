@@ -45,7 +45,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   @Input() site_id: number;
   visitForm = new FormGroup({
     date: new FormControl("", Validators.required),
-    data: new FormControl("", Validators.required)
+    data: new FormControl("")
   });
   currentStep: number = 1;
   partialLayout: any;

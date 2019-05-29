@@ -38,15 +38,15 @@ export const myMarkerTitle =
 export class SiteFormComponent implements AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   @ViewChild("photo") photo: ElementRef;
-  siteForm = new FormGroup({
-    name: new FormControl("", Validators.required),
-    geometry: new FormControl("", Validators.required),
-    id_program: new FormControl("", Validators.required),
-    site_type: new FormControl("", Validators.required)
-  });
   program: any;
   program_id: any;
   formMap: any;
+  siteForm = new FormGroup({
+    name: new FormControl("", Validators.required),
+    geometry: new FormControl("", Validators.required),
+    id_program: new FormControl(this.program_id),
+    site_type: new FormControl("mare") // TODO : get site type
+  });
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
@@ -111,6 +111,7 @@ export class SiteFormComponent implements AfterViewInit {
 
   onFormSubmit(): Promise<object>  {
     console.debug("formValues:", this.siteForm.value);
+
     return this.postSite().toPromise().then(
       data => { console.debug(data); return data; },
       err => console.error(err)
@@ -123,10 +124,6 @@ export class SiteFormComponent implements AfterViewInit {
         Accept: "application/json"
       })
     };
-    this.siteForm.patchValue({
-        id_program: this.program_id,
-        site_type: "mare"
-    });
 
     return this.http.post<any>(
       `${this.URL}/sites/`,
