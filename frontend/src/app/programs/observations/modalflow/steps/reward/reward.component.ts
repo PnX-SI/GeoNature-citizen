@@ -13,10 +13,8 @@ import {
   catchError,
   map,
   distinctUntilChanged,
-  take,
   share,
-  pluck,
-  filter
+  pluck
 } from "rxjs/operators";
 
 import { AppConfig } from "../../../../../../conf/app.config";
@@ -54,9 +52,8 @@ export class BadgeFacade {
   );
   changes$ = this.state$.pipe(
     map(state => state.changes),
-    tap(c => console.debug(c)),
-    filter((b: Badge[]) => !!b && !!b.length),
     distinctUntilChanged(),
+    tap(c => console.debug(c)),
     share()
   );
   loading$ = this.state$.pipe(map(state => state.loading));
@@ -79,10 +76,6 @@ export class BadgeFacade {
             )
             .pipe(
               pluck("badges"),
-              catchError(error => {
-                window.alert(error);
-                return throwError(error);
-              }),
               tap((badges: Badge[]) => {
                 const changes = this.difference(badges);
                 this.updateState({
@@ -92,6 +85,11 @@ export class BadgeFacade {
                   loading: false
                 });
                 localStorage.setItem("badges", JSON.stringify(badges));
+              }),
+              catchError(error => {
+                console.error(error);
+                window.alert(error);
+                return throwError(error);
               })
             )
             .subscribe();
@@ -106,7 +104,7 @@ export class BadgeFacade {
   }
 
   difference(badges: Badge[]) {
-    if (badges && badges.length === 0) return;
+    if (badges && badges.length === 0) return /* EMPTY */;
 
     function badgeListComparer(otherArray) {
       return current =>
@@ -115,9 +113,9 @@ export class BadgeFacade {
 
     const oldBadges: Badge[] = _state.badges;
     const onlyInOldState: Badge[] = oldBadges.filter(badgeListComparer(badges));
-    const onlyInNewState = badges.filter(badgeListComparer(oldBadges));
+    const onlyInNewState: Badge[] = badges.filter(badgeListComparer(oldBadges));
 
-    return onlyInOldState.concat(onlyInNewState);
+    return [...onlyInOldState, ...onlyInNewState];
   }
 
   private updateState(state: BadgeState) {
@@ -161,25 +159,14 @@ export class RewardComponent implements IFlowComponent, OnInit, AfterViewInit {
   ngOnInit(): void {
     console.debug("reward data:", this.data);
     this.timeout = setTimeout(() => this.close("NOREWARD"), 5000);
-    this.badges.changes$
-      .pipe(
-        tap(changes => {
-          console.debug("badge changes:", changes);
-        })
-        // map(changes => {
-        //   return (
-        //     !!changes && !!changes.length && !!Object.keys(changes[0]).length
-        //   );
-        // })
-      )
-      .subscribe(rewarded => {
-        console.debug("badge changes:", rewarded);
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(
-          () => this.close(rewarded ? "REWARDED" : "NOREWARD"),
-          rewarded ? 5000 : 0
-        );
-      });
+    this.badges.changes$.subscribe(rewarded => {
+      console.debug("badge changes:", rewarded);
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(
+        () => this.close(rewarded ? "REWARDED" : "NOREWARD"),
+        rewarded ? 5000 : 0
+      );
+    });
   }
 
   ngAfterViewInit() {
