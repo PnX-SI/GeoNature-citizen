@@ -1,4 +1,4 @@
-.navbar {
+.navbar-visible {
   min-height: 100px;
   background-color: #fefefe;
   /* color: #60a3bc; */
@@ -90,7 +90,7 @@ div.btn-group a:first-child{
   font-weight: bold;
 }
 
- @media screen and (max-width: 992px){
+ @media screen and (max-width: 991px){
   /* FIXME: la nav bar ne se referme qu'à 768, pourquoi 912 ? */
 /*    .navbar-collapse form{
     justify-content: flex-end;
@@ -102,6 +102,14 @@ div.btn-group a:first-child{
   ul.btn-group li{/*
     min-width: 120px !important; */
     max-width: 120px !important;
+  }
+
+  .navbar-hidden {
+    pointer-events: auto;
+    min-height: 65px !important;
+  }
+  .navbar-hidden img{
+    height: 40px
   }
 }
 
