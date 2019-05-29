@@ -63,11 +63,12 @@ export class BadgeFacade {
 
   constructor(private authService: AuthService, private http: HttpClient) {
     this.username = localStorage.getItem("username");
-    this.initialize();
+    this.getChanges();
   }
 
-  initialize(): void {
+  getChanges(): void {
     const access_token = localStorage.getItem("access_token");
+    console.debug("facade initialized.");
     if (access_token) {
       this.authService.ensureAuthorized(access_token).then(user => {
         if (user["features"]["id_role"]) {
@@ -107,26 +108,16 @@ export class BadgeFacade {
   difference(badges: Badge[]) {
     if (badges && badges.length === 0) return;
 
-    let oldBadges: Badge[] = [];
-    let onlyInOldState: Badge[] = [];
-
     function badgeListComparer(otherArray) {
       return current =>
         otherArray.filter(other => other.alt == current.alt).length == 0;
     }
 
-    this.badges$
-      .pipe(
-        take(1),
-        tap(oldState => {
-          oldBadges = oldState;
-          onlyInOldState = oldBadges.filter(badgeListComparer(badges));
-        })
-      )
-      .subscribe();
+    const oldBadges: Badge[] = _state.badges;
+    const onlyInOldState: Badge[] = oldBadges.filter(badgeListComparer(badges));
     const onlyInNewState = badges.filter(badgeListComparer(oldBadges));
-    // return onlyInOldState.concat(onlyInNewState);
-    return onlyInNewState;
+
+    return onlyInOldState.concat(onlyInNewState);
   }
 
   private updateState(state: BadgeState) {
