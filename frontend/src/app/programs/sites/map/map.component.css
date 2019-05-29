@@ -10,7 +10,7 @@
 
 .marker-cluster span {
   color: var(--primary);
-  font-size: .9em;
+  font-size: 0.9em;
   font-weight: bold;
   line-height: 45px;
 }
@@ -31,21 +31,27 @@
 .marker-cluster-large {
   background-color: rgba(254, 250, 245, 0.1);
 }
+
 .marker-cluster-large div {
   background-color: rgba(254, 250, 245, 0.1);
 }
 
-.leaflet-right {
-  left: 15px;
-  right: inherit !important;
+a.leaflet-control-layers-toggle {
+  /* Should inherit leaflet-bar sizes */
+  width: 30px !important;
+  height: 30px !important;
 }
 
-@media screen and (max-width: 991px){
-  .btn-group .btn-big{
+@media screen and (max-width: 991px) {
+  .btn-group .btn-big {
     opacity: 1 !important;
   }
-  #sitesMap{
+  #sitesMap {
     margin: 0;
     width: 100%;
+  }
+  #map {
+    width: 100%;
+    max-height: 40vh;
   }
 }
