@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, OnInit, Input} from "@angular/core";
 import { Observable } from "rxjs";
 import { tap, map } from "rxjs/operators";
 
@@ -24,6 +24,9 @@ export class TopbarComponent implements OnInit {
   username: any;
   modalRef: NgbModalRef;
   programs$: Observable<Program[]>;
+
+  @Input()
+  displayTopbar: boolean;
 
   constructor(
     private programService: GncProgramsService,

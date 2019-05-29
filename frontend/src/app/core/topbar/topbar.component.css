@@ -7,6 +7,20 @@
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
+.navbar-hidden {
+  min-height: 100px;
+  pointer-events: none;
+}
+
+.navbar-login {
+  pointer-events: auto;
+  background-color: #fefefe;
+}
+
+.hidden {
+  display: none!important;
+}
+
 .navbar-brand {
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
     color: var(--primary);
@@ -85,17 +99,17 @@ div.btn-group a:first-child{
   ul.btn-group{
     padding: 0px;
   }
-  ul.btn-group li{/* 
+  ul.btn-group li{/*
     min-width: 120px !important; */
     max-width: 120px !important;
   }
-} 
+}
 
  @media screen and (max-width: 820px) {
   div.btn-group{
     margin-left: 0px;
   }
-} 
+}
 
 @media screen and (max-width: 767px) {
 
@@ -122,7 +136,6 @@ div.btn-group a:first-child{
     text-align: right;
   }
 
-  
 }
 
 @media screen and (max-width: 576px) {
@@ -131,5 +144,5 @@ div.btn-group a:first-child{
   }
   .navbar img{
     height: 40px
-  } 
+  }
 }
