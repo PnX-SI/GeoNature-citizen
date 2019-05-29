@@ -3,6 +3,7 @@ import {GncProgramsService} from "../../../api/gnc-programs.service";
 import {ActivatedRoute} from "@angular/router";
 import * as L from "leaflet";
 import MaresJson from '../../../../../../config/custom/form/mares.json';
+import { SiteModalFlowService } from "../modalflow/modalflow.service";
 
 declare let $: any;
 
@@ -36,6 +37,7 @@ export class SiteDetailComponent implements AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private programService: GncProgramsService,
+    public flowService: SiteModalFlowService
   ) {
     this.route.params.subscribe(params => {
       this.site_id = params["site_id"];
@@ -81,5 +83,9 @@ export class SiteDetailComponent implements AfterViewInit {
     console.log(photo);
     this.clickedPhoto = photo;
     $("#photoModal").modal('show');
+  }
+
+  addSiteVisit() {
+    this.flowService.addSiteVisit(this.site_id);
   }
 }
