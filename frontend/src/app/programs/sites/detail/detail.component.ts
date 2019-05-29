@@ -3,6 +3,7 @@ import {GncProgramsService} from "../../../api/gnc-programs.service";
 import {ActivatedRoute} from "@angular/router";
 import * as L from "leaflet";
 import MaresJson from '../../../../../../config/custom/form/mares.json';
+import {AppConfig} from "../../../../conf/app.config";
 
 declare let $: any;
 
@@ -21,16 +22,7 @@ export class SiteDetailComponent implements AfterViewInit {
   program_id: any;
   site: any;
   attributes = [];
-  photos = [{
-    url: "../../assets/Azure-Commun-019.JPG",
-    description: "Photo - Anonyme",
-    date: "15 mars 2019"
-  }, {
-    url: "../../assets/faune-mercantour.jpg",
-    description: "des bébêtes - Anonyme",
-    date: "15 mars 2019"
-  }
-  ];
+  photos = [];
   clickedPhoto: any;
 
   constructor(
@@ -50,6 +42,11 @@ export class SiteDetailComponent implements AfterViewInit {
 
         console.log(sites);
         this.site = sites['features'][0];
+
+        this.photos = this.site.properties.photos;
+        for (var i = 0; i<this.photos.length; i++){
+          this.photos[i]['url'] = AppConfig.API_ENDPOINT + this.photos[i]['url'];
+        }
 
         // setup map
         const map = L.map("map");
