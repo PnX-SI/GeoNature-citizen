@@ -1,5 +1,5 @@
 <header>
-  <app-topbar *ngIf="appConfig.FRONTEND.DISPLAY_TOPBAR"></app-topbar>
+  <app-topbar [displayTopbar]="appConfig.FRONTEND.DISPLAY_TOPBAR"></app-topbar>
   <!-- <app-sidebar></app-sidebar> -->
 </header>
 <div [ngClass]="appConfig.FRONTEND.DISPLAY_TOPBAR ? 'app-with-topbar' : 'app-no-topbar'">
