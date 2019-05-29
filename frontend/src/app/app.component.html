@@ -1,8 +1,8 @@
 <header>
-  <app-topbar></app-topbar>
+  <app-topbar *ngIf="appConfig.FRONTEND.DISPLAY_TOPBAR"></app-topbar>
   <!-- <app-sidebar></app-sidebar> -->
 </header>
-<div class="router-app">
+<div [ngClass]="appConfig.FRONTEND.DISPLAY_TOPBAR ? 'app-with-topbar' : 'app-no-topbar'">
   <div class="container-fluid">
     <router-outlet></router-outlet>
   </div>
