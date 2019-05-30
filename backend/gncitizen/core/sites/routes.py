@@ -106,11 +106,15 @@ def format_site(site):
     return feature
 
 
-def format_sites(sites):
+def prepare_sites(sites):
     count = len(sites)
     features = []
     for site in sites:
-        features.append(format_site(site))
+        formatted = format_site(site)
+        photos = get_site_photos(site.id_site)
+        if len(photos) > 0:
+            formatted['properties']['photo'] = photos[0]
+        features.append(formatted)
     data = FeatureCollection(features)
     data["count"] = count
     return data
@@ -137,7 +141,7 @@ def get_sites():
     """
     try:
         sites = SiteModel.query.all()
-        return format_sites(sites)
+        return prepare_sites(sites)
     except Exception as e:
         return {"error_message": str(e)}, 400
 
@@ -163,7 +167,7 @@ def get_program_sites(id):
     """
     try:
         sites = SiteModel.query.filter_by(id_program=id).all()
-        return format_sites(sites)
+        return prepare_sites(sites)
     except Exception as e:
         return {"error_message": str(e)}, 400
 
