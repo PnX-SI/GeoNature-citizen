@@ -115,7 +115,6 @@
               "title": "Présence d’un corridor linéaire",
               "description": "Existe-t-il un corridor linéaire naturel facilitant le déplacement des espèces animales à proximité de la mare (à moins de 5 mètres) ? Ce corridor peut être aquatique (fossé, ruisseau) ou végétal (haie).",
               "titleMap": [
-                { "name": "inconnu", "value": null },
                 { "name": "Fossé / ruisseau", "value": "Fossé / ruisseau" },
                 { "name": "Haie", "value": "Haie" },
                 { "name": "Fossé / ruisseau ET haie", "value": "Fossé / ruisseau ET haie" },
@@ -299,7 +298,6 @@
               "title": "Usages",
               "description": "Les mares peuvent avoir plusieurs fonctions : agricole (abreuvement du bétail, avec aménagements ou non : clôtures, pompe à museau….), traitement de l’eau (lagunage), stockage des eaux de ruissellement (rétention), loisirs (pêche, chasse), pédagogique, écologique (protection de la biodiversité) … cochez le ou les usages observés sur la mare.",
               "titleMap": [
-                { "name": "inconnu", "value": null },
                 { "name": "Abreuvoir aménagé", "value": "Abreuvoir aménagé" },
                 { "name": "Abreuvoir non aménagé", "value": "Abreuvoir non aménagé" },
                 { "name": "Collecte ruissellement (rétention)", "value": "Collecte ruissellement (rétention)" },
