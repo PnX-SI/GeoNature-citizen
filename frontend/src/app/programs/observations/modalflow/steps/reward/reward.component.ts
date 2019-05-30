@@ -53,7 +53,7 @@ export class BadgeFacade {
   changes$ = this.state$.pipe(
     map(state => state.changes),
     distinctUntilChanged(),
-    tap(c => console.debug(c)),
+    // tap(c => console.debug("$changes:", c)),
     share()
   );
   loading$ = this.state$.pipe(map(state => state.loading));
@@ -112,10 +112,9 @@ export class BadgeFacade {
     }
 
     const oldBadges: Badge[] = _state.badges;
-    const onlyInOldState: Badge[] = oldBadges.filter(badgeListComparer(badges));
     const onlyInNewState: Badge[] = badges.filter(badgeListComparer(oldBadges));
 
-    return [...onlyInOldState, ...onlyInNewState];
+    return onlyInNewState;
   }
 
   private updateState(state: BadgeState) {
@@ -125,19 +124,20 @@ export class BadgeFacade {
 
 @Component({
   selector: "app-reward",
+  //  *ngIf="+(changes$ | async)?.length > 0"
   template: `
     <div>
       <div class="modal-body new-badge" (click)="clicked('background')">
         <div><img src="assets/user.jpg" /></div>
         <h5 i18n>Félicitation !</h5>
         <h6 i18n>
-          { +(badges.changes$ | async)?.length, plural, =1 { Vous venez
-          d'obtenir ce badge } other { Vous venez d'obtenir ces badges } }
+          { +(changes$ | async)?.length, plural, =1 { Vous venez d'obtenir ce
+          badge } other { Vous venez d'obtenir ces badges } }
         </h6>
         <p>
           <img
             [ngbTooltip]="b.alt"
-            *ngFor="let b of (badges.changes$ | async)"
+            *ngFor="let b of (changes$ | async)"
             [src]="AppConfig.API_ENDPOINT + b.img"
             [alt]="b.alt"
           />
@@ -153,20 +153,26 @@ export class RewardComponent implements IFlowComponent, OnInit, AfterViewInit {
   readonly AppConfig = AppConfig;
   @Input() data: any;
   timeout: any;
+  init = 0;
+  changes$ = this.badges.changes$.pipe(
+    map(reward => {
+      this.init++;
+      const condition = reward && !!reward.length;
+
+      // console.debug(this.init, condition, reward);
+
+      if (!condition && this.init > 1) {
+        if (this.timeout) clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => this.close("NOREWARD"), 0);
+      }
+      return reward;
+    })
+  );
 
   constructor(public badges: BadgeFacade) {}
 
   ngOnInit(): void {
     console.debug("reward data:", this.data);
-    this.timeout = setTimeout(() => this.close("NOREWARD"), 5000);
-    this.badges.changes$.subscribe(rewarded => {
-      console.debug("badge changes:", rewarded);
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(
-        () => this.close(rewarded ? "REWARDED" : "NOREWARD"),
-        rewarded ? 5000 : 0
-      );
-    });
   }
 
   ngAfterViewInit() {
