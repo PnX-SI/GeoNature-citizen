@@ -10,6 +10,7 @@
   <button class="btn btn-warning rounded-0" (click)="form.nextStep()" *ngIf="!form.isLastStep()">Etape suivante</button>
   <button
     type="submit"
+    [disabled]="!form.visitForm.valid"
     class="btn btn-default btn-outline-primary rounded-0"
     (click)="committed()"
     *ngIf="form.isLastStep()"

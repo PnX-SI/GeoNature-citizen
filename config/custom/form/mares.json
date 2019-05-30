@@ -5,237 +5,81 @@
     "type": "object",
     "properties": {
       "environnement": {
-        "title": "Environnement Immédiat",
-        "description": "Quel est le type de milieu représentant le mieux (milieu dominant) l’occupation du sol sur la parcelle où se situe la mare",
-        "type": "string",
-        "enum": [
-          "Prairie",
-          "Champs cultivé",
-          "Bois de feuillus",
-          "Bois de résineux",
-          "Friche / lande",
-          "Zone humide",
-          "Zone urbanisé",
-          "Parc de loisirs / jardin"
-        ]
+        "type": "string"
       },
       "presenceCorridor": {
-        "title": "Présence d’un corridor linéaire",
-        "description": "Existe-t-il un corridor linéaire naturel facilitant le déplacement des espèces animales à proximité de la mare (à moins de 5 mètres) ? Ce corridor peut être aquatique (fossé, ruisseau) ou végétal (haie).",
-        "type": "string",
-        "enum": [
-          "Fossé / ruisseau",
-          "Haie",
-          "Fossé / ruisseau ET haie",
-          "Aucun corridor"
-        ]
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
       },
       "corridorFonctionnel": {
-        "title": "Si oui, le corridor est-il fonctionnel ?",
-        "description": "La fonctionnalité du corridor pour le déplacement de la faune peut être altérée par la présence d’obstacles ou une structure défavorable : présence d’une buse sur un fossé, haie discontinue, haie sans strate arbustive…",
-        "type": "string",
-        "enum": [
-          "Fonctionnel",
-          "Altéré"
-        ]
+        "type": "string"
       },
       "natureFond": {
-        "title": "Nature du fond",
-        "description": "La bâche en caoutchouc se distingue de la bâche en plastique par son élasticité. Les bâches peuvent être recouvertes par de la sédimentation naturelle (vase), elles sont cependant généralement visibles sur les berges.",
-        "type": "string",
-        "enum": [
-          "Naturel",
-          "Béton / pierre",
-          "Bâche en caoutchouc synthétique",
-          "Bâche en plastique (PVC)"
-        ]
+        "type": "string"
       },
       "longueur": {
-        "title": "Longueur",
-        "description": "Vous pouvez l’estimer en comptant le nombre de pas nécessaire pour couvrir sa plus grande longueur : un pas allongé par rapport à la foulée normale représente environ 1 m.",
         "type": "integer"
       },
       "largeur": {
-        "title": "Largeur",
-        "description": "Vous pouvez l’estimer en comptant le nombre de pas nécessaire pour couvrir sa plus grande largeur : un pas allongé par rapport à la foulée normale représente environ 1 m.",
         "type": "integer"
       },
       "surface": {
-        "title": "Surface en m²",
-        "description": "Vous pouvez l’estimer en multipliant les longueurs et largeurs maximales relevées. Comme la mare n’est que rarement un rectangle parfait, la surface réelle sera inférieure au résultat trouvé.",
         "type": "integer"
       },
       "profondeurMax": {
-        "title": "Profondeur maximale",
-        "description": "La profondeur varie en fonction de la saison, elle n’est pas souvent facile à mesurer. Elle correspond à la hauteur entre le fond et la crête de berge. Pour l’estimer, vous pouvez utiliser un bâton planté à l’endroit le plus profond de la mare (en général au centre), s’il est accessible (mare petite et peu profonde, utilisation de bottes ou cuissardes). À défaut, cette estimation peut se faire à vue : la visibilité du fond (si l’eau est limpide), la taille de la mare ainsi que le profil et la pente observés sur les berges peuvent vous aider à réaliser cette estimation",
-        "type": "string",
-        "enum": [
-          "≤ 50 cm",
-          "Entre 51 et 100 cm",
-          "Entre 101 et 150 cm",
-          "> 150 cm"
-        ]
+        "type": "string"
       },
       "presenceEau": {
-        "title": "Présence d’eau lors de la visite",
-        "type": "string",
-        "enum": [
-          "Oui",
-          "Non",
-          "Eau limpide",
-          "Eau trouble"
-        ]
+        "type": "string"
       },
       "turbiditeEau": {
-        "title": "Turbidité de l’eau",
-        "description": "Une eau limpide permet d’observer le fond de la mare.",
-        "type": "string",
-        "enum": [
-          "Eau limpide",
-          "Eau trouble"
-        ]
+        "type": "string"
       },
       "regimeHydro": {
-        "title": "Régime hydrologique",
-        "description": "La mare s’assèche t-elle en été ? Dans ce cas on parle de mare temporaire. Pour répondre à cette question, il faut pouvoir observer la niveau d’eau dans la mare en période de plus basses eaux (généralement août-septembre). Si vous ne savez pas, vous pouvez répondre « indéterminé ».",
-        "type": "string",
-        "enum": [
-          "Permanent",
-          "Temporaire",
-          "Indéterminé"
-        ]
+        "type": "string"
       },
       "alimentationEau": {
-        "title": "Alimentation en eau",
-        "description": "Les mares sont en général alimentées par de l’eau d’origine pluviale (alimentation directe et ruissellement). Elles peuvent également être alimentées par une nappe superficielle, ou encore par captation de l’eau d’un cours d’eau ou d’un fossé. Si vous ne savez pas vous pouvez répondre « indéterminé ».",
-        "type": "string",
-        "enum": [
-          "Eau pluviale",
-          "Cours d’eau ou fossé",
-          "Nappe",
-          "Indéterminé"
-        ]
+        "type": "string"
       },
       "ouvrageRegulationHydraulique": {
-        "title": "Présence d’un ouvrage de régulation hydraulique",
-        "description": "Dans le cas de petits plans d’eau alimentés par un cours d’eau ou un fossé, la gestion du niveau d’eau est parfois possible grâce à l’implantation d’un ouvrage de type vanne, martelière, moine…",
-        "type": "string",
-        "enum": [
-          "Oui",
-          "Non"
-        ]
+        "type": "string"
       },
       "presencePoissons": {
-        "title": "Présence de poissons",
-        "description": "Si la présence de poissons n’est directement observée (avérée), elle peut cependant être suspectée (présence probable) : la nature et la taille du plan d’eau, la turbidité de l’eau, des traces d’activité piscicole (bouchons, flotteurs)… sont des indices de présence potentielle",
-        "type": "string",
-        "enum": [
-          "Absence",
-          "Probable",
-          "Avérée"
-        ]
+        "type": "string"
       },
       "dechets": {
-        "title": "Déchets",
-        "description": "Notez si des déchets sont présents en faible quantité (quelques petits détritus de type bouteilles, ferrailles et plastiques divers …) ou en grande quantité (déchets de toute nature en quantité importante, souvent déposés dans le cadre d’un comblement de la mare).",
-        "type": "string",
-        "enum": [
-          "Absence",
-          "Faible quantité",
-          "Quantité importante"
-        ]
+        "type": "string"
       },
       "pollution": {
-        "title": "Pollution",
-        "description": "Notez si des traces visibles de pollutions chimique ou organique sont observées : nappe d’hydrocarbure, bouse de vache…).",
-        "type": "string",
-        "enum": [
-          "Absence de traces visibles",
-          "Avérée"
-        ]
+        "type": "string"
       },
       "usages": {
-        "title": "Usages (plusieurs choix possibles)",
-        "description": "Les mares peuvent avoir plusieurs fonctions : agricole (abreuvement du bétail, avec aménagements ou non : clôtures, pompe à museau….), traitement de l’eau (lagunage), stockage des eaux de ruissellement (rétention), loisirs (pêche, chasse), pédagogique, écologique (protection de la biodiversité) … cochez le ou les usages observés sur la mare.",
-        "type": "string",
-        "enum": [
-          "Abreuvoir aménagé",
-          "Abreuvoir non aménagé",
-          "Collecte ruissellement (rétention)",
-          "Lagunage",
-          "Pêche",
-          "Chasse",
-          "Ornemental",
-          "Pédagogique",
-          "Écologique",
-          "Autre",
-          "Abandonné",
-          "Indéterminé"
-        ]
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
       },
       "penteBerges": {
-        "title": "Berges en pente douce",
-        "description": "On considère qu’une berge est en pente douce lorsque le rapport  hauteur / longueur de la pente est de 1 sur 3 (33%). Quel est le pourcentage du linéaire total de berge qui comprend des pentes douces ?",
-        "type": "string",
-        "enum": [
-          "0 %",
-          ">0-50 %",
-          "51-100 %"
-        ]
-      },
-      "boisementBerges": {
-        "title": "Boisement / embroussaillement des berges",
-        "description": "Quel est le pourcentage du linéaire total de berge qui comprend une végétation arbustive ou arborée ?",
-        "type": "string",
-        "enum": [
-          "0 %",
-          ">0-50 %",
-          "51-100 %"
-        ]
-      },
-      "ombrage": {
-        "title": "Ombrage",
-        "description": "Quand le soleil est au zénith, quel est le pourcentage de la surface de la mare qui est à l’ombre du fait de la végétation (arbres, arbustes) située sur les berges ?",
-        "type": "string",
-        "enum": [
-          "0 %",
-          ">0-50 %",
-          "51-100 %"
-        ]
-      },
-      "vegetationHelophyte": {
-        "title": "Végétation hélophytes",
-        "description": "La végétation hélophytes est composée d’espèces qui poussent les pieds dans l’eau mais dont les feuilles se situent au dessus du niveau de l’eau (par exemple : le roseau). Quel est le pourcentage de la surface de la mare occupé par la végétation d’hélophytes ?",
-        "type": "string",
-        "enum": [
-          "0 %",
-          ">0-50 %",
-          "51-100 %"
-        ]
-      },
-      "vegetationHydrophyte": {
-        "title": "Végétation hydrophytes",
-        "description": "La végétation hydrophyte est composée d’espèces aquatiques dont les feuilles se situent sous ou à la surface de l’eau (par exemple : le nénuphar). Quel est le pourcentage de la surface de la mare occupé par la végétation d’hydrophytes ?",
-        "type": "string",
-        "enum": [
-          "0 %",
-          ">0-50 %",
-          "51-100 %"
-        ]
+        "type": "string"
       },
       "eauLibre": {
-        "title": "Eau libre",
-        "description": "Quel est le pourcentage de la surface de la mare sans végétation ?",
-        "type": "string",
-        "enum": [
-          "0 %",
-          ">0-50 %",
-          "51-100 %"
-        ]
+        "type": "string"
+      },
+      "boisementBerges": {
+        "type": "string"
+      },
+      "ombrage": {
+        "type": "string"
+      },
+      "vegetationHelophyte": {
+        "type": "string"
+      },
+      "vegetationHydrophyte": {
+        "type": "string"
       },
       "remarques": {
-        "title": "Remarques",
-        "description": "",
         "type": "string"
       }
     }
@@ -243,86 +87,326 @@
   "steps": [
     {
       "title": "Environnement de la mare",
+      "description": "",
       "layout": [
-        { "key": "environnement" },
+        { "key": "environnement",
+          "title": "Environnement Immédiat",
+          "description": "Quel est le type de milieu représentant le mieux (milieu dominant) l’occupation du sol sur la parcelle où se situe la mare",
+          "type": "select",
+          "titleMap": [
+            { "name": "inconnu", "value": null },
+            { "name": "Prairie", "value": "Prairie" },
+            { "name": "Champs cultivé", "value": "Champs cultivé" },
+            { "name": "Bois de feuillus", "value": "Bois de feuillus" },
+            { "name": "Bois de résineux", "value": "Bois de résineux" },
+            { "name": "Friche / lande", "value": "Friche / lande" },
+            { "name": "Zone humide", "value": "Zone humide" },
+            { "name": "Zone urbanisé", "value": "Zone urbanisé" },
+            { "name": "Parc de loisirs / jardin", "value": "Parc de loisirs / jardin" }
+          ]
+        },
         { "type": "section",
           "title": "Description avancée",
           "expandable": true,
           "items": [
-            { "key": "presenceCorridor" },
-            { "key": "corridorFonctionnel" }
+            { 
+              "key": "presenceCorridor",
+              "type": "checkboxes",
+              "title": "Présence d’un corridor linéaire",
+              "description": "Existe-t-il un corridor linéaire naturel facilitant le déplacement des espèces animales à proximité de la mare (à moins de 5 mètres) ? Ce corridor peut être aquatique (fossé, ruisseau) ou végétal (haie).",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "Fossé / ruisseau", "value": "Fossé / ruisseau" },
+                { "name": "Haie", "value": "Haie" },
+                { "name": "Fossé / ruisseau ET haie", "value": "Fossé / ruisseau ET haie" },
+                { "name": "Aucun corridor", "value": "Aucun corridor" }
+              ]
+            },
+            {
+              "key": "corridorFonctionnel",
+              "title": "Si oui, le corridor est-il fonctionnel ?",
+              "description": "La fonctionnalité du corridor pour le déplacement de la faune peut être altérée par la présence d’obstacles ou une structure défavorable : présence d’une buse sur un fossé, haie discontinue, haie sans strate arbustive…",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "Fonctionnel", "value": "Fonctionnel" },
+                { "name": "Altéré", "value": "Altéré" }
+              ]
+            }
           ]
         }
       ]
     },
     {
       "title": "Caractéristiques physiques de la mare",
+      "description": "",
       "layout": [
-        { "key": "natureFond" },
+        {
+          "key": "natureFond",
+          "title": "Nature du fond",
+          "description": "La bâche en caoutchouc se distingue de la bâche en plastique par son élasticité. Les bâches peuvent être recouvertes par de la sédimentation naturelle (vase), elles sont cependant généralement visibles sur les berges.",
+          "titleMap": [
+            { "name": "inconnu", "value": null },
+            { "name": "Naturel", "value": "Naturel" },
+            { "name": "Béton / pierre", "value": "Béton / pierre" },
+            { "name": "Bâche en caoutchouc synthétique", "value": "Bâche en caoutchouc synthétique" },
+            { "name": "Bâche en plastique (PVC)", "value": "Bâche en plastique (PVC)" }
+          ]
+        },
         { "type": "section",
           "title": "Description avancée",
           "expandable": true,
           "items": [
-            { "key": "longueur" },
-            { "key": "largeur" },
-            { "key": "surface" },
-            { "key": "profondeurMax" }
+            {
+              "key": "longueur",
+              "title": "Longueur",
+              "description": "Vous pouvez l’estimer en comptant le nombre de pas nécessaire pour couvrir sa plus grande longueur : un pas allongé par rapport à la foulée normale représente environ 1 m."
+            },
+            {
+              "key": "largeur",
+              "title": "Largeur",
+              "description": "Vous pouvez l’estimer en comptant le nombre de pas nécessaire pour couvrir sa plus grande largeur : un pas allongé par rapport à la foulée normale représente environ 1 m."
+            },
+            {
+              "key": "surface",
+              "title": "Surface en m²",
+              "description": "Vous pouvez l’estimer en multipliant les longueurs et largeurs maximales relevées. Comme la mare n’est que rarement un rectangle parfait, la surface réelle sera inférieure au résultat trouvé."
+            },
+            {
+              "key": "profondeurMax",
+              "title": "Profondeur maximale",
+              "description": "La profondeur varie en fonction de la saison, elle n’est pas souvent facile à mesurer. Elle correspond à la hauteur entre le fond et la crête de berge. Pour l’estimer, vous pouvez utiliser un bâton planté à l’endroit le plus profond de la mare (en général au centre), s’il est accessible (mare petite et peu profonde, utilisation de bottes ou cuissardes). À défaut, cette estimation peut se faire à vue : la visibilité du fond (si l’eau est limpide), la taille de la mare ainsi que le profil et la pente observés sur les berges peuvent vous aider à réaliser cette estimation",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name" : "≤ 50 cm", "value": "≤ 50 cm" },
+                { "name" : "Entre 51 et 100 cm", "value": "Entre 51 et 100 cm" },
+                { "name" : "Entre 101 et 150 cm", "value": "Entre 101 et 150 cm" },
+                { "name" : "> 150 cm", "value": "> 150 cm" }
+              ]
+            }
           ]
         }
       ]
     },
     {
       "title": "Hydrologie de la mare",
+      "description": "",
       "layout": [
-        { "key": "presenceEau" },
-        { "key": "turbiditeEau" },
+        {
+          "key": "presenceEau",
+          "title": "Présence d’eau lors de la visite",
+          "titleMap": [
+            { "name": "inconnu", "value": null },
+            { "name": "Oui", "value" : "Oui" },
+            { "name": "Non", "value" : "Non" },
+            { "name": "Eau limpide", "value" : "Eau limpide" },
+            { "name": "Eau trouble", "value" : "Eau trouble" }
+          ]
+        },
+        {
+          "key": "turbiditeEau",
+          "title": "Turbidité de l’eau",
+          "description": "Une eau limpide permet d’observer le fond de la mare.",
+          "titleMap": [
+            { "name": "inconnu", "value": null },
+            { "name": "Eau limpide", "value": "Eau limpide" },
+            { "name": "Eau trouble", "value": "Eau trouble" }
+          ]
+        },
         { "type": "section",
           "title": "Description avancée",
           "expandable": true,
           "items": [
-            { "key": "regimeHydro" },
-            { "key": "alimentationEau" },
-            { "key": "ouvrageRegulationHydraulique" }
+            {
+              "key": "regimeHydro",
+              "title": "Régime hydrologique",
+              "description": "La mare s’assèche t-elle en été ? Dans ce cas on parle de mare temporaire. Pour répondre à cette question, il faut pouvoir observer la niveau d’eau dans la mare en période de plus basses eaux (généralement août-septembre). Si vous ne savez pas, vous pouvez répondre « indéterminé ».",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "Permanent", "value": "Permanent" },
+                { "name": "Temporaire", "value": "Temporaire" },
+                { "name": "Indéterminé", "value": "Indéterminé" }
+              ]
+            },
+            {
+              "key": "alimentationEau",
+              "title": "Alimentation en eau",
+              "description": "Les mares sont en général alimentées par de l’eau d’origine pluviale (alimentation directe et ruissellement). Elles peuvent également être alimentées par une nappe superficielle, ou encore par captation de l’eau d’un cours d’eau ou d’un fossé. Si vous ne savez pas vous pouvez répondre « indéterminé ».",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "Eau pluviale", "value": "Eau pluviale" },
+                { "name": "Cours d’eau ou fossé", "value": "Cours d’eau ou fossé" },
+                { "name": "Nappe", "value": "Nappe" },
+                { "name": "Indéterminé", "value": "Indéterminé" }
+              ]
+            },
+            {
+              "key": "ouvrageRegulationHydraulique",
+              "title": "Présence d’un ouvrage de régulation hydraulique",
+              "description": "Dans le cas de petits plans d’eau alimentés par un cours d’eau ou un fossé, la gestion du niveau d’eau est parfois possible grâce à l’implantation d’un ouvrage de type vanne, martelière, moine…",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "Oui", "value": "Oui" },
+                { "name": "Non", "value": "Non" }
+              ]
+            }
           ]
         }
       ]
     },
     {
       "title": "Usages et perturbations",
+      "description": "",
       "layout": [
-        { "key": "presencePoissons" },
-        { "key": "dechets" },
+        {
+          "key": "presencePoissons",
+          "title": "Présence de poissons",
+          "description": "Si la présence de poissons n’est directement observée (avérée), elle peut cependant être suspectée (présence probable) : la nature et la taille du plan d’eau, la turbidité de l’eau, des traces d’activité piscicole (bouchons, flotteurs)… sont des indices de présence potentielle",
+          "titleMap": [
+            { "name": "inconnu", "value": null },
+            { "name": "Absence", "value": "Absence" },
+            { "name": "Probable", "value": "Probable" },
+            { "name": "Avérée", "value": "Avérée" }
+          ]
+        },
+        {
+          "key": "dechets",
+          "title": "Déchets",
+          "description": "Notez si des déchets sont présents en faible quantité (quelques petits détritus de type bouteilles, ferrailles et plastiques divers …) ou en grande quantité (déchets de toute nature en quantité importante, souvent déposés dans le cadre d’un comblement de la mare).",
+          "titleMap": [
+            { "name": "inconnu", "value": null },
+            { "name": "Absence", "value": "Absence" },
+            { "name": "Faible quantité", "value": "Faible quantité" },
+            { "name": "Quantité importante", "value": "Quantité importante" }
+          ]
+        },
         { "type": "section",
           "title": "Description avancée",
           "expandable": true,
           "items": [
-            { "key": "pollution" },
-            { "key": "usages" }
+            {
+              "key": "pollution",
+              "title": "Pollution",
+              "description": "Notez si des traces visibles de pollutions chimique ou organique sont observées : nappe d’hydrocarbure, bouse de vache…).",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "Absence de traces visibles", "value": "Absence de traces visibles" },
+                { "name": "Avérée", "value": "Avérée" }
+              ]
+            },
+            {
+              "key": "usages",
+              "type": "checkboxes",
+              "title": "Usages",
+              "description": "Les mares peuvent avoir plusieurs fonctions : agricole (abreuvement du bétail, avec aménagements ou non : clôtures, pompe à museau….), traitement de l’eau (lagunage), stockage des eaux de ruissellement (rétention), loisirs (pêche, chasse), pédagogique, écologique (protection de la biodiversité) … cochez le ou les usages observés sur la mare.",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "Abreuvoir aménagé", "value": "Abreuvoir aménagé" },
+                { "name": "Abreuvoir non aménagé", "value": "Abreuvoir non aménagé" },
+                { "name": "Collecte ruissellement (rétention)", "value": "Collecte ruissellement (rétention)" },
+                { "name": "Lagunage", "value": "Lagunage" },
+                { "name": "Pêche", "value": "Pêche" },
+                { "name": "Chasse", "value": "Chasse" },
+                { "name": "Ornemental", "value": "Ornemental" },
+                { "name": "Pédagogique", "value": "Pédagogique" },
+                { "name": "Écologique", "value": "Écologique" },
+                { "name": "Autre", "value": "Autre" },
+                { "name": "Abandonné", "value": "Abandonné" },
+                { "name": "Indéterminé", "value": "Indéterminé" }
+              ]
+            }
           ]
         }
       ]
     },
     {
       "title": "Berges et végétation",
+      "description": "",
       "layout": [
         { "type": "section",
           "title": "Description avancée",
           "expandable": true,
           "items": [
-            { "key": "penteBerges" },
-            { "key": "eauLibre" },
-            { "key": "boisementBerges" },
-            { "key": "ombrage" },
-            { "key": "vegetationHelophyte" },
-            { "key": "vegetationHydrophyte" }
+            {
+              "key": "penteBerges",
+              "title": "Berges en pente douce",
+              "description": "On considère qu’une berge est en pente douce lorsque le rapport  hauteur / longueur de la pente est de 1 sur 3 (33%). Quel est le pourcentage du linéaire total de berge qui comprend des pentes douces ?",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "0 %", "value": "0 %" },
+                { "name": ">0-50 %", "value": ">0-50 %" },
+                { "name": "51-100 %", "value": "51-100 %" }
+              ]
+            },
+            {
+              "key": "eauLibre",
+              "title": "Eau libre",
+              "description": "Quel est le pourcentage de la surface de la mare sans végétation ?",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "0 %", "value": "0 %" },
+                { "name": ">0-50 %", "value": ">0-50 %" },
+                { "name": "51-100 %", "value": "51-100 %" }
+              ]
+            },
+            {
+              "key": "boisementBerges",
+              "title": "Boisement / embroussaillement des berges",
+              "description": "Quel est le pourcentage du linéaire total de berge qui comprend une végétation arbustive ou arborée ?",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "0 %", "value": "0 %" },
+                { "name": ">0-50 %", "value": ">0-50 %" },
+                { "name": "51-100 %", "value": "51-100 %" }
+              ]
+            },
+            {
+              "key": "ombrage",
+              "title": "Ombrage",
+              "description": "Quand le soleil est au zénith, quel est le pourcentage de la surface de la mare qui est à l’ombre du fait de la végétation (arbres, arbustes) située sur les berges ?",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "0 %", "value": "0 %" },
+                { "name": ">0-50 %", "value": ">0-50 %" },
+                { "name": "51-100 %", "value": "51-100 %" }
+              ]
+            },
+            {
+              "key": "vegetationHelophyte",
+              "title": "Végétation hélophytes",
+              "description": "La végétation hélophytes est composée d’espèces qui poussent les pieds dans l’eau mais dont les feuilles se situent au dessus du niveau de l’eau (par exemple : le roseau). Quel est le pourcentage de la surface de la mare occupé par la végétation d’hélophytes ?",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "0 %", "value": "0 %" },
+                { "name": ">0-50 %", "value": ">0-50 %" },
+                { "name": "51-100 %", "value": "51-100 %" }
+              ]
+            },
+            {
+              "key": "vegetationHydrophyte",
+              "title": "Végétation hydrophytes",
+              "description": "La végétation hydrophyte est composée d’espèces aquatiques dont les feuilles se situent sous ou à la surface de l’eau (par exemple : le nénuphar). Quel est le pourcentage de la surface de la mare occupé par la végétation d’hydrophytes ?",
+              "titleMap": [
+                { "name": "inconnu", "value": null },
+                { "name": "0 %", "value": "0 %" },
+                { "name": ">0-50 %", "value": ">0-50 %" },
+                { "name": "51-100 %", "value": "51-100 %" }
+              ]
+            }
           ]
         }
       ]
     },
     {
       "title": "Remarques",
+      "description": "",
       "layout": [
-        { "key": "remarques", "type": "textarea", "notitle": true }
+        {
+          "key": "remarques",
+          "type": "textarea",
+          "notitle": true,
+          "title": "Remarques",
+          "description": ""
+        }
       ]
     }
   ]

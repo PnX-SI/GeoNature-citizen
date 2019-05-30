@@ -23,14 +23,13 @@ export class SiteModalFlowService extends ModalFlowService {
   @Output() siteVisitClick: EventEmitter<number> = new EventEmitter();
 
   getFlowItems(site_id?: number) {
+    let init_data = site_id ? { site_id: site_id } : {}
     let items = [];
-    items.push(new FlowItem(OnboardComponent, {service: this}));
-    if (site_id) {
-      items.push(new FlowItem(VisitStepComponent, {service: this, site_id: site_id }));
-    } else {
-      items.push(new FlowItem(SiteStepComponent, {service: this }));
-      items.push(new FlowItem(VisitStepComponent, {service: this }));
+    items.push(new FlowItem(OnboardComponent, { ...init_data, service: this }));
+    if (!site_id) {
+      items.push(new FlowItem(SiteStepComponent));
     }
+    items.push(new FlowItem(VisitStepComponent));
     // items.push(new FlowItem(CongratsComponent, {service: this, date: new Date().toLocaleDateString()}));
     // items.push(new FlowItem(RewardComponent, {service: this}));
     return items;

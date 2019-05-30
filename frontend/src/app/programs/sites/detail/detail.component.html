@@ -23,7 +23,7 @@
         <ng-template #noVisit>
           <p class="card-text"><small class="text-danger">Aucune visite enregistrée :(</small></p>
         </ng-template>
-        <a href="#" class="btn btn-primary">Ajouter un rapport de visite</a>
+        <a href="#" (click)="$event.preventDefault();addSiteVisit();" class="btn btn-primary">Ajouter un rapport de visite</a>
       </div>
     </div>
     <div class="col-md-8">

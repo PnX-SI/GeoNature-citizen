@@ -28,7 +28,7 @@ export class SiteStepComponent implements IFlowComponent {
     let that = this;
     resp.then( function(result) {
       let site_id = result.features[0].properties.id_site;
-      that.data.next({ site_id: site_id });
+      that.data.next({ ...that.data, site_id: site_id });
     })
   }
 }

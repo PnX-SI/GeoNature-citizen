@@ -45,7 +45,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   @Input() site_id: number;
   visitForm = new FormGroup({
     date: new FormControl("", Validators.required),
-    data: new FormControl("", Validators.required)
+    data: new FormControl("")
   });
   currentStep: number = 1;
   partialLayout: any;
@@ -92,6 +92,9 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   }
   isLastStep() {
     return this.currentStep === this.jsonSchema.steps.length;
+  }
+  totalSteps() {
+    return this.jsonSchema.steps.length;
   }
   yourOnChangesFn(e) {
     // console.log(e)

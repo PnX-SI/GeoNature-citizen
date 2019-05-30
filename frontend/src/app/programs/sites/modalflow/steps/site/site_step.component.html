@@ -8,6 +8,7 @@
 <div class="modal-footer">
   <button
     type="submit"
+    [disabled]="!form.siteForm.valid"
     class="btn btn-default btn-outline-primary rounded-0"
     (click)="committed()"
   >
