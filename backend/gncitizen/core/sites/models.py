@@ -87,8 +87,8 @@ class MediaOnVisitModel(TimestampMixinModel, db.Model):
 
     __tablename__ = "cor_visites_media"
     __table_args__ = {"schema": "gnc_sites"}
-    id_cor_visit_media = db.Column(db.Integer, primary_key=True, unique=True)
-    id_visit = db.Column(
+    id_match = db.Column(db.Integer, primary_key=True, unique=True)
+    id_data_source = db.Column(
         db.Integer,
         db.ForeignKey(VisitModel.id_visit, ondelete="SET NULL"),
         nullable=False,

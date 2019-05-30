@@ -66,12 +66,16 @@ def auth():
     return json.dumps(myParams)
 
 
-def postrequest(url, params=None):
+def postrequest(url, params=None, file=None):
     myUrl = mainUrl + url
     h = headers.copy()
     if access_token:
         h.update({'Authorization': 'Bearer {}'.format(access_token)})
-    response = requests.post(myUrl, headers=h, data=params)
+    files = None
+    if file is not None:
+        files = {'file': open(file, 'rb')}
+        del h['Content-Type'] # let requests set proper Content-Type with boundaries
+    response = requests.post(myUrl, headers=h, data=params, files=files)
     return response
 
 
