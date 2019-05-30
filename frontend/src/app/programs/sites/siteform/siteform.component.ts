@@ -57,8 +57,8 @@ export class SiteFormComponent implements AfterViewInit {
   siteForm = new FormGroup({
     name: new FormControl("", Validators.required),
     geometry: new FormControl("", Validators.required),
-    id_program: new FormControl(this.program_id),
-    site_type: new FormControl("mare") // TODO : get site type
+    id_program: new FormControl(),
+    site_type: new FormControl()
   });
   MAP_CONFIG = MAP_CONFIG;
   hasZoomAlert: boolean;
@@ -164,7 +164,12 @@ export class SiteFormComponent implements AfterViewInit {
               formMap
             );
             this.coords = L.point(e.latlng.lng, e.latlng.lat);
-            this.siteForm.patchValue({ geometry: this.coords });
+            // this.siteForm.patchValue({ geometry: this.coords });
+            let coords = <Point>{
+              type: "Point",
+              coordinates: <Position>[e.latlng.lng, e.latlng.lat]
+            };
+            this.siteForm.patchValue({ geometry: coords });
           }
         });
       });
@@ -185,7 +190,10 @@ export class SiteFormComponent implements AfterViewInit {
         Accept: "application/json"
       })
     };
-
+    this.siteForm.patchValue({
+        id_program: this.program_id,
+        site_type: "mare" // TODO : get site type
+    });
     return this.http.post<any>(
       `${this.URL}/sites/`,
       this.siteForm.value,
