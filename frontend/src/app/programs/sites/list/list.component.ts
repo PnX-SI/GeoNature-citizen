@@ -2,6 +2,7 @@ import { Component, OnChanges, Input } from "@angular/core";
 
 import { FeatureCollection, Feature } from "geojson";
 import { SiteModalFlowService } from "../modalflow/modalflow.service";
+import {AppConfig} from "../../../../conf/app.config";
 
 @Component({
   selector: "app-sites-list",
@@ -15,6 +16,7 @@ export class SitesListComponent implements OnChanges {
   municipalities: string[];
   sites: Feature[] = [];
   taxa: any[];
+  apiEndpoint = AppConfig.API_ENDPOINT;
 
   constructor(public flowService: SiteModalFlowService) {}
 

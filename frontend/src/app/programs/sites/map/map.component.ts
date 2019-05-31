@@ -13,6 +13,7 @@ import { GeoJsonObject, FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import "leaflet.markercluster";
 import {formatDate} from "@angular/common";
+import {AppConfig} from "../../../../conf/app.config";
 
 // import { AppConfig } from "../../../../conf/app.config";
 
@@ -38,6 +39,7 @@ export const DEFAULT_TILES = {
   attribution: "OpenStreetMap"
 };
 
+export const NO_IMG = '../../assets/no_photo_light.png';
 // export const DEFAULT_TILES = {
 //   // url: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
 //   url: "https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg",
@@ -172,7 +174,9 @@ export class SitesMapComponent implements OnInit, OnChanges {
 
   onEachFeature(feature, layer): void {
     let popupContent =
-      '<img src="../../../assets/Azure-Commun-019.JPG"><p><b>' +
+      '<img src="' +
+      (feature.properties.photo ? AppConfig.API_ENDPOINT + feature.properties.photo.url : NO_IMG) +
+      '"><p><b>' +
       feature.properties.name +
       "</b></br><span>Ajoutée par " +
       feature.properties.obs_txt +
@@ -180,7 +184,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
       formatDate(feature.properties.timestamp_create, "longDate", "fr-FR") +
       '</span><br>' +
       '<a href="/programs/' + feature.properties.id_program + '/sites/' +
-      feature.properties.id_site + '">>>> details</a>' +
+      feature.properties.id_site + '">details</a>' +
       '</p>' +
       '<div><img class="icon" src="../../../../assets/binoculars.png"></div>';
 

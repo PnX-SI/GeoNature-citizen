@@ -9,7 +9,7 @@
           [routerLink]="['/programs', program_id, 'sites', o.properties.id_site]"
           style="cursor:pointer"
         >
-          <img src="../../assets/Azure-Commun-019.JPG" />
+          <img src="{{ o.properties.photo ? apiEndpoint + o.properties.photo.url : '../../assets/no_photo_light.png'}}" />
           <div class="infos">
             <h5>{{ o.properties.name }}</h5>
             <p>
