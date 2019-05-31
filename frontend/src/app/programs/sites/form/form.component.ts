@@ -61,6 +61,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   GNCBootstrap4Framework: any = {
     framework: GNCFrameworkComponent,
   };
+  formInputObject: any = {};
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
@@ -70,18 +71,25 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     this.jsonSchema = MaresJson;
     this.updatePartialLayout();
     console.debug("site_id:", this.site_id);
+    this.updateFormInput();
   }
-
+  updateFormInput() {
+    this.updatePartialLayout();
+    this.formInputObject = {
+      schema: this.jsonSchema.schema,
+      data: this.jsonData[this.currentStep],
+      layout: this.partialLayout
+    }
+  }
   ngAfterViewInit() {
   }
-
   nextStep() {
     this.currentStep += 1;
-    this.updatePartialLayout();
+    this.updateFormInput();
   }
   previousStep() {
     this.currentStep -= 1;
-    this.updatePartialLayout();
+    this.updateFormInput();
   }
   updatePartialLayout() {
     this.partialLayout = this.jsonSchema.steps[this.currentStep - 1].layout;
@@ -97,7 +105,14 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     return this.jsonSchema.steps.length;
   }
   yourOnChangesFn(e) {
-    // console.log(e)
+    this.jsonData[this.currentStep] = e;
+  }
+  getTotalJsonData(){
+    var resp = {}
+    for (const key of Object.keys(this.jsonData)) {
+      resp = {...resp, ...this.jsonData[key]};
+    }
+    return resp;
   }
   toogleAdvancedMode() {
     this.advancedMode = !this.advancedMode;
@@ -121,7 +136,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     };
     let visitDate = NgbDate.from(this.visitForm.controls.date.value);
     this.visitForm.patchValue({
-      data: this.jsonData,
+      data: this.getTotalJsonData(),
       date: new Date(visitDate.year, visitDate.month, visitDate.day)
         .toISOString()
         .match(/\d{4}-\d{2}-\d{2}/)[0]
