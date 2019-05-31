@@ -50,7 +50,19 @@ const sorted = (property: string) => {
 };
 
 @Injectable({
-  providedIn: "root"
+  deps: [
+    [new Optional(), new SkipSelf(), GncProgramsService],
+    HttpClient,
+    TransferState,
+    DomSanitizer
+  ],
+  providedIn: "root",
+  useFactory: (
+    instance: GncProgramsService | null,
+    http: HttpClient,
+    state: TransferState,
+    domSanitizer: DomSanitizer
+  ) => instance || new GncProgramsService(http, state, domSanitizer)
 })
 export class GncProgramsService implements OnInit {
   private readonly URL = AppConfig.API_ENDPOINT;
