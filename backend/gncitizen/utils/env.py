@@ -1,10 +1,13 @@
 import os
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 from flasgger import Swagger
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_admin import Admin
+
 
 from gncitizen.utils.toml import load_toml
 
@@ -37,7 +40,8 @@ def load_config(config_file=None):
     return config_gnc
 
 
-SQLALCHEMY_DATABASE_URI = load_config()["SQLALCHEMY_DATABASE_URI"]
+app_conf = load_config()
+SQLALCHEMY_DATABASE_URI = app_conf["SQLALCHEMY_DATABASE_URI"]
 db = SQLAlchemy()
 
 jwt = JWTManager()
@@ -56,6 +60,12 @@ swagger_template = {
 }
 
 swagger = Swagger(template=swagger_template)
+
+admin = Admin(
+    name="GN-Citizen: Backoffice d'administration",
+    template_mode="bootstrap3",
+    url="/".join([urlparse(app_conf["API_ENDPOINT"]).path, "admin"]),
+)
 
 taxhub_url = load_config()["API_TAXHUB"]
 taxhub_lists_url = taxhub_url + "biblistes/"

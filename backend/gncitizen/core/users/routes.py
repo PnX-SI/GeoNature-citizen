@@ -8,9 +8,13 @@ from flask_jwt_extended import (
     jwt_refresh_token_required,
     jwt_required,
 )
+from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
+
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
 from server import db, jwt
+from gncitizen.core.observations.models import ObservationModel
 from .models import UserModel, RevokedTokenModel
 from gncitizen.utils.jwt import admin_required
 import uuid
@@ -33,17 +37,6 @@ def check_if_token_in_blacklist(decrypted_token):
 def registration():
     """
     User registration
-    Utiliser le décorateur `@get_jwt_identity()`
-    pour avoir l'identité de l'utilisateur courant. Exemple:
-
-    ``` python
-    @routes.route('/protected', methods=['GET'])
-    @jwt_required
-    def protected():
-        # Access the identity of the current user with get_jwt_identity
-        current_user = get_jwt_identity()
-        return jsonify(current_suer=current_user), 200
-    ```
     ---
     tags:
       - Authentication
@@ -99,25 +92,49 @@ def registration():
         try:
             newuser = UserModel(**datas_to_save)
         except Exception as e:
-            print(e)
-            raise GeonatureApiError(e)
+            db.session.rollback()
+            current_app.logger.critical(e)
+            # raise GeonatureApiError(e)
+            return ({"message": "La syntaxe de la requête est erronée."}, 400)
 
-        if UserModel.find_by_username(newuser.username):
-            return (
-                {
-                    "error_message": "L'utilisateur {} éxiste déjà".format(
-                        newuser.username
-                    )
-                },
-                400,
-            )
+        try:
+            newuser.save_to_db()
+        except IntegrityError as e:
+            db.session.rollback()
+            # error causality ?
+            current_app.logger.critical("IntegrityError: %s", str(e))
 
-        newuser.save_to_db()
+            if UserModel.find_by_username(newuser.username):
+                return (
+                    {
+                        "message": """L'utilisateur "{}" existe déjà.""".format(
+                            newuser.username
+                        )
+                    },
+                    400,
+                )
+
+            elif (
+                db.session.query(UserModel)
+                .filter(UserModel.email == newuser.email)
+                .one()
+            ):
+                return (
+                    {
+                        "message": """Un email correspondant est déjà enregistré.""".format(
+                            newuser.email
+                        )
+                    },
+                    400,
+                )
+            else:
+                raise GeonatureApiError(e)
+
         access_token = create_access_token(identity=newuser.username)
         refresh_token = create_refresh_token(identity=newuser.username)
         return (
             {
-                "message": "Félicitations, l'utilisateur <b>{}</b> a été créé".format(
+                "message": """Félicitations, l'utilisateur "{}" a été créé""".format(
                     newuser.username
                 ),
                 "username": newuser.username,
@@ -128,7 +145,8 @@ def registration():
         )
 
     except Exception as e:
-        return {"error_message": str(e)}, 500
+        current_app.logger.critical("grab all: %s", str(e))
+        return {"message": str(e)}, 500
 
 
 @routes.route("/login", methods=["POST"])
@@ -170,13 +188,20 @@ def login():
         print(username)
         current_user = UserModel.find_by_username(username)
         if not current_user:
-            return {"message": ("User {} doesn't exist").format(username)}, 400
+            return (
+                {
+                    "message": """L'utilisateur "{}" n'est pas enregistré.""".format(
+                        username
+                    )
+                },
+                400,
+            )
         if UserModel.verify_hash(password, current_user.password):
             access_token = create_access_token(identity=username)
             refresh_token = create_refresh_token(identity=username)
             return (
                 {
-                    "message": "Logged in as {}".format(username),
+                    "message": """Connecté en tant que "{}".""".format(username),
                     "username": username,
                     "access_token": access_token,
                     "refresh_token": refresh_token,
@@ -184,7 +209,7 @@ def login():
                 200,
             )
         else:
-            return {"message": "Wrong credentials"}, 400
+            return {"message": """Mauvaises informations d'identification"""}, 400
     except Exception as e:
         return {"message": str(e)}, 400
 
@@ -289,34 +314,49 @@ def logged_user():
     try:
         current_user = get_jwt_identity()
         user = UserModel.query.filter_by(username=current_user).one()
-        current_app.logger.debug(
-            "[logged_user] current user is {}".format(user.as_secured_dict())
-        )
         if flask.request.method == "GET":
-            current_app.logger.debug("[logged_user] Get current user personnal data")
+            # base stats, to enhance as we go
+            result = user.as_secured_dict(True)
+            result["stats"] = {
+                "platform_attendance": db.session.query(
+                    func.count(ObservationModel.id_role)
+                )
+                .filter(ObservationModel.id_role == user.id_user)
+                .one()[0]
+            }
+
+            return ({"message": "Vos données personelles", "features": result}, 200)
+
+        if flask.request.method == "POST":
+            is_admin = user.admin or False
+            current_app.logger.debug("[logged_user] Update current user personnal data")
+            request_data = dict(request.get_json())
+            for data in request_data:
+                if hasattr(UserModel, data) and data not in {
+                    "id_user",
+                    "password",
+                    "admin",
+                }:
+                    setattr(user, data, request_data[data])
+
+            user.password = UserModel.generate_hash(request_data["password"])
+            user.admin = is_admin
+            # QUESTION: do we want to update corresponding obs IDs ... in any case ?
+            user.update()
             return (
                 {
-                    "message": "Vos données personelles",
+                    "message": "Informations personnelles mises à jour. Merci.",
                     "features": user.as_secured_dict(True),
                 },
                 200,
             )
-        if flask.request.method == "POST":
-            isAdmin = user.admin
-            current_app.logger.debug("[logged_user] Update current user personnal data")
-            request_data = dict(request.get_json())
-            for data in request_data:
-                if hasattr(UserModel, data) and data != "password":
-                    setattr(user, data, request_data[data])
-
-            user.password = UserModel.generate_hash(request_data["password"])
-            user.admin = isAdmin
-            user.update()
-            return {"message": "Personal info updated."}, 200
 
     except Exception as e:
         raise GeonatureApiError(e)
-        return ({"error_message": "You must log in to get your personal data"}, 400)
+        return (
+            {"message": "Connectez vous pour obtenir vos données personnelles."},
+            400,
+        )
 
 
 @routes.route("/user/delete", methods=["DELETE"])
@@ -359,10 +399,14 @@ def delete_user():
         except Exception as e:
             db.session.rollback()
             raise GeonatureApiError(e)
-            return {"error_message": str(e)}, 400
+            return {"message": str(e)}, 400
 
         return (
-            {"message": "Account {} have been successfully deleted".format(username)},
+            {
+                "message": """Account "{}" have been successfully deleted""".format(
+                    username
+                )
+            },
             200,
         )
 
@@ -372,11 +416,15 @@ def delete_user():
 def reset_user_password():
     request_datas = dict(request.get_json())
     email = request_datas["email"]
+    username = request_datas["username"]
 
     try:
-        user = UserModel.query.filter_by(email=email).one()
+        user = UserModel.query.filter_by(username=username, email=email).one()
     except Exception:
-        return ({"error": "{} does not exists".format(email)}, 400)
+        return (
+            {"message": """L'email "{}" n'est pas enregistré.""".format(email)},
+            400,
+        )
 
     passwd = uuid.uuid4().hex[0:6]
     passwd_hash = UserModel.generate_hash(passwd)
@@ -419,10 +467,21 @@ def reset_user_password():
                 current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
             )
             server.quit()
+        user.password = passwd_hash
+        db.session.commit()
+        return (
+            {"message": "Check your email, you credentials have been updated."},
+            200,
+        )
     except Exception as e:
-        return ({"error": str(e)}, 500)
-
-    user.password = passwd_hash
-    db.session.commit()
-
-    return ({"message": "success"}, 200)
+        current_app.logger.warning(
+            "reset_password: failled to send new credentials. %s", str(e)
+        )
+        return (
+            {
+                "message": """Echec d'envoi des informations de connexion: "{}".""".format(
+                    str(e)
+                )
+            },
+            500,
+        )

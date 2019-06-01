@@ -138,15 +138,15 @@
 
 @media screen and (max-width: 992px) {
   #list {
-    /* height: 230px; */
-    height: 40vh;
+    max-height: 40vh;
+    height: inherit;
   }
   .toggle {
     display: none;
   }
   .side-bar,
   .map {
-    position: static;
+    position: static !important;
   }
   .map {
     height: auto;

@@ -4,6 +4,8 @@
 
 import uuid
 
+# from sqlalchemy import func
+
 # from datetime import datetime
 import requests
 from flask import Blueprint, current_app, request, json, send_from_directory
@@ -14,9 +16,10 @@ from shapely.geometry import Point, asShape
 
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
+from .models import ObservationMediaModel, ObservationModel
+from gncitizen.core.users.models import UserModel
 
 # from gncitizen.core.taxonomy.models import Taxref
-# from gncitizen.core.users.models import UserModel
 
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
@@ -27,8 +30,6 @@ from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
 
-from .models import ObservationMediaModel, ObservationModel
-from gncitizen.core.users.models import UserModel
 
 routes = Blueprint("observations", __name__)
 
@@ -59,10 +60,7 @@ def generate_observation_geojson(id_observation):
     # Crée le dictionnaire de l'observation
     result = (
         db.session.query(
-            ObservationModel,
-            UserModel.username.label("observer_username"),
-            LAreas.area_name,
-            LAreas.area_code,
+            ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code
         )
         .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
@@ -70,7 +68,7 @@ def generate_observation_geojson(id_observation):
         .one()
     )
     result_dict = result.ObservationModel.as_dict(True)
-    result_dict["observer"] = {"username": result.observer_username}
+    result_dict["observer"] = {"username": result.username}
     result_dict["municipality"] = {"name": result.area_name, "code": result.area_code}
 
     # Populate "geometry"
@@ -122,7 +120,7 @@ def get_observation(pk):
         features = generate_observation_geojson(pk)
         return {"features": features}, 200
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/observations", methods=["POST"])
@@ -221,7 +219,6 @@ def post_observation():
 
         newobs.uuid_sinp = uuid.uuid4()
 
-        print("geom", newobs.geom)
         newobs.municipality = get_municipality_id_from_wkb(newobs.geom)
 
         db.session.add(newobs)
@@ -258,12 +255,12 @@ def post_observation():
             #   - submission_date
             # 2. map result to BADGESET
             # 3. return reward selection with new observation feature
-            pass
-        return ({"message": "New observation created", "features": features}, 200)
+            ...
+        return ({"message": "Nouvelle observation créée.", "features": features}, 200)
 
     except Exception as e:
         current_app.logger.warning("[post_observation] Error: %s", str(e))
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/observations", methods=["GET"])
@@ -306,7 +303,7 @@ def get_observations():
             features.append(feature)
         return FeatureCollection(features)
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/observations/lists/<int:id>", methods=["GET"])
@@ -365,7 +362,7 @@ def get_observations_from_list(id):  # noqa: A002
                     features.append(feature)
             return FeatureCollection(features)
         except Exception as e:
-            return {"error_message": str(e)}, 400
+            return {"message": str(e)}, 400
 
 
 @routes.route("programs/<int:id>/observations", methods=["GET"])
@@ -401,9 +398,7 @@ def get_program_observations(id):
         observations = (
             db.session.query(
                 ObservationModel,
-                UserModel.username.label("observer_username"),
-                # UserModel.name.label("observer_name"),
-                # UserModel.username.label("observer_surname"),
+                UserModel.username,
                 MediaModel.filename.label("image"),
                 LAreas.area_name,
                 LAreas.area_code,
@@ -437,26 +432,33 @@ def get_program_observations(id):
                 "code": observation.area_code,
             }
 
+            current_app.logger.debug(observations[0])
+
             # Observer
             feature["properties"]["observer"] = {
-                "username": observation.observer_username,
+                "username": observation.username,
                 # "name": observation.observer_name,
                 # "surname": observation.observer_surname,
             }
+            current_app.logger.warning(feature["properties"]["observer"])
 
-            # FIXME: Media endpoint
             feature["properties"]["image"] = (
-                "{}/media/{}".format(  # FIXME: medias url
-                    current_app.config["API_ENDPOINT"], observation.image
+                "/".join(
+                    [
+                        current_app.config["API_ENDPOINT"],
+                        current_app.config["MEDIA_FOLDER"],
+                        observation.image,
+                    ]
                 )
                 if observation.image
                 else None
             )
-            current_app.logger.warning(feature["properties"]["image"])
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
+                # TODO: refact, leveraging generate_observation_geojson()
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
+
             taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
             for k in taxref:
                 feature["properties"][k] = taxref[k]
@@ -464,7 +466,7 @@ def get_program_observations(id):
         current_app.logger.debug(FeatureCollection(features))
         return FeatureCollection(features)
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("media/<item>")
@@ -472,16 +474,17 @@ def get_media(item):
     return send_from_directory(str(MEDIA_DIR), item)
 
 
-@routes.route("/dev_rewards")
+@routes.route("/dev_rewards/<int:id>")
 @json_resp
-def get_rewards():
-    from gncitizen.utils.rewards import reward, results
+def get_rewards(id):
+    from gncitizen.utils.rewards import get_rewards, get_badges
 
-    current_app.logger.debug("reward: %s", json.dumps(reward, indent=4))
+    badges, rewards = get_badges(id), get_rewards(id)
+    current_app.logger.debug("rewards: %s", json.dumps(rewards, indent=4))
     return (
         {
-            "results": results,
-            "rewards": reward,
+            "badges": badges,
+            "rewards": rewards,
             "REWARDS": current_app.config["REWARDS"],
         },
         200,

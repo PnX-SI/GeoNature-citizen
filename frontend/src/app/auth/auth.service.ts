@@ -85,31 +85,8 @@ export class AuthService {
     return this.http.post<TokenRefresh>(url, null, {
       headers: headers
     });
-    /*
-    .pipe(
-      tap(data =>
-        console.debug("[AuthService.performTokenRefresh] result", data)
-      ),
-      take(1),
-      map((data: TokenRefresh) => {
-        if (data && data.access_token) {
-          localStorage.setItem("access_token", data.access_token);
-        }
-      }),
-      catchError(error => {
-        console.error(`[AuthService.performTokenRefresh] error "${error}"`);
-        console.debug("logout");
-        this.router.navigate(["/home"]);
-        return from(this.logout());
-      }),
-      finalize(() => {
-        console.debug("done");
-        return of(localStorage.getItem("access_token"));
-      })
-    );*/
   }
 
-  // TODO: verify service to delete account in response to GDPR recommandations
   selfDeleteAccount(_access_token): Promise<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/user/delete`;
     return this.http.delete(url, { headers: this.headers }).toPromise();

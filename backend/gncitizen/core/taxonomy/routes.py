@@ -53,7 +53,7 @@ def get_lists():
         # current_app.logger.debug([l.as_dict() for l in data])
         return [l.as_dict() for l in data]
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
@@ -111,7 +111,7 @@ def get_list(id):
             for d in data
         ]
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 # @routes.route('/taxonomy/lists/full', methods=['GET'])

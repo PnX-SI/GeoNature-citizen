@@ -1,12 +1,13 @@
 import logging
 import os
-import datetime
+
+# import datetime
 
 
 from flask import Flask, current_app
 from flask_cors import CORS
 
-from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger
+from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger, admin
 from gncitizen.utils.sqlalchemy import create_schemas
 
 logger = logging.getLogger()
@@ -16,9 +17,21 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 
 app.debug = True
+if app.config["DEBUG"]:
+    import colorlog
 
-logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+    handler = colorlog.StreamHandler()
+    handler.setFormatter(
+        colorlog.ColoredFormatter(
+            "%(log_color)s %(asctime)s %(levelname)s:%(name)s:%(message)s [in %(pathname)s:%(lineno)d]"
+        )
+    )
+
+    logger = colorlog.getLogger()
+    logger.addHandler(handler)
+
+    logging.basicConfig()
+    logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
 
 
 class ReverseProxied(object):
@@ -34,7 +47,7 @@ class ReverseProxied(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name):]
+                environ["PATH_INFO"] = path_info[len(script_name) :]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -62,6 +75,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     # Swagger for api documentation
     swagger.init_app(app)
+
+    admin.init_app(app)
 
     with app.app_context():
         # db.create_all()

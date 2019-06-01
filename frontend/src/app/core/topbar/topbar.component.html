@@ -10,7 +10,7 @@
       width="auto"
       height="80"
       class="d-inline-block align-top"
-      alt="GéoNature Citizen Log: flamengo origami"
+      alt="GeoNature Citizen logo: flamengo origami"
     />
   </a>
   <button
@@ -39,12 +39,22 @@
             <a
               routerLink="home"
               routerLinkActive="active"
-              class="active btn my-2 my-sm-0 rounded-0"
+              class="btn my-2 my-sm-0 rounded-0"
+              i18n
               >Accueil</a
             >
           </li>
+          <li *ngIf="isAdmin">
+            <a
+              routerLink="/api/admin"
+              routerLinkActive="active"
+              class="btn my-2 my-sm-0 rounded-0"
+              i18n
+              >Admin</a
+            >
+          </li>
           <li *ngIf="_programs.length > 1">
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()"
+            <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()" i18n
               >Les programmes</a
             >
           </li>
@@ -56,6 +66,7 @@
           <ng-template #connected>
             <a
               placement="bottom"
+              i18n-ngbTooltip
               ngbTooltip="Mon tableau de bord"
               routerLink="mydashboard"
               routerLinkActive="active"
@@ -66,15 +77,16 @@
               class="btn btn-sm my-2 my-sm-0"
               (click)="logout()"
               style="min-width: 147px !important"
+              i18n
             >
               <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
             </a>
           </ng-template>
           <ng-template #disconnected>
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="login()">
+            <a class="btn my-2 my-sm-0 rounded-0" (click)="login()" i18n>
               Se connecter
             </a>
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="register()">
+            <a class="btn my-2 my-sm-0 rounded-0" (click)="register()" i18n>
               S'inscrire
             </a>
           </ng-template>

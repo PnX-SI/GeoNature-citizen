@@ -48,6 +48,16 @@
   cursor: pointer;
 }
 
+.programs .text-center .img-hover {
+  height: 200px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  object-fit: cover;
+  margin-bottom: 30px;
+  border-radius: 50%;
+}
+
 .programs .text-center img {
   margin-bottom: 30px;
   display: block;
@@ -81,7 +91,7 @@
   margin: 0px;
 }
 
-.text-center h5.card-title{
+.text-center h5.card-title {
   min-height: 48px;
 }
 
@@ -113,12 +123,11 @@
   }
 }
 
-
 @media screen and (max-width: 576px) {
-  .text-center h5.card-title{
+  .text-center h5.card-title {
     min-height: inherit;
   }
-  .programs .text-center{
+  .programs .text-center {
     margin-top: 0px;
   }
   .programs .text-center img {

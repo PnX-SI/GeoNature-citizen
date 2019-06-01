@@ -15,6 +15,7 @@ import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 
 import { Program } from "../programs.models";
+import { ProgramsResolve } from "../../programs/programs-resolve.service";
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { ModalFlowService } from "./modalflow/modalflow.service";
 import { TaxonomyList } from "./observation.model";
@@ -26,7 +27,8 @@ import { AppConfig } from "../../../conf/app.config";
   selector: "app-observations",
   templateUrl: "./obs.component.html",
   styleUrls: ["./obs.component.css", "../../home/home.component.css"],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [ProgramsResolve]
 })
 export class ObsComponent implements OnInit, AfterViewInit {
   AppConfig = AppConfig;
@@ -85,7 +87,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
 
   onMapClicked(p: L.Point): void {
     this.coords = p;
-    console.debug("map clicked", this.coords, this.obsMap.observationMap);
+    // console.debug("map clicked", this.coords, this.obsMap.observationMap);
   }
 
   toggleList() {
@@ -96,7 +98,26 @@ export class ObsComponent implements OnInit, AfterViewInit {
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
     console.debug("[ObsComponent.newObservationEventHandler]", e.detail);
+    const _ = this.observations.features.unshift(e.detail);
+    this.observations = {
+      type: "FeatureCollection",
+      features: this.observations.features
+    };
+    this.obsList.observations = {
+      type: "FeatureCollection",
+      features: this.observations.features
+    };
+    // this.obsMap.observations = {
+    //   type: "FeatureCollection",
+    //   features: this.observations.features
+    // };
   }
+
+  /*
+    filters subject
+    observations subject
+    filtered observations subject -> presentation source observable
+  */
 
   @HostListener("document:ObservationFilterEvent", ["$event"])
   observationFilterEventHandler(e: CustomEvent) {
@@ -106,5 +127,9 @@ export class ObsComponent implements OnInit, AfterViewInit {
       type: "FeatureCollection",
       features: this.observations.features
     };
+    // this.obsMap.observations = {
+    //   type: "FeatureCollection",
+    //   features: this.observations.features
+    // };
   }
 }

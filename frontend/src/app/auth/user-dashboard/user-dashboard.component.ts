@@ -1,12 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, Subject, throwError } from "rxjs";
+import { tap, catchError } from "rxjs/operators";
 
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppConfig } from "../../../conf/app.config";
 import { AuthService } from "./../auth.service";
-import { Observable } from "rxjs";
 
 @Component({
   selector: "app-user-dashboard",
@@ -14,13 +15,18 @@ import { Observable } from "rxjs";
   styleUrls: ["./user-dashboard.component.css"]
 })
 export class UserDashboardComponent implements OnInit {
-  isLoggedIn: boolean = false;
-  username: string = "not defined";
   private headers: HttpHeaders = new HttpHeaders({
     "Content-Type": "application/json"
   });
+  readonly AppConfig = AppConfig;
   modalRef: NgbModalRef;
+  username: string = "not defined";
+  role_id: number;
+  isLoggedIn: boolean = false;
+  stats: any;
   personalInfo: any = {};
+  badges = [];
+  badges$: Subject<Object> = new Subject<Object>();
 
   constructor(
     private auth: AuthService,
@@ -38,6 +44,11 @@ export class UserDashboardComponent implements OnInit {
           if (user["features"]["id_role"]) {
             this.isLoggedIn = true;
             this.username = user["features"]["username"];
+            this.stats = user["features"]["stats"];
+            this.role_id = user["features"]["id_role"];
+            this.getBadgeCategories().subscribe(() =>
+              console.debug("badges done.")
+            );
           }
         })
         .catch(err => alert(err));
@@ -73,7 +84,7 @@ export class UserDashboardComponent implements OnInit {
     });
   }
 
-  editInfos(content) {
+  editInfos(content): void {
     this.getPersonalInfo().subscribe(data => {
       this.personalInfo = data;
       this.modalRef = this.modalService.open(content, {
@@ -83,18 +94,46 @@ export class UserDashboardComponent implements OnInit {
     });
   }
 
-  onUpdatePersonalData() {
+  onUpdatePersonalData(): void | Error {
     this.http
       .post(`${AppConfig.API_ENDPOINT}/user/info`, this.personalInfo, {
         headers: this.headers
       })
-      .subscribe(
-        data => console.debug(data),
-        error => console.error(error),
-        () => {
-          // update PI
-          this.modalRef.close();
-        }
+      .pipe(
+        catchError(error => {
+          window.alert(error);
+          return throwError(error);
+        })
+      )
+      .subscribe(() => {
+        this.modalRef.close();
+      });
+  }
+
+  getBadgeCategories(): Observable<Object | Error> {
+    return this.http
+      .get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
+      .pipe(
+        tap(data => {
+          const categories = data["badges"].reduce((acc, item) => {
+            const category = item["alt"].split(/\.[^/.]+$/)[0];
+            if (!acc[category]) {
+              acc[category] = data["badges"].filter(item =>
+                item.alt.startsWith(category + ".")
+              );
+            }
+            return acc;
+          }, {});
+          // console.debug(categories);
+
+          Object.values(categories).map(value => this.badges.push(value));
+          this.badges$.next(this.badges);
+          localStorage.setItem("badges", JSON.stringify(data["badges"]));
+        }),
+        catchError(error => {
+          window.alert(error);
+          return throwError(error);
+        })
       );
   }
 }

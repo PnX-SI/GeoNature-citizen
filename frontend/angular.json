@@ -28,7 +28,8 @@
               "node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.css",
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
               "node_modules/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css",
-              "src/styles.css"
+              "src/styles.css",
+              "src/custom/custom.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -75,7 +76,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              /* "baseHref": "/fr/", */
+              "baseHref": "/fr/",
               "i18nFile": "src/locale/messages.fr.xlf",
               "i18nFormat": "xlf",
               "i18nLocale": "fr",
@@ -98,7 +99,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              /* "baseHref": "/en/", */
+              "baseHref": "/en/",
               "i18nFile": "src/locale/messages.en.xlf",
               "i18nFormat": "xlf",
               "i18nLocale": "en",

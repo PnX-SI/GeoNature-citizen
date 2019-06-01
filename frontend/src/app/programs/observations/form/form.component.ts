@@ -6,7 +6,9 @@ import {
   ElementRef,
   Input,
   Output,
-  EventEmitter
+  EventEmitter,
+  Inject,
+  LOCALE_ID
 } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
@@ -120,6 +122,7 @@ export class ObsFormComponent implements AfterViewInit {
   });
   taxonSelectInputThreshold = taxonSelectInputThreshold;
   taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
+  autocomplete = "isOff";
   MAP_CONFIG = MAP_CONFIG;
   formMap: L.Map;
   program: FeatureCollection;
@@ -174,9 +177,11 @@ export class ObsFormComponent implements AfterViewInit {
         }
       }
     }
+    this.autocomplete = "isOn";
   };
 
   constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
     private http: HttpClient,
     private programService: GncProgramsService,
     private route: ActivatedRoute
@@ -244,7 +249,7 @@ export class ObsFormComponent implements AfterViewInit {
 
         const maxBounds: L.LatLngBounds = programArea.getBounds();
         formMap.fitBounds(maxBounds);
-        formMap.setMaxBounds(maxBounds);
+        formMap.setMaxBounds(maxBounds.pad(0.01));
 
         // Set initial observation marker from main map if already spotted
         let myMarker = null;
@@ -262,7 +267,6 @@ export class ObsFormComponent implements AfterViewInit {
 
           if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
             // this.hasZoomAlert = true;
-            console.debug("ZOOM ALERT", formMap);
             L.DomUtil.addClass(
               formMap.getContainer(),
               "observation-zoom-statement-warning"
@@ -275,7 +279,6 @@ export class ObsFormComponent implements AfterViewInit {
                 formMap.getContainer(),
                 "observation-zoom-statement-warning"
               );
-              console.debug("Deactivating overlay", formMap);
             }, 2000);
             return;
           }
