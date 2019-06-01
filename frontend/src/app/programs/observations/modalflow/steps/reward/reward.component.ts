@@ -95,7 +95,11 @@ export class BadgeFacade {
             .subscribe();
         }
       }),
-        error => window.alert(error);
+        error => {
+          console.error(error);
+          window.alert(error);
+          return throwError(error);
+        };
     }
   }
 
@@ -124,20 +128,20 @@ export class BadgeFacade {
 
 @Component({
   selector: "app-reward",
-  //  *ngIf="+(changes$ | async)?.length > 0"
+  //  *ngIf="+(reward$ | async)?.length > 0"
   template: `
-    <div>
+    <div *ngIf="(reward$ | async) as rewards">
       <div class="modal-body new-badge" (click)="clicked('background')">
         <div><img src="assets/user.jpg" /></div>
-        <h5 i18n>Félicitation !</h5>
+        <h5 i18n>Félicitations !</h5>
         <h6 i18n>
-          { +(changes$ | async)?.length, plural, =1 { Vous venez d'obtenir ce
-          badge } other { Vous venez d'obtenir ces badges } }
+          { rewards.length, plural, =1 { Vous venez d'obtenir ce badge } other {
+          Vous venez d'obtenir ces badges } }
         </h6>
         <p>
           <img
             [ngbTooltip]="b.alt"
-            *ngFor="let b of (changes$ | async)"
+            *ngFor="let b of rewards"
             [src]="AppConfig.API_ENDPOINT + b.img"
             [alt]="b.alt"
           />
@@ -154,18 +158,19 @@ export class RewardComponent implements IFlowComponent, OnInit, AfterViewInit {
   @Input() data: any;
   timeout: any;
   init = 0;
-  changes$ = this.badges.changes$.pipe(
+  condition$ = new BehaviorSubject<boolean>(false);
+  reward$ = this.badges.changes$.pipe(
     map(reward => {
       this.init++;
       const condition = reward && !!reward.length;
 
-      // console.debug(this.init, condition, reward);
-
+      console.debug(this.init, condition, reward);
+      this.condition$.next(condition);
       if (!condition && this.init > 1) {
         if (this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(() => this.close("NOREWARD"), 0);
       }
-      return reward;
+      return condition && this.init > 1 ? reward : null;
     })
   );
 
