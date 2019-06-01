@@ -24,7 +24,6 @@ export class TopbarComponent implements OnInit {
   // isLoggedIn: boolean = false;
   username: any;
   modalRef: NgbModalRef;
-  // programs$: Observable<Program[]>;
   programs$ = new Subject<Program[]>();
   isAdmin = false;
 
@@ -36,11 +35,10 @@ export class TopbarComponent implements OnInit {
   ) {
     const tmp = localStorage.getItem("username");
     this.username = tmp ? tmp.replace(/\"/g, "") : "Anonymous";
-    // this.programs$ = this.programService.getAllPrograms();
     this.route.data
       .pipe(
         tap((data: { programs: Program[] }) => {
-          if (data.programs) {
+          if (data && data.programs) {
             this.programs$.next(data.programs);
           } else {
             // console.warn("topbar::getAllPrograms");
@@ -51,10 +49,11 @@ export class TopbarComponent implements OnInit {
         }),
         catchError(error => throwError(error))
       )
-      .subscribe(data => {
-        // HELP: triggers "EmptyError: no elements in sequence" right after our token refresh
-        // console.debug("topbar::programs", data);
-      });
+      .subscribe
+      // FIXME:
+      // HELP: triggers "EmptyError: no elements in sequence" right after our token refresh
+      // console.debug("topbar::programs", data);
+      ();
   }
 
   isLoggedIn(): Observable<boolean> {
