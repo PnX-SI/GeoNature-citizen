@@ -45,7 +45,7 @@
         <div *ngFor="let s of (surveySpecies$ | async)">
           <div class="obs-img" [class.selected]="isTaxonSelected(s)">
             <img
-              src="{{(s.media?.url)?s.media.url:'assets/Azure-Commun-019.JPG'}}"
+              src="{{(s.medias?.url)?s.medias.url:'assets/Azure-Commun-019.JPG'}}"
               alt="{{s.nom.nom_francais}}"
               (click)="onTaxonSelected(s)"
             />
