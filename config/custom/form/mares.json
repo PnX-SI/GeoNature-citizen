@@ -158,7 +158,6 @@
               "key": "presenceCorridor",
               "type": "checkboxes",
               "titleMap": [
-                { "name": "inconnu", "value": null },
                 { "name": "Fossé / ruisseau", "value": "Fossé / ruisseau" },
                 { "name": "Haie", "value": "Haie" },
                 { "name": "Fossé / ruisseau ET haie", "value": "Fossé / ruisseau ET haie" },
@@ -313,7 +312,6 @@
               "key": "usages",
               "type": "checkboxes",
               "titleMap": [
-                { "name": "inconnu", "value": null },
                 { "name": "Abreuvoir aménagé", "value": "Abreuvoir aménagé" },
                 { "name": "Abreuvoir non aménagé", "value": "Abreuvoir non aménagé" },
                 { "name": "Collecte ruissellement (rétention)", "value": "Collecte ruissellement (rétention)" },

@@ -7,7 +7,6 @@ import {
   Input
 } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { ActivatedRoute } from "@angular/router";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
 import { map, tap } from "rxjs/operators";
@@ -50,9 +49,9 @@ export const myMarkerTitle =
 export class SiteFormComponent implements AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   @Input("coords") coords: L.Point;
+  @Input("program_id") program_id: number;
   @ViewChild("photo") photo: ElementRef;
   program: any;
-  program_id: any;
   formMap: L.Map;
   siteForm = new FormGroup({
     name: new FormControl("", Validators.required),
@@ -64,10 +63,9 @@ export class SiteFormComponent implements AfterViewInit {
   hasZoomAlert: boolean;
   zoomAlertTimeout: any;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
+  constructor(private http: HttpClient) {}
 
   ngAfterViewInit() {
-    this.route.params.subscribe(params => (this.program_id = params["id"]));
     this.http
       .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
       .subscribe(result => {

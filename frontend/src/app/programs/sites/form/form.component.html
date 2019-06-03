@@ -21,11 +21,9 @@
     </div>
   </form>
   <json-schema-form
-  [schema]="jsonSchema.schema"
-  [layout]="partialLayout"
-  [(data)]="jsonData"
+  [form]="formInputObject"
   [options]="formOptions"
-  (onSubmit)="onFormSubmit($event)"
+  (onChanges)="yourOnChangesFn($event)"
   [framework]="GNCBootstrap4Framework"
   >
   </json-schema-form>

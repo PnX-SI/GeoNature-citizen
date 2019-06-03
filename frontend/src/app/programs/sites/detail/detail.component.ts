@@ -1,4 +1,4 @@
-import {Component, AfterViewInit} from '@angular/core';
+import {Component, AfterViewInit, ViewEncapsulation} from '@angular/core';
 import {GncProgramsService} from "../../../api/gnc-programs.service";
 import {ActivatedRoute} from "@angular/router";
 import * as L from "leaflet";
@@ -16,7 +16,10 @@ export const markerIcon = L.icon({
 @Component({
   selector: 'app-site-detail',
   templateUrl: './detail.component.html',
-  styleUrls: ['./detail.component.css']
+  styleUrls: [
+    './../../observations/obs.component.css', // for form modal only
+    './detail.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SiteDetailComponent implements AfterViewInit {
   site_id: any;

@@ -1,13 +1,7 @@
-import { Injectable, EventEmitter, Output } from '@angular/core';
-
-// import {
-//   NgbModal,
-//   ModalDismissReasons,
-//   NgbModalRef,
-//   NgbModalOptions,
-// } from '@ng-bootstrap/ng-bootstrap'
+import { Injectable } from '@angular/core';
 
 import { FlowItem } from '../../observations/modalflow/flow/flow-item'
+import { FlowComponent } from '../../observations/modalflow/flow/flow.component'
 import { OnboardComponent } from '../../observations/modalflow/steps/onboard/onboard.component'
 import { SiteStepComponent } from "./steps/site/site_step.component";
 import { VisitStepComponent } from './steps/visit/visit_step.component'
@@ -20,14 +14,12 @@ import { ModalFlowService } from '../../observations/modalflow/modalflow.service
   providedIn: 'root'
 })
 export class SiteModalFlowService extends ModalFlowService {
-  @Output() siteVisitClick: EventEmitter<number> = new EventEmitter();
 
-  getFlowItems(site_id?: number) {
-    let init_data = site_id ? { site_id: site_id } : {}
+  getFlowItems(init_data: any) {
     let items = [];
     items.push(new FlowItem(OnboardComponent, { ...init_data, service: this }));
-    if (!site_id) {
-      items.push(new FlowItem(SiteStepComponent));
+    if (!init_data.site_id) {
+      items.push(new FlowItem(SiteStepComponent, { ...init_data, service: this }));
     }
     items.push(new FlowItem(VisitStepComponent));
     // items.push(new FlowItem(CongratsComponent, {service: this, date: new Date().toLocaleDateString()}));
@@ -35,7 +27,17 @@ export class SiteModalFlowService extends ModalFlowService {
     return items;
   }
 
+  addSite(program_id) {
+    var init_data = { program_id: program_id };
+    var flowitems = this.getFlowItems(init_data);
+    var modalRef = this.open(FlowComponent);
+    modalRef.componentInstance.flowItems = flowitems;
+  }
+
   addSiteVisit(site_id) {
-    this.siteVisitClick.emit(site_id);
+    var init_data = { site_id: site_id };
+    var flowitems = this.getFlowItems(init_data);
+    var modalRef = this.open(FlowComponent);
+    modalRef.componentInstance.flowItems = flowitems;
   }
 }

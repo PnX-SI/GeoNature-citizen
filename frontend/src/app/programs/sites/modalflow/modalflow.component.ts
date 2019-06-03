@@ -1,11 +1,8 @@
 import {
   Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
   ViewEncapsulation
 } from "@angular/core";
-
+import { ActivatedRoute } from "@angular/router";
 import { FlowItem } from "../../observations/modalflow/flow/flow-item";
 import { SiteModalFlowService } from "./modalflow.service";
 
@@ -16,45 +13,29 @@ import { SiteModalFlowService } from "./modalflow.service";
       <button class="btn-big" (click)="clicked()">
         Ajouter une mare
       </button>
-      <!-- <button class="btn-big">Réaliser un programme</button> -->
     </div>
-    <ng-template #content>
-      <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>
-    </ng-template>
   `,
   styleUrls: ["./modalflow.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class SiteModalFlowComponent implements OnInit {
-  @ViewChild("content") content: ElementRef;
+export class SiteModalFlowComponent {
   flowitems: FlowItem[];
   timeout: any;
+  program_id: any;
 
-  constructor(public flowService: SiteModalFlowService) {}
-
-  ngOnInit() {
-    this.flowService.siteVisitClick.subscribe(
-        site_id => this.addSiteVisit(site_id)
+  constructor(public flowService: SiteModalFlowService, private route: ActivatedRoute) {
+    this.route.params.subscribe(
+      params => {
+        this.program_id = params["id"];
+      }
     );
   }
 
   clicked() {
-    this.flowitems = this.flowService.getFlowItems();
-    console.debug("flow items: ", this.flowitems);
-    this.flowService.open(this.content);
+    this.flowService.addSite(this.program_id);
   }
 
   ngOnDestroy(): void {
     console.debug("destroyed");
-  }
-
-  step(data) {
-    console.debug("modalflow step:", data);
-  }
-
-  addSiteVisit(site_id) {
-    this.flowitems = this.flowService.getFlowItems(site_id);
-    console.debug("flow items: ", this.flowitems);
-    this.flowService.open(this.content);
   }
 }
