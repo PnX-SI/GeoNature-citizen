@@ -18,6 +18,17 @@
         #d="ngbDatepicker"
         (click)="d.toggle()"
       />
+      <div *ngIf="visitForm.get('date').invalid" class="alert alert-danger">
+        <div *ngIf="visitForm.get('date').errors.required">
+          La date est obligatoire
+        </div>
+        <div *ngIf="visitForm.get('date').errors['Parsed a date in the future']">
+          La date doit être antérieure à la date du jour
+        </div>
+        <div *ngIf="visitForm.get('date').errors.ngbDate">
+          Date invalide
+        </div>
+      </div>
     </div>
   </form>
   <json-schema-form

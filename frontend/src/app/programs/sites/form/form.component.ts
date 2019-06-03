@@ -113,6 +113,9 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   totalSteps() {
     return this.jsonSchema.steps.length;
   }
+  invalidStep() {
+    return this.currentStep === 1 && this.visitForm.get('date').invalid;
+  }
   yourOnChangesFn(e) {
     this.jsonData[this.currentStep] = e;
   }
@@ -136,7 +139,6 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
       // TODO: queue obs in list
     );
   }
-
   postSiteVisit(): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
