@@ -15,23 +15,6 @@ export class LogoutComponent {
     public activeModal: NgbActiveModal
   ) {}
 
-  // ngOnInit(): void {
-  //   const access_token = localStorage.getItem("access_token");
-  //   if (access_token) {
-  //     this.auth
-  //       .logout()
-  //       .then(logout => {
-  //         console.log("LogoutUser Get Status", logout.status);
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //       localStorage.removeItem("access_token");
-  //       localStorage.removeItem("refresh_token");
-  //       localStorage.removeItem("username");
-  //   }
-  // }
-
   onLogout(): void {
     const access_token = localStorage.getItem("access_token");
     if (access_token) {

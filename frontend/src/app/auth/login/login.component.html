@@ -22,7 +22,82 @@
     (close)="successMessage = null"
     >{{ successMessage }}</ngb-alert
   >
-  <form #loginForm="ngForm" (ngSubmit)="loginForm.form.valid && onLogin()">
+  <!-- Recover password -->
+  <form
+    *ngIf="!successMessage && recoverPassword"
+    #recoverForm="ngForm"
+    (ngSubmit)="recoverForm.form.valid && onRecoverPassword()"
+  >
+    <div class="form-group">
+      <label for="username" i18n>Utilisateur</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span
+            class="input-group-text"
+            [ngClass]="{
+              'ng-invalid': username.invalid
+            }"
+            ><i class="fa fa-user"></i
+          ></span>
+        </div>
+        <input
+          type="text"
+          class="form-control rounded-0"
+          id="username"
+          i18n-placeholder
+          placeholder="Entrez votre nom d'utilisateur"
+          [(ngModel)]="recovery.username"
+          name="username"
+          autocomplete="username"
+          required
+          #username="ngModel"
+        />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="Email" i18n>Votre Email</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span
+            class="input-group-text"
+            [ngClass]="{
+              'ng-invalid': email.invalid
+            }"
+            ><i class="fa fa-envelope"></i
+          ></span>
+        </div>
+        <input
+          type="email"
+          class="form-control rounded-0"
+          name="email"
+          id="email"
+          i18n-placeholder
+          placeholder="Entrez votre email"
+          [(ngModel)]="recovery.email"
+          #email="ngModel"
+          autocomplete="email"
+          required
+          pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+        />
+      </div>
+    </div>
+    <button
+      *ngIf="(errorMessage || !successMessage) && recoverPassword"
+      class="btn btn-outline-primary rounded-0"
+      expand="block"
+      type="submit"
+      i18n
+      [disabled]="!recoverForm.form.valid"
+    >
+      Récupérer le compte
+    </button>
+    <!-- End recover password -->
+  </form>
+  <form
+    *ngIf="!successMessage && !recoverPassword"
+    #loginForm="ngForm"
+    (ngSubmit)="loginForm.form.valid && onLogin()"
+  >
     <div class="form-group">
       <label for="username" i18n="login|username">Utilisateur</label>
       <div class="input-group">
@@ -40,7 +115,7 @@
           class="form-control rounded-0"
           id="username"
           placeholder="Entrez votre nom d'utilisateur"
-          i18n="login|Entrez votre nom d'utilisateur"
+          i18n-placeholder
           [(ngModel)]="user.username"
           name="username"
           autocomplete="username"
@@ -65,8 +140,8 @@
           type="password"
           class="form-control rounded-0"
           id="password"
+          i18n-placeholder
           placeholder="Entrez votre mot de passe"
-          i18n="login|Entrez votre mot de passe"
           [(ngModel)]="user.password"
           name="password"
           autocomplete="current-password"
@@ -75,14 +150,28 @@
         />
       </div>
     </div>
+    <span id="recoverPassword" (click)="recoverPassword = true" i18n
+      >Mot de passe oublié ?</span
+    >
     <button
+      *ngIf="errorMessage || !successMessage"
       type="submit"
       class="btn btn-outline-primary rounded-0"
-      i18n="login|login"
       [disabled]="loginForm.invalid"
       expand="block"
+      i18n
     >
       Se connecter
     </button>
   </form>
+  <button
+    *ngIf="successMessage"
+    class="btn btn-outline-primary rounded-0"
+    [disabled]="errorMessage || !successMessage"
+    expand="block"
+    i18n
+    (click)="activeModal.dismiss('Success')"
+  >
+    Fermer
+  </button>
 </div>

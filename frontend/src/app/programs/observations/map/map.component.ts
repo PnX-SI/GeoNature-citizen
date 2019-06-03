@@ -9,7 +9,9 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
-  HostListener
+  HostListener,
+  ComponentFactoryResolver,
+  Injector
 } from "@angular/core";
 
 import { FeatureCollection, Feature } from "geojson";
@@ -25,7 +27,7 @@ import { MarkerClusterGroup } from "leaflet";
 const conf = {
   MAP_ID: "obsMap",
   GEOLOCATION_HIGH_ACCURACY: false,
-  BASE_LAYERS: MAP_CONFIG["BASEMAP"].reduce((acc, baseLayer: Object) => {
+  BASE_LAYERS: MAP_CONFIG["BASEMAPS"].reduce((acc, baseLayer: Object) => {
     acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
       name: baseLayer["name"],
       attribution: baseLayer["attribution"],
@@ -45,7 +47,8 @@ const conf = {
       ]
     ];
     */
-    return conf.BASE_LAYERS["OpenStreetMapFRHot"];
+    // alert(MAP_CONFIG["DEFAULT_PROVIDER"]);
+    return conf.BASE_LAYERS[MAP_CONFIG["DEFAULT_PROVIDER"]];
   },
   ZOOM_CONTROL_POSITION: "topright",
   BASE_LAYER_CONTROL_POSITION: "topright",
@@ -131,6 +134,11 @@ export class ObsMapComponent implements OnInit, OnChanges {
   openPopupAfterClose: boolean;
   zoomAlertTimeout: any;
 
+  constructor(
+    private resolver: ComponentFactoryResolver,
+    private injector: Injector
+  ) {}
+
   ngOnInit() {
     this.initMap(conf);
   }
@@ -141,6 +149,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       changes.program &&
       changes.program.currentValue
     ) {
+      console.debug("ObsMapComponent::program OnChanges:", changes);
       this.loadProgramArea();
     }
 
@@ -149,6 +158,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       changes.observations &&
       changes.observations.currentValue
     ) {
+      console.debug("ObsMapComponent::observations OnChanges:", changes);
       this.loadObservations();
 
       /*
@@ -234,29 +244,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
     zv.setPosition("bottomright");
   }
 
-  getPopupContent(feature): string {
-    return `
-      <img src="${
-        feature.properties.image
-          ? feature.properties.image
-          : "assets/Azure-Commun-019.JPG"
-      }">
-      <p>
-        <b>${feature.properties.common_name}</b>
-        </br>
-        <span i18n>
-          Observé par ${
-            feature.properties.observer
-              ? feature.properties.observer.username
-              : "Anonyme"
-          }
-          </br>
-          le ${feature.properties.date}
-        </span>
-      </p>
-      <div>
-        <img class="icon" src="assets/binoculars.png">
-      </div>`;
+  getPopupContent(feature): any {
+    const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
+    const component = factory.create(this.injector);
+    component.instance.data = feature.properties;
+    component.changeDetectorRef.detectChanges();
+    const popupContent = component.location.nativeElement;
+    return popupContent;
   }
 
   loadObservations(): void {
@@ -271,9 +265,9 @@ export class ObsMapComponent implements OnInit, OnChanges {
         onEachFeature: (feature, layer) => {
           let popupContent = this.getPopupContent(feature);
 
-          if (feature.properties && feature.properties.popupContent) {
-            popupContent += feature.properties.popupContent;
-          }
+          // if (feature.properties && feature.properties.popupContent) {
+          //   popupContent += feature.properties.popupContent;
+          // }
 
           layer.bindPopup(popupContent);
         },
@@ -344,7 +338,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
           if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
             // this.hasZoomAlert = true;
-            console.debug("ZOOM ALERT", this.observationMap);
             L.DomUtil.addClass(
               this.observationMap.getContainer(),
               "observation-zoom-statement-warning"
@@ -357,7 +350,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
                 this.observationMap.getContainer(),
                 "observation-zoom-statement-warning"
               );
-              console.debug("Deactivating overlay", this.observationMap);
             }, 2000);
             return;
           }
@@ -384,4 +376,30 @@ export class ObsMapComponent implements OnInit, OnChanges {
     e.stopPropagation();
     console.debug("[ObsMapComponent.newObservationEventHandler]", e.detail);
   }
+}
+
+@Component({
+  selector: "popup",
+  template: `
+    <ng-container>
+      <img [src]="data.image || 'assets/Azure-Commun-019.JPG'" />
+      <p>
+        <b>{{ data.common_name }}</b> <br />
+        <span i18n>
+          Observé par
+          {{
+            data.observer && data.observer.username
+              ? data.observer.username
+              : "Anonyme"
+          }}
+          <br />
+          le {{ data.date }}
+        </span>
+      </p>
+      <div><img class="icon" src="assets/binoculars.png" /></div>
+    </ng-container>
+  `
+})
+export class MarkerPopupComponent {
+  @Input() data;
 }

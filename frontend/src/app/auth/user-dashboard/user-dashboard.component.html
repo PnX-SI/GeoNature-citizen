@@ -4,41 +4,28 @@
       <div class="row">
         <div class="user"></div>
         <div class="user-infos" (click)="editInfos(personalInfos)">
-          <!-- FIXME: mocked observation count -->
-          <span>{{ "30" }} observations</span> <img src="assets/user.jpg" />
+          <span i18n
+            >{ +stats?.platform_attendance, plural, =0 { aucune observation} =1
+            {une observation} other
+            {{{stats?.platform_attendance}} observations} }</span
+          >
+          <img src="assets/user.jpg" />
           <p>{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>
       <section id="badges">
-        <h3>Vos badges</h3>
+        <h3 i18n>Vos badges</h3>
         <div class="row">
-          <div class="col-lg-4 col-sm-12">
-            <img src="assets/badges_Plante.svg" alt="Badge Plante" />
-            <img src="assets/badges_Insecte.svg" alt="Badge Insecte" />
+          <div
+            *ngFor="let category of (badges$ | async)"
+            class="col-lg-4 col-sm-12"
+          >
             <img
-              src="assets/badges_Petit-mam.svg"
-              alt="Badge Petit mammifère"
+              *ngFor="let b of category"
+              [src]="AppConfig.API_ENDPOINT + b.img"
+              [alt]="b.alt"
+              [ngbTooltip]="b.alt"
             />
-            <img src="assets/badges_Oiseau.svg" alt="Badge Oiseau" />
-            <img
-              src="assets/badges_Grand-mam.svg"
-              alt="Badge Grand mammifère"
-            />
-            <img
-              src="assets/badges_Oiseau-proie.svg"
-              alt="Badge Oiseau de proie"
-            />
-          </div>
-          <div class="col-lg-4 col-sm-12">
-            <img src="assets/badges_Humide.svg" alt="Badge Zone humide" />
-            <img src="assets/badges_Vallee.svg" alt="Badge Vallée" />
-            <img src="assets/badges_Montagne.svg" alt="Badge Montagne" />
-            <img src="assets/badges_Haute.svg" alt="Badge Haute-montagne" />
-          </div>
-          <div class="col-lg-4 col-sm-12">
-            <img src="assets/badges_Novice.svg" alt="Badge Novice" />
-            <img src="assets/badges_Confirme.svg" alt="Badge Confirmé" />
-            <img src="assets/badges_Expert.svg" alt="Badge Expert" />
           </div>
         </div>
       </section>
@@ -47,12 +34,14 @@
         <button
           class="btn-big col-lg-3 col-md-5 col-sm-12"
           (click)="exportPersonalData()"
+          i18n
         >
           <i class="fa fa-download"></i>Exporter mes données personnelles
         </button>
         <button
           class="btn-big col-lg-3 col-md-5 col-sm-12"
           (click)="deletePersonalData()"
+          i18n
         >
           <i class="fa fa-trash"></i>Supprimer mes données personnelles
         </button>
@@ -80,7 +69,12 @@
       #updatePersonalInfoForm="ngForm"
       (ngSubmit)="updatePersonalInfoForm.valid && onUpdatePersonalData()"
     >
-      <ngb-alert [dismissible]="false" type="danger" *ngIf="email.errors" i18n>
+      <ngb-alert
+        [dismissible]="false"
+        type="danger"
+        *ngIf="email.errors && email.dirty"
+        i18n
+      >
         Impossible de valider votre email.
       </ngb-alert>
       <div class="form-row">
@@ -148,6 +142,7 @@
               [(ngModel)]="personalInfo.name"
               #fname="ngModel"
               autocomplete="fname"
+              required
             />
           </div>
         </div>
@@ -164,6 +159,7 @@
               [(ngModel)]="personalInfo.surname"
               #surname="ngModel"
               autocomplete="lname"
+              required
             />
           </div>
         </div>
@@ -171,7 +167,9 @@
       <ngb-alert
         [dismissible]="false"
         type="danger"
-        *ngIf="confirm_password.errors || password.errors"
+        *ngIf="
+          (confirm_password.errors || password.errors) && confirm_password.dirty
+        "
         i18n
       >
         Les mots de passe diffèrent.
@@ -220,7 +218,7 @@
 
       <button
         type="submit"
-        class="btn btn-outline-primary text-right rounded-0"
+        class="btn btn-default btn-big btn-outline-primary rounded-0"
         i18n
         [disabled]="updatePersonalInfoForm.invalid"
       >

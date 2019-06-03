@@ -22,8 +22,17 @@
     (close)="successMessage = null"
     >{{ successMessage }}</ngb-alert
   >
-  <form #registerForm="ngForm" (ngSubmit)="registerForm.valid && onRegister()">
-    <ngb-alert [dismissible]="false" type="danger" *ngIf="email.errors" i18n>
+  <form
+    *ngIf="errorMessage || !successMessage"
+    #registerForm="ngForm"
+    (ngSubmit)="registerForm.valid && onRegister()"
+  >
+    <ngb-alert
+      [dismissible]="false"
+      type="danger"
+      *ngIf="email.errors && email.dirty"
+      i18n
+    >
       Impossible de valider votre email.
     </ngb-alert>
     <div class="form-row">
@@ -89,6 +98,7 @@
             [(ngModel)]="user.name"
             #fname="ngModel"
             autocomplete="fname"
+            required
           />
         </div>
       </div>
@@ -105,6 +115,7 @@
             [(ngModel)]="user.surname"
             #surname="ngModel"
             autocomplete="lname"
+            required
           />
         </div>
       </div>
@@ -112,7 +123,10 @@
     <ngb-alert
       [dismissible]="false"
       type="danger"
-      *ngIf="confirm_password.errors || password.errors"
+      *ngIf="
+        (confirm_password.errors && confirm_password.dirty) ||
+        (password.errors && password.dirty)
+      "
       i18n
     >
       Les mots de passe diffèrent.
@@ -158,7 +172,7 @@
         </div>
       </div>
       <span>
-        <ngb-alert [dismissible]="false" type="danger" *ngIf="cgu.errors" i18n>
+        <ngb-alert [dismissible]="false" type="warning" *ngIf="cgu.errors" i18n>
           Veuillez accepter les conditions d'utilisation.
         </ngb-alert>
         <input
@@ -170,11 +184,15 @@
           required
           i18n
         />
-        J'accepte les <a href="#"><u>conditions d'utilisation</u></a></span
+        J'accepte les
+        <a href="{{AppConfig['termsOfUse'][localeId]}}" i18n
+          >conditions d&apos;utilisation</a
+        ></span
       >
     </div>
 
     <button
+      *ngIf="errorMessage || !successMessage"
       type="submit"
       class="btn btn-outline-primary text-right rounded-0"
       i18n
@@ -183,4 +201,14 @@
       S'enregistrer
     </button>
   </form>
+  <button
+    *ngIf="successMessage"
+    class="btn btn-outline-primary rounded-0"
+    [disabled]="registerForm.invalid"
+    expand="block"
+    (click)="activeModal.dismiss('Cross click')"
+    i18n
+  >
+    Fermer
+  </button>
 </div>

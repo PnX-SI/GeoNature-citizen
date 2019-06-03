@@ -14,17 +14,19 @@ export class CommittedComponent implements IFlowComponent {
   @ViewChild(ObsFormComponent) form: ObsFormComponent;
 
   onNewObservation(observation: ObservationFeature) {
-    this.data.obs = observation;
+    if (observation) {
+      this.data.obs = observation;
 
-    const event: CustomEvent = new CustomEvent("NewObservationEvent", {
-      bubbles: true,
-      cancelable: true,
-      detail: this.data.obs
-    });
-    document.dispatchEvent(event);
+      const event: CustomEvent = new CustomEvent("NewObservationEvent", {
+        bubbles: true,
+        cancelable: true,
+        detail: this.data.obs
+      });
+      document.dispatchEvent(event);
 
-    console.debug("committed > next:", this.data);
-    this.data.next(this.data);
+      console.debug("committed > next:", this.data);
+      this.data.next(this.data);
+    }
   }
 
   committed() {
