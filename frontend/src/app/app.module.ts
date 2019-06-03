@@ -48,6 +48,7 @@ import { CommittedComponent } from "./programs/observations/modalflow/steps/comm
 import { VisitStepComponent } from "./programs/sites/modalflow/steps/visit/visit_step.component";
 import { SiteStepComponent } from "./programs/sites/modalflow/steps/site/site_step.component";
 import { CongratsComponent } from "./programs/observations/modalflow/steps/congrats/congrats.component";
+import { SiteCongratsComponent } from "./programs/sites/modalflow/steps/congrats/congrats.component";
 import { ModalFlowComponent } from "./programs/observations/modalflow/modalflow.component";
 import { SiteModalFlowComponent } from "./programs/sites/modalflow/modalflow.component";
 import { RewardComponent } from "./programs/observations/modalflow/steps/reward/reward.component";
@@ -110,6 +111,7 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     VisitStepComponent,
     SiteStepComponent,
     CongratsComponent,
+    SiteCongratsComponent,
     ModalFlowComponent,
     SiteModalFlowComponent,
     RewardComponent,
@@ -142,6 +144,7 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     VisitStepComponent,
     SiteStepComponent,
     CongratsComponent,
+    SiteCongratsComponent,
     RewardComponent,
     GNCFrameworkComponent,
     FlowComponent
