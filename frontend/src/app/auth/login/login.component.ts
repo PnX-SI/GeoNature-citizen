@@ -95,11 +95,9 @@ export class LoginComponent {
 
   handleError(error) {
     let errorMessage = "";
-    if (error.error instanceof ErrorEvent) {
-      console.error("client-side error");
+    // if (error.error instanceof ErrorEvent) {
+    if (error.error) {
       // client-side or network error
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
       // server-side error
       console.error("server-side error:", error, typeof error);
       if (error.error && error.error.message) {

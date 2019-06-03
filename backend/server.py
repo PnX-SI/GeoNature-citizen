@@ -1,9 +1,6 @@
 import logging
 import os
 
-# import datetime
-
-
 from flask import Flask, current_app
 from flask_cors import CORS
 
@@ -70,8 +67,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     # JWT Auth
     jwt.init_app(app)
-    # wip token refresh Warning not < 130 (see frontend/auth/interceptor)!!!!
-    # app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=130)
 
     # Swagger for api documentation
     swagger.init_app(app)
