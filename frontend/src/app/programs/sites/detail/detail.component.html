@@ -31,7 +31,7 @@
     </div>
   </div>
   <div *ngIf="site?.properties.last_visit">
-    <div class="row">
+    <div *ngIf="photos.length > 0" class="row">
       <h2 class="mt-4 mb-4">Photos</h2>
     </div>
     <div class="row">
@@ -47,7 +47,7 @@
       </div>
 
     </div>
-    <div class="row">
+    <div *ngIf="attributes.length > 0" class="row">
       <h2 class="mt-4 mb-4">Description</h2>
     </div>
     <div class="row bg-light">
