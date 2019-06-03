@@ -17,6 +17,10 @@
   background-color: #fefefe;
 }
 
+.navbar-hidden .navbar-login {
+  border: 1px solid var(--primary);
+}
+
 .hidden {
   display: none!important;
 }

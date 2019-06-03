@@ -116,7 +116,6 @@ export class SitesMapComponent implements OnInit, OnChanges {
     tiles: Object = DEFAULT_TILES
   ): void {
     this.sitesMap = L.map(element, options);
-    this.sitesMap.zoomControl.setPosition("topright");
     L.control
       .scale({ position: "bottomleft", imperial: false })
       .addTo(this.sitesMap);
