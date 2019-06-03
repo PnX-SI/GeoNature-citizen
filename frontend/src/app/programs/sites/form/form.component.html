@@ -7,7 +7,7 @@
   </h3>
   <p class="h6">{{ jsonSchema.steps[currentStep-1].description }}</p>
   <form id="visitForm" [formGroup]="visitForm">
-    <div class="row" *ngIf="currentStep === 1">
+    <div class="row" [ngClass]="currentStep === 1 ? '' : 'hidden'">
       <div class="col-md-4">
         <div class="input-group">
           <label for="date" >Date de la visite</label>

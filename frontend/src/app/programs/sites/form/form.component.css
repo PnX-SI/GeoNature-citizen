@@ -29,3 +29,7 @@
   background-color: var(--secondary) !important;
   font-size: 1em !important;
 }
+
+.hidden {
+  display: none!important;
+}
