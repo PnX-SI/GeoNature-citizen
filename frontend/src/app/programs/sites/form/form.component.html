@@ -28,6 +28,7 @@
           dropBoxMessage="Déposez vos photos ici !"
           clearButtonCaption="Supprimer"
           (uploadFinished)="addImage($event)"
+          (removed)="deleteImage($event)"
         ></image-upload>
       </div>
     </div>

@@ -123,6 +123,13 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   addImage(event) {
     this.photos.push(event.file);
   }
+  deleteImage(event) {
+    for (var i=0; i<this.photos.length; i++) {
+      if (this.photos[i] == event.file) {
+        this.photos.splice(i, 1);
+      }
+    }
+  }
   onFormSubmit(): void {
     console.debug("formValues:", this.visitForm.value);
     this.postSiteVisit().subscribe(
