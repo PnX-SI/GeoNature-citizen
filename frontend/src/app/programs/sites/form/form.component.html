@@ -7,20 +7,29 @@
   </h3>
   <p class="h6">{{ jsonSchema.steps[currentStep-1].description }}</p>
   <form id="visitForm" [formGroup]="visitForm">
-    <div class="input-group" *ngIf="currentStep === 1">
-      <label for="date" >Date de la visite</label>
-      <input
-        formControlName="date"
-        type="text"
-        class="form-control rounded-0"
-        placeholder="yyyy-mm-dd"
-        ngbDatepicker
-        #d="ngbDatepicker"
-        (click)="d.toggle()"
-      />
-      <image-upload
-        (uploadFinished)="addImage($event)"
-      ></image-upload>
+    <div class="row" *ngIf="currentStep === 1">
+      <div class="col-md-4">
+        <div class="input-group">
+          <label for="date" >Date de la visite</label>
+          <input
+            formControlName="date"
+            type="text"
+            class="form-control rounded-0"
+            placeholder="yyyy-mm-dd"
+            ngbDatepicker
+            #d="ngbDatepicker"
+            (click)="d.toggle()"
+          />
+        </div>
+      </div>
+      <div class="col-md-8">
+        <image-upload
+          buttonCaption="Ajouter une photo"
+          dropBoxMessage="Déposez vos photos ici !"
+          clearButtonCaption="Supprimer"
+          (uploadFinished)="addImage($event)"
+        ></image-upload>
+      </div>
     </div>
   </form>
 
