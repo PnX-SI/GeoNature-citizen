@@ -1,0 +1,5 @@
+.app-no-topbar .observations {
+  height: calc(100vh);
+  --list-obs-offset: 0px;
+  --router-outlet-offset: 0px;
+}

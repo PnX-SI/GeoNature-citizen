@@ -15,7 +15,7 @@ import { SiteModalFlowService } from "./modalflow/modalflow.service";
 @Component({
   selector: "app-sites",
   templateUrl: "./sites.component.html",
-  styleUrls: ["../observations/obs.component.css", "../../home/home.component.css"],
+  styleUrls: ["../observations/obs.component.css", "../../home/home.component.css", "./sites.component.css"],
   encapsulation: ViewEncapsulation.None
 })
 export class SitesComponent implements OnInit, AfterViewChecked {
