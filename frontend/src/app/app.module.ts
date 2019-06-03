@@ -68,6 +68,7 @@ registerLocaleData(localeFr, "fr");
 // registerLocaleData(localeFr, "fr-FR", localeFrExtra);
 import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
 import { GNCFrameworkComponent } from './programs/sites/form/framework/framework.component';
+import {ImageUploadModule} from "angular2-image-upload";
 
 @NgModule({
   imports: [
@@ -78,6 +79,7 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     FormsModule,
     NgbModule,
     routing,
+    ImageUploadModule.forRoot(),
     Bootstrap4FrameworkModule
   ],
   declarations: [

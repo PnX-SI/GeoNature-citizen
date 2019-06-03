@@ -18,8 +18,12 @@
         #d="ngbDatepicker"
         (click)="d.toggle()"
       />
+      <image-upload
+        (uploadFinished)="addImage($event)"
+      ></image-upload>
     </div>
   </form>
+
   <json-schema-form
   [form]="formInputObject"
   [options]="formOptions"

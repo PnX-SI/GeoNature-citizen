@@ -63,6 +63,8 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   };
   formInputObject: any = {};
 
+  photos = [];
+
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
   ngOnInit() {
@@ -117,6 +119,11 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   toogleAdvancedMode() {
     this.advancedMode = !this.advancedMode;
     this.updatePartialLayout();
+  }
+  addImage(event) {
+    console.log(event);
+    this.photos.push(event.file);
+    console.log(this.photos);
   }
   onFormSubmit(): void {
     console.debug("formValues:", this.visitForm.value);
