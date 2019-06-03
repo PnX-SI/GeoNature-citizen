@@ -24,14 +24,11 @@ export class CommittedComponent implements IFlowComponent {
       });
       document.dispatchEvent(event);
 
-      console.debug("committed > next:", this.data);
       this.data.next(this.data);
     }
   }
 
   committed() {
     this.form.onFormSubmit();
-    console.debug("committed action > data:", this.data);
-    console.debug("committed action > obs:", this.form.newObservation);
   }
 }

@@ -58,8 +58,7 @@ export class RegisterComponent {
       .subscribe(
         _data => {},
         errorMessage => {
-          // console.debug("errorMessage", errorMessage);
-          // window.alert(errorMessage);
+          console.error("errorMessage", errorMessage);
           this.errorMessage = errorMessage;
           this.displayErrorMessage(errorMessage);
         }

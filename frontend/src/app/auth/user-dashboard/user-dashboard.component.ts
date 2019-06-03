@@ -46,9 +46,7 @@ export class UserDashboardComponent implements OnInit {
             this.username = user["features"]["username"];
             this.stats = user["features"]["stats"];
             this.role_id = user["features"]["id_role"];
-            this.getBadgeCategories().subscribe(() =>
-              console.debug("badges done.")
-            );
+            this.getBadgeCategories().subscribe();
           }
         })
         .catch(err => alert(err));
@@ -124,7 +122,6 @@ export class UserDashboardComponent implements OnInit {
             }
             return acc;
           }, {});
-          // console.debug(categories);
 
           Object.values(categories).map(value => this.badges.push(value));
           this.badges$.next(this.badges);

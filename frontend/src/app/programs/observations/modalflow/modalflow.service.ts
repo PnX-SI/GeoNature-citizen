@@ -36,7 +36,7 @@ export class ModalFlowService extends FlowService {
     });
     this.modalRef.result.then(
       result => {
-        console.debug("closed", content, "with", result);
+        console.debug("closed", content, "with", !!result);
       },
       reason => {
         let trigger = undefined;
@@ -51,14 +51,12 @@ export class ModalFlowService extends FlowService {
             trigger = reason;
             break;
         }
-        console.info(`dismissed with ${trigger}`);
+        console.debug(`dismissed with ${trigger}`);
       }
     );
   }
 
-  next_(data) {
-    console.debug("next_", data);
-  }
+  next_(data) {}
 
   close(data) {
     this.modalRef.close(data);

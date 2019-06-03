@@ -1,11 +1,4 @@
-import {
-  Component,
-  Input,
-  ViewEncapsulation,
-  OnInit,
-  Injectable,
-  AfterViewInit
-} from "@angular/core";
+import { Component, Input, ViewEncapsulation, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { throwError, BehaviorSubject } from "rxjs";
 import {
@@ -53,7 +46,6 @@ export class BadgeFacade {
   changes$ = this.state$.pipe(
     map(state => state.changes),
     distinctUntilChanged(),
-    // tap(c => console.debug("$changes:", c)),
     share()
   );
   loading$ = this.state$.pipe(map(state => state.loading));
@@ -65,7 +57,6 @@ export class BadgeFacade {
 
   getChanges(): void {
     const access_token = localStorage.getItem("access_token");
-    console.debug("facade initialized.");
     if (access_token) {
       this.authService.ensureAuthorized(access_token).then(user => {
         if (user["features"]["id_role"]) {
@@ -128,7 +119,6 @@ export class BadgeFacade {
 
 @Component({
   selector: "app-reward",
-  //  *ngIf="+(reward$ | async)?.length > 0"
   template: `
     <div *ngIf="(reward$ | async) as rewards">
       <div class="modal-body new-badge" (click)="clicked('background')">
@@ -153,7 +143,7 @@ export class BadgeFacade {
   encapsulation: ViewEncapsulation.None,
   providers: [BadgeFacade]
 })
-export class RewardComponent implements IFlowComponent, OnInit, AfterViewInit {
+export class RewardComponent implements IFlowComponent {
   readonly AppConfig = AppConfig;
   @Input() data: any;
   timeout: any;
@@ -164,7 +154,6 @@ export class RewardComponent implements IFlowComponent, OnInit, AfterViewInit {
       this.init++;
       const condition = reward && !!reward.length;
 
-      console.debug(this.init, condition, reward);
       this.condition$.next(condition);
       if (!condition && this.init > 1) {
         if (this.timeout) clearTimeout(this.timeout);
@@ -175,14 +164,6 @@ export class RewardComponent implements IFlowComponent, OnInit, AfterViewInit {
   );
 
   constructor(public badges: BadgeFacade) {}
-
-  ngOnInit(): void {
-    console.debug("reward data:", this.data);
-  }
-
-  ngAfterViewInit() {
-    console.debug("rewards  view init.");
-  }
 
   close(d) {
     console.debug(`reward close: ${d}`);
