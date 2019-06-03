@@ -25,6 +25,10 @@
   font-size: 1em !important;
 }
 
+.img-ul-button {
+  text-transform: none !important;
+}
+
 .img-ul-clear {
   background-color: var(--secondary) !important;
   font-size: 1em !important;
