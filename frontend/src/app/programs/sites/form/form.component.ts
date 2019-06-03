@@ -22,6 +22,7 @@ import { AppConfig } from "../../../../conf/app.config";
 
 import { GNCFrameworkComponent } from './framework/framework.component';
 import MaresJson from '../../../../../../config/custom/form/mares.json';
+import { ngbDateMaxIsToday } from '../../observations/form/form.component';
 
 declare let $: any;
 
@@ -43,8 +44,16 @@ export const myMarkerTitle =
 export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   @Input() site_id: number;
+  today = new Date();
   visitForm = new FormGroup({
-    date: new FormControl("", Validators.required),
+    date: new FormControl(
+      {
+        year: this.today.getFullYear(),
+        month: this.today.getMonth() + 1,
+        day: this.today.getDate()
+      },
+      [Validators.required, ngbDateMaxIsToday()]
+    ),
     data: new FormControl("")
   });
   currentStep: number = 1;
