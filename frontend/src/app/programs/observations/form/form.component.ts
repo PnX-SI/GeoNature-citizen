@@ -1,49 +1,49 @@
+import * as L from 'leaflet';
 import {
-  Component,
-  ViewEncapsulation,
-  AfterViewInit,
-  ViewChild,
-  ElementRef,
-  Input,
-  Output,
-  EventEmitter,
-  Inject,
-  LOCALE_ID
-} from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { ActivatedRoute } from "@angular/router";
-import {
+  AbstractControl,
   FormControl,
   FormGroup,
-  Validators,
-  AbstractControl,
-  ValidatorFn
-} from "@angular/forms";
-import { Observable } from "rxjs";
+  ValidatorFn,
+  Validators
+  } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import {
-  share,
-  take,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  LOCALE_ID,
+  Output,
+  ViewChild,
+  ViewEncapsulation
+  } from '@angular/core';
+import { AppConfig } from '../../../../conf/app.config';
+import {
   debounceTime,
+  distinctUntilChanged,
   map,
-  distinctUntilChanged
-} from "rxjs/operators";
-
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
-import { FeatureCollection } from "geojson";
-import * as L from "leaflet";
-import { LeafletMouseEvent } from "leaflet";
-import "leaflet-fullscreen/dist/Leaflet.fullscreen";
-import "leaflet-gesture-handling";
-
-import { AppConfig } from "../../../../conf/app.config";
-import { MAP_CONFIG } from "../../../../conf/map.config";
+  share,
+  take
+  } from 'rxjs/operators';
+import { FeatureCollection } from 'geojson';
+import { GncProgramsService } from '../../../api/gnc-programs.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { LeafletMouseEvent } from 'leaflet';
+import { MAP_CONFIG } from '../../../../conf/map.config';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
 import {
-  PostObservationResponse,
   ObservationFeature,
+  PostObservationResponse,
   TaxonomyList,
   TaxonomyListItem
-} from "../observation.model";
-import { GncProgramsService } from "../../../api/gnc-programs.service";
+  } from '../observation.model';
+import 'leaflet-gesture-handling';
+import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
+
+
 
 declare let $: any;
 
@@ -62,7 +62,7 @@ const taxonAutocompleteMaxResults = 10;
 
 // TODO: migrate to conf
 export const obsFormMarkerIcon = L.icon({
-  iconUrl: "assets/pointer-blue2.png",
+  iconUrl: MAP_CONFIG["NEW_OBS_POINTER"],
   iconSize: [33, 42],
   iconAnchor: [16, 42]
 });

@@ -249,5 +249,9 @@ Pipfile
 Pipfile.lock
 
 media/
-frontend/src/custom/custom.css
 frontend/ssl
+
+# Custom files
+frontend/src/custom/custom.css
+frontend/src/custom/images/*.png
+frontend/src/custom/images/*.jpg
