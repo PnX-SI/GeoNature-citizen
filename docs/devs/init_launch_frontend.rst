@@ -210,26 +210,21 @@ Exemple de fichier de configuration serveur Apache2:
     <Directory /home/utilisateur/citizen/frontend/dist/browser>
       Require all granted
       AllowOverride All
+
+      <IfModule mod_rewrite.c>
+          Options -MultiViews
+
+          RewriteEngine On
+            RewriteCond %{REQUEST_FILENAME} !-d
+            RewriteCond %{REQUEST_FILENAME} !-f
+              RewriteRule ".*" "index.html" [QSA,L]
+      </IfModule>
+
     </Directory>
     <Location /citizen/api>
       ProxyPass http://127.0.0.1:5002/api
       ProxyPassReverse  http://127.0.0.1:5002/api
     </Location>
-
-Exemple de fichier .htaccess (Apache2) , à placer dans le répertoire racine (≡ dist/browser) du site:
-*****************************************************************************************************
-
-.. code-block:: conf
-
-    <IfModule mod_rewrite.c>
-        Options -MultiViews
-
-        RewriteEngine On
-          RewriteCond %{REQUEST_FILENAME} !-d
-          RewriteCond %{REQUEST_FILENAME} !-f
-            RewriteRule ".*" "index.html" [QSA,L]
-    </IfModule>
-
 
 Suivi des journaux d'évenements et d'erreurs:
 *********************************************

@@ -2,20 +2,67 @@
 # -*- coding:utf-8 -*-
 
 import json
-
-from flask import Blueprint, request
-from flask_jwt_extended import jwt_optional
+import urllib.parse
+from flask import Blueprint, request, current_app
+from flask_jwt_extended import jwt_optional, get_jwt_identity
+from flask_admin.form import SecureForm
+from flask_admin.contrib.sqla import ModelView
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
 
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
+from gncitizen.utils.env import admin
 from server import db
 
 from .models import ModulesModel, ProgramsModel
+from gncitizen.core.users.models import UserModel
+
+try:
+    from flask import _app_ctx_stack as ctx_stack
+except ImportError:  # pragma: no cover
+    from flask import _request_ctx_stack as ctx_stack
+from flask_jwt_extended.utils import (
+    decode_token,
+    has_user_loader,
+    user_loader,
+    verify_token_not_blacklisted,
+)
+from flask_jwt_extended.exceptions import UserLoadError
+
 
 routes = Blueprint("commons", __name__)
+
+
+class ProgramView(ModelView):
+    form_base_class = SecureForm
+
+    def is_accessible(self):
+        try:
+
+            token = request.args.get("jwt")
+            if not token:
+                token = urllib.parse.parse_qsl(request.args.get("url"))[0][1]
+            decoded_token = decode_token(token)
+            verify_token_not_blacklisted(decoded_token, request_type="access")
+            ctx_stack.top.jwt = decoded_token
+            if has_user_loader():
+                user = user_loader(ctx_stack.top.jwt["identity"])
+                if user is None:
+                    raise UserLoadError("user_loader returned None for {}".format(user))
+                else:
+                    ctx_stack.top.jwt_user = user
+
+            current_user = get_jwt_identity()
+            is_admin = UserModel.query.filter_by(username=current_user).one().admin
+            return current_user and is_admin
+        except Exception as e:
+            current_app.logger.critical("FAULTY ADMIN UI ACCESS: %s", str(e))
+            return False
+
+
+admin.add_view(ProgramView(ProgramsModel, db.session))
 
 
 @routes.route("/modules/<int:pk>", methods=["GET"])
@@ -39,7 +86,7 @@ def get_module(pk):
         datas = ModulesModel.query.filter_by(id_module=pk).first()
         return datas.as_dict(), 200
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/modules", methods=["GET"])
@@ -62,7 +109,7 @@ def get_modules():
             datas.append(d)
         return {"count": count, "datas": datas}, 200
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/programs/<int:pk>", methods=["GET"])
@@ -83,9 +130,7 @@ def get_program(pk):
              description: A list of all programs
          """
     try:
-        datas = ProgramsModel.query.filter_by(
-            id_program=pk, is_active=True
-        ).limit(1)
+        datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
         features = []
         for data in datas:
             feature = data.get_geofeature()
@@ -94,7 +139,7 @@ def get_program(pk):
             features.append(feature)
         return {"features": features}, 200
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/programs", methods=["GET"])
@@ -134,7 +179,7 @@ def get_programs():
         feature_collection["count"] = count
         return feature_collection
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 @routes.route("/programs", methods=["POST"])
@@ -224,11 +269,8 @@ def post_program():
         db.session.commit()
         # Réponse en retour
         return (
-            {
-                "message": "New observation created.",
-                "features": newprogram.as_dict(),
-            },
+            {"message": "Nouveau programme créé.", "features": newprogram.as_dict()},
             200,
         )
     except Exception as e:
-        return {"error_message": str(e)}, 400
+        return {"message": str(e)}, 400

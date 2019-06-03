@@ -35,9 +35,6 @@
               <h3>{{ program.title }}</h3>
               <p [innerHTML]="program.html_short_desc"></p>
               <div [innerHTML]="program.html_long_desc"></div>
-              <a class="btn-big" [routerLink]="" fragment="program">{{
-                AppConfig.program_share_an_observation[localeId]
-              }}</a>
             </div>
           </div>
         </div>
@@ -58,7 +55,7 @@
     <label class="toggle" for="slide-sidebar"
       ><i class="fa fa-chevron-left"></i
     ></label>
-    <div class="col-lg-4 col-md-12 side-bar" id="list">
+    <div class="col-lg-12 col-md-12 side-bar" id="list">
       <app-obs-list
         #obsListRef
         [observations]="observations"

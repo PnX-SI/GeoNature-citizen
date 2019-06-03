@@ -1,12 +1,20 @@
-import { Injectable, OnInit, Optional, SkipSelf } from "@angular/core";
+import { Injectable, Optional, SkipSelf, OnInit } from "@angular/core";
 import {
   DomSanitizer,
   TransferState,
   makeStateKey
 } from "@angular/platform-browser";
 import { HttpClient } from "@angular/common/http";
-import { Observable, of } from "rxjs";
-import { catchError, map, mergeMap, take } from "rxjs/operators";
+import { Observable, of, Subject } from "rxjs";
+import {
+  catchError,
+  map,
+  mergeMap,
+  take,
+  share,
+  pluck,
+  tap
+} from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 
@@ -24,6 +32,22 @@ export interface IGncFeatures extends FeatureCollection {
   features: IGncProgram[];
   count: number;
 }
+
+const sorted = (property: string) => {
+  if (!property) return undefined;
+  let sortOrder = 1;
+
+  if (property[0] === "-") {
+    sortOrder = -1;
+    property = property.substr(1);
+  }
+
+  return (a, b) => {
+    return sortOrder === -1
+      ? b[property].localeCompare(a[property])
+      : a[property].localeCompare(b[property]);
+  };
+};
 
 @Injectable({
   deps: [
@@ -43,26 +67,34 @@ export interface IGncFeatures extends FeatureCollection {
 export class GncProgramsService implements OnInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   programs: Program[];
-  programs$: Observable<Program[]>;
+  programs$ = new Subject<Program[]>();
 
   constructor(
     protected http: HttpClient,
     private state: TransferState,
     protected domSanitizer: DomSanitizer
-  ) {
-    this.programs$ = of(this.programs);
-  }
+  ) {}
 
   ngOnInit() {
-    this.programs = this.state.get(PROGRAMS_KEY, null as any);
+    this.programs = this.state.get(PROGRAMS_KEY, null as Program[]);
+    this.programs$.next(this.programs);
   }
 
   getAllPrograms(): Observable<Program[]> {
+    // console.debug(`
+    //   stateKey: ${this.state.hasKey(PROGRAMS_KEY)},
+    //   state: ${this.state.get(PROGRAMS_KEY, null as Program[]) != null}
+    //   programs: ${this.programs != null}`);
+
     if (!this.programs) {
+      // console.warn("getAllPrograms");
+
       return this.http.get<IGncFeatures>(`${this.URL}/programs`).pipe(
-        map(featureCollection => featureCollection.features),
-        map(features => features.map(feature => feature.properties)),
-        map(programs =>
+        pluck("features"),
+        map((features: IGncProgram[]) =>
+          features.map(feature => feature.properties)
+        ),
+        map((programs: Program[]) =>
           programs.map(program => {
             program.html_short_desc = this.domSanitizer.bypassSecurityTrustHtml(
               program.short_desc
@@ -73,14 +105,15 @@ export class GncProgramsService implements OnInit {
             return program;
           })
         ),
-        map(programs => {
-          this.state.set(PROGRAMS_KEY, programs as any);
-          return programs;
+        map(programs => programs.sort(sorted(AppConfig["program_list_sort"]))),
+        tap(programs => {
+          this.state.set(PROGRAMS_KEY, programs as Program[]);
+          this.programs$.next(programs);
         }),
-        take(1),
         catchError(this.handleError<Program[]>("getAllPrograms"))
       );
     } else {
+      // console.debug("I want this!");
       return this.programs$;
     }
   }

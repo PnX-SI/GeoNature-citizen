@@ -6,7 +6,7 @@
       [(ngModel)]="selectedTaxon"
       (ngModelChange)="onFilterChange()"
     >
-      <option [ngValue]="null">Toutes espèces</option>
+      <option [ngValue]="null" i18n>Toutes espèces</option>
       <option *ngFor="let s of surveySpecies" [ngValue]="s">
         {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
         >)
@@ -21,21 +21,26 @@
       [(ngModel)]="selectedMunicipality"
       (ngModelChange)="onFilterChange()"
     >
-      <option [ngValue]="null">Toutes communes</option>
+      <option [ngValue]="null" i18n>Toutes communes</option>
       <option *ngFor="let t of municipalities" [ngValue]="t">{{
         t?.name || "?"
       }}</option>
     </select>
   </div>
   <div class="obs-found">
-    <p i18n>{{ observationList?.length }} observations trouvées !</p>
+    <p i18n>
+      {{ (features$ | async)?.length }} { +(features$ | async)?.length, plural,
+      =0 { observation trouvée } =1 { observation trouvée !} other {
+      observations trouvées !} }
+    </p>
   </div>
   <div id="list">
     <div
-      *ngFor="let o of observationList"
+      *ngFor="let o of (features$ | async); trackBy: trackByObs"
       class="espece obs-{{ o.properties.id_observation }}"
       (click)="onObsClick(o)"
     >
+      <!-- FIXME: hardcoded api media endpoint -->
       <img
         [src]="
           o.properties.images && o.properties.images[0]
@@ -56,8 +61,10 @@
           }}</span>
         </p>
         <p i18n>
-          le <span>{{ o.properties.date }}</span> à
-          <span>{{ o.properties.municipality?.name || "?" }}</span>
+          le <span>{{ o.properties.date }}</span>
+          <span *ngIf="o.properties.municipality?.name">
+            à {{ o.properties.municipality?.name }}</span
+          >
         </p>
       </div>
       <div class="hide"><img src="assets/binoculars.png" /></div>
