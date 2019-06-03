@@ -27,15 +27,12 @@ export class SiteModalFlowService extends ModalFlowService {
     return items;
   }
 
-  addSite(program_id) {
-    var init_data = { program_id: program_id };
-    var flowitems = this.getFlowItems(init_data);
-    var modalRef = this.open(FlowComponent);
-    modalRef.componentInstance.flowItems = flowitems;
-  }
-
   addSiteVisit(site_id) {
     var init_data = { site_id: site_id };
+    this.openFormModal(init_data);
+  }
+
+  openFormModal(init_data) {
     var flowitems = this.getFlowItems(init_data);
     var modalRef = this.open(FlowComponent);
     modalRef.componentInstance.flowItems = flowitems;

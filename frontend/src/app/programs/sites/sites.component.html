@@ -17,8 +17,11 @@
       <app-sites-map
         [sites]="sites"
         [program]="programFeature"
+        (onClick)="onMapClicked($event)"
       ></app-sites-map>
-      <div class="btn-groups"><app-sitemodalflow></app-sitemodalflow></div>
+      <div class="btn-groups">
+        <app-sitemodalflow [coords]="coords"></app-sitemodalflow>
+      </div>
     </div>
   </section>
 </div>

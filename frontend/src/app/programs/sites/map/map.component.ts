@@ -229,7 +229,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
 
       let myNewObsMarker = null;
       this.sitesMap.on("click", (e: L.LeafletMouseEvent) => {
-        this.onClick.emit();
+        this.onClick.emit(L.point(e.latlng.lng, e.latlng.lat));
         let coords = JSON.stringify({
           type: "Point",
           coordinates: [e.latlng.lng, e.latlng.lat]

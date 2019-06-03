@@ -72,4 +72,9 @@ export class SitesComponent implements OnInit, AfterViewChecked {
       alert(e);
     }
   }
+
+  onMapClicked(p): void {
+    this.coords = p;
+    console.debug("map clicked", this.coords);
+  }
 }
