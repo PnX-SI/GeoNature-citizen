@@ -24,7 +24,10 @@ import { DescModalComponent } from "./programs/desc-modal/desc-modal.component";
 import { ProgramsComponent } from "./programs/programs.component";
 import { ObsFormComponent } from "./programs/observations/form/form.component";
 import { ObsListComponent } from "./programs/observations/list/list.component";
-import { ObsMapComponent } from "./programs/observations/map/map.component";
+import {
+  ObsMapComponent,
+  MarkerPopupComponent
+} from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
 import { SitesListComponent } from "./programs/sites/list/list.component";
 import { SitesMapComponent } from "./programs/sites/map/map.component";
@@ -56,6 +59,8 @@ import { SiteModalFlowService } from "./programs/sites/modalflow/modalflow.servi
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { AppConfig } from "../conf/app.config";
 
+import { AdminComponent } from "./auth/admin/admin.component";
+
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
 registerLocaleData(localeFr, "fr");
@@ -79,6 +84,7 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     AppComponent,
     ObsComponent,
     ObsMapComponent,
+    MarkerPopupComponent,
     ObsFormComponent,
     ObsListComponent,
     SitesComponent,
@@ -112,8 +118,9 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     CongratsComponent,
     ModalFlowComponent,
     SiteModalFlowComponent,
+    GNCFrameworkComponent,
     RewardComponent,
-    GNCFrameworkComponent
+    AdminComponent
   ],
   providers: [
     AuthService,
@@ -144,7 +151,9 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     CongratsComponent,
     RewardComponent,
     GNCFrameworkComponent,
-    FlowComponent
-  ]
+    FlowComponent,
+    MarkerPopupComponent
+  ],
+  exports: [AdminComponent]
 })
 export class AppModule {}

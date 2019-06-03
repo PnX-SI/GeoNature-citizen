@@ -48,10 +48,10 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         "GeoNature-citizen est une application de crowdsourcing des données sur la biodiversité."
     });
     this.platform_intro = this.domSanitizer.bypassSecurityTrustHtml(
-      AppConfig["platform_intro"]
+      AppConfig["platform_intro"][this.localeId]
     );
     this.platform_teaser = this.domSanitizer.bypassSecurityTrustHtml(
-      AppConfig["platform_teaser"]
+      AppConfig["platform_teaser"][this.localeId]
     );
   }
 

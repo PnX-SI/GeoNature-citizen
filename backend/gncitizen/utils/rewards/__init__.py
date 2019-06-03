@@ -1,24 +1,22 @@
 import datetime
-import json
-
-
+from flask import current_app
 from .classifier import Classifier
 from .rules import (
     attendance_rule,
     seniority_rule,
-    program_taxo_distance_rule,
     program_attendance_rule,
     program_date_bounds_rule,
+    recognition_rule,
 )
-from . import queries
+from .queries import get_stats
 
 
 default_ruleset = {
     attendance_rule,
     seniority_rule,
-    program_taxo_distance_rule,
     program_attendance_rule,
     program_date_bounds_rule,
+    recognition_rule,
 }
 
 # PROPERTIES
@@ -68,10 +66,54 @@ program_props = {
     # },
 }
 
-reward = []
-results = queries.results
-merged = {**base_props, **program_props, **results}
-print("query result:", json.dumps(merged, indent=4, sort_keys=True))
-reward = Classifier().tag(default_ruleset, merged)
-# print("reward:", json.dumps(reward, indent=4))
-# print("query result:", json.dumps(results, indent=4))
+
+def flatten(arr):
+    for i in arr:
+        if isinstance(i, list):
+            yield from flatten(i)
+        else:
+            yield i
+
+
+def badge_image_mapper(item):
+    if not item or item.endswith(".None") or item.endswith(".0"):
+        return
+
+    domain, *rest, status = item.split(".")
+    theme = current_app.config["REWARDS"].get(
+        "DEFAULT_BADGESET", current_app.config["REWARDS"]["BADGESET"][0]
+    )
+    badge = None
+    try:
+        badge = {"img": theme[domain][status], "alt": item}
+    except Exception as e:
+        current_app.logger.info("theme[domain] = %s", theme[domain])
+        current_app.logger.info("item = %s ", item)
+        current_app.logger.error("exception caught: %s", str(e))
+        raise
+
+    return badge
+
+
+def get_rewards(id):
+    stats = get_stats(id)
+    attendance = stats["attendance"](id)
+    results = {
+        "seniority": stats["seniority"](id).one().timestamp_create.timestamp(),
+        "attendance": attendance.count(),
+        "program_attendance": [
+            item.count() for item in stats["program_attendance"](attendance)
+        ],
+        # Program date bounds
+        # Mission Success
+        "get_occ": stats["get_occ"](attendance),
+    }
+    rewards = Classifier().tag(
+        default_ruleset, {**base_props, **program_props, **results}
+    )
+    return [item for item in flatten(rewards)]
+
+
+def get_badges(id):
+    rewards = get_rewards(id)
+    return [b for b in map(badge_image_mapper, rewards) if b]

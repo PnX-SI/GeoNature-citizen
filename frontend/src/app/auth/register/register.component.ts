@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Inject, LOCALE_ID } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subject, throwError } from "rxjs";
 import { debounceTime, catchError, map } from "rxjs/operators";
@@ -7,6 +7,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 import { RegisterUser } from "../models";
 import { AuthService } from "./../auth.service";
+import { AppConfig } from "../../../conf/app.config";
 
 @Component({
   selector: "register",
@@ -14,6 +15,7 @@ import { AuthService } from "./../auth.service";
   styleUrls: ["./register.component.css"]
 })
 export class RegisterComponent {
+  readonly AppConfig = AppConfig;
   user: RegisterUser = new RegisterUser();
   private _error = new Subject<string>();
   private _success = new Subject<string>();
@@ -22,6 +24,7 @@ export class RegisterComponent {
   successMessage: string;
 
   constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
     private auth: AuthService,
     private router: Router,
     public activeModal: NgbActiveModal
@@ -38,9 +41,8 @@ export class RegisterComponent {
           console.log(user.status);
           if (user) {
             let message = user.message;
-            // setTimeout(() => (this.staticAlertClosed = true), 20000);
             this._success.subscribe(message => (this.successMessage = message));
-            this._success.pipe(debounceTime(5000)).subscribe(() => {
+            this._success.pipe(debounceTime(1500)).subscribe(() => {
               this.successMessage = null;
               this.activeModal.close();
             });
@@ -54,9 +56,7 @@ export class RegisterComponent {
         catchError(this.handleError)
       )
       .subscribe(
-        data => {
-          // console.debug("login data:", data)
-        },
+        _data => {},
         errorMessage => {
           // console.debug("errorMessage", errorMessage);
           // window.alert(errorMessage);
@@ -74,12 +74,12 @@ export class RegisterComponent {
       errorMessage = `Error: ${error.error.message}`;
     } else {
       // server-side error
-      console.error("server-side error", error);
-      if (error.error && error.error.error_message) {
+      if (error.error && error.error.message) {
         // api error
-        // FIXME: response fields consistency
-        errorMessage = error.error.error_message;
+        console.error("api error", error);
+        errorMessage = error.error.message;
       } else {
+        console.error("server-side error", error);
         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
       }
     }
@@ -88,11 +88,11 @@ export class RegisterComponent {
 
   displayErrorMessage(message) {
     this._error.next(message);
-    console.log("errorMessage:", message);
+    console.error("errorMessage:", message);
   }
 
   displaySuccessMessage(message) {
     this._success.next(message);
-    console.log("successMessage:", message);
+    console.info("successMessage:", message);
   }
 }

@@ -3,52 +3,10 @@ import re
 from collections import OrderedDict
 from typing import Optional
 
-try:
-    from flask import current_app
+from flask import current_app
 
-    conf = current_app.config["REWARDS"]["CONF"]
-    logger = current_app.logger
-except ImportError:
-    # standalone __main__ / dev mode
-    import logging
-
-    logger = logging.getLogger()
-    _dev_conf = {
-        "attendance": {
-            "Attendance.Au": 5000,
-            "Attendance.Ar": 1000,
-            "Attendance.CuSn": 100,
-        },
-        "seniority": {
-            "Seniority.oeuf": "7days",
-            "Seniority.chenille": "6months",
-            "Seniority.papillon": "1an",
-        },
-        "taxo_error_binary_weights": {
-            "regne": 64,
-            "phylum": 32,
-            "classe": 16,
-            "ordre": 8,
-            "famille": 4,
-            "sous_famille": 2,
-            "tribu": 1,
-        },
-        "taxo_distance": {
-            "Observateur.None": 4,
-            "Observateur.Amateur": 2,
-            "Observateur.Chevronné": 1,
-            "Observateur.SuperFort": 0,
-        },
-        "program_attendance": {
-            "Program_Attendance.Au": 7,
-            "Program_Attendance.Ar": 5,
-            "Program_Attendance.CuSn": 3,
-        },
-        "program_date_bounds": {"start": "2019-03-20", "end": ""},
-    }
-    conf = _dev_conf
-
-
+conf = current_app.config["REWARDS"]["CONF"]
+logger = current_app.logger
 Timestamp = float
 
 
@@ -112,15 +70,6 @@ seniority_model = OrderedDict(
     )
 )
 
-taxo_error_binary_weights = OrderedDict(
-    reversed(sorted(conf["taxo_error_binary_weights"].items(), key=lambda t: t[1]))
-)
-
-
-taxo_distance_model = OrderedDict(
-    reversed(sorted(conf["taxo_distance"].items(), key=lambda t: t[1]))
-)
-
 program_attendance_model = OrderedDict(
     reversed(sorted(conf["program_attendance"].items(), key=lambda t: t[1]))
 )
@@ -130,6 +79,22 @@ program_date_bounds_model = {
     "end": config_duration2timestamp(conf["program_date_bounds"]["end"]),
 }
 
+recognition_model = [
+    {
+        "class"
+        if "class" in conf["recognition"][i]
+        else "order": conf["recognition"][i]["class"]
+        if "class" in conf["recognition"][i]
+        else conf["recognition"][i]["order"],
+        "specialization": conf["recognition"][i]["specialization"],
+        "attendance": OrderedDict(
+            reversed(
+                sorted(conf["recognition"][i]["attendance"].items(), key=lambda t: t[1])
+            )
+        ),
+    }
+    for i in range(len(conf["recognition"]))
+]
 
 test_config_duration2timestamp = """
 >>> datetime.date.fromtimestamp(config_duration2timestamp("3 months")) == (datetime.datetime.now() - datetime.timedelta(weeks=3 * 4.345)).date()
