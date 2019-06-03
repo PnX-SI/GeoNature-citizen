@@ -6,7 +6,7 @@ import {
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModule, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppComponent } from "./app.component";
 import { routing } from "./app.routing";
@@ -128,7 +128,8 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
       useClass: AuthInterceptor,
       multi: true
     },
-    { provide: LOCALE_ID, useValue: "fr" }
+    { provide: LOCALE_ID, useValue: "fr" },
+    NgbActiveModal
   ],
   bootstrap: [AppComponent],
   entryComponents: [
@@ -142,7 +143,8 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     SiteStepComponent,
     CongratsComponent,
     RewardComponent,
-    GNCFrameworkComponent
+    GNCFrameworkComponent,
+    FlowComponent
   ]
 })
 export class AppModule {}

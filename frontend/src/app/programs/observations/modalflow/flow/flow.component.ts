@@ -12,6 +12,7 @@ import {
 import { FlowDirective } from "./flow.directive";
 import { FlowItem } from "./flow-item";
 import { IFlowComponent } from "./flow";
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: "app-flow",
@@ -27,7 +28,9 @@ export class FlowComponent implements OnInit {
   @ViewChild(FlowDirective) flowitem: FlowDirective;
   currentFlowIndex = -1;
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
+  constructor(
+    private componentFactoryResolver: ComponentFactoryResolver,
+    public activeModal: NgbActiveModal) {}
 
   ngOnInit(): void {
     this.loadComponent();

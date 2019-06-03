@@ -54,6 +54,7 @@ export class ModalFlowService extends FlowService {
         console.info(`dismissed with ${trigger}`);
       }
     );
+    return this.modalRef;
   }
 
   next_(data) {
