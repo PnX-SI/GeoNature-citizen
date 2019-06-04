@@ -86,7 +86,7 @@ app.get("*", (req, res) => {
   // res.render("index", { req });
   res.render(`${locale}/index`, {
     req: req,
-    url: req.url.replace(`${locale}/`, ""),
+    url: req.url.replace(`/${locale}/`, "/"),
     providers: [
       { provide: "language", useFactory: () => locale, deps: [] },
       { provide: "ip", useFactory: () => ip, deps: [] }
