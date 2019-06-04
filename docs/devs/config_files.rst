@@ -43,7 +43,7 @@ Editez alors les différents paramètres de ce fichier.
     DEBUG = true
 
     URL_APPLICATION = 'http://url.com/gncitizen'         # Replace my_url.com by your domain or IP
-    API_ENDPOINT = 'http://url.com/gncitizen/api'        # Replace my_url.com by your domain or IP
+    API_ENDPOINT = 'http://url.com/gncitizen/api:API_PORT'        # Replace my_url.com by your domain or IP
     API_PORT = 5002 # 5000 déjà utilisé par taxhub
     API_TAXHUB ='http://127.0.0.1:5000/api/'
 

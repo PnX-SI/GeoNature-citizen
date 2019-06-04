@@ -72,6 +72,8 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   };
   formInputObject: any = {};
 
+  photos = [];
+
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
   ngOnInit() {
@@ -130,10 +132,28 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     this.advancedMode = !this.advancedMode;
     this.updatePartialLayout();
   }
+  addImage(event) {
+    this.photos.push(event.file);
+  }
+  deleteImage(event) {
+    for (var i=0; i<this.photos.length; i++) {
+      if (this.photos[i] == event.file) {
+        this.photos.splice(i, 1);
+      }
+    }
+  }
   onFormSubmit(): void {
     console.debug("formValues:", this.visitForm.value);
     this.postSiteVisit().subscribe(
-      data => console.debug(data),
+      data => {
+        console.debug(data);
+        let visitId = data["features"][0]["id_visit"];
+        this.postVisitPhotos(visitId).subscribe(
+          resp => console.debug(resp),
+          err => console.error(err),
+          () => console.log("photo upload done")
+        );
+      },
       err => console.error(err),
       () => console.log("done")
       // TODO: queue obs in list
@@ -157,5 +177,18 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
       this.visitForm.value,
       httpOptions
     );
+  }
+
+  postVisitPhotos(visitId: number) {
+    let formData = new FormData();
+    this.photos.forEach((file) => {
+        formData.append('file', file);
+      }
+    );
+    return this.http.post<any>(
+      `${this.URL}/sites/${this.site_id}/visits/${visitId}/photos`,
+      formData
+    );
+
   }
 }

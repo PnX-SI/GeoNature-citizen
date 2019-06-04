@@ -14,7 +14,7 @@
   background: url(../../../assets/faune-mercantour.jpg) no-repeat;
   background-size: cover;
   background-position: top;
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
   position: relative;
   min-height: 280px;
@@ -119,6 +119,37 @@
 
 #badges .row {
   padding: 0px;
+}
+
+form > button {
+  background: var(--primary);
+  padding: 10px 30px;
+  margin: 0 auto;
+  max-height: 115px;
+  width: fit-content;
+  display: block;
+}
+
+/* MODIF DATA */
+
+.modal-header {
+  background: var(--secondary);
+  background: var(--modal-header-bg-moz);
+  background: var(--modal-header-bg-webkit);
+  background: var(--modal-header-bg-linear);
+  border-radius: 0px;
+  align-items: center;
+  max-height: 61px;
+}
+
+.modal-header h4 {
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0 auto;
+}
+
+.modal-header button {
+  margin: 0;
 }
 
 @media screen and (min-width: 992px) {

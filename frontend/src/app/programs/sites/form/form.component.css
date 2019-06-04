@@ -19,3 +19,21 @@
   min-height: 225px; /*50vh*/
   width: 100%;
 }
+
+.img-ul-upload {
+  background-color: var(--primary) !important;
+  font-size: 1em !important;
+}
+
+.img-ul-button {
+  text-transform: none !important;
+}
+
+.img-ul-clear {
+  background-color: var(--secondary) !important;
+  font-size: 1em !important;
+}
+
+.hidden {
+  display: none!important;
+}

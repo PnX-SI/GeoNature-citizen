@@ -24,7 +24,10 @@ import { DescModalComponent } from "./programs/desc-modal/desc-modal.component";
 import { ProgramsComponent } from "./programs/programs.component";
 import { ObsFormComponent } from "./programs/observations/form/form.component";
 import { ObsListComponent } from "./programs/observations/list/list.component";
-import { ObsMapComponent } from "./programs/observations/map/map.component";
+import {
+  ObsMapComponent,
+  MarkerPopupComponent
+} from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
 import { SitesListComponent } from "./programs/sites/list/list.component";
 import { SitesMapComponent } from "./programs/sites/map/map.component";
@@ -58,6 +61,8 @@ import { SiteService } from "./programs/sites/sites.service";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { AppConfig } from "../conf/app.config";
 
+import { AdminComponent } from "./auth/admin/admin.component";
+
 import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
 registerLocaleData(localeFr, "fr");
@@ -65,6 +70,7 @@ registerLocaleData(localeFr, "fr");
 // registerLocaleData(localeFr, "fr-FR", localeFrExtra);
 import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
 import { GNCFrameworkComponent } from './programs/sites/form/framework/framework.component';
+import {ImageUploadModule} from "angular2-image-upload";
 
 @NgModule({
   imports: [
@@ -75,12 +81,14 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     FormsModule,
     NgbModule,
     routing,
+    ImageUploadModule.forRoot(),
     Bootstrap4FrameworkModule
   ],
   declarations: [
     AppComponent,
     ObsComponent,
     ObsMapComponent,
+    MarkerPopupComponent,
     ObsFormComponent,
     ObsListComponent,
     SitesComponent,
@@ -115,8 +123,9 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     SiteCongratsComponent,
     ModalFlowComponent,
     SiteModalFlowComponent,
+    GNCFrameworkComponent,
     RewardComponent,
-    GNCFrameworkComponent
+    AdminComponent
   ],
   providers: [
     AuthService,
@@ -149,7 +158,9 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     SiteCongratsComponent,
     RewardComponent,
     GNCFrameworkComponent,
-    FlowComponent
-  ]
+    FlowComponent,
+    MarkerPopupComponent
+  ],
+  exports: [AdminComponent]
 })
 export class AppModule {}

@@ -33,6 +33,7 @@
     "@ng-bootstrap/ng-bootstrap": "^3.2.2",
     "@nguniversal/express-engine": "^7.1.0",
     "@nguniversal/module-map-ngfactory-loader": "0.0.0",
+    "angular2-image-upload": "^1.0.0-rc.2",
     "angular6-json-schema-form": "^7.1.0",
     "bootstrap": "^4.3.1",
     "core-js": "^2.5.4",
@@ -54,7 +55,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.9",
-    "@angular/cli": "^6.2.6",
+    "@angular/cli": "^6.2.9",
     "@angular/compiler-cli": "^6.1.0",
     "@angular/language-service": "^6.1.10",
     "@types/jasmine": "~2.8.8",
