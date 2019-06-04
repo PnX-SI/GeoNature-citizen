@@ -100,7 +100,7 @@ export class BadgeFacade {
     return this.role_id;
   }
 
-  difference(badges: Badge[]) {
+  difference(badges: Badge[]): Badge[] | null {
     if (badges && badges.length === 0) return /* EMPTY */;
 
     function badgeListComparer(otherArray) {
@@ -150,13 +150,11 @@ export class RewardComponent implements IFlowComponent {
   @Input() data: any;
   timeout: any;
   init = 0;
-  condition$ = new BehaviorSubject<boolean>(false);
   reward$ = this.badges.changes$.pipe(
     map(reward => {
       this.init++;
       const condition = reward && !!reward.length;
-
-      this.condition$.next(condition);
+      console.debug(condition, this.init, reward);
       if (!condition && this.init > 1) {
         if (this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(() => this.close("NOREWARD"), 0);
