@@ -49,11 +49,7 @@ export class TopbarComponent implements OnInit {
         }),
         catchError(error => throwError(error))
       )
-      .subscribe
-      // FIXME:
-      // HELP: triggers "EmptyError: no elements in sequence" right after our token refresh
-      // console.debug("topbar::programs", data);
-      ();
+      .subscribe();
   }
 
   isLoggedIn(): Observable<boolean> {
