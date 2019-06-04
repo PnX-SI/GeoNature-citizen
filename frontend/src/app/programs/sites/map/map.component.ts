@@ -229,8 +229,9 @@ export class SitesMapComponent implements OnInit, OnChanges {
 
       let myNewObsMarker = null;
       this.sitesMap.on("click", (e: L.LeafletMouseEvent) => {
-        this.onClick.emit(L.point(e.latlng.lng, e.latlng.lat));
-        let coords = JSON.stringify({
+        let coords = L.point(e.latlng.lng, e.latlng.lat);
+        this.onClick.emit(coords);
+        let json_coords = JSON.stringify({
           type: "Point",
           coordinates: [e.latlng.lng, e.latlng.lat]
         });
@@ -242,14 +243,14 @@ export class SitesMapComponent implements OnInit, OnChanges {
         // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
         // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
         if (programBounds.contains([e.latlng.lat, e.latlng.lng])) {
-          this.coords = coords;
-          console.debug(coords);
+          this.coords = json_coords;
+          console.debug(json_coords);
           // emit new coordinates
           myNewObsMarker = L.marker(e.latlng, {
             icon: newObsMarkerIcon()
           }).addTo(this.sitesMap);
           $("#feature-title").html(myMarkerTitle);
-          $("#feature-coords").html(coords);
+          $("#feature-coords").html(json_coords);
           // $("#feature-info").html(myMarkerContent);
           $("#featureModal").modal("show");
         }
