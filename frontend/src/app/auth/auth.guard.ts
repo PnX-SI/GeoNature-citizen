@@ -32,7 +32,6 @@ export class AuthGuard implements CanActivate {
           console.error("[AuthGuard] canActivate error", error);
           this.authService.logout();
           this.router.navigate(["/home"]);
-          // return throwError(error);
           return of(false);
         })
       );
