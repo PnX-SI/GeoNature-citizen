@@ -54,6 +54,7 @@ import { SiteModalFlowComponent } from "./programs/sites/modalflow/modalflow.com
 import { RewardComponent } from "./programs/observations/modalflow/steps/reward/reward.component";
 import { ModalFlowService } from "./programs/observations/modalflow/modalflow.service";
 import { SiteModalFlowService } from "./programs/sites/modalflow/modalflow.service";
+import { SiteService } from "./programs/sites/sites.service";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { AppConfig } from "../conf/app.config";
 
@@ -124,6 +125,7 @@ import { GNCFrameworkComponent } from './programs/sites/form/framework/framework
     // FlowService,
     ModalFlowService,
     SiteModalFlowService,
+    SiteService,
     ProgramsResolve,
     {
       provide: HTTP_INTERCEPTORS,
