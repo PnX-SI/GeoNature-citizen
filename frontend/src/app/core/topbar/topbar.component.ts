@@ -98,18 +98,15 @@ export class TopbarComponent implements OnInit {
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
     if (access_token) {
-      this.auth
-        .ensureAuthorized(access_token)
-        .then(user => {
-          if (user && user.features) {
-            if (user.features.id_role) {
-              this.username = user.features.username;
-              this.isAdmin = user.features.admin ? true : false;
-            }
+      this.auth.ensureAuthorized().pipe(
+        tap(user => {
+          if (user && user["features"] && user["features"].id_role) {
+            this.username = user["features"].username;
+            this.isAdmin = user["features"].admin ? true : false;
           }
-        })
-        .catch(err => {
-          console.log(err);
+        }),
+        catchError(err => {
+          console.error(err);
           this.auth
             .logout()
             .then(logout => {
@@ -118,7 +115,9 @@ export class TopbarComponent implements OnInit {
             .catch(err => {
               console.log(err);
             });
-        });
+          return throwError(err);
+        })
+      );
     }
   }
 

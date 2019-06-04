@@ -5,7 +5,8 @@ import {
   RouterStateSnapshot,
   Router
 } from "@angular/router";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
+import { map, catchError } from "rxjs/operators";
 
 import { AuthService } from "./auth.service";
 import { LoginUser } from "./models";
@@ -25,19 +26,16 @@ export class AuthGuard implements CanActivate {
     this.authService.redirectUrl = state.url;
     const token = localStorage.getItem("access_token");
     if (token) {
-      return new Promise(resolve => {
-        this.authService
-          .ensureAuthorized(token)
-          .then((user: LoginUser) => {
-            resolve(true);
-          })
-          .catch(error => {
-            console.error("[AuthGuard] canActivate error", error);
-            this.authService.logout();
-            this.router.navigate(["/home"]);
-            resolve(false);
-          });
-      });
+      return this.authService.ensureAuthorized().pipe(
+        map((user: LoginUser) => !!user),
+        catchError(error => {
+          console.error("[AuthGuard] canActivate error", error);
+          this.authService.logout();
+          this.router.navigate(["/home"]);
+          // return throwError(error);
+          return of(false);
+        })
+      );
     }
 
     this.authService.logout();

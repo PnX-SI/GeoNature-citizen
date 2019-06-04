@@ -67,39 +67,41 @@ export class BadgeFacade {
     const access_token = localStorage.getItem("access_token");
     console.debug("facade initialized.");
     if (access_token) {
-      this.authService.ensureAuthorized(access_token).then(user => {
-        if (user["features"]["id_role"]) {
-          this.role_id = user["features"]["id_role"];
-          this.http
-            .get<Object>(
-              `${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`
-            )
-            .pipe(
-              pluck("badges"),
-              tap((badges: Badge[]) => {
-                const changes = this.difference(badges);
-                this.updateState({
-                  ..._state,
-                  badges: badges,
-                  changes: changes,
-                  loading: false
-                });
-                localStorage.setItem("badges", JSON.stringify(badges));
-              }),
-              catchError(error => {
-                console.error(error);
-                window.alert(error);
-                return throwError(error);
-              })
-            )
-            .subscribe();
-        }
-      }),
-        error => {
+      this.authService.ensureAuthorized().pipe(
+        tap(user => {
+          if (user["features"]["id_role"]) {
+            this.role_id = user["features"]["id_role"];
+            this.http
+              .get<Object>(
+                `${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`
+              )
+              .pipe(
+                pluck("badges"),
+                tap((badges: Badge[]) => {
+                  const changes = this.difference(badges);
+                  this.updateState({
+                    ..._state,
+                    badges: badges,
+                    changes: changes,
+                    loading: false
+                  });
+                  localStorage.setItem("badges", JSON.stringify(badges));
+                }),
+                catchError(error => {
+                  console.error(error);
+                  window.alert(error);
+                  return throwError(error);
+                })
+              )
+              .subscribe();
+          }
+        }),
+        catchError(error => {
           console.error(error);
           window.alert(error);
           return throwError(error);
-        };
+        })
+      );
     }
   }
 

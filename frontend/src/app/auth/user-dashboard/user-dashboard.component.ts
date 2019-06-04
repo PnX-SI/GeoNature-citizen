@@ -38,10 +38,9 @@ export class UserDashboardComponent implements OnInit {
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
     if (access_token) {
-      this.auth
-        .ensureAuthorized(access_token)
-        .then(user => {
-          if (user["features"]["id_role"]) {
+      this.auth.ensureAuthorized().pipe(
+        tap(user => {
+          if (user && user["features"] && user["features"]["id_role"]) {
             this.isLoggedIn = true;
             this.username = user["features"]["username"];
             this.stats = user["features"]["stats"];
@@ -50,8 +49,9 @@ export class UserDashboardComponent implements OnInit {
               console.debug("badges done.")
             );
           }
-        })
-        .catch(err => alert(err));
+        }),
+        catchError(err => throwError(err))
+      );
     }
   }
 

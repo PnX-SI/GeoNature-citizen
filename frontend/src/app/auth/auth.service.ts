@@ -70,9 +70,9 @@ export class AuthService {
       .toPromise();
   }
 
-  ensureAuthorized(_access_token): Promise<any> {
+  ensureAuthorized(): Observable<LoginUser> {
     let url: string = `${AppConfig.API_ENDPOINT}/user/info`;
-    return this.http.get(url, { headers: this.headers }).toPromise();
+    return this.http.get<LoginUser>(url, { headers: this.headers });
   }
 
   performTokenRefresh(): Observable<TokenRefresh> {

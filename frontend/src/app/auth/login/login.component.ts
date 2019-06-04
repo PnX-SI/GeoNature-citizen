@@ -99,7 +99,7 @@ export class LoginComponent {
     if (error.error) {
       // client-side or network error
       // server-side error
-      console.error("server-side error:", error, typeof error);
+      console.error("login error:", error, typeof error);
       if (error.error && error.error.message) {
         // api error
         errorMessage = `${error.error.message}`;
