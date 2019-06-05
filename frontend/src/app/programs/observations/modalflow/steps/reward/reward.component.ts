@@ -111,7 +111,7 @@ export class BadgeFacade {
     }
 
     const oldBadges: Badge[] = _state.badges;
-    if (!!oldBadges.length) return badges;
+    if (oldBadges.length === 0) return badges;
 
     const onlyInNewState: Badge[] = badges.filter(badgeListComparer(oldBadges));
 
