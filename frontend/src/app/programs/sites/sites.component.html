@@ -10,11 +10,13 @@
         [sites]="sites"
         [taxa]="surveySpecies"
         [program_id]="program_id"
+        (siteSelect)="sitesMapRef.showPopup($event);"
       ></app-sites-list>
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
       <app-sites-map
+        #sitesMapRef
         [sites]="sites"
         [program]="programFeature"
         (onClick)="onMapClicked($event)"

@@ -2,7 +2,8 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  AfterViewChecked
+  AfterViewChecked,
+  ViewChild
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
@@ -12,6 +13,8 @@ import { GncProgramsService } from "../../api/gnc-programs.service";
 import { Program } from "../programs.models";
 import { SiteModalFlowService } from "./modalflow/modalflow.service";
 import { SiteService } from "./sites.service";
+import { SitesMapComponent } from "./map/map.component";
+import { SitesListComponent } from "./list/list.component";
 
 @Component({
   selector: "app-sites",
@@ -29,6 +32,8 @@ export class SitesComponent implements OnInit, AfterViewChecked {
   sites: FeatureCollection;
   programFeature: FeatureCollection;
   surveySpecies: any;
+  @ViewChild(SitesMapComponent) sitesMap: SitesMapComponent;
+  @ViewChild(SitesListComponent) sitesList: SitesListComponent;
 
   constructor(
     private route: ActivatedRoute,

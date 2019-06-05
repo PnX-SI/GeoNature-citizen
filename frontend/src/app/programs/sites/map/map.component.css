@@ -1,5 +1,13 @@
-#sitesMap {
-  height: calc(100vh - var(--router-outlet-offset));
+popup {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+#obsMap {
+  height: calc(100vh - var(--router-outlet-offset) - 25px);
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
 }
@@ -18,12 +26,15 @@
 .marker-cluster-small {
   background-color: rgba(254, 250, 245, 0.1);
 }
+
 .marker-cluster-small div {
   background-color: rgba(254, 250, 245, 0.1);
 }
+
 .marker-cluster-medium {
   background-color: rgba(254, 250, 245, 0.1);
 }
+
 .marker-cluster-medium div {
   background-color: rgba(254, 250, 245, 0.1);
 }
@@ -46,10 +57,13 @@ a.leaflet-control-layers-toggle {
   .btn-group .btn-big {
     opacity: 1 !important;
   }
-  #sitesMap {
+
+  #obsMap {
     margin: 0;
     width: 100%;
+    max-height: 40vh;
   }
+
   #map {
     width: 100%;
     max-height: 40vh;

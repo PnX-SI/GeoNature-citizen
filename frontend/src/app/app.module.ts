@@ -30,7 +30,10 @@ import {
 } from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
 import { SitesListComponent } from "./programs/sites/list/list.component";
-import { SitesMapComponent } from "./programs/sites/map/map.component";
+import {
+    SitesMapComponent,
+    SiteMarkerPopupComponent
+} from "./programs/sites/map/map.component";
 import { SitesComponent } from "./programs/sites/sites.component";
 import { SiteFormComponent } from "./programs/sites/siteform/siteform.component";
 import { SiteVisitFormComponent } from "./programs/sites/form/form.component";
@@ -89,6 +92,7 @@ import {ImageUploadModule} from "angular2-image-upload";
     ObsComponent,
     ObsMapComponent,
     MarkerPopupComponent,
+    SiteMarkerPopupComponent,
     ObsFormComponent,
     ObsListComponent,
     SitesComponent,
@@ -159,7 +163,8 @@ import {ImageUploadModule} from "angular2-image-upload";
     RewardComponent,
     GNCFrameworkComponent,
     FlowComponent,
-    MarkerPopupComponent
+    MarkerPopupComponent,
+    SiteMarkerPopupComponent
   ],
   exports: [AdminComponent]
 })

@@ -1,4 +1,10 @@
-import { Component, OnChanges, Input } from "@angular/core";
+import {
+  Component,
+  OnChanges,
+  Input,
+  EventEmitter,
+  Output
+} from "@angular/core";
 
 import { FeatureCollection, Feature } from "geojson";
 import { SiteModalFlowService } from "../modalflow/modalflow.service";
@@ -13,6 +19,7 @@ export class SitesListComponent implements OnChanges {
   @Input("sites") sitesCollection: FeatureCollection;
   @Input("taxa") surveySpecies: any[];
   @Input("program_id") program_id: number;
+  @Output("siteSelect") siteSelect: EventEmitter<Feature> = new EventEmitter();
   municipalities: string[];
   sites: Feature[] = [];
   taxa: any[];
@@ -34,5 +41,9 @@ export class SitesListComponent implements OnChanges {
   }
   addSiteVisit(site_id) {
     this.flowService.addSiteVisit(site_id);
+  }
+
+  onSiteClick(e): void {
+    this.siteSelect.emit(e);
   }
 }
