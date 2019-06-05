@@ -777,21 +777,21 @@
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="d2ba50433c616b0f5b40acd3cd80f034ee615e9b" datatype="html">
+      <trans-unit id="6afd170ad10325de9e3880f67f2d6d7749dd4c43" datatype="html">
         <source>
-          <x id="ICU" equiv-text="{ rewards.length, plural, =1 {...} other {...}}"/>
+          <x id="ICU" equiv-text="{ +rewards?.length, plural, =1 {...} other {...}}"/>
         </source>
         <target>
-          <x id="ICU" equiv-text="{ rewards.length, plural, =1 {...} other {...}}"/>
+          <x id="ICU" equiv-text="{ +rewards?.length, plural, =1 {...} other {...}}"/>
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/modalflow/steps/reward/reward.component.ts</context>
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="72c73cea6897a74ca98c6087f68c5e60ea673427" datatype="html">
+      <trans-unit id="d1cc8bb10d375528a4f6bbf843c7904d2779a7c6" datatype="html">
         <source>{VAR_PLURAL, plural, =1 {Vous venez d&apos;obtenir ce badge } other {Vous venez d&apos;obtenir ces badges } }</source>
-        <target>{VAR_PLURAL, plural, =1 {You acquired this badge just now } other {You acquired these badges just now  } }</target>
+        <target>{VAR_PLURAL, plural, =1 {You have just acquired this badge } other {You have just acquired these badge  } }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/modalflow/steps/reward/reward.component.ts</context>
           <context context-type="linenumber">7</context>
