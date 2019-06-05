@@ -1,13 +1,14 @@
 import { Component, Input, ViewEncapsulation, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { throwError, BehaviorSubject } from "rxjs";
+import { throwError, BehaviorSubject, Observable } from "rxjs";
 import {
   tap,
   catchError,
   map,
   distinctUntilChanged,
   share,
-  pluck
+  pluck,
+  filter
 } from "rxjs/operators";
 
 import { AppConfig } from "../../../../../../conf/app.config";
@@ -28,7 +29,7 @@ export interface BadgeState {
 let _state: BadgeState = {
   badges: JSON.parse(localStorage.getItem("badges")),
   changes: [],
-  loading: false
+  loading: true
 };
 
 @Injectable()
@@ -58,8 +59,8 @@ export class BadgeFacade {
   getChanges(): void {
     const access_token = localStorage.getItem("access_token");
     if (access_token) {
-      this.authService.ensureAuthorized().pipe(
-        tap(user => {
+      this.authService.ensureAuthorized().subscribe(
+        user => {
           if (user["features"]["id_role"]) {
             this.role_id = user["features"]["id_role"];
             this.http
@@ -86,12 +87,13 @@ export class BadgeFacade {
               )
               .subscribe();
           }
-        }),
-        catchError(error => {
+        },
+        error => {
           console.error(error);
           window.alert(error);
           return throwError(error);
-        })
+        },
+        null
       );
     }
   }
@@ -100,8 +102,8 @@ export class BadgeFacade {
     return this.role_id;
   }
 
-  difference(badges: Badge[]): Badge[] | null {
-    if (badges && badges.length === 0) return /* EMPTY */;
+  difference(badges: Badge[]): Badge[] {
+    if (badges && badges.length === 0) return [];
 
     function badgeListComparer(otherArray) {
       return current =>
@@ -127,8 +129,8 @@ export class BadgeFacade {
         <div><img src="assets/user.jpg" /></div>
         <h5 i18n>Félicitations !</h5>
         <h6 i18n>
-          { rewards.length, plural, =1 { Vous venez d'obtenir ce badge } other {
-          Vous venez d'obtenir ces badges } }
+          { +rewards?.length, plural, =1 { Vous venez d'obtenir ce badge } other
+          { Vous venez d'obtenir ces badges } }
         </h6>
         <p>
           <img
@@ -147,31 +149,32 @@ export class BadgeFacade {
 })
 export class RewardComponent implements IFlowComponent {
   readonly AppConfig = AppConfig;
+  private _timeout: any;
+  private _init = 0;
   @Input() data: any;
-  timeout: any;
-  init = 0;
-  reward$ = this.badges.changes$.pipe(
-    map(reward => {
-      this.init++;
-      const condition = reward && !!reward.length;
-      console.debug(condition, this.init, reward);
-      if (!condition && this.init > 1) {
-        if (this.timeout) clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => this.close("NOREWARD"), 0);
-      }
-      return condition && this.init > 1 ? reward : null;
-    })
-  );
+  reward$: Observable<Badge[]>;
 
-  constructor(public badges: BadgeFacade) {}
+  constructor(public badges: BadgeFacade) {
+    this.reward$ = this.badges.changes$.pipe(
+      tap(reward => {
+        this._init++;
+
+        const condition = !!reward && !!reward.length;
+
+        if (!condition && this._init > 1) {
+          if (this._timeout) clearTimeout(this._timeout);
+          this._timeout = setTimeout(() => this.close("NOREWARD"), 0);
+        }
+      }),
+      filter(reward => reward && !!reward.length && this._init > 1)
+    );
+  }
 
   close(d) {
-    console.debug(`reward close: ${d}`);
     this.data.service.close(d);
   }
 
   clicked(d) {
-    console.debug("clicked", d);
     this.close(d);
   }
 }
