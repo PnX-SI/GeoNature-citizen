@@ -27,7 +27,7 @@ export interface BadgeState {
 }
 
 let _state: BadgeState = {
-  badges: JSON.parse(localStorage.getItem("badges")),
+  badges: JSON.parse(localStorage.getItem("badges")) || [],
   changes: [],
   loading: true
 };
@@ -104,6 +104,7 @@ export class BadgeFacade {
 
   difference(badges: Badge[]): Badge[] {
     const oldBadges: Badge[] = _state.badges;
+    console.debug("oldBadges:", oldBadges);
     if (oldBadges.length === 0 && badges && !!badges.length) {
       return badges;
     }
