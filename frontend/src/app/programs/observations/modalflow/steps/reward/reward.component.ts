@@ -103,15 +103,14 @@ export class BadgeFacade {
   }
 
   difference(badges: Badge[]): Badge[] {
+    const oldBadges: Badge[] = _state.badges;
+    if (oldBadges.length === 0 && badges && !!badges.length) return badges;
     if (!badges || (badges && badges.length === 0)) return [];
 
     function badgeListComparer(otherArray) {
       return current =>
         otherArray.filter(other => other.alt == current.alt).length == 0;
     }
-
-    const oldBadges: Badge[] = _state.badges;
-    if (oldBadges.length === 0) return badges;
 
     const onlyInNewState: Badge[] = badges.filter(badgeListComparer(oldBadges));
 
