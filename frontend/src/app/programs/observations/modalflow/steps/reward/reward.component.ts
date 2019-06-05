@@ -129,8 +129,8 @@ export class BadgeFacade {
         <div><img src="assets/user.jpg" /></div>
         <h5 i18n>Félicitations !</h5>
         <h6 i18n>
-          { +rewards?.length, plural, =1 { Vous venez d'obtenir ce badge } other
-          { Vous venez d'obtenir ces badges } }
+          { +rewards?.length, plural, =1 { Vous venez d&apos;obtenir ce badge }
+          other { Vous venez d&apos;obtenir ces badges } }
         </h6>
         <p>
           <img

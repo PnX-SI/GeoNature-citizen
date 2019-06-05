@@ -791,7 +791,7 @@
       </trans-unit>
       <trans-unit id="d1cc8bb10d375528a4f6bbf843c7904d2779a7c6" datatype="html">
         <source>{VAR_PLURAL, plural, =1 {Vous venez d&apos;obtenir ce badge } other {Vous venez d&apos;obtenir ces badges } }</source>
-        <target>{VAR_PLURAL, plural, =1 {You have just acquired this badge } other {You have just acquired these badge  } }</target>
+        <target>{VAR_PLURAL, plural, =1 {You have just acquired this badge } other {You have just acquired these badges } }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/modalflow/steps/reward/reward.component.ts</context>
           <context context-type="linenumber">7</context>
