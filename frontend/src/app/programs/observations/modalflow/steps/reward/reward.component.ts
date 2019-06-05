@@ -103,7 +103,7 @@ export class BadgeFacade {
   }
 
   difference(badges: Badge[]): Badge[] {
-    if (badges && badges.length === 0) return [];
+    if (!badges || (badges && badges.length === 0)) return [];
 
     function badgeListComparer(otherArray) {
       return current =>
