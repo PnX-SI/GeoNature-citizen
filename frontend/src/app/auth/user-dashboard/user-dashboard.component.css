@@ -81,15 +81,16 @@
 #badges div {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: start;
   padding: 20px;
   background: #f3f3f3;
+  border: solid 3px #fff;
 }
 
 #badges div img {
   margin: 20px 10px;
-  width: 120px;
-  height: 120px;
+  width: 70px;
+  height: 70px;
 }
 
 /* DONNEES PERSO */
@@ -152,7 +153,7 @@ form > button {
   margin: 0;
 }
 
-@media screen and (min-width: 992px) {
+/* @media screen and (min-width: 992px) {
   #badges .row div:nth-child(2):before {
     content: " ";
     background-color: #333;
@@ -173,7 +174,7 @@ form > button {
     right: 0;
     transform: translateY(-50%);
   }
-}
+} */
 
 @media screen and (max-width: 991px) {
   #badges .row div:nth-child(2):before {
