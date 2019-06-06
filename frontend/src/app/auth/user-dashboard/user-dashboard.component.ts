@@ -49,7 +49,9 @@ export class UserDashboardComponent implements OnInit {
               this.username = user["features"]["username"];
               this.stats = user["features"]["stats"];
               this.role_id = user["features"]["id_role"];
-              this.getBadgeCategories().subscribe();
+              if (AppConfig["REWARDS"] && AppConfig["REWARDS"]["BADGESET"]) {
+                this.getBadgeCategories().subscribe();
+              }
             }
           }),
           catchError(err => throwError(err))

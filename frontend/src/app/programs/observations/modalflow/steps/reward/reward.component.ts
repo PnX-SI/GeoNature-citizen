@@ -58,7 +58,11 @@ export class BadgeFacade {
 
   getChanges(): void {
     const access_token = localStorage.getItem("access_token");
-    if (access_token) {
+    if (
+      access_token &&
+      AppConfig["REWARDS"] &&
+      AppConfig["REWARDS"]["BADGESET"]
+    ) {
       this.authService.ensureAuthorized().subscribe(
         user => {
           if (user["features"]["id_role"]) {
