@@ -20,6 +20,8 @@ from .models import ObservationMediaModel, ObservationModel
 from gncitizen.core.users.models import UserModel
 
 # from gncitizen.core.taxonomy.models import Taxref
+# DOING: TaxRef REST as alternative
+# from gncitizen.core.taxonomy.routes import get_list
 
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
@@ -411,7 +413,23 @@ def get_program_observations(id):
             .order_by(ObservationModel.timestamp_create.desc())
             .all()
         )
+
         features = []
+        # taxon_catalogue = dict()
+        # if current_app.config["API_TAXHUB"]:
+        #     try:
+        #         TAXHUB_API = current_app.config["API_TAXHUB"]
+        #         TAXHUB_API += "/" if current_app.config["API_TAXHUB"][-1] != "/" else ""
+        #
+        #         taxon_info = requests.get("{}bibnoms/taxoninfo/{}".format(TAXHUB_API, id))
+        #         taxon_catalogue = taxon_info.json()
+        #
+        #     except (Exception, ConnectionError) as e:
+        #         if current_app.config["DEBUG"]:
+        #             raise e
+        #             return {"message": str(e)}, 400
+        #         current_app.logger.warning(str(e))
+
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
             feature["properties"]["municipality"] = {
@@ -447,12 +465,17 @@ def get_program_observations(id):
                     feature["properties"][k] = observation_dict[k]
 
             taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
+
             for k in taxref:
                 feature["properties"][k] = taxref[k]
             features.append(feature)
-        current_app.logger.debug(FeatureCollection(features))
+
+        current_app.logger.warning(FeatureCollection(features))
         return FeatureCollection(features)
+
     except Exception as e:
+        if current_app.config["DEBUG"]:
+            raise e
         return {"message": str(e)}, 400
 
 

@@ -1,5 +1,5 @@
 # import requests
-from flask import Blueprint, current_app, json
+from flask import Blueprint, current_app
 
 # from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.env import db
@@ -90,8 +90,9 @@ def get_list(id):
           200:
             description: A list of all species lists
         """
-    # if current_app.config["API_TAXHUB"] == "bla":
-    if current_app.config["API_TAXHUB"]:
+
+    # if current_app.config["API_TAXHUB"]:
+    if current_app.config["API_TAXHUB"] == "bla":
         try:
             TAXHUB_API = current_app.config["API_TAXHUB"]
             TAXHUB_API += "/" if current_app.config["API_TAXHUB"][-1] != "/" else ""
@@ -101,15 +102,16 @@ def get_list(id):
                     TAXHUB_API, id
                 )
             )
+            list_resp = list_req.json()
 
-            taxon_list = json.loads(list_req.content).get("items")
+            taxon_list = list_resp.content.get("items")
             taxon_card_ids = [item["id_nom"] for item in taxon_list]
-            current_app.logger.critical(taxon_card_ids)
+            # current_app.logger.critical(taxon_card_ids)
 
             results = []
             for card_id in taxon_card_ids:
                 _req = requests.get("{}bibnoms/{}".format(TAXHUB_API, card_id))
-                _res = json.loads(_req.content)
+                _res = _req.content.json()
 
                 data = dict()
                 data["nom"] = {
@@ -121,7 +123,10 @@ def get_list(id):
                 data["medias"] = [
                     media
                     for media in _res["medias"]
-                    if media and media["is_public"] and media["url"]
+                    if media
+                    and not media["supprime"]
+                    and media["is_public"]
+                    and media["url"]
                 ]
                 data["taxref"] = _res["taxref"]
                 results.append(data)
