@@ -46,7 +46,6 @@ export class LoginComponent {
             });
             this.displaySuccessMessage(message);
 
-            // redirect ?
             if (this.auth.redirectUrl) {
               this.router.navigate([this.auth.redirectUrl]);
             }
@@ -59,8 +58,7 @@ export class LoginComponent {
       .subscribe(
         _data => {},
         errorMessage => {
-          // console.debug("errorMessage", errorMessage);
-          // window.alert(errorMessage);
+          console.error("errorMessage", errorMessage);
           this.successMessage = null;
           this.errorMessage = errorMessage;
           this.displayErrorMessage(errorMessage);
@@ -69,14 +67,12 @@ export class LoginComponent {
   }
 
   onRecoverPassword(): void {
-    console.debug(this.recovery);
     this.http
       .post(`${AppConfig.API_ENDPOINT}/user/resetpasswd`, this.recovery)
       .pipe(catchError(this.handleError))
       .subscribe(
         response => {
           const message = response["message"];
-          console.debug("message: ", message);
           this._success.subscribe(message => (this.successMessage = message));
           this._success.pipe(debounceTime(5000)).subscribe(() => {
             this.activeModal.close();
@@ -84,8 +80,7 @@ export class LoginComponent {
           this.displaySuccessMessage(message);
         },
         errorMessage => {
-          console.debug("error", errorMessage);
-          // window.alert(errorMessage);
+          console.error("error", errorMessage);
           this.successMessage = null;
           this.errorMessage = errorMessage;
           this.displayErrorMessage(errorMessage);
@@ -96,12 +91,10 @@ export class LoginComponent {
   handleError(error) {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
-      console.error("client-side error");
       // client-side or network error
-      errorMessage = `Error: ${error.error.message}`;
     } else {
       // server-side error
-      console.error("server-side error:", error, typeof error);
+      console.error("login error:", error, typeof error);
       if (error.error && error.error.message) {
         // api error
         errorMessage = `${error.error.message}`;
@@ -116,11 +109,9 @@ export class LoginComponent {
 
   displayErrorMessage(message) {
     this._error.next(message);
-    // console.log("errorMessage:", message);
   }
 
   displaySuccessMessage(message) {
     this._success.next(message);
-    // console.log("successMessage:", message);
   }
 }

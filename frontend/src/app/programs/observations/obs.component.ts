@@ -87,7 +87,6 @@ export class ObsComponent implements OnInit, AfterViewInit {
 
   onMapClicked(p: L.Point): void {
     this.coords = p;
-    // console.debug("map clicked", this.coords, this.obsMap.observationMap);
   }
 
   toggleList() {
@@ -97,7 +96,6 @@ export class ObsComponent implements OnInit, AfterViewInit {
   @HostListener("document:NewObservationEvent", ["$event"])
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
-    console.debug("[ObsComponent.newObservationEventHandler]", e.detail);
     const _ = this.observations.features.unshift(e.detail);
     this.observations = {
       type: "FeatureCollection",
@@ -107,29 +105,14 @@ export class ObsComponent implements OnInit, AfterViewInit {
       type: "FeatureCollection",
       features: this.observations.features
     };
-    // this.obsMap.observations = {
-    //   type: "FeatureCollection",
-    //   features: this.observations.features
-    // };
   }
-
-  /*
-    filters subject
-    observations subject
-    filtered observations subject -> presentation source observable
-  */
 
   @HostListener("document:ObservationFilterEvent", ["$event"])
   observationFilterEventHandler(e: CustomEvent) {
     e.stopPropagation();
-    console.debug("[ObsComponent.observationFilterEventHandler]", e.detail);
     this.obsList.observations = {
       type: "FeatureCollection",
       features: this.observations.features
     };
-    // this.obsMap.observations = {
-    //   type: "FeatureCollection",
-    //   features: this.observations.features
-    // };
   }
 }

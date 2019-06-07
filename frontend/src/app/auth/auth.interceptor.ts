@@ -53,9 +53,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
       return this.auth.performTokenRefresh().pipe(
         take(1),
-        tap(token => {
-          console.debug("[AuthInterceptor.performTokenRefresh] result", token);
-        }),
         map((data: TokenRefresh) => {
           if (data && data.access_token) {
             localStorage.setItem("access_token", data.access_token);
@@ -74,7 +71,6 @@ export class AuthInterceptor implements HttpInterceptor {
           return from(this.auth.logout());
         }),
         finalize(() => {
-          console.debug("done");
           this.refreshing = false;
         })
       );
@@ -91,7 +87,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
   async handle400(error): Promise<any> {
     console.error(`[400 handler] "${error.message}"`);
-    // this.auth.logout();
     return from(this.router.navigateByUrl("/home"));
   }
 
@@ -113,9 +108,6 @@ export class AuthInterceptor implements HttpInterceptor {
     // renew access_token 2min before expiration if interacting with backend api.
     const expired = this.auth.tokenExpiration(this.auth.getAccessToken());
     if (expired && expired <= 120.0) {
-      console.debug(
-        `[AuthInterceptor.intercept] token is about to expire: ${expired}`
-      );
       return this.handle401(request, next);
     }
 
@@ -131,9 +123,6 @@ export class AuthInterceptor implements HttpInterceptor {
             case 422:
               return this.handle400(error);
             case 401:
-              console.debug(
-                `[AuthInterceptor.intercept] handling "${error.error.msg}"`
-              );
               return this.handle401(request, next);
             default:
               console.error(
@@ -143,8 +132,8 @@ export class AuthInterceptor implements HttpInterceptor {
               errorMessage = `${error}`;
           }
         }
-        // window.alert(errorMessage);
-        // console.error(errorMessage);
+        window.alert(errorMessage);
+        console.error(errorMessage);
         return throwError(errorMessage);
       })
     );

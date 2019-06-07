@@ -37,21 +37,24 @@ export class UserDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
+    console.debug("dashboard", access_token);
     if (access_token) {
       this.auth
-        .ensureAuthorized(access_token)
-        .then(user => {
-          if (user["features"]["id_role"]) {
-            this.isLoggedIn = true;
-            this.username = user["features"]["username"];
-            this.stats = user["features"]["stats"];
-            this.role_id = user["features"]["id_role"];
-            this.getBadgeCategories().subscribe(() =>
-              console.debug("badges done.")
-            );
-          }
-        })
-        .catch(err => alert(err));
+        .ensureAuthorized()
+        .pipe(
+          tap(user => {
+            console.debug("user:", user);
+            if (user && user["features"] && user["features"]["id_role"]) {
+              this.isLoggedIn = true;
+              this.username = user["features"]["username"];
+              this.stats = user["features"]["stats"];
+              this.role_id = user["features"]["id_role"];
+              this.getBadgeCategories().subscribe();
+            }
+          }),
+          catchError(err => throwError(err))
+        )
+        .subscribe();
     }
   }
 
@@ -124,7 +127,6 @@ export class UserDashboardComponent implements OnInit {
             }
             return acc;
           }, {});
-          // console.debug(categories);
 
           Object.values(categories).map(value => this.badges.push(value));
           this.badges$.next(this.badges);

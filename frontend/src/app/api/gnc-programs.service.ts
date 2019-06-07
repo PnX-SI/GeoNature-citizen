@@ -81,14 +81,7 @@ export class GncProgramsService implements OnInit {
   }
 
   getAllPrograms(): Observable<Program[]> {
-    // console.debug(`
-    //   stateKey: ${this.state.hasKey(PROGRAMS_KEY)},
-    //   state: ${this.state.get(PROGRAMS_KEY, null as Program[]) != null}
-    //   programs: ${this.programs != null}`);
-
     if (!this.programs) {
-      // console.warn("getAllPrograms");
-
       return this.http.get<IGncFeatures>(`${this.URL}/programs`).pipe(
         pluck("features"),
         map((features: IGncProgram[]) =>
@@ -113,7 +106,6 @@ export class GncProgramsService implements OnInit {
         catchError(this.handleError<Program[]>("getAllPrograms"))
       );
     } else {
-      // console.debug("I want this!");
       return this.programs$;
     }
   }
