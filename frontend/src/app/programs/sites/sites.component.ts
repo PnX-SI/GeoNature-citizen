@@ -2,7 +2,8 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  AfterViewChecked
+  AfterViewChecked,
+  ViewChild
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
@@ -11,6 +12,9 @@ import { FeatureCollection } from "geojson";
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { Program } from "../programs.models";
 import { SiteModalFlowService } from "./modalflow/modalflow.service";
+import { SiteService } from "./sites.service";
+import { SitesMapComponent } from "./map/map.component";
+import { SitesListComponent } from "./list/list.component";
 
 @Component({
   selector: "app-sites",
@@ -28,16 +32,21 @@ export class SitesComponent implements OnInit, AfterViewChecked {
   sites: FeatureCollection;
   programFeature: FeatureCollection;
   surveySpecies: any;
+  @ViewChild(SitesMapComponent) sitesMap: SitesMapComponent;
+  @ViewChild(SitesListComponent) sitesList: SitesListComponent;
 
   constructor(
     private route: ActivatedRoute,
     private programService: GncProgramsService,
-    public flowService: SiteModalFlowService
+    public flowService: SiteModalFlowService,
+    public siteService: SiteService
   ) {
     this.route.params.subscribe(params => (this.program_id = params["id"]));
     this.route.fragment.subscribe(fragment => {
       this.fragment = fragment;
     });
+    this.siteService.newSiteCreated.subscribe(
+      newSiteFeature => { this.loadSites(); })
   }
 
   ngOnInit() {
@@ -45,11 +54,7 @@ export class SitesComponent implements OnInit, AfterViewChecked {
       // TODO: merge observables
       this.programs = data.programs;
       this.program = this.programs.find(p => p.id_program == this.program_id);
-      this.programService
-        .getProgramSites(this.program_id)
-        .subscribe(sites => {
-          this.sites = sites;
-        });
+      this.loadSites();
       this.programService
         .getProgramTaxonomyList(this.program_id)
         .subscribe(taxa => {
@@ -59,6 +64,14 @@ export class SitesComponent implements OnInit, AfterViewChecked {
         .getProgram(this.program_id)
         .subscribe(program => (this.programFeature = program));
     });
+  }
+
+  loadSites() {
+    this.programService
+        .getProgramSites(this.program_id)
+        .subscribe(sites => {
+          this.sites = sites;
+        });
   }
 
   ngAfterViewChecked(): void {
@@ -71,5 +84,10 @@ export class SitesComponent implements OnInit, AfterViewChecked {
     } catch (e) {
       alert(e);
     }
+  }
+
+  onMapClicked(p): void {
+    this.coords = p;
+    console.debug("map clicked", this.coords);
   }
 }

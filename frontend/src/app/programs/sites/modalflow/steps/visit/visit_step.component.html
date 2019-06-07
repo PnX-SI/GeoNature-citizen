@@ -7,7 +7,13 @@
 
 <div class="modal-footer">
   <button class="btn btn-danger rounded-0" (click)="form.previousStep()" *ngIf="!form.isFirstStep()">Etape précédente</button>
-  <button class="btn btn-warning rounded-0" (click)="form.nextStep()" *ngIf="!form.isLastStep()">Etape suivante</button>
+  <button 
+    class="btn btn-warning rounded-0"
+    (click)="form.nextStep()"
+    *ngIf="!form.isLastStep()"
+    [disabled]="form.invalidStep()">
+      Etape suivante
+    </button>
   <button
     type="submit"
     [disabled]="!form.visitForm.valid"

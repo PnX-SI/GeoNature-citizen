@@ -8,6 +8,7 @@ import {
 
 import { IFlowComponent } from "../../../../observations/modalflow/flow/flow";
 import { SiteFormComponent } from "../../../siteform/siteform.component";
+import { SiteService } from "../../../sites.service";
 
 @Component({
   templateUrl: "./site_step.component.html",
@@ -17,6 +18,8 @@ import { SiteFormComponent } from "../../../siteform/siteform.component";
 export class SiteStepComponent implements IFlowComponent {
   @Input() data: any;
   @ViewChild(SiteFormComponent) form: SiteFormComponent;
+
+  constructor(public siteService: SiteService) {}
 
   committed() {
     console.log("data :", this.data);
@@ -28,6 +31,7 @@ export class SiteStepComponent implements IFlowComponent {
     let that = this;
     resp.then( function(result) {
       let site_id = result.features[0].properties.id_site;
+      that.siteService.newSiteCreated.emit(result.features[0]);
       that.data.next({ ...that.data, site_id: site_id });
     })
   }

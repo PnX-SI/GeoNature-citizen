@@ -3,27 +3,19 @@
     <p>{{ sites?.length }} mares dans l'inventaire</p>
   </div>
   <div id="list">
-    <div *ngFor="let o of sites">
-      <div class="espece">
-        <a
-          [routerLink]="['/programs', program_id, 'sites', o.properties.id_site]"
-          style="cursor:pointer"
-        >
-          <img src="{{ o.properties.photo ? apiEndpoint + o.properties.photo.url : '../../assets/no_photo_light.png'}}" />
-          <div class="infos">
-            <h5>{{ o.properties.name }}</h5>
-            <p>
-              Ajoutée par <span>{{ o.properties.obs_txt }}</span>
-            </p>
-            <p>
-              le <span>{{ o.properties.timestamp_create | date : longDate }}</span>
-            </p>
-          </div>
-          <div class="hide">
-            <img src="../../../../assets/binoculars.png"/>
-          </div>
-        </a>
-        <!-- <p (click)="$event.stopPropagation();addSiteVisit(o.properties.id_site);">ajouter visite</p> -->
+    <div *ngFor="let o of sites" (click)="onSiteClick(o)" class="espece">
+      <img src="{{ o.properties.photo ? apiEndpoint + o.properties.photo.url : '../../assets/no_photo_light.png'}}" />
+      <div class="infos">
+        <h5>{{ o.properties.name }}</h5>
+        <p>
+          Ajoutée par <span>{{ o.properties.obs_txt }}</span>
+        </p>
+        <p>
+          le <span>{{ o.properties.timestamp_create | date : longDate }}</span>
+        </p>
+      </div>
+      <div class="hide">
+        <img src="../../../../assets/binoculars.png"/>
       </div>
     </div>
   </div>

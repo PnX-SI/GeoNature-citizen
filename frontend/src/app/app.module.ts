@@ -30,7 +30,10 @@ import {
 } from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
 import { SitesListComponent } from "./programs/sites/list/list.component";
-import { SitesMapComponent } from "./programs/sites/map/map.component";
+import {
+    SitesMapComponent,
+    SiteMarkerPopupComponent
+} from "./programs/sites/map/map.component";
 import { SitesComponent } from "./programs/sites/sites.component";
 import { SiteFormComponent } from "./programs/sites/siteform/siteform.component";
 import { SiteVisitFormComponent } from "./programs/sites/form/form.component";
@@ -51,11 +54,13 @@ import { CommittedComponent } from "./programs/observations/modalflow/steps/comm
 import { VisitStepComponent } from "./programs/sites/modalflow/steps/visit/visit_step.component";
 import { SiteStepComponent } from "./programs/sites/modalflow/steps/site/site_step.component";
 import { CongratsComponent } from "./programs/observations/modalflow/steps/congrats/congrats.component";
+import { SiteCongratsComponent } from "./programs/sites/modalflow/steps/congrats/congrats.component";
 import { ModalFlowComponent } from "./programs/observations/modalflow/modalflow.component";
 import { SiteModalFlowComponent } from "./programs/sites/modalflow/modalflow.component";
 import { RewardComponent } from "./programs/observations/modalflow/steps/reward/reward.component";
 import { ModalFlowService } from "./programs/observations/modalflow/modalflow.service";
 import { SiteModalFlowService } from "./programs/sites/modalflow/modalflow.service";
+import { SiteService } from "./programs/sites/sites.service";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { AppConfig } from "../conf/app.config";
 
@@ -87,6 +92,7 @@ import {ImageUploadModule} from "angular2-image-upload";
     ObsComponent,
     ObsMapComponent,
     MarkerPopupComponent,
+    SiteMarkerPopupComponent,
     ObsFormComponent,
     ObsListComponent,
     SitesComponent,
@@ -118,6 +124,7 @@ import {ImageUploadModule} from "angular2-image-upload";
     VisitStepComponent,
     SiteStepComponent,
     CongratsComponent,
+    SiteCongratsComponent,
     ModalFlowComponent,
     SiteModalFlowComponent,
     GNCFrameworkComponent,
@@ -131,6 +138,7 @@ import {ImageUploadModule} from "angular2-image-upload";
     // FlowService,
     ModalFlowService,
     SiteModalFlowService,
+    SiteService,
     ProgramsResolve,
     {
       provide: HTTP_INTERCEPTORS,
@@ -151,10 +159,12 @@ import {ImageUploadModule} from "angular2-image-upload";
     VisitStepComponent,
     SiteStepComponent,
     CongratsComponent,
+    SiteCongratsComponent,
     RewardComponent,
     GNCFrameworkComponent,
     FlowComponent,
-    MarkerPopupComponent
+    MarkerPopupComponent,
+    SiteMarkerPopupComponent
   ],
   exports: [AdminComponent]
 })

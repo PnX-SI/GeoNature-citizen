@@ -22,6 +22,7 @@ import { AppConfig } from "../../../../conf/app.config";
 
 import { GNCFrameworkComponent } from './framework/framework.component';
 import MaresJson from '../../../../../../config/custom/form/mares.json';
+import { ngbDateMaxIsToday } from '../../observations/form/form.component';
 
 declare let $: any;
 
@@ -43,8 +44,16 @@ export const myMarkerTitle =
 export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   @Input() site_id: number;
+  today = new Date();
   visitForm = new FormGroup({
-    date: new FormControl("", Validators.required),
+    date: new FormControl(
+      {
+        year: this.today.getFullYear(),
+        month: this.today.getMonth() + 1,
+        day: this.today.getDate()
+      },
+      [Validators.required, ngbDateMaxIsToday()]
+    ),
     data: new FormControl("")
   });
   currentStep: number = 1;
@@ -106,6 +115,9 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
   totalSteps() {
     return this.jsonSchema.steps.length;
   }
+  invalidStep() {
+    return this.currentStep === 1 && this.visitForm.get('date').invalid;
+  }
   yourOnChangesFn(e) {
     this.jsonData[this.currentStep] = e;
   }
@@ -147,7 +159,6 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
       // TODO: queue obs in list
     );
   }
-
   postSiteVisit(): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({

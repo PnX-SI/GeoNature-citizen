@@ -120,7 +120,11 @@ export class SiteFormComponent implements AfterViewInit {
         // Set initial observation marker from main map if already spotted
         let myMarker = null;
         if (this.coords) {
-          this.siteForm.patchValue({ geometry: this.coords });
+          let geo_coords = <Point>{
+              type: "Point",
+              coordinates: <Position>[this.coords.x, this.coords.y]
+            };
+          this.siteForm.patchValue({ geometry: geo_coords });
 
           myMarker = L.marker([this.coords.y, this.coords.x], {
             icon: siteFormMarkerIcon
@@ -177,7 +181,7 @@ export class SiteFormComponent implements AfterViewInit {
     console.debug("formValues:", this.siteForm.value);
 
     return this.postSite().toPromise().then(
-      data => { console.debug(data); return data; },
+      data => { return data; },
       err => console.error(err)
     );
   }
