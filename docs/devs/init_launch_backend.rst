@@ -38,5 +38,7 @@ depuis l'environnement virtuel python:
     cd backend
     source venv/bin/activate
     python -m wsgi.py
+    # debug mode
+    # export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; export FLASK_APP=wsgi; python -m flask run --host=0.0.0.0
 
 Vous pouvez alors aller sur la page de documentation de l'API à l'adresse suivant ``http://VOTRE_HOTE:5002/apidocs``, en local, ce sera `http://localhost:5002/apidocs <http://localhost:5002/apidocs>`_.

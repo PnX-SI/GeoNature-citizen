@@ -5,8 +5,7 @@ from flask import Blueprint, current_app
 from gncitizen.utils.env import db
 from gncitizen.utils.sqlalchemy import json_resp
 
-# if not current_app.config["API_TAXHUB"] == "bla":
-if not current_app.config["API_TAXHUB"]:
+if current_app.config.get("API_TAXHUB") is None:
     from gncitizen.core.taxonomy.models import (
         BibNoms,
         BibListes,
@@ -15,8 +14,7 @@ if not current_app.config["API_TAXHUB"]:
         Taxref,
     )
 else:
-    import requests
-    from requests.exceptions import ConnectionError
+    from gncitizen.utils.taxonomy import taxhub_rest_get_taxon_list
 
 
 routes = Blueprint("taxonomy", __name__)
@@ -91,55 +89,21 @@ def get_list(id):
             description: A list of all species lists
         """
 
-    # if current_app.config["API_TAXHUB"]:
-    if current_app.config["API_TAXHUB"] == "bla":
+    if current_app.config.get("API_TAXHUB") is not None:
+        current_app.logger.critical("Calling TaxHub REST API.")
         try:
-            TAXHUB_API = current_app.config["API_TAXHUB"]
-            TAXHUB_API += "/" if current_app.config["API_TAXHUB"][-1] != "/" else ""
+            results = taxhub_rest_get_taxon_list(
+                id, current_app.config["API_TAXHUB"])
 
-            list_req = requests.get(
-                "{}biblistes/taxons/{}?existing=true&order=asc&orderby=taxref.nom_complet".format(
-                    TAXHUB_API, id
-                )
-            )
-            list_resp = list_req.json()
-
-            taxon_list = list_resp.content.get("items")
-            taxon_card_ids = [item["id_nom"] for item in taxon_list]
-            # current_app.logger.critical(taxon_card_ids)
-
-            results = []
-            for card_id in taxon_card_ids:
-                _req = requests.get("{}bibnoms/{}".format(TAXHUB_API, card_id))
-                _res = _req.content.json()
-
-                data = dict()
-                data["nom"] = {
-                    k: _res[k]
-                    for k in _res
-                    if k in {"id_nom", "cd_nom", "cd_ref", "nom_francais"}
-                }
-                # get_medias -> filter(is_public==true)
-                data["medias"] = [
-                    media
-                    for media in _res["medias"]
-                    if media
-                    and not media["supprime"]
-                    and media["is_public"]
-                    and media["url"]
-                ]
-                data["taxref"] = _res["taxref"]
-                results.append(data)
-
-        except (Exception, ConnectionError) as e:
-            current_app.logger.warning(str(e))
-            return {"message": str(e)}, 400
+        except Exception as e:
+            current_app.logger.critical(str(e))
+            raise e
 
         else:
-            current_app.logger.info("%s", results)
             return [d for d in results]
 
     else:
+        current_app.logger.critical("Select TaxHub schema.")
         try:
             data = (
                 db.session.query(BibNoms, Taxref, TMedias)

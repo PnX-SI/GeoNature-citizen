@@ -26,6 +26,7 @@ import {
   debounceTime,
   map,
   distinctUntilChanged
+  tap,
 } from "rxjs/operators";
 
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
@@ -97,7 +98,7 @@ export class ObsFormComponent implements AfterViewInit {
   @Input("coords") coords: L.Point;
   @Output("newObservation") newObservation: EventEmitter<
     ObservationFeature
-  > = new EventEmitter();
+    > = new EventEmitter();
   @ViewChild("photo") photo: ElementRef;
   today = new Date();
   program_id: any;
@@ -148,11 +149,11 @@ export class ObsFormComponent implements AfterViewInit {
         term === "" // term.length < n
           ? []
           : this.species
-              .filter(
-                v => new RegExp(term, "gi").test(v["name"])
-                // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
-              )
-              .slice(0, taxonAutocompleteMaxResults)
+            .filter(
+              v => new RegExp(term, "gi").test(v["name"])
+              // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
+            )
+            .slice(0, taxonAutocompleteMaxResults)
       )
     );
 
@@ -166,8 +167,8 @@ export class ObsFormComponent implements AfterViewInit {
             name:
               field === "cd_nom"
                 ? `${this.taxa[taxon]["taxref"]["cd_nom"]} - ${
-                    this.taxa[taxon]["taxref"]["nom_complet"]
-                  }`
+                this.taxa[taxon]["taxref"]["nom_complet"]
+                }`
                 : this.taxa[taxon]["taxref"][field],
             cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
             icon:
@@ -186,7 +187,7 @@ export class ObsFormComponent implements AfterViewInit {
     private http: HttpClient,
     private programService: GncProgramsService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngAfterViewInit() {
     this.route.params.subscribe(params => (this.program_id = params["id"]));
@@ -197,14 +198,16 @@ export class ObsFormComponent implements AfterViewInit {
         this.taxonomyListID = this.program.features[0].properties.taxonomy_list;
         this.surveySpecies$ = this.programService
           .getProgramTaxonomyList(this.program_id)
-          .pipe(share());
-        this.surveySpecies$.pipe(take(1)).subscribe(speciesList => {
-          this.taxa = speciesList;
-          this.taxaCount = Object.keys(this.taxa).length;
-          if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
-            this.inputAutoCompleteSetup();
-          }
-        });
+          .pipe(
+            tap(species => {
+              this.taxa = species
+              this.taxaCount = Object.keys(this.taxa).length;
+              if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
+                this.inputAutoCompleteSetup();
+              }
+            }),
+            share());
+        this.surveySpecies$.subscribe();
 
         // build map control
         const formMap = L.map("formMap", { gestureHandling: true });

@@ -13,22 +13,25 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 
-app.debug = True
+logging.basicConfig()
+
 if app.config["DEBUG"]:
+    from flask.logging import default_handler
     import colorlog
 
+    logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
+    # getattr(logging, app.config["SQLALCHEMY_DEBUG_LEVEL"]))
+    app.logger.removeHandler(default_handler)
     handler = colorlog.StreamHandler()
     handler.setFormatter(
         colorlog.ColoredFormatter(
-            "%(log_color)s %(asctime)s %(levelname)s:%(name)s:%(message)s [in %(pathname)s:%(lineno)d]"
+            """%(log_color)s%(asctime)s %(levelname)s:%(name)s:%(message)s [in %(pathname)s:%(lineno)d]"""
         )
     )
 
-    logger = colorlog.getLogger()
+    logger = logging.getLogger()
+    # logger = colorlog.getLogger()
     logger.addHandler(handler)
-
-    logging.basicConfig()
-    logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
 
 
 class ReverseProxied(object):
@@ -44,7 +47,7 @@ class ReverseProxied(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]
+                environ["PATH_INFO"] = path_info[len(script_name):]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -61,6 +64,14 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     app = Flask(__name__)
     app.config.update(config)
+
+    CORS(app, supports_credentials=True)
+    # brings back those cors headers on error response in debug mode
+    # to trace client-side error handling
+    # but drops the embedded debugger ¯\_(ツ)_/¯
+    # https://github.com/corydolphin/flask-cors/issues/67
+    # https://stackoverflow.com/questions/29825235/getting-cors-headers-in-a-flask-500-error
+    # app.config['PROPAGATE_EXCEPTIONS'] = False
 
     # Bind app to DB
     db.init_app(app)
@@ -96,7 +107,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
         app.register_blueprint(routes, url_prefix=url_prefix)
 
-        CORS(app, supports_credentials=True)
         # Chargement des mosdules tiers
         if with_external_mods:
             for conf, manifest, module in list_and_import_gnc_modules(app):
