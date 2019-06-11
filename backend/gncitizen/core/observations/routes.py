@@ -480,14 +480,16 @@ def get_program_observations(
                 if observation.TMedias:
                     feature["properties"]["medias"] = observation.TMedias.as_dict(True)
             else:
-                taxon = next(
-                    taxon
-                    for taxon in taxon_repository
-                    if taxon["cd_nom"] == feature["properties"]["cd_nom"]
-                )
-                feature["properties"]["taxref"] = taxon["taxref"]
-                feature["properties"]["medias"] = taxon["medias"]
-
+                try:
+                    taxon = next(
+                        taxon
+                        for taxon in taxon_repository
+                        if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+                    )
+                    feature["properties"]["taxref"] = taxon["taxref"]
+                    feature["properties"]["medias"] = taxon["medias"]
+                except StopIteration:
+                    pass
             features.append(feature)
 
         return FeatureCollection(features)
