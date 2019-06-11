@@ -3,76 +3,56 @@
 
 """A module to manage taxonomy"""
 
+from typing import Dict, List
 from functools import lru_cache
 from flask import current_app
 
 if current_app.config.get("API_TAXHUB") is None:
-    from gncitizen.core.taxonomy.models import Taxref, TMedias
-
+    from gncitizen.core.taxonomy.models import Taxref
 else:
     import requests
 
-    TAXHUB_API = current_app.config["API_TAXHUB"] + \
-        "/" if current_app.config["API_TAXHUB"][-1] != "/" else current_app.config["API_TAXHUB"]
+    TAXHUB_API = (
+        current_app.config["API_TAXHUB"] + "/"
+        if current_app.config["API_TAXHUB"][-1] != "/"
+        else current_app.config["API_TAXHUB"]
+    )
 
 
-def taxhub_rest_get_taxon_list(_id: int):
-
-    payload = {
-        "existing": "true",
-        "order": "asc",
-        "orderby": "taxref.nom_complet"
-    }
+def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
+    payload = {"existing": "true", "order": "asc", "orderby": "taxref.nom_complet"}
     req = requests.get(
-        "{}biblistes/taxons/{}".format(TAXHUB_API, _id),
+        "{}biblistes/taxons/{}".format(TAXHUB_API, taxhub_list_id),
         params=payload,
-        timeout=1
+        timeout=1,
     )
     req.raise_for_status()
     return req.json()
 
 
-def taxhub_rest_get_taxon(taxhub_id):
-    req = requests.get(
-        "{}bibnoms/{}".format(TAXHUB_API, taxhub_id))
+def repo_species_from_cd_nom(repo, cd_nom: int):
+    def cd_nomMatcher(taxon):
+        return taxon["cd_nom"] == cd_nom
+
+    return filter(cd_nomMatcher, repo)
+
+
+def taxhub_rest_get_taxon(taxhub_id: int) -> Dict[List[str], List[str]]:
+    req = requests.get("{}bibnoms/{}".format(TAXHUB_API, taxhub_id), timeout=1)
     req.raise_for_status()
-    taxon_res = req.json()
-
-    data = dict()
-    data["nom"] = {
-        k: taxon_res[k]
-        for k in taxon_res
-        if k in {"id_nom", "cd_nom", "cd_ref", "nom_vern", "nom_vern_eng"}
-    }
-    data["medias"] = [
-        media
-        for media in taxon_res["medias"]
-        if media
-        # and not media["supprime"]
-        and media["is_public"]
-        and media["url"]
-    ]
-    data["taxref"] = taxon_res["taxref"]
-    return data["nom"], data["medias"]
+    return req.json()
 
 
-def taxhub_rest_get_full_taxa_from_list(taxon_list_id):
-    taxa = taxhub_rest_get_taxon_list(taxon_list_id)
+def mkTaxonRepository(taxhub_list_id: int) -> List:
+    taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
     taxon_ids = [item["id_nom"] for item in taxa.get("items")]
-
-    results = []
-    for taxon_id in taxon_ids:
-        data = taxhub_rest_get_taxon(taxon_id)
-        results.append(data)
-
-    return results
+    return [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
 
 
 @lru_cache(maxsize=64)
-def taxhub_rest_medias(cd_nom):
-    req = requests.get(
-        "{}bibnoms/taxoninfo/{}".format(TAXHUB_API, cd_nom))
-    # "{}tmedias/bycdref/{}".format(TAXHUB_API, cdref))
+def taxhub_rest_medias(cd_nom: int) -> Dict:
+    # req = requests.get("{}tmedias/bycdref/{}".format(TAXHUB_API, cdref), timeout=1)
+    req = requests.get("{}bibnoms/taxoninfo/{}".format(TAXHUB_API, cd_nom), timeout=1)
     req.raise_for_status()
     return req.json()
 

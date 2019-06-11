@@ -14,7 +14,7 @@ if current_app.config.get("API_TAXHUB") is None:
         Taxref,
     )
 else:
-    from gncitizen.utils.taxonomy import taxhub_rest_get_taxon_list
+    from gncitizen.utils.taxonomy import mkTaxonRepository
 
 
 routes = Blueprint("taxonomy", __name__)
@@ -90,20 +90,11 @@ def get_list(id):
         """
 
     if current_app.config.get("API_TAXHUB") is not None:
-        current_app.logger.critical("Calling TaxHub REST API.")
-        try:
-            results = taxhub_rest_get_taxon_list(
-                id, current_app.config["API_TAXHUB"])
-
-        except Exception as e:
-            current_app.logger.critical(str(e))
-            raise e
-
-        else:
-            return [d for d in results]
+        current_app.logger.info("Calling TaxHub REST API.")
+        return mkTaxonRepository(id)
 
     else:
-        current_app.logger.critical("Select TaxHub schema.")
+        current_app.logger.info("Select TaxHub schema.")
         try:
             data = (
                 db.session.query(BibNoms, Taxref, TMedias)

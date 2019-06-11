@@ -45,17 +45,17 @@
         [class.ng-invalid]="!selectedTaxon"
       >
         <div *ngFor="let s of (surveySpecies$ | async)">
-          <div class="obs-img" [class.selected]="isTaxonSelected(s)">
+          <div class="obs-img" [class.selected]="isSelectedTaxon(s)">
             <img
               [src]="
                 s.medias && !!s.medias.length
                   ? s.medias[0]?.url
                   : 'assets/Azure-Commun-019.JPG'
               "
-              [alt]="s.nom.nom_francais"
+              [alt]="s.nom?.nom_francais"
               (click)="onTaxonSelected(s)"
             />
-            <span>{{ s.nom.nom_francais }}</span>
+            <span>{{ s.nom?.nom_francais }}</span>
           </div>
         </div>
       </div>

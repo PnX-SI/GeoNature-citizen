@@ -47,7 +47,7 @@ class ReverseProxied(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name):]
+                environ["PATH_INFO"] = path_info[len(script_name) :]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -66,12 +66,12 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     app.config.update(config)
 
     CORS(app, supports_credentials=True)
-    # brings back those cors headers on error response in debug mode
+    # app.config['PROPAGATE_EXCEPTIONS'] = False
+    # ... brings back those cors headers on error response in debug mode
     # to trace client-side error handling
     # but drops the embedded debugger ¯\_(ツ)_/¯
     # https://github.com/corydolphin/flask-cors/issues/67
     # https://stackoverflow.com/questions/29825235/getting-cors-headers-in-a-flask-500-error
-    # app.config['PROPAGATE_EXCEPTIONS'] = False
 
     # Bind app to DB
     db.init_app(app)

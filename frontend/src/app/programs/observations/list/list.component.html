@@ -8,7 +8,7 @@
     >
       <option [ngValue]="null" i18n>Toutes espèces</option>
       <option *ngFor="let s of surveySpecies" [ngValue]="s">
-        {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
+        {{ s.nom?.nom_francais }} (<i>{{ s.taxref?.nom_complet }}</i
         >)
       </option>
     </select>
@@ -47,6 +47,8 @@
             ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
             : o.properties.image
             ? o.properties.image
+            : o.properties.medias && !!o.properties.medias.length
+            ? o.properties.medias[0].url
             : 'assets/Azure-Commun-019.JPG'
         "
       />

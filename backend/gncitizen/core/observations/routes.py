@@ -3,6 +3,7 @@
 
 
 import uuid
+from typing import Union, Tuple, Dict
 
 # from sqlalchemy import func
 
@@ -20,6 +21,7 @@ from .models import ObservationMediaModel, ObservationModel
 from gncitizen.core.users.models import UserModel
 
 from gncitizen.core.taxonomy.models import Taxref, TMedias
+
 # DOING: TaxRef REST as alternative
 # from gncitizen.core.taxonomy.routes import get_list
 
@@ -29,7 +31,7 @@ from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.geo import get_municipality_id_from_wkb  # , get_area_informations
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
-from gncitizen.utils.taxonomy import get_specie_from_cd_nom, taxhub_rest_get_taxon_n_medias
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
 from server import db
 
 
@@ -71,8 +73,7 @@ def generate_observation_geojson(id_observation):
     )
     result_dict = result.ObservationModel.as_dict(True)
     result_dict["observer"] = {"username": result.username}
-    result_dict["municipality"] = {
-        "name": result.area_name, "code": result.area_code}
+    result_dict["municipality"] = {"name": result.area_name, "code": result.area_code}
 
     # Populate "geometry"
     features = []
@@ -190,8 +191,7 @@ def post_observation():
         """
     try:
         request_datas = request.form
-        current_app.logger.debug(
-            "[post_observation] request data:", request_datas)
+        current_app.logger.debug("[post_observation] request data:", request_datas)
 
         datas2db = {}
         for field in request_datas:
@@ -347,8 +347,7 @@ def get_observations_from_list(id):  # noqa: A002
                     for k in observation_dict:
                         if k in obs_keys:
                             feature["properties"][k] = observation_dict[k]
-                    taxref = get_specie_from_cd_nom(
-                        feature["properties"]["cd_nom"])
+                    taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
                     for k in taxref:
                         feature["properties"][k] = taxref[k]
                     features.append(feature)
@@ -357,9 +356,17 @@ def get_observations_from_list(id):  # noqa: A002
             return {"message": str(e)}, 400
 
 
-@routes.route("programs/<int:id>/observations", methods=["GET"])
+@routes.route("debug_taxon_repo", methods=["GET"])
 @json_resp
-def get_program_observations(id):
+def debug_taxon_repo():
+    return mkTaxonRepository(1)
+
+
+@routes.route("programs/<int:program_id>/observations", methods=["GET"])
+@json_resp
+def get_program_observations(
+    program_id: int
+) -> Union[FeatureCollection, Tuple[Dict, int]]:
     """Get all observations from a program
     GET
         ---
@@ -395,7 +402,7 @@ def get_program_observations(id):
                 LAreas.area_name,
                 LAreas.area_code,
             )
-            .filter(ObservationModel.id_program == id, ProgramsModel.is_active)
+            .filter(ObservationModel.id_program == program_id, ProgramsModel.is_active)
             .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
             .join(
                 ProgramsModel,
@@ -416,19 +423,25 @@ def get_program_observations(id):
         )
         if current_app.config.get("API_TAXHUB") is None:
             current_app.logger.critical("Selecting TaxHub Medias schema.")
-            observations = observations.outerjoin(
-                Taxref,
-                ObservationModel.cd_nom == Taxref.cd_nom
-                ).add_entity(Taxref).outerjoin(
-                TMedias,
-                ObservationModel.cd_nom == TMedias.cd_ref,
-            ).add_entity(TMedias)
+            observations = (
+                observations.outerjoin(Taxref, ObservationModel.cd_nom == Taxref.cd_nom)
+                .add_entity(Taxref)
+                .outerjoin(TMedias, ObservationModel.cd_nom == TMedias.cd_ref)
+                .add_entity(TMedias)
+            )
 
-        observations = observations.order_by(
-            ObservationModel.timestamp_create.desc())
+        observations = observations.order_by(ObservationModel.timestamp_create.desc())
         current_app.logger.critical(str(observations))
         observations = observations.all()
-        current_app.logger.debug(len(observations))
+
+        if current_app.config.get("API_TAXHUB") is not None:
+            #
+            # FIXME: !GET TAXHUB LIST ID PARAM FROM PROGRAM!
+            #
+            taxhub_list_id = (
+                ProgramsModel.query.filter_by(id_program=program_id).one().taxonomy_list
+            )
+            taxon_repository = mkTaxonRepository(taxhub_list_id)
 
         features = []
         for observation in observations:
@@ -438,15 +451,10 @@ def get_program_observations(id):
                 "code": observation.area_code,
             }
 
-            # current_app.logger.debug(observations[0])
-
             # Observer
-            feature["properties"]["observer"] = {
-                "username": observation.username,
-                # "name": observation.observer_name,
-                # "surname": observation.observer_surname,
-            }
+            feature["properties"]["observer"] = {"username": observation.username}
 
+            # Observer submitted media
             feature["properties"]["image"] = (
                 "/".join(
                     [
@@ -458,28 +466,27 @@ def get_program_observations(id):
                 if observation.image
                 else None
             )
+
+            # Municipality
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
 
-            taxref_dict, medias_dict = dict(), dict()
+            # taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
             if current_app.config.get("API_TAXHUB") is None:
-                # taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
                 if observation.Taxref:
-                    taxref_dict = observation.Taxref.as_dict(True)
+                    feature["properties"]["taxref"] = observation.Taxref.as_dict(True)
                 if observation.TMedias:
-                    medias_dict = observation.TMedias.as_dict(True)
+                    feature["properties"]["medias"] = observation.TMedias.as_dict(True)
             else:
-                taxref_dict, medias_dict = taxhub_rest_get_taxon_n_medias()
-
-            feature["properties"]["taxref"] = dict()
-            for k in taxref_dict:
-                feature["properties"]["taxref"][k] = taxref_dict[k]
-
-            feature["properties"]["medias"] = dict()
-            for k in medias_dict:
-                feature["properties"][k] = medias_dict[k]
+                taxon = next(
+                    taxon
+                    for taxon in taxon_repository
+                    if taxon["cd_nom"] == feature["properties"]["cd_nom"]
+                )
+                feature["properties"]["taxref"] = taxon["taxref"]
+                feature["properties"]["medias"] = taxon["medias"]
 
             features.append(feature)
 
@@ -487,15 +494,15 @@ def get_program_observations(id):
 
     except Exception as e:
         # if current_app.config["DEBUG"]:
-            # import traceback
-            # import sys
+        # import traceback
+        # import sys
 
-            # import pdb
-            # pdb.set_trace()
-            # etype, value, tb = sys.exc_info()
-            # trace = str(traceback.print_exception(etype, value, tb))
-            # trace = traceback.format_exc()
-            # return("<pre>" + trace + "</pre>"), 500
+        # import pdb
+        # pdb.set_trace()
+        # etype, value, tb = sys.exc_info()
+        # trace = str(traceback.print_exception(etype, value, tb))
+        # trace = traceback.format_exc()
+        # return("<pre>" + trace + "</pre>"), 500
         raise e
         return {"message": str(e)}, 400
 
