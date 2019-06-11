@@ -23,6 +23,7 @@ import { AppConfig } from "../../../../conf/app.config";
 import { GNCFrameworkComponent } from './framework/framework.component';
 import MaresJson from '../../../../../../config/custom/form/mares.json';
 import { ngbDateMaxIsToday } from '../../observations/form/form.component';
+import {SiteService} from "../sites.service";
 
 declare let $: any;
 
@@ -66,7 +67,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
 
   photos = [];
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
+  constructor(private http: HttpClient, private route: ActivatedRoute, public siteService: SiteService) {}
 
   ngOnInit() {
     console.debug("ngOnInit");
@@ -141,7 +142,10 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         console.debug(data);
         let visitId = data["features"][0]["id_visit"];
         this.postVisitPhotos(visitId).subscribe(
-          resp => console.debug(resp),
+          resp => {
+            console.debug(resp);
+            this.siteService.newSiteCreated.emit(true);
+          },
           err => console.error(err),
           () => console.log("photo upload done")
         );
