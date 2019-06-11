@@ -12,6 +12,10 @@ popup {
   width: calc(100% - var(--list-toggler-width));
 }
 
+.app-no-topbar #obsMap {
+  height: calc(100vh - var(--router-outlet-offset));
+}
+
 .marker-cluster {
   background-image: url(/assets/marker2.svg);
 }
