@@ -43,7 +43,7 @@
       <!-- FIXME: hardcoded api media endpoint -->
       <img
         [src]="
-          o.properties.images && o.properties.images[0]
+          o.properties.images && !!o.properties.images.length
             ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
             : o.properties.image
             ? o.properties.image

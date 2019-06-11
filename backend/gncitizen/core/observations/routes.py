@@ -62,15 +62,25 @@ def generate_observation_geojson(id_observation):
     """
 
     # Crée le dictionnaire de l'observation
-    result = (
+    query = (
         db.session.query(
             ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code
         )
         .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
         .filter(ObservationModel.id_observation == id_observation)
-        .one()
+
     )
+    if current_app.config.get("API_TAXHUB") is None:
+        current_app.logger.critical("Selecting TaxHub Medias schema.")
+        query = (
+            query.outerjoin(
+                Taxref, ObservationModel.cd_nom == Taxref.cd_nom)
+            .add_entity(Taxref)
+            .outerjoin(TMedias, ObservationModel.cd_nom == TMedias.cd_ref)
+            .add_entity(TMedias)
+        )
+    result = query.one()
     result_dict = result.ObservationModel.as_dict(True)
     result_dict["observer"] = {"username": result.username}
     result_dict["municipality"] = {"name": result.area_name, "code": result.area_code}
@@ -85,9 +95,27 @@ def generate_observation_geojson(id_observation):
             feature["properties"][k] = result_dict[k]
 
     # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref  # noqa: E501
-    taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-    for k in taxref:
-        feature["properties"][k] = taxref[k]
+    if current_app.config.get("API_TAXHUB") is None:
+        taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
+        for k in taxref:
+            feature["properties"][k] = taxref[k]
+    else:
+        taxhub_list_id = (
+            ProgramsModel.query.filter_by(
+                id_program=result.ObservationModel.id_program).one().taxonomy_list
+        )
+        taxon_repository = mkTaxonRepository(taxhub_list_id)
+        try:
+            taxon = next(
+                taxon
+                for taxon in taxon_repository
+                if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+            )
+            feature["properties"]["taxref"] = taxon["taxref"]
+            feature["properties"]["medias"] = taxon["medias"]
+        except StopIteration:
+            pass
+
     features.append(feature)
     return features
 
@@ -224,9 +252,9 @@ def post_observation():
         newobs.uuid_sinp = uuid.uuid4()
 
         newobs.municipality = get_municipality_id_from_wkb(newobs.geom)
-
         db.session.add(newobs)
         db.session.commit()
+        current_app.logger.debug(newobs.as_dict())
         # Réponse en retour
         features = generate_observation_geojson(newobs.id_observation)
         current_app.logger.debug("FEATURES: {}".format(features))
@@ -429,9 +457,6 @@ def get_program_observations(
         observations = observations.all()
 
         if current_app.config.get("API_TAXHUB") is not None:
-            #
-            # FIXME: !GET TAXHUB LIST ID PARAM FROM PROGRAM!
-            #
             taxhub_list_id = (
                 ProgramsModel.query.filter_by(id_program=program_id).one().taxonomy_list
             )
