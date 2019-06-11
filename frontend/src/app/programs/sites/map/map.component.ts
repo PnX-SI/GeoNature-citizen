@@ -386,7 +386,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
   selector: "popup",
   template: `
      <ng-container>
-      <img [src]="(data.photo ? env.AppConfig.API_ENDPOINT + data.photo.url : NO_IMG)">
+      <img [src]="(data.photo ? env.AppConfig.API_ENDPOINT + data.photo.url : 'assets/no_photo_light.png')">
       <p>
         <b>{{ data.name }}</b><br>
         <span>Ajoutée par {{ data.obs_txt }}<br>
@@ -396,7 +396,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
         </p>
       <div>
         <a [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer">
-          <img class="icon" src="../../../../assets/binoculars.png">
+          <img class="icon" src="assets/binoculars.png">
         </a>
       </div>
     </ng-container>

@@ -34,7 +34,7 @@ const PROGRAM_AREA_STYLE = {
 // TODO: migrate to conf
 export const taxonListThreshold = 10;
 export const siteFormMarkerIcon = L.icon({
-  iconUrl: "../../../../assets/pointer-blue2.png", // TODO: Asset path should be normalized, conf ?
+  iconUrl: "assets/pointer-blue2.png", // TODO: Asset path should be normalized, conf ?
   iconAnchor: [16, 42]
 });
 export const myMarkerTitle =
