@@ -30,31 +30,17 @@ def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
     return req.json()
 
 
-def repo_species_from_cd_nom(repo, cd_nom: int):
-    def cd_nomMatcher(taxon):
-        return taxon["cd_nom"] == cd_nom
-
-    return filter(cd_nomMatcher, repo)
-
-
 def taxhub_rest_get_taxon(taxhub_id: int) -> Dict[List[str], List[str]]:
     req = requests.get("{}bibnoms/{}".format(TAXHUB_API, taxhub_id), timeout=1)
     req.raise_for_status()
     return req.json()
 
 
+@lru_cache()
 def mkTaxonRepository(taxhub_list_id: int) -> List:
     taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
     taxon_ids = [item["id_nom"] for item in taxa.get("items")]
     return [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
-
-
-@lru_cache(maxsize=64)
-def taxhub_rest_medias(cd_nom: int) -> Dict:
-    # req = requests.get("{}tmedias/bycdref/{}".format(TAXHUB_API, cdref), timeout=1)
-    req = requests.get("{}bibnoms/taxoninfo/{}".format(TAXHUB_API, cd_nom), timeout=1)
-    req.raise_for_status()
-    return req.json()
 
 
 def get_specie_from_cd_nom(cd_nom):

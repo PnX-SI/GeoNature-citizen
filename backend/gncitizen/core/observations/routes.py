@@ -356,12 +356,6 @@ def get_observations_from_list(id):  # noqa: A002
             return {"message": str(e)}, 400
 
 
-@routes.route("debug_taxon_repo", methods=["GET"])
-@json_resp
-def debug_taxon_repo():
-    return mkTaxonRepository(1)
-
-
 @routes.route("programs/<int:program_id>/observations", methods=["GET"])
 @json_resp
 def get_program_observations(
