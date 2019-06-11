@@ -26,14 +26,6 @@ import { ngbDateMaxIsToday } from '../../observations/form/form.component';
 
 declare let $: any;
 
-// TODO: migrate to conf
-export const taxonListThreshold = 10;
-export const siteFormMarkerIcon = L.icon({
-  iconUrl: "../../../../assets/pointer-blue2.png", // TODO: Asset path should be normalized, conf ?
-  iconAnchor: [16, 42]
-});
-export const myMarkerTitle =
-  '<i class="fa fa-eye"></i> Partagez votre site';
 
 @Component({
   selector: "app-site-visit-form",

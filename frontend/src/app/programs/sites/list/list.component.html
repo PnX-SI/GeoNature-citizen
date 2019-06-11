@@ -4,7 +4,7 @@
   </div>
   <div id="list">
     <div *ngFor="let o of sites" (click)="onSiteClick(o)" class="espece">
-      <img src="{{ o.properties.photo ? apiEndpoint + o.properties.photo.url : '../../assets/no_photo_light.png'}}" />
+      <img src="{{ o.properties.photo ? apiEndpoint + o.properties.photo.url : 'assets/no_photo_light.png'}}" />
       <div class="infos">
         <h5>{{ o.properties.name }}</h5>
         <p>
@@ -15,7 +15,7 @@
         </p>
       </div>
       <div class="hide">
-        <img src="../../../../assets/binoculars.png"/>
+        <img src="assets/binoculars.png"/>
       </div>
     </div>
   </div>

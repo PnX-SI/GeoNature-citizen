@@ -9,7 +9,7 @@ import {AppConfig} from "../../../../conf/app.config";
 declare let $: any;
 
 export const markerIcon = L.icon({
-  iconUrl: "../../../../assets/pointer-blue2.png", // TODO: Asset path should be normalized, conf ?
+  iconUrl: "assets/pointer-blue2.png",
   iconAnchor: [16, 42]
 });
 
