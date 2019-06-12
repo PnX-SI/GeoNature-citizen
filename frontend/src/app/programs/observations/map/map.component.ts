@@ -378,7 +378,15 @@ export class ObsMapComponent implements OnInit, OnChanges {
   selector: "popup",
   template: `
     <ng-container>
-      <img [src]="data.image || 'assets/Azure-Commun-019.JPG'" />
+      <img
+        [src]="
+          data.image
+            ? data.image
+            : data.medias && !!data.medias.length
+            ? data.medias[0].url
+            : 'assets/Azure-Commun-019.JPG'
+        "
+      />
       <p>
         <b>{{ data.common_name }}</b> <br />
         <span i18n>
