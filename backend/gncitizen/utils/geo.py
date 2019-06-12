@@ -5,6 +5,7 @@ from flask import current_app
 
 from gncitizen.core.ref_geo.models import LAreas, BibAreasTypes
 from gncitizen.utils.env import db
+from geoalchemy2 import func
 
 
 # Get municipality id
@@ -23,11 +24,14 @@ def get_municipality_id_from_wkb(wkb):
     :rtype: int
     """
     try:
+        srid = db.session.query(func.Find_SRID("gnc_core", "t_programs", "geom")).one()[
+            0
+        ]
         query = (
             db.session.query(LAreas)
             .join(BibAreasTypes)
             .filter(
-                LAreas.geom.ST_Intersects(wkb.ST_Transform(2154)),
+                LAreas.geom.ST_Intersects(wkb.ST_Transform(srid)),
                 BibAreasTypes.type_name == "Communes",
             )
             .first()
