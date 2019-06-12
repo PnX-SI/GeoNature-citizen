@@ -388,7 +388,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
         "
       />
       <p>
-        <b>{{ data.common_name }}</b> <br />
+        <b i18n>{{ data.taxref?.nom_vern }}</b> <br />
         <span i18n>
           Observé par
           {{

@@ -64,4 +64,6 @@ def get_specie_from_cd_nom(cd_nom):
     taxref["common_name"] = common_name
     taxref["common_name_eng"] = common_name_eng
     taxref["sci_name"] = sci_name
+    for k in official_taxa:
+        taxref[k] = official_taxa[k]
     return taxref
