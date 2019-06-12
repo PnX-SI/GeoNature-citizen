@@ -7,8 +7,8 @@
       (ngModelChange)="onFilterChange()"
     >
       <option [ngValue]="null" i18n>Toutes espèces</option>
-      <option *ngFor="let s of surveySpecies" [ngValue]="s">
-        {{ s.nom?.nom_francais }} (<i>{{ s.taxref?.nom_complet }}</i
+      <option *ngFor="let s of surveySpecies" [ngValue]="s" i18n>
+        {{ s.taxref?.nom_vern }} (<i>{{ s.taxref?.nom_complet }}</i
         >)
       </option>
     </select>
@@ -53,7 +53,7 @@
         "
       />
       <div class="infos">
-        <h5>{{ o.properties.common_name }}</h5>
+        <h5 i18n>{{ o.properties.taxref?.nom_vern }}</h5>
         <p i18n>
           Observé par
           <span>{{
