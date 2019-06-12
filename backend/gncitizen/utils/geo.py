@@ -24,14 +24,15 @@ def get_municipality_id_from_wkb(wkb):
     :rtype: int
     """
     try:
-        srid = db.session.query(func.Find_SRID("gnc_core", "t_programs", "geom")).one()[
-            0
-        ]
+        srid = db.session.query(func.Find_SRID("ref_geo", "l_areas", "geom")).one()[0]
+        current_app.logger.debug(
+            "[get_municipality_id_from_wkb_point] SRID: {}".format(srid)
+        )
         query = (
             db.session.query(LAreas)
             .join(BibAreasTypes)
             .filter(
-                LAreas.geom.ST_Intersects(wkb.ST_Transform(srid)),
+                LAreas.geom.ST_Intersects(wkb.ST_Transform(2154)),
                 BibAreasTypes.type_name == "Communes",
             )
             .first()
