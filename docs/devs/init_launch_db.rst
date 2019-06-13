@@ -34,7 +34,7 @@ l'utilisateur lorsqu'il vous sera demandé :
 
 .. code:: sh
 
-    createuser -e -E -P dbuser
+    sudo -u postgres createuser -e -E -P dbuser
 
 Créez la base de données, ici nommée ``geonaturedb`` appartenant à l'utilisateur ``dbuser``:
 
@@ -43,7 +43,7 @@ Création de la base de données et des extensions
 
 .. code:: sh
 
-    createdb -e -E UTF8 -O dbuser geonaturedb
+    sudo -u postgres createdb -e -E UTF8 -O dbuser geonaturedb
 
 Activez les extensions ``postgis`` pour la gestion des données spatiales et ``uuid-ossp`` \
 pour la gestion des uuid. Seul un superutilisateur peut activer les extensions (ici, \
