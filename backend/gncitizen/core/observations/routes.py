@@ -62,44 +62,54 @@ def generate_observation_geojson(id_observation):
     """
 
     # Crée le dictionnaire de l'observation
-    query = (
+    observation = (
         db.session.query(
             ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code
         )
         .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
         .filter(ObservationModel.id_observation == id_observation)
-    )
-    if current_app.config.get("API_TAXHUB") is None:
-        current_app.logger.critical("Selecting TaxHub Medias schema.")
-        query = (
-            query.outerjoin(Taxref, ObservationModel.cd_nom == Taxref.cd_nom)
-            .add_entity(Taxref)
-            .outerjoin(TMedias, ObservationModel.cd_nom == TMedias.cd_ref)
-            .add_entity(TMedias)
-        )
-    result = query.one()
-    result_dict = result.ObservationModel.as_dict(True)
-    result_dict["observer"] = {"username": result.username}
-    result_dict["municipality"] = {"name": result.area_name, "code": result.area_code}
+    ).one()
+
+    result_dict = observation.ObservationModel.as_dict(True)
+    result_dict["observer"] = {"username": observation.username}
+    result_dict["municipality"] = {
+        "name": observation.area_name,
+        "code": observation.area_code,
+    }
 
     # Populate "geometry"
     features = []
-    feature = get_geojson_feature(result.ObservationModel.geom)
+    feature = get_geojson_feature(observation.ObservationModel.geom)
 
     # Populate "properties"
     for k in result_dict:
         if k in obs_keys:
             feature["properties"][k] = result_dict[k]
 
-    # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref  # noqa: E501
     if current_app.config.get("API_TAXHUB") is None:
-        taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-        for k in taxref:
-            feature["properties"][k] = taxref[k]
+        current_app.logger.critical("Selecting TaxHub Medias schema.")
+        # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref
+        # taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
+        # for k in taxref:
+        #     feature["properties"][k] = taxref[k]
+        taxref = Taxref.query.filter(
+            Taxref.cd_nom == observation.ObservationModel.cd_nom
+        ).first()
+        if taxref:
+            feature["properties"]["taxref"] = taxref.as_dict(True)
+
+        medias = TMedias.query.filter(
+            TMedias.cd_ref == observation.ObservationModel.cd_nom
+        ).all()
+        if medias:
+            feature["properties"]["medias"] = [media.as_dict(True) for media in medias]
+
     else:
         taxhub_list_id = (
-            ProgramsModel.query.filter_by(id_program=result.ObservationModel.id_program)
+            ProgramsModel.query.filter_by(
+                id_program=observation.ObservationModel.id_program
+            )
             .one()
             .taxonomy_list
         )
