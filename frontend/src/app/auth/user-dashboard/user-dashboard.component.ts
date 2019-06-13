@@ -49,7 +49,8 @@ export class UserDashboardComponent implements OnInit {
               this.username = user["features"]["username"];
               this.stats = user["features"]["stats"];
               this.role_id = user["features"]["id_role"];
-              if (AppConfig["REWARDS"] && AppConfig["REWARDS"]["BADGESET"]) {
+              // FIXME: source backend conf
+              if (AppConfig["REWARDS"]) {
                 this.getBadgeCategories().subscribe();
               }
             }
