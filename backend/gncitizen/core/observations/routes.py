@@ -69,13 +69,11 @@ def generate_observation_geojson(id_observation):
         .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
         .filter(ObservationModel.id_observation == id_observation)
-
     )
     if current_app.config.get("API_TAXHUB") is None:
         current_app.logger.critical("Selecting TaxHub Medias schema.")
         query = (
-            query.outerjoin(
-                Taxref, ObservationModel.cd_nom == Taxref.cd_nom)
+            query.outerjoin(Taxref, ObservationModel.cd_nom == Taxref.cd_nom)
             .add_entity(Taxref)
             .outerjoin(TMedias, ObservationModel.cd_nom == TMedias.cd_ref)
             .add_entity(TMedias)
@@ -101,8 +99,9 @@ def generate_observation_geojson(id_observation):
             feature["properties"][k] = taxref[k]
     else:
         taxhub_list_id = (
-            ProgramsModel.query.filter_by(
-                id_program=result.ObservationModel.id_program).one().taxonomy_list
+            ProgramsModel.query.filter_by(id_program=result.ObservationModel.id_program)
+            .one()
+            .taxonomy_list
         )
         taxon_repository = mkTaxonRepository(taxhub_list_id)
         try:
@@ -384,7 +383,7 @@ def get_observations_from_list(id):  # noqa: A002
             return {"message": str(e)}, 400
 
 
-@routes.route("programs/<int:program_id>/observations", methods=["GET"])
+@routes.route("/programs/<int:program_id>/observations", methods=["GET"])
 @json_resp
 def get_program_observations(
     program_id: int
@@ -443,14 +442,6 @@ def get_program_observations(
             )
             .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         )
-        if current_app.config.get("API_TAXHUB") is None:
-            current_app.logger.critical("Selecting TaxHub Medias schema.")
-            observations = (
-                observations.outerjoin(Taxref, ObservationModel.cd_nom == Taxref.cd_nom)
-                .add_entity(Taxref)
-                .outerjoin(TMedias, ObservationModel.cd_nom == TMedias.cd_ref)
-                .add_entity(TMedias)
-            )
 
         observations = observations.order_by(ObservationModel.timestamp_create.desc())
         current_app.logger.critical(str(observations))
@@ -492,12 +483,21 @@ def get_program_observations(
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
 
-            # taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
+            # TaxRef
             if current_app.config.get("API_TAXHUB") is None:
-                if observation.Taxref:
-                    feature["properties"]["taxref"] = observation.Taxref.as_dict(True)
-                if observation.TMedias:
-                    feature["properties"]["medias"] = observation.TMedias.as_dict(True)
+                taxref = Taxref.query.filter(
+                    Taxref.cd_nom == observation.ObservationModel.cd_nom
+                ).first()
+                if taxref:
+                    feature["properties"]["taxref"] = taxref.as_dict(True)
+
+                medias = TMedias.query.filter(
+                    TMedias.cd_ref == observation.ObservationModel.cd_nom
+                ).all()
+                if medias:
+                    feature["properties"]["medias"] = [
+                        media.as_dict(True) for media in medias
+                    ]
             else:
                 try:
                     taxon = next(
