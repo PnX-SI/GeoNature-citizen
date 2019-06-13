@@ -12,6 +12,7 @@ ou ``pyenv`` ou tout autre outil équivalent (ex: pyenv):
 .. code-block:: bash
 
     cd backend
+    sudo apt install python3-pip
     virtualenv -p /usr/bin/python3 venv
 
 L'activation de cet environnement se fait avec la commande suivante:
