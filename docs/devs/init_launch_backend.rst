@@ -27,7 +27,7 @@ Et l'installation des librairies nécessaires à GeoNature-citizen avec la comma
 
 .. code-block:: bash
 
-    pip install -r requirements.txt
+    python3 -m pip install -r requirements.txt
 
 
 Lancer le backend
