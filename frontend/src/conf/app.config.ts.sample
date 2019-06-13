@@ -10,6 +10,7 @@ export const AppConfig = {
         DISPLAY_SIDEBAR: true
     },
     URL_APPLICATION:"http://127.0.0.1:4200",
+    REWARDS: true,
     termsOfUse: {
       fr: "assets/cgu.pdf",
       en: "assets/termsOfUse.pdf"

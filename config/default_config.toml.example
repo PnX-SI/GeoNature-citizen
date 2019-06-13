@@ -15,6 +15,7 @@ DEFAULT_LANGUAGE = 'fr'
 PORTAL_AREA_NAME = 'zonage'
 
 DEBUG = true
+SQLALCHEMY_DEBUG_LEVEL = 'WARNING'
 
 URL_APPLICATION = 'http://url.com/gncitizen'         # Replace my_url.com by your domain or IP
 API_ENDPOINT = 'http://url.com/gncitizen/api:API_PORT'        # Replace my_url.com by your domain or IP
@@ -103,9 +104,9 @@ UPLOAD_FOLDER = 'static/medias'
 # Front end configuration
 [FRONTEND]
     PROD_MOD = true
-    DISPLAY_HEADER = false
-    DISPLAY_FOOTER = false
-    MULTILINGUAL = false
+    # DISPLAY_HEADER = false
+    # DISPLAY_FOOTER = false
+    # MULTILINGUAL = false
 
 
 [RESET_PASSWD]
