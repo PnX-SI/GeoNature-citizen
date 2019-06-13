@@ -1,5 +1,6 @@
-import logging
+import sys
 import os
+import logging
 
 from flask import Flask, current_app
 from flask_cors import CORS
@@ -7,31 +8,7 @@ from flask_cors import CORS
 from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger, admin
 from gncitizen.utils.sqlalchemy import create_schemas
 
-logger = logging.getLogger()
-logger.setLevel(10)
 basedir = os.path.abspath(os.path.dirname(__file__))
-
-app = Flask(__name__)
-
-logging.basicConfig()
-
-if app.config["DEBUG"]:
-    from flask.logging import default_handler
-    import colorlog
-
-    logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
-    # getattr(logging, app.config["SQLALCHEMY_DEBUG_LEVEL"]))
-    app.logger.removeHandler(default_handler)
-    handler = colorlog.StreamHandler()
-    handler.setFormatter(
-        colorlog.ColoredFormatter(
-            """%(log_color)s%(asctime)s %(levelname)s:%(name)s:%(message)s [in %(pathname)s:%(lineno)d]"""
-        )
-    )
-
-    logger = logging.getLogger()
-    # logger = colorlog.getLogger()
-    logger.addHandler(handler)
 
 
 class ReverseProxied(object):
@@ -47,7 +24,7 @@ class ReverseProxied(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]
+                environ["PATH_INFO"] = path_info[len(script_name):]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -64,6 +41,33 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     app = Flask(__name__)
     app.config.update(config)
+
+    if app.config["DEBUG"]:
+        from flask.logging import default_handler
+        import colorlog
+
+        handler = colorlog.StreamHandler()
+        handler.setFormatter(
+            colorlog.ColoredFormatter(
+                """%(log_color)s%(asctime)s %(levelname)s:%(name)s:%(message)s [in %(pathname)s:%(lineno)d]"""
+            )
+        )
+
+        logger = logging.getLogger('werkzeug')
+        logger.addHandler(handler)
+        app.logger.removeHandler(default_handler)
+
+        for l in logging.Logger.manager.loggerDict.values():
+            if hasattr(l, 'handlers'):
+                l.handlers = [handler]
+
+    # else:
+    #     # TODO: sourced from app.config['LOGGING']
+    #     logging.basicConfig()
+    #     logger = logging.getLogger()
+    #     logger.setLevel(logging.INFO)
+    logging.getLogger("sqlalchemy.engine").setLevel(
+        getattr(sys.modules['logging'], app.config["SQLALCHEMY_DEBUG_LEVEL"]))
 
     CORS(app, supports_credentials=True)
     # app.config['PROPAGATE_EXCEPTIONS'] = False
@@ -85,7 +89,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     admin.init_app(app)
 
     with app.app_context():
-        # db.create_all()
 
         from gncitizen.core.users.routes import routes
 
