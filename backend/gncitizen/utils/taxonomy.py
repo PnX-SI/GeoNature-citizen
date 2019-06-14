@@ -25,7 +25,7 @@ Taxon = Dict[str, Union[str, Dict[str, str], List[Dict]]]
 def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
     payload = {"existing": "true", "order": "asc",
                "orderby": "taxref.nom_complet"}
-    res: Response = requests.get(
+    res = requests.get(
         "{}biblistes/taxons/{}".format(TAXHUB_API, taxhub_list_id),
         params=payload,
         timeout=1,
@@ -37,7 +37,7 @@ def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
 def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
     if not taxhub_id:
         raise ValueError("Null value for taxhub taxon id")
-    res: Response = requests.get(
+    res = requests.get(
         "{}bibnoms/{}".format(TAXHUB_API, taxhub_id), timeout=1)
     res.raise_for_status()
     return res.json()
