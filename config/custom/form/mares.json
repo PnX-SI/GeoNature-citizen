@@ -145,9 +145,14 @@
           "type": "string"
         }
       },
+      "autresEspeces": {
+        "title": "Autres Précisions",
+        "description": "",
+        "type": "string"
+      },
       "remarques": {
         "title": "Remarques",
-        "description": "",
+        "description": "Vous pouvez renseigner ici le nom complet des espèces que vous avez identifié. C'est également ici que vous pouvez indiquer si des animaux autres que ceux proposés dans la liste étaient présents.",
         "type": "string"
       }
     }
@@ -459,6 +464,10 @@
             { "name": "Plantes aquatiques immergées ", "value": "Plantes aquatiques immergées " },
             { "name": "Plantes aquatiques de berges ", "value": "Plantes aquatiques de berges " }
           ]
+        },
+        {
+          "key": "autresEspeces",
+          "type": "textarea"
         }
       ]
     },
