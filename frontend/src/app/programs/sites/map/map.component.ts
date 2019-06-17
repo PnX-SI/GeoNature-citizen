@@ -175,8 +175,9 @@ export class SitesMapComponent implements OnInit, OnChanges {
       this.sitesMap.invalidateSize();
       */
       // fix for disappearing base layer when back in navigation history
-      this.sitesMap.removeLayer(conf.DEFAULT_BASE_MAP());
-      this.sitesMap.addLayer(conf.DEFAULT_BASE_MAP());
+      let base_layer = this.sitesMap.options.layers[0]
+      this.sitesMap.removeLayer(base_layer);
+      this.sitesMap.addLayer(base_layer);
       // end fix
     }
   }
