@@ -25,6 +25,12 @@
           <h3>{{ p.title }}</h3>
           <p [innerHTML]="p.html_long_desc" class="card-body"></p>
         </div>
+          <a
+          class="btn-big"
+          [routerLink]="['/programs', p.id_program, 'observations']"
+        >
+          {{ AppConfig.platform_participate[localeId] }}
+        </a>
       </div>
     </div>
 
