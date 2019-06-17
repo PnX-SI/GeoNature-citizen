@@ -49,11 +49,7 @@ export class TopbarComponent implements OnInit {
         }),
         catchError(error => throwError(error))
       )
-      .subscribe
-      // FIXME:
-      // HELP: triggers "EmptyError: no elements in sequence" right after our token refresh
-      // console.debug("topbar::programs", data);
-      ();
+      .subscribe();
   }
 
   isLoggedIn(): Observable<boolean> {
@@ -98,27 +94,26 @@ export class TopbarComponent implements OnInit {
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
     if (access_token) {
-      this.auth
-        .ensureAuthorized(access_token)
-        .then(user => {
-          if (user && user.features) {
-            if (user.features.id_role) {
-              this.username = user.features.username;
-              this.isAdmin = user.features.admin ? true : false;
-            }
+      this.auth.ensureAuthorized().pipe(
+        tap(user => {
+          if (user && user["features"] && user["features"].id_role) {
+            this.username = user["features"].username;
+            this.isAdmin = user["features"].admin ? true : false;
           }
-        })
-        .catch(err => {
-          console.log(err);
+        }),
+        catchError(err => {
+          console.error(err);
           this.auth
             .logout()
             .then(logout => {
-              console.log("LogoutUser Get Status", logout.status);
+              console.log("Logout Status:", logout.status);
             })
             .catch(err => {
-              console.log(err);
+              console.error("Logout error:", err);
             });
-        });
+          return throwError(err);
+        })
+      );
     }
   }
 

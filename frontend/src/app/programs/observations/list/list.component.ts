@@ -2,14 +2,14 @@ import {
   Component,
   OnChanges,
   Input,
-  HostListener,
+  // HostListener,
   ChangeDetectorRef,
   SimpleChanges,
   Output,
   EventEmitter
 } from "@angular/core";
 import { BehaviorSubject, merge } from "rxjs";
-import { tap, pluck, share, count } from "rxjs/operators";
+import { pluck, share } from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 
@@ -53,8 +53,6 @@ export class ObsListComponent implements OnChanges {
     this.changes$.next(changes);
 
     if (this.observations && changes.observations.currentValue) {
-      console.debug("ObsListComponent::observations OnChanges:", changes);
-
       this.observationList = this.observations["features"];
       this.observations$.next(this.observations["features"]);
       this.municipalities = this.observations.features
@@ -72,21 +70,16 @@ export class ObsListComponent implements OnChanges {
     }
   }
 
-  @HostListener("document:NewObservationEvent", ["$event"])
-  public newObservationEventHandler(e: CustomEvent) {
-    console.debug("[ObsListComponent.newObservationEventHandler]", e.detail);
-    /* const obsFeature: Feature = e.detail;
-    this.observationList.unshift(obsFeature);
-    this.observations$.next(this.observationList);
-    this.cd.detectChanges(); */
-  }
+  // @HostListener("document:NewObservationEvent", ["$event"])
+  // public newObservationEventHandler(e: CustomEvent) {
+  // }
 
   onFilterChange(): void {
     let filters: { taxon: string; municipality: string } = {
       taxon: null,
       municipality: null
     };
-    // WARNING: map observations are connected to this.observationList
+    // WARNING: map.observations is connected to this.observationList
     this.observationList = this.observations["features"].filter(obs => {
       let results: boolean[] = [];
       if (this.selectedMunicipality) {

@@ -45,15 +45,17 @@ ol.carousel-indicators li{
     max-width: 70%;
 }
 
-.carousel-text{
-    background-color: #fff;
-    padding: 40px;
-    min-width: 400px;
-    height: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.carousel-text {
+  background-color: #fff;
+  padding: 35px 20px 35px 35px;
+  min-width: 450px;
+  max-height: 80%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
+
 
 .carousel-text h3 {
     font-family: 'Satisfy';

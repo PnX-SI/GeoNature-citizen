@@ -13,25 +13,30 @@
   --secondary: #60b15c;
   --secondary-gradient: #57a154;
   --ternary: #45765c;
-  --list-toggler-width: 21px;
-  --list-obs-offset: 170px;
-  --router-outlet-offset: 113px;
+  --list-toggler-width: 1.2rem;
+  /* --list-toggler-width: 21px; */
+  --list-obs-offset: calc(var(--router-outlet-offset) + 4em);
+  /* --list-obs-offset: 170px; */
+  --router-outlet-margin-top: 6.625em;
+  /* --router-outlet-margin-top: 106px; */
+  --router-outlet-offset: calc(var(--router-outlet-margin-top) + 0.5em);
+  /* --router-outlet-offset: 113px; */
   --modal-header-bg-moz: moz-linear-gradient(
-    top,
+    179.4deg,
     var(--secondary) 0%,
     var(--secondary) 50%,
     var(--secondary-gradient) 51%,
     var(--secondary-gradient) 100%
   );
   --modal-header-bg-webkit: moz-linear-gradient(
-    top,
+    179.4deg,
     var(--secondary) 0%,
     var(--secondary) 50%,
     var(--secondary-gradient) 51%,
     var(--secondary-gradient) 100%
   );
   --modal-header-bg-linear: linear-gradient(
-    to bottom,
+    179.4deg,
     var(--secondary) 0%,
     var(--secondary) 50%,
     var(--secondary-gradient) 51%,

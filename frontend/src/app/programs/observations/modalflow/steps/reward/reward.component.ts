@@ -1,20 +1,14 @@
-import {
-  Component,
-  Input,
-  ViewEncapsulation,
-  OnInit,
-  Injectable,
-  AfterViewInit
-} from "@angular/core";
+import { Component, Input, ViewEncapsulation, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { throwError, BehaviorSubject } from "rxjs";
+import { throwError, BehaviorSubject, Observable } from "rxjs";
 import {
   tap,
   catchError,
   map,
   distinctUntilChanged,
   share,
-  pluck
+  pluck,
+  filter
 } from "rxjs/operators";
 
 import { AppConfig } from "../../../../../../conf/app.config";
@@ -33,9 +27,9 @@ export interface BadgeState {
 }
 
 let _state: BadgeState = {
-  badges: JSON.parse(localStorage.getItem("badges")),
+  badges: JSON.parse(localStorage.getItem("badges")) || [],
   changes: [],
-  loading: false
+  loading: true
 };
 
 @Injectable()
@@ -53,7 +47,6 @@ export class BadgeFacade {
   changes$ = this.state$.pipe(
     map(state => state.changes),
     distinctUntilChanged(),
-    // tap(c => console.debug("$changes:", c)),
     share()
   );
   loading$ = this.state$.pipe(map(state => state.loading));
@@ -65,41 +58,45 @@ export class BadgeFacade {
 
   getChanges(): void {
     const access_token = localStorage.getItem("access_token");
-    console.debug("facade initialized.");
-    if (access_token) {
-      this.authService.ensureAuthorized(access_token).then(user => {
-        if (user["features"]["id_role"]) {
-          this.role_id = user["features"]["id_role"];
-          this.http
-            .get<Object>(
-              `${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`
-            )
-            .pipe(
-              pluck("badges"),
-              tap((badges: Badge[]) => {
-                const changes = this.difference(badges);
-                this.updateState({
-                  ..._state,
-                  badges: badges,
-                  changes: changes,
-                  loading: false
-                });
-                localStorage.setItem("badges", JSON.stringify(badges));
-              }),
-              catchError(error => {
-                console.error(error);
-                window.alert(error);
-                return throwError(error);
-              })
-            )
-            .subscribe();
-        }
-      }),
+    if (
+      access_token && AppConfig["REWARDS"]
+    ) {
+      this.authService.ensureAuthorized().subscribe(
+        user => {
+          if (user["features"]["id_role"]) {
+            this.role_id = user["features"]["id_role"];
+            this.http
+              .get<Object>(
+                `${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`
+              )
+              .pipe(
+                pluck("badges"),
+                tap((badges: Badge[]) => {
+                  const changes = this.difference(badges);
+                  this.updateState({
+                    ..._state,
+                    badges: badges,
+                    changes: changes,
+                    loading: false
+                  });
+                  localStorage.setItem("badges", JSON.stringify(badges));
+                }),
+                catchError(error => {
+                  console.error(error);
+                  window.alert(error);
+                  return throwError(error);
+                })
+              )
+              .subscribe();
+          }
+        },
         error => {
           console.error(error);
           window.alert(error);
           return throwError(error);
-        };
+        },
+        null
+      );
     }
   }
 
@@ -107,15 +104,22 @@ export class BadgeFacade {
     return this.role_id;
   }
 
-  difference(badges: Badge[]) {
-    if (badges && badges.length === 0) return /* EMPTY */;
+  difference(badges: Badge[]): Badge[] {
+    const oldBadges: Badge[] = _state.badges;
+
+    if (!oldBadges || (oldBadges.length === 0 && badges && !!badges.length)) {
+      return badges;
+    }
+
+    if (!badges || (badges && badges.length === 0)) {
+      return [];
+    }
 
     function badgeListComparer(otherArray) {
       return current =>
         otherArray.filter(other => other.alt == current.alt).length == 0;
     }
 
-    const oldBadges: Badge[] = _state.badges;
     const onlyInNewState: Badge[] = badges.filter(badgeListComparer(oldBadges));
 
     return onlyInNewState;
@@ -128,15 +132,14 @@ export class BadgeFacade {
 
 @Component({
   selector: "app-reward",
-  //  *ngIf="+(reward$ | async)?.length > 0"
   template: `
     <div *ngIf="(reward$ | async) as rewards">
       <div class="modal-body new-badge" (click)="clicked('background')">
         <div><img src="assets/user.jpg" /></div>
         <h5 i18n>Félicitations !</h5>
         <h6 i18n>
-          { rewards.length, plural, =1 { Vous venez d'obtenir ce badge } other {
-          Vous venez d'obtenir ces badges } }
+          { +rewards?.length, plural, =1 { Vous venez d&apos;obtenir ce badge }
+          other { Vous venez d&apos;obtenir ces badges } }
         </h6>
         <p>
           <img
@@ -153,44 +156,41 @@ export class BadgeFacade {
   encapsulation: ViewEncapsulation.None,
   providers: [BadgeFacade]
 })
-export class RewardComponent implements IFlowComponent, OnInit, AfterViewInit {
+export class RewardComponent implements IFlowComponent {
   readonly AppConfig = AppConfig;
+  private _timeout: any;
+  private _init = 0;
   @Input() data: any;
-  timeout: any;
-  init = 0;
-  condition$ = new BehaviorSubject<boolean>(false);
-  reward$ = this.badges.changes$.pipe(
-    map(reward => {
-      this.init++;
-      const condition = reward && !!reward.length;
+  reward$: Observable<Badge[]>;
 
-      console.debug(this.init, condition, reward);
-      this.condition$.next(condition);
-      if (!condition && this.init > 1) {
-        if (this.timeout) clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => this.close("NOREWARD"), 0);
-      }
-      return condition && this.init > 1 ? reward : null;
-    })
-  );
+  constructor(public badges: BadgeFacade) {
+    if (
+      !badges.username || !AppConfig["REWARDS"]
+    ) {
+      if (this._timeout) clearTimeout(this._timeout);
+      this._timeout = setTimeout(() => this.close("REWARDS_DISABLED"), 0);
+    } else {
+      this.reward$ = this.badges.changes$.pipe(
+        tap(reward => {
+          this._init++;
 
-  constructor(public badges: BadgeFacade) {}
+          const condition = !!reward && !!reward.length;
 
-  ngOnInit(): void {
-    console.debug("reward data:", this.data);
-  }
-
-  ngAfterViewInit() {
-    console.debug("rewards  view init.");
+          if (!condition && this._init > 1) {
+            if (this._timeout) clearTimeout(this._timeout);
+            this._timeout = setTimeout(() => this.close("NOREWARD"), 0);
+          }
+        }),
+        filter(reward => reward && !!reward.length && this._init > 1)
+      );
+    }
   }
 
   close(d) {
-    console.debug(`reward close: ${d}`);
     this.data.service.close(d);
   }
 
   clicked(d) {
-    console.debug("clicked", d);
     this.close(d);
   }
 }
