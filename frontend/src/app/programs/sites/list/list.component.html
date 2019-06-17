@@ -11,7 +11,7 @@
           Ajoutée par <span>{{ o.properties.obs_txt }}</span>
         </p>
         <p>
-          le <span>{{ o.properties.timestamp_create | date : longDate }}</span>
+          le <span>{{ o.properties.timestamp_create.substring(0, 10) | date : longDate }}</span>
         </p>
       </div>
       <div class="hide">

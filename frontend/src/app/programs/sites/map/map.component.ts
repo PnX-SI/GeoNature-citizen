@@ -12,7 +12,6 @@ import {
   ComponentFactoryResolver,
   Injector
 } from "@angular/core";
-import { formatDate } from "@angular/common";
 
 import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
@@ -300,7 +299,6 @@ export class SitesMapComponent implements OnInit, OnChanges {
     const component = factory.create(this.injector);
     component.instance.data = feature.properties;
     component.instance.env = {
-      formatDate: formatDate,
       AppConfig: AppConfig
     };
     component.changeDetectorRef.detectChanges();
@@ -391,7 +389,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
       <p>
         <b>{{ data.name }}</b><br>
         <span>Ajoutée par {{ data.obs_txt }}<br>
-        le {{ env.formatDate(data.timestamp_create, "longDate", "fr-FR") }}
+        le {{ data.timestamp_create.substring(0, 10) | date : longDate }}
         </span><br>
         <a [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer">details</a>
         </p>
