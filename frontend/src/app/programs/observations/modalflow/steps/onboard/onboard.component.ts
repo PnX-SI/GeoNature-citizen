@@ -44,17 +44,12 @@ export class OnboardComponent implements IFlowComponent, OnInit {
 
   // Actions
   register() {
-    console.debug("register action > data:", this.data);
     this.RegistrationModalRef = this.modalService.open(RegisterComponent, {
       centered: true
     });
     this.RegistrationModalRef.result.then(_ => {
-      console.debug("[obs-flow] registration resolved");
       this.authService.isLoggedIn().subscribe(
-        value => {
-          if (value) {
-          }
-        },
+        value => value!!,
         reason => {
           console.debug("registration dismissed:", reason);
         }
@@ -63,20 +58,13 @@ export class OnboardComponent implements IFlowComponent, OnInit {
   }
 
   login() {
-    // if not logged_in then stack Login modal dialog
-    console.debug("login action > data:", this.data);
-    // this.authService.redirectUrl = this.route.snapshot.url[0].path;
     this.LoginModalRef = this.modalService.open(LoginComponent, {
       centered: true
     });
     this.LoginModalRef.result.then(_ => {
       console.debug("[obs-flow] login resolved");
       this.authService.isLoggedIn().subscribe(
-        value => {
-          if (value) {
-            // assert login
-          }
-        },
+        value => !!value,
         reason => {
           console.debug("login dismissed:", reason);
         }
@@ -86,8 +74,6 @@ export class OnboardComponent implements IFlowComponent, OnInit {
 
   continue() {
     console.debug("continue");
-    // Continue to Submission form as Anonymous|Registered user
-    // authenticated but not logged in ... deserves notification ?
     this.data.next();
   }
 }

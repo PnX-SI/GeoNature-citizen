@@ -62,6 +62,8 @@ class ProgramView(ModelView):
             return False
 
 
+# response.headers['Content-Security-Policy'] = "frame-ancestors 'self' '\*.somesite.com' current_app.config['URL_APPLICATION']"
+# response.headers['X-Frame-Options'] = 'SAMEORIGIN' # ALLOW-FROM
 admin.add_view(ProgramView(ProgramsModel, db.session))
 
 

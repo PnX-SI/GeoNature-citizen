@@ -352,7 +352,8 @@ def logged_user():
             )
 
     except Exception as e:
-        raise GeonatureApiError(e)
+        # raise GeonatureApiError(e)
+        current_app.logger.error("AUTH ERROR:", str(e))
         return (
             {"message": "Connectez vous pour obtenir vos données personnelles."},
             400,

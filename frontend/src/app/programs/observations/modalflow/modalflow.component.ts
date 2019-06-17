@@ -44,17 +44,9 @@ export class ModalFlowComponent {
   ) {}
 
   clicked() {
-    console.debug("coords:", this.coords);
     this.flowitems = this.flowService.getFlowItems({ coords: this.coords });
-    console.debug("flow items: ", this.flowitems);
     this.flowService.open(this.content);
   }
 
-  ngOnDestroy(): void {
-    console.debug("destroyed");
-  }
-
-  step(componentName) {
-    console.debug("modalflow step:", componentName);
-  }
+  step(componentName) {}
 }

@@ -7,8 +7,8 @@
       (ngModelChange)="onFilterChange()"
     >
       <option [ngValue]="null" i18n>Toutes espèces</option>
-      <option *ngFor="let s of surveySpecies" [ngValue]="s">
-        {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
+      <option *ngFor="let s of surveySpecies" [ngValue]="s" i18n>
+        {{ s.taxref?.nom_vern }} (<i>{{ s.taxref?.nom_complet }}</i
         >)
       </option>
     </select>
@@ -43,15 +43,17 @@
       <!-- FIXME: hardcoded api media endpoint -->
       <img
         [src]="
-          o.properties.images && o.properties.images[0]
+          o.properties.images && !!o.properties.images.length
             ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
             : o.properties.image
             ? o.properties.image
+            : o.properties.medias && !!o.properties.medias.length
+            ? o.properties.medias[0].url
             : 'assets/Azure-Commun-019.JPG'
         "
       />
       <div class="infos">
-        <h5>{{ o.properties.common_name }}</h5>
+        <h5 i18n>{{ o.properties.taxref?.nom_vern }}</h5>
         <p i18n>
           Observé par
           <span>{{

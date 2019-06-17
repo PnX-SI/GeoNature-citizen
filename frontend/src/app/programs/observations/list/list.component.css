@@ -103,12 +103,15 @@
 }
 
 .obs-found {
-  background-color: var(--secondary);
+  /* background-color: var(--secondary); */
   background-image: linear-gradient(
-    to bottom,
-    var(--secondary),
+    178deg,
+    var(--secondary) 0%,
+    var(--secondary) 60%,
+    var(--secondary-gradient) 63%,
     var(--secondary-gradient)
-  );
+  ) !important;
+  min-height: 1.5em !important;
 }
 
 .obs-found p {

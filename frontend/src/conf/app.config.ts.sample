@@ -10,6 +10,7 @@ export const AppConfig = {
         DISPLAY_SIDEBAR: true
     },
     URL_APPLICATION:"http://127.0.0.1:4200",
+    REWARDS: true,
     termsOfUse: {
       fr: "assets/cgu.pdf",
       en: "assets/termsOfUse.pdf"
@@ -23,7 +24,7 @@ export const AppConfig = {
       en: "Hae duae provinciae bello quondam piratico catervis mixtae praedonum a Servilio pro consule missae sub iugum factae sunt vectigales. et hae quidem regiones velut in prominenti terrarum lingua positae ob orbe eoo monte Amano disparantur."
       },
     platform_participate: {
-      fr: "PARTICIPER AUX PROGRAMMES",
+      fr: "PARTICIPER AU PROGRAMME",
       en: "PARTICIPATE"
     },
     program_share_an_observation: {

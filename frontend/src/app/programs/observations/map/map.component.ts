@@ -149,7 +149,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
       changes.program &&
       changes.program.currentValue
     ) {
-      console.debug("ObsMapComponent::program OnChanges:", changes);
       this.loadProgramArea();
     }
 
@@ -158,7 +157,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
       changes.observations &&
       changes.observations.currentValue
     ) {
-      console.debug("ObsMapComponent::observations OnChanges:", changes);
       this.loadObservations();
 
       /*
@@ -166,7 +164,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
       // update when switching layers from control.
       // save configured map state (base_layer, center, zoom) in localStorage ?
       let base_layer = this.observationMap.options.layers[0];
-      // console.debug(base_layer["options"]["name"]);
       this.observationMap.removeLayer(this.observationMap.options.layers[0]);
       conf.BASE_LAYERS[base_layer["options"]["name"]].addTo(
         this.observationMap
@@ -374,7 +371,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @HostListener("document:NewObservationEvent", ["$event"])
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
-    console.debug("[ObsMapComponent.newObservationEventHandler]", e.detail);
   }
 }
 
@@ -382,9 +378,17 @@ export class ObsMapComponent implements OnInit, OnChanges {
   selector: "popup",
   template: `
     <ng-container>
-      <img [src]="data.image || 'assets/Azure-Commun-019.JPG'" />
+      <img
+        [src]="
+          data.image
+            ? data.image
+            : data.medias && !!data.medias.length
+            ? data.medias[0].url
+            : 'assets/Azure-Commun-019.JPG'
+        "
+      />
       <p>
-        <b>{{ data.common_name }}</b> <br />
+        <b i18n>{{ data.taxref?.nom_vern }}</b> <br />
         <span i18n>
           Observé par
           {{

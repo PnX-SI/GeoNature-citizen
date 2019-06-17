@@ -25,7 +25,7 @@ import {
   distinctUntilChanged,
   map,
   share,
-  take
+  tap
   } from 'rxjs/operators';
 import { FeatureCollection } from 'geojson';
 import { GncProgramsService } from '../../../api/gnc-programs.service';
@@ -42,6 +42,8 @@ import {
   } from '../observation.model';
 import 'leaflet-gesture-handling';
 import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
+
+
 
 
 
@@ -170,9 +172,10 @@ export class ObsFormComponent implements AfterViewInit {
                   }`
                 : this.taxa[taxon]["taxref"][field],
             cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
-            icon: this.taxa[taxon]["media"]
-              ? this.taxa[taxon]["media"]["url"]
-              : "assets/Azure-Commun-019.JPG"
+            icon:
+              this.taxa[taxon]["medias"].length >= 1
+                ? this.taxa[taxon]["medias"][0]["url"]
+                : "assets/Azure-Commun-019.JPG"
           });
         }
       }
@@ -196,14 +199,17 @@ export class ObsFormComponent implements AfterViewInit {
         this.taxonomyListID = this.program.features[0].properties.taxonomy_list;
         this.surveySpecies$ = this.programService
           .getProgramTaxonomyList(this.program_id)
-          .pipe(share());
-        this.surveySpecies$.pipe(take(1)).subscribe(speciesList => {
-          this.taxa = speciesList;
-          this.taxaCount = Object.keys(this.taxa).length;
-          if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
-            this.inputAutoCompleteSetup();
-          }
-        });
+          .pipe(
+            tap(species => {
+              this.taxa = species;
+              this.taxaCount = Object.keys(this.taxa).length;
+              if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
+                this.inputAutoCompleteSetup();
+              }
+            }),
+            share()
+          );
+        this.surveySpecies$.subscribe();
 
         // build map control
         const formMap = L.map("formMap", { gestureHandling: true });
@@ -305,7 +311,7 @@ export class ObsFormComponent implements AfterViewInit {
     this.obsForm.controls["cd_nom"].patchValue(taxon.taxref["cd_nom"]);
   }
 
-  isTaxonSelected(taxon: TaxonomyListItem): boolean {
+  isSelectedTaxon(taxon: TaxonomyListItem): boolean {
     return this.selectedTaxon === taxon;
   }
 

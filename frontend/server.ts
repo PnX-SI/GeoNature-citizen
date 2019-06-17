@@ -19,12 +19,12 @@ const PORT = process.env.PORT || 4000;
 const DIST_FOLDER = join(process.cwd(), "dist/browser");
 
 const supportedLocales = ["en", "fr"];
-const defaultLocale = "fr";
+const DEFAULT_LOCALE = "fr";
 const MockBrowser = require("mock-browser").mocks.MockBrowser;
 const mock = new MockBrowser();
 const domino = require("domino");
 const template = readFileSync(
-  join(DIST_FOLDER, defaultLocale, "index.html")
+  join(DIST_FOLDER, DEFAULT_LOCALE, "index.html")
 ).toString();
 const win = domino.createWindow(template);
 win.Object = Object;
@@ -72,21 +72,26 @@ app.get(
 
 // All regular routes use the Universal engine
 app.get("*", (req, res) => {
-  // workaround for '/citizen' path segment addition
-  // if (!req.url.startsWith("/citizen/")) {
-  //   res.redirect(301, "/citizen/fr/home");
-  // }
   const matches = req.url.match(/^\/([a-z]{2}(?:-[A-Z]{2})?)\//);
-  //check if the requested url has a correct format '/locale' and matches any of the supportedLocales
+  // check if the requested url has a correct format '/locale' and matches any of the supportedLocales
   const locale =
     matches && supportedLocales.indexOf(matches[1]) !== -1
       ? matches[1]
-      : defaultLocale;
+      : DEFAULT_LOCALE;
 
-  console.log("req.url:", req.url);
-  res.render(`${locale}/index`, { req });
-
+  let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  if (ip.substr(0, 7) === "::ffff:") {
+    ip = ip.substr(7);
+  }
   // res.render("index", { req });
+  res.render(`${locale}/index`, {
+    req: req,
+    url: req.url.replace(`/${locale}/`, "/"),
+    providers: [
+      { provide: "language", useFactory: () => locale, deps: [] },
+      { provide: "ip", useFactory: () => ip, deps: [] }
+    ]
+  });
 });
 
 // Start up the Node server

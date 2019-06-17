@@ -3,12 +3,12 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "types": [
+      "geojson",
       "leaflet",
-      "leaflet.markercluster"
-    ]
+      "leaflet.markercluster",
+      "leaflet.locatecontrol"
+    ],
+    "module": "esnext"
   },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["test.ts", "**/*.spec.ts"]
 }

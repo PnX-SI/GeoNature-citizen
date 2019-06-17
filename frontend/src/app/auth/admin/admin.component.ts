@@ -14,7 +14,13 @@ import { AuthService } from "../auth.service";
 @Component({
   selector: "app-admin",
   template: `
-    <section><iframe id="admin" [src]="adminUrl"></iframe></section>
+    <section>
+      <iframe
+        id="admin"
+        [src]="adminUrl"
+        sandbox="allow-forms allow-popups allow-scripts allow-top-navigation"
+      ></iframe>
+    </section>
   `,
   styleUrls: ["./admin.component.css"],
   encapsulation: ViewEncapsulation.None
