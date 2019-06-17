@@ -391,12 +391,12 @@ export class SitesMapComponent implements OnInit, OnChanges {
         <span>Ajoutée par {{ data.obs_txt }}<br>
         le {{ data.timestamp_create.substring(0, 10) | date : longDate }}
         </span><br>
-        <a [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer">details</a>
-        </p>
-      <div>
         <a [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer">
-          <img class="icon" src="assets/binoculars.png">
+          Voir les détails
         </a>
+        </p>
+      <div [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer" title="Voir les détails sur cette mare">
+          <img class="icon" src="assets/binoculars.png">
       </div>
     </ng-container>
   `
