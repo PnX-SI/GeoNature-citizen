@@ -152,6 +152,15 @@ form > button {
   margin: 0;
 }
 
+.homeLink {
+  text-align: center;
+}
+
+.homeLink a {
+  color: var(--secondary);
+}
+
+
 @media screen and (min-width: 992px) {
   #badges .row div:nth-child(2):before {
     content: " ";
