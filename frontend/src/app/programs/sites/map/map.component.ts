@@ -392,7 +392,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
         le {{ data.timestamp_create.substring(0, 10) | date : longDate }}
         </span><br>
         <a [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer">
-          Voir les détails
+          + Voir les détails
         </a>
         </p>
       <div [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer" title="Voir les détails sur cette mare">
