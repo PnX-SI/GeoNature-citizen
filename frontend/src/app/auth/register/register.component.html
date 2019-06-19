@@ -124,7 +124,8 @@
       [dismissible]="false"
       type="danger"
       *ngIf="
-        (confirm_password.errors && confirm_password.dirty) ||
+        confirm_password.errors &&
+        confirm_password.dirty &&
         (password.errors && password.dirty)
       "
       i18n
@@ -196,7 +197,7 @@
       type="submit"
       class="btn btn-outline-primary text-right rounded-0"
       i18n
-      [disabled]="registerForm.invalid"
+      [disabled]="registerForm?.invalid"
     >
       S'enregistrer
     </button>
@@ -204,7 +205,7 @@
   <button
     *ngIf="successMessage"
     class="btn btn-outline-primary rounded-0"
-    [disabled]="registerForm.invalid"
+    [disabled]="registerForm?.invalid"
     expand="block"
     (click)="activeModal.dismiss('Cross click')"
     i18n

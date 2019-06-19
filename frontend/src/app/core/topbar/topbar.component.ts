@@ -26,6 +26,7 @@ export class TopbarComponent implements OnInit {
   modalRef: NgbModalRef;
   programs$ = new Subject<Program[]>();
   isAdmin = false;
+  canDisplayAbout: boolean = AppConfig.about;
 
   constructor(
     private route: ActivatedRoute,

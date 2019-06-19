@@ -7,6 +7,7 @@ import {
   LOCALE_ID
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
 import { Meta, SafeHtml, DomSanitizer } from "@angular/platform-browser";
 
 import { AppConfig } from "../../conf/app.config";
@@ -27,11 +28,14 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   platform_intro: SafeHtml;
   AppConfig = AppConfig;
 
+  htmlContent: SafeHtml;
+
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
     private meta: Meta,
-    protected domSanitizer: DomSanitizer
+    protected domSanitizer: DomSanitizer,
+    protected http: HttpClient
   ) {}
 
   ngOnInit() {

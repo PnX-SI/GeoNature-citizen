@@ -9,6 +9,8 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AppConfig } from "../../../conf/app.config";
 import { AuthService } from "./../auth.service";
 
+import { saveAs } from "file-saver";
+
 @Component({
   selector: "app-user-dashboard",
   templateUrl: "./user-dashboard.component.html",
@@ -85,7 +87,11 @@ export class UserDashboardComponent implements OnInit {
 
   exportPersonalData() {
     this.getPersonalInfo().subscribe(data => {
-      alert(JSON.stringify(data));
+      let blob = new Blob([JSON.stringify(data)], {
+        type: "text/plain;charset=utf-8"
+      });
+      saveAs(blob, "mydata.txt");
+      //alert(JSON.stringify(data));
       // TODO: data format: csv, geojson ? Link observations and associated medias ?
     });
   }

@@ -36,11 +36,7 @@ export class AuthService {
       .pipe(
         map(user => {
           if (user) {
-            localStorage.setItem("access_token", user.access_token);
-            this.authorized$.next(true);
-            localStorage.setItem("refresh_token", user.refresh_token);
-            this.authenticated$.next(true);
-            localStorage.setItem("username", user.username);
+            this.authenticate(user);
           }
           return user;
         })
@@ -49,7 +45,22 @@ export class AuthService {
 
   register(user: RegisterUser): Observable<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/registration`;
-    return this.http.post(url, user, { headers: this.headers });
+    return this.http.post(url, user, { headers: this.headers }).pipe(
+      map(user => {
+        if (user) {
+          this.authenticate(user);
+        }
+        return user;
+      })
+    );
+  }
+
+  authenticate(user: any): void {
+    localStorage.setItem("access_token", user.access_token);
+    this.authorized$.next(true);
+    localStorage.setItem("refresh_token", user.refresh_token);
+    this.authenticated$.next(true);
+    localStorage.setItem("username", user.username);
   }
 
   logout(): Promise<any> {

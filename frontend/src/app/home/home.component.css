@@ -28,7 +28,7 @@ section {
 } */
 
 #welcome {
-  background: url(/assets/background.jpg) no-repeat;
+  background: url(../../assets/background.jpg) no-repeat;
   background-size: cover;
   position: relative;
   height: calc(100vh - 113px);

@@ -28,14 +28,17 @@ const conf = {
   MAP_ID: "obsMap",
   GEOLOCATION_HIGH_ACCURACY: false,
   BASE_LAYERS: MAP_CONFIG["BASEMAPS"].reduce((acc, baseLayer: Object) => {
-    acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
+    let layerConf: any = {
       name: baseLayer["name"],
       attribution: baseLayer["attribution"],
-      subdomains: baseLayer["subdomains"],
       detectRetina: baseLayer["detectRetina"],
       maxZoom: baseLayer["maxZoom"],
       bounds: baseLayer["bounds"]
-    });
+    };
+    if (baseLayer["subdomains"]) {
+      layerConf.subdomains = baseLayer["subdomains"];
+    }
+    acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], layerConf);
     return acc;
   }, {}),
   DEFAULT_BASE_MAP: () => {

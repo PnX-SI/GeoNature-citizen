@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { AppConfig } from "../../conf/app.config";
 
 @Component({
   selector: "app-about",
@@ -6,7 +8,11 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./about.component.css"]
 })
 export class AboutComponent implements OnInit {
-  constructor() {}
+  constructor(private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (!AppConfig.about) {
+      this.router.navigateByUrl("home");
+    }
+  }
 }

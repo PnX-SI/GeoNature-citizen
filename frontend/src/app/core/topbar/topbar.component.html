@@ -41,6 +41,7 @@
               routerLinkActive="active"
               class="btn my-2 my-sm-0 rounded-0"
               i18n
+              title="Accueil"
               >Accueil</a
             >
           </li>
@@ -50,12 +51,27 @@
               routerLinkActive="active"
               class="btn my-2 my-sm-0 rounded-0"
               i18n
+              title="Admin"
               >Admin</a
             >
           </li>
           <li *ngIf="_programs.length > 1">
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()" i18n
+            <a
+              class="btn my-2 my-sm-0 rounded-0"
+              (click)="programs()"
+              i18n
+              title="Les programmes"
               >Les programmes</a
+            >
+          </li>
+          <li *ngIf="canDisplayAbout">
+            <a
+              class="btn my-2 my-sm-0 rounded-0"
+              routerLink="/about"
+              routerLinkActive="active"
+              i18n
+              title="A propos"
+              >A propos</a
             >
           </li>
         </ul>
