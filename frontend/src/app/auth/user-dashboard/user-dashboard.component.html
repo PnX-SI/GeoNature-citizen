@@ -13,7 +13,7 @@
           <p>{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>
-      <section id="badges">
+      <section id="badges" *ngIf="AppConfig.FRONTEND.DISPLAY_BADGES">
         <h3 i18n>Vos badges</h3>
         <div class="row">
           <div
@@ -45,6 +45,11 @@
         >
           <i class="fa fa-trash"></i>Supprimer mes données personnelles
         </button>
+      </section>
+      <section class="homeLink">
+        <a [routerLink]="['/']">
+          <i class="fa fa-arrow-left"></i> Retour au site
+        </a>
       </section>
     </div>
   </div>
