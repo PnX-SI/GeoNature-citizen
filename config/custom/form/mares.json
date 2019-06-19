@@ -124,9 +124,35 @@
         "description": "La végétation hydrophyte est composée d’espèces aquatiques dont les feuilles se situent sous ou à la surface de l’eau (par exemple : le nénuphar). Quel est le pourcentage de la surface de la mare occupé par la végétation d’hydrophytes ?",
         "type": "string"
       },
+       "vertebres": {
+        "title": "Vertébrés",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "invertebres": {
+        "title": "Invertébrés",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "plantes": {
+        "title": "Plantes",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "autresEspeces": {
+        "title": "Autres Précisions",
+        "description": "",
+        "type": "string"
+      },
       "remarques": {
         "title": "Remarques",
-        "description": "",
+        "description": "Vous pouvez renseigner ici le nom complet des espèces que vous avez identifié. C'est également ici que vous pouvez indiquer si des animaux autres que ceux proposés dans la liste étaient présents.",
         "type": "string"
       }
     }
@@ -334,21 +360,21 @@
       "title": "Berges et végétation",
       "description": "",
       "layout": [
+        {
+          "key": "eauLibre",
+          "titleMap": [
+            { "name": "inconnu", "value": null },
+            { "name": "0 %", "value": "0 %" },
+            { "name": ">0-50 %", "value": ">0-50 %" },
+            { "name": "51-100 %", "value": "51-100 %" }
+          ]
+        },
         { "type": "section",
           "title": "Description avancée",
           "expandable": true,
           "items": [
             {
               "key": "penteBerges",
-              "titleMap": [
-                { "name": "inconnu", "value": null },
-                { "name": "0 %", "value": "0 %" },
-                { "name": ">0-50 %", "value": ">0-50 %" },
-                { "name": "51-100 %", "value": "51-100 %" }
-              ]
-            },
-            {
-              "key": "eauLibre",
               "titleMap": [
                 { "name": "inconnu", "value": null },
                 { "name": "0 %", "value": "0 %" },
@@ -393,6 +419,55 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "title": "Faune et flore",
+      "description": "",
+      "layout": [
+        {
+          "key": "vertebres",
+          "type": "checkboxes",
+          "titleMap": [
+            { "name": "Amphibiens indéterminés", "value": "Amphibiens indéterminés" },
+            { "name": "Grenouilles", "value": "Grenouilles" },
+            { "name": "Crapauds", "value": "Crapauds" },
+            { "name": "Tritons", "value": "Tritons" },
+            { "name": "Têtards", "value": "Têtards" },
+            { "name": "Pontes d’amphibiens en \"chapelet\"", "value": "Pontes d’amphibiens en \"chapelet\"" },
+            { "name": "Pontes d’amphibiens en \"amas globulaire\"", "value": "Pontes d’amphibiens en \"amas globulaire\"" },
+            { "name": "Poissons", "value": "Poissons" },
+            { "name": "Serpents", "value": "Serpents" },
+            { "name": "Oiseaux d’eau (canard, foulque, héron...)", "value": "Oiseaux d’eau (canard, foulque, héron...)" },
+            { "name": "Autres oiseaux (rouge-gorge, troglodyte, rapace...)", "value": "Autres oiseaux (rouge-gorge, troglodyte, rapace...)" },
+            { "name": "Ragondins / rats musqués", "value": "Ragondins / rats musqués" },
+            { "name": "Mammifères indéterminés ", "value": "Mammifères indéterminés " }
+          ]
+        },
+        {
+          "key": "invertebres",
+          "type": "checkboxes",
+          "titleMap": [
+            { "name": "Libellules (insecte posé : ailes ouvertes)", "value": "Libellules (insecte posé : ailes ouvertes)" },
+            { "name": "Lestes (insecte posé : ailes mi-ouvertes)", "value": "Lestes (insecte posé : ailes mi-ouvertes)" },
+            { "name": "Demoiselles (insecte posé : ailes fermées)", "value": "Demoiselles (insecte posé : ailes fermées)" },
+            { "name": "Insectes aquatiques (dytiques, larves de libellules..)", "value": "Insectes aquatiques (dytiques, larves de libellules..)" },
+            { "name": "Écrevisses", "value": "Écrevisses" }
+          ]
+        },
+        {
+          "key": "plantes",
+          "type": "checkboxes",
+          "titleMap": [
+            { "name": "Algues", "value": "Algues" },
+            { "name": "Plantes aquatiques immergées ", "value": "Plantes aquatiques immergées " },
+            { "name": "Plantes aquatiques de berges ", "value": "Plantes aquatiques de berges " }
+          ]
+        },
+        {
+          "key": "autresEspeces",
+          "type": "textarea"
         }
       ]
     },

@@ -12,7 +12,6 @@ import {
   ComponentFactoryResolver,
   Injector
 } from "@angular/core";
-import { formatDate } from "@angular/common";
 
 import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
@@ -175,8 +174,9 @@ export class SitesMapComponent implements OnInit, OnChanges {
       this.sitesMap.invalidateSize();
       */
       // fix for disappearing base layer when back in navigation history
-      this.sitesMap.removeLayer(conf.DEFAULT_BASE_MAP());
-      this.sitesMap.addLayer(conf.DEFAULT_BASE_MAP());
+      let base_layer = this.sitesMap.options.layers[0]
+      this.sitesMap.removeLayer(base_layer);
+      this.sitesMap.addLayer(base_layer);
       // end fix
     }
   }
@@ -299,7 +299,6 @@ export class SitesMapComponent implements OnInit, OnChanges {
     const component = factory.create(this.injector);
     component.instance.data = feature.properties;
     component.instance.env = {
-      formatDate: formatDate,
       AppConfig: AppConfig
     };
     component.changeDetectorRef.detectChanges();
@@ -390,14 +389,14 @@ export class SitesMapComponent implements OnInit, OnChanges {
       <p>
         <b>{{ data.name }}</b><br>
         <span>Ajoutée par {{ data.obs_txt }}<br>
-        le {{ env.formatDate(data.timestamp_create, "longDate", "fr-FR") }}
+        le {{ data.timestamp_create.substring(0, 10) | date : longDate }}
         </span><br>
-        <a [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer">details</a>
-        </p>
-      <div>
         <a [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer">
-          <img class="icon" src="assets/binoculars.png">
+          + Voir les détails
         </a>
+        </p>
+      <div [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer" title="Voir les détails sur cette mare">
+          <img class="icon" src="assets/binoculars.png">
       </div>
     </ng-container>
   `

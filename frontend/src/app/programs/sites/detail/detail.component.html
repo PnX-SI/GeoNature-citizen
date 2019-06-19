@@ -14,7 +14,7 @@
           <!--<tr><td>Ajoutée par</td><td>{{ site?.properties.obs_txt }}</td></tr>-->
           <!--</tbody>-->
         <!--</table>-->
-       <h6 class="card-subtitle mb-2 text-muted">Ajoutée le {{ site?.properties.timestamp_create | date : longDate }}</h6>
+       <h6 class="card-subtitle mb-2 text-muted">Ajoutée le {{ site?.properties.timestamp_create.substring(0, 10) | date : longDate }}</h6>
         <p class="card-text">Inventoriée par {{ site?.properties.obs_txt }}</p>
 
         <p *ngIf="site?.properties.last_visit; else noVisit" class="card-text"><small class="text-muted">

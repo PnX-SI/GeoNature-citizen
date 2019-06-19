@@ -44,8 +44,6 @@ export class SiteDetailComponent implements AfterViewInit {
     this.programService
       .getSiteDetails(this.site_id)
       .subscribe(sites => {
-
-        console.log(sites);
         this.site = sites['features'][0];
 
         this.photos = this.site.properties.photos;
