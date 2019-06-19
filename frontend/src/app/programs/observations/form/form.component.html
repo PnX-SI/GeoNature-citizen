@@ -27,7 +27,7 @@
             *ngFor="let s of (surveySpecies$ | async)"
             [value]="s.taxref.cd_nom"
           >
-            {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
+            {{ s.nom?.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
             >)
           </option>
         </select>

@@ -59,9 +59,7 @@ export class BadgeFacade {
   getChanges(): void {
     const access_token = localStorage.getItem("access_token");
     if (
-      access_token &&
-      AppConfig["REWARDS"] &&
-      AppConfig["REWARDS"]["BADGESET"]
+      access_token && AppConfig["REWARDS"]
     ) {
       this.authService.ensureAuthorized().subscribe(
         user => {
@@ -167,9 +165,7 @@ export class RewardComponent implements IFlowComponent {
 
   constructor(public badges: BadgeFacade) {
     if (
-      !badges.username ||
-      !AppConfig["REWARDS"] ||
-      !AppConfig["REWARDS"]["BADGESET"]
+      !badges.username || !AppConfig["REWARDS"]
     ) {
       if (this._timeout) clearTimeout(this._timeout);
       this._timeout = setTimeout(() => this.close("REWARDS_DISABLED"), 0);
