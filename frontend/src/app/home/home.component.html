@@ -34,7 +34,7 @@
         </div>
         <a
           class="btn-big"
-          [routerLink]="['/programs', p.id_program, 'observations']"
+          [routerLink]="['/programs', p.id_program, p.module_info.name]"
         >
           {{ AppConfig.platform_participate[localeId] }}
         </a>
