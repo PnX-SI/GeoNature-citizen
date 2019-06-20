@@ -5,7 +5,7 @@
   <h3>
     Etape {{ currentStep }}/{{ totalSteps() }} : {{ jsonSchema.steps[currentStep-1].title }}
   </h3>
-  <p class="h6">{{ jsonSchema.steps[currentStep-1].description }}</p>
+  <p class="h6" [innerHTML]="jsonSchema.steps[currentStep-1].description"></p>
   <form id="visitForm" [formGroup]="visitForm">
     <div class="row" [ngClass]="currentStep === 1 ? '' : 'hidden'">
       <div class="col-md-4">
