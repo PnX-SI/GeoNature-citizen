@@ -424,7 +424,7 @@
     },
     {
       "title": "Faune et flore",
-      "description": "Renseignez ici les espèces que vous observez dans et autour de la mare. Pour un inventaire plus complet, se connecter à <a href='https://www.faune-isere.org'>www.faune-isère.org</a> ou utiliser l'application Naturalist (Android). Pour savoir comment faire : consulter les tutoriels suivants : <a href='https://www.youtube.com/watch?v=tbqW3TUHVKg'>VisioNature TUTO#2 - Comment s'inscrire ?</a> et <a href='https://www.youtube.com/watch?v=YkiO__UvNq4'>VisioNature TUTO#9 - Saisir vos données sur l'application mobile Naturalist</a>",
+      "description": "Renseignez ici les espèces que vous observez dans et autour de la mare. Pour un inventaire plus complet, se connecter à <a href='https://www.faune-isere.org' target='_blank'>www.faune-isère.org</a> ou utiliser l'application Naturalist (Android). Pour savoir comment faire : consulter les tutoriels suivants : <a href='https://www.youtube.com/watch?v=tbqW3TUHVKg' target='_blank'>VisioNature TUTO#2 - Comment s'inscrire ?</a> et <a href='https://www.youtube.com/watch?v=YkiO__UvNq4' target='_blank'>VisioNature TUTO#9 - Saisir vos données sur l'application mobile Naturalist</a>",
       "layout": [
         {
           "key": "vertebres",
