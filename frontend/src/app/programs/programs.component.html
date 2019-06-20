@@ -11,11 +11,11 @@
           *ngFor="let p of (programs$ | async)"
           class="col-lg-4 col-md-4 col-sm-12"
         >
-          <a [routerLink]="['programs', p.id_program, 'observations']">
-            <div
-              class="text-center"
-              (click)="activeModal.close('PROGRAM_SELECTED')"
-            >
+          <a
+            [routerLink]="['programs', p.id_program, 'observations']"
+            (click)="activeModal.close('PROGRAM_SELECTED')"
+          >
+            <div class="text-center">
               <div
                 class="img-hover"
                 [ngbTooltip]="p.short_desc"
