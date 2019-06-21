@@ -30,7 +30,7 @@ Sommaire
 
 
 
-Installation de Geonature Citizen sur un environnement Debian
+=== Installation de Geonature Citizen sur un environnement Debian ===
 ==================
 
 Créer un utilisateur debian :
