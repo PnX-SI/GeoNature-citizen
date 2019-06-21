@@ -30,7 +30,7 @@ Sommaire
 
 
 
-=== Installation de Geonature Citizen sur un environnement Debian ===
+ Installation de Geonature Citizen sur un environnement Debian 
 ==================
 
 Créer un utilisateur debian :
@@ -141,7 +141,7 @@ Si Taxhub n’est pas installé :
 
 
 
-Etape 1 : “init_launch_db.rst” (https://github.com/patkap/GeoNature-citizen/blob/taxhub_rest/docs/devs/init_launch_db.rst) :
+* Etape 1 : “init_launch_db.rst” (https://github.com/PnX-SI/GeoNature-citizen/blob/taxhub_rest/docs/devs/init_launch_db.rst) :
 
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/postgresql.list'
 
@@ -162,7 +162,7 @@ sudo -u postgres psql dbname (geonature2db) -c 'create extension postgis; create
 
 --------------
 
-Etape 2 : Installer python3, pip et virtualenv :
+* Etape 2 : Installer python3, pip et virtualenv :
 
 python3 -m pip install --upgrade --user virtualenv
 sudo apt install python3-pip
@@ -178,15 +178,15 @@ python3 -m pip install -r requirements.txt
 
 
 
-Etape 3 : editer fichier de config (https://github.com/patkap/GeoNature-citizen/blob/taxhub_rest/docs/devs/config_files.rst) :
+* Etape 3 : editer fichier de config (https://github.com/PnX-SI/GeoNature-citizen/blob/taxhub_rest/docs/devs/config_files.rst) :
 
 cd ../config
 ## editer les paramètres dans default_config.toml
 
 -	SQLALCHEMY_DATABASE_URI : "postgresql+psycopg2://dbuser(geonatadmin):password(***)@127.0.0.1:5432/dbname(geonature2db)"
--	URL_APPLICATION : 'https://ipserveur(51.83.46.49):4200/'
--	API_ENDPOINT : 'https://ipserveur(51.83.46.49):5002/api'
--	API_TAXHUB : 'http://46.105.50.163/taxhub/api/'
+-	URL_APPLICATION : 'https://ipserveur:4200/'
+-	API_ENDPOINT : 'https://ipserveur:5002/api'
+-	API_TAXHUB : 'http://ipserveur/taxhub/api/'
 
 Notes pour la configuration des badges :
 clé attendance (global): 
@@ -199,7 +199,7 @@ seniority : ancienneté de la plate-forme
 
 
 
-Etape 4: “init_launch_backend.rst” et creation referentiel géo (https://github.com/patkap/GeoNature-citizen/blob/taxhub_rest/docs/devs/init_launch_backend.rst):
+* Etape 4: “init_launch_backend.rst” et creation referentiel géo (https://github.com/PnX-SI/GeoNature-citizen//blob/taxhub_rest/docs/devs/init_launch_backend.rst):
 
 Si git n’est pas installé : (sudo apt install git)
 
@@ -272,7 +272,8 @@ sudo systemctl reload apache2
 
 
 
-Etape 5:  Font End (https://github.com/patkap/GeoNature-citizen/blob/dev/docs/devs/init_launch_frontend.rst
+* Etape 5:  Font End (https://github.com/PnX-SI/GeoNature-citizen/tree/dev/docs/devs/init_launch_frontend.rst
+
 ):
 
 cd citizen/frontend/
