@@ -1,28 +1,28 @@
+import * as L from 'leaflet';
 import {
   Component,
-  ViewEncapsulation,
-  OnInit,
-  Input,
-  Output,
-  OnChanges,
-  SimpleChanges,
-  EventEmitter,
-  ViewChild,
-  ElementRef,
-  HostListener,
   ComponentFactoryResolver,
-  Injector
-} from "@angular/core";
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Injector,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+  ViewEncapsulation
+  } from '@angular/core';
+import { Feature, FeatureCollection } from 'geojson';
+import { MAP_CONFIG } from '../../../../conf/map.config';
+import { MarkerClusterGroup } from 'leaflet';
+import 'leaflet.markercluster';
+import 'leaflet.locatecontrol';
+import 'leaflet-gesture-handling';
+// import { AppConfig } from '../../../../conf/app.config';
 
-import { FeatureCollection, Feature } from "geojson";
-import * as L from "leaflet";
-import "leaflet.markercluster";
-import "leaflet.locatecontrol";
-import "leaflet-gesture-handling";
 
-// import { AppConfig } from "../../../../conf/app.config";
-import { MAP_CONFIG } from "../../../../conf/map.config";
-import { MarkerClusterGroup } from "leaflet";
 
 const conf = {
   MAP_ID: "obsMap",
@@ -60,13 +60,13 @@ const conf = {
   SCALE_CONTROL_POSITION: "bottomleft",
   NEW_OBS_MARKER_ICON: () =>
     L.icon({
-      iconUrl: "assets/pointer-blue2.png",
+      iconUrl: MAP_CONFIG["NEW_OBS_POINTER"],
       iconSize: [33, 42],
       iconAnchor: [16, 42]
     }),
   OBS_MARKER_ICON: () =>
     L.icon({
-      iconUrl: "assets/pointer-green.png",
+      iconUrl: MAP_CONFIG["OBS_POINTER"],
       iconSize: [33, 42],
       iconAnchor: [16, 42]
     }),
