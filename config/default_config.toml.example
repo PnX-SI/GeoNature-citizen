@@ -22,6 +22,14 @@ API_ENDPOINT = 'http://url.com:API_PORT/gncitizen/api'        # Replace my_url.c
 API_PORT = 5002 # 5000 déjà utilisé par taxhub
 API_TAXHUB ='http://127.0.0.1:5000/api/'
 
+# FlaskAdmin
+# credentials for loading map tiles from mapbox
+MAPBOX_MAP_ID = '...'
+MAPBOX_ACCESS_TOKEN = '...'
+DEFAULT_CENTER_LAT = 45
+DEFAULT_CENTER_LONG = 5
+
+
 SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'MyS3cr3tK3y'
 COOKIE_EXPIRATION = 7200

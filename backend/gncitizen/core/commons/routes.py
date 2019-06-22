@@ -6,7 +6,7 @@ import urllib.parse
 from flask import Blueprint, request, current_app
 from flask_jwt_extended import jwt_optional, get_jwt_identity
 from flask_admin.form import SecureForm
-from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.geoa import ModelView
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
@@ -33,7 +33,6 @@ from flask_jwt_extended.exceptions import UserLoadError
 
 
 routes = Blueprint("commons", __name__)
-
 
 class ProgramView(ModelView):
     form_base_class = SecureForm

@@ -67,6 +67,7 @@ admin = Admin(
     url="/".join([urlparse(app_conf["API_ENDPOINT"]).path, "admin"]),
 )
 
+
 taxhub_url = app_conf.get("API_TAXHUB", "")
 taxhub_lists_url = taxhub_url + "biblistes/"
 
