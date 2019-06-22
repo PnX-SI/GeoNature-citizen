@@ -1062,6 +1062,14 @@
           <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
+            <trans-unit id="75d8553871b8bf51ec744c06ac5a2441538df461" datatype="html">
+        <source>A propos</source>
+        <target>About</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="408cb6073e60c5d966296a3207fc596adca75e01" datatype="html">
         <source>Admin</source>
         <target>Admin</target>
