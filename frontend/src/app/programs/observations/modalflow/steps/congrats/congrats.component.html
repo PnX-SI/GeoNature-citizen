@@ -14,8 +14,8 @@
   <h6 i18n="Congrats|Votre observation a bien été ajoutée !">
     Votre observation a bien été ajoutée !
   </h6>
-  <p>{{ obs.common_name }}</p>
-  <span i18n="Congrats|observé par OBSERVATEUR le DATE "
+  <p i18n>{{ obs.taxref?.nom_vern }}</p>
+  <span i18n
     >Observé par {{ username || "Anonyme" }} <br />
     le {{ obs.date }}</span
   >

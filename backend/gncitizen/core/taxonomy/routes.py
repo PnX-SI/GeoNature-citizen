@@ -1,16 +1,21 @@
 # import requests
-from flask import Blueprint
+from flask import Blueprint, current_app
 
 # from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.env import db
 from gncitizen.utils.sqlalchemy import json_resp
-from gncitizen.core.taxonomy.models import (
-    BibNoms,
-    BibListes,
-    CorNomListe,
-    TMedias,
-    Taxref,
-)
+
+if current_app.config.get("API_TAXHUB") is None:
+    from gncitizen.core.taxonomy.models import (
+        BibNoms,
+        BibListes,
+        CorNomListe,
+        TMedias,
+        Taxref,
+    )
+else:
+    from gncitizen.utils.taxonomy import mkTaxonRepository
+
 
 routes = Blueprint("taxonomy", __name__)
 
@@ -83,35 +88,35 @@ def get_list(id):
           200:
             description: A list of all species lists
         """
-    # # taxhub_url = load_config()['TAXHUB_API_URL']
-    # r = requests.get(taxhub_lists_url + str(id))
-    # if r.status_code == 200:
-    #     result = r.json()
-    #     return result
-    # else:
-    #     return jsonify('Erreur de chargement de l \'API', r.status_code)
-    try:
-        data = (
-            db.session.query(BibNoms, Taxref, TMedias)
-            .distinct(BibNoms.cd_ref)
-            .join(CorNomListe, CorNomListe.id_nom == BibNoms.id_nom)
-            .join(Taxref, Taxref.cd_ref == BibNoms.cd_ref)
-            .outerjoin(TMedias, TMedias.cd_ref == BibNoms.cd_ref)
-            .filter(CorNomListe.id_liste == id)
-            .all()
-        )
-        # current_app.logger.debug(
-        #     [{'nom': d[0], 'taxref': d[1]} for d in data])
-        return [
-            {
-                "nom": d[0].as_dict(),
-                "taxref": d[1].as_dict(),
-                "medias": d[2].as_dict() if d[2] else None,
-            }
-            for d in data
-        ]
-    except Exception as e:
-        return {"message": str(e)}, 400
+
+    if current_app.config.get("API_TAXHUB") is not None:
+        current_app.logger.info("Calling TaxHub REST API.")
+        return mkTaxonRepository(id)
+
+    else:
+        current_app.logger.info("Select TaxHub schema.")
+        try:
+            data = (
+                db.session.query(BibNoms, Taxref, TMedias)
+                .distinct(BibNoms.cd_ref)
+                .join(CorNomListe, CorNomListe.id_nom == BibNoms.id_nom)
+                .join(Taxref, Taxref.cd_ref == BibNoms.cd_ref)
+                .outerjoin(TMedias, TMedias.cd_ref == BibNoms.cd_ref)
+                .filter(CorNomListe.id_liste == id)
+                .all()
+            )
+            # current_app.logger.debug(
+            #     [{'nom': d[0], 'taxref': d[1]} for d in data])
+            return [
+                {
+                    "nom": d[0].as_dict(),
+                    "taxref": d[1].as_dict(),
+                    "medias": d[2].as_dict() if d[2] else None,
+                }
+                for d in data
+            ]
+        except Exception as e:
+            return {"message": str(e)}, 400
 
 
 # @routes.route('/taxonomy/lists/full', methods=['GET'])

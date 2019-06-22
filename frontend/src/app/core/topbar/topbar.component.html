@@ -1,4 +1,4 @@
-<nav class="navbar navbar-light navbar-expand-md fixed-top">
+<nav class="navbar navbar-light navbar-expand-md">
   <a
     class="navbar-brand"
     routerLink="home"
@@ -41,7 +41,27 @@
               routerLinkActive="active"
               class="btn my-2 my-sm-0 rounded-0"
               i18n
+              title="Accueil"
               >Accueil</a
+            >
+          </li>
+          <li *ngIf="_programs.length > 1">
+            <a
+              class="btn my-2 my-sm-0 rounded-0"
+              (click)="programs()"
+              i18n
+              title="Les programmes"
+              >Les programmes</a
+            >
+          </li>
+          <li *ngIf="canDisplayAbout">
+            <a
+              class="btn my-2 my-sm-0 rounded-0"
+              routerLink="/about"
+              routerLinkActive="active"
+              i18n
+              title="A propos"
+              >A propos</a
             >
           </li>
           <li *ngIf="isAdmin">
@@ -50,12 +70,8 @@
               routerLinkActive="active"
               class="btn my-2 my-sm-0 rounded-0"
               i18n
+              title="Admin"
               >Admin</a
-            >
-          </li>
-          <li *ngIf="_programs.length > 1">
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()" i18n
-              >Les programmes</a
             >
           </li>
         </ul>

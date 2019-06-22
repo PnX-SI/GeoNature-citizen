@@ -6,7 +6,7 @@ import urllib.parse
 from flask import Blueprint, request, current_app
 from flask_jwt_extended import jwt_optional, get_jwt_identity
 from flask_admin.form import SecureForm
-from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.geoa import ModelView
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
@@ -33,7 +33,6 @@ from flask_jwt_extended.exceptions import UserLoadError
 
 
 routes = Blueprint("commons", __name__)
-
 
 class ProgramView(ModelView):
     form_base_class = SecureForm
@@ -62,6 +61,8 @@ class ProgramView(ModelView):
             return False
 
 
+# response.headers['Content-Security-Policy'] = "frame-ancestors 'self' '\*.somesite.com' current_app.config['URL_APPLICATION']"
+# response.headers['X-Frame-Options'] = 'SAMEORIGIN' # ALLOW-FROM
 admin.add_view(ProgramView(ProgramsModel, db.session))
 
 

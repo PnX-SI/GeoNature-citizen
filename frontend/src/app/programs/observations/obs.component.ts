@@ -96,7 +96,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
   @HostListener("document:NewObservationEvent", ["$event"])
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
-    const _ = this.observations.features.unshift(e.detail);
+    this.observations.features.unshift(e.detail);
     this.observations = {
       type: "FeatureCollection",
       features: this.observations.features

@@ -6,15 +6,7 @@ import {
 } from "@angular/platform-browser";
 import { HttpClient } from "@angular/common/http";
 import { Observable, of, Subject } from "rxjs";
-import {
-  catchError,
-  map,
-  mergeMap,
-  take,
-  share,
-  pluck,
-  tap
-} from "rxjs/operators";
+import { catchError, map, mergeMap, pluck, tap } from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 
@@ -103,7 +95,7 @@ export class GncProgramsService implements OnInit {
           this.state.set(PROGRAMS_KEY, programs as Program[]);
           this.programs$.next(programs);
         }),
-        catchError(this.handleError<Program[]>("getAllPrograms"))
+        catchError(this.handleError<Program[]>("getAllPrograms", []))
       );
     } else {
       return this.programs$;
@@ -111,11 +103,14 @@ export class GncProgramsService implements OnInit {
   }
 
   getProgram(id: number): Observable<FeatureCollection> {
-    return this.http
-      .get<FeatureCollection>(`${this.URL}/programs/${id}`)
-      .pipe(
-        catchError(this.handleError<FeatureCollection>(`getProgram id=${id}`))
-      );
+    return this.http.get<FeatureCollection>(`${this.URL}/programs/${id}`).pipe(
+      catchError(
+        this.handleError<FeatureCollection>(`getProgram id=${id}`, {
+          type: "FeatureCollection",
+          features: []
+        })
+      )
+    );
   }
 
   getProgramObservations(id: number): Observable<FeatureCollection> {
@@ -123,7 +118,10 @@ export class GncProgramsService implements OnInit {
       .get<FeatureCollection>(`${this.URL}/programs/${id}/observations`)
       .pipe(
         catchError(
-          this.handleError<FeatureCollection>(`getProgramObservations id=${id}`)
+          this.handleError<FeatureCollection>(
+            `getProgramObservations id=${id}`,
+            { type: "FeatureCollection", features: [] }
+          )
         )
       );
   }
@@ -142,7 +140,11 @@ export class GncProgramsService implements OnInit {
 
   private handleError<T>(operation = "operation", result?: T) {
     return (error: any): Observable<T> => {
-      console.error(`${operation} failed: ${error.message}`, error);
+      // API errors are caught within the interceptor and handled by our
+      // ErrorHandler in frontend/src/app/api/error_handler.ts .
+      console.error(
+        `${operation} failed: ${error.message ? error.message : error}`
+      );
       return of(result as T);
     };
   }

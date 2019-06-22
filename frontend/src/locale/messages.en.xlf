@@ -611,7 +611,7 @@
         <target>{VAR_SELECT, select, isOn {Search species} isOff {Select species} }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="e3ad01baa641db51491a7ba93a3a332decc40d89" datatype="html">
@@ -619,7 +619,7 @@
         <target>Scientific or vernacular name or cd_ref</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">73</context>
+          <context context-type="linenumber">79</context>
         </context-group>
       </trans-unit>
       <trans-unit id="f312db469126382e45a6fd27b1dc184dd8874475" datatype="html">
@@ -627,7 +627,7 @@
         <target>Further information</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">82</context>
+          <context context-type="linenumber">88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="795e2656ad62ca76c3398619f693621e5e94ef5f" datatype="html">
@@ -635,7 +635,7 @@
         <target>Observation date</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">86</context>
+          <context context-type="linenumber">92</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d7f155db07c7c362fcf9b6f98bbabf8c9815fca0" datatype="html">
@@ -643,7 +643,7 @@
         <target>yyyy-dd-mm</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">92</context>
+          <context context-type="linenumber">98</context>
         </context-group>
       </trans-unit>
       <trans-unit id="67a0a02419575b54eed6b27101ae0a30c635029f" datatype="html">
@@ -651,7 +651,7 @@
         <target>Counting</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">101</context>
+          <context context-type="linenumber">107</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dd2a11ebc737589080ed400dacc33a8c8c84728b" datatype="html">
@@ -659,7 +659,7 @@
         <target>Count</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">106</context>
+          <context context-type="linenumber">112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="688190149c303fc5438d194a57d73b2b16943b6f" datatype="html">
@@ -667,7 +667,7 @@
         <target>Comment</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">117</context>
+          <context context-type="linenumber">123</context>
         </context-group>
       </trans-unit>
       <trans-unit id="91d25744e097aa7d2be6eb1c90e85bda45d50624" datatype="html">
@@ -675,7 +675,7 @@
         <target>Comment</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">120</context>
+          <context context-type="linenumber">126</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bfa14a6744dd1c8bc159dfca1cb286f4c7ea8fc6" datatype="html">
@@ -683,7 +683,7 @@
         <target><x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Add a picture</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">130</context>
+          <context context-type="linenumber">136</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1ca6b9fd976db3087d536ed5c02e83d4eb791a56" datatype="html">
@@ -691,7 +691,7 @@
         <target>Where did you observe this species?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">146</context>
+          <context context-type="linenumber">152</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dc67b08c999905bfad44810acabbaa2c59d43061" datatype="html">
@@ -705,7 +705,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">149</context>
+          <context context-type="linenumber">155</context>
         </context-group>
       </trans-unit>
       <trans-unit id="37bffdf00ec09441168b52d6e0888a2e076aa2a4" datatype="html">
@@ -713,7 +713,7 @@
         <target>Zoomin to spot the observation.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">161</context>
+          <context context-type="linenumber">167</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/map/map.component.ts</context>
@@ -757,10 +757,18 @@
         <note priority="1" from="description">Votre observation a bien été ajoutée !</note>
         <note priority="1" from="meaning">Congrats</note>
       </trans-unit>
-      <trans-unit id="a479cf8651ff368f67091c4a1ec3f0c2d40d492f" datatype="html">
+      <trans-unit id="a71b80f1ccd88cf680a77e22033bb8b27f486850" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ obs.taxref?.nom_vern }}"/></source>
+        <target>{{ obs.taxref?.nom_vern_eng }}</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/congrats/congrats.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a424d8f02a3a93b974ee57fff8052aeec291440e" datatype="html">
         <source>Observé par <x id="INTERPOLATION" equiv-text="{{ username || &quot;Anonyme&quot; }}"/> <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
     le <x id="INTERPOLATION_1" equiv-text="{{ obs.date }}"/></source>
-    <target>Observed by <x id="INTERPOLATION" equiv-text="{{ username || &quot;Anonymous&quot; }}"/> <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
+    <target>Observed by <x id="INTERPOLATION" equiv-text="{{ username || 'Anonymous' }}"/> <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
     on <x id="INTERPOLATION_1" equiv-text="{{ obs.date }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/modalflow/steps/congrats/congrats.component.html</context>
@@ -797,6 +805,14 @@
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8c2daa99e32922f951e3735925ab9b7a31d266b8" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ data.taxref?.nom_vern }}"/></source>
+        <target>{{ data.taxref?.nom_vern_eng }}</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/map/map.component.ts</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="d49f50c97c1c2592b081e0aeaf0246b5ed5038c3" datatype="html">
         <source>
           Observé par
@@ -813,14 +829,14 @@
           <x id="INTERPOLATION" equiv-text="{{
             data.observer &amp;&amp; data.observer.username
               ? data.observer.username
-              : &quot;Anonymous&quot;
+              : 'Anonymous'
           }}"/>
           <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
           on <x id="INTERPOLATION_1" equiv-text="{{ data.date }}"/>
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/map/map.component.ts</context>
-          <context context-type="linenumber">6</context>
+          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="e0212155de52e79fd3927a7a0cd0b3e64c4d2e2e" datatype="html">
@@ -829,6 +845,17 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
           <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="51683d97d9a270ea9a36298e3e227c1181b0edaa" datatype="html">
+        <source>
+        <x id="INTERPOLATION" equiv-text="{{ s.taxref?.nom_vern }}"/> (<x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ s.taxref?.nom_complet }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>)
+      </source>
+        <target>{{ s.taxref?.nom_vern_eng }} (<x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ s.taxref?.nom_complet }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>)
+      </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3d9ec159fb51a28ab5ed26394a718910086471ca" datatype="html">
@@ -859,6 +886,14 @@
           <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="9a6b119da7545bcf7436bccc748d3248631950cf" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ o.properties.taxref?.nom_vern }}"/></source>
+        <target>{{ o.properties.taxref?.nom_vern_eng }}</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="36e3ed59fceed4face574868125417cebc71129a" datatype="html">
         <source>
           Observé par
@@ -873,12 +908,12 @@
           <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
             o.properties.observer?.username
               ? o.properties.observer.username
-              : &quot;Anonymous&quot;
+              : 'Anonymous'
           }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
-          <context context-type="linenumber">55</context>
+          <context context-type="linenumber">57</context>
         </context-group>
       </trans-unit>
       <trans-unit id="709e0ef5bbd3d66407ed33721520de70dcda2972" datatype="html">
@@ -894,7 +929,7 @@
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
-          <context context-type="linenumber">63</context>
+          <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a3a89bb8b6c93b00c5a1c774318fcfeffe3e4853" datatype="html">
@@ -1025,6 +1060,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
           <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+            <trans-unit id="75d8553871b8bf51ec744c06ac5a2441538df461" datatype="html">
+        <source>A propos</source>
+        <target>About</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
+          <context context-type="linenumber">64</context>
         </context-group>
       </trans-unit>
       <trans-unit id="408cb6073e60c5d966296a3207fc596adca75e01" datatype="html">

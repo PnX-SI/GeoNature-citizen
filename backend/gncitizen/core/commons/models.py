@@ -64,7 +64,9 @@ class ProgramsModel(TimestampMixinModel, db.Model):
         default=1,
     )
     taxonomy_list = db.Column(
-        db.Integer, ForeignKey(BibListes.id_liste), nullable=True
+        db.Integer, 
+        #ForeignKey(BibListes.id_liste), 
+        nullable=True
     )
     is_active = db.Column(
         db.Boolean(), server_default=expression.true(), default=True

@@ -15,11 +15,20 @@ DEFAULT_LANGUAGE = 'fr'
 PORTAL_AREA_NAME = 'zonage'
 
 DEBUG = true
+SQLALCHEMY_DEBUG_LEVEL = 'WARNING'
 
 URL_APPLICATION = 'http://url.com/gncitizen'         # Replace my_url.com by your domain or IP
-API_ENDPOINT = 'http://url.com/gncitizen/api:API_PORT'        # Replace my_url.com by your domain or IP
+API_ENDPOINT = 'http://url.com:API_PORT/gncitizen/api'        # Replace my_url.com by your domain or IP
 API_PORT = 5002 # 5000 déjà utilisé par taxhub
 API_TAXHUB ='http://127.0.0.1:5000/api/'
+
+# FlaskAdmin
+# credentials for loading map tiles from mapbox
+MAPBOX_MAP_ID = '...'
+MAPBOX_ACCESS_TOKEN = '...'
+DEFAULT_CENTER_LAT = 45
+DEFAULT_CENTER_LONG = 5
+
 
 SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'MyS3cr3tK3y'
@@ -103,9 +112,9 @@ UPLOAD_FOLDER = 'static/medias'
 # Front end configuration
 [FRONTEND]
     PROD_MOD = true
-    DISPLAY_HEADER = false
-    DISPLAY_FOOTER = false
-    MULTILINGUAL = false
+    # DISPLAY_HEADER = false
+    # DISPLAY_FOOTER = false
+    # MULTILINGUAL = false
 
 
 [RESET_PASSWD]

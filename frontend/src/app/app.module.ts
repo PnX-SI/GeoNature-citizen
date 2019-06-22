@@ -1,10 +1,11 @@
-import { LOCALE_ID, NgModule } from "@angular/core";
+import { LOCALE_ID, NgModule, Inject } from "@angular/core";
 import {
   BrowserModule,
   BrowserTransferStateModule
 } from "@angular/platform-browser";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { registerLocaleData } from "@angular/common";
 
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
@@ -33,6 +34,7 @@ import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.com
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { GncService } from "./api/gnc.service";
 import { GncProgramsService } from "./api/gnc-programs.service";
+import { ErrorHandler } from "./api/error_handler";
 import { AboutComponent } from "./about/about.component";
 import { AboutCustomComponent } from "./about/custom/custom.component";
 import { AboutFixedComponent } from "./about/fixed/fixed.component";
@@ -47,15 +49,9 @@ import { ModalFlowComponent } from "./programs/observations/modalflow/modalflow.
 import { RewardComponent } from "./programs/observations/modalflow/steps/reward/reward.component";
 import { ModalFlowService } from "./programs/observations/modalflow/modalflow.service";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
-import { AppConfig } from "../conf/app.config";
-
 import { AdminComponent } from "./auth/admin/admin.component";
 
-import { registerLocaleData } from "@angular/common";
-import localeFr from "@angular/common/locales/fr";
-registerLocaleData(localeFr, "fr");
-// import localeFrExtra from "@angular/common/locales/extra/fr";
-// registerLocaleData(localeFr, "fr-FR", localeFrExtra);
+import { AppConfig } from "../conf/app.config";
 
 @NgModule({
   imports: [
@@ -103,6 +99,7 @@ registerLocaleData(localeFr, "fr");
     AuthService,
     GncService,
     GncProgramsService,
+    ErrorHandler,
     // FlowService,
     ModalFlowService,
     ProgramsResolve,
@@ -127,4 +124,16 @@ registerLocaleData(localeFr, "fr");
   ],
   exports: [AdminComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(@Inject(LOCALE_ID) localeId: string) {
+    this.localeInitializer(localeId).then(() => {
+      console.info(`Locale: ${localeId}.`);
+    });
+  }
+
+  async localeInitializer(localeId: string): Promise<any> {
+    const module = await import(/* webpackInclude: /(fr|en)\.js$/ */
+    `@angular/common/locales/${localeId}.js`);
+    return registerLocaleData(module.default);
+  }
+}

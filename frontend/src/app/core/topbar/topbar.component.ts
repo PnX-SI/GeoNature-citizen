@@ -26,6 +26,7 @@ export class TopbarComponent implements OnInit {
   modalRef: NgbModalRef;
   programs$ = new Subject<Program[]>();
   isAdmin = false;
+  canDisplayAbout: boolean = AppConfig.about;
 
   constructor(
     private route: ActivatedRoute,
@@ -93,9 +94,32 @@ export class TopbarComponent implements OnInit {
 
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
+    console.log("topabr ngOnInit", access_token);
     if (access_token) {
-      this.auth.ensureAuthorized().pipe(
+      this.auth.ensureAuthorized().subscribe(
+        user => {
+          console.log("ensureAuthorized result", user);
+          if (user && user["features"] && user["features"].id_role) {
+            this.username = user["features"].username;
+            this.isAdmin = user["features"].admin ? true : false;
+          }
+        },
+        err => {
+          console.error(err);
+          this.auth
+            .logout()
+            .then(logout => {
+              console.log("Logout Status:", logout.status);
+            })
+            .catch(err => {
+              console.error("Logout error:", err);
+            });
+          return throwError(err);
+        }
+      );
+      /*this.auth.ensureAuthorized().pipe(
         tap(user => {
+          console.log("ensureAuthorized result", user);
           if (user && user["features"] && user["features"].id_role) {
             this.username = user["features"].username;
             this.isAdmin = user["features"].admin ? true : false;
@@ -113,7 +137,7 @@ export class TopbarComponent implements OnInit {
             });
           return throwError(err);
         })
-      );
+      );*/
     }
   }
 

@@ -58,7 +58,9 @@ export class BadgeFacade {
 
   getChanges(): void {
     const access_token = localStorage.getItem("access_token");
-    if (access_token) {
+    if (
+      access_token && AppConfig["REWARDS"]
+    ) {
       this.authService.ensureAuthorized().subscribe(
         user => {
           if (user["features"]["id_role"]) {
@@ -104,9 +106,11 @@ export class BadgeFacade {
 
   difference(badges: Badge[]): Badge[] {
     const oldBadges: Badge[] = _state.badges;
-    if (oldBadges.length === 0 && badges && !!badges.length) {
+
+    if (!oldBadges || (oldBadges.length === 0 && badges && !!badges.length)) {
       return badges;
     }
+
     if (!badges || (badges && badges.length === 0)) {
       return [];
     }
@@ -160,19 +164,26 @@ export class RewardComponent implements IFlowComponent {
   reward$: Observable<Badge[]>;
 
   constructor(public badges: BadgeFacade) {
-    this.reward$ = this.badges.changes$.pipe(
-      tap(reward => {
-        this._init++;
+    if (
+      !badges.username || !AppConfig["REWARDS"]
+    ) {
+      if (this._timeout) clearTimeout(this._timeout);
+      this._timeout = setTimeout(() => this.close("REWARDS_DISABLED"), 0);
+    } else {
+      this.reward$ = this.badges.changes$.pipe(
+        tap(reward => {
+          this._init++;
 
-        const condition = !!reward && !!reward.length;
+          const condition = !!reward && !!reward.length;
 
-        if (!condition && this._init > 1) {
-          if (this._timeout) clearTimeout(this._timeout);
-          this._timeout = setTimeout(() => this.close("NOREWARD"), 0);
-        }
-      }),
-      filter(reward => reward && !!reward.length && this._init > 1)
-    );
+          if (!condition && this._init > 1) {
+            if (this._timeout) clearTimeout(this._timeout);
+            this._timeout = setTimeout(() => this.close("NOREWARD"), 0);
+          }
+        }),
+        filter(reward => reward && !!reward.length && this._init > 1)
+      );
+    }
   }
 
   close(d) {

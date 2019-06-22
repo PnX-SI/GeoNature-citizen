@@ -20,7 +20,7 @@ Concrètement, sur Debian stretch:
     sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/postgresql.list'
     sudo wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
     sudo apt update
-    sudo apt install postgresql-10 postgresql-10-postgis-2.5
+    sudo apt install postgresql-10 postgresql-10-postgis-2.5 postgresql-10-postgis-2.5-scripts git
 
 Configurer la base de données
 #############################
@@ -34,7 +34,7 @@ l'utilisateur lorsqu'il vous sera demandé :
 
 .. code:: sh
 
-    createuser -e -E -P dbuser
+    sudo -u postgres createuser -e -E -P dbuser
 
 Créez la base de données, ici nommée ``geonaturedb`` appartenant à l'utilisateur ``dbuser``:
 
@@ -43,7 +43,7 @@ Création de la base de données et des extensions
 
 .. code:: sh
 
-    createdb -e -E UTF8 -O dbuser geonaturedb
+    sudo -u postgres createdb -e -E UTF8 -O dbuser geonaturedb
 
 Activez les extensions ``postgis`` pour la gestion des données spatiales et ``uuid-ossp`` \
 pour la gestion des uuid. Seul un superutilisateur peut activer les extensions (ici, \

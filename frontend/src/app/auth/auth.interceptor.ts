@@ -22,13 +22,18 @@ import { Observable, throwError, BehaviorSubject, from } from "rxjs";
 import { AppConfig } from "../../conf/app.config";
 import { AuthService } from "./auth.service";
 import { TokenRefresh } from "./models";
+import { ErrorHandler } from "../api/error_handler";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   refreshing = false;
   token$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    public errorHandler: ErrorHandler,
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
   addToken(request: HttpRequest<any>, token: string): HttpRequest<any> {
     if (token) {
@@ -67,6 +72,7 @@ export class AuthInterceptor implements HttpInterceptor {
           console.error(
             `[AuthInterceptor.performTokenRefresh] error "${error}"`
           );
+          this.errorHandler.handleError(error);
           this.router.navigate(["/home"]);
           return from(this.auth.logout());
         }),
@@ -87,6 +93,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   async handle400(error): Promise<any> {
     console.error(`[400 handler] "${error.message}"`);
+    this.errorHandler.handleError(error);
     return from(this.router.navigateByUrl("/home"));
   }
 
@@ -103,7 +110,6 @@ export class AuthInterceptor implements HttpInterceptor {
     ) {
       return next.handle(request);
     }
-    let errorMessage = "";
 
     // renew access_token 2min before expiration if interacting with backend api.
     const expired = this.auth.tokenExpiration(this.auth.getAccessToken());
@@ -113,10 +119,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(this.addToken(request, this.auth.getAccessToken())).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.error instanceof ErrorEvent) {
-          // client-side or network
-          errorMessage = `Error: ${error.error.message}`;
-        } else {
+        if (!(error.error instanceof ErrorEvent)) {
           // api call failure response
           switch (error.status) {
             case 400:
@@ -125,16 +128,21 @@ export class AuthInterceptor implements HttpInterceptor {
             case 401:
               return this.handle401(request, next);
             default:
-              console.error(
-                `[AuthInterceptor.intercept] missing handler for error:`,
-                error
-              );
-              errorMessage = `${error}`;
+              /*
+              When the flask backend is in debug mode ,
+              no cors header is returned upon error so
+              error.status=0, error.statusText="Unknown Error"
+              and error.message="Http failure response for (unknown url): 0 Unknown Error".
+              See comment in backend/server.py below flask_cors init.
+              */
+              if (error.status !== 0) {
+                console.error("error: ", error);
+              }
           }
         }
-        window.alert(errorMessage);
-        console.error(errorMessage);
-        return throwError(errorMessage);
+        this.errorHandler.handleError(error);
+        console.error(error);
+        return throwError(error);
       })
     );
   }

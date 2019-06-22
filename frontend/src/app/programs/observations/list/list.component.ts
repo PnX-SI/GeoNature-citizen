@@ -2,14 +2,14 @@ import {
   Component,
   OnChanges,
   Input,
-  HostListener,
+  // HostListener,
   ChangeDetectorRef,
   SimpleChanges,
   Output,
   EventEmitter
 } from "@angular/core";
 import { BehaviorSubject, merge } from "rxjs";
-import { tap, pluck, share, count } from "rxjs/operators";
+import { pluck, share } from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 

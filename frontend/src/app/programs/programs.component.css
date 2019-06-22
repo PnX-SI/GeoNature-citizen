@@ -11,21 +11,21 @@
   color: #fff;
   background: var(--primary);
   background: -moz-linear-gradient(
-    top,
+    179.4deg,
     var(--primary) 0%,
     var(--primary) 50%,
     var(--dark-primary) 51%,
     var(--dark-primary) 100%
   );
   background: -webkit-linear-gradient(
-    top,
+    179.4deg,
     var(--primary) 0%,
     var(--primary) 50%,
     var(--dark-primary) 51%,
     var(--dark-primary) 100%
   );
   background: linear-gradient(
-    to bottom,
+    179.4deg,
     var(--primary) 0%,
     var(--primary) 50%,
     var(--dark-primary) 51%,
@@ -49,21 +49,23 @@
 }
 
 .programs .text-center .img-hover {
-  height: 200px;
-  background-size: cover;
+  /* padding top 100% permet à la div d'avoir un ratio height/width égal peut importe le format d'image */
+  padding-top: 100%;
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  object-fit: cover;
+  transition: all 0.2s ease-in-out;
   margin-bottom: 30px;
   border-radius: 50%;
 }
 
 .programs .text-center img {
+  margin: 0 auto;
   margin-bottom: 30px;
   display: block;
   width: 100%;
   height: auto;
-  transition: all 0.2s ease-in-out;
+  object-fit: cover;
 }
 
 .programs .text-center:hover img {
@@ -120,6 +122,10 @@
   .programs .img-hover {
     max-width: 200px;
     margin: 0 auto;
+    padding-top: 50% !important;
+  }
+  .programs .text-center{
+    margin-bottom: 10px;
   }
 }
 

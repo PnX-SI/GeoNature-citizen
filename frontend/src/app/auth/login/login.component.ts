@@ -53,7 +53,7 @@ export class LoginComponent {
             return user;
           }
         }),
-        catchError(this.handleError)
+        catchError(error => this.handleError(error))
       )
       .subscribe(
         _data => {},
@@ -69,7 +69,7 @@ export class LoginComponent {
   onRecoverPassword(): void {
     this.http
       .post(`${AppConfig.API_ENDPOINT}/user/resetpasswd`, this.recovery)
-      .pipe(catchError(this.handleError))
+      .pipe(catchError(error => this.handleError(error)))
       .subscribe(
         response => {
           const message = response["message"];
@@ -94,7 +94,6 @@ export class LoginComponent {
       // client-side or network error
     } else {
       // server-side error
-      console.error("login error:", error, typeof error);
       if (error.error && error.error.message) {
         // api error
         errorMessage = `${error.error.message}`;

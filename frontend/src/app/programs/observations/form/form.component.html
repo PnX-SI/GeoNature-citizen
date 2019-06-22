@@ -8,10 +8,12 @@
   <div class="form-row">
     <div class="form-group col-lg-8">
       <input formControlName="id_program" type="hidden" />
-      <h5 class="m-0"><label for="cd_nom" i18n class="m-0"
-        >{ autocomplete, select, isOn {Rechercher une esp&egrave;ce} isOff
-        {S&eacute;lectionnez une esp&egrave;ce}}</label
-      ></h5>
+      <h5 class="m-0">
+        <label for="cd_nom" i18n class="m-0"
+          >{ autocomplete, select, isOn {Rechercher une esp&egrave;ce} isOff
+          {S&eacute;lectionnez une esp&egrave;ce}}</label
+        >
+      </h5>
       <!-- TAXON SELECT -->
       <div
         *ngIf="
@@ -25,7 +27,7 @@
             *ngFor="let s of (surveySpecies$ | async)"
             [value]="s.taxref.cd_nom"
           >
-            {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
+            {{ s.nom?.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
             >)
           </option>
         </select>
@@ -43,13 +45,17 @@
         [class.ng-invalid]="!selectedTaxon"
       >
         <div *ngFor="let s of (surveySpecies$ | async)">
-          <div class="obs-img" [class.selected]="isTaxonSelected(s)">
+          <div class="obs-img" [class.selected]="isSelectedTaxon(s)">
             <img
-              src="{{(s.medias?.url)?s.medias.url:'assets/Azure-Commun-019.JPG'}}"
-              alt="{{s.nom.nom_francais}}"
+              [src]="
+                s.medias && !!s.medias.length
+                  ? s.medias[0]?.url
+                  : 'assets/Azure-Commun-019.JPG'
+              "
+              [alt]="s.nom?.nom_francais"
               (click)="onTaxonSelected(s)"
             />
-            <span>{{ s.nom.nom_francais }}</span>
+            <span>{{ s.nom?.nom_francais }}</span>
           </div>
         </div>
       </div>
@@ -169,7 +175,12 @@
         #geometry
         class="col-lg-12"
       />
-      <p class="text-right m-0"><em>Cliquez sur la carte pour renseigner le lieu précis de votre observation</em></p>
+      <p class="text-right m-0">
+        <em
+          >Cliquez sur la carte pour renseigner le lieu précis de votre
+          observation</em
+        >
+      </p>
     </div>
     <p class="ng-invalid pl-1 ml-1">Champs manquants</p>
   </div>

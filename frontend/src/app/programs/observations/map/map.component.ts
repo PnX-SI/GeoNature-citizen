@@ -28,14 +28,17 @@ const conf = {
   MAP_ID: "obsMap",
   GEOLOCATION_HIGH_ACCURACY: false,
   BASE_LAYERS: MAP_CONFIG["BASEMAPS"].reduce((acc, baseLayer: Object) => {
-    acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
+    let layerConf: any = {
       name: baseLayer["name"],
       attribution: baseLayer["attribution"],
-      subdomains: baseLayer["subdomains"],
       detectRetina: baseLayer["detectRetina"],
       maxZoom: baseLayer["maxZoom"],
       bounds: baseLayer["bounds"]
-    });
+    };
+    if (baseLayer["subdomains"]) {
+      layerConf.subdomains = baseLayer["subdomains"];
+    }
+    acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], layerConf);
     return acc;
   }, {}),
   DEFAULT_BASE_MAP: () => {
@@ -378,9 +381,17 @@ export class ObsMapComponent implements OnInit, OnChanges {
   selector: "popup",
   template: `
     <ng-container>
-      <img [src]="data.image || 'assets/Azure-Commun-019.JPG'" />
+      <img
+        [src]="
+          data.image
+            ? data.image
+            : data.medias && !!data.medias.length
+            ? data.medias[0].url
+            : 'assets/Azure-Commun-019.JPG'
+        "
+      />
       <p>
-        <b>{{ data.common_name }}</b> <br />
+        <b i18n>{{ data.taxref?.nom_vern }}</b> <br />
         <span i18n>
           Observé par
           {{

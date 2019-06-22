@@ -2,13 +2,6 @@
   <section id="welcome">
     <h1 [innerHTML]="platform_intro"></h1>
     <p [innerHTML]="platform_teaser"></p>
-    <a
-      [routerLink]="['/home']"
-      fragment="programs"
-      class="btn-big"
-      role="button"
-      >{{ AppConfig.platform_participate[localeId] }}</a
-    >
     <a [routerLink]="['/home']" fragment="programs" class="scroll">
       <span i18n="Scrollez pour en voir plus !"
         >Scrollez pour en voir plus !</span
@@ -35,8 +28,7 @@
         <a
           class="btn-big"
           [routerLink]="['/programs', p.id_program, 'observations']"
-        >
-          {{ AppConfig.platform_participate[localeId] }}
+          >{{ AppConfig.platform_participate[localeId] }}
         </a>
       </div>
     </div>

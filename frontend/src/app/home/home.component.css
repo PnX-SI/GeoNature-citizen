@@ -28,7 +28,7 @@ section {
 } */
 
 #welcome {
-  background: url(/assets/background.jpg) no-repeat;
+  background: url(../../assets/background.jpg) no-repeat;
   background-size: cover;
   position: relative;
   height: calc(100vh - 113px);
@@ -228,7 +228,8 @@ section {
   background-color: #fff;
   padding: 35px 20px 35px 35px;
   min-width: 450px;
-  height: 80%;
+  max-height: 80%;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -248,7 +249,6 @@ section {
 #slider .carousel-text > p {
   font-style: italic;
   font-size: 14px;
-  overflow: hidden;
 }
 
 #slider .carousel-text a {
