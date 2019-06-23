@@ -7,7 +7,7 @@ from flasgger import Swagger
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
-
+from flask_ckeditor import CKEditor, CKEditorField 
 
 from gncitizen.utils.toml import load_toml
 
@@ -45,6 +45,8 @@ SQLALCHEMY_DATABASE_URI = app_conf["SQLALCHEMY_DATABASE_URI"]
 db = SQLAlchemy()
 
 jwt = JWTManager()
+
+ckeditor = CKEditor()
 
 swagger_template = {
     # "openapi": "3.0.0",
