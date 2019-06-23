@@ -15,6 +15,7 @@ import { AuthService } from "../auth.service";
   selector: "app-admin",
   template: `
     <section>
+    <a [href]="adminUrl" target="_blank">BackOffice</a>
       <iframe
         id="admin"
         [src]="adminUrl"
