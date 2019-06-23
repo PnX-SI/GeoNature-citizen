@@ -5,7 +5,7 @@ import logging
 from flask import Flask, current_app
 from flask_cors import CORS
 
-from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger, admin
+from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger, admin, ckeditor
 from gncitizen.utils.sqlalchemy import create_schemas
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -87,6 +87,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     swagger.init_app(app)
 
     admin.init_app(app)
+
+    ckeditor.init_app(app)
 
     with app.app_context():
 

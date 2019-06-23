@@ -10,6 +10,7 @@ from flask_admin.contrib.geoa import ModelView
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
+from flask_ckeditor import CKEditorField
 
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
@@ -36,6 +37,9 @@ routes = Blueprint("commons", __name__)
 
 class ProgramView(ModelView):
     form_base_class = SecureForm
+    form_overrides = dict(short_desc=CKEditorField, long_desc=CKEditorField)
+    create_template = 'edit.html'
+    edit_template = 'edit.html'
 
     def is_accessible(self):
         try:
