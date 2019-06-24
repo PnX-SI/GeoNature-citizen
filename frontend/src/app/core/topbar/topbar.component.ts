@@ -13,6 +13,8 @@ import { ProgramsComponent } from "../../programs/programs.component";
 import { Program } from "../../programs/programs.models";
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { ActivatedRoute } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 
 @Component({
   selector: "app-topbar",
@@ -27,12 +29,15 @@ export class TopbarComponent implements OnInit {
   programs$ = new Subject<Program[]>();
   isAdmin = false;
   canDisplayAbout: boolean = AppConfig.about;
+  adminUrl: SafeUrl;
 
   constructor(
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     private auth: AuthService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private sanitizer: DomSanitizer,
+    protected http: HttpClient
   ) {
     const tmp = localStorage.getItem("username");
     this.username = tmp ? tmp.replace(/\"/g, "") : "Anonymous";
@@ -63,6 +68,7 @@ export class TopbarComponent implements OnInit {
       })
     );
   }
+
 
   login() {
     this.modalRef = this.modalService.open(LoginComponent, {
@@ -102,6 +108,18 @@ export class TopbarComponent implements OnInit {
           if (user && user["features"] && user["features"].id_role) {
             this.username = user["features"].username;
             this.isAdmin = user["features"].admin ? true : false;
+            if (this.isAdmin) {
+              const ADMIN_ENDPOINT = [
+                AppConfig.API_ENDPOINT,
+                // this.localeId,
+                "admin",
+                ""
+              ].join("/");
+              const PROGRAM_ENDPOINT = ADMIN_ENDPOINT + "programsmodel/";
+              this.adminUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+                PROGRAM_ENDPOINT + "?jwt=" + this.auth.getAccessToken()
+              );
+            }
           }
         },
         err => {
