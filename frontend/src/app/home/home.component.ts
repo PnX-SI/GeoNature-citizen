@@ -1,3 +1,4 @@
+import { ProgramsComponent } from './../programs/programs.component';
 import {
   Component,
   OnInit,
@@ -14,6 +15,7 @@ import { AppConfig } from "../../conf/app.config";
 import { ProgramsResolve } from "../programs/programs-resolve.service";
 import { Program } from "../programs/programs.models";
 
+
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -27,7 +29,6 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   platform_teaser: SafeHtml;
   platform_intro: SafeHtml;
   AppConfig = AppConfig;
-
   htmlContent: SafeHtml;
 
   constructor(
