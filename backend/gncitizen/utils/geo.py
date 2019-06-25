@@ -32,7 +32,7 @@ def get_municipality_id_from_wkb(wkb):
             db.session.query(LAreas)
             .join(BibAreasTypes)
             .filter(
-                LAreas.geom.ST_Intersects(wkb.ST_Transform(2154)),
+                LAreas.geom.ST_Intersects(wkb.ST_Transform(srid)),
                 BibAreasTypes.type_name == "Communes",
             )
             .first()
