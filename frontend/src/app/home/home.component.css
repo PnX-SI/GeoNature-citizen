@@ -528,7 +528,7 @@ app-observations {
     transform: translateY(-5px);
 }
 
-.programs .text-center p {
+.programs .text-center .short_desc {
     font-size: 14px;
     color: #111;
     background: #eee;
@@ -539,14 +539,14 @@ app-observations {
     min-height: 50px;
 }
 
-.programs .text-center p span {
+.programs .text-center .short_desc span {
     display: flex;
     justify-content: center;
     /* align horizontal */
     align-items: center;
 }
 
-.programs .text-center p h1 {
+.programs .text-center .short_desc h1 {
     background: inherit;
     font-size: 16px;
     color: inherit;
@@ -557,26 +557,7 @@ app-observations {
     min-height: 48px;
 }
 
-.programs .text-center .btn-big {
-    text-transform: uppercase;
-    color: #fff !important;
-    padding: 20px 30px;
-    border: none;
-    font-weight: 500;
-    font-size: 18px;
-    width: fit-content;
-    transition: all 0.2s ease-in-out;
-}
-
-.programs .text-center .btn-big:hover {
-    -webkit-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
-    -moz-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
-    box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
-    color: #fff !important;
-    transform: translateY(-5px);
-}
-
-.programs .text-center p:before {
+.programs .text-center .short_desc:before {
     content: " ";
     background: #eee;
     position: absolute;
@@ -589,6 +570,47 @@ app-observations {
     -webkit-clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
     clip-path: polygon(50% 29%, 10% 100%, 100% 100%);
     width: 25px;
+}
+
+.programs .text-center .btn-big {
+    background: var(--primary);
+}
+
+.programs .text-center .overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    height: calc(100%-60px);
+    width: calc(100%-20px);
+    opacity: 0;
+    transition: .5s ease;
+    background-color: var(--primary);
+    border-radius: 3px;
+}
+
+.programs .text-center:hover .overlay {
+    opacity: 0.9;
+}
+
+.programs .text-center .overlay .overlay-text {
+    text-transform: uppercase;
+    color: #fff !important;
+    font-weight: 1000;
+    font-size: 18px;
+    width: fit-content;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
 }
 
 @media screen and (max-width: 991px) {
