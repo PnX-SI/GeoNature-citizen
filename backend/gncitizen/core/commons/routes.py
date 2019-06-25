@@ -37,7 +37,7 @@ routes = Blueprint("commons", __name__)
 
 class ProgramView(ModelView):
     form_base_class = SecureForm
-    form_overrides = dict(short_desc=CKEditorField, long_desc=CKEditorField)
+    form_overrides = dict(long_desc=CKEditorField)
     create_template = 'edit.html'
     edit_template = 'edit.html'
 
