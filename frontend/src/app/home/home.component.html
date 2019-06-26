@@ -15,7 +15,7 @@
             <div class="container-fluid programs">
                 <div class="row justify-content-center align-items-center">
                     <div class="col-xl-3 col-lg-4 " *ngFor="let p of programs">
-                        <a [routerLink]="['programs', p.id_program, 'observations']">
+                        <a [routerLink]="['/programs', p.id_program, 'observations']">
                             <div class="text-center">
                                 <div class="img-hover" [ngbTooltip]="p.short_desc" [ngStyle]="{
                                     'background-image': p.logo
