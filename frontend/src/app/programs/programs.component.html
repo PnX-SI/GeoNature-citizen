@@ -1,41 +1,31 @@
 <div class="container programs">
-  <div class="row">
-    <h1 i18n="Programs modal title|PROGRAMMES">
-      PROGRAMMES<span class="badge badge-pill badge-primary">{{
+    <div class="row">
+        <h1 i18n="Programs modal title|PROGRAMMES">
+            PROGRAMMES&nbsp;<span class="badge badge-pill badge-light">{{
         (programs$ | async)?.length
       }}</span>
-    </h1>
-    <div class="container" id="main">
-      <div class="row justify-content-center">
-        <div
-          *ngFor="let p of (programs$ | async)"
-          class="col-lg-4 col-md-4 col-sm-12"
-        >
-          <a
-            [routerLink]="['programs', p.id_program, 'observations']"
-            (click)="activeModal.close('PROGRAM_SELECTED')"
-          >
-            <div class="text-center">
-              <div
-                class="img-hover"
-                [ngbTooltip]="p.short_desc"
-                [ngStyle]="{
-                  'background-image': p.logo
-                    ? 'url(' + p.logo + ')'
-                    : p.image
-                    ? 'url(' + p.image + ')'
-                    : 'url(' + 'assets/prog1.jpg' + ')',
-                  'background-size': 'cover'
-                }"
-              ></div>
-              <h5 class="card-title">
-                {{ p.title }}&nbsp; <span class="badge badge-info"> </span>
-              </h5>
-              <p [innerHTML]="p.html_short_desc"></p>
+        </h1>
+        <div class="container" id="main">
+            <div class="row justify-content-center">
+                <div *ngFor="let p of (programs$ | async)" class="col-lg-4 col-md-4 col-sm-12">
+                    <a [routerLink]="['programs', p.id_program, 'observations']" (click)="activeModal.close('PROGRAM_SELECTED')">
+                        <div class="text-center">
+                            <div class="img-hover" [ngbTooltip]="p.short_desc" [ngStyle]="{
+                                'background-image': p.logo
+                                  ? 'url(' + p.logo + ')'
+                                  : p.image
+                                  ? 'url(' + p.image + ')'
+                                  : 'url(' + 'assets/prog1.jpg' + ')',
+                                'background-size': 'cover'
+                              }"></div>
+                            <h5 class="card-title">
+                                {{ p.title }}&nbsp; <span class="badge badge-info"> </span>
+                            </h5>
+                            <p class="short_desc" [innerHTML]="p.html_short_desc"></p>
+                        </div>
+                    </a>
+                </div>
             </div>
-          </a>
         </div>
-      </div>
     </div>
-  </div>
 </div>

@@ -1064,20 +1064,20 @@
           <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="75d8553871b8bf51ec744c06ac5a2441538df461" datatype="html">
+      <trans-unit id="b132890d128d04269ac74582b89b31813d000604" datatype="html">
         <source>A propos</source>
         <target>A propos</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="408cb6073e60c5d966296a3207fc596adca75e01" datatype="html">
-        <source>Admin</source>
-        <target>Admin</target>
+      <trans-unit id="308f7f785d1b6424af72bbf2e3145ca7258149c8" datatype="html">
+        <source>Admin </source>
+        <target>Admin<target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="46b2bd5add5ff29876db4ca3eb3b1bcdad798254" datatype="html">
@@ -1096,7 +1096,7 @@
           <context context-type="linenumber">70</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="e5c4aa14604e404f735b8845b759693207e98a6f" datatype="html">
+            <trans-unit id="75254ddc87124d59afb872d62e7f4553ff26228b" datatype="html">
         <source>
               <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>  Se déconnecter
             </source>

@@ -1,90 +1,75 @@
 <div class="row">
-  <section id="welcome">
-    <h1 [innerHTML]="platform_intro"></h1>
-    <p [innerHTML]="platform_teaser"></p>
-    <a [routerLink]="['/home']" fragment="programs" class="scroll">
-      <span i18n="Scrollez pour en voir plus !"
-        >Scrollez pour en voir plus !</span
-      >
-      <img class="d-block" src="assets/scroll.svg" alt="scroll to #programs" />
-    </a>
-  </section>
-</div>
-
-<div class="row">
-  <!-- LES PROGRAMMES -->
-  <section id="programs" *ngIf="programs.length > 1">
-    <div id="programs-cards">
-      <div class="card" *ngFor="let p of programs">
-        <div class="card-content">
-          <img
-            class="d-block w-100"
-            [src]="p.image || 'assets/Azure-Commun-019.JPG'"
-            alt="Programme {{ p.title }}"
-          />
-          <h3>{{ p.title }}</h3>
-          <p [innerHTML]="p.html_long_desc" class="card-body"></p>
-        </div>
-        <a
-          class="btn-big"
-          [routerLink]="['/programs', p.id_program, 'observations']"
-          >{{ AppConfig.platform_participate[localeId] }}
+    <section id="welcome">
+        <h1 [innerHTML]="platform_intro"></h1>
+        <p [innerHTML]="platform_teaser"></p>
+        <a [routerLink]="['/home']" fragment="programs" class="scroll">
+            <span i18n="Scrollez pour en voir plus !">Scrollez pour en voir plus !</span>
+            <img class="d-block" src="assets/scroll.svg" alt="scroll to #programs" />
         </a>
-      </div>
-    </div>
+    </section>
+</div>
+<div class="row">
+    <!-- LES PROGRAMMES -->
+    <section id="programs" *ngIf="programs.length > 1">
+        <div id="programs-cards">
+            <div class="container-fluid programs">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-xl-3 col-lg-4 " *ngFor="let p of programs">
+                        <a [routerLink]="['/programs', p.id_program, 'observations']">
+                            <div class="text-center">
+                                <div class="img-hover" [ngbTooltip]="p.short_desc" [ngStyle]="{
+                                    'background-image': p.logo
+                                      ? 'url(' + p.logo + ')'
+                                      : p.image
+                                      ? 'url(' + p.image + ')'
+                                      : 'url(' + 'assets/prog1.jpg' + ')',
+                                    'background-size': 'cover'
+                                  }"></div>
 
-    <div id="slider" class="carousel slide" data-ride="carousel">
-      <ol class="carousel-indicators">
-        <li
-          *ngFor="let p of programs; index as i; first as isFirst"
-          data-target="#slider"
-          [attr.data-slide-to]="i"
-          [class.active]="isFirst"
-        ></li>
-      </ol>
-      <h2 i18n="Les programmes du moment">Les programmes du moment</h2>
-      <div class="carousel-inner">
-        <div
-          *ngFor="let p of programs; first as isFirst"
-          [ngClass]="{ active: isFirst, 'carousel-item': true }"
-        >
-          <img
-            class="d-block w-100"
-            [src]="p.image || 'assets/Azure-Commun-019.JPG'"
-            alt="Programme {{ p.title }}"
-          />
-          <div class="carousel-text-container">
-            <div class="carousel-text" tabindex="0">
-              <h3>{{ p.title }}</h3>
-              <p [innerHTML]="p.html_short_desc"></p>
-              <div class="mobile-hidden" [innerHTML]="p.html_long_desc"></div>
-              <a
-                class="btn-big"
-                [routerLink]="['/programs', p.id_program, 'observations']"
-                >{{ AppConfig.platform_participate[localeId] }}</a
-              >
+                                <h5 class="card-title">
+                                    {{ p.title }}&nbsp; <span class="badge badge-info"> </span>
+                                </h5>
+                                <p class="short_desc" [innerHTML]="p.html_short_desc"></p>
+
+                                <!-- <a class="btn-big" [routerLink]="['/programs', p.id_program, 'observations']">{{ AppConfig.platform_participate[localeId] }}
+                              </a> -->
+                                <div class="overlay">
+                                    <p class="overlay-text">{{ AppConfig.platform_participate[localeId] }}</p>
+                                </div>
+                            </div>
+
+                        </a>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-      <a
-        class="carousel-control-prev"
-        href="#slider"
-        role="button"
-        data-slide="prev"
-      >
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only" i18n="ngb.carousel.previous">Précédent</span>
-      </a>
-      <a
-        class="carousel-control-next"
-        href="#slider"
-        role="button"
-        data-slide="next"
-      >
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only" i18n="ngb.carousel.next">Prochain</span>
-      </a>
-    </div>
-  </section>
+        <div id="slider" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li *ngFor="let p of programs; index as i; first as isFirst" data-target="#slider" [attr.data-slide-to]="i" [class.active]="isFirst"></li>
+            </ol>
+            <h2 i18n="Les programmes du moment">Les programmes du moment</h2>
+            <div class="carousel-inner">
+                <div *ngFor="let p of programs; first as isFirst" [ngClass]="{ active: isFirst, 'carousel-item': true }">
+                    <img class="d-block w-100" [src]="p.image || 'assets/Azure-Commun-019.JPG'" alt="Programme {{ p.title }}" />
+                    <div class="carousel-text-container">
+                        <div class="carousel-text" tabindex="0">
+                            <h3>{{ p.title }}</h3>
+                            <p [innerHTML]="p.html_short_desc"></p>
+                            <!-- <div class="mobile-hidden" [innerHTML]="p.html_long_desc"></div> -->
+                            <a class="btn-big" [routerLink]="['/programs', p.id_program, 'observations']">{{ AppConfig.platform_participate[localeId] }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#slider" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only" i18n="ngb.carousel.previous">Précédent</span>
+            </a>
+            <a class="carousel-control-next" href="#slider" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only" i18n="ngb.carousel.next">Prochain</span>
+            </a>
+        </div>
+
+    </section>
 </div>
