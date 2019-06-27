@@ -1,80 +1,80 @@
 export const MAP_CONFIG = {
-    DEFAULT_PROVIDER: "OpenStreetMapFRHot",
-    BASEMAPS: [
-    {
-      name: "OpenStreetMapOrg",
-      maxZoom: 19,
-      layer: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      subdomains: "abc",
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
-    },
-    {
-      name: "OpenStreetMapFRHot",
-      maxZoom: 19,
-      layer: "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-      subdomains: "abc",
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
-    },
-    {
-      name: "OpenStreetMapCH",
-      maxZoom: 18,
-      layer: "//tile.osm.ch/switzerland/{z}/{x}/{y}.png",
-      subdomains: "abc",
-      attribution:
-        '&copy; <a href="&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      bounds: [[45, 5], [48, 11]]
-    },
-    {
-      name: "OpenStreetMapDE",
-      maxZoom: 18,
-      layer: "//{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png",
-      subdomains: "abc",
-      attribution:
-        '&copy; <a href="&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    },
-    {
-      name: "OpenStreetMapBZH",
-      maxZoom: 18,
-      layer: "//tile.openstreetmap.bzh/br/{z}/{x}/{y}.png",
-      subdomains: "",
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles courtesy of <a href="http://www.openstreetmap.bzh/" target="_blank">Breton OpenStreetMap Team</a>',
-      bounds: [[46.2, -5.5], [50, 0.7]]
-    },
-    {
-      name: "OpenTopoMap",
-      maxZoom: 17,
-      layer: "//{s}.opentopomap.org/{z}/{x}/{y}.png",
-      subdomains: "abc",
-      attribution: "© OpenTopoMap"
-    },
-    {
-      // ⚠ google's terms&conditions
-      // https://github.com/Leaflet/Leaflet/blob/master/FAQ.md#i-want-to-use-google-maps-api-tiles-with-leaflet-can-i-do-that
-      name: "GoogleSatellite",
-      maxZoom: 20,
-      layer: "//mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-      subdomains: "1",
-      attribution: "© GoogleMap"
-    },
-    {
-      name: "Stamen",
-      // layer: "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg",
-      // layer: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
-      // layer:
-      //   "https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg",
-      // maxZoom: 22,
-      layer: "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
-      maxZoom: 20,
-      subdomains: "abcd",
-      attribution: "maps.stamen.com"
-    }
-  ],
-   CENTER: [46.52863469527167, 2.43896484375],
-   ZOOM_LEVEL: 6,
-   ZOOM_LEVEL_RELEVE: 15,
-   NEW_OBS_POINTER: "assets/pointer-blue2.png",
-   OBS_POINTER: "assets/pointer-green.png"
+  DEFAULT_PROVIDER: "OpenStreetMapFRHot",
+  BASEMAPS: [
+  {
+    name: "OpenStreetMap",
+    maxZoom: 19,
+    layer: "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    subdomains: "abc",
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
+  },
+  // {
+  //   name: "OpenStreetMapFRHot",
+  //   maxZoom: 19,
+  //   layer: "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+  //   subdomains: "abc",
+  //   attribution:
+  //     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
+  // },
+  // {
+  //   name: "OpenStreetMapCH",
+  //   maxZoom: 18,
+  //   layer: "//tile.osm.ch/switzerland/{z}/{x}/{y}.png",
+  //   subdomains: "abc",
+  //   attribution:
+  //     '&copy; <a href="&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  //   bounds: [[45, 5], [48, 11]]
+  // },
+  // {
+  //   name: "OpenStreetMapDE",
+  //   maxZoom: 18,
+  //   layer: "//{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png",
+  //   subdomains: "abc",
+  //   attribution:
+  //     '&copy; <a href="&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  // },
+  // {
+  //   name: "OpenStreetMapBZH",
+  //   maxZoom: 18,
+  //   layer: "//tile.openstreetmap.bzh/br/{z}/{x}/{y}.png",
+  //   subdomains: "",
+  //   attribution:
+  //     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles courtesy of <a href="http://www.openstreetmap.bzh/" target="_blank">Breton OpenStreetMap Team</a>',
+  //   bounds: [[46.2, -5.5], [50, 0.7]]
+  // },
+  {
+    name: "OpenTopoMap",
+    maxZoom: 17,
+    layer: "//{s}.opentopomap.org/{z}/{x}/{y}.png",
+    subdomains: "abc",
+    attribution: "© OpenTopoMap"
+  },
+    // {
+  //   name: "Stamen",
+  //   // layer: "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg",
+  //   // layer: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+  //   // layer:
+  //   //   "https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg",
+  //   // maxZoom: 22,
+  //   layer: "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
+  //   maxZoom: 20,
+  //   subdomains: "abcd",
+  //   attribution: "maps.stamen.com"
+  // },
+  {
+    // ⚠ google's terms&conditions
+    // https://github.com/Leaflet/Leaflet/blob/master/FAQ.md#i-want-to-use-google-maps-api-tiles-with-leaflet-can-i-do-that
+    name: "GoogleSatellite",
+    maxZoom: 20,
+    layer: "//mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+    subdomains: "1",
+    attribution: "© GoogleMap"
+  }
+],
+ CENTER: [46.52863469527167, 2.43896484375],
+ ZOOM_LEVEL: 6,
+ ZOOM_LEVEL_RELEVE: 15,
+ NEW_OBS_POINTER: "assets/pointer-blue2.png",
+ OBS_POINTER: "assets/pointer-green.png"
 }
