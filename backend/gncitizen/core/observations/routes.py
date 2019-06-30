@@ -88,7 +88,7 @@ def generate_observation_geojson(id_observation):
             feature["properties"][k] = result_dict[k]
 
     if current_app.config.get("API_TAXHUB") is None:
-        current_app.logger.critical("Selecting TaxHub Medias schema.")
+        current_app.logger.debug("Selecting TaxHub Medias schema.")
         # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref
         # taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
         # for k in taxref:
@@ -239,7 +239,7 @@ def post_observation():
         try:
             newobs = ObservationModel(**datas2db)
         except Exception as e:
-            current_app.logger.debug("[post_observation] data2db ", e)
+            current_app.logger.warning("[post_observation] data2db ", e)
             raise GeonatureApiError(e)
 
         try:
@@ -248,7 +248,7 @@ def post_observation():
             _shape = asShape(_point)
             newobs.geom = from_shape(Point(_shape), srid=4326)
         except Exception as e:
-            current_app.logger.debug("[post_observation] coords ", e)
+            current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)
 
         id_role = get_id_role_if_exists()
@@ -276,18 +276,17 @@ def post_observation():
                 newobs.id_observation,
                 ObservationMediaModel,
             )
-            current_app.logger.debug("ObsTax UPLOAD FILE {}".format(file))
+            current_app.logger.debug("[post_observation] ObsTax UPLOAD FILE {}".format(file))
             features[0]["properties"]["images"] = file
 
         except Exception as e:
-            current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
+            current_app.logger.warning("[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
             # raise GeonatureApiError(e)
-            current_app.logger.critical(str(e))
 
         return ({"message": "Nouvelle observation créée.", "features": features}, 200)
 
     except Exception as e:
-        current_app.logger.warning("[post_observation] Error: %s", str(e))
+        current_app.logger.critical("[post_observation] Error: %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -331,6 +330,7 @@ def get_observations():
             features.append(feature)
         return FeatureCollection(features)
     except Exception as e:
+        current_app.logger.critical("[get_observations] Error: %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -390,6 +390,7 @@ def get_observations_from_list(id):  # noqa: A002
                     features.append(feature)
             return FeatureCollection(features)
         except Exception as e:
+            current_app.logger.critical("[get_observations_from_list] Error: %s", str(e))
             return {"message": str(e)}, 400
 
 
@@ -454,7 +455,7 @@ def get_program_observations(
         )
 
         observations = observations.order_by(ObservationModel.timestamp_create.desc())
-        current_app.logger.critical(str(observations))
+        # current_app.logger.debug(str(observations))
         observations = observations.all()
 
         if current_app.config.get("API_TAXHUB") is not None:
@@ -535,6 +536,7 @@ def get_program_observations(
         # trace = traceback.format_exc()
         # return("<pre>" + trace + "</pre>"), 500
         raise e
+        current_app.logger.critical("[get_program_observations] Error: %s", str(e))
         return {"message": str(e)}, 400
 
 
