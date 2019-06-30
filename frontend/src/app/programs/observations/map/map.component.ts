@@ -33,7 +33,9 @@ const conf = {
       attribution: baseLayer["attribution"],
       detectRetina: baseLayer["detectRetina"],
       maxZoom: baseLayer["maxZoom"],
-      bounds: baseLayer["bounds"]
+      bounds: baseLayer["bounds"],
+      apiKey: baseLayer["apiKey"],
+      layerName: baseLayer["layerName"],
     };
     if (baseLayer["subdomains"]) {
       layerConf.subdomains = baseLayer["subdomains"];
