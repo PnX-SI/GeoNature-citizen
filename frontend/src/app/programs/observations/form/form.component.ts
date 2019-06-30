@@ -32,7 +32,6 @@ import { FeatureCollection } from 'geojson';
 import { GncProgramsService } from '../../../api/gnc-programs.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LeafletMouseEvent } from 'leaflet';
-import { MAP_CONFIG } from '../../../../conf/map.config';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import {
@@ -241,7 +240,6 @@ export class ObsFormComponent implements AfterViewInit {
             alert('Vous semblez être en dehors de la zone du programme'),
           locateOptions: {
             enableHighAccuracy: map_conf.GEOLOCATION_HIGH_ACCURACY
-
           }
         })
         .addTo(formMap);
