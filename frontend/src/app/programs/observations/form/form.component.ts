@@ -1,3 +1,4 @@
+import { MAP_CONFIG } from "./../../../../conf/map.config";
 import * as L from "leaflet";
 import {
   AbstractControl,
@@ -45,12 +46,16 @@ import "leaflet-fullscreen/dist/Leaflet.fullscreen";
 
 declare let $: any;
 
-const PROGRAM_AREA_STYLE = {
-  fillColor: "transparent",
-  weight: 2,
-  opacity: 0.8,
-  color: "red",
-  dashArray: "4"
+const map_conf = {
+  GEOLOCATION_CONTROL_POSITION: "topright",
+  GEOLOCATION_HIGH_ACCURACY: false,
+  PROGRAM_AREA_STYLE: {
+    fillColor: "transparent",
+    weight: 2,
+    opacity: 0.8,
+    color: "red",
+    dashArray: "4"
+  }
 };
 const taxonSelectInputThreshold = AppConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold =
@@ -226,6 +231,19 @@ export class ObsFormComponent implements AfterViewInit {
           }
         }).addTo(formMap);
 
+        L.control
+          .locate({
+            position: map_conf.GEOLOCATION_CONTROL_POSITION,
+            getLocationBounds: locationEvent =>
+              locationEvent.bounds.extend(L.LatLngBounds),
+            onLocationError: locationEvent =>
+              alert("Vous semblez être en dehors de la zone du programme"),
+            locateOptions: {
+              enableHighAccuracy: map_conf.GEOLOCATION_HIGH_ACCURACY
+            }
+          })
+          .addTo(formMap);
+
         let ZoomViewer = L.Control.extend({
           onAdd: () => {
             let container = L.DomUtil.create("div");
@@ -248,7 +266,7 @@ export class ObsFormComponent implements AfterViewInit {
 
         const programArea = L.geoJSON(this.program, {
           style: function(_feature) {
-            return PROGRAM_AREA_STYLE;
+            return map_conf.PROGRAM_AREA_STYLE;
           }
         }).addTo(formMap);
 

@@ -7,7 +7,7 @@ from flasgger import Swagger
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
-
+from flask_ckeditor import CKEditor, CKEditorField 
 
 from gncitizen.utils.toml import load_toml
 
@@ -46,6 +46,8 @@ db = SQLAlchemy()
 
 jwt = JWTManager()
 
+ckeditor = CKEditor()
+
 swagger_template = {
     # "openapi": "3.0.0",
     # "components": {
@@ -66,6 +68,7 @@ admin = Admin(
     template_mode="bootstrap3",
     url="/".join([urlparse(app_conf["API_ENDPOINT"]).path, "admin"]),
 )
+
 
 taxhub_url = app_conf.get("API_TAXHUB", "")
 taxhub_lists_url = taxhub_url + "biblistes/"

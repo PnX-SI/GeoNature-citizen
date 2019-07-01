@@ -1,114 +1,52 @@
 <nav class="navbar navbar-light navbar-expand-md">
-  <a
-    class="navbar-brand"
-    routerLink="home"
-    routerLinkActive="active"
-    aria-label="GéoNature Citizen Home"
-  >
-    <img
-      src="assets/logo.png"
-      width="auto"
-      height="80"
-      class="d-inline-block align-top"
-      alt="GeoNature Citizen logo: flamengo origami"
-    />
-  </a>
-  <button
-    class="navbar-toggler collapsed"
-    type="button"
-    data-toggle="collapse"
-    data-target="#navbarsExample03"
-    aria-controls="navbarsExample03"
-    aria-expanded="false"
-    aria-label="Toggle navigation"
-  >
+    <a class="navbar-brand" routerLink="home" routerLinkActive="active" aria-label="GéoNature Citizen Home">
+        <img src="assets/logo.png" width="auto" height="80" class="d-inline-block align-top" alt="GeoNature Citizen logo: flamengo origami" />
+    </a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
     <i class="fa fa-bars"></i>
   </button>
 
-  <div class="navbar-collapse collapse align-top" id="navbarsExample03">
-    <div class="navbar-nav mr-auto"></div>
-    <div>
-      <form class="form-inline mt-2 mt-md-0">
-        <ul
-          *ngIf="(programs$ | async); let _programs"
-          class="btn-group"
-          role="group"
-          aria-label="auth"
-        >
-          <li>
-            <a
-              routerLink="home"
-              routerLinkActive="active"
-              class="btn my-2 my-sm-0 rounded-0"
-              i18n
-              title="Accueil"
-              >Accueil</a
-            >
-          </li>
-          <li *ngIf="_programs.length > 1">
-            <a
-              class="btn my-2 my-sm-0 rounded-0"
-              (click)="programs()"
-              i18n
-              title="Les programmes"
-              >Les programmes</a
-            >
-          </li>
-          <li *ngIf="canDisplayAbout">
-            <a
-              class="btn my-2 my-sm-0 rounded-0"
-              routerLink="/about"
-              routerLinkActive="active"
-              i18n
-              title="A propos"
-              >A propos</a
-            >
-          </li>
-          <li *ngIf="isAdmin">
-            <a
-              routerLink="/api/admin"
-              routerLinkActive="active"
-              class="btn my-2 my-sm-0 rounded-0"
-              i18n
-              title="Admin"
-              >Admin</a
-            >
-          </li>
-        </ul>
-        <div class="btn-group">
-          <div
-            *ngIf="(isLoggedIn() | async); then: connected; else: disconnected"
-          ></div>
-          <ng-template #connected>
-            <a
-              placement="bottom"
-              i18n-ngbTooltip
-              ngbTooltip="Mon tableau de bord"
-              routerLink="mydashboard"
-              routerLinkActive="active"
-            >
-              <i class="fa fa-fw fa-user-circle"></i> &nbsp;{{ username }}
+    <div class="navbar-collapse collapse align-top" id="navbarsExample03">
+        <div class="navbar-nav mr-auto"></div>
+        <div>
+            <form class="form-inline mt-2 mt-md-0">
+                <ul *ngIf="(programs$ | async); let _programs" class="btn-group" role="group" aria-label="auth">
+                    <li>
+                        <a routerLink="home" routerLinkActive="active" class="btn my-2 my-sm-0 rounded-0" i18n title="Accueil">Accueil</a>
+                    </li>
+                    <li *ngIf="_programs.length > 1">
+                        <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()" i18n title="Les programmes">Les programmes</a>
+                    </li>
+                    <li *ngIf="canDisplayAbout">
+                        <a class="btn my-2 my-sm-0 rounded-0" routerLink="/about" routerLinkActive="active" i18n title="A propos">A
+              propos</a>
+                    </li>
+                    <li *ngIf="isAdmin">
+                        <a [href]="adminUrl" target="_blank" class="btn my-2 my-sm-0 rounded-0" i18n title="Admin">Admin
             </a>
-            <a
-              class="btn btn-sm my-2 my-sm-0"
-              (click)="logout()"
-              style="min-width: 147px !important"
-              i18n
-            >
-              <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
-            </a>
-          </ng-template>
-          <ng-template #disconnected>
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="login()" i18n>
+                    </li>
+                </ul>
+                <div class="btn-group">
+                    <div *ngIf="(isLoggedIn() | async); then: connected; else: disconnected"></div>
+                    <ng-template #connected>
+                        <a placement="bottom" i18n-ngbTooltip ngbTooltip="Mon tableau de bord" routerLink="mydashboard" routerLinkActive="active">
+                            <i class="fa fa-fw fa-user-circle"></i> &nbsp;{{ username }}
+                        </a>
+                        <a class="btn btn-sm my-2 my-sm-0" (click)="logout()" style="min-width: 147px !important" i18n>
+                            <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
+                        </a>
+                    </ng-template>
+                    <ng-template #disconnected>
+                        <a class="btn my-2 my-sm-0 rounded-0" (click)="login()" i18n>
               Se connecter
             </a>
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="register()" i18n>
+                        <a class="btn my-2 my-sm-0 rounded-0" (click)="register()" i18n>
               S'inscrire
             </a>
-          </ng-template>
+                    </ng-template>
+                </div>
+            </form>
         </div>
-      </form>
+        <!-- FIXME: closed elsewhere </nav> -->
     </div>
-    <!-- FIXME: closed elsewhere </nav> -->
-  </div>
 </nav>

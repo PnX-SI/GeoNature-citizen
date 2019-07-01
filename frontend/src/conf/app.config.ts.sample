@@ -9,6 +9,7 @@ export const AppConfig = {
         DISPLAY_TOPBAR: false,
         DISPLAY_SIDEBAR: true
     },
+    about: true,
     URL_APPLICATION:"http://127.0.0.1:4200",
     REWARDS: true,
     termsOfUse: {

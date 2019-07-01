@@ -6,10 +6,11 @@ import urllib.parse
 from flask import Blueprint, request, current_app
 from flask_jwt_extended import jwt_optional, get_jwt_identity
 from flask_admin.form import SecureForm
-from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.geoa import ModelView
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
+from flask_ckeditor import CKEditorField
 
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
@@ -34,9 +35,11 @@ from flask_jwt_extended.exceptions import UserLoadError
 
 routes = Blueprint("commons", __name__)
 
-
 class ProgramView(ModelView):
     form_base_class = SecureForm
+    form_overrides = dict(long_desc=CKEditorField)
+    create_template = 'edit.html'
+    edit_template = 'edit.html'
 
     def is_accessible(self):
         try:
@@ -88,6 +91,7 @@ def get_module(pk):
         datas = ModulesModel.query.filter_by(id_module=pk).first()
         return datas.as_dict(), 200
     except Exception as e:
+        current_app.logger.critical("[get_module] error : %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -111,6 +115,7 @@ def get_modules():
             datas.append(d)
         return {"count": count, "datas": datas}, 200
     except Exception as e:
+        current_app.logger.critical("[get_modules] error : %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -133,14 +138,19 @@ def get_program(pk):
          """
     try:
         datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
-        features = []
-        for data in datas:
-            feature = data.get_geofeature()
-            # for k, v in data:
-            #     feature['properties'][k] = v
-            features.append(feature)
-        return {"features": features}, 200
+        if datas.count() != 1:
+          current_app.logger.warning("[get_program] Program not found")        
+          return {"message": "Program not found"}, 400
+        else:
+          features = []
+          for data in datas:
+              feature = data.get_geofeature()
+              # for k, v in data:
+              #     feature['properties'][k] = v
+              features.append(feature)
+          return {"features": features}, 200
     except Exception as e:
+        current_app.logger.critical("[get_program] error : %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -181,6 +191,7 @@ def get_programs():
         feature_collection["count"] = count
         return feature_collection
     except Exception as e:
+        current_app.logger.critical("[get_programs] error : %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -275,4 +286,5 @@ def post_program():
             200,
         )
     except Exception as e:
+        current_app.logger.critical("[post_program] error : %s", str(e))
         return {"message": str(e)}, 400

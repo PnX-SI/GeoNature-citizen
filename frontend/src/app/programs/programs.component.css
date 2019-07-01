@@ -76,7 +76,7 @@
   transform: translateY(-5px);
 }
 
-.programs .text-center p {
+.programs .text-center .short_desc {
   font-size: 14px;
   color: #111;
   background: #eee;
@@ -86,7 +86,7 @@
   position: relative;
 }
 
-.programs .text-center p h1 {
+.programs .text-center .short_desc h1 {
   background: inherit;
   font-size: 16px;
   color: inherit;
@@ -97,7 +97,7 @@
   min-height: 48px;
 }
 
-.programs .text-center p:before {
+.programs .text-center .short_desc:before {
   content: " ";
   background: #eee;
   position: absolute;
