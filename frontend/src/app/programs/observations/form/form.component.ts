@@ -1,12 +1,12 @@
-import * as L from 'leaflet';
+import * as L from "leaflet";
 import {
   AbstractControl,
   FormControl,
   FormGroup,
   ValidatorFn,
   Validators
-  } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+} from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import {
   AfterViewInit,
   Component,
@@ -18,34 +18,30 @@ import {
   Output,
   ViewChild,
   ViewEncapsulation
-  } from '@angular/core';
-import { AppConfig } from '../../../../conf/app.config';
+} from "@angular/core";
+import { AppConfig } from "../../../../conf/app.config";
 import {
   debounceTime,
   distinctUntilChanged,
   map,
   share,
   tap
-  } from 'rxjs/operators';
-import { FeatureCollection } from 'geojson';
-import { GncProgramsService } from '../../../api/gnc-programs.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LeafletMouseEvent } from 'leaflet';
-import { MAP_CONFIG } from '../../../../conf/map.config';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs';
+} from "rxjs/operators";
+import { FeatureCollection } from "geojson";
+import { GncProgramsService } from "../../../api/gnc-programs.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { LeafletMouseEvent } from "leaflet";
+import { MAP_CONFIG } from "../../../../conf/map.config";
+import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { Observable } from "rxjs";
 import {
   ObservationFeature,
   PostObservationResponse,
   TaxonomyList,
   TaxonomyListItem
-  } from '../observation.model';
-import 'leaflet-gesture-handling';
-import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
-
-
-
-
+} from "../observation.model";
+import "leaflet-gesture-handling";
+import "leaflet-fullscreen/dist/Leaflet.fullscreen";
 
 declare let $: any;
 
@@ -103,25 +99,28 @@ export class ObsFormComponent implements AfterViewInit {
   @ViewChild("photo") photo: ElementRef;
   today = new Date();
   program_id: any;
-  obsForm = new FormGroup({
-    cd_nom: new FormControl("", Validators.required),
-    count: new FormControl("1", Validators.required),
-    comment: new FormControl(""),
-    date: new FormControl(
-      {
-        year: this.today.getFullYear(),
-        month: this.today.getMonth() + 1,
-        day: this.today.getDate()
-      },
-      [Validators.required, ngbDateMaxIsToday()]
-    ),
-    photo: new FormControl(""),
-    geometry: new FormControl(this.coords ? this.coords : "", [
-      Validators.required,
-      geometryValidator()
-    ]),
-    id_program: new FormControl(this.program_id)
-  });
+  obsForm = new FormGroup(
+    {
+      cd_nom: new FormControl("", Validators.required),
+      count: new FormControl("1", Validators.required),
+      comment: new FormControl(""),
+      date: new FormControl(
+        {
+          year: this.today.getFullYear(),
+          month: this.today.getMonth() + 1,
+          day: this.today.getDate()
+        },
+        [Validators.required, ngbDateMaxIsToday()]
+      ),
+      photo: new FormControl(""),
+      geometry: new FormControl(this.coords ? this.coords : "", [
+        Validators.required,
+        geometryValidator()
+      ]),
+      id_program: new FormControl(this.program_id)
+    },
+    { updateOn: "blur" }
+  );
   taxonSelectInputThreshold = taxonSelectInputThreshold;
   taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
   autocomplete = "isOff";
