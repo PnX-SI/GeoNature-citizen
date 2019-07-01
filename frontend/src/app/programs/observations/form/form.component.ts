@@ -32,7 +32,6 @@ import { FeatureCollection } from "geojson";
 import { GncProgramsService } from "../../../api/gnc-programs.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { LeafletMouseEvent } from "leaflet";
-import { MAP_CONFIG } from "../../../../conf/map.config";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { Observable } from "rxjs";
 import {
