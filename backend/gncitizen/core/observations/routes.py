@@ -540,6 +540,161 @@ def get_program_observations(
         return {"message": str(e)}, 400
 
 
+@routes.route("/programs/all/observations", methods=["GET"])
+@json_resp
+def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
+    """Get all observations from all programs
+    GET
+        ---
+        tags:
+          - observations
+        parameters:
+          - name: id
+            in: path
+            type: integer
+            required: true
+            example: 1
+        definitions:
+          cd_nom:
+            type: integer
+            description: cd_nom taxref
+          geometry:
+            type: dict
+            description: Géométrie de la donnée
+          name:
+            type: string
+          geom:
+            type: geometry
+        responses:
+          200:
+            description: A list of all species lists
+        """
+    try:
+        observations = (
+            db.session.query(
+                ObservationModel,
+                UserModel.username,
+                MediaModel.filename.label("image"),
+                LAreas.area_name,
+                LAreas.area_code,
+            )
+            .filter(ProgramsModel.is_active)
+            .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
+            .join(
+                ProgramsModel,
+                ProgramsModel.id_program == ObservationModel.id_program,
+                isouter=True,
+            )
+            .join(
+                ObservationMediaModel,
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
+                isouter=True,
+            )
+            .join(
+                MediaModel,
+                ObservationMediaModel.id_media == MediaModel.id_media,
+                isouter=True,
+            )
+            .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
+        )
+
+        observations = observations.order_by(ObservationModel.timestamp_create.desc())
+        # current_app.logger.debug(str(observations))
+        observations = observations.all()
+
+        # TODO: loop to retrieve taxonomic data for all programs
+        if current_app.config.get("API_TAXHUB") is not None:
+          programs = ProgramsModel.query.all()
+          taxon_repository = []
+          for program in programs:
+            taxhub_list_id = (
+                ProgramsModel.query.filter_by(id_program=program.id_program).one().taxonomy_list
+            )
+            taxon_data = mkTaxonRepository(taxhub_list_id)
+            try:
+              for taxon in taxon_data:
+                if taxon not in taxon_repository:
+                  taxon_repository.append(taxon)
+              current_app.logger.critical('taxon_repository', type(taxon_repository))
+            except Exception as e:
+              current_app.logger.critical(str(e))
+
+        features = []
+        for observation in observations:
+            feature = get_geojson_feature(observation.ObservationModel.geom)
+            feature["properties"]["municipality"] = {
+                "name": observation.area_name,
+                "code": observation.area_code,
+            }
+
+            # Observer
+            feature["properties"]["observer"] = {"username": observation.username}
+
+            # Observer submitted media
+            feature["properties"]["image"] = (
+                "/".join(
+                    [
+                        current_app.config["API_ENDPOINT"],
+                        current_app.config["MEDIA_FOLDER"],
+                        observation.image,
+                    ]
+                )
+                if observation.image
+                else None
+            )
+
+            # Municipality
+            observation_dict = observation.ObservationModel.as_dict(True)
+            for k in observation_dict:
+                if k in obs_keys and k != "municipality":
+                    feature["properties"][k] = observation_dict[k]
+
+            # TaxRef
+            if current_app.config.get("API_TAXHUB") is None:
+                taxref = Taxref.query.filter(
+                    Taxref.cd_nom == observation.ObservationModel.cd_nom
+                ).first()
+                if taxref:
+                    feature["properties"]["taxref"] = taxref.as_dict(True)
+
+                medias = TMedias.query.filter(
+                    TMedias.cd_ref == observation.ObservationModel.cd_nom
+                ).all()
+                if medias:
+                    feature["properties"]["medias"] = [
+                        media.as_dict(True) for media in medias
+                    ]
+            else:
+                try:
+                    taxon = next(
+                        taxon
+                        for taxon in taxon_repository
+                        if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+                    )
+                    feature["properties"]["taxref"] = taxon["taxref"]
+                    feature["properties"]["medias"] = taxon["medias"]
+                except StopIteration:
+                    pass
+            features.append(feature)
+
+        return FeatureCollection(features)
+
+    except Exception as e:
+        # if current_app.config["DEBUG"]:
+        # import traceback
+        # import sys
+
+        # import pdb
+        # pdb.set_trace()
+        # etype, value, tb = sys.exc_info()
+        # trace = str(traceback.print_exception(etype, value, tb))
+        # trace = traceback.format_exc()
+        # return("<pre>" + trace + "</pre>"), 500
+        raise e
+        current_app.logger.critical("[get_program_observations] Error: %s", str(e))
+        return {"message": str(e)}, 400
+
+
 @routes.route("media/<item>")
 def get_media(item):
     return send_from_directory(str(MEDIA_DIR), item)

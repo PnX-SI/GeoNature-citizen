@@ -13,7 +13,7 @@ import {
   SimpleChanges,
   ViewChild,
   ViewEncapsulation
-  } from '@angular/core';
+} from '@angular/core';
 import { Feature, FeatureCollection } from 'geojson';
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { MarkerClusterGroup } from 'leaflet';
@@ -129,6 +129,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   options: any;
   observationMap: L.Map;
   programMaxBounds: L.LatLngBounds;
+  programArea: any;
   observationLayer: MarkerClusterGroup;
   newObsMarker: L.Marker;
   markers: {
@@ -142,7 +143,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   constructor(
     private resolver: ComponentFactoryResolver,
     private injector: Injector
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.initMap(conf);
@@ -322,10 +323,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   loadProgramArea(canSubmit = true): void {
     if (this.program) {
-      const programArea = L.geoJSON(this.program, {
+      if (this.programArea !== undefined) {
+        this.observationMap.removeLayer(this.programArea);
+      };
+      this.programArea = L.geoJSON(this.program, {
         style: _feature => this.options.PROGRAM_AREA_STYLE(_feature)
       }).addTo(this.observationMap);
-      const programBounds = programArea.getBounds();
+      const programBounds = this.programArea.getBounds();
       this.observationMap.fitBounds(programBounds);
       // this.observationMap.setMaxBounds(programBounds)
 
@@ -371,7 +375,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     }
   }
 
-  canStart(): void {}
+  canStart(): void { }
 
   @HostListener("document:NewObservationEvent", ["$event"])
   newObservationEventHandler(e: CustomEvent) {
