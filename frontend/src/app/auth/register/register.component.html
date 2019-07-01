@@ -26,6 +26,7 @@
     *ngIf="errorMessage || !successMessage"
     #registerForm="ngForm"
     (ngSubmit)="registerForm.valid && onRegister()"
+    [ngFormOptions]="{ updateOn: 'blur' }"
   >
     <ngb-alert
       [dismissible]="false"
