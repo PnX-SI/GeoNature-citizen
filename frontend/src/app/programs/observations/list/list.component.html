@@ -48,7 +48,7 @@
             : o.properties.image
             ? o.properties.image
             : o.properties.medias && !!o.properties.medias.length
-            ? o.properties.medias[0].url
+            ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + o.properties.medias[0].id_media + '?h=80&v=80'
             : 'assets/Azure-Commun-019.JPG'
         "
       />

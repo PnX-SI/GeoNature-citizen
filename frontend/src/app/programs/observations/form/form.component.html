@@ -49,7 +49,7 @@
             <img
               [src]="
                 s.medias && !!s.medias.length
-                  ? s.medias[0]?.url
+                  ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + s.medias[0].id_media + '?h=100&v=100'
                   : 'assets/Azure-Commun-019.JPG'
               "
               [alt]="s.nom?.nom_francais"
