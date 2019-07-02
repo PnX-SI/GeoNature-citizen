@@ -81,7 +81,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
           .scrollIntoView({ behavior: "smooth" });
       }
     } catch (e) {
-      alert(e);
+      //alert(e);
     }
   }
 

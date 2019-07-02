@@ -77,7 +77,7 @@ export class UserDashboardComponent implements OnInit {
           this.router.navigate(["/home"]);
         }
       })
-      .catch(err => alert(err));
+      .catch(err => console.log('err', err))
   }
 
   getPersonalInfo(): Observable<any> {
@@ -113,7 +113,7 @@ export class UserDashboardComponent implements OnInit {
       })
       .pipe(
         catchError(error => {
-          window.alert(error);
+          //window.alert(error);
           return throwError(error);
         })
       )
@@ -142,7 +142,7 @@ export class UserDashboardComponent implements OnInit {
           localStorage.setItem("badges", JSON.stringify(data["badges"]));
         }),
         catchError(error => {
-          window.alert(error);
+          //window.alert(error);
           return throwError(error);
         })
       );

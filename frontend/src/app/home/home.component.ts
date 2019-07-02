@@ -1,12 +1,4 @@
-import { ProgramsComponent } from './../programs/programs.component';
-import {
-  Component,
-  OnInit,
-  ViewEncapsulation,
-  AfterViewChecked,
-  Inject,
-  LOCALE_ID
-} from "@angular/core";
+import {Component, OnInit, ViewEncapsulation, AfterViewChecked, Inject, LOCALE_ID } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { Meta, SafeHtml, DomSanitizer } from "@angular/platform-browser";
@@ -14,7 +6,6 @@ import { Meta, SafeHtml, DomSanitizer } from "@angular/platform-browser";
 import { AppConfig } from "../../conf/app.config";
 import { ProgramsResolve } from "../programs/programs-resolve.service";
 import { Program } from "../programs/programs.models";
-
 
 @Component({
   selector: "app-home",
@@ -68,7 +59,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         });
       }
     } catch (e) {
-      alert(e);
+      //alert(e);
     }
   }
 }

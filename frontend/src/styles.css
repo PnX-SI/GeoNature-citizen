@@ -5,6 +5,7 @@
   font-family: "Satisfy";
   src: url("assets/Satisfy-Regular.ttf") format("truetype");
 }
+@import '~ngx-toastr/toastr';
 
 :root {
   --default-font-color: #5d6970;

@@ -1,9 +1,12 @@
 import { Injectable } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http";
+import { ToastrService } from "ngx-toastr";
 
 @Injectable()
 export class ErrorHandler {
-  constructor() {}
+  constructor(
+    private toastr: ToastrService,
+  ) {}
 
   public handleError(error: Error | HttpErrorResponse) {
     // notification system, once elected, goes here
@@ -24,6 +27,7 @@ export class ErrorHandler {
     } else {
       errorMessage = JSON.stringify(error);
     }
-    window.alert(errorMessage);
+    let msg = "Une erreur est survenue lors de la récupération des données sur le serveur.";
+    this.toastr.error(msg, "", { positionClass: "toast-top-right" });
   }
 }

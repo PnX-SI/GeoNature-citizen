@@ -1,8 +1,5 @@
 import { LOCALE_ID, NgModule, Inject } from "@angular/core";
-import {
-  BrowserModule,
-  BrowserTransferStateModule
-} from "@angular/platform-browser";
+import {BrowserModule, BrowserTransferStateModule} from "@angular/platform-browser";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { registerLocaleData } from "@angular/common";
@@ -25,10 +22,7 @@ import { DescModalComponent } from "./programs/desc-modal/desc-modal.component";
 import { ProgramsComponent } from "./programs/programs.component";
 import { ObsFormComponent } from "./programs/observations/form/form.component";
 import { ObsListComponent } from "./programs/observations/list/list.component";
-import {
-  ObsMapComponent,
-  MarkerPopupComponent
-} from "./programs/observations/map/map.component";
+import {ObsMapComponent, MarkerPopupComponent } from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
@@ -50,8 +44,9 @@ import { RewardComponent } from "./programs/observations/modalflow/steps/reward/
 import { ModalFlowService } from "./programs/observations/modalflow/modalflow.service";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { AdminComponent } from "./auth/admin/admin.component";
-
-import { AppConfig } from "../conf/app.config";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   imports: [
@@ -61,6 +56,13 @@ import { AppConfig } from "../conf/app.config";
     ReactiveFormsModule,
     FormsModule,
     NgbModule,
+    CommonModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(
+     {
+      preventDuplicates: true,
+    }
+    ),
     routing
   ],
   declarations: [

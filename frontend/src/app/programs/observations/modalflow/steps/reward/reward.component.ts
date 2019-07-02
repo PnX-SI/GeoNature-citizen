@@ -83,7 +83,7 @@ export class BadgeFacade {
                 }),
                 catchError(error => {
                   console.error(error);
-                  window.alert(error);
+                  //window.alert(error);
                   return throwError(error);
                 })
               )
@@ -92,7 +92,7 @@ export class BadgeFacade {
         },
         error => {
           console.error(error);
-          window.alert(error);
+          //window.alert(error);
           return throwError(error);
         },
         null

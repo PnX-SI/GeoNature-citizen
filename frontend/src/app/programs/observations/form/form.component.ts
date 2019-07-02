@@ -42,6 +42,7 @@ import {
 } from "../observation.model";
 import "leaflet-gesture-handling";
 import "leaflet-fullscreen/dist/Leaflet.fullscreen";
+import { ToastrService } from "ngx-toastr";
 
 declare let $: any;
 
@@ -97,9 +98,7 @@ export function geometryValidator(): ValidatorFn {
 export class ObsFormComponent implements AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   @Input("coords") coords: L.Point;
-  @Output("newObservation") newObservation: EventEmitter<
-    ObservationFeature
-  > = new EventEmitter();
+  @Output("newObservation") newObservation: EventEmitter<ObservationFeature> = new EventEmitter();
   @ViewChild("photo") photo: ElementRef;
   today = new Date();
   program_id: any;
@@ -122,8 +121,8 @@ export class ObsFormComponent implements AfterViewInit {
         geometryValidator()
       ]),
       id_program: new FormControl(this.program_id)
-    },
-    { updateOn: "blur" }
+    }
+    //{ updateOn: "submit" }
   );
   taxonSelectInputThreshold = taxonSelectInputThreshold;
   taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
@@ -190,7 +189,8 @@ export class ObsFormComponent implements AfterViewInit {
     @Inject(LOCALE_ID) readonly localeId: string,
     private http: HttpClient,
     private programService: GncProgramsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService,
   ) {}
 
   ngAfterViewInit() {
@@ -235,8 +235,11 @@ export class ObsFormComponent implements AfterViewInit {
             position: map_conf.GEOLOCATION_CONTROL_POSITION,
             getLocationBounds: locationEvent =>
               locationEvent.bounds.extend(L.LatLngBounds),
-            onLocationError: locationEvent =>
-              alert("Vous semblez être en dehors de la zone du programme"),
+            onLocationError: locationEvent => {
+              let msg = "Vous semblez être en dehors de la zone du programme.";
+              this.toastr.error(msg, "", { positionClass: "toast-top-right" });
+              //alert("Vous semblez être en dehors de la zone du programme")
+            },
             locateOptions: {
               enableHighAccuracy: map_conf.GEOLOCATION_HIGH_ACCURACY
             }
@@ -337,7 +340,8 @@ export class ObsFormComponent implements AfterViewInit {
       (data: PostObservationResponse) => {
         obs = data.features[0];
       },
-      err => alert(err),
+      err => console.log(err),
+      //alert(err),
       () => {
         this.newObservation.emit(obs);
       }
