@@ -1,4 +1,5 @@
 import * as L from 'leaflet';
+import { AppConfig } from '../../../../conf/app.config';
 import {
   Component,
   ComponentFactoryResolver,
@@ -13,13 +14,14 @@ import {
   SimpleChanges,
   ViewChild,
   ViewEncapsulation
-} from '@angular/core';
+  } from '@angular/core';
 import { Feature, FeatureCollection } from 'geojson';
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { MarkerClusterGroup } from 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
 import 'leaflet-gesture-handling';
+
 // import { AppConfig } from '../../../../conf/app.config';
 
 
@@ -392,12 +394,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
           data.image
             ? data.image
             : data.medias && !!data.medias.length
-            ? data.medias[0].url
+            ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + data.medias[0].id_media + '?h=80&v=80'
             : 'assets/Azure-Commun-019.JPG'
         "
       />
       <p>
-        <b i18n>{{ data.taxref?.nom_vern }}</b> <br />
+        <b i18n>{{ !!data.nom_francais ? data.nom_francais : data.taxref?.nom_vern }}</b> <br />
         <span i18n>
           Observé par
           {{
@@ -415,4 +417,5 @@ export class ObsMapComponent implements OnInit, OnChanges {
 })
 export class MarkerPopupComponent {
   @Input() data;
+  AppConfig = AppConfig;
 }
