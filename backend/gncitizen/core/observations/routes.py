@@ -516,6 +516,7 @@ def get_program_observations(
                         for taxon in taxon_repository
                         if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
                     )
+                    feature["properties"]["nom_francais"] = taxon["nom_francais"]
                     feature["properties"]["taxref"] = taxon["taxref"]
                     feature["properties"]["medias"] = taxon["medias"]
                 except StopIteration:

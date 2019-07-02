@@ -34,7 +34,6 @@ export class ObsListComponent implements OnChanges {
   program_id: number;
   taxa: any[];
   AppConfig = AppConfig;
-
   selectedTaxon: TaxonomyListItem = null;
   selectedMunicipality: any = null;
   changes$ = new BehaviorSubject<SimpleChanges>(null);
