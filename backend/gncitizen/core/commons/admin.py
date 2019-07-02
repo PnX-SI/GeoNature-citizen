@@ -44,6 +44,7 @@ def taxonomy_lists():
     else:
         from gncitizen.utils.env import taxhub_lists_url
         rtlists = requests.get(taxhub_lists_url)
+        current_app.logger.warning(rtlists)
         if rtlists.status_code == 200:
             try:
                 tlists = rtlists.json()["data"]
@@ -62,11 +63,12 @@ def taxonomy_lists():
 
 class ProgramView(ModelView):
     form_base_class = SecureForm
-    form_overrides = dict(long_desc=CKEditorField, taxonomy_list=CustomSelectField)
-    form_args = dict(
-        taxonomy_list=dict(
-            choices=taxonomy_lists()
-        ))
+    form_overrides = dict(long_desc=CKEditorField)
+    # form_overrides = dict(long_desc=CKEditorField, taxonomy_list=SelectField)
+    # form_args = dict(
+    #     taxonomy_list=dict(
+    #         choices=taxonomy_lists()
+    #     ))
     create_template = 'edit.html'
     edit_template = 'edit.html'
 
