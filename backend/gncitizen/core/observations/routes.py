@@ -516,6 +516,7 @@ def get_program_observations(
                         for taxon in taxon_repository
                         if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
                     )
+                    feature["properties"]["nom_francais"] = taxon["nom_francais"]
                     feature["properties"]["taxref"] = taxon["taxref"]
                     feature["properties"]["medias"] = taxon["medias"]
                 except StopIteration:
@@ -548,23 +549,6 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         ---
         tags:
           - observations
-        parameters:
-          - name: id
-            in: path
-            type: integer
-            required: true
-            example: 1
-        definitions:
-          cd_nom:
-            type: integer
-            description: cd_nom taxref
-          geometry:
-            type: dict
-            description: Géométrie de la donnée
-          name:
-            type: string
-          geom:
-            type: geometry
         responses:
           200:
             description: A list of all species lists
@@ -602,7 +586,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         # current_app.logger.debug(str(observations))
         observations = observations.all()
 
-        # TODO: loop to retrieve taxonomic data for all programs
+        # loop to retrieve taxonomic data from all programs
         if current_app.config.get("API_TAXHUB") is not None:
           programs = ProgramsModel.query.all()
           taxon_repository = []
@@ -615,7 +599,6 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
               for taxon in taxon_data:
                 if taxon not in taxon_repository:
                   taxon_repository.append(taxon)
-              current_app.logger.critical('taxon_repository', type(taxon_repository))
             except Exception as e:
               current_app.logger.critical(str(e))
 
