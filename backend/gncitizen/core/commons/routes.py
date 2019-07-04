@@ -31,38 +31,11 @@ from flask_jwt_extended.utils import (
     verify_token_not_blacklisted,
 )
 from flask_jwt_extended.exceptions import UserLoadError
+from gncitizen.core.commons.admin import ProgramView
 
 
 routes = Blueprint("commons", __name__)
 
-class ProgramView(ModelView):
-    form_base_class = SecureForm
-    form_overrides = dict(long_desc=CKEditorField)
-    create_template = 'edit.html'
-    edit_template = 'edit.html'
-
-    def is_accessible(self):
-        try:
-
-            token = request.args.get("jwt")
-            if not token:
-                token = urllib.parse.parse_qsl(request.args.get("url"))[0][1]
-            decoded_token = decode_token(token)
-            verify_token_not_blacklisted(decoded_token, request_type="access")
-            ctx_stack.top.jwt = decoded_token
-            if has_user_loader():
-                user = user_loader(ctx_stack.top.jwt["identity"])
-                if user is None:
-                    raise UserLoadError("user_loader returned None for {}".format(user))
-                else:
-                    ctx_stack.top.jwt_user = user
-
-            current_user = get_jwt_identity()
-            is_admin = UserModel.query.filter_by(username=current_user).one().admin
-            return current_user and is_admin
-        except Exception as e:
-            current_app.logger.critical("FAULTY ADMIN UI ACCESS: %s", str(e))
-            return False
 
 
 # response.headers['Content-Security-Policy'] = "frame-ancestors 'self' '\*.somesite.com' current_app.config['URL_APPLICATION']"

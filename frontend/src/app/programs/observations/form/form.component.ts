@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { MAP_CONFIG } from "./../../../../conf/map.config";
 import * as L from "leaflet";
+=======
+import * as L from 'leaflet';
+>>>>>>> 073baf3abd4b60dc13364c1ed08946e8a02bf5c7
 import {
   AbstractControl,
   FormControl,
@@ -27,6 +31,7 @@ import {
   map,
   share,
   tap
+<<<<<<< HEAD
 } from "rxjs/operators";
 import { FeatureCollection } from "geojson";
 import { GncProgramsService } from "../../../api/gnc-programs.service";
@@ -34,6 +39,16 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { LeafletMouseEvent } from "leaflet";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { Observable } from "rxjs";
+=======
+  } from 'rxjs/operators';
+import { FeatureCollection } from 'geojson';
+import { GncProgramsService } from '../../../api/gnc-programs.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { LeafletMouseEvent } from 'leaflet';
+import { MAP_CONFIG } from './../../../../conf/map.config';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
+>>>>>>> 073baf3abd4b60dc13364c1ed08946e8a02bf5c7
 import {
   ObservationFeature,
   PostObservationResponse,
@@ -138,6 +153,7 @@ export class ObsFormComponent implements AfterViewInit {
   selectedTaxon: any;
   hasZoomAlert: boolean;
   zoomAlertTimeout: any;
+  AppConfig = AppConfig;
 
   disabledDates = (date: NgbDate, current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
@@ -176,7 +192,8 @@ export class ObsFormComponent implements AfterViewInit {
             cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
             icon:
               this.taxa[taxon]["medias"].length >= 1
-                ? this.taxa[taxon]["medias"][0]["url"]
+                // ? this.taxa[taxon]["medias"][0]["url"]
+                ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + this.taxa[taxon]["medias"][0]["id_media"] + '?h=20'
                 : "assets/Azure-Commun-019.JPG"
           });
         }
