@@ -25,7 +25,7 @@ export class ProgramsResolve implements Resolve<Program[]> {
     return this.programService.getAllPrograms().pipe(
       catchError(error => {
         console.error(error);
-        window.alert(error);
+        //window.alert(error);
         return EMPTY;
       }),
       mergeMap((programs: Program[]) => (programs ? of(programs) : EMPTY))

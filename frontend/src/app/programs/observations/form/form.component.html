@@ -1,4 +1,9 @@
-<form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
+<form
+  id="obsForm"
+  [formGroup]="obsForm"
+  #formRef="ngForm"
+  (ngSubmit)="onFormSubmit()"
+>
   <!--
     <div class="alert alert-primary rounded-0" role="alert">
       {{ obsForm.value | json }}
@@ -182,6 +187,14 @@
         >
       </p>
     </div>
-    <p class="ng-invalid pl-1 ml-1">Champs manquants</p>
+    <p
+      class="ng-invalid ng-dirty pl-1 ml-1"
+      *ngIf="
+        (obsForm.get('date').invalid || obsForm.get('count').invalid) &&
+        (formRef.touched || formRef.dirty)
+      "
+    >
+      Champs manquants
+    </p>
   </div>
 </form>

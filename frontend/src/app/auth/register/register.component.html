@@ -77,6 +77,7 @@
               [(ngModel)]="user.email"
               #email="ngModel"
               autocomplete="email"
+              [ngModelOptions]="{updateOn: 'blur'}"
               required
               pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
             />
@@ -125,8 +126,7 @@
       type="danger"
       *ngIf="
         confirm_password.errors &&
-        confirm_password.dirty &&
-        (password.errors && password.dirty)
+        confirm_password.dirty && password.dirty
       "
       i18n
     >
@@ -146,7 +146,6 @@
             name="password"
             #password="ngModel"
             autocomplete="new-password"
-            minlength="6"
             required
             #password="ngModel"
           />
@@ -168,6 +167,7 @@
             placeholder="Confirmez le mot de passe"
             autocomplete="new-password"
             required
+            [ngModelOptions]="{updateOn: 'blur'}"
             pattern="^{{ password.value }}$"
           />
         </div>

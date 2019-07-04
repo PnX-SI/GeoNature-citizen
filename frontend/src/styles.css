@@ -5,6 +5,7 @@
   font-family: "Satisfy";
   src: url("assets/Satisfy-Regular.ttf") format("truetype");
 }
+@import '~ngx-toastr/toastr';
 
 :root {
   --default-font-color: #5d6970;
@@ -326,7 +327,7 @@ select:focus {
   /* green */
 }
 
-.ng-invalid:not(form) {
+.ng-invalid.ng-dirty:not(form) {
   border-left: 5px solid #a94442;
   /* red */
 }

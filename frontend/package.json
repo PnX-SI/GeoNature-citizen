@@ -17,7 +17,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^6.1.0",
+    "@angular/animations": "^6.1.10",
     "@angular/common": "^6.1.0",
     "@angular/compiler": "^6.1.0",
     "@angular/core": "^6.1.0",
@@ -44,6 +44,7 @@
     "leaflet.locatecontrol": "^0.66.2",
     "leaflet.markercluster": "^1.4.1",
     "mock-browser": "^0.92.14",
+    "ngx-toastr": "^10.0.4",
     "rxjs": "~6.2.0",
     "uninstall": "0.0.0",
     "zone.js": "~0.8.26"
