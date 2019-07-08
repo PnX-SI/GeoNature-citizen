@@ -1,0 +1,15 @@
+app-modalflow  {
+    position: absolute;
+    bottom: 40px;
+    right: 20px;
+}
+
+@media screen and (max-width: 450px){
+    app-modalflow  {
+        right: 0px;
+        left: 0px;
+    }
+    app-modalflow button:first-child{
+        margin: 0px !important;
+    }
+}

@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <h4 class="modal-title" i18n>
+    <i class="fa fa-fw fa-user-circle"></i>Se déconnecter
+  </h4>
+  <button
+    type="button"
+    class="close rounded-0"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    &times;
+  </button>
+</div>
+<div class="modal-body">
+  <form (ngSubmit)="onLogout()" novalidate>
+    <button type="submit" class="btn btn-outline-alert rounded-0" i18n>
+      Se déconnecter
+    </button>
+  </form>
+</div>

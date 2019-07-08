@@ -1,0 +1,22 @@
+/*************************************
+ *      Global css style overlay     *
+ * Uncomment and adapt or add styles *
+ *************************************/
+
+
+/* COLORS */
+
+:root {
+    --default-font-color: #5d6970;
+    --primary: #00a99d;
+    --dark-primary: #0a998f;
+    --secondary: #60b15c;
+    --secondary-gradient: #57a154;
+    --ternary: #45765c;
+    --list-toggler-width: 21px;
+    --list-obs-offset: 170px;
+    --router-outlet-offset: 113px;
+    --modal-header-bg-moz: moz-linear-gradient(top, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
+    --modal-header-bg-webkit: moz-linear-gradient(top, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
+    --modal-header-bg-linear: linear-gradient(to bottom, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
+}

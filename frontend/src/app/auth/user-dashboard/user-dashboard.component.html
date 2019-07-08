@@ -1,0 +1,229 @@
+<div class="container" id="main">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="user"></div>
+        <div class="user-infos" (click)="editInfos(personalInfos)">
+          <span i18n
+            >{ +stats?.platform_attendance, plural, =0 { aucune observation} =1
+            {une observation} other
+            {{{stats?.platform_attendance}} observations} }</span
+          >
+          <img src="assets/user.jpg" />
+          <p>{{ username }} <i class="fa fa-pencil"></i></p>
+        </div>
+      </div>
+      <section id="badges">
+        <h3 i18n>Vos badges</h3>
+        <div class="row">
+          <div
+            *ngFor="let category of (badges$ | async)"
+            class="col-lg-4 col-sm-12"
+          >
+            <img
+              *ngFor="let b of category"
+              [src]="AppConfig.API_ENDPOINT + b.img"
+              [alt]="b.alt"
+              [ngbTooltip]="b.alt"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="personal-data row">
+        <button
+          class="btn-big col-lg-3 col-md-5 col-sm-12"
+          (click)="exportPersonalData()"
+          i18n
+        >
+          <i class="fa fa-download"></i>Exporter mes données personnelles
+        </button>
+        <button
+          class="btn-big col-lg-3 col-md-5 col-sm-12"
+          (click)="deletePersonalData()"
+          i18n
+        >
+          <i class="fa fa-trash"></i>Supprimer mes données personnelles
+        </button>
+      </section>
+    </div>
+  </div>
+</div>
+<ng-template #personalInfos let-modal>
+  <div class="modal-header">
+    <h4 i18n>Mettre à jour vos données personnelles</h4>
+    <button
+      type="button"
+      class="close rounded-0"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
+      &times;
+    </button>
+  </div>
+  <div class="modal-body">
+    <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null"
+      >{{ errorMessage }}
+    </ngb-alert>
+    <form
+      #updatePersonalInfoForm="ngForm"
+      (ngSubmit)="updatePersonalInfoForm.valid && onUpdatePersonalData()"
+    >
+      <ngb-alert
+        [dismissible]="false"
+        type="danger"
+        *ngIf="email.errors && email.dirty"
+        i18n
+      >
+        Impossible de valider votre email.
+      </ngb-alert>
+      <div class="form-row">
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="personalInfo.username" i18n
+              >Votre nom d'utilisateur</label
+            >
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-user"></i></span>
+              </div>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-control rounded-0"
+                i18n-placeholder
+                placeholder="Entrez votre nom d'utilisateur"
+                [(ngModel)]="personalInfo.username"
+                #username="ngModel"
+                autocomplete="username"
+                required
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="email" i18n>Votre email</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="fa fa-envelope"></i
+                ></span>
+              </div>
+              <input
+                type="email"
+                class="form-control rounded-0"
+                name="email"
+                id="email"
+                i18n-placeholder
+                placeholder="Entrez votre email"
+                [(ngModel)]="personalInfo.email"
+                #email="ngModel"
+                autocomplete="email"
+                required
+                pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="name" i18n>Votre prénom</label>
+            <input
+              type="text"
+              class="form-control rounded-0"
+              id="fname"
+              name="fname"
+              i18n-placeholder
+              placeholder="Entrez votre prénom"
+              [(ngModel)]="personalInfo.name"
+              #fname="ngModel"
+              autocomplete="fname"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="surname" i18n>Votre nom</label>
+            <input
+              type="text"
+              class="form-control rounded-0"
+              id="surname"
+              name="surname"
+              i18n-placeholder
+              placeholder="Entrez votre nom"
+              [(ngModel)]="personalInfo.surname"
+              #surname="ngModel"
+              autocomplete="lname"
+              required
+            />
+          </div>
+        </div>
+      </div>
+      <ngb-alert
+        [dismissible]="false"
+        type="danger"
+        *ngIf="
+          (confirm_password.errors || password.errors) && confirm_password.dirty
+        "
+        i18n
+      >
+        Les mots de passe diffèrent.
+      </ngb-alert>
+      <div class="form-row">
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="password" i18n>Votre mot de passe</label>
+            <input
+              type="password"
+              class="form-control rounded-0"
+              id="password"
+              i18n-placeholder
+              placeholder="Votre nouveau mot de passe"
+              [(ngModel)]="personalInfo.password"
+              name="password"
+              #password="ngModel"
+              autocomplete="current-password"
+              minlength="6"
+              required
+              #password="ngModel"
+            />
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="form-group">
+            <label for="new-password" i18n
+              >Confirmez votre nouveau mot de passe</label
+            >
+            <input
+              type="password"
+              id="new-password"
+              name="new-password"
+              class="form-control rounded-0"
+              ngModel
+              #confirm_password="ngModel"
+              i18n-placeholder
+              placeholder="Confirmez le mot de passe"
+              autocomplete="new-password"
+              required
+              pattern="^{{ password.value }}$"
+            />
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-default btn-big btn-outline-primary rounded-0"
+        i18n
+        [disabled]="updatePersonalInfoForm.invalid"
+      >
+        Mettre à jour
+      </button>
+    </form>
+  </div>
+</ng-template>

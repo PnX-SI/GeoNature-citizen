@@ -1,0 +1,742 @@
+section {
+  width: 100%;
+  min-height: 70vh;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.section:before {
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #00000056;
+}
+
+#welcome {
+  background: url(/assets/background.jpg) no-repeat;
+  background-size: cover;
+  height: calc(100vh - var(--router-outlet-offset));
+}
+
+#welcome h1 {
+  padding-left: 50%;
+  margin-top: 30px;
+  color: #fff;
+  font-family: "Satisfy";
+  font-size: 60px;
+}
+
+#welcome a {
+  position: absolute;
+  bottom: 100px;
+  right: 100px;
+  background-color: var(--primary);
+}
+
+/* SLIDER */
+
+#slide {
+  min-height: inherit !important;
+  /* height: calc(100vh - var(--router-outlet-offset)); */
+}
+
+/* #slider .carousel-inner,
+#slider .carousel-item {
+    height: calc(100vh - var(--router-outlet-offset));
+    max-height: 70vh;
+} */
+
+#slider h2 {
+  position: absolute;
+  top: 10px;
+  left: 50px;
+  z-index: 999;
+  color: #fff;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 20px;
+}
+
+#slider h2:before {
+  content: " ";
+  position: absolute;
+  width: 40px;
+  height: 21px;
+  transform: translateX(-125%);
+  background: #fff;
+}
+
+#slider ol.carousel-indicators li {
+  margin-top: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 25px;
+  background: transparent;
+  border: solid 1px #fff;
+}
+
+#slider .carousel-text-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  max-width: 70%;
+}
+
+#slider .carousel-text {
+  background-color: #fff;
+  padding: 35px 20px 35px 35px;
+  min-width: 450px;
+  max-height: 80%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#slider .carousel-text h3 {
+  font-family: "Satisfy";
+  color: var(--ternary);
+}
+
+#slider .carousel-text > p {
+  font-style: italic;
+  font-size: 14px;
+  max-height: 20%;
+}
+
+#slider .carousel-text div {
+  max-height: 50%;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+#slider .carousel-text a {
+  background-color: var(--secondary);
+  width: fit-content;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.mobile-hidden {
+  overflow: hidden;
+  line-height: 22px;
+}
+
+app-observations {
+  min-width: 100%;
+}
+
+/* OBSERVATION / MAP */
+
+app-observations {
+  min-width: 100%;
+}
+
+/* MAP */
+
+.leaflet-touch .leaflet-bar {
+  border-radius: 25px;
+}
+
+.leaflet-touch .leaflet-bar a:first-child {
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  color: var(--primary);
+}
+
+.leaflet-touch .leaflet-bar a:last-child {
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  color: var(--primary);
+}
+
+section .observations {
+  min-width: 100%;
+}
+
+.observations {
+  margin: 0px;
+  min-height: inherit;
+  height: calc(100vh - 137px);
+  overflow: hidden;
+}
+
+.observations #map {
+  overflow: hidden;
+}
+
+.observations #map,
+.observations #list {
+  padding: 0px;
+}
+
+.observations #map iframe {
+  height: 100%;
+}
+
+.observations #map .btn-group {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+
+.scroll {
+  width: 15px;
+  height: auto;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.observations #map .btn-group button,
+.observations #map .btn-group app-modalflow button {
+  margin-left: 20px;
+  opacity: 0.8;
+  padding: 10px 30px;
+  z-index: 999;
+}
+
+.observations #map .btn-group button:hover {
+  opacity: 1;
+}
+
+.observations #map .btn-group button:first-child {
+  background-color: var(--secondary);
+}
+
+.observations #map .btn-group button:nth-child(2n) {
+  background-color: var(--primary);
+}
+
+/* POPUP CUSTOM */
+
+.leaflet-popup-content-wrapper {
+  padding: 0px;
+}
+
+.leaflet-popup-content {
+  margin: 0px;
+  min-width: 300px !important;
+  min-height: 80px !important;
+  max-height: 80px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.leaflet-popup-tip,
+.leaflet-popup-content-wrapper {
+  border-radius: 0px !important;
+}
+
+.leaflet-popup-tip span,
+.leaflet-popup-content-wrapper span {
+  color: var(--primary);
+  font-style: italic;
+  font-size: 13px;
+}
+
+.leaflet-popup-tip p,
+.leaflet-popup-content-wrapper p {
+  margin: 0 !important;
+  font-size: 14px;
+}
+
+.leaflet-popup img,
+.leaflet-popup-content-wrapper img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  float: left;
+  margin-right: 3px;
+  padding: 2px;
+}
+
+.leaflet-popup-content-wrapper img.icon {
+  width: 25px;
+  height: 17px;
+}
+
+.leaflet-popup-content div {
+  height: 80px;
+  width: 40px;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+}
+
+.modal-header {
+  background: var(--secondary);
+  background: var(--modal-header-bg-moz);
+  background: var(--modal-header-bg-webkit);
+  background: var(--modal-header-bg-linear);
+  border-radius: 0px;
+  align-items: center;
+  max-height: 61px;
+}
+
+.modal-header h4 {
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.modal-content {
+  max-height: 95vh;
+  overflow-y: auto;
+}
+
+.modal-body,
+.modal-content {
+  border-radius: 0px !important;
+}
+
+span.input-group-text {
+  background-color: var(--secondary);
+  color: #fff;
+}
+
+.modal-body input.ng-valid,
+.modal-body input.pristine {
+  border: solid 1px rgb(206, 212, 218);
+}
+
+.modal-content .row {
+  margin: 0 !important;
+}
+
+.modal-content .col-lg-6,
+.modal-content .col-lg-12 {
+  padding: 5px 5px;
+}
+
+.modal-body input::placeholder,
+.modal-body textarea::placeholder {
+  color: #ccc;
+}
+
+.modal-footer button {
+  background-color: var(--secondary) !important;
+  color: #fff;
+  border: solid 1px transparent;
+  display: flex;
+  margin: 0 auto;
+  text-transform: uppercase;
+  padding: 6px 30px;
+}
+
+.modal-footer button:hover,
+.modal-footer button:active {
+  background: transparent;
+  color: var(--secondary);
+  border: solid 1px;
+  border-color: var(--secondary);
+}
+
+/* MODALES AJOUTER UNE OBS */
+
+.add-obs .obs-images {
+  overflow: hidden;
+  justify-content: space-between;
+  padding: 0px;
+}
+
+.obs-img {
+  position: relative;
+}
+
+.obs-img span {
+  font-size: 11px;
+  color: #222;
+  text-align: center;
+  font-weight: 700;
+  display: block;
+  background: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  padding: 2px 5px;
+}
+
+.add-obs .form-group.btn {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 0px;
+}
+
+.add-obs .form-group.btn i {
+  margin-right: 10px;
+}
+
+.add-obs .form-group.btn label {
+  margin: 0;
+}
+
+.half #obsMap {
+  height: 228px;
+  overflow: hidden;
+}
+
+form .d-inline-flex {
+  width: 100%;
+}
+
+/* .add-obs .col-lg-8 {
+  margin: 0 auto;
+  margin-bottom: 20px;
+} */
+
+.add-obs .form-group .form-group {
+  margin-bottom: 0;
+}
+
+.add-obs select,
+.add-obs .d-inline-flex input {
+  border: solid 1px var(--primary) !important;
+}
+
+.toolbar select {
+  width: 50%;
+}
+
+.obs-images img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  margin: 5px;
+  opacity: 0.7;
+}
+
+.obs-img:hover img,
+.obs-img.selected img {
+  opacity: 1;
+  cursor: pointer;
+  box-shadow: 0 0 0 3px var(--secondary);
+}
+
+.scroll-img {
+  display: inline-flex;
+  overflow-x: auto;
+}
+
+.obs-add-img {
+  margin: 5px;
+  background: #dcdcdc;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  min-width: 120px;
+  height: 120px;
+}
+
+.obs-add-img:hover {
+  background: #a1a1a1;
+}
+
+.obs-add-img input:hover,
+.obs-add-img i:hover,
+.obs-add-img label:hover,
+.obs-add-img:hover {
+  cursor: pointer !important;
+}
+
+.obs-add-img i {
+  font-size: 30px;
+}
+
+.obs-add-img input {
+  height: 120px;
+  width: 120px;
+}
+
+.add-obs ::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  width: 10px;
+  border: 1px solid #eee;
+  margin: 5px;
+  border-radius: 5px;
+}
+
+.add-obs ::-webkit-scrollbar {
+  background: #eee;
+  width: 10px;
+  height: 10px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* MODALE CONNEXION OU NON */
+
+.modal-body .sign {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.modal-body .sign:hover i {
+  transform: translateY(-5px);
+}
+
+.modal-body .sign i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-box-shadow: 0px 28px 91px -29px rgba(0, 0, 0, 0.75) !important;
+  -moz-box-shadow: 0px 28px 91px -29px rgba(0, 0, 0, 0.75) !important;
+  box-shadow: 0px 28px 91px -29px rgba(0, 0, 0, 0.75) !important;
+  margin-bottom: 30px;
+  height: 130px;
+  width: 130px;
+  border-radius: 50%;
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-body .sign i:before {
+  font-size: 60px;
+  color: #fff;
+}
+
+.modal-body .sign:hover {
+  cursor: pointer;
+}
+
+.modal-body .sign:first-child i {
+  background: var(--primary);
+}
+
+.modal-body .sign:first-child span {
+  color: var(--primary);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-body .sign:last-child i {
+  background: #e8e1db;
+}
+
+.modal-body .sign:last-child span {
+  color: #a0a0a0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-footer span {
+  margin: 0 auto;
+  font-style: italic;
+  border-bottom: solid 1px grey;
+}
+
+.modal-footer span:hover {
+  cursor: pointer;
+}
+
+/* MODALE OBSERVATION AJOUTEE */
+
+.obs-added {
+  text-align: center;
+}
+
+.obs-added img {
+  display: block;
+  width: 100%;
+}
+
+.obs-added div {
+  margin: -16px;
+  margin-bottom: 0px;
+}
+
+.obs-added h5 {
+  color: var(--secondary);
+  font-style: italic;
+  font-size: 1.8em;
+  margin-top: 20px;
+}
+
+.obs-added h6 {
+  text-transform: uppercase;
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+.obs-added p {
+  font-size: 1.5em;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+.obs-added span {
+  font-size: 1.6em;
+  font-style: italic;
+  color: #919191;
+}
+
+/* MOdALES NEW BADGES */
+
+.new-badge {
+  text-align: center;
+}
+
+.new-badge img {
+  display: block;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+.new-badge div {
+  margin: -16px;
+  margin-bottom: 0px;
+}
+
+.new-badge h5 {
+  color: var(--secondary);
+  font-style: italic;
+  font-size: 1.8em;
+  margin-top: 20px;
+}
+
+.new-badge h6 {
+  text-transform: uppercase;
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+.new-badge p {
+  font-size: 1.5em;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+@media screen and (max-width: 991px) {
+  .sign {
+    padding: 0px 40px 20px 40px !important;
+  }
+  .obs-img span,
+  .obs-img img {
+    opacity: 1;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .observations #map .btn-group {
+    right: 0px;
+  }
+}
+
+.side-bar {
+  width: 33%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+input#slide-sidebar[type="checkbox"] {
+  display: none;
+}
+
+input:checked ~ .map {
+  left: 0;
+  width: 100%;
+}
+
+input:not(:checked) ~ .map {
+  width: 67%;
+}
+
+.toggle {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 33%;
+  background-color: var(--primary);
+  width: var(--list-toggler-width);
+  display: flex;
+  transition: left 0.5s ease;
+  align-items: center;
+  overflow: hidden;
+  margin-bottom: 0px;
+  justify-content: center;
+}
+
+input:checked ~ .toggle {
+  left: 0;
+}
+
+.toggle i {
+  transition: all 0.5s ease;
+}
+
+input:checked ~ .toggle i {
+  transform: rotate(180deg);
+}
+
+.toggle:hover {
+  cursor: pointer;
+}
+
+.toggle i {
+  color: #fff;
+}
+
+.map {
+  position: absolute;
+  top: 0;
+  left: 33%;
+  right: 0;
+  bottom: 0;
+  -moz-transition: left 0.5s ease;
+  transition: left 0.5s ease;
+}
+
+.observation-zoom-statement-warning::after {
+  position: absolute;
+  color: darkred;
+  display: flex;
+  align-items: center;
+  padding: 1em;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  content: attr(data-observation-zoom-statement-warning);
+  z-index: 9999;
+}
+
+@media screen and (max-width: 991px) {
+  .observations {
+    height: inherit;
+  }
+
+  .leaflet-touch .leaflet-control-attribution {
+    display: none;
+  }
+
+  .observation-zoom-statement-warning::after {
+    max-height: 40vh;
+  }
+}

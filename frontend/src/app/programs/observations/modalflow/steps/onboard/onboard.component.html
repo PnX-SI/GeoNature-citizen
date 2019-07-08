@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h4 class="modal-title" i18n>AJOUTER UNE OBSERVATION</h4>
+</div>
+
+<div class="modal-body row">
+  <div
+    class="sign col-lg-6 col-md-12"
+    (click)="register()"
+    data-dismiss="modal"
+  >
+    <i class="fa fa-user"></i>
+    <span i18n>S'incrire <br />et contribuer au site</span>
+  </div>
+  <div
+    class="sign col-lg-6 col-md-12"
+    (click)="continue()"
+    data-dismiss="modal"
+  >
+    <i class="fa fa-user"></i>
+    <span i18n>Continuer <br />sans s'enregistrer</span>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <span (click)="login()" data-dismiss="modal" i18n
+    >Vous avez déjà un compte ? Connectez-vous !</span
+  >
+</div>
