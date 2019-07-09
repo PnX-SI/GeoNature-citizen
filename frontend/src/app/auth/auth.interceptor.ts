@@ -11,11 +11,9 @@ import {
   catchError,
   switchMap,
   finalize,
-  take,
   filter,
   tap,
-  map,
-  first
+  mergeMap
 } from "rxjs/operators";
 import { Observable, throwError, BehaviorSubject, from } from "rxjs";
 
@@ -57,16 +55,17 @@ export class AuthInterceptor implements HttpInterceptor {
       this.token$.next(null);
 
       return this.auth.performTokenRefresh().pipe(
-        take(1),
-        map((data: TokenRefresh) => {
-          if (data && data.access_token) {
+        mergeMap((data: TokenRefresh) => {
+          if (data && !!data.access_token) {
             localStorage.setItem("access_token", data.access_token);
             this.token$.next(data.access_token);
-            return next.handle(this.addToken(request, data.access_token));
+            // Fixme:
+            const clone = this.addToken(request, data.access_token);
+            console.debug(clone);
+            return next.handle(clone);
           }
-
-          this.auth.logout();
-          return from(this.router.navigate(["/home"]));
+          this.router.navigate(["/home"]);
+          return from(this.auth.logout());
         }),
         catchError(error => {
           console.error(
@@ -82,11 +81,12 @@ export class AuthInterceptor implements HttpInterceptor {
       );
     } else {
       return this.token$.pipe(
-        filter(token => token != null),
-        switchMap((token: string) =>
-          next.handle(this.addToken(request, token))
-        ),
-        first()
+        filter((token: string | null) => !!token),
+        tap(token => console.debug(token)),
+        switchMap((token: string) => {
+          console.debug("waited after refresh:", token);
+          return next.handle(this.addToken(request, token));
+        })
       );
     }
   }
@@ -111,9 +111,12 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    // renew access_token 2min before expiration if interacting with backend api.
-    const expired = this.auth.tokenExpiration(this.auth.getAccessToken());
-    if (expired && expired <= 120.0) {
+    // access_token renewal 2min before expiration if interacting with backend api.
+    const secondsToExpiration = this.auth.tokenExpiration(
+      this.auth.getAccessToken()
+    );
+    console.debug(`secs to exp: ${secondsToExpiration}`);
+    if (secondsToExpiration && secondsToExpiration <= 120.0) {
       return this.handle401(request, next);
     }
 
