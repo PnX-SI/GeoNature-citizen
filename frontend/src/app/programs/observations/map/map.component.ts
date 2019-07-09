@@ -389,13 +389,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
   selector: "popup",
   template: `
     <ng-container>
-      <img
+      <img class="default-img"
         [src]="
           data.image
             ? data.image
             : data.medias && !!data.medias.length
             ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + data.medias[0].id_media + '?h=80&v=80'
-            : 'assets/Azure-Commun-019.JPG'
+            : 'assets/default_image.png'
         "
       />
       <p>

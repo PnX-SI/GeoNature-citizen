@@ -179,7 +179,7 @@ export class ObsFormComponent implements AfterViewInit {
               this.taxa[taxon]["medias"].length >= 1
                 // ? this.taxa[taxon]["medias"][0]["url"]
                 ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + this.taxa[taxon]["medias"][0]["id_media"] + '?h=20'
-                : "assets/Azure-Commun-019.JPG"
+                : "assets/default_image.png"
           });
         }
       }
@@ -400,6 +400,11 @@ export class ObsFormComponent implements AfterViewInit {
       formData,
       httpOptions
     );
+  }
+
+  getMediaUrl(){
+    
+
   }
 }
 
