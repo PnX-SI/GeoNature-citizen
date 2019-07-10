@@ -32,7 +32,7 @@
             *ngFor="let s of (surveySpecies$ | async)"
             [value]="s.taxref.cd_nom"
           >
-            {{ s.nom?.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
+            {{ !!s.nom_francais ? s.nom_francais : s.taxref[0].nom_vern }} (<i>{{ s.taxref.nom_complet }}</i
             >)
           </option>
         </select>
@@ -57,10 +57,10 @@
                   ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + s.medias[0].id_media + '?h=100&v=100'
                   : 'assets/Azure-Commun-019.JPG'
               "
-              [alt]="s.nom?.nom_francais"
+              [alt]="!!s.nom_francais ? s.nom_francais : s.taxref.nom_vern"
               (click)="onTaxonSelected(s)"
             />
-            <span>{{ s.nom?.nom_francais }}</span>
+            <span>{{ !!s.nom_francais ? s.nom_francais : s.taxref.nom_vern }}</span>
           </div>
         </div>
       </div>
