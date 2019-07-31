@@ -23,14 +23,14 @@
   <div id="list">
     <div *ngFor="let o of (features$ | async); trackBy: trackByObs" class="espece obs-{{ o.properties.id_observation }}" (click)="onObsClick(o)">
       <!-- FIXME: hardcoded api media endpoint -->
-      <img [src]="
+      <img class="default-img" [src]="
           o.properties.images && !!o.properties.images.length
             ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
             : o.properties.image
             ? o.properties.image
             : o.properties.medias && !!o.properties.medias.length
             ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + o.properties.medias[0].id_media + '?h=80&v=80'
-            : 'assets/Azure-Commun-019.JPG'
+            : 'assets/default_image.png'
         " />
       <div class="infos">
         <h5 i18n>{{ !!o.properties.nom_francais ? o.properties.nom_francais : o.properties.taxref?.nom_vern }}</h5>

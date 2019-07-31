@@ -50,7 +50,7 @@
             <h2 i18n="Les programmes du moment">Les programmes du moment</h2>
             <div class="carousel-inner">
                 <div *ngFor="let p of programs; first as isFirst" [ngClass]="{ active: isFirst, 'carousel-item': true }">
-                    <img class="d-block w-100" [src]="p.image || 'assets/Azure-Commun-019.JPG'" alt="Programme {{ p.title }}" />
+                    <img class="d-block w-100 default-img" [src]="p.image || 'assets/default_program.jpg'" alt="Programme {{ p.title }}" />
                     <div class="carousel-text-container">
                         <div class="carousel-text" tabindex="0">
                             <h3>{{ p.title }}</h3>

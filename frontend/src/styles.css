@@ -370,3 +370,8 @@ select:focus {
     margin: 5px;
     cursor: pointer;
 }
+
+.default-img {
+    position: relative;
+    background-color:#e6e6e6;
+  }
