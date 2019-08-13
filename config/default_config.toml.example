@@ -41,13 +41,17 @@ MEDIA_FOLDER = 'media'
 # BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = 'static/medias'
 
+# Déclaration des Récompenses
 [REWARDS]
   [[REWARDS.BADGESET]]
+    # Déclaration des types de récompense
     [REWARDS.BADGESET.Seniority]
+      # Déclaration des noms et des urls des badges pour un type de récompense
       oeuf = '/media/badges_Novice.svg'
       chenille = '/media/badges_Confirme.svg'
       papillon = '/media/badges_Expert.svg'
     [REWARDS.BADGESET.Attendance]
+      # CuSn = bronze Au = or Ar = argent
       Au = '/media/badges_Expert.svg'
       Ar = '/media/badges_Confirme.svg'
       CuSn = '/media/badges_Novice.svg'
@@ -77,7 +81,7 @@ UPLOAD_FOLDER = 'static/medias'
       Au = '/media/badges_Humide.svg'
       Ar = '/media/badges_Humide.svg'
       CuSn = '/media/badges_Humide.svg'
-
+  # Configuration des Récompenses
   [REWARDS.CONF]
     "attendance" = { "Au" = 5000, "Ar" = 66, "CuSn" = 65 }
     "seniority" = { "oeuf" = "7days", "chenille" = "6months", "papillon" = "1an" }
