@@ -52,14 +52,13 @@ Configuration et installation de l’application :
 https://taxhub.readthedocs.io/fr/latest/installation.html
 
 :notes:
-
-- Bien vérifier de ne pas être en root :
+ - Bien vérifier de ne pas être en root :
 
   ::
 
     su - nom_utilisateur (geonatadmin)
 
-- Pour avoir les caractéristiques de votre instance:
+ - Pour avoir les caractéristiques de votre instance:
 
   ::
 
@@ -76,8 +75,8 @@ INSTALLATION DE GEONATURE CITIZEN
 
 :notes:
 
-- Cette étape n'est nécessaire que si Taxhub n’est pas installé
-- voir init_launch_db.rst:  https://github.com/PnX-SI/GeoNature citizen/blob/taxhub_rest/docs/devs/init_launch_db.rst
+ - Cette étape n'est nécessaire que si Taxhub n’est pas installé
+ - voir init_launch_db.rst:  https://github.com/PnX-SI/GeoNature citizen/blob/taxhub_rest/docs/devs/init_launch_db.rst
 
 ::
 
@@ -90,8 +89,8 @@ INSTALLATION DE GEONATURE CITIZEN
 
 :notes:
 
-- ls /etc/init.d/ : pour lister les services
-- sudo service restart postgresql : vérification 
+ - ls /etc/init.d/ : pour lister les services
+ - sudo service restart postgresql : vérification 
 
 **Etape 2 : Installer python3, pip et virtualenv :**
 
@@ -113,9 +112,9 @@ installer virtualenv :
 
 :notes:
 
-- init_launch_backend.rst 
-- creation referentiel géo
-- voir : https://github.com/PnX-SI/GeoNature-citizen//blob/taxhub_rest/docs/devs/init_launch_backend.rst
+ - init_launch_backend.rst 
+ - creation referentiel géo
+ - voir : https://github.com/PnX-SI/GeoNature-citizen//blob/taxhub_rest/docs/devs/init_launch_backend.rst
 
 Cloner le dépôt github de Geonature Citizen
 
@@ -183,7 +182,7 @@ enregistrement d’un programme exemple
 
 :notes:
 
-- voir : https://github.com/PnX-SI/GeoNature-citizen/blob/taxhub_rest/docs/devs/config_files.rst
+ - voir : https://github.com/PnX-SI/GeoNature-citizen/blob/taxhub_rest/docs/devs/config_files.rst
 
 ::
 
@@ -212,7 +211,7 @@ enregistrement d’un programme exemple
 
 :notes:
 
-- voir : https://github.com/PnX-SI/GeoNature-citizen/tree/dev/docs/devs/init_launch_frontend.rst
+ - voir : https://github.com/PnX-SI/GeoNature-citizen/tree/dev/docs/devs/init_launch_frontend.rst
 
 ::
 
