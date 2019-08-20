@@ -24,8 +24,6 @@ describe('ObsComponent', () => {
       imports: [
         HttpClientTestingModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        NgbModule.forRoot(),
       ],
       providers: [
         NgbModal,

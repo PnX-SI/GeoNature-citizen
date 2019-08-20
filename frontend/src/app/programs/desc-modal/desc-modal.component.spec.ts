@@ -11,7 +11,6 @@ describe('DescModalComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgbModule.forRoot(),
       ],
       providers: [
         NgbActiveModal,

@@ -17,7 +17,6 @@ describe('LoginComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgbModule.forRoot(),
         HttpClientTestingModule,
         RouterTestingModule,
         FormsModule,
