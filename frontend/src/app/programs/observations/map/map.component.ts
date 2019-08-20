@@ -124,7 +124,7 @@ const conf = {
   encapsulation: ViewEncapsulation.None
 })
 export class ObsMapComponent implements OnInit, OnChanges {
-  @ViewChild("map") map: ElementRef;
+  @ViewChild("map", {static: true}) map: ElementRef;
   @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
   @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
