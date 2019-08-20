@@ -25,8 +25,8 @@ export class OnboardComponent implements IFlowComponent, OnInit {
   LoginModalRef: NgbModalRef;
   timeout: any;
   @Input("data") data: any;
-  @ViewChild("RegisterComponent") RegisterComponent: ElementRef;
-  @ViewChild("LoginComponent") LoginComponent: ElementRef;
+  @ViewChild("RegisterComponent", {static: true}) RegisterComponent: ElementRef;
+  @ViewChild("LoginComponent", {static: true}) LoginComponent: ElementRef;
 
   constructor(
     private modalService: NgbModal,

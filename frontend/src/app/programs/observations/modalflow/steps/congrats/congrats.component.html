@@ -2,11 +2,11 @@
 <div class="modal-body obs-added">
   <div>
     <!-- FIXME: hardcoded backend media url -->
-    <img
+    <img class="default-img"
       [src]="
         obs.images[0]
           ? AppConfig.API_ENDPOINT + '/media/' + obs.images[0]
-          : 'assets/Azure-Commun-019.JPG'
+          : 'assets/default_program.jpg'
       "
     />
   </div>

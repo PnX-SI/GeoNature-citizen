@@ -134,7 +134,7 @@ export class GncProgramsService implements OnInit {
           `${this.URL}/taxonomy/lists/${program["taxonomy_list"]}/species`
         )
       ),
-      catchError(this.handleError<TaxonomyList>(`getProgramTaxonomyList`))
+      catchError(this.handleError<TaxonomyList>(`getProgramTaxonomyList`,{}))
     );
   }
 

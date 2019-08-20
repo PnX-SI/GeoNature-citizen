@@ -11,7 +11,7 @@ import { ObservationFeature } from "../../../observation.model";
 })
 export class CommittedComponent implements IFlowComponent {
   @Input() data: any;
-  @ViewChild(ObsFormComponent) form: ObsFormComponent;
+  @ViewChild(ObsFormComponent, {static: true}) form: ObsFormComponent;
 
   onNewObservation(observation: ObservationFeature) {
     if (observation) {
