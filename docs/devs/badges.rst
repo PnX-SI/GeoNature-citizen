@@ -16,10 +16,16 @@ Configuration des badges
  
 **niveaux de récompense:**
 
-- CuSn = bronze Au = or Ar = argent
+- CuSn = bronze, Au = or, Ar = argent
 
 **Configuration des points de récompense:**
 
 Configuration des points des paliers(niveaux) pour chaque type de badge
  
  exemple : "attendance" = { "Au" = 5000, "Ar" = 66, "CuSn" = 65 }
+ 
+:notes:
+ Pour plus d'informations voir : https://github.com/PnX-SI/GeoNature-citizen/issues/7
+ 
+ 
+ 
