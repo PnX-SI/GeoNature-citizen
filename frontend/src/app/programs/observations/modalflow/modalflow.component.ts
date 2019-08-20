@@ -33,7 +33,7 @@ import { AppConfig } from "../../../../conf/app.config";
 })
 export class ModalFlowComponent {
   @Input("coords") coords;
-  @ViewChild("content") content: ElementRef;
+  @ViewChild("content", {static: true}) content: ElementRef;
   AppConfig = AppConfig;
   flowitems: FlowItem[];
   timeout: any;

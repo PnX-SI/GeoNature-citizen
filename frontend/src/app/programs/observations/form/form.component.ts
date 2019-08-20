@@ -98,8 +98,10 @@ export function geometryValidator(): ValidatorFn {
 export class ObsFormComponent implements AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   @Input("coords") coords: L.Point;
-  @Output("newObservation") newObservation: EventEmitter<ObservationFeature> = new EventEmitter();
-  @ViewChild("photo") photo: ElementRef;
+  @Output("newObservation") newObservation: EventEmitter<
+    ObservationFeature
+  > = new EventEmitter();
+  @ViewChild("photo", { static: true }) photo: ElementRef;
   today = new Date();
   program_id: any;
   obsForm = new FormGroup(
@@ -177,8 +179,11 @@ export class ObsFormComponent implements AfterViewInit {
             cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
             icon:
               this.taxa[taxon]["medias"].length >= 1
-                // ? this.taxa[taxon]["medias"][0]["url"]
-                ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + this.taxa[taxon]["medias"][0]["id_media"] + '?h=20'
+                ? // ? this.taxa[taxon]["medias"][0]["url"]
+                  AppConfig.API_TAXHUB +
+                  "/tmedias/thumbnail/" +
+                  this.taxa[taxon]["medias"][0]["id_media"] +
+                  "?h=20"
                 : "assets/default_image.png"
           });
         }
@@ -192,7 +197,7 @@ export class ObsFormComponent implements AfterViewInit {
     private http: HttpClient,
     private programService: GncProgramsService,
     private route: ActivatedRoute,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {}
 
   ngAfterViewInit() {
@@ -210,6 +215,8 @@ export class ObsFormComponent implements AfterViewInit {
               this.taxaCount = Object.keys(this.taxa).length;
               if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
                 this.inputAutoCompleteSetup();
+              } else if (this.taxaCount == 1) {
+                this.onTaxonSelected(this.taxa[0]);
               }
             }),
             share()
@@ -402,9 +409,5 @@ export class ObsFormComponent implements AfterViewInit {
     );
   }
 
-  getMediaUrl(){
-    
-
-  }
+  getMediaUrl() {}
 }
-

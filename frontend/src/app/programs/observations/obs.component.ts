@@ -40,8 +40,8 @@ export class ObsComponent implements OnInit, AfterViewInit {
   observations: FeatureCollection;
   programFeature: FeatureCollection;
   surveySpecies: TaxonomyList;
-  @ViewChild(ObsMapComponent) obsMap: ObsMapComponent;
-  @ViewChild(ObsListComponent) obsList: ObsListComponent;
+  @ViewChild(ObsMapComponent, {static: true}) obsMap: ObsMapComponent;
+  @ViewChild(ObsListComponent, {static: true}) obsList: ObsListComponent;
 
   selectedObs: Feature;
 
