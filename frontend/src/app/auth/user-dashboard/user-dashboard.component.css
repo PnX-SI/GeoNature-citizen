@@ -78,17 +78,15 @@
   text-transform: uppercase;
 }
 
-#badges div {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: start;
-  padding: 20px;
+#badges .inner-row {
+  
+  padding: 8px 10px;
   background: #f3f3f3;
   border: solid 3px #fff;
 }
 
 #badges div img {
-  margin: 20px 10px;
+  margin: 2px 10px;
   width: 70px;
   height: 70px;
 }
@@ -119,7 +117,7 @@
 }
 
 #badges .row {
-  padding: 0px;
+  padding: 0px 10px;
 }
 
 form > button {

@@ -107,6 +107,8 @@ export class ObsFormComponent implements AfterViewInit {
   obsForm = new FormGroup(
     {
       cd_nom: new FormControl("", Validators.required),
+      famille: new FormControl(""),
+      classe: new FormControl(""),
       count: new FormControl("1", Validators.required),
       comment: new FormControl(""),
       date: new FormControl(
@@ -336,7 +338,11 @@ export class ObsFormComponent implements AfterViewInit {
 
   onTaxonSelected(taxon: TaxonomyListItem): void {
     this.selectedTaxon = taxon;
+    console.log('taxon',this.selectedTaxon);
+    
     this.obsForm.controls["cd_nom"].patchValue(taxon.taxref["cd_nom"]);
+    this.obsForm.controls["classe"].patchValue(taxon.taxref["classe"]);
+    this.obsForm.controls["famille"].patchValue(taxon.taxref["famille"]);
   }
 
   isSelectedTaxon(taxon: TaxonomyListItem): boolean {
@@ -384,6 +390,9 @@ export class ObsFormComponent implements AfterViewInit {
       cd_nom = Number.parseInt(taxon.cd_nom);
     }
     formData.append("cd_nom", cd_nom.toString());
+
+    formData.append("famille",this.obsForm.get("famille").value);
+    formData.append("classe",this.obsForm.get("classe").value);
 
     const obsDateControlValue = NgbDate.from(this.obsForm.controls.date.value);
     const obsDate = new Date(

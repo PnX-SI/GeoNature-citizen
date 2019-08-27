@@ -5,24 +5,25 @@ Configuration des badges
 **Types de récompense:**
 
 - Seniority: ancienneté d'inscription sur la plateforme
-- Attendance: participation sur la plateforme( faire des observations)
+- all_attendance: participation sur la plateforme( faire des observations)
 - Program_Attendance: participation par programme
-- Program_Date_Bounds: participation à un intervalle de temps sur un programme
-- Ornitologue:  faire des observations dans la catégorie Ornithologue
-- Mammalogiste: faire des observations dans la catégorie Mammalogiste
-- Odonatologue: faire des observations dans la catégorie Odontologue
-- Lépidoptériste: faire des observations dans la catégorie Lépidoptériste
-- AHerpétologue: faire des observations dans la catégorie Herpétologique
+- recognition:  identification d'espèces
+
  
 **niveaux de récompense:**
 
-- CuSn = bronze, Au = or, Ar = argent
+ - min_obs : nombre d'observations minimum pour obtenir le badge
+ - min_date : date minimum pour obtenir le badge
 
-**Configuration des points de récompense:**
+**Configuration  de récompense:**
 
-Configuration des points des paliers(niveaux) pour chaque type de badge
- 
- exemple : "attendance" = { "Au" = 5000, "Ar" = 66, "CuSn" = 65 }
+ - type : type de récompense (exemple Seniority)
+ - reward_label : label de la récompense ( a afficher du coté forntend)
+ - id_program : identifant du programme ( 0 pour les récompenses géneral)
+ - badges : tableau des badges par type de récompense 
+
+ Pour les récompenses de type recognition il faut renseigner soit la classe ou la famille du taxref 
+
  
 :notes:
  Pour plus d'informations voir : https://github.com/PnX-SI/GeoNature-citizen/issues/7
