@@ -12,17 +12,17 @@ Configuration des badges
  
 **niveaux de récompense:**
 
- - min_obs : nombre d'observations minimum pour obtenir le badge
- - min_date : date minimum pour obtenir le badge
+- min_obs: nombre d'observations minimum pour obtenir le badge
+- min_date: date minimum pour obtenir le badge
 
 **Configuration  de récompense:**
 
- - type : type de récompense (exemple Seniority)
- - reward_label : label de la récompense ( a afficher du coté forntend)
- - id_program : identifant du programme ( 0 pour les récompenses géneral)
- - badges : tableau des badges par type de récompense 
+- type: type de récompense (exemple Seniority)
+- reward_label  label de la récompense ( a afficher du coté forntend)
+- id_program: identifant du programme ( 0 pour les récompenses géneral)
+- badges: tableau des badges par type de récompense 
 
- Pour les récompenses de type recognition il faut renseigner soit la classe ou la famille du taxref 
+Pour les récompenses de type recognition il faut renseigner soit la classe ou la famille du taxref 
 
  
 :notes:
