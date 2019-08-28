@@ -107,8 +107,6 @@ export class ObsFormComponent implements AfterViewInit {
   obsForm = new FormGroup(
     {
       cd_nom: new FormControl("", Validators.required),
-      famille: new FormControl(""),
-      classe: new FormControl(""),
       count: new FormControl("1", Validators.required),
       comment: new FormControl(""),
       date: new FormControl(
@@ -339,8 +337,6 @@ export class ObsFormComponent implements AfterViewInit {
   onTaxonSelected(taxon: TaxonomyListItem): void {
     this.selectedTaxon = taxon; 
     this.obsForm.controls["cd_nom"].patchValue(taxon.taxref["cd_nom"]);
-    this.obsForm.controls["classe"].patchValue(taxon.taxref["classe"]);
-    this.obsForm.controls["famille"].patchValue(taxon.taxref["famille"]);
   }
 
   isSelectedTaxon(taxon: TaxonomyListItem): boolean {
