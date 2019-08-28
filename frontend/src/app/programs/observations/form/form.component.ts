@@ -385,9 +385,6 @@ export class ObsFormComponent implements AfterViewInit {
     }
     formData.append("cd_nom", cd_nom.toString());
 
-    formData.append("famille",this.obsForm.get("famille").value);
-    formData.append("classe",this.obsForm.get("classe").value);
-
     const obsDateControlValue = NgbDate.from(this.obsForm.controls.date.value);
     const obsDate = new Date(
       obsDateControlValue.year,
