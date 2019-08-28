@@ -3,6 +3,7 @@ from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.commons.models import ProgramsModel
 from gncitizen.core.users.models import UserModel
+from gncitizen.core.taxonomy.models import Taxref
 from sqlalchemy.sql.expression import func
 from datetime import date, datetime, timedelta
 from calendar import monthrange
@@ -33,9 +34,11 @@ def get_rewards(id):
         total_obs = total_obs + item.nb_obs
     print('total_obs',total_obs)
     taxon_classe_query = ObservationModel.query.filter(
-        ObservationModel.id_role == id).group_by(ObservationModel.classe).values(
-            ObservationModel.classe.label('classe'), func.count(
-                ObservationModel.classe).label('nb_obs'))
+        ObservationModel.id_role == id).outerjoin(
+            Taxref, Taxref.cd_nom == ObservationModel.cd_nom
+        ).group_by(Taxref.classe).values(
+            Taxref.classe.label('classe'), func.count(
+                Taxref.classe).label('nb_obs'))
     for item in taxon_classe_query:
         taxon_scores.append(
             {
@@ -45,9 +48,11 @@ def get_rewards(id):
         )
 
     taxon_famille_query = ObservationModel.query.filter(
-        ObservationModel.id_role == id).group_by(ObservationModel.famille).values(
-            ObservationModel.famille.label('famille'), func.count(
-                ObservationModel.famille).label('nb_obs'))
+        ObservationModel.id_role == id).outerjoin(
+            Taxref, Taxref.cd_nom == ObservationModel.cd_nom
+        ).group_by(Taxref.famille).values(
+            Taxref.famille.label('famille'), func.count(
+                Taxref.famille).label('nb_obs'))
     for item in taxon_famille_query:
         taxon_scores.append(
             {
