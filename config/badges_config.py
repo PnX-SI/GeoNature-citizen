@@ -12,7 +12,7 @@ REWARDS = [
             {
                 "name": "Argent",
                 "min_obs": 20,
-                "url": "/media/badges_Novice.svg"
+                "url": "/media/badges_Confirme.svg"
             },
             {
                 "name": "Or",
@@ -56,7 +56,7 @@ REWARDS = [
             {
                 "name": "Argent",
                 "min_obs": 5,
-                "url": "/media/badges_Novice.svg"
+                "url": "/media/badges_Confirme.svg"
             },
             {
                 "name": "Or",
@@ -78,7 +78,7 @@ REWARDS = [
             {
                 "name": "Argent",
                 "min_obs": 3,
-                "url": "/media/badges_Novice.svg"
+                "url": "/media/badges_Confirme.svg"
             },
             {
                 "name": "Or",

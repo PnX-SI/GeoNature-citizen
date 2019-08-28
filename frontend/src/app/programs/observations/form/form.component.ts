@@ -337,9 +337,7 @@ export class ObsFormComponent implements AfterViewInit {
   }
 
   onTaxonSelected(taxon: TaxonomyListItem): void {
-    this.selectedTaxon = taxon;
-    console.log('taxon',this.selectedTaxon);
-    
+    this.selectedTaxon = taxon; 
     this.obsForm.controls["cd_nom"].patchValue(taxon.taxref["cd_nom"]);
     this.obsForm.controls["classe"].patchValue(taxon.taxref["classe"]);
     this.obsForm.controls["famille"].patchValue(taxon.taxref["famille"]);

@@ -182,10 +182,8 @@ def login():
     """
     try:
         request_datas = dict(request.get_json())
-        print(request_datas)
         username = request_datas["username"]
         password = request_datas["password"]
-        print(username)
         current_user = UserModel.find_by_username(username)
         if not current_user:
             return (
@@ -292,7 +290,6 @@ def get_allusers():
     """
     # allusers = UserModel.return_all()
     allusers = UserModel.return_all()
-    print(allusers)
     return allusers, 200
 
 

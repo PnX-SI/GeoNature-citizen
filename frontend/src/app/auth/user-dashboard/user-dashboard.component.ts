@@ -130,6 +130,7 @@ export class UserDashboardComponent implements OnInit {
       .subscribe(
         rewards => {
           this.badges = rewards;
+          localStorage.setItem("badges", JSON.stringify(this.badges));
           this.badges.forEach(badge => {
             if (badge.type == "all_attendance" || badge.type == "seniority")
               this.main_badges.push(badge);
