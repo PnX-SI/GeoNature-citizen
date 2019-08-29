@@ -27,8 +27,10 @@ export class UserDashboardComponent implements OnInit {
   isLoggedIn: boolean = false;
   stats: any;
   personalInfo: any = {};
-  badges = [];
-  badges$: Subject<Object> = new Subject<Object>();
+  badges: any;
+  main_badges: any = [];
+  programs_badges: any = [];
+  recognition_badges: any = [];
 
   constructor(
     private auth: AuthService,
@@ -53,7 +55,7 @@ export class UserDashboardComponent implements OnInit {
               this.role_id = user["features"]["id_role"];
               // FIXME: source backend conf
               if (AppConfig["REWARDS"]) {
-                this.getBadgeCategories().subscribe();
+                this.getBadgeCategories();
               }
             }
           }),
@@ -77,7 +79,7 @@ export class UserDashboardComponent implements OnInit {
           this.router.navigate(["/home"]);
         }
       })
-      .catch(err => console.log('err', err))
+      .catch(err => console.log("err", err));
   }
 
   getPersonalInfo(): Observable<any> {
@@ -122,29 +124,25 @@ export class UserDashboardComponent implements OnInit {
       });
   }
 
-  getBadgeCategories(): Observable<Object | Error> {
-    return this.http
-      .get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
-      .pipe(
-        tap(data => {
-          const categories = data["badges"].reduce((acc, item) => {
-            const category = item["alt"].split(/\.[^/.]+$/)[0];
-            if (!acc[category]) {
-              acc[category] = data["badges"].filter(item =>
-                item.alt.startsWith(category + ".")
-              );
-            }
-            return acc;
-          }, {});
-
-          Object.values(categories).map(value => this.badges.push(value));
-          this.badges$.next(this.badges);
-          localStorage.setItem("badges", JSON.stringify(data["badges"]));
-        }),
-        catchError(error => {
-          //window.alert(error);
-          return throwError(error);
-        })
+  getBadgeCategories() {
+    this.http
+      .get<Object>(`${AppConfig.API_ENDPOINT}/rewards/${this.role_id}`)
+      .subscribe(
+        rewards => {
+          this.badges = rewards;
+          localStorage.setItem("badges", JSON.stringify(this.badges));
+          this.badges.forEach(badge => {
+            if (badge.type == "all_attendance" || badge.type == "seniority")
+              this.main_badges.push(badge);
+            if (badge.type == "program_attendance")
+              this.programs_badges.push(badge);
+            if (badge.type == "recognition")
+              this.recognition_badges.push(badge);
+          });
+        },
+        err => {
+          throwError(err);
+        }
       );
   }
 }

@@ -38,7 +38,6 @@ export class RegisterComponent {
           localStorage.setItem("access_token", user.access_token);
           localStorage.setItem("refresh_token", user.refresh_token);
           localStorage.setItem("username", user.username);
-          console.log(user.status);
           if (user) {
             let message = user.message;
             this._success.subscribe(message => (this.successMessage = message));

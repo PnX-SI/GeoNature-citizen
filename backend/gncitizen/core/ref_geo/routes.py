@@ -87,9 +87,7 @@ def get_municipality(insee):
             LAreas.id_type == 101
         ).limit(1)
         datas = q.all()
-        print(datas[0])
         data = datas[0]
-        print(to_shape(data.geom))
         feature = Feature(geometry=to_shape(data.geom))
         feature['properties']['area_name'] = data.area_name
         feature['properties']['area_code'] = data.area_code
