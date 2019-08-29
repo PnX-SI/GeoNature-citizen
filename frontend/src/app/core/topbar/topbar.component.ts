@@ -100,11 +100,9 @@ export class TopbarComponent implements OnInit {
 
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
-    console.log("topabr ngOnInit", access_token);
     if (access_token) {
       this.auth.ensureAuthorized().subscribe(
         user => {
-          console.log("ensureAuthorized result", user);
           if (user && user["features"] && user["features"].id_role) {
             this.username = user["features"].username;
             this.isAdmin = user["features"].admin ? true : false;

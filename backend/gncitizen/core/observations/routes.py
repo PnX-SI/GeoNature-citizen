@@ -229,7 +229,6 @@ def post_observation():
     try:
         request_datas = request.form
         current_app.logger.debug("[post_observation] request data:", request_datas)
-
         datas2db = {}
         for field in request_datas:
             if hasattr(ObservationModel, field):
