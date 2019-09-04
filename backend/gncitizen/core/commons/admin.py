@@ -63,7 +63,6 @@ def taxonomy_lists():
 
 class ProgramView(ModelView):
     form_base_class = SecureForm
-    form_overrides = dict(long_desc=CKEditorField)
     form_overrides = {'long_desc':CKEditorField, 'taxonomy_list':SelectField}
     form_args = {'taxonomy_list':{'choices':taxonomy_lists(), 'coerce':int}}
     create_template = 'edit.html'
