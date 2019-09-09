@@ -131,7 +131,7 @@ class UserRightsModel(TimestampMixinModel, db.Model):
         db.Integer, db.ForeignKey(ModulesModel.id_module), nullable=True
     )
     id_program = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=True, ondelete="CASCADE"
+        db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE"), nullable=True
     )
     right = db.Column(db.String(150), nullable=False)
     create = db.Column(db.Boolean(), default=False)
@@ -148,7 +148,7 @@ class UserGroupsModel(TimestampMixinModel, db.Model):
     id_user_right = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
     id_group = db.Column(
-        db.Integer, db.ForeignKey(GroupsModel.id_group), nullable=False, ondelete="CASCADE"
+        db.Integer, db.ForeignKey(GroupsModel.id_group, ondelete="CASCADE"), nullable=False
     )
 
 
