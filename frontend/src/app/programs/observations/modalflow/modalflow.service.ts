@@ -51,7 +51,6 @@ export class ModalFlowService extends FlowService {
             trigger = reason;
             break;
         }
-        console.debug(`dismissed with ${trigger}`);
       }
     );
   }
@@ -60,6 +59,9 @@ export class ModalFlowService extends FlowService {
 
   close(data) {
     this.modalRef.close(data);
+  }
+  closeModal() {
+    if (this.modalRef) this.modalRef.close();
   }
 
   getFlowItems(initialState) {

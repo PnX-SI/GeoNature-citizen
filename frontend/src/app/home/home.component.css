@@ -214,11 +214,11 @@ section {
     bottom: 0;
     display: flex;
     align-items: center;
-    max-width: 60%;
+    max-width: 40%;
 }
 
 #slider .carousel-text {
-    background-color: #fff;
+    background-color: #eeeeeecf;
     padding: 35px 20px 35px 35px;
     min-width: 450px;
     max-height: 80%;
@@ -232,6 +232,8 @@ section {
     max-height: 50%;
     overflow-y: auto;
     margin-bottom: 1em;
+    color: black;
+    font-size: 14px
 }
 
 #slider .carousel-text h3 {
@@ -242,10 +244,10 @@ section {
 #slider .carousel-text>p {
     font-style: italic;
     font-size: 14px;
+    color: black;
 }
 
 #slider .carousel-text a {
-    background-color: var(--secondary);
     width: fit-content;
     text-align: center;
     margin: 0 auto;

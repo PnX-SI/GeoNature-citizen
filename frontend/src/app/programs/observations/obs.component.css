@@ -85,15 +85,15 @@ section {
   bottom: 0;
   display: flex;
   align-items: center;
-  max-width: 70%;
+  max-width: 40%;
 }
 
 #slider .carousel-text {
-  background-color: #fff;
   padding: 35px 20px 35px 35px;
   min-width: 450px;
   max-height: 80%;
   height: auto;
+  background-color: #eeeeeecf;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -108,16 +108,18 @@ section {
   font-style: italic;
   font-size: 14px;
   max-height: 20%;
+  color: black;
 }
 
 #slider .carousel-text div {
   max-height: 50%;
   overflow-y: auto;
   margin-bottom: 15px;
+  color: black;
+  font-size: 14px
 }
 
 #slider .carousel-text a {
-  background-color: var(--secondary);
   width: fit-content;
   text-align: center;
   margin: 0 auto;
