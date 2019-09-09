@@ -145,4 +145,7 @@ export class UserDashboardComponent implements OnInit {
         }
       );
   }
+  ngOnDestroy(): void {
+    if (this.modalRef) this.modalRef.close()    
+  }
 }

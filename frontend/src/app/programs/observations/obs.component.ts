@@ -115,4 +115,8 @@ export class ObsComponent implements OnInit, AfterViewInit {
       features: this.observations.features
     };
   }
+
+  ngOnDestroy(): void {
+   this.flowService.closeModal()
+  }
 }
