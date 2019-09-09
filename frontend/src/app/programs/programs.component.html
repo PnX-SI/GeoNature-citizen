@@ -7,23 +7,39 @@
         </h1>
         <div class="container" id="main">
             <div class="row justify-content-center">
-                <div *ngFor="let p of (programs$ | async)" class="col-lg-4 col-md-4 col-sm-12">
-                    <a [routerLink]="['programs', p.id_program, 'observations']" (click)="activeModal.close('PROGRAM_SELECTED')">
-                        <div class="text-center">
-                            <div class="img-hover" [ngbTooltip]="p.short_desc" [ngStyle]="{
-                                'background-image': p.logo
-                                  ? 'url(' + p.logo + ')'
-                                  : p.image
-                                  ? 'url(' + p.image + ')'
-                                  : 'url(' + 'assets/prog1.jpg' + ')',
-                                'background-size': 'cover'
-                              }"></div>
-                            <h5 class="card-title">
-                                {{ p.title }}&nbsp; <span class="badge badge-info"> </span>
-                            </h5>
-                            <p class="short_desc" [innerHTML]="p.html_short_desc"></p>
+                <div id="programs-cards">
+                    <div class="container-fluid programs">
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-xl-4 col-lg-3 " *ngFor="let p of (programs$ | async)">
+                                <a [routerLink]="['programs', p.id_program, 'observations']"
+                                    (click)="activeModal.close('PROGRAM_SELECTED')">
+                                    <div class="text-center">
+                                        <div class="img-hover" [ngbTooltip]="p.short_desc" [ngStyle]="{
+                                                    'background-image': p.logo
+                                                      ? 'url(' + p.logo + ')'
+                                                      : p.image
+                                                      ? 'url(' + p.image + ')'
+                                                      : 'url(' + 'assets/prog1.jpg' + ')',
+                                                    'background-size': 'cover'
+                                                  }">
+                                                </div>
+
+                                        <h5 class="card-title">
+                                            {{ p.title }}&nbsp; <span class="badge badge-info"> </span>
+                                        </h5>
+                                        <p class="short_desc" [innerHTML]="p.html_short_desc"></p>
+
+                                        <!-- <a class="btn-big" [routerLink]="['/programs', p.id_program, 'observations']">{{ AppConfig.platform_participate[localeId] }}
+                                              </a> -->
+                                        <div class="overlay">
+                                            <p class="overlay-text">{{ AppConfig.platform_participate[localeId] }}</p>
+                                        </div>
+                                    </div>
+
+                                </a>
+                            </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
