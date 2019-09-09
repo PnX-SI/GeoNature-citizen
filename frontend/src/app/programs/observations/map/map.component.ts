@@ -207,6 +207,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
     L.control
       .locate({
+        icon: 'fa fa-compass',
         position: this.options.GEOLOCATION_CONTROL_POSITION,
         getLocationBounds: locationEvent =>
           locationEvent.bounds.extend(this.programMaxBounds),
