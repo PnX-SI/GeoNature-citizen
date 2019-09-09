@@ -130,8 +130,8 @@ class UserRightsModel(TimestampMixinModel, db.Model):
     id_module = db.Column(
         db.Integer, db.ForeignKey(ModulesModel.id_module), nullable=True
     )
-    id_module = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=True
+    id_program = db.Column(
+        db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=True, ondelete="CASCADE"
     )
     right = db.Column(db.String(150), nullable=False)
     create = db.Column(db.Boolean(), default=False)
@@ -148,7 +148,7 @@ class UserGroupsModel(TimestampMixinModel, db.Model):
     id_user_right = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
     id_group = db.Column(
-        db.Integer, db.ForeignKey(GroupsModel.id_group), nullable=False
+        db.Integer, db.ForeignKey(GroupsModel.id_group), nullable=False, ondelete="CASCADE"
     )
 
 
@@ -157,7 +157,7 @@ class ObserverMixinModel(object):
     def id_role(cls):
         return db.Column(
             db.Integer,
-            db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
+            db.ForeignKey(UserModel.id_user, ondelete="CASCADE"),
             nullable=True,
         )
 
