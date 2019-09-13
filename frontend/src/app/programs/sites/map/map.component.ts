@@ -389,7 +389,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
       <p>
         <b>{{ data.name }}</b><br>
         <span>Ajoutée par {{ data.obs_txt }}<br>
-        le {{ data.timestamp_create.substring(0, 10) | date : longDate }}
+        le {{ data.timestamp_create.substring(0, 10) | date : "longDate" }}
         </span><br>
         <a [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer">
           + Voir les détails

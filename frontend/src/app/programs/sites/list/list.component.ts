@@ -20,9 +20,9 @@ export class SitesListComponent implements OnChanges {
   @Input("taxa") surveySpecies: any[];
   @Input("program_id") program_id: number;
   @Output("siteSelect") siteSelect: EventEmitter<Feature> = new EventEmitter();
-  municipalities: string[];
+  municipalities: string[] = [];
   sites: Feature[] = [];
-  taxa: any[];
+  taxa: any[] = [];
   apiEndpoint = AppConfig.API_ENDPOINT;
 
   constructor(public flowService: SiteModalFlowService) {}

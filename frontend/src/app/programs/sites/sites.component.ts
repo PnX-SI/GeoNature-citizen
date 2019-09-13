@@ -12,6 +12,7 @@ import { FeatureCollection } from "geojson";
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { Program } from "../programs.models";
 import { SiteModalFlowService } from "./modalflow/modalflow.service";
+import { TaxonomyList } from "../observations/observation.model";
 import { SiteService } from "./sites.service";
 import { SitesMapComponent } from "./map/map.component";
 import { SitesListComponent } from "./list/list.component";
@@ -31,7 +32,7 @@ export class SitesComponent implements OnInit, AfterViewChecked {
   program: Program;
   sites: FeatureCollection;
   programFeature: FeatureCollection;
-  surveySpecies: any;
+  surveySpecies: TaxonomyList;
   @ViewChild(SitesMapComponent) sitesMap: SitesMapComponent;
   @ViewChild(SitesListComponent) sitesList: SitesListComponent;
 

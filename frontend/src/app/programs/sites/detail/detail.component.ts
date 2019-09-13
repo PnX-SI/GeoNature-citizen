@@ -2,9 +2,9 @@ import {Component, AfterViewInit, ViewEncapsulation} from '@angular/core';
 import {GncProgramsService} from "../../../api/gnc-programs.service";
 import {ActivatedRoute} from "@angular/router";
 import * as L from "leaflet";
-import MaresJson from '../../../../../../config/custom/form/mares.json';
 import { SiteModalFlowService } from "../modalflow/modalflow.service";
 import {AppConfig} from "../../../../conf/app.config";
+import { HttpClient } from "@angular/common/http";
 
 declare let $: any;
 
@@ -22,6 +22,7 @@ export const markerIcon = L.icon({
   encapsulation: ViewEncapsulation.None
 })
 export class SiteDetailComponent implements AfterViewInit {
+  private readonly URL = AppConfig.API_ENDPOINT;
   site_id: any;
   program_id: any;
   site: any;
@@ -30,6 +31,7 @@ export class SiteDetailComponent implements AfterViewInit {
   clickedPhoto: any;
 
   constructor(
+    private http: HttpClient,
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     public flowService: SiteModalFlowService
@@ -67,13 +69,22 @@ export class SiteDetailComponent implements AfterViewInit {
         // prepare data
         if (this.site.properties.last_visit) {
           let data = this.site.properties.last_visit.json_data;
-          let schema = MaresJson.schema.properties;
-          for (const k in data) {
-            let v = data[k];
-            this.attributes.push({name: schema[k].title, value: v.toString()})
-          }
+          var that = this;
+          this.loadJsonSchema().subscribe((jsonschema: any) => {
+            let schema = jsonschema.schema.properties
+            for (const k in data) {
+              let v = data[k];
+              that.attributes.push({name: schema[k].title, value: v.toString()})
+            }
+          });
         }
       });
+  }
+
+  loadJsonSchema() {
+    return this.http.get(
+      `${this.URL}/sites/${this.site_id}/jsonschema`
+    )
   }
 
   showPhoto(photo) {
