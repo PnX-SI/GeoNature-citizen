@@ -28,7 +28,7 @@ class SiteType(enum.Enum):
     (pour l'instant seulement "mare").
     """
 
-    mare = os.path.join(ROOT_DIR, "config/custom/form/mares.json") # json_schema file path
+    mare = ROOT_DIR / "config/custom/form/mares.json" # json_schema file path
 
     def __init__(self, form_schema):
         self.form_schema = form_schema

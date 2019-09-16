@@ -85,7 +85,7 @@ def get_site(pk):
 def get_site_jsonschema(pk):
     try:
         site = SiteModel.query.get(pk)
-        with open(site.site_type.form_schema) as json_data:
+        with site.site_type.form_schema.open() as json_data:
             data_dict = json.load(json_data)
             return data_dict, 200
     except Exception as e:
