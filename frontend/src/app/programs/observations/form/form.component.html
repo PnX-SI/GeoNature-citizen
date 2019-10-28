@@ -136,6 +136,7 @@
         ></textarea>
       </div>
 
+
       <div class="form-group col-lg-12 btn position-relative">
         <label for="photo" i18n
           ><i class="fa fa-camera"></i>Ajouter une photo</label
@@ -151,7 +152,29 @@
           capture="environment"
         />
       </div>
+       <div class="form-check col-lg-12" *ngIf="AppConfig.email_contact">
+              <input 
+                class="form-check-input"
+                type="checkbox" 
+                id="agreeContactRGPD" 
+                formControlName="agreeContactRGPD"
+                (change)=onChangeContactCheckBoxRGPD()
+              />
+              <label class="form-check-label" for="agreeContactRGPD" >{{ AppConfig.program_allow_email_contact[localeId] }}</label>
+        </div>
+        <div class="form-group form-inline col-lg-12" *ngIf="AppConfig.email_contact">
+              <label for="email" style="margin-right:5px" i18n>E-mail de contact </label>
+              <input
+                class="form-control"
+                type="text"
+                i18n-placeholder
+                placeholder="E-Mail"
+                id="email"
+                formControlName="email"
+              />
+        </div>
     </div>
+
 
     <div class="form-group col-lg-6 col-md-12 half">
       <h5 i18n>Où avez-vous observé cette espèce ?</h5>

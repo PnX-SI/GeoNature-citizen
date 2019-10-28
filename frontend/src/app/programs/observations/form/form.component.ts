@@ -122,7 +122,9 @@ export class ObsFormComponent implements AfterViewInit {
         Validators.required,
         geometryValidator()
       ]),
-      id_program: new FormControl(this.program_id)
+      id_program: new FormControl(this.program_id),
+      email: new FormControl({value:'',disabled:true}),
+      agreeContactRGPD: new FormControl(""),
     }
     //{ updateOn: "submit" }
   );
@@ -340,6 +342,11 @@ export class ObsFormComponent implements AfterViewInit {
     this.obsForm.controls["cd_nom"].patchValue(taxon.taxref["cd_nom"]);
   }
 
+  onChangeContactCheckBoxRGPD(): void{
+      this.obsForm.controls["agreeContactRGPD"].value ?  this.obsForm.controls["email"].enable() : this.obsForm.controls["email"].disable(); 
+      this.obsForm.controls["email"].setValue('');
+  };
+
   isSelectedTaxon(taxon: TaxonomyListItem): boolean {
     return this.selectedTaxon === taxon;
   }
@@ -399,7 +406,7 @@ export class ObsFormComponent implements AfterViewInit {
       .match(/\d{4}-\d{2}-\d{2}/)[0];
     formData.append("date", normDate);
 
-    for (let item of ["count", "comment", "id_program"]) {
+    for (let item of ["count", "comment", "id_program","email"]) {
       formData.append(item, this.obsForm.get(item).value);
     }
 
