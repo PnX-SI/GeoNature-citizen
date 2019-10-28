@@ -44,5 +44,6 @@ export const AppConfig = {
       "nom_vern_eng",
       "cd_nom"
     ],
+    program_list_observers_names: true,
     program_list_sort: "-timestamp_create"
 }
