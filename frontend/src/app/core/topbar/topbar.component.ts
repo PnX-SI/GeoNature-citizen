@@ -27,6 +27,7 @@ export class TopbarComponent implements OnInit {
   programs$ = new Subject<Program[]>();
   isAdmin = false;
   canDisplayAbout: boolean = AppConfig.about;
+  canSignup: boolean = AppConfig.signup;
   adminUrl: SafeUrl;
 
   constructor(

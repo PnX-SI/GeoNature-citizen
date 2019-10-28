@@ -16,6 +16,7 @@ export const AppConfig = {
       fr: "assets/cgu.pdf",
       en: "assets/termsOfUse.pdf"
     },
+    signup:true,
     platform_intro: {
       fr: "Bienvenue<br /> sur GeoNature Citizen",
       en: "Welcome<br /> on GeoNature Citizen"
