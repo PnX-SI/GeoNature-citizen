@@ -34,7 +34,7 @@
         " />
       <div class="infos">
         <h5 i18n>{{ !!o.properties.nom_francais ? o.properties.nom_francais : o.properties.taxref?.nom_vern }}</h5>
-        <p i18n>
+        <p i18n *ngIf="AppConfig.program_list_observers_names">
           Observé par
           <span>{{
             o.properties.observer?.username
