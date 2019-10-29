@@ -401,7 +401,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
       />
       <p>
         <b i18n>{{ !!data.nom_francais ? data.nom_francais : data.taxref?.nom_vern }}</b> <br />
-        <span i18n>
+        <span>
+        <span i18n *ngIf="AppConfig.program_list_observers_names">
           Observé par
           {{
             data.observer && data.observer.username
@@ -409,6 +410,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
               : "Anonyme"
           }}
           <br />
+          </span>
           le {{ data.date }}
         </span>
       </p>
