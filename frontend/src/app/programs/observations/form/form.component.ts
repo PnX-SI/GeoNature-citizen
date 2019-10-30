@@ -21,6 +21,7 @@ import {
   ViewEncapsulation
 } from "@angular/core";
 import { AppConfig } from "../../../../conf/app.config";
+import { AuthService } from "./../../../auth/auth.service";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -199,7 +200,8 @@ export class ObsFormComponent implements AfterViewInit {
     private http: HttpClient,
     private programService: GncProgramsService,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private auth: AuthService
   ) {}
 
   ngAfterViewInit() {
@@ -414,6 +416,14 @@ export class ObsFormComponent implements AfterViewInit {
       `${this.URL}/observations`,
       formData,
       httpOptions
+    );
+  }
+
+  isLoggedIn(): Observable<boolean> {
+    return this.auth.authorized$.pipe(
+      map(value => {
+        return value;
+      })
     );
   }
 
