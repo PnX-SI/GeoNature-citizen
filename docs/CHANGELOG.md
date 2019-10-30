@@ -7,13 +7,13 @@ CHANGELOG
 **🚀 New features**
 
 * Better geolocation icon (#162)
-* Allow to desactivate Signup/signin
-* Allow to add an email field in form when observer is not signed in
-* Allow to desactivate Observers names
+* Allow to desactivate Signup/signin (by @jbdesbas)
+* Allow to add an email field in form when observer is not signed in (by @jbdesbas)
+* Allow to desactivate Observers names (by @jbdesbas)
 
 **🐛 Bug fixes**
 
-* Add and fix ``ondelete``on models
+* Add and fix ``ondelete`` on models
 
 0.1.1 (2019-09-20)
 ------------------
