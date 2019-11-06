@@ -17,6 +17,7 @@ export const AppConfig = {
       en: "assets/termsOfUse.pdf"
     },
     signup:true,
+    email_contact:false,
     platform_intro: {
       fr: "Bienvenue<br /> sur GeoNature Citizen",
       en: "Welcome<br /> on GeoNature Citizen"
@@ -36,6 +37,10 @@ export const AppConfig = {
     program_add_an_observation: {
       fr: "AJOUTER UNE OBSERVATION",
       en: "CONTRIBUTE AN OBSERVATION"
+    },
+    program_allow_email_contact: {
+      fr: "J'accepte que mon adresse e-mail puisse être utilisée pour recontacter à propos de mon observation",
+      en : "I agree that my e-mail address can be used to recontact about my observation"
     },
     taxonSelectInputThreshold: 7,
     taxonAutocompleteInputThreshold: 12,
