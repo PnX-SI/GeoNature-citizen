@@ -697,3 +697,107 @@ def get_rewards(id):
         },
         200,
     )
+
+
+@routes.route("/observations/users/<int:user_id>", methods=["GET"])
+@json_resp
+def get_observations_by_user_id(user_id) :
+    try:
+        observations = (
+            db.session.query(
+                ObservationModel,
+                UserModel.username,
+                MediaModel.filename.label("image"),
+                LAreas.area_name,
+                LAreas.area_code,
+            )
+            .filter(ObservationModel.id_role == user_id, ProgramsModel.is_active)
+            .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
+            .join(
+                ProgramsModel,
+                isouter=True,
+            )
+            .join(
+                ObservationMediaModel,
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
+                isouter=True,
+            )
+            .join(
+                MediaModel,
+                ObservationMediaModel.id_media == MediaModel.id_media,
+                isouter=True,
+            )
+            .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
+        )
+
+        observations = observations.order_by(ObservationModel.timestamp_create.desc())
+        # current_app.logger.debug(str(observations))
+        observations = observations.all()
+        if current_app.config.get("API_TAXHUB") is not None:
+            taxhub_list_id = (
+                ProgramsModel.query.one().taxonomy_list
+            )
+            taxon_repository = mkTaxonRepository(taxhub_list_id)
+        features = []
+        for observation in observations:
+            feature = get_geojson_feature(observation.ObservationModel.geom)
+            feature["properties"]["municipality"] = {
+                "name": observation.area_name,
+                "code": observation.area_code,
+            }
+
+            # Observer
+            feature["properties"]["observer"] = {"username": observation.username}
+            # Observer submitted media
+            feature["properties"]["image"] = (
+                "/".join(
+                    [
+                        current_app.config["API_ENDPOINT"],
+                        current_app.config["MEDIA_FOLDER"],
+                        observation.image,
+                    ]
+                )
+                if observation.image
+                else None
+            )
+            # Municipality
+            observation_dict = observation.ObservationModel.as_dict(True)
+            for k in observation_dict:
+                if k in obs_keys and k != "municipality":
+                    feature["properties"][k] = observation_dict[k]
+
+            # TaxRef
+            if current_app.config.get("API_TAXHUB") is None:
+                taxref = Taxref.query.filter(
+                    Taxref.cd_nom == observation.ObservationModel.cd_nom
+                ).first()
+                if taxref:
+                    feature["properties"]["taxref"] = taxref.as_dict(True)
+
+                medias = TMedias.query.filter(
+                    TMedias.cd_ref == observation.ObservationModel.cd_nom
+                ).all()
+                if medias:
+                    feature["properties"]["medias"] = [
+                        media.as_dict(True) for media in medias
+                    ]
+            else:
+                try:
+                    taxon = next(
+                        taxon
+                        for taxon in taxon_repository
+                        if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+                    )
+                    feature["properties"]["nom_francais"] = taxon["nom_francais"]
+                    feature["properties"]["taxref"] = taxon["taxref"]
+                    feature["properties"]["medias"] = taxon["medias"]
+                except StopIteration:
+                    pass
+            features.append(feature)
+
+        return FeatureCollection(features)
+
+    except Exception as e:
+        raise e
+        current_app.logger.critical("[get_program_observations] Error: %s", str(e))
+        return {"message": str(e)}, 400
