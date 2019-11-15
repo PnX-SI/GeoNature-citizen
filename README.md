@@ -18,9 +18,9 @@ La collecte de données est ludifiée pour améliorer la gestion des utilisateur
 
 Portail d'inventaire participatif de la biodiversité à destination du grand public
 
-Les développements de cette première version sur dans la branche [dev](https://github.com/PnX-SI/GeoNature-citizen/tree/dev).
-
-La discussion de préfiguration du projet est [ici](https://github.com/PnX-SI/GeoNature-citizen/issues/2)
+Uilisé sur les sites : 
+- https://obs.mercantour-parcnational.fr
+- https://www.a-vos-mares.org/participez/
 
 ## Solutions logicielles
 
@@ -51,7 +51,3 @@ Au delà des fonctionnalités principales de collecte de données naturalistes o
 * [gnc_events](https://github.com/lpofredc/gnc_events) Pour afficher une liste d'évènements en lien avec la biodiversté;
 * [gnc_small_heritage](https://github.com/lpofredc/gnc_small_heritage) Pour faire l'inventaire du petit patrimoine (murs en pierre sèche, mares, arbres remarquables, etc.);
 * Des fiches de présentations des espèces (basé sur [TaxHub](https://github.com/PnX-SI/TaxHub)).
-
-# Suivi du projet du projet
-L'état d'avancement du projet est [ici](https://github.com/PnX-SI/GeoNature-citizen/projects) (à venir).
-
