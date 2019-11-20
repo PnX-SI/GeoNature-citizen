@@ -1,5 +1,7 @@
 # GeoNature-citizen
 
+Portail d'inventaire participatif de la biodiversité à destination du grand public
+
 ![logo](https://github.com/PnX-SI/GeoNature-citizen/raw/master/frontend/src/assets/logo.png)
 
 :bangbang: **Projet en cours de développement, actuellement en version beta**
@@ -15,11 +17,12 @@ It is based on a fully open Source stack from PostgreSQL to Angular.
 GeoNature-citizen est une solution web gratuite et à code source ouvert pour les projets de science citoyenne destinés à la collecte de données sur la biodiversité. L'outil est entièrement personnalisable. Votre plateforme peut être constituée d'un programme unique ou de plusieurs programmes de collecte et être basée sur une liste d'espèces existante ou adoc.
 La collecte de données est ludifiée pour améliorer la gestion des utilisateurs à l’aide de badges et de scores. Elle peut également être personnalisée pour accepter que de nouveaux utilisateurs soient créés ou non.
 
-Portail d'inventaire participatif de la biodiversité à destination du grand public
+## Cas d'utilisation
 
-Uilisé sur les sites : 
 - https://obs.mercantour-parcnational.fr
 - https://www.a-vos-mares.org/participez/
+- http://abc-meylan.lpo-aura.org/obs/home
+- http://biodiv-valenceromansagglo.lpo-aura.org
 
 ## Solutions logicielles
 
