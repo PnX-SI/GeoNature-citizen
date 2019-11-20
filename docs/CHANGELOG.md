@@ -12,6 +12,7 @@ CHANGELOG
 * Allow to desactivate Observers names (by @jbdesbas & @lpofredc)
 * Program selection style in modal similar to home page (by @lpofredc)
 * Add a CHANGELOG file (by @camillemonchicourt)
+* Add demo link into README.md
 
 **🐛 Some fixes**
 
