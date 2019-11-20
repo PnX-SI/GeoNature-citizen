@@ -1,6 +1,6 @@
 # GeoNature-citizen
 
-Portail d'inventaire participatif de la biodiversité à destination du grand public
+Portail d'inventaire participatif de la biodiversité à destination du grand public ([**Démo**](http://democitizen.geonature.fr))
 
 ![logo](https://github.com/PnX-SI/GeoNature-citizen/raw/master/frontend/src/assets/logo.png)
 
