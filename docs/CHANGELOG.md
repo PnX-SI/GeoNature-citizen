@@ -1,19 +1,22 @@
 CHANGELOG
 =========
 
-0.2.0 (unreleased)
+0.2.0 (2019-11-20)
 ------------------
 
 **🚀 New features**
 
 * Better geolocation icon (#162)
 * Allow to desactivate Signup/signin (by @jbdesbas)
-* Allow to add an email field in form when observer is not signed in (by @jbdesbas)
-* Allow to desactivate Observers names (by @jbdesbas)
+* Allow to add an optional email field in form when observer is not signed in (by @jbdesbas)
+* Allow to desactivate Observers names (by @jbdesbas & @lpofredc)
+* Program selection style in modal similar to home page (by @lpofredc)
+* Add a CHANGELOG file (by @camillemonchicourt)
 
-**🐛 Bug fixes**
+**🐛 Some fixes**
 
 * Add and fix ``ondelete`` on models
+* Update README.md (new screenshots, update project details)
 
 0.1.1 (2019-09-20)
 ------------------
