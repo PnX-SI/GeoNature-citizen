@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Observable, BehaviorSubject, Subscription } from "rxjs";
 
 import {
   NgbModal,
@@ -24,6 +25,7 @@ export const MODAL_DEFAULTS: NgbModalOptions = {
 })
 export class ModalFlowService extends FlowService {
   modalRef: NgbModalRef;
+  private modalCloseStatus: BehaviorSubject<string> = new BehaviorSubject(null);
 
   constructor(private modalService: NgbModal) {
     super();
@@ -55,8 +57,6 @@ export class ModalFlowService extends FlowService {
     );
   }
 
-  next_(data) {}
-
   close(data) {
     this.modalRef.close(data);
   }
@@ -71,5 +71,13 @@ export class ModalFlowService extends FlowService {
       new FlowItem(CongratsComponent, { ...initialState, service: this }),
       new FlowItem(RewardComponent, { ...initialState, service: this })
     ];
+  }
+
+  getModalCloseSatus(): Observable<string> {
+    return this.modalCloseStatus.asObservable();
+  }
+
+  setModalCloseSatus(type: "updateObs" | "newObs" | null) {
+    this.modalCloseStatus.next(type);
   }
 }
