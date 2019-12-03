@@ -30,6 +30,7 @@
     "@ng-bootstrap/ng-bootstrap": "^5.1.0",
     "@nguniversal/express-engine": "^8.1.1",
     "@nguniversal/module-map-ngfactory-loader": "8.1.1",
+    "@swimlane/ngx-datatable": "^16.0.2",
     "bootstrap": "^4.3.1",
     "core-js": "^3.2.1",
     "domino": "^2.1.3",

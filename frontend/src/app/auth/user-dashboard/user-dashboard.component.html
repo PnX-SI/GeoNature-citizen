@@ -3,18 +3,45 @@
     <div class="col-lg-12">
       <div class="row">
         <div class="user"></div>
-        <div class="user-infos" (click)="editInfos(personalInfos)">
+        <div class="user-infos">
           <span i18n>{ +stats?.platform_attendance, plural, =0 { aucune observation} =1
             {une observation} other
             {{{stats?.platform_attendance}} observations} }</span>
           <img src="assets/user.jpg" />
-          <p>{{ username }} <i class="fa fa-pencil"></i></p>
+          <p (click)="onEditInfos(personalInfos)">{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>
-      <section id="badges">
-        <h3 i18n>Vos badges</h3>
+      <div id="myObs" class="container">
+        <h3 class="title" i18n>Mes observations</h3>
+        <ngx-datatable *ngIf="observations" class="material" [rows]="rows" [headerHeight]="40" [footerHeight]="40"
+          [limit]="7" [rowHeight]="'auto'" [reorderable]="reorderable" [selectionType]="'single'">
+          <ngx-datatable-column name="Photo" prop="media_url">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <img class="main-photo img-fluid" src="{{row.media_url}}" alt="">
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Espèce" prop="taxref" width="400">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{row.taxref.nom_complet}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Date" prop="date">
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Lieu" prop="municipality" width="200">
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Programme" prop="program" width="200">
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Editer" >
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <app-modalflow [coords]="row.coords" [updateData]="row" [program_id]="row.program_id"></app-modalflow>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+      <div id="badges" class="container">
+        <h3 class="title" i18n>Mes badges</h3>
         <div *ngIf="main_badges" class="inner-row">
-          <h5>Récompenses géneral</h5>
+          <h5 i18n>Récompenses géneral</h5>
           <div class="row">
             <img *ngFor="let m_badge of main_badges" [src]="AppConfig.API_ENDPOINT + m_badge.url"
               [alt]="m_badge.type + m_badge.name" [ngbTooltip]="m_badge.reward_label +' '+ m_badge.name" />
@@ -34,16 +61,19 @@
               [alt]="r_badge.type + r_badge.name" [ngbTooltip]="r_badge.reward_label +' '+ r_badge.name" />
           </div>
         </div>
-      </section>
+      </div>
 
-      <section class="personal-data row">
-        <button class="btn-big col-lg-3 col-md-5 col-sm-12" (click)="exportPersonalData()" i18n>
+      <div class="personal-data row">
+        <button class="btn-big col-lg-3 col-md-5 col-sm-12 export" (click)="onExportPersonalData()" i18n>
           <i class="fa fa-download"></i>Exporter mes données personnelles
         </button>
-        <button class="btn-big col-lg-3 col-md-5 col-sm-12" (click)="deletePersonalData()" i18n>
+        <button class="btn-big col-lg-3 col-md-5 col-sm-12 export" (click)="onExportObservations()" i18n>
+          <i class="fa fa-download"></i>Exporter mes observations
+        </button>
+        <button class="btn-big btn-danger col-lg-3 col-md-5 col-sm-12" (click)="onDeletePersonalData()" i18n>
           <i class="fa fa-trash"></i>Supprimer mes données personnelles
         </button>
-      </section>
+      </div>
     </div>
   </div>
 </div>
@@ -141,3 +171,9 @@
     </form>
   </div>
 </ng-template>
+
+<div *ngIf="!observations" id="spinner">
+  <div class="loader-1"></div>
+  <div class="loader-2"></div>
+  <div class="loader-3"></div>
+</div>

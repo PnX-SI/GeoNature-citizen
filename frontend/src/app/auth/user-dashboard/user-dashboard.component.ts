@@ -1,15 +1,15 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, Subject, throwError } from "rxjs";
+import { throwError, forkJoin } from "rxjs";
 import { tap, catchError } from "rxjs/operators";
-
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-
 import { AppConfig } from "../../../conf/app.config";
 import { AuthService } from "./../auth.service";
-
+import { UseService } from "./user.service.service";
 import { saveAs } from "file-saver";
+import * as _ from "lodash";
+import { Point } from "leaflet";
+import { ModalFlowService } from "src/app/programs/observations/modalflow/modalflow.service";
 
 @Component({
   selector: "app-user-dashboard",
@@ -17,9 +17,6 @@ import { saveAs } from "file-saver";
   styleUrls: ["./user-dashboard.component.css"]
 })
 export class UserDashboardComponent implements OnInit {
-  private headers: HttpHeaders = new HttpHeaders({
-    "Content-Type": "application/json"
-  });
   readonly AppConfig = AppConfig;
   modalRef: NgbModalRef;
   username: string = "not defined";
@@ -31,32 +28,35 @@ export class UserDashboardComponent implements OnInit {
   main_badges: any = [];
   programs_badges: any = [];
   recognition_badges: any = [];
+  observations: any;
+  rows: any = [];
+  obsToExport: any = [];
 
   constructor(
     private auth: AuthService,
-    private http: HttpClient,
+    private userService: UseService,
     private router: Router,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private flowService: ModalFlowService
   ) {}
 
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
-    console.debug("dashboard", access_token);
     if (access_token) {
       this.auth
         .ensureAuthorized()
         .pipe(
           tap(user => {
-            console.debug("user:", user);
             if (user && user["features"] && user["features"]["id_role"]) {
               this.isLoggedIn = true;
               this.username = user["features"]["username"];
               this.stats = user["features"]["stats"];
               this.role_id = user["features"]["id_role"];
               // FIXME: source backend conf
-              if (AppConfig["REWARDS"]) {
-                this.getBadgeCategories();
-              }
+              this.getData();
+              this.flowService.getModalCloseSatus().subscribe(status => {
+                if (status === "updateObs") this.getData();
+              });
             }
           }),
           catchError(err => throwError(err))
@@ -65,7 +65,84 @@ export class UserDashboardComponent implements OnInit {
     }
   }
 
-  deletePersonalData() {
+  getData() {
+    let data = [];
+    this.rows = [];
+    this.obsToExport = [];
+    this.observations = null;
+    this.badges = null;
+    this.main_badges = [];
+    this.programs_badges = [];
+    this.recognition_badges =[];
+    let badgeCategories = this.userService.getBadgeCategories(this.role_id);
+    let userObservations = this.userService.getObservationsByUserId(
+      this.role_id
+    );
+    if (AppConfig["REWARDS"]) {
+      data.push(badgeCategories);
+    }
+    data.push(userObservations);
+
+    forkJoin(data).subscribe((data: any) => {
+      if (data.length > 1) {
+        this.badges = data[0];
+        localStorage.setItem("badges", JSON.stringify(this.badges));
+        this.badges.forEach(badge => {
+          if (badge.type == "all_attendance" || badge.type == "seniority")
+            this.main_badges.push(badge);
+          if (badge.type == "program_attendance")
+            this.programs_badges.push(badge);
+          if (badge.type == "recognition") this.recognition_badges.push(badge);
+        });
+        this.observations = data[1].features;
+        this.observations.forEach(obs => {
+          let coords: Point = new Point(
+            obs.geometry.coordinates[0],
+            obs.geometry.coordinates[1]
+          );
+          this.obsToExport.push({
+            id_observation: obs.properties.id_observation,
+            date: obs.properties.date,
+            program: obs.properties.program_title,
+            count: obs.properties.count,
+            comment: obs.properties.comment,
+            municipality: obs.properties.municipality.name,
+            taxref: obs.properties.taxref.nom_complet,
+          })
+          this.rows.push({
+            media_url:
+              obs.properties.images && !!obs.properties.images.length
+                ? AppConfig.API_ENDPOINT + "/media/" + obs.properties.images[0]
+                : obs.properties.image
+                ? obs.properties.image
+                : obs.properties.medias && !!obs.properties.medias.length
+                ? AppConfig.API_TAXHUB +
+                  "/tmedias/thumbnail/" +
+                  obs.properties.medias[0].id_media +
+                  "?h=80&v=80"
+                : "assets/default_image.png",
+            taxref: obs.properties.taxref,
+            date: obs.properties.date,
+            municipality: obs.properties.municipality.name,
+            program_id: obs.properties.id_program,
+            program: obs.properties.program_title,
+            count: obs.properties.count,
+            comment: obs.properties.comment,
+            id_observation: obs.properties.id_observation,
+            taxon: {
+              media: obs.properties.media,
+              taxref: obs.properties.taxref
+            },
+            coords: coords
+          });
+        });
+      } else {
+        this.observations = data[0].features;
+      }
+    });
+  }
+
+  onDeletePersonalData() {
     const access_token = localStorage.getItem("access_token");
     this.auth
       .selfDeleteAccount(access_token)
@@ -82,13 +159,8 @@ export class UserDashboardComponent implements OnInit {
       .catch(err => console.log("err", err));
   }
 
-  getPersonalInfo(): Observable<any> {
-    let url = `${AppConfig.API_ENDPOINT}/user/info`;
-    return this.http.get(url, { headers: this.headers });
-  }
-
-  exportPersonalData() {
-    this.getPersonalInfo().subscribe(data => {
+  onExportPersonalData() {
+    this.userService.getPersonalInfo().subscribe(data => {
       let blob = new Blob([JSON.stringify(data)], {
         type: "text/plain;charset=utf-8"
       });
@@ -98,8 +170,14 @@ export class UserDashboardComponent implements OnInit {
     });
   }
 
-  editInfos(content): void {
-    this.getPersonalInfo().subscribe(data => {
+  onExportObservations() {
+  let csv_str = this.userService.ConvertToCSV(this.obsToExport, ['id_observation','taxref','date','program', 'count', 'comment', 'municipality'])
+  let blob = new Blob([csv_str], {type: 'text/csv' })
+  saveAs(blob, "mydata.csv");
+  }
+
+  onEditInfos(content): void {
+    this.userService.getPersonalInfo().subscribe(data => {
       this.personalInfo = data;
       this.modalRef = this.modalService.open(content, {
         size: "lg",
@@ -108,44 +186,14 @@ export class UserDashboardComponent implements OnInit {
     });
   }
 
-  onUpdatePersonalData(): void | Error {
-    this.http
-      .post(`${AppConfig.API_ENDPOINT}/user/info`, this.personalInfo, {
-        headers: this.headers
-      })
-      .pipe(
-        catchError(error => {
-          //window.alert(error);
-          return throwError(error);
-        })
-      )
-      .subscribe(() => {
-        this.modalRef.close();
-      });
+  onUpdatePersonalData() {
+    this.userService.updatePersonalData(this.personalInfo).subscribe(() => {
+      this.modalRef.close();
+    });
   }
 
-  getBadgeCategories() {
-    this.http
-      .get<Object>(`${AppConfig.API_ENDPOINT}/rewards/${this.role_id}`)
-      .subscribe(
-        rewards => {
-          this.badges = rewards;
-          localStorage.setItem("badges", JSON.stringify(this.badges));
-          this.badges.forEach(badge => {
-            if (badge.type == "all_attendance" || badge.type == "seniority")
-              this.main_badges.push(badge);
-            if (badge.type == "program_attendance")
-              this.programs_badges.push(badge);
-            if (badge.type == "recognition")
-              this.recognition_badges.push(badge);
-          });
-        },
-        err => {
-          throwError(err);
-        }
-      );
-  }
   ngOnDestroy(): void {
-    if (this.modalRef) this.modalRef.close()    
+    if (this.modalRef) this.modalRef.close();
+    this.flowService.setModalCloseSatus(null)
   }
 }

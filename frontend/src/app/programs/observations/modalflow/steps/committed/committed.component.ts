@@ -11,7 +11,7 @@ import { ObservationFeature } from "../../../observation.model";
 })
 export class CommittedComponent implements IFlowComponent {
   @Input() data: any;
-  @ViewChild(ObsFormComponent, {static: true}) form: ObsFormComponent;
+  @ViewChild(ObsFormComponent, { static: true }) form: ObsFormComponent;
 
   onNewObservation(observation: ObservationFeature) {
     if (observation) {
@@ -30,5 +30,9 @@ export class CommittedComponent implements IFlowComponent {
 
   committed() {
     this.form.onFormSubmit();
+  }
+
+  onUdpdateObs() {
+    this.form.onFormUpdate();
   }
 }
