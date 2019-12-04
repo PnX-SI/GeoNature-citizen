@@ -1,23 +1,20 @@
 <!-- Ajouter une observation -->
 <div class="modal-header">
-  <h4 class="modal-title" i18n>AJOUTER UNE OBSERVATION</h4>
+  <h4 *ngIf="!data.updateData" class="modal-title" i18n>AJOUTER UNE OBSERVATION</h4>
+  <h4 *ngIf="data.updateData" class="modal-title" i18n>MODIFIER L'OBSERVATION</h4>
 </div>
 
 <div class="modal-body add-obs pb-0">
-  <app-obs-form
-    [coords]="data.coords"
-    (newObservation)="onNewObservation($event)"
-  ></app-obs-form>
+  <app-obs-form [data]="data" (newObservation)="onNewObservation($event)"></app-obs-form>
 </div>
 
 <div class="modal-footer">
-  <button
-    type="submit"
-    [disabled]="!form.obsForm.valid"
-    class="btn btn-default btn-big btn-outline-primary rounded-0"
-    (click)="committed()"
-    i18n="Valider l'observation"
-  >
+  <button *ngIf="!data.updateData" type="submit" [disabled]="!form.obsForm.valid"
+    class="btn btn-default btn-big btn-outline-primary rounded-0" (click)="committed()" i18n="Valider l'observation">
     Valider l'observation
+  </button>
+  <button *ngIf="data.updateData" type="submit" [disabled]="!form.obsForm.valid"
+    class="btn btn-default btn-big btn-outline-primary rounded-0" (click)="onUdpdateObs()" i18n="Valider l'observation">
+    Modifier l'observation
   </button>
 </div>

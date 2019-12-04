@@ -2,7 +2,6 @@ section {
     width: 100%;
     min-height: 70vh;
     position: relative;
-    margin-bottom: 20px;
 }
 
 .section:before {
@@ -32,7 +31,8 @@ section {
     background: url(../../assets/background.jpg) no-repeat;
     background-size: cover;
     position: relative;
-    height: calc(100vh - 113px);
+    height: calc(100vh - var(--router-outlet-margin-top));
+    margin-top: var(--router-outlet-margin-top);
 }
 
 #welcome:before {
@@ -214,11 +214,11 @@ section {
     bottom: 0;
     display: flex;
     align-items: center;
-    max-width: 60%;
+    max-width: 40%;
 }
 
 #slider .carousel-text {
-    background-color: #fff;
+    background-color: #eeeeeecf;
     padding: 35px 20px 35px 35px;
     min-width: 450px;
     max-height: 80%;
@@ -232,6 +232,8 @@ section {
     max-height: 50%;
     overflow-y: auto;
     margin-bottom: 1em;
+    color: black;
+    font-size: 14px
 }
 
 #slider .carousel-text h3 {
@@ -242,10 +244,10 @@ section {
 #slider .carousel-text>p {
     font-style: italic;
     font-size: 14px;
+    color: black;
 }
 
 #slider .carousel-text a {
-    background-color: var(--secondary);
     width: fit-content;
     text-align: center;
     margin: 0 auto;
@@ -640,4 +642,119 @@ app-observations {
     .programs .text-center img {
         margin-bottom: 15px;
     }
+}
+
+
+.panel-container {
+  padding-top: 20px;
+}
+.panel {
+  margin: 20px 0;
+  background-color: #fff;
+  border: 1px solid transparent;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.no-padding {
+  padding: 0;
+  margin: 0;
+}
+
+.panel-widget {
+  padding: 10px 0;
+  position: relative;
+  box-shadow: none;
+  border-radius: 0;
+  background: none;
+  text-align: center;
+  color: #333;
+}
+
+.panel-widget .text-muted {
+  margin-top: -6px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.8em;
+}
+
+.panel-widget .large {
+  color: #373b45;
+  font-size: 3em;
+}
+
+.panel-heading {
+  padding: 10px 15px;
+  border-bottom: 1px solid transparent;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 0.025em;
+  height: 60px;
+  line-height: 38px;
+}
+
+.title-spaced {
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 0.025em;
+  height: 60px;
+  line-height: 38px;
+}
+.falsy-btn {
+  padding-right: 5px;
+  padding-left: 5px;
+  border-color: black;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.panel-body {
+  padding: 15px;
+}
+
+.panel-default .panel-heading {
+  background: #fff;
+  border-bottom: 1px solid #e9ecf2;
+  color: #444444;
+}
+
+.panel-default > .panel-heading {
+  color: #333;
+  border-color: #ddd;
+}
+
+.text-muted {
+  color: #c5c7cc;
+}
+
+.fa-xl {
+  font-size: 3em;
+}
+
+.large {
+  font-size: 2em;
+}
+
+.color-blue {
+  color: #30a5ff;
+}
+
+.color-orange {
+  color: #ffb53e;
+}
+
+.color-teal {
+  color: #1ebfae;
+}
+
+.color-gray {
+  color: #6e7579;
+}
+
+.float-right {
+  float: right;
+}
+
+.general-stat{
+    background-color: white;
 }

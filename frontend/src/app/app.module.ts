@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { registerLocaleData } from "@angular/common";
 
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { AppComponent } from "./app.component";
 import { routing } from "./app.routing";
@@ -56,6 +57,7 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
     FormsModule,
     NgbModule,
+    NgxDatatableModule,
     CommonModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(

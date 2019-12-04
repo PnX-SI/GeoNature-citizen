@@ -56,6 +56,10 @@
   height: auto;
   margin: 0 auto;
   border-radius: 50%;
+ 
+    fill: red;
+  
+  
 }
 
 .user-infos p {
@@ -72,29 +76,34 @@
   margin-top: 30px;
 }
 
-#badges h3 {
+section h3 {
   text-align: center;
   font-weight: normal;
   text-transform: uppercase;
 }
 
-#badges div {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: start;
-  padding: 20px;
+#badges .inner-row {
+  padding: 8px 10px;
   background: #f3f3f3;
   border: solid 3px #fff;
 }
 
 #badges div img {
-  margin: 20px 10px;
+  margin: 2px 10px;
   width: 70px;
   height: 70px;
 }
 
-/* DONNEES PERSO */
+.main-photo {
+  margin-left: -14px;
+  object-fit: cover;
+  min-width: 140px !important;
+  max-width: 140px !important;
+  height: 100px;
 
+}
+
+/* DONNEES PERSO */
 .personal-data {
   margin: 20px 0px;
   display: flex;
@@ -108,10 +117,13 @@
 
 .personal-data button {
   font-size: 16px;
-  background: var(--primary);
   padding: 10px 30px;
   margin: 10px 25px;
   max-height: 115px;
+}
+
+.personal-data button.export {
+  background: var(--primary);
 }
 
 .personal-data button i {
@@ -119,16 +131,21 @@
 }
 
 #badges .row {
-  padding: 0px;
+  padding: 0px 10px;
 }
 
-form > button {
+form>button {
   background: var(--primary);
   padding: 10px 30px;
   margin: 0 auto;
   max-height: 115px;
   width: fit-content;
   display: block;
+}
+
+app-modalflow {
+  position: relative;
+  display: contents;
 }
 
 /* MODIF DATA */
@@ -153,6 +170,25 @@ form > button {
   margin: 0;
 }
 
+.title {
+  padding-top: 50px;
+  padding-bottom: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 22px;
+  font-weight: 600;
+  color: #626262
+}
+
+.title::before,
+.title::after {
+  display: inline-block;
+  content: "";
+  border-top: 1px solid #b1b0b0;
+  width: 6rem;
+  margin: 0 1rem;
+  transform: translateY(-8px);
+}
 /* @media screen and (min-width: 992px) {
   #badges .row div:nth-child(2):before {
     content: " ";
@@ -175,7 +211,9 @@ form > button {
     transform: translateY(-50%);
   }
 } */
-
+.danger{
+  color: red;
+}
 @media screen and (max-width: 991px) {
   #badges .row div:nth-child(2):before {
     content: " ";
@@ -185,6 +223,7 @@ form > button {
     height: 2px;
     width: 60%;
   }
+
   #badges .row div:nth-child(2):after {
     content: " ";
     background-color: #333;
@@ -199,4 +238,35 @@ form > button {
   .personal-data button {
     width: 100% !important;
   }
+}
+
+.avatar-main-wrapper {
+  position: relative;
+  height: 160px;
+  width: 160px;
+  border-radius: 50%;
+  margin-top: 8px;
+  overflow: hidden;
+  box-shadow: 1px 1px 15px -5px black;
+  transition: all .3s ease;
+}
+
+.avatar-main-wrapper .profile-pic {
+  height: 100%;
+  width: 100%;
+  transition: all .3s ease;
+}
+
+.avatar-main-wrapper .profile-pic:after {
+  font-family: FontAwesome;
+  content: "\f007";
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  font-size: 140px;
+  background: #ecf0f1;
+  color: #34495e;
+  text-align: center;
 }

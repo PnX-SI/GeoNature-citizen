@@ -36,6 +36,7 @@ global["navigator"] = mock.getNavigator();
 global["branch"] = null;
 global["object"] = win.object;
 global["HTMLElement"] = win.HTMLElement;
+global["HTMLAnchorElement"] = win.HTMLAnchorElement;
 global["DOMTokenList"] = win.DOMTokenList;
 global["Node"] = win.Node;
 global["Text"] = win.Text;

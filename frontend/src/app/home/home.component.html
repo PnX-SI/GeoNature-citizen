@@ -8,6 +8,42 @@
         </a>
     </section>
 </div>
+
+<div *ngIf="stats" class="row row-0 general-stat">
+    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+      <div class="panel panel-teal panel-widget border-right">
+        <div class="no-padding"><em class="fa fa-xl fa-search color-blue"></em>
+          <div class="large">{{stats.nb_obs}}</div>
+          <div class="text-muted" i18n>Observations</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+      <div class="panel panel-blue panel-widget border-right">
+        <div class="no-padding"><em class="fa fa-xl fa fa-leaf color-orange"></em>
+          <div class="large">{{stats.nb_espece}}</div>
+          <div class="text-muted" i18n>Espèces</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+      <div class="panel panel-orange panel-widget border-right">
+        <div class="no-padding"><em class="fa fa-xl fa-users color-teal"></em>
+          <div class="large">{{stats.nb_user}}</div>
+          <div class="text-muted" i18n> Observateurs </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+      <div class="panel panel-red panel-widget ">
+        <div class="no-padding"><em class="fa fa-xl fa fas fa-share-alt color-gray"></em>
+          <div class="large">{{stats.nb_program}}</div>
+          <div class="text-muted" i18n>Programmes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <div class="row">
     <!-- LES PROGRAMMES -->
     <section id="programs" *ngIf="programs.length > 1">
@@ -25,19 +61,16 @@
                                       : 'url(' + 'assets/prog1.jpg' + ')',
                                     'background-size': 'cover'
                                   }"></div>
-
                                 <h5 class="card-title">
                                     {{ p.title }}&nbsp; <span class="badge badge-info"> </span>
                                 </h5>
                                 <p class="short_desc" [innerHTML]="p.html_short_desc"></p>
-
                                 <!-- <a class="btn-big" [routerLink]="['/programs', p.id_program, 'observations']">{{ AppConfig.platform_participate[localeId] }}
                               </a> -->
                                 <div class="overlay">
                                     <p class="overlay-text">{{ AppConfig.platform_participate[localeId] }}</p>
                                 </div>
                             </div>
-
                         </a>
                     </div>
                 </div>

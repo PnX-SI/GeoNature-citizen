@@ -1,14 +1,15 @@
 <div id="mapList">
   <div class="toolbar">
-    <select class="form-control rounded-0" id="inputSpecies" [(ngModel)]="selectedTaxon" (ngModelChange)="onFilterChange()">
+    <select class="form-control rounded-0" id="inputSpecies" [(ngModel)]="selectedTaxon"
+      (ngModelChange)="onFilterChange()">
       <option [ngValue]="null" i18n>Toutes espèces</option>
       <option *ngFor="let s of surveySpecies" [ngValue]="s" i18n>
-        {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }} (<i>{{ s.taxref?.nom_complet }}</i
-        >)
+        {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }} (<i>{{ s.taxref?.nom_complet }}</i>)
       </option>
     </select>
 
-    <select id="municipality" name="municipality" type="text" class="form-control rounded-0 col-lg-6" [(ngModel)]="selectedMunicipality" (ngModelChange)="onFilterChange()">
+    <select id="municipality" name="municipality" type="text" class="form-control rounded-0 col-lg-6"
+      [(ngModel)]="selectedMunicipality" (ngModelChange)="onFilterChange()">
       <option [ngValue]="null" i18n>Toutes communes</option>
       <option *ngFor="let t of municipalities" [ngValue]="t">{{
         t?.name || "?"
@@ -17,11 +18,13 @@
   </div>
   <div class="obs-found">
     <p i18n>
-      {{ (features$ | async)?.length }} { +(features$ | async)?.length, plural, =0 { observation trouvée } =1 { observation trouvée !} other { observations trouvées !} }
+      {{ (features$ | async)?.length }} { +(features$ | async)?.length, plural, =0 { observation trouvée } =1 {
+      observation trouvée !} other { observations trouvées !} }
     </p>
   </div>
   <div id="list">
-    <div *ngFor="let o of (features$ | async); trackBy: trackByObs" class="espece obs-{{ o.properties.id_observation }}" (click)="onObsClick(o)">
+    <div *ngFor="let o of (features$ | async); trackBy: trackByObs" class="espece obs-{{ o.properties.id_observation }}"
+      (click)="onObsClick(o)">
       <!-- FIXME: hardcoded api media endpoint -->
       <img class="default-img" [src]="
           o.properties.images && !!o.properties.images.length
@@ -34,7 +37,7 @@
         " />
       <div class="infos">
         <h5 i18n>{{ !!o.properties.nom_francais ? o.properties.nom_francais : o.properties.taxref?.nom_vern }}</h5>
-        <p i18n>
+        <p i18n *ngIf="AppConfig.program_list_observers_names">
           Observé par
           <span>{{
             o.properties.observer?.username
@@ -45,9 +48,11 @@
         <p i18n>
           le <span>{{ o.properties.date }}</span>
           <span *ngIf="o.properties.municipality?.name">
-            à {{ o.properties.municipality?.name }}</span
-          >
+            à {{ o.properties.municipality?.name }}</span>
         </p>
+        <a class="btn-detail-espece" href="{{AppConfig.details_espece_url + o.properties.cd_nom}}" target="_blank" i18n>
+          En savoir plus <i class="fa fa-chevron-right"></i>
+        </a>
       </div>
       <div class="hide"><img src="assets/binoculars.png" /></div>
     </div>

@@ -14,26 +14,15 @@ import { AppConfig } from "../../../../conf/app.config";
 
 @Component({
   selector: "app-modalflow",
-  template: `
-    <div class="btn-group">
-      <button
-        class="btn-big text-center text-nowrap text-uppercase"
-        (click)="clicked()"
-      >
-        {{ AppConfig.program_add_an_observation[localeId] }}
-      </button>
-      <!-- <button class="btn-big">Réaliser un programme</button> -->
-    </div>
-    <ng-template #content>
-      <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>
-    </ng-template>
-  `,
+  templateUrl: "./modalflow.component.html",
   styleUrls: ["./modalflow.component.css"],
   encapsulation: ViewEncapsulation.None
 })
 export class ModalFlowComponent {
   @Input("coords") coords;
-  @ViewChild("content") content: ElementRef;
+  @Input("program_id") program_id;
+  @Input("updateData") updateData;
+  @ViewChild("content", { static: true }) content: ElementRef;
   AppConfig = AppConfig;
   flowitems: FlowItem[];
   timeout: any;
@@ -44,7 +33,11 @@ export class ModalFlowComponent {
   ) {}
 
   clicked() {
-    this.flowitems = this.flowService.getFlowItems({ coords: this.coords });
+    this.flowitems = this.flowService.getFlowItems({
+      coords: this.coords,
+      program_id: this.program_id,
+      updateData: this.updateData
+    });
     this.flowService.open(this.content);
   }
 

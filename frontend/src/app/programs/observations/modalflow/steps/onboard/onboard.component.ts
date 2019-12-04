@@ -13,6 +13,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { IFlowComponent } from "../../flow/flow";
 import { RegisterComponent } from "../../../../../auth/register/register.component";
 import { LoginComponent } from "../../../../../auth/login/login.component";
+import { AppConfig } from "../../../../../../conf/app.config";
 import { AuthService } from "../../../../../auth/auth.service";
 
 @Component({
@@ -25,8 +26,8 @@ export class OnboardComponent implements IFlowComponent, OnInit {
   LoginModalRef: NgbModalRef;
   timeout: any;
   @Input("data") data: any;
-  @ViewChild("RegisterComponent") RegisterComponent: ElementRef;
-  @ViewChild("LoginComponent") LoginComponent: ElementRef;
+  @ViewChild("RegisterComponent", {static: true}) RegisterComponent: ElementRef;
+  @ViewChild("LoginComponent", {static: true}) LoginComponent: ElementRef;
 
   constructor(
     private modalService: NgbModal,
@@ -38,6 +39,9 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     this.authService.authorized$.subscribe(value => {
       if (value) {
         this.timeout = setTimeout(() => this.data.next(), 0);
+      }
+      if (!AppConfig.signup) { 
+        this.data.next(); 
       }
     });
   }

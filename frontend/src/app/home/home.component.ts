@@ -6,6 +6,7 @@ import { Meta, SafeHtml, DomSanitizer } from "@angular/platform-browser";
 import { AppConfig } from "../../conf/app.config";
 import { ProgramsResolve } from "../programs/programs-resolve.service";
 import { Program } from "../programs/programs.models";
+import { ObservationsService } from "../programs/observations/observations.service";
 
 @Component({
   selector: "app-home",
@@ -21,11 +22,13 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   platform_intro: SafeHtml;
   AppConfig = AppConfig;
   htmlContent: SafeHtml;
+  stats: Object;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
     private meta: Meta,
+    private observationsService: ObservationsService,
     protected domSanitizer: DomSanitizer,
     protected http: HttpClient
   ) {}
@@ -33,6 +36,9 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
     this.route.data.subscribe((data: { programs: Program[] }) => {
       this.programs = data.programs;
+      this.observationsService.getStat().subscribe(
+        (stats) => this.stats=stats
+      )
     });
     this.route.fragment.subscribe(fragment => {
       this.fragment = fragment;

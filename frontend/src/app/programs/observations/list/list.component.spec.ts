@@ -19,7 +19,6 @@ describe('ObsListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgbModule.forRoot(),
         HttpClientTestingModule,
         RouterTestingModule,],
       providers: [

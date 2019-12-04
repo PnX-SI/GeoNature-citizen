@@ -3,127 +3,125 @@
     <div class="col-lg-12">
       <div class="row">
         <div class="user"></div>
-        <div class="user-infos" (click)="editInfos(personalInfos)">
-          <span i18n
-            >{ +stats?.platform_attendance, plural, =0 { aucune observation} =1
+        <div class="user-infos">
+          <span i18n>{ +stats?.platform_attendance, plural, =0 { aucune observation} =1
             {une observation} other
-            {{{stats?.platform_attendance}} observations} }</span
-          >
-          <img src="assets/user.jpg" />
-          <p>{{ username }} <i class="fa fa-pencil"></i></p>
+            {{{stats?.platform_attendance}} observations} }</span>
+            <div class="avatar-main-wrapper">
+          <img class="profile-pic" [src]="userAvatar" (click)="onEditInfos(personalInfos)" />
+          </div>
+          <p (click)="onEditInfos(personalInfos)">{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>
-      <section id="badges">
-        <h3 i18n>Vos badges</h3>
-        <div class="row">
-          <div
-            *ngFor="let category of (badges$ | async)"
-            class="col-lg-4 col-sm-12"
-          >
-            <img
-              *ngFor="let b of category"
-              [src]="AppConfig.API_ENDPOINT + b.img"
-              [alt]="b.alt"
-              [ngbTooltip]="b.alt"
-            />
+      <div id="myObs" class="container">
+        <h3 class="title" i18n>Mes observations</h3>
+        <ngx-datatable *ngIf="observations" class="material" [rows]="rows" [headerHeight]="40" [footerHeight]="40"
+          [limit]="7" [rowHeight]="'auto'" [reorderable]="reorderable" [selectionType]="'single'">
+          <ngx-datatable-column name="Photo" prop="media_url">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <img class="main-photo img-fluid" src="{{row.media_url}}" alt="">
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Espèce" prop="taxref" width="400">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{row.taxref.nom_complet}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Date" prop="date">
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Lieu" prop="municipality" width="200">
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Programme" prop="program" width="200">
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Editer">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <app-modalflow [coords]="row.coords" [updateData]="row" [program_id]="row.program_id"></app-modalflow>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+      <div id="badges" class="container">
+        <h3 class="title" i18n>Mes badges</h3>
+        <div *ngIf="main_badges" class="inner-row">
+          <h5 i18n>Récompenses géneral</h5>
+          <div class="row">
+            <img *ngFor="let m_badge of main_badges" [src]="AppConfig.API_ENDPOINT + m_badge.url"
+              [alt]="m_badge.type + m_badge.name" [ngbTooltip]="m_badge.reward_label +' '+ m_badge.name" />
           </div>
         </div>
-      </section>
+        <div *ngIf="programs_badges" class="inner-row">
+          <h5>Récompenses par programmes</h5>
+          <div class="row">
+            <img *ngFor="let p_badge of programs_badges" [src]="AppConfig.API_ENDPOINT + p_badge.url"
+              [alt]="p_badge.type + p_badge.name" [ngbTooltip]="p_badge.reward_label +' '+ p_badge.name" />
+          </div>
+        </div>
+        <div *ngIf="recognition_badges" class=" inner-row">
+          <h5>Récompenses d'identification d'espèces</h5>
+          <div class="row">
+            <img *ngFor="let r_badge of recognition_badges" [src]="AppConfig.API_ENDPOINT + r_badge.url"
+              [alt]="r_badge.type + r_badge.name" [ngbTooltip]="r_badge.reward_label +' '+ r_badge.name" />
+          </div>
+        </div>
+      </div>
 
-      <section class="personal-data row">
-        <button
-          class="btn-big col-lg-3 col-md-5 col-sm-12"
-          (click)="exportPersonalData()"
-          i18n
-        >
+      <div class="personal-data row">
+        <button class="btn-big col-lg-3 col-md-5 col-sm-12 export" (click)="onExportPersonalData()" i18n>
           <i class="fa fa-download"></i>Exporter mes données personnelles
         </button>
-        <button
-          class="btn-big col-lg-3 col-md-5 col-sm-12"
-          (click)="deletePersonalData()"
-          i18n
-        >
+        <button class="btn-big col-lg-3 col-md-5 col-sm-12 export" (click)="onExportObservations()" i18n>
+          <i class="fa fa-download"></i>Exporter mes observations
+        </button>
+        <button class="btn-big btn-danger col-lg-3 col-md-5 col-sm-12" (click)="onDeletePersonalData()" i18n>
           <i class="fa fa-trash"></i>Supprimer mes données personnelles
         </button>
-      </section>
+      </div>
     </div>
   </div>
 </div>
+
 <ng-template #personalInfos let-modal>
   <div class="modal-header">
     <h4 i18n>Mettre à jour vos données personnelles</h4>
-    <button
-      type="button"
-      class="close rounded-0"
-      aria-label="Close"
-      (click)="modal.dismiss('Cross click')"
-    >
+    <button type="button" class="close rounded-0" aria-label="Close" (click)="modal.dismiss('Cross click')">
       &times;
     </button>
   </div>
   <div class="modal-body">
-    <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null"
-      >{{ errorMessage }}
+    <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}
     </ngb-alert>
-    <form
-      #updatePersonalInfoForm="ngForm"
-      (ngSubmit)="updatePersonalInfoForm.valid && onUpdatePersonalData()"
-    >
-      <ngb-alert
-        [dismissible]="false"
-        type="danger"
-        *ngIf="email.errors && email.dirty"
-        i18n
-      >
-        Impossible de valider votre email.
-      </ngb-alert>
+    <form [formGroup]="userForm" (ngSubmit)="userForm.valid && onUpdatePersonalData(userForm.value)">
+      <div class="d-flex justify-content-center">
+        <div class="avatar-wrapper">
+          <img class="profile-pic" src="{{userAvatar}}" />
+          <div class="upload-button" (click)="fileToUpload.click()">
+            <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+          </div>
+          <input #fileToUpload type="file" accept="image/*" (change)="onUploadAvatar($event)" class="file-upload" />
+        </div>
+      </div>
       <div class="form-row">
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="personalInfo.username" i18n
-              >Votre nom d'utilisateur</label
-            >
+            <label for="username" i18n>Votre nom d'utilisateur *</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fa fa-user"></i></span>
               </div>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                class="form-control rounded-0"
-                i18n-placeholder
-                placeholder="Entrez votre nom d'utilisateur"
-                [(ngModel)]="personalInfo.username"
-                #username="ngModel"
-                autocomplete="username"
-                required
-              />
+              <input type="text" id="username" formControlName="username" class="form-control rounded-0"
+                i18n-placeholder placeholder="Entrez votre nom d'utilisateur" />
             </div>
           </div>
         </div>
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="email" i18n>Votre email</label>
+            <label for="email" i18n>Votre email  *</label>
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text"
-                  ><i class="fa fa-envelope"></i
-                ></span>
+                <span class="input-group-text"><i class="fa fa-envelope"></i></span>
               </div>
-              <input
-                type="email"
-                class="form-control rounded-0"
-                name="email"
-                id="email"
-                i18n-placeholder
-                placeholder="Entrez votre email"
-                [(ngModel)]="personalInfo.email"
-                #email="ngModel"
-                autocomplete="email"
-                required
-                pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-              />
+              <input type="email" class="form-control rounded-0" formControlName="email" id="email" i18n-placeholder
+                placeholder="Entrez votre email" />
             </div>
           </div>
         </div>
@@ -131,99 +129,51 @@
       <div class="form-row">
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="name" i18n>Votre prénom</label>
-            <input
-              type="text"
-              class="form-control rounded-0"
-              id="fname"
-              name="fname"
-              i18n-placeholder
-              placeholder="Entrez votre prénom"
-              [(ngModel)]="personalInfo.name"
-              #fname="ngModel"
-              autocomplete="fname"
-              required
-            />
+            <label for="name" i18n>Votre prénom *</label>
+            <input type="text" class="form-control rounded-0" id="name" formControlName="name" i18n-placeholder
+              placeholder="Entrez votre prénom" />
           </div>
         </div>
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="surname" i18n>Votre nom</label>
-            <input
-              type="text"
-              class="form-control rounded-0"
-              id="surname"
-              name="surname"
-              i18n-placeholder
-              placeholder="Entrez votre nom"
-              [(ngModel)]="personalInfo.surname"
-              #surname="ngModel"
-              autocomplete="lname"
-              required
-            />
+            <label for="surname" i18n>Votre nom *</label>
+            <input type="text" class="form-control rounded-0" id="surname" formControlName="surname" i18n-placeholder
+              placeholder="Entrez votre nom" />
           </div>
         </div>
       </div>
-      <ngb-alert
-        [dismissible]="false"
-        type="danger"
-        *ngIf="
-          (confirm_password.errors || password.errors) && confirm_password.dirty
-        "
-        i18n
-      >
+      <ngb-alert [dismissible]="false" type="danger" *ngIf="
+          (userForm.get('confirmPassword').errors || userForm.get('newPassword').errors) && userForm.get('confirmPassword').dirty
+        " i18n>
         Les mots de passe diffèrent.
       </ngb-alert>
       <div class="form-row">
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="password" i18n>Votre mot de passe</label>
-            <input
-              type="password"
-              class="form-control rounded-0"
-              id="password"
-              i18n-placeholder
-              placeholder="Votre nouveau mot de passe"
-              [(ngModel)]="personalInfo.password"
-              name="password"
-              #password="ngModel"
-              autocomplete="current-password"
-              minlength="6"
-              required
-              #password="ngModel"
-            />
+            <label for="newPassword" i18n>Votre nouveau mot de passe</label>
+            <input type="password" name="newPassword" class="form-control rounded-0" id="newPassword" formControlName="newPassword"
+              i18n-placeholder placeholder="Votre nouveau mot de passe" autocomplete="new-password" />
           </div>
         </div>
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="new-password" i18n
-              >Confirmez votre nouveau mot de passe</label
-            >
-            <input
-              type="password"
-              id="new-password"
-              name="new-password"
-              class="form-control rounded-0"
-              ngModel
-              #confirm_password="ngModel"
-              i18n-placeholder
-              placeholder="Confirmez le mot de passe"
-              autocomplete="new-password"
-              required
-              pattern="^{{ password.value }}$"
-            />
+            <label for="confirmPassword" i18n>Confirmez votre nouveau mot de passe</label>
+            <input type="password" id="confirmPassword" formControlName="confirmPassword" autocomplete="" class="form-control rounded-0"/>
+            <p *ngIf="userForm.errors && userForm.errors.MatchPassword && userForm.controls.confirmPassword.dirty" class="danger">* Le mot de passe n'est pas identique.</p>
           </div>
         </div>
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-default btn-big btn-outline-primary rounded-0"
-        i18n
-        [disabled]="updatePersonalInfoForm.invalid"
-      >
+      <button type="submit" class="btn btn-default btn-big btn-outline-primary rounded-0" i18n
+        [disabled]="userForm.invalid">
         Mettre à jour
       </button>
     </form>
   </div>
 </ng-template>
+
+<div *ngIf="!observations" id="spinner">
+  <div class="loader-1"></div>
+  <div class="loader-2"></div>
+  <div class="loader-3"></div>
+</div>

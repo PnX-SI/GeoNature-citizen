@@ -40,7 +40,6 @@ def admin_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         current_user = get_jwt_identity()
-        print("CURRENT USER IS", current_user)
         try:
             is_admin = (
                 UserModel.query.filter_by(username=current_user).first().admin

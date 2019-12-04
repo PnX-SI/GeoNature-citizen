@@ -24,7 +24,7 @@ import { IFlowComponent } from "./flow";
 export class FlowComponent implements OnInit {
   @Input() flowItems: FlowItem[];
   @Output() step = new EventEmitter();
-  @ViewChild(FlowDirective) flowitem: FlowDirective;
+  @ViewChild(FlowDirective, {static: true}) flowitem: FlowDirective;
   currentFlowIndex = -1;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {}

@@ -1,9 +1,7 @@
 .router-app {
-  margin-top: var(--router-outlet-margin-top);
+  height: 100%;
 }
 
-@media screen and (max-width: 576px) {
-  .router-app {
-    margin-top: 65px !important;
-  }
-}
+
+
+

@@ -1,10 +1,8 @@
-import { Observable, throwError } from "rxjs";
+import { Observable, throwError ,  of } from "rxjs";
 import { map, catchError } from "rxjs/operators";
 // angular
 import { Injectable } from "@angular/core";
 import { Http, Response } from "@angular/http";
-// rxjs
-import { of } from "rxjs";
 // config
 import { AppConfig } from "../../conf/app.config";
 // models

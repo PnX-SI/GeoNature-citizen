@@ -21,7 +21,6 @@ describe('ObsFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgbModule.forRoot(),
         HttpClientTestingModule,
         RouterTestingModule,
         ReactiveFormsModule,
