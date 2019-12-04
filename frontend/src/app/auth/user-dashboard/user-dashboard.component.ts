@@ -10,6 +10,8 @@ import { saveAs } from "file-saver";
 import * as _ from "lodash";
 import { Point } from "leaflet";
 import { ModalFlowService } from "src/app/programs/observations/modalflow/modalflow.service";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { CustomFormValidator } from "./customFormValidator";
 
 @Component({
   selector: "app-user-dashboard",
@@ -31,13 +33,19 @@ export class UserDashboardComponent implements OnInit {
   observations: any;
   rows: any = [];
   obsToExport: any = [];
+  userForm: FormGroup;
+  currentUser: any;
+  userAvatar: string | ArrayBuffer;
+  extentionFile: any;
+  newAvatar: string | ArrayBuffer;
 
   constructor(
     private auth: AuthService,
     private userService: UseService,
     private router: Router,
     private modalService: NgbModal,
-    private flowService: ModalFlowService
+    private flowService: ModalFlowService,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -52,6 +60,11 @@ export class UserDashboardComponent implements OnInit {
               this.username = user["features"]["username"];
               this.stats = user["features"]["stats"];
               this.role_id = user["features"]["id_role"];
+              if (user["features"]["avatar"])
+                this.userAvatar =
+                  AppConfig.API_ENDPOINT +
+                  "/media/" +
+                  user["features"]["avatar"];
               // FIXME: source backend conf
               this.getData();
               this.flowService.getModalCloseSatus().subscribe(status => {
@@ -61,7 +74,9 @@ export class UserDashboardComponent implements OnInit {
           }),
           catchError(err => throwError(err))
         )
-        .subscribe();
+        .subscribe(user => {
+          this.currentUser = user;
+        });
     }
   }
 
@@ -73,7 +88,7 @@ export class UserDashboardComponent implements OnInit {
     this.badges = null;
     this.main_badges = [];
     this.programs_badges = [];
-    this.recognition_badges =[];
+    this.recognition_badges = [];
     let badgeCategories = this.userService.getBadgeCategories(this.role_id);
     let userObservations = this.userService.getObservationsByUserId(
       this.role_id
@@ -107,8 +122,8 @@ export class UserDashboardComponent implements OnInit {
             count: obs.properties.count,
             comment: obs.properties.comment,
             municipality: obs.properties.municipality.name,
-            taxref: obs.properties.taxref.nom_complet,
-          })
+            taxref: obs.properties.taxref.nom_complet
+          });
           this.rows.push({
             media_url:
               obs.properties.images && !!obs.properties.images.length
@@ -171,14 +186,23 @@ export class UserDashboardComponent implements OnInit {
   }
 
   onExportObservations() {
-  let csv_str = this.userService.ConvertToCSV(this.obsToExport, ['id_observation','taxref','date','program', 'count', 'comment', 'municipality'])
-  let blob = new Blob([csv_str], {type: 'text/csv' })
-  saveAs(blob, "mydata.csv");
+    let csv_str = this.userService.ConvertToCSV(this.obsToExport, [
+      "id_observation",
+      "taxref",
+      "date",
+      "program",
+      "count",
+      "comment",
+      "municipality"
+    ]);
+    let blob = new Blob([csv_str], { type: "text/csv" });
+    saveAs(blob, "mydata.csv");
   }
 
   onEditInfos(content): void {
     this.userService.getPersonalInfo().subscribe(data => {
       this.personalInfo = data;
+      this.intiForm();
       this.modalRef = this.modalService.open(content, {
         size: "lg",
         centered: true
@@ -186,14 +210,61 @@ export class UserDashboardComponent implements OnInit {
     });
   }
 
-  onUpdatePersonalData() {
-    this.userService.updatePersonalData(this.personalInfo).subscribe(() => {
+  onUpdatePersonalData(userForm) {
+    userForm = _.omitBy(userForm, _.isNil);
+    delete userForm.username;
+    if (this.newAvatar && this.extentionFile) {
+      userForm.avatar = this.userAvatar;
+      userForm.extention = this.extentionFile;
+    }
+    this.userService.updatePersonalData(userForm).subscribe(() => {
       this.modalRef.close();
     });
   }
 
+  onUploadAvatar($event) {
+    if ($event) {
+      if ($event.target.files && $event.target.files[0]) {
+        let reader = new FileReader();
+        let file = $event.target.files[0];
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          this.userAvatar = reader.result;
+          this.newAvatar = reader.result;
+          this.extentionFile = $event.target.files[0].type.split("/").pop();
+        };
+      }
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.modalRef) this.modalRef.close();
-    this.flowService.setModalCloseSatus(null)
+    this.flowService.setModalCloseSatus(null);
+  }
+
+  intiForm() {
+    this.userForm = this.formBuilder.group(
+      {
+        username: [
+          { value: this.personalInfo.features.username, disabled: true }
+        ],
+        email: [
+          this.personalInfo.features.email,
+          [
+            Validators.required,
+            Validators.pattern(
+              "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+            )
+          ]
+        ],
+        name: [this.personalInfo.features.name, Validators.required],
+        surname: [this.personalInfo.features.surname, Validators.required],
+        newPassword: [null],
+        confirmPassword: [null]
+      },
+      {
+        validator: CustomFormValidator.MatchPassword
+      }
+    );
   }
 }

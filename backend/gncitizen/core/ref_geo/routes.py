@@ -75,7 +75,6 @@ def get_municipality(insee):
           200:
             description: A municipality
         """
-    print('INSEE: ', insee)
     try:
         q = db.session.query(
             LAreas.area_name,

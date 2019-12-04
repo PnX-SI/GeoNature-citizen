@@ -7,7 +7,9 @@
           <span i18n>{ +stats?.platform_attendance, plural, =0 { aucune observation} =1
             {une observation} other
             {{{stats?.platform_attendance}} observations} }</span>
-          <img src="assets/user.jpg" />
+            <div class="avatar-main-wrapper">
+          <img class="profile-pic" [src]="userAvatar" (click)="onEditInfos(personalInfos)" />
+          </div>
           <p (click)="onEditInfos(personalInfos)">{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>
@@ -31,7 +33,7 @@
           </ngx-datatable-column>
           <ngx-datatable-column name="Programme" prop="program" width="200">
           </ngx-datatable-column>
-          <ngx-datatable-column name="Editer" >
+          <ngx-datatable-column name="Editer">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <app-modalflow [coords]="row.coords" [updateData]="row" [program_id]="row.program_id"></app-modalflow>
             </ng-template>
@@ -78,7 +80,6 @@
   </div>
 </div>
 
-
 <ng-template #personalInfos let-modal>
   <div class="modal-header">
     <h4 i18n>Mettre à jour vos données personnelles</h4>
@@ -89,35 +90,38 @@
   <div class="modal-body">
     <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}
     </ngb-alert>
-    <form #updatePersonalInfoForm="ngForm" (ngSubmit)="updatePersonalInfoForm.valid && onUpdatePersonalData()">
-      <ngb-alert [dismissible]="false" type="danger" *ngIf="email.errors && email.dirty" i18n>
-        Impossible de valider votre email.
-      </ngb-alert>
+    <form [formGroup]="userForm" (ngSubmit)="userForm.valid && onUpdatePersonalData(userForm.value)">
+      <div class="d-flex justify-content-center">
+        <div class="avatar-wrapper">
+          <img class="profile-pic" src="{{userAvatar}}" />
+          <div class="upload-button" (click)="fileToUpload.click()">
+            <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+          </div>
+          <input #fileToUpload type="file" accept="image/*" (change)="onUploadAvatar($event)" class="file-upload" />
+        </div>
+      </div>
       <div class="form-row">
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="personalInfo.username" i18n>Votre nom d'utilisateur</label>
+            <label for="username" i18n>Votre nom d'utilisateur *</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fa fa-user"></i></span>
               </div>
-              <input type="text" id="username" name="username" class="form-control rounded-0" i18n-placeholder
-                placeholder="Entrez votre nom d'utilisateur" [(ngModel)]="personalInfo.username" #username="ngModel"
-                autocomplete="username" required />
+              <input type="text" id="username" formControlName="username" class="form-control rounded-0"
+                i18n-placeholder placeholder="Entrez votre nom d'utilisateur" />
             </div>
           </div>
         </div>
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="email" i18n>Votre email</label>
+            <label for="email" i18n>Votre email  *</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fa fa-envelope"></i></span>
               </div>
-              <input type="email" class="form-control rounded-0" name="email" id="email" i18n-placeholder
-                placeholder="Entrez votre email" [(ngModel)]="personalInfo.email" #email="ngModel" autocomplete="email"
-                required
-                pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$" />
+              <input type="email" class="form-control rounded-0" formControlName="email" id="email" i18n-placeholder
+                placeholder="Entrez votre email" />
             </div>
           </div>
         </div>
@@ -125,47 +129,43 @@
       <div class="form-row">
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="name" i18n>Votre prénom</label>
-            <input type="text" class="form-control rounded-0" id="fname" name="fname" i18n-placeholder
-              placeholder="Entrez votre prénom" [(ngModel)]="personalInfo.name" #fname="ngModel" autocomplete="fname"
-              required />
+            <label for="name" i18n>Votre prénom *</label>
+            <input type="text" class="form-control rounded-0" id="name" formControlName="name" i18n-placeholder
+              placeholder="Entrez votre prénom" />
           </div>
         </div>
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="surname" i18n>Votre nom</label>
-            <input type="text" class="form-control rounded-0" id="surname" name="surname" i18n-placeholder
-              placeholder="Entrez votre nom" [(ngModel)]="personalInfo.surname" #surname="ngModel" autocomplete="lname"
-              required />
+            <label for="surname" i18n>Votre nom *</label>
+            <input type="text" class="form-control rounded-0" id="surname" formControlName="surname" i18n-placeholder
+              placeholder="Entrez votre nom" />
           </div>
         </div>
       </div>
       <ngb-alert [dismissible]="false" type="danger" *ngIf="
-          (confirm_password.errors || password.errors) && confirm_password.dirty
+          (userForm.get('confirmPassword').errors || userForm.get('newPassword').errors) && userForm.get('confirmPassword').dirty
         " i18n>
         Les mots de passe diffèrent.
       </ngb-alert>
       <div class="form-row">
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="password" i18n>Votre mot de passe</label>
-            <input type="password" class="form-control rounded-0" id="password" i18n-placeholder
-              placeholder="Votre nouveau mot de passe" [(ngModel)]="personalInfo.password" name="password"
-              #password="ngModel" autocomplete="current-password" minlength="6" required #password="ngModel" />
+            <label for="newPassword" i18n>Votre nouveau mot de passe</label>
+            <input type="password" name="newPassword" class="form-control rounded-0" id="newPassword" formControlName="newPassword"
+              i18n-placeholder placeholder="Votre nouveau mot de passe" autocomplete="new-password" />
           </div>
         </div>
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="new-password" i18n>Confirmez votre nouveau mot de passe</label>
-            <input type="password" id="new-password" name="new-password" class="form-control rounded-0" ngModel
-              #confirm_password="ngModel" i18n-placeholder placeholder="Confirmez le mot de passe"
-              autocomplete="new-password" required pattern="^{{ password.value }}$" />
+            <label for="confirmPassword" i18n>Confirmez votre nouveau mot de passe</label>
+            <input type="password" id="confirmPassword" formControlName="confirmPassword" autocomplete="" class="form-control rounded-0"/>
+            <p *ngIf="userForm.errors && userForm.errors.MatchPassword && userForm.controls.confirmPassword.dirty" class="danger">* Le mot de passe n'est pas identique.</p>
           </div>
         </div>
       </div>
 
       <button type="submit" class="btn btn-default btn-big btn-outline-primary rounded-0" i18n
-        [disabled]="updatePersonalInfoForm.invalid">
+        [disabled]="userForm.invalid">
         Mettre à jour
       </button>
     </form>
