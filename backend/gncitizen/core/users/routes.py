@@ -350,12 +350,19 @@ def logged_user():
                 filename = 'avatar_' + \
                     current_user + '.' + extention
                 request_data['avatar'] = filename
-                if os.path.exists(os.path.join(str(MEDIA_DIR), user.as_secured_dict(True)["avatar"])):
+                if os.path.exists(os.path.join(str(MEDIA_DIR), str(user.as_secured_dict(True)["avatar"]))):
                     os.remove(os.path.join(str(MEDIA_DIR),
-                                           user.as_secured_dict(True)["avatar"]))
-                handler = open(os.path.join(str(MEDIA_DIR), filename), "wb+")
-                handler.write(imgdata)
-                handler.close()
+                                           str(user.as_secured_dict(True)["avatar"])))
+                try:
+                    handler = open(os.path.join(
+                        str(MEDIA_DIR), str(filename)), "wb+")
+                    handler.write(imgdata)
+                    handler.close()
+                except Exception as e:
+                    return (
+                        {"message": e},
+                        500,
+                    )
 
             for data in request_data:
                 if hasattr(UserModel, data) and data not in {
@@ -365,7 +372,8 @@ def logged_user():
                 }:
                     setattr(user, data, request_data[data])
             if ('newPassword' in request_data):
-              user.password = UserModel.generate_hash(request_data["newPassword"])
+                user.password = UserModel.generate_hash(
+                    request_data["newPassword"])
             user.admin = is_admin
             user.update()
             return (
@@ -380,7 +388,7 @@ def logged_user():
         # raise GeonatureApiError(e)
         current_app.logger.error("AUTH ERROR:", str(e))
         return (
-            {"message": "Connectez vous pour obtenir vos données personnelles."},
+            {"message": str(e)},
             400,
         )
 

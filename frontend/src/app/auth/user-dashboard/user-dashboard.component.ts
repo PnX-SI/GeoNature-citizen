@@ -115,45 +115,62 @@ export class UserDashboardComponent implements OnInit {
             obs.geometry.coordinates[0],
             obs.geometry.coordinates[1]
           );
-          this.obsToExport.push({
-            id_observation: obs.properties.id_observation,
-            date: obs.properties.date,
-            program: obs.properties.program_title,
-            count: obs.properties.count,
-            comment: obs.properties.comment,
-            municipality: obs.properties.municipality.name,
-            taxref: obs.properties.taxref.nom_complet
-          });
-          this.rows.push({
-            media_url:
-              obs.properties.images && !!obs.properties.images.length
-                ? AppConfig.API_ENDPOINT + "/media/" + obs.properties.images[0]
-                : obs.properties.image
-                ? obs.properties.image
-                : obs.properties.medias && !!obs.properties.medias.length
-                ? AppConfig.API_TAXHUB +
-                  "/tmedias/thumbnail/" +
-                  obs.properties.medias[0].id_media +
-                  "?h=80&v=80"
-                : "assets/default_image.png",
-            taxref: obs.properties.taxref,
-            date: obs.properties.date,
-            municipality: obs.properties.municipality.name,
-            program_id: obs.properties.id_program,
-            program: obs.properties.program_title,
-            count: obs.properties.count,
-            comment: obs.properties.comment,
-            id_observation: obs.properties.id_observation,
-            taxon: {
-              media: obs.properties.media,
-              taxref: obs.properties.taxref
-            },
-            coords: coords
-          });
+          this.rowData(obs, coords);
+          this.obsExport(obs)
         });
       } else {
         this.observations = data[0].features;
+        this.observations.forEach(obs => {
+          let coords: Point = new Point(
+            obs.geometry.coordinates[0],
+            obs.geometry.coordinates[1]
+          );
+          this.rowData(obs, coords);
+          this.obsExport(obs)
+        });
       }
+    });
+  }
+
+
+  rowData(obs,coords){
+    this.rows.push({
+      media_url:
+        obs.properties.images && !!obs.properties.images.length
+          ? AppConfig.API_ENDPOINT + "/media/" + obs.properties.images[0]
+          : obs.properties.image
+          ? obs.properties.image
+          : obs.properties.medias && !!obs.properties.medias.length
+          ? AppConfig.API_TAXHUB +
+            "/tmedias/thumbnail/" +
+            obs.properties.medias[0].id_media +
+            "?h=80&v=80"
+          : "assets/default_image.png",
+      taxref: obs.properties.taxref,
+      date: obs.properties.date,
+      municipality: obs.properties.municipality.name,
+      program_id: obs.properties.id_program,
+      program: obs.properties.program_title,
+      count: obs.properties.count,
+      comment: obs.properties.comment,
+      id_observation: obs.properties.id_observation,
+      taxon: {
+        media: obs.properties.media,
+        taxref: obs.properties.taxref
+      },
+      coords: coords
+    });
+  }
+
+  obsExport(obs){
+    this.obsToExport.push({
+      id_observation: obs.properties.id_observation,
+      date: obs.properties.date,
+      program: obs.properties.program_title,
+      count: obs.properties.count,
+      comment: obs.properties.comment,
+      municipality: obs.properties.municipality.name,
+      taxref: obs.properties.taxref.nom_complet
     });
   }
 
