@@ -134,7 +134,6 @@ export class BadgeFacade {
   template: `
     <div *ngIf="(reward$ | async) as rewards">
       <div class="modal-body new-badge" (click)="clicked('background')">
-        <div><img src="assets/user.jpg" /></div>
         <h5 i18n>Félicitations !</h5>
         <h6 i18n>
           { +rewards?.length, plural, =1 { Vous venez d&apos;obtenir ce badge }

@@ -131,7 +131,7 @@ def generate_observation_geojson(id_observation):
     return features
 
 
-@routes.route("/observations/<int:pk>")
+@routes.route("/observations/<int:pk>", methods=["GET"])
 @json_resp
 def get_observation(pk):
     """Get on observation by id
@@ -731,7 +731,7 @@ def get_observations_by_user_id(user_id):
             .join(
                 ProgramsModel,
                 ProgramsModel.id_program == ObservationModel.id_program,
-                isouter=True,
+                isouter=True, full=True
             )
             .join(
                 ObservationMediaModel,
@@ -751,12 +751,21 @@ def get_observations_by_user_id(user_id):
         # current_app.logger.debug(str(observations))
         observations = observations.all()
 
-        if current_app.config.get("API_TAXHUB") is not None:
-            taxhub_list_id = (
-                ProgramsModel.query.one().taxonomy_list
-            )
-            taxon_repository = mkTaxonRepository(taxhub_list_id)
-        features = []
+        try:
+            if current_app.config.get("API_TAXHUB") is not None:
+                taxon_repository = []
+                taxhub_list_id = []
+                for observation in observations:
+                    if observation.ProgramsModel.taxonomy_list not in taxhub_list_id:
+                        taxhub_list_id.append(
+                            observation.ProgramsModel.taxonomy_list)
+                for tax_list in taxhub_list_id:
+                    taxon_repository.append(mkTaxonRepository(tax_list))
+
+            features = []
+        except Exception as e:
+            return {"message": str(e)}, 500
+
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
             feature["properties"]["municipality"] = {
@@ -806,19 +815,18 @@ def get_observations_by_user_id(user_id):
                     ]
             else:
                 try:
-                    taxon = next(
-                        taxon
-                        for taxon in taxon_repository
-                        if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
-                    )
-                    feature["properties"]["nom_francais"] = taxon["nom_francais"]
-                    feature["properties"]["taxref"] = taxon["taxref"]
-                    feature["properties"]["medias"] = taxon["medias"]
+                    for taxon_rep in taxon_repository:
+                        for taxon in taxon_rep:
+                            if taxon["taxref"]["cd_nom"] == observation.ObservationModel.cd_nom:
+                                feature["properties"]["nom_francais"] = taxon["nom_francais"]
+                                feature["properties"]["taxref"] = taxon["taxref"]
+                                feature["properties"]["medias"] = taxon["medias"]
+
                 except StopIteration:
                     pass
             features.append(feature)
 
-        return FeatureCollection(features)
+        return FeatureCollection(features), 200
 
     except Exception as e:
         raise e
@@ -855,5 +863,3 @@ def update_observation():
     except Exception as e:
         current_app.logger.critical("[post_observation] Error: %s", str(e))
         return {"message": str(e)}, 400
-
-
