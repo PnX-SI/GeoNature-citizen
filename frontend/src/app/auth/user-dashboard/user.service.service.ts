@@ -23,9 +23,11 @@ export class UseService {
     return this.http.get<Object>(`${AppConfig.API_ENDPOINT}/rewards/${userId}`);
   }
 
-  updatePersonalData(personalInfo): any {
-    this.http
-      .post(`${AppConfig.API_ENDPOINT}/user/info`, personalInfo, {
+  updatePersonalData(personalInfo) {
+    console.log('up',personalInfo);
+    
+    return this.http
+      .patch(`${AppConfig.API_ENDPOINT}/user/info`, personalInfo, {
         headers: this.headers
       })
       .pipe(

@@ -4,6 +4,8 @@ export class RegisterUser {
   email?: string;
   name?: string;
   surname?: string;
+  avatar?: string | ArrayBuffer;
+  extention?: string;
 
   constructor() {}
 }

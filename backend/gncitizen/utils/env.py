@@ -110,6 +110,4 @@ def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):
             sys.path.pop(0)
 
             conf_module = load_toml(str(f / "config/conf_gn_module.toml"))
-            print(conf_module, conf_manifest, module_blueprint)
-
             yield conf_module, conf_manifest, module_blueprint

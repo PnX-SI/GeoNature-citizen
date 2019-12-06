@@ -79,7 +79,6 @@ def getsights():
 
 
 if __name__ == "__main__":
-    print("test.py is being run directly")
     registration()
     login()
     logout()
