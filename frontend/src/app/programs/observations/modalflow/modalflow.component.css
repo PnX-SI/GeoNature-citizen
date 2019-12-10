@@ -16,4 +16,5 @@ app-modalflow  {
 .btn-secondary{
     color: white !important;
     margin-right: 20px ;
+    margin-left: 0px;
 }
