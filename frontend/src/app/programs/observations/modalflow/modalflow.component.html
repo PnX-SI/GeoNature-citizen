@@ -2,9 +2,10 @@
   <button *ngIf="!updateData" class="btn-big text-center text-nowrap text-uppercase" (click)="clicked()">
     {{ AppConfig.program_add_an_observation[localeId] }}
   </button>
-  <button   *ngIf="updateData" class="btn" (click)="clicked()" i18n>
-        <i class="fa fa-2x fa-edit"></i>
-      </button>
+  <button class="btn btn-secondary" placement="top" ngbTooltip="Editer" *ngIf="updateData"
+    (click)="clicked()" i18n>
+    <i class="fa fa-edit"></i>
+  </button>
 </div>
 <ng-template #content>
   <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>

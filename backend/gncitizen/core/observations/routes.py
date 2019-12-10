@@ -10,7 +10,7 @@ from typing import Union, Tuple, Dict
 # from datetime import datetime
 import requests
 from flask import Blueprint, current_app, request, json, send_from_directory
-from flask_jwt_extended import jwt_optional
+from flask_jwt_extended import jwt_optional, jwt_required, get_jwt_identity
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
@@ -837,7 +837,7 @@ def get_observations_by_user_id(user_id):
 
 @routes.route("/observations", methods=["PATCH"])
 @json_resp
-@jwt_optional
+@jwt_required
 def update_observation():
     try:
         update_data = request.form
@@ -863,3 +863,21 @@ def update_observation():
     except Exception as e:
         current_app.logger.critical("[post_observation] Error: %s", str(e))
         return {"message": str(e)}, 400
+
+
+@routes.route("/observations/<int:idObs>", methods=["DELETE"])
+@json_resp
+@jwt_required
+def delete_observation(idObs):
+    current_user = get_jwt_identity()
+    try:
+        observation = db.session.query(ObservationModel, UserModel).filter(
+            ObservationModel.id_observation == idObs).join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True).first()
+        if (current_user == observation.UserModel.username):
+            ObservationModel.query.filter_by(id_observation=idObs).delete()
+            db.session.commit()
+            return ('observation deleted successfully'), 200
+        else:
+            return ('delete unauthorized'), 403
+    except Exception as e:
+        return {"message": str(e)}, 500

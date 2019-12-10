@@ -50,11 +50,9 @@
           <span *ngIf="o.properties.municipality?.name">
             à {{ o.properties.municipality?.name }}</span>
         </p>
-        <a class="btn-detail-espece" href="{{AppConfig.details_espece_url + o.properties.cd_nom}}" target="_blank" i18n>
-          En savoir plus <i class="fa fa-chevron-right"></i>
-        </a>
       </div>
-      <div class="hide"><img src="assets/binoculars.png" /></div>
+      <a class="hide" href="{{AppConfig.details_espece_url + o.properties.cd_nom}}" title="En savoir plus"
+        target="_blank"><img src="assets/binoculars.png" /></a>
     </div>
   </div>
 </div>

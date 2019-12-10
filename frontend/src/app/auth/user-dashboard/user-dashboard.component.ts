@@ -21,6 +21,7 @@ import { CustomFormValidator } from "./customFormValidator";
 export class UserDashboardComponent implements OnInit {
   readonly AppConfig = AppConfig;
   modalRef: NgbModalRef;
+  modalRefDel: NgbModalRef;
   username: string = "not defined";
   role_id: number;
   isLoggedIn: boolean = false;
@@ -38,6 +39,7 @@ export class UserDashboardComponent implements OnInit {
   userAvatar: string | ArrayBuffer;
   extentionFile: any;
   newAvatar: string | ArrayBuffer;
+  idObsToDelete: number;
 
   constructor(
     private auth: AuthService,
@@ -254,11 +256,6 @@ export class UserDashboardComponent implements OnInit {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.modalRef) this.modalRef.close();
-    this.flowService.setModalCloseSatus(null);
-  }
-
   intiForm() {
     this.userForm = this.formBuilder.group(
       {
@@ -284,4 +281,29 @@ export class UserDashboardComponent implements OnInit {
       }
     );
   }
+
+  openDeleteModal(deleteModal: any, idObs :number) {
+    this.idObsToDelete = idObs;
+    this.modalRefDel = this.modalService.open(deleteModal, { windowClass: 'delete-modal', centered: true });
+  }
+
+  onCancelDelete() {
+    this.modalRefDel.close();
+  }
+
+ onDeleteObs(){
+  this.userService.deleteObsservation(this.idObsToDelete).subscribe(() => {
+    this.modalRefDel.close();
+    this.getData();
+    this.idObsToDelete = null;
+  });
+  }
+
+  ngOnDestroy(): void {
+    if (this.modalRef) this.modalRef.close();
+    if (this.modalRefDel) this.modalRefDel.close();
+    this.flowService.setModalCloseSatus(null);
+  }
+  
+
 }

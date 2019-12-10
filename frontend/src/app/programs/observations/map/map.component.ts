@@ -414,7 +414,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
           le {{ data.date }}
         </span>
       </p>
-      <div><img class="icon" src="assets/binoculars.png" /></div>
+      <a href="{{AppConfig.details_espece_url + data.taxref?.cd_nom}}" title="En savoir plus" target="_blank" ><img class="icon" src="assets/binoculars.png" /></a>
     </ng-container>
   `
 })

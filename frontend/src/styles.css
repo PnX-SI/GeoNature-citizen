@@ -449,6 +449,17 @@ select:focus {
   font-size: 18px;
 }
 
+.leaflet-popup-content a {
+  height: 80px;
+  width: 40px;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+}
+
 .modal-header {
   background: var(--secondary);
   background: var(--modal-header-bg-moz);
@@ -1008,4 +1019,46 @@ input:checked~.toggle i {
 
 .avatar-wrapper .upload-button:hover .fa-arrow-circle-up {
   opacity: .9;
+}
+
+.delete-modal .modal-delete-content {
+  min-width: 300px;
+}
+
+.delete-modal .modal-delete-body {
+  padding: 20px;
+}
+
+.delete-modal .modal-delete-header {
+  padding: 10px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  background-color: #ff6666 !important;
+}
+
+.delete-modal .cancel-btn {
+  background-color: #535650 !important;
+  color: #fff;
+  border: none;
+  padding: 5px 30px;
+  text-transform: uppercase;
+  font-size: 13px;
+  width: fit-content;
+}
+
+.delete-modal .green-btn {
+  background-color: #7AB929 !important;
+  color: #fff;
+  border: none;
+  padding: 5px 30px;
+  text-transform: uppercase;
+  font-size: 13px;
+  width: fit-content;
+}
+
+.delete-modal .modal-delete-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 13px;
 }

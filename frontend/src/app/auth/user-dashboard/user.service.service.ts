@@ -8,6 +8,7 @@ import { throwError } from "rxjs";
   providedIn: "root"
 })
 export class UseService {
+ 
   private headers: HttpHeaders = new HttpHeaders({
     "Content-Type": "application/json"
   });
@@ -41,6 +42,10 @@ export class UseService {
     return this.http.get<Object>(
       `${AppConfig.API_ENDPOINT}/observations/users/${userId}`
     );
+  }
+
+  deleteObsservation(idObs: any) {
+    return this.http.delete<Object>(`${AppConfig.API_ENDPOINT}/observations/${idObs}`);
   }
 
   ConvertToCSV(objArray, headerList) {
