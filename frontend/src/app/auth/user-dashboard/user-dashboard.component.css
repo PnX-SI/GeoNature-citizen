@@ -161,6 +161,7 @@ app-modalflow {
   color: #fff;
   text-transform: uppercase;
   margin: 0 auto;
+  font-size: 18px;
 }
 
 .modal-header button {
@@ -231,6 +232,12 @@ app-modalflow {
     position: absolute;
     height: 2px;
     width: 60%;
+  }
+}
+
+@media screen and (max-width: 775px) {
+  .modal-header h4{
+    font-size: 18px;
   }
 }
 
