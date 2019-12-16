@@ -224,6 +224,7 @@ export class UserDashboardComponent implements OnInit {
       this.intiForm();
       this.modalRef = this.modalService.open(content, {
         size: "lg",
+        windowClass: 'add-obs-modal',
         centered: true
       });
     });
