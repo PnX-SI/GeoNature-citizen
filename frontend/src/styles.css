@@ -915,6 +915,11 @@ input:checked~.toggle i {
   z-index: 9999;
 }
 
+.ngx-datatable{
+  max-width: 1130px;
+  margin: 0 auto;
+}
+
 @media screen and (max-width: 991px) {
   .observations {
     height: inherit;
@@ -1021,6 +1026,18 @@ input:checked~.toggle i {
   opacity: .9;
 }
 
+.obs-modal .modal-header{
+  padding : 6px;
+}
+
+.obs-modal button.close{
+  position: absolute;
+  z-index: 100;
+  right: 17px;
+  padding: 10px;
+  top: 16px;
+}
+
 .delete-modal .modal-delete-content {
   min-width: 300px;
 }
@@ -1061,4 +1078,27 @@ input:checked~.toggle i {
   display: flex;
   justify-content: flex-end;
   padding: 13px;
+}
+
+@media screen and (max-width: 1200px){
+  app-about .container{
+    margin-top: 106px !important;
+  }
+  app-about .container h2{
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+}
+@media screen and (max-width: 576px) {
+  .programs-modal .modal-dialog, .obs-modal .modal-dialog{
+    margin: 0px !important;
+  }
+  .programs-modal .modal-content, .obs-modal .modal-content{
+    max-height: inherit;
+    height: 100vh;
+  }
+  .obs-modal .modal-header h4{
+    font-size: 18px;
+  }
 }
