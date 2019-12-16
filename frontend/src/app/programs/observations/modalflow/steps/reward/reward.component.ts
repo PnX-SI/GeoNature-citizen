@@ -15,6 +15,7 @@ import {
 import { AppConfig } from "../../../../../../conf/app.config";
 import { IFlowComponent } from "../../flow/flow";
 import { AuthService } from "../../../../../auth/auth.service";
+import { ModalFlowService } from "../../modalflow.service";
 
 export interface Badge {
   img: string;
@@ -133,6 +134,9 @@ export class BadgeFacade {
   selector: "app-reward",
   template: `
     <div *ngIf="(reward$ | async) as rewards">
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+</button>
       <div class="modal-body new-badge" (click)="clicked('background')">
         <h5 i18n>Félicitations !</h5>
         <h6 i18n>
@@ -161,7 +165,8 @@ export class RewardComponent implements IFlowComponent {
   @Input() data: any;
   reward$: Observable<any[]>;
 
-  constructor(public badges: BadgeFacade) {
+  constructor(public badges: BadgeFacade,
+    private modalFlowService :ModalFlowService) {
     if (
       !badges.username || !AppConfig["REWARDS"]
     ) {
@@ -176,7 +181,8 @@ export class RewardComponent implements IFlowComponent {
 
           if (!condition && this._init > 1) {
             if (this._timeout) clearTimeout(this._timeout);
-            this._timeout = setTimeout(() => this.close("NOREWARD"), 0);
+            this._timeout = setTimeout(() => 
+            {this.close("NOREWARD")}, 0);
           }
         }),
         filter(reward => reward && !!reward.length && this._init > 1)
@@ -190,5 +196,8 @@ export class RewardComponent implements IFlowComponent {
 
   clicked(d) {
     this.close(d);
+  }
+  closeModal(){
+    this.modalFlowService.closeModal()
   }
 }

@@ -2,6 +2,9 @@
 <div class="modal-body obs-added">
   <div>
     <!-- FIXME: hardcoded backend media url -->
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+  </button>
     <img class="default-img"
       [src]="
         obs.images[0]

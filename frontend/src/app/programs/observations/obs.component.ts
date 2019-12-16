@@ -44,12 +44,14 @@ export class ObsComponent implements OnInit, AfterViewInit {
   @ViewChild(ObsListComponent, {static: true}) obsList: ObsListComponent;
 
   selectedObs: Feature;
+  public isCollapsed : boolean = true;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
     private programService: GncProgramsService,
-    public flowService: ModalFlowService
+    public flowService: ModalFlowService,
+    
   ) {
     this.route.params.subscribe(params => (this.program_id = params["id"]));
     this.route.fragment.subscribe(fragment => {
