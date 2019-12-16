@@ -20,7 +20,6 @@ section {
     transition-duration: 0.2s;
 }
 
-
 /* .collapse:not(.show){
     transform: translateX(-100%) !important;
     display: block !important;
@@ -220,7 +219,7 @@ section {
 #slider .carousel-text {
     background-color: #eeeeeecf;
     padding: 35px 20px 35px 35px;
-    min-width: 450px;
+    min-width: 100%;
     max-height: 80%;
     height: auto;
     display: flex;
@@ -245,12 +244,17 @@ section {
     font-style: italic;
     font-size: 14px;
     color: black;
+    min-height: 80px;
 }
 
 #slider .carousel-text a {
     width: fit-content;
     text-align: center;
     margin: 0 auto;
+}
+
+#slider .carousel-text a.btn-big{
+    background-color: var(--secondary) !important;
 }
 
 .mobile-hidden {
@@ -306,7 +310,7 @@ app-observations {
     /* FIRST SECT */
     #welcome h1 {
         font-size: 44px !important;
-        padding-left: 10% !important;
+        padding: 0px 5% !important;
     }
     #welcome p {
         display: none;
@@ -325,13 +329,6 @@ app-observations {
     }
     #slider .carousel-text a {
         font-size: 16px;
-    }
-    #slider {
-        display: block !important;
-        width: 100%;
-    }
-    #programs-cards {
-        display: none !important;
     }
 }
 
@@ -353,11 +350,23 @@ app-observations {
         width: 100% !important;
     }
 }
+@media screen and (min-width: 760px) {
+    .carousel-text .collapse:not(.show){
+        display: block;
+    }
+}
 
 @media screen and (max-width: 760px) {
     #welcome a[role="button"] {
         left: 50%;
         transform: translateX(-50%);
+    }
+    #programs #programs-cards {
+        display: none !important;
+    } 
+    #slider {
+        display: block !important;
+        width: 100%;
     }
     #slider .carousel-inner {
         max-height: fit-content;
@@ -390,6 +399,9 @@ app-observations {
     #slider .carousel-item {
         max-height: fit-content !important;
     }
+    #slider .carousel-item img{
+        height: 450px;
+    }
     #slider .carousel-text p,
     #slider .carousel-text a {
         width: 100%;
@@ -401,6 +413,15 @@ app-observations {
     }
     #slider .carousel-text {
         min-width: inherit !important;
+    }
+    #slider .carousel-text button{
+        background: var(--secondary);
+        border: none;
+        width: 100%;
+        color: #fff;
+    }
+    #slider .carousel-text button[aria-expanded="true"]{
+        transform: rotate(180deg);
     }
 }
 
@@ -459,6 +480,30 @@ app-observations {
     .active.carousel-item-left {
         -webkit-transform: translate3d(0, +100%, 0);
         transform: translate3d(0, +100, 0);
+    }
+}
+
+@media screen and (max-width: 650px){
+    #slider .carousel-item img{
+        height: 400px;
+    }
+}
+
+@media screen and (max-width: 600px){
+    #slider .carousel-item img{
+        height: 350px;
+    }
+}
+
+@media screen and (max-width: 550px){
+    #slider .carousel-item img{
+        height: 300px;
+    }
+}
+
+@media screen and (max-width: 450px){
+    #slider .carousel-item img{
+        height: 250px;
     }
 }
 
@@ -633,6 +678,10 @@ app-observations {
 }
 
 @media screen and (max-width: 576px) {
+    #welcome{
+        margin-top: 66px !important;
+        height: calc(100vh - 66px) !important;
+    }
     .text-center h5.card-title {
         min-height: inherit;
     }
@@ -688,19 +737,6 @@ app-observations {
   border-bottom: 1px solid transparent;
   font-size: 20px;
   font-weight: 300;
-  letter-spacing: 0.025em;
-  height: 60px;
-  line-height: 38px;
-}
-
-.title-spaced {
-  font-size: 20px;
-  font-weight: 300;
-  letter-spacing: 0.025em;
-  height: 60px;
-  line-height: 38px;
-}
-.falsy-btn {
   padding-right: 5px;
   padding-left: 5px;
   border-color: black;
@@ -735,20 +771,12 @@ app-observations {
   font-size: 2em;
 }
 
-.color-blue {
-  color: #30a5ff;
+.color-secondary {
+  color: var(--secondary);
 }
 
-.color-orange {
-  color: #ffb53e;
-}
-
-.color-teal {
-  color: #1ebfae;
-}
-
-.color-gray {
-  color: #6e7579;
+.color-primary{
+    color: var(--primary);
 }
 
 .float-right {
@@ -757,4 +785,33 @@ app-observations {
 
 .general-stat{
     background-color: white;
+}
+
+@media screen and (max-width: 780px){
+    .general-stat .no-padding.col-lg-3{
+        width: 50%;
+    }
+}
+
+@media screen and (min-width: 760px){
+    .mobile{
+        display: none;
+    }
+    .desktop{
+        display: block;
+    }
+}
+@media screen and (max-width: 760px){
+    .mobile{
+        display: block;
+    }
+    .desktop{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .programs-modal .modal-dialog, .obs-modal .modal-dialog{
+        margin: 0px !important;
+    }
 }
