@@ -24,6 +24,7 @@ export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
   // isLoggedIn: boolean = false;
   username: any;
+  isCollapsed = true;
   programs$ = new Subject<Program[]>();
   isAdmin = false;
   canDisplayAbout: boolean = AppConfig.about;
@@ -92,6 +93,7 @@ export class TopbarComponent implements OnInit {
   programs() {
     this.modalService.open(ProgramsComponent, {
       size: "lg",
+      windowClass: 'programs-modal',
       centered: true
     });
   }
