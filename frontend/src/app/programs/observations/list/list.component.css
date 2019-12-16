@@ -138,13 +138,17 @@
 }
 
 @media screen and (max-width: 992px) {
-  #list {
+  .observations #list {
     max-height: 40vh;
     height: inherit;
   }
 
   .toggle {
     display: none;
+  }
+
+  div#list:not(.sidebar) {
+    max-height: 33vh;
   }
 
   .side-bar,

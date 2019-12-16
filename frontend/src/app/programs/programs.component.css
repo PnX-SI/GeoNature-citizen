@@ -119,6 +119,9 @@
 }
 
 @media screen and (max-width: 775px) {
+  .programs .row h1{
+    font-size: 18px;
+  }
   .programs .img-hover {
     max-width: 200px;
     margin: 0 auto;

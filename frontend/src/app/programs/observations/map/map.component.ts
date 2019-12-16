@@ -188,6 +188,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       gestureHandling: true,
       ...LeafletOptions
     });
+console.log('intmap',this.map);
 
     // TODO: inject controls with options
     this.observationMap.zoomControl.setPosition(
