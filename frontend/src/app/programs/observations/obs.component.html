@@ -1,6 +1,6 @@
 <div class="row">
   <!-- LA PLATEFORME -->
-  <section *ngIf="programs.length === 1" id="welcome" class="row">
+  <section *ngIf="programs.length === 1" id="welcome" class="row obs-section">
     <h1
       i18n="Bienvenue<br />
   sur Geonature Citizen"
@@ -18,7 +18,7 @@
 
 <div class="row">
   <!-- LE PROGRAMME -->
-  <section id="slide">
+  <section id="slide" class="obs-section">
     <div id="slider" class="carousel slide">
       <div class="carousel-inner">
         <h2 i18n>
@@ -37,7 +37,7 @@
                 <div>
                   <p [innerHTML]="program.html_short_desc"></p>
                   <div [innerHTML]="program.html_long_desc" id="collapse" [ngbCollapse]="isCollapsed"></div>
-                  <button type="button" class="mobile" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="collapse" aria-expanded="false"><span>v</span></button>
+                  <button type="button" class="mobile" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="collapse" aria-expanded="false"><span>...</span></button>
                 </div>
             </div>
           </div>
@@ -49,7 +49,7 @@
 
 <div class="row">
   <!-- LES OBSERVATIONS -->
-  <section id="program" class="observations row desktop">
+  <section id="program" class="observations row desktop obs-section">
     <input
       id="slide-sidebar"
       type="checkbox"
@@ -81,21 +81,8 @@
     </div>
   </section>
 
-  <section id="program" class="obs-tabs mobile">
+  <section id="program" class="obs-tabs mobile obs-section">
     <ngb-tabset >
-      <ngb-tab title="Carte">
-        <ng-template ngbTabContent id="tab-map" class="map">
-          <app-obs-map
-            #obsMapRef
-            [observations]="obsListRef.observationList"
-            [program]="programFeature"
-            (onClick)="onMapClicked($event)">
-          </app-obs-map>
-          <div class="btn-groups">
-            <app-modalflow [coords]="coords" [program_id]="program_id"></app-modalflow>
-          </div>
-        </ng-template>
-      </ngb-tab>
       <ngb-tab title="Liste">
         <ng-template ngbTabContent>
           <input
@@ -117,7 +104,19 @@
           </div>
         </ng-template>
       </ngb-tab>
-     
+      <ngb-tab title="Carte">
+        <ng-template ngbTabContent id="tab-map" class="map">
+          <app-obs-map
+            #obsMapRef
+            [observations]="obsListRef.observationList"
+            [program]="programFeature"
+            (onClick)="onMapClicked($event)">
+          </app-obs-map>
+          <div class="btn-groups">
+            <app-modalflow [coords]="coords" [program_id]="program_id"></app-modalflow>
+          </div>
+        </ng-template>
+      </ngb-tab>
     </ngb-tabset >
   </section>
 </div>

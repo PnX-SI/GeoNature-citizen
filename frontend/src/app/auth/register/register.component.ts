@@ -36,16 +36,17 @@ export class RegisterComponent {
       .register(this.user)
       .pipe(
         map(user => {
-          localStorage.setItem("access_token", user.access_token);
-          localStorage.setItem("refresh_token", user.refresh_token);
-          localStorage.setItem("username", user.username);
+
           if (user) {
+            console.log('user',user);
+            
             let message = user.message;
             this._success.subscribe(message => (this.successMessage = message));
-            this._success.pipe(debounceTime(1500)).subscribe(() => {
+            this._success.pipe(debounceTime(5000)).subscribe(() => {
               this.successMessage = null;
               this.activeModal.close();
             });
+         
             this.displaySuccessMessage(message);
             // redirect ?
             if (this.auth.redirectUrl) {
@@ -87,12 +88,10 @@ export class RegisterComponent {
 
   displayErrorMessage(message) {
     this._error.next(message);
-    console.error("errorMessage:", message);
   }
 
   displaySuccessMessage(message) {
     this._success.next(message);
-    console.info("successMessage:", message);
   }
 
   onUploadAvatar($event) {

@@ -44,17 +44,17 @@ def taxonomy_lists():
     else:
         from gncitizen.utils.env import taxhub_lists_url
         rtlists = requests.get(taxhub_lists_url)
-        current_app.logger.warning(rtlists)
+        #current_app.logger.warning(rtlists)
         if rtlists.status_code == 200:
             try:
                 tlists = rtlists.json()["data"]
-                current_app.logger.debug(tlists)
+                #current_app.logger.debug(tlists)
                 for tlist in tlists:
                     l = (tlist['id_liste'], tlist['nom_liste'])
                     taxonomy_lists.append(l)
             except Exception as e:
                 current_app.logger.critical(str(e))
-    current_app.logger.debug(taxonomy_lists)
+    #current_app.logger.debug(taxonomy_lists)
     return taxonomy_lists
 
         

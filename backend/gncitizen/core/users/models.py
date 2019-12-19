@@ -47,6 +47,7 @@ class UserModel(TimestampMixinModel, db.Model):
     phone = db.Column(db.String(15))
     organism = db.Column(db.String(100))
     avatar = db.Column(db.String())
+    active = db.Column(db.Boolean, default=False)
     admin = db.Column(db.Boolean, default=False)
 
     def save_to_db(self):
@@ -70,6 +71,7 @@ class UserModel(TimestampMixinModel, db.Model):
             "avatar": self.avatar,
             "full_name": name + " " + surname,
             "admin": self.admin,
+            "active": self.active,
             "timestamp_create": self.timestamp_create.isoformat(),
             "timestamp_update": self.timestamp_update.isoformat()
             if self.timestamp_update

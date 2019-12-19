@@ -11,7 +11,7 @@ from flask_jwt_extended import (
 )
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-
+from gncitizen.utils.mail_check import confirm_user_email, confirm_token
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.sqlalchemy import json_resp
@@ -145,10 +145,12 @@ def registration():
             handler = open(os.path.join(str(MEDIA_DIR), filename), "wb+")
             handler.write(imgdata)
             handler.close()
-
+        # send confirm mail
+        confirm_user_email(newuser)
         return (
             {
-                "message": """Félicitations, l'utilisateur "{}" a été créé""".format(
+                "message": """Félicitations, l'utilisateur "{}" a été créé.  \r\n Vous allez recevoir un email
+                pour activer votre compte """.format(
                     newuser.username
                 ),
                 "username": newuser.username,
@@ -208,6 +210,13 @@ def login():
                 },
                 400,
             )
+        if not current_user.active:
+            return (
+                {
+                    "message": "Votre compte n'a pas été activé"
+                },
+                400,
+        )
         if UserModel.verify_hash(password, current_user.password):
             access_token = create_access_token(identity=username)
             refresh_token = create_refresh_token(identity=username)
@@ -520,4 +529,38 @@ def reset_user_password():
                 )
             },
             500,
+        )
+
+
+@routes.route('/user/confirmEmail/<token>', methods=["GET"])
+@json_resp
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        return (
+            {
+                "message": "The confirmation link is invalid or has expired."
+            },
+            404,
+        )
+    user = UserModel.query.filter_by(email=email).first_or_404()
+    if user.active:
+        return (
+            {
+                "message": 'Account already confirmed. Please login.',
+                "status" : 208
+            },
+            208,
+        )
+    else:
+        user.active = True
+        user.update()
+        db.session.commit()
+        return (
+            {
+                "message": 'You have confirmed your account. Thanks!',
+                "status": 200
+            },
+            200,
         )

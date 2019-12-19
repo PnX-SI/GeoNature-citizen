@@ -37,6 +37,10 @@
   --modal-header-bg-linear: linear-gradient(179.4deg, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
 }
 
+button:focus{
+  outline: transparent;
+}
+
 html,
 body {
   height: 100%;

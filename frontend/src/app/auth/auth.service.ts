@@ -50,7 +50,7 @@ export class AuthService {
     return this.http.post(url, user).pipe(
       map(user => {
         if (user) {
-          this.authenticate(user);
+          //this.authenticate(user);
         }
         return user;
       })
@@ -147,5 +147,11 @@ export class AuthService {
     const now: number = new Date().getTime();
     const delta: number = (jwt.payload.exp * 1000 - now) / 1000.0;
     return delta;
+  }
+
+
+  confirmEmail (token): Observable<any> {
+    let url: string = `${AppConfig.API_ENDPOINT}/user/confirmEmail/${token}`;
+    return this.http.get(url)
   }
 }

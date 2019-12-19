@@ -11,7 +11,7 @@ popup {
   margin-left: var(--list-toggler-width);
   /* width: calc(100% - var(--list-toggler-width)); */
   height: 100%;
-  width: 100%;
+
 }
 
 .marker-cluster {

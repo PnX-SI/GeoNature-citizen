@@ -7,7 +7,7 @@
 <div class="modal-body">
   <ngb-alert *ngIf="errorMessage && !successMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}
   </ngb-alert>
-  <ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">{{ successMessage }}</ngb-alert>
+  <p *ngIf="successMessage">{{ successMessage }}</p>
   
   <form *ngIf="errorMessage || !successMessage" #registerForm="ngForm" (ngSubmit)="registerForm.valid && onRegister()">
     <ngb-alert [dismissible]="false" type="danger" *ngIf="email.errors && email.dirty" i18n>

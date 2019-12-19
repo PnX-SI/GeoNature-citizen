@@ -28,9 +28,9 @@ export class CongratsComponent implements IFlowComponent {
   ngOnInit(): void {
     this.username = localStorage.getItem("username");
     this.obs = this.data.obs.properties;
-   /**  this.timeout = setTimeout(() => {
+   this.timeout = setTimeout(() => {
       this.data.next(this.data);
-    }, 2000);*/
+    }, 2000);
   }
 
 

@@ -1,10 +1,10 @@
-section {
+app-home section {
     width: 100%;
     min-height: 70vh;
     position: relative;
 }
 
-.section:before {
+app-home .section:before {
     content: " ";
     position: absolute;
     top: 0;
@@ -415,13 +415,22 @@ app-observations {
         min-width: inherit !important;
     }
     #slider .carousel-text button{
-        background: var(--secondary);
+        background: #a8a8a8;
         border: none;
-        width: 100%;
+        margin: 0 auto;
+        border-radius: 5px;
+        padding: 5px 10px;
         color: #fff;
+        font-size: 18px;
+        font-weight: bold;
+        position: relative;
+        width: 30px;
+        height: 20px;
     }
-    #slider .carousel-text button[aria-expanded="true"]{
-        transform: rotate(180deg);
+    #slider .carousel-text button span{
+        position: absolute;
+        top: -8px;
+        left: 7px;
     }
 }
 

@@ -51,5 +51,6 @@ export const AppConfig = {
       "cd_nom"
     ],
     program_list_observers_names: true,
-    program_list_sort: "-timestamp_create"
+    program_list_sort: "-timestamp_create",
+    details_espece_url: "<url_inpn_or_atlas>/cd_nom/" // !! gardez bien le cd_nom/ dans l'url
 }

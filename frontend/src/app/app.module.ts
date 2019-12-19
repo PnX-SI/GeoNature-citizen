@@ -48,6 +48,7 @@ import { AdminComponent } from "./auth/admin/admin.component";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
+import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.component'
 
 @NgModule({
   imports: [
@@ -97,7 +98,8 @@ import { CommonModule } from '@angular/common';
     CongratsComponent,
     ModalFlowComponent,
     RewardComponent,
-    AdminComponent
+    AdminComponent,
+    ConfirmEmailComponent
   ],
   providers: [
     AuthService,

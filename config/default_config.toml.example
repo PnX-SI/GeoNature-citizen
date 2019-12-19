@@ -33,6 +33,7 @@ DEFAULT_CENTER_LONG = 5
 
 SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'MyS3cr3tK3y'
+CONFIRM_MAIL_SALT = 'your-secret-salt' # secret salt for corfirm mail token
 COOKIE_EXPIRATION = 7200
 COOKIE_AUTORENEW = true
 TRAP_ALL_EXCEPTIONS = false
@@ -64,6 +65,14 @@ UPLOAD_FOLDER = 'static/medias'
     <a href="{app_url}">Connexion</a>'
     '''
 
+[CONFIRM_EMAIL]
+    SUBJECT = "Activez votre compte"
+    FROM = 'contact@geonature-citizen.fr'
+    HTML_TEMPLATE = '''<p> Bonjour,</p><br /><p>Nous vous confirmons que votre compte a bien été créé.</p>
+     <p> Afin d'activer votre compte veuillez <a href="{activate_url}">cliquer ici.</a>
+     <p>Nous vous souhaitons la bienvenue sur notre site.</p><br />
+     <p>Bien à vous.</p>
+    '''
 
 [MAIL]
     MAIL_HOST = 'smtpd host'
