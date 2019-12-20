@@ -164,7 +164,7 @@ def get_stat():
         stats = {}
         stats["nb_obs"] = ObservationModel.query.count()
         stats["nb_user"] = UserModel.query.count()
-        stats["nb_program"] = ProgramsModel.query.count()
+        stats["nb_program"] = ProgramsModel.query.filter(ProgramsModel.is_active == True).count()
         stats["nb_espece"] = ObservationModel.query.distinct(
             ObservationModel.cd_nom).count()
         return (stats, 200)
