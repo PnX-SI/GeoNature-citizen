@@ -38,6 +38,9 @@
 .user-infos i:hover {
   cursor: pointer;
 }
+.profile-pic{
+  cursor: pointer;
+}
 
 .user-infos span {
   color: #fff;

@@ -15,7 +15,8 @@
     </ngb-alert>
     <div class="d-flex justify-content-center">
       <div class="avatar-wrapper">
-        <img class="profile-pic" src="{{userAvatar}}" />
+        <div *ngIf="!userAvatar" class="profile-pic" ></div>
+        <img *ngIf="userAvatar" class="profile-pic" src="{{userAvatar}}" />
         <div class="upload-button" (click)="fileToUpload.click()">
           <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
         </div>

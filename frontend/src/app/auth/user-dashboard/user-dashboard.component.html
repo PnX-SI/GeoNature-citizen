@@ -8,7 +8,8 @@
             {une observation} other
             {{{stats?.platform_attendance}} observations} }</span>
           <div class="avatar-main-wrapper">
-            <img class="profile-pic" [src]="userAvatar" (click)="onEditInfos(personalInfos)" />
+            <div *ngIf="!userAvatar" class="profile-pic" (click)="onEditInfos(personalInfos)" ></div>
+            <img *ngIf="userAvatar" class="profile-pic" src="{{userAvatar}}" (click)="onEditInfos(personalInfos)" />
           </div>
           <p (click)="onEditInfos(personalInfos)">{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
@@ -94,7 +95,8 @@
     <form [formGroup]="userForm" (ngSubmit)="userForm.valid && onUpdatePersonalData(userForm.value)">
       <div class="d-flex justify-content-center">
         <div class="avatar-wrapper">
-          <img class="profile-pic" src="{{userAvatar}}" />
+          <div *ngIf="!userAvatar" class="profile-pic" ></div>
+          <img *ngIf="userAvatar" class="profile-pic" src="{{userAvatar}}" />
           <div class="upload-button" (click)="fileToUpload.click()">
             <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
           </div>
