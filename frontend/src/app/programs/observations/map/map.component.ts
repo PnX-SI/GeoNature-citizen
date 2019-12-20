@@ -399,7 +399,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
         "
       />
       <p>
-        <b i18n>{{ !!data.nom_francais ? data.nom_francais : data.taxref?.nom_vern }}</b> <br />
+        <a class="espece-link" href="{{AppConfig.details_espece_url + data.taxref?.cd_nom}}" target="_blank"  i18n>{{ !!data.nom_francais ? data.nom_francais : data.taxref?.nom_vern }}</a> <br />
         <span>
         <span i18n *ngIf="AppConfig.program_list_observers_names">
           Observé par
@@ -413,7 +413,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
           le {{ data.date }}
         </span>
       </p>
-      <a href="{{AppConfig.details_espece_url + data.taxref?.cd_nom}}" title="En savoir plus" target="_blank" ><img class="icon" src="assets/binoculars.png" /></a>
+      <div><img class="icon" src="assets/binoculars.png" /></div>
     </ng-container>
   `
 })

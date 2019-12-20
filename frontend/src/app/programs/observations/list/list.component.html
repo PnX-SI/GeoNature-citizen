@@ -23,8 +23,7 @@
     </p>
   </div>
   <div id="list">
-    <div *ngFor="let o of (features$ | async); trackBy: trackByObs" class="espece obs-{{ o.properties.id_observation }}"
-      (click)="onObsClick(o)">
+    <div *ngFor="let o of (features$ | async); trackBy: trackByObs" class="espece obs-{{ o.properties.id_observation }}">
       <!-- FIXME: hardcoded api media endpoint -->
       <img class="default-img" [src]="
           o.properties.images && !!o.properties.images.length
@@ -36,7 +35,7 @@
             : 'assets/default_image.png'
         " />
       <div class="infos">
-        <h5 i18n>{{ !!o.properties.nom_francais ? o.properties.nom_francais : o.properties.taxref?.nom_vern }}</h5>
+        <a class="espece-link" i18n target="_blank" href="{{AppConfig.details_espece_url + o.properties.cd_nom}}">{{ !!o.properties.nom_francais ? o.properties.nom_francais : o.properties.taxref?.nom_vern }}</a>
         <p i18n *ngIf="AppConfig.program_list_observers_names">
           Observé par
           <span>{{
@@ -51,8 +50,7 @@
             à {{ o.properties.municipality?.name }}</span>
         </p>
       </div>
-      <a class="hide" href="{{AppConfig.details_espece_url + o.properties.cd_nom}}" title="En savoir plus"
-        target="_blank"><img src="assets/binoculars.png" /></a>
+      <a class="hide" (click)="onObsClick(o)" ><img src="assets/binoculars.png" /></a>
     </div>
   </div>
 </div>

@@ -453,17 +453,13 @@ select:focus {
   font-size: 18px;
 }
 
-.leaflet-popup-content a {
-  height: 80px;
-  width: 40px;
-  background: var(--primary);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
+.leaflet-popup-content .espece-link {
+  color :black
 }
-
+.leaflet-popup-content .espece-link:hover{
+  text-decoration: none !important;
+  color: #555;
+}
 .modal-header {
   background: var(--secondary);
   background: var(--modal-header-bg-moz);
