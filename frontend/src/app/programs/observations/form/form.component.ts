@@ -2,6 +2,7 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { geometryValidator, ngbDateMaxIsToday } from "./formValidators";
 import { MAP_CONFIG } from "./../../../../conf/map.config";
 import * as L from "leaflet";
+
 import {
   AfterViewInit,
   Component,
@@ -140,7 +141,7 @@ export class ObsFormComponent implements AfterViewInit {
         this.surveySpecies$.subscribe();
 
         // build map control
-        const formMap = L.map("formMap", { gestureHandling: true });
+        const formMap = L.map("formMap", { gestureHandling: true } as any);
         this.formMap = formMap;
 
         L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -169,7 +170,7 @@ export class ObsFormComponent implements AfterViewInit {
             locateOptions: {
               enableHighAccuracy: map_conf.GEOLOCATION_HIGH_ACCURACY
             }
-          })
+          } as any )
           .addTo(formMap);
 
         let ZoomViewer = L.Control.extend({
