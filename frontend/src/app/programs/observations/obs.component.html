@@ -53,7 +53,7 @@
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
-      <app-obs-map #obsMapRef [observations]="obsListRef.observationList" [program]="programFeature"
+      <app-obs-map #obsMapRef [observations]="observations" [program]="programFeature"
         (onClick)="onMapClicked($event)"></app-obs-map>
       <div class="btn-groups">
         <app-modalflow [coords]="coords" [program_id]="program_id"></app-modalflow>
