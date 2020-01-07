@@ -21,9 +21,9 @@ import { MarkerClusterGroup } from "leaflet";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
 import "leaflet-gesture-handling";
+import { GestureHandling } from "leaflet-gesture-handling";
+L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
 
-// import { AppConfig } from '../../../../conf/app.config';
-//const baseLayer = this.options.DEFAULT_BASE_MAP();
 
 const conf = {
   MAP_ID: "obsMap",
@@ -168,6 +168,7 @@ export class ObsMapComponent implements OnChanges {
   }
 
   initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
+    L.Map.addInitHook("addHandler", "gestureHandling", GestureHandling);
     this.options = options;
     this.observationMap = L.map(this.map.nativeElement, {
       layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay ?
@@ -194,8 +195,6 @@ export class ObsMapComponent implements OnChanges {
       .locate({
         icon: "fa fa-compass",
         position: this.options.GEOLOCATION_CONTROL_POSITION,
-        getLocationBounds: locationEvent =>
-          locationEvent.bounds.extend(this.programMaxBounds),
         locateOptions: {
           enableHighAccuracy: this.options.GEOLOCATION_HIGH_ACCURACY
         }
@@ -226,7 +225,6 @@ export class ObsMapComponent implements OnChanges {
             (gauge.innerHTML = "Zoom level: " + this.observationMap.getZoom())
         );
         container.appendChild(gauge);
-
         return container;
       }
     });
