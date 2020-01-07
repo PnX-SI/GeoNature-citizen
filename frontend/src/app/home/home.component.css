@@ -28,6 +28,7 @@ app-home .section:before {
 
 #welcome {
     background: url(../../assets/background.jpg) no-repeat;
+    width: 100%;
     background-size: cover;
     position: relative;
     height: calc(100vh - var(--router-outlet-margin-top));

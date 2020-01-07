@@ -48,7 +48,8 @@ import { AdminComponent } from "./auth/admin/admin.component";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
-import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.component'
+import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.component';
+import { LayoutModule } from '@angular/cdk/layout';
 
 @NgModule({
   imports: [
@@ -61,6 +62,7 @@ import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.compon
     NgxDatatableModule,
     CommonModule,
     BrowserAnimationsModule,
+    LayoutModule,
     ToastrModule.forRoot(
      {
       preventDuplicates: true,

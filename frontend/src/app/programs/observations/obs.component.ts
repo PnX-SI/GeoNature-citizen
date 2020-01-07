@@ -9,6 +9,7 @@ import {
   LOCALE_ID
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { forkJoin } from "rxjs";
 
 import { FeatureCollection, Feature } from "geojson";
@@ -45,12 +46,15 @@ export class ObsComponent implements OnInit, AfterViewInit {
 
   selectedObs: Feature;
   public isCollapsed : boolean = true;
+  isMobile: boolean;
 
+ 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     public flowService: ModalFlowService,
+    public breakpointObserver: BreakpointObserver
     
   ) {
     this.route.params.subscribe(params => (this.program_id = params["id"]));
@@ -60,6 +64,14 @@ export class ObsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.breakpointObserver.observe(['(min-width: 500px)']).subscribe((state: BreakpointState) => {
+      if (state.matches) {
+        this.isMobile = false;
+      } else {
+        this.isMobile = true;
+      }
+    });
+    
     this.route.data.subscribe((data: { programs: Program[] }) => {
       this.programs = data.programs;
       this.program = this.programs.find(p => p.id_program == this.program_id);

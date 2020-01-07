@@ -146,7 +146,10 @@ def registration():
             handler.write(imgdata)
             handler.close()
         # send confirm mail
-        confirm_user_email(newuser)
+        try:
+            confirm_user_email(newuser)
+        except Exception as e:
+            return {"message mail faild": str(e)}, 500
         return (
             {
                 "message": """Félicitations, l'utilisateur "{}" a été créé.  \r\n Vous allez recevoir un email
