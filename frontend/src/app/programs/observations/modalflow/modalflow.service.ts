@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, BehaviorSubject, Subscription } from "rxjs";
+import { Observable, BehaviorSubject } from "rxjs";
 
 import {
   NgbModal,

@@ -9,9 +9,9 @@ import { UseService } from "./user.service.service";
 import { saveAs } from "file-saver";
 import * as _ from "lodash";
 import { Point } from "leaflet";
-import { ModalFlowService } from "src/app/programs/observations/modalflow/modalflow.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { CustomFormValidator } from "./customFormValidator";
+import { ModalFlowService } from "../../programs/observations/modalflow/modalflow.service";
 
 @Component({
   selector: "app-user-dashboard",
@@ -19,7 +19,7 @@ import { CustomFormValidator } from "./customFormValidator";
   styleUrls: ["./user-dashboard.component.css"]
 })
 export class UserDashboardComponent implements OnInit {
-  readonly AppConfig = AppConfig;
+  public appConfig = AppConfig;
   modalRef: NgbModalRef;
   modalRefDel: NgbModalRef;
   username: string = "not defined";
@@ -64,7 +64,7 @@ export class UserDashboardComponent implements OnInit {
               this.role_id = user["features"]["id_role"];
               if (user["features"]["avatar"])
                 this.userAvatar =
-                  AppConfig.API_ENDPOINT +
+                  this.appConfig.API_ENDPOINT +
                   "/media/" +
                   user["features"]["avatar"];
               // FIXME: source backend conf
@@ -215,7 +215,7 @@ export class UserDashboardComponent implements OnInit {
       "programme",
       "denombrement",
       "commentaire",
-      "municipalite",
+      "commune",
       "coordonnee_x",
       "coordonnee_y"
     ]);

@@ -2,7 +2,7 @@ import { Component, Input, ViewChild, ViewEncapsulation } from "@angular/core";
 import { IFlowComponent } from "../../flow/flow";
 import { ObsFormComponent } from "../../../form/form.component";
 import { ObservationFeature } from "../../../observation.model";
-import { ModalFlowService } from "src/app/programs/observations/modalflow/modalflow.service";
+import { ModalFlowService } from "../../modalflow.service";
 @Component({
   templateUrl: "./committed.component.html",
   styleUrls: ["./committed.component.css"],
