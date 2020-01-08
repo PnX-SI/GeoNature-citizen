@@ -21,6 +21,7 @@ import { CustomFormValidator } from "./customFormValidator";
 export class UserDashboardComponent implements OnInit {
   readonly AppConfig = AppConfig;
   modalRef: NgbModalRef;
+  modalRefDel: NgbModalRef;
   username: string = "not defined";
   role_id: number;
   isLoggedIn: boolean = false;
@@ -38,6 +39,7 @@ export class UserDashboardComponent implements OnInit {
   userAvatar: string | ArrayBuffer;
   extentionFile: any;
   newAvatar: string | ArrayBuffer;
+  idObsToDelete: number;
 
   constructor(
     private auth: AuthService,
@@ -116,7 +118,7 @@ export class UserDashboardComponent implements OnInit {
             obs.geometry.coordinates[1]
           );
           this.rowData(obs, coords);
-          this.obsExport(obs)
+          this.obsExport(obs);
         });
       } else {
         this.observations = data[0].features;
@@ -126,14 +128,13 @@ export class UserDashboardComponent implements OnInit {
             obs.geometry.coordinates[1]
           );
           this.rowData(obs, coords);
-          this.obsExport(obs)
+          this.obsExport(obs);
         });
       }
     });
   }
 
-
-  rowData(obs,coords){
+  rowData(obs, coords) {
     this.rows.push({
       media_url:
         obs.properties.images && !!obs.properties.images.length
@@ -162,15 +163,18 @@ export class UserDashboardComponent implements OnInit {
     });
   }
 
-  obsExport(obs){
+  obsExport(obs) {
     this.obsToExport.push({
       id_observation: obs.properties.id_observation,
       date: obs.properties.date,
-      program: obs.properties.program_title,
-      count: obs.properties.count,
-      comment: obs.properties.comment,
-      municipality: obs.properties.municipality.name,
-      taxref: obs.properties.taxref.nom_complet
+      programme: obs.properties.program_title,
+      denombrement: obs.properties.count,
+      commentaire: obs.properties.comment,
+      municipalite: obs.properties.municipality.name,
+      cd_nom: obs.properties.taxref.cd_nom,
+      espece: obs.properties.taxref.nom_vern,
+      coordonnee_x: obs.geometry.coordinates[0],
+      coordonnee_y: obs.geometry.coordinates[1]
     });
   }
 
@@ -205,12 +209,15 @@ export class UserDashboardComponent implements OnInit {
   onExportObservations() {
     let csv_str = this.userService.ConvertToCSV(this.obsToExport, [
       "id_observation",
-      "taxref",
+      "espece",
+      "cd_nom",
       "date",
-      "program",
-      "count",
-      "comment",
-      "municipality"
+      "programme",
+      "denombrement",
+      "commentaire",
+      "municipalite",
+      "coordonnee_x",
+      "coordonnee_y"
     ]);
     let blob = new Blob([csv_str], { type: "text/csv" });
     saveAs(blob, "mydata.csv");
@@ -222,6 +229,7 @@ export class UserDashboardComponent implements OnInit {
       this.intiForm();
       this.modalRef = this.modalService.open(content, {
         size: "lg",
+        windowClass: "add-obs-modal",
         centered: true
       });
     });
@@ -254,11 +262,6 @@ export class UserDashboardComponent implements OnInit {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.modalRef) this.modalRef.close();
-    this.flowService.setModalCloseSatus(null);
-  }
-
   intiForm() {
     this.userForm = this.formBuilder.group(
       {
@@ -283,5 +286,31 @@ export class UserDashboardComponent implements OnInit {
         validator: CustomFormValidator.MatchPassword
       }
     );
+  }
+
+  openDeleteModal(deleteModal: any, idObs: number) {
+    this.idObsToDelete = idObs;
+    this.modalRefDel = this.modalService.open(deleteModal, {
+      windowClass: "delete-modal",
+      centered: true
+    });
+  }
+
+  onCancelDelete() {
+    this.modalRefDel.close();
+  }
+
+  onDeleteObs() {
+    this.userService.deleteObsservation(this.idObsToDelete).subscribe(() => {
+      this.modalRefDel.close();
+      this.getData();
+      this.idObsToDelete = null;
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.modalRef) this.modalRef.close();
+    if (this.modalRefDel) this.modalRefDel.close();
+    this.flowService.setModalCloseSatus(null);
   }
 }

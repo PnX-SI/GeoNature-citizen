@@ -56,3 +56,8 @@ span.input-group-text {
     color: var(--secondary);
     border: solid 1px var(--secondary);
 }
+@media screen and (max-width: 775px) {
+    .modal-header h4{
+        font-size: 18px;
+    }
+}

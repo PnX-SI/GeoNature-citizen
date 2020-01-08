@@ -110,8 +110,9 @@ div.btn-group a:first-child {
 
 @media screen and (max-width: 767px) {
   .navbar form {
-    flex-direction: column;
-    align-items: flex-end;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
   }
 
   .navbar form ul {
@@ -121,6 +122,7 @@ div.btn-group a:first-child {
   .navbar form ul li {
     min-width: none !important;
     max-width: none !important;
+    text-align : left;
   }
 
   .navbar div.btn-group {
@@ -140,5 +142,12 @@ div.btn-group a:first-child {
   }
   .navbar img {
     height: 40px;
+  }
+  .programs-modal .modal-dialog, .obs-modal .modal-dialog{
+    margin: 0px !important;
+  }
+  .programs-modal .modal-content, .obs-modal .modal-content{
+    max-height: inherit;
+    height: 100vh;
   }
 }

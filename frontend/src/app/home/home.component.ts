@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation, AfterViewChecked, Inject, LOCALE_ID } from "@angular/core";
+import {Component, OnInit, AfterViewChecked, Inject, LOCALE_ID } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { Meta, SafeHtml, DomSanitizer } from "@angular/platform-browser";
@@ -12,7 +12,6 @@ import { ObservationsService } from "../programs/observations/observations.servi
   selector: "app-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.css"],
-  encapsulation: ViewEncapsulation.None,
   providers: [ProgramsResolve]
 })
 export class HomeComponent implements OnInit, AfterViewChecked {

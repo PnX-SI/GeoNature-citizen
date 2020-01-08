@@ -1,17 +1,24 @@
-/* Sticky footer styles
--------------------------------------------------- */
-.footer {
-  /* position: fixed;
+footer{
+  margin-top: 20px;
+  padding: 20px 0px;
   text-align: center;
-  margin-left: 60px;
-  width: calc(100vw - 60px);
-  bottom: 0; */
-  /* width: 100%-60px; */
+  background: rgb(226, 226, 226);
+}
 
-  /* Set the fixed height of the footer here */
-  height: 30px;
-  line-height: 30px;
-  /* Vertically center the text there */
-  background-color: #fefefe;
-  box-shadow: 0px -2px 2px 0  rgba(0, 0, 0, 0.2);
+footer p, footer div{
+  margin: 0 auto;
+  max-width: 80%;
+}
+
+footer div{
+  margin-bottom: 20px;
+}
+
+footer div a {
+  text-decoration: none;
+  color: var(--secondary) !important;
+}
+
+footer div a:hover{
+  border-bottom: solid 1px black;
 }

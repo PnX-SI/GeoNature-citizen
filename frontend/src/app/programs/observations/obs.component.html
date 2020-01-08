@@ -1,40 +1,39 @@
 <div class="row">
   <!-- LA PLATEFORME -->
-  <section *ngIf="programs.length === 1" id="welcome" class="row">
-    <h1
-      i18n="Bienvenue<br />
-  sur Geonature Citizen"
-    >
+  <section *ngIf="programs.length === 1" id="welcome" class="row obs-section">
+    <h1 i18n="Bienvenue<br />
+  sur Geonature Citizen">
       Bienvenue<br />
       sur Geonature Citizen
     </h1>
     <a class="btn-big">{{ AppConfig.platform_participate[localeId] }}</a>
-    <span i18n="Scrollez pour en voir plus !"
-      >Scrollez pour en voir plus !</span
-    >
+    <span i18n="Scrollez pour en voir plus !">Scrollez pour en voir plus !</span>
     <img class="d-block scroll" src="assets/scroll.svg" />
   </section>
 </div>
 
 <div class="row">
   <!-- LE PROGRAMME -->
-  <section id="slide">
+  <section id="slide" class="obs-section">
     <div id="slider" class="carousel slide">
       <div class="carousel-inner">
         <h2 i18n>
           Le programme <span>{{ program.title }}</span>
         </h2>
         <div class="carousel-item active">
-          <img
-            class="d-block w-100 default-img"
-            [src]="program.image || 'assets/default_program.jpg'"
-            alt="program image (fixme context)"
-          />
+          <img class="d-block w-100 default-img" [src]="program.image || 'assets/default_program.jpg'"
+            alt="program image (fixme context)" />
           <div class="carousel-text-container">
             <div class="carousel-text">
-              <h3>{{ program.title }}</h3>
-              <p [innerHTML]="program.html_short_desc"></p>
-              <div [innerHTML]="program.html_long_desc"></div>
+              <h3 class="mobile">{{ program.title }}</h3>
+              <h3 class="desktop">{{ program.title }}</h3>
+              <div>
+                <p [innerHTML]="program.html_short_desc"></p>
+                <div [innerHTML]="program.html_long_desc" id="collapse" [ngbCollapse]="isCollapsed"></div>
+                <button type="button" class="mobile" (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapse"
+                  aria-expanded="false"><span>...</span></button>
+              </div>
             </div>
           </div>
         </div>
@@ -45,35 +44,43 @@
 
 <div class="row">
   <!-- LES OBSERVATIONS -->
-  <section id="program" class="observations row">
-    <input
-      id="slide-sidebar"
-      type="checkbox"
-      role="button"
-      (click)="toggleList()"
-    />
-    <label class="toggle" for="slide-sidebar"
-      ><i class="fa fa-chevron-left"></i
-    ></label>
+  <section *ngIf="!isMobile"  id="program" class="observations row  obs-section">
+    <input id="slide-sidebar" type="checkbox" role="button" (click)="toggleList()" />
+    <label class="toggle" for="slide-sidebar"><i class="fa fa-chevron-left"></i></label>
     <div class="col-lg-12 col-md-12 side-bar" id="list">
-      <app-obs-list
-        #obsListRef
-        [observations]="observations"
-        [taxa]="surveySpecies"
-        (obsSelect)="obsMapRef.showPopup($event)"
-      ></app-obs-list>
+      <app-obs-list #obsListRef [observations]="observations" [taxa]="surveySpecies"
+        (obsSelect)="obsMapRef.showPopup($event)"></app-obs-list>
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
-      <app-obs-map
-        #obsMapRef
-        [observations]="obsListRef.observationList"
-        [program]="programFeature"
-        (onClick)="onMapClicked($event)"
-      ></app-obs-map>
+      <app-obs-map #obsMapRef [observations]="observations" [program]="programFeature"
+        (onClick)="onMapClicked($event)"></app-obs-map>
       <div class="btn-groups">
         <app-modalflow [coords]="coords" [program_id]="program_id"></app-modalflow>
       </div>
     </div>
+  </section>
+
+  <section *ngIf="isMobile" class="obs-tabs  obs-section">
+    <ngb-tabset>
+      <ngb-tab title="Liste">
+        <ng-template ngbTabContent>
+                  <div class="side-bar" id="list">
+            <app-obs-list #obsListRef [observations]="observations" [taxa]="surveySpecies"
+              (obsSelect)="obsMapRef.showPopup($event)"></app-obs-list>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="Carte">
+        <ng-template ngbTabContent id="tab-map" class="map">
+          <app-obs-map #obsMapRef [observations]="observations" [program]="programFeature"
+            (onClick)="onMapClicked($event)">
+          </app-obs-map>
+          <div class="btn-groups">
+            <app-modalflow [coords]="coords" [program_id]="program_id"></app-modalflow>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
   </section>
 </div>

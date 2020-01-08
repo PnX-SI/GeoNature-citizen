@@ -41,9 +41,11 @@ span.input-group-text {
   margin-bottom: 10px;
 }
 
-.modal-body .form-row:first-child,
-.modal-body .form-row:nth-child(2n) {
+.modal-body .form-row:not(:last-of-type){
   border-bottom: solid 1px var(--secondary);
+}
+.modal-body .form-row:not(:first-of-type){
+  padding-top: 10px;
 }
 
 .modal-body button {
@@ -58,6 +60,12 @@ span.input-group-text {
   background: transparent;
   color: var(--secondary);
   border: solid 1px var(--secondary);
+}
+
+@media screen and (max-width: 775px) {
+  .modal-header h4{
+    font-size: 18px;
+  }
 }
 
 @media screen and (max-width: 576px) {

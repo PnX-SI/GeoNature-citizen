@@ -1,7 +1,12 @@
-section {
+.obs-section {
   width: 100%;
   min-height: 70vh;
   position: relative;
+  margin-bottom: 20px;
+}
+
+.obs-section#slide{
+  /*margin-top: 106px;*/
   margin-bottom: 20px;
 }
 
@@ -91,7 +96,7 @@ section {
 
 #slider .carousel-text {
   padding: 35px 20px 35px 35px;
-  min-width: 450px;
+  min-width: 100%;
   max-height: 80%;
   height: auto;
   background-color: #eeeeeecf;
@@ -103,6 +108,33 @@ section {
 #slider .carousel-text h3 {
   font-family: "Satisfy";
   color: var(--ternary);
+  padding-right: 20px;
+  position: relative;
+}
+
+/*#slider .carousel-text h3[aria-expanded="true"]:before{
+  content: 'v';
+  font-family: arial, sans-serif;
+  font-size: 20px;
+  position: absolute;
+  right: 0px;
+  top: 0;
+  transition: all 0.5s ease-in-out;
+  transform: rotate(180deg);
+}
+#slider .carousel-text h3[aria-expanded="false"]:before{
+  content: 'v';
+  font-family: arial, sans-serif;
+  font-size: 20px;
+  position: absolute;
+  right: 0px;
+  top: 3px;
+  transition: all 0.5s ease-in-out;
+  transform: rotate(0deg);
+}*/
+
+#slider .carousel-text .collapse{
+  transition: all 0.5s ease-in-out;
 }
 
 #slider .carousel-text > p {
@@ -124,6 +156,9 @@ section {
   width: fit-content;
   text-align: center;
   margin: 0 auto;
+}
+#slider .carousel-text a.btn-big{
+  background-color: var(--secondary) !important;
 }
 
 .mobile-hidden {
@@ -161,6 +196,7 @@ app-observations {
 
 section .observations {
   min-width: 100%;
+  margin-top: 106px;
 }
 
 .observations {
@@ -218,3 +254,49 @@ section .observations {
   background-color: var(--primary);
 }
 
+/* TABS */
+
+.obs-tabs .nav-item{
+  width: 50%;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding-bottom: 5px;
+}
+
+.obs-tabs .nav-item a{
+  color: #a8a8a8;
+  border: none;
+  border-bottom: solid 3px #a8a8a8;
+  transition: all 0.3s ease-in-out;
+}
+
+.obs-tabs .nav-item a.active{
+  border:none;
+  background: none;
+  color: var(--secondary);
+  border-bottom: solid 3px var(--secondary);
+}
+
+@media screen and (max-width: 1024px){
+  #slider .carousel-text {
+    min-width: inherit !important;
+  }
+}
+@media screen and (max-width: 760px){
+  .obs-tabs .tab-pane.active #mapList #list, .obs-tabs .tab-pane.active #map{
+    max-height: calc(100vh - 295px);
+    overflow: scroll;
+  }
+}
+@media screen and (max-width: 576px){
+  .obs-tabs .tab-pane.active #mapList #list, .obs-tabs .tab-pane.active #map{
+    max-height: calc(100vh - 260px);
+    overflow: scroll;
+  }
+}
+@media screen and (max-width: 576px) {
+  section#slide{
+    margin-top: 66px;
+  }
+}

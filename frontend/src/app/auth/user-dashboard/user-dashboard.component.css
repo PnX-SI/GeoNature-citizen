@@ -38,6 +38,9 @@
 .user-infos i:hover {
   cursor: pointer;
 }
+.profile-pic{
+  cursor: pointer;
+}
 
 .user-infos span {
   color: #fff;
@@ -56,10 +59,7 @@
   height: auto;
   margin: 0 auto;
   border-radius: 50%;
- 
     fill: red;
-  
-  
 }
 
 .user-infos p {
@@ -72,20 +72,23 @@
   font-size: 23px;
 }
 
-#badges {
-  margin-top: 30px;
-}
-
 section h3 {
   text-align: center;
   font-weight: normal;
   text-transform: uppercase;
 }
 
+#badges.container {
+  margin-top: 30px;
+  max-width: 1130px !important;
+  margin: 0 auto !important;
+  padding: 0px;
+}
+
 #badges .inner-row {
   padding: 8px 10px;
-  background: #f3f3f3;
-  border: solid 3px #fff;
+  margin-bottom: 10px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 #badges div img {
@@ -164,6 +167,7 @@ app-modalflow {
   color: #fff;
   text-transform: uppercase;
   margin: 0 auto;
+  font-size: 18px;
 }
 
 .modal-header button {
@@ -214,6 +218,9 @@ app-modalflow {
 .danger{
   color: red;
 }
+.btn-danger{
+  color: white !important;
+}
 @media screen and (max-width: 991px) {
   #badges .row div:nth-child(2):before {
     content: " ";
@@ -234,9 +241,25 @@ app-modalflow {
   }
 }
 
+@media screen and (max-width: 1024px) {
+  .ngx-datatable .datatable-body .datatable-row-wrapper{
+    overflow-x: scroll;
+  }
+}
+
+@media screen and (max-width: 775px) {
+  .modal-header h4{
+    font-size: 18px;
+  }
+}
+
 @media screen and (max-width: 577px) {
   .personal-data button {
     width: 100% !important;
+  }
+  .title::before,
+  .title::after {
+    width: 1rem;
   }
 }
 
@@ -269,4 +292,14 @@ app-modalflow {
   background: #ecf0f1;
   color: #34495e;
   text-align: center;
+}
+
+.green-btn {
+  background-color: var(--color-green);
+  color: #fff;
+  border: none;
+  padding: 5px 30px;
+  text-transform: uppercase;
+  font-size: 13px;
+  width: fit-content;
 }

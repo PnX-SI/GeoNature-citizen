@@ -12,6 +12,7 @@ import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.com
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { AuthGuard } from "./auth/auth.guard";
 import { AdminComponent } from "./auth/admin/admin.component";
+import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.component'
 
 const appRoutes: Routes = [
   {
@@ -45,6 +46,10 @@ const appRoutes: Routes = [
     path: "programs/:id/observations",
     component: ObsComponent,
     resolve: { programs: ProgramsResolve }
+  },
+  {
+    path: "confirmEmail/:token",
+    component: ConfirmEmailComponent,
   },
   { path: "synthesis/species/:id", component: SpeciesComponent },
   { path: "**", component: PageNotFoundComponent }

@@ -5,11 +5,12 @@ app-modalflow  {
 }
 
 @media screen and (max-width: 450px){
-    app-modalflow  {
-        right: 0px;
-        left: 0px;
-    }
     app-modalflow button:first-child{
         margin: 0px !important;
     }
+}
+.btn-secondary{
+    color: white !important;
+    margin-right: 20px ;
+    margin-left: 0px;
 }

@@ -3,7 +3,9 @@
         <h1 i18n="Programs modal title|PROGRAMMES">
             PROGRAMMES&nbsp;<span class="badge badge-pill badge-light">{{
         (programs$ | async)?.length
-      }}</span>
+      }}</span>  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
         </h1>
         <div class="container" id="main">
             <div class="row justify-content-center">

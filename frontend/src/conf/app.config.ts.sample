@@ -7,7 +7,8 @@ export const AppConfig = {
         MULTILINGUAL:false,
         DISPLAY_FOOTER: true,
         DISPLAY_TOPBAR: false,
-        DISPLAY_SIDEBAR: true
+        DISPLAY_SIDEBAR: true,
+        DISPLAY_STATS: true,
     },
     about: true,
     URL_APPLICATION:"http://127.0.0.1:4200",
@@ -51,5 +52,6 @@ export const AppConfig = {
       "cd_nom"
     ],
     program_list_observers_names: true,
-    program_list_sort: "-timestamp_create"
+    program_list_sort: "-timestamp_create",
+    details_espece_url: "<url_inpn_or_atlas>/cd_nom/" // !! gardez bien le cd_nom/ dans l'url
 }

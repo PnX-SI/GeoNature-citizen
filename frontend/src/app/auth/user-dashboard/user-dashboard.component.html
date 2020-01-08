@@ -8,7 +8,8 @@
             {une observation} other
             {{{stats?.platform_attendance}} observations} }</span>
           <div class="avatar-main-wrapper">
-            <img class="profile-pic" [src]="userAvatar" (click)="onEditInfos(personalInfos)" />
+            <div *ngIf="!userAvatar" class="profile-pic" (click)="onEditInfos(personalInfos)" ></div>
+            <img *ngIf="userAvatar" class="profile-pic" src="{{userAvatar}}" (click)="onEditInfos(personalInfos)" />
           </div>
           <p (click)="onEditInfos(personalInfos)">{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
@@ -16,26 +17,27 @@
       <div id="myObs" class="container">
         <h3 class="title" i18n>Mes observations</h3>
         <ngx-datatable *ngIf="observations" class="material" [rows]="rows" [headerHeight]="40" [footerHeight]="40"
-          [limit]="7" [rowHeight]="'auto'" [reorderable]="reorderable" [selectionType]="'single'">
+          [limit]="7" [rowHeight]="'auto'" [reorderable]="reorderable" [scrollbarH]="true"  [selectionType]="'single'">
           <ngx-datatable-column name="Photo" prop="media_url">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <img class="main-photo img-fluid" src="{{row.media_url}}" alt="">
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="Espèce" prop="taxref" width="400">
+          <ngx-datatable-column name="Espèce" prop="taxref" width="200">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              {{row.taxref.nom_complet}}
+              {{row.taxref.nom_vern}}
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="Date" prop="date">
           </ngx-datatable-column>
-          <ngx-datatable-column name="Lieu" prop="municipality" width="200">
+          <ngx-datatable-column name="Lieu" prop="municipality" width="160">
           </ngx-datatable-column>
           <ngx-datatable-column name="Programme" prop="program" width="200">
           </ngx-datatable-column>
-          <ngx-datatable-column name="Editer">
+          <ngx-datatable-column>
             <ng-template let-row="row" ngx-datatable-cell-template>
               <app-modalflow [coords]="row.coords" [updateData]="row" [program_id]="row.program_id"></app-modalflow>
+              <button class="btn btn-danger" placement="top" ngbTooltip="Supprimer"  (click)="openDeleteModal(deleteModal,row.id_observation )" ><i class="fa fa-trash"></i></button>
             </ng-template>
           </ngx-datatable-column>
         </ngx-datatable>
@@ -93,7 +95,8 @@
     <form [formGroup]="userForm" (ngSubmit)="userForm.valid && onUpdatePersonalData(userForm.value)">
       <div class="d-flex justify-content-center">
         <div class="avatar-wrapper">
-          <img class="profile-pic" src="{{userAvatar}}" />
+          <div *ngIf="!userAvatar" class="profile-pic" ></div>
+          <img *ngIf="userAvatar" class="profile-pic" src="{{userAvatar}}" />
           <div class="upload-button" (click)="fileToUpload.click()">
             <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
           </div>
@@ -175,8 +178,28 @@
   </div>
 </ng-template>
 
+
+
+
+<ng-template #deleteModal let-modal>
+    <div class="modal-delete-header">
+      <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
+    </div>
+    <div class="modal-delete-body">
+      Êtes-vous sûr de vouloir supprimer cette observation ?
+      <br>
+      Sa suppression sera définitive
+    </div>
+    <div class="modal-delete-footer">
+      <button type="button" class="cancel-btn" style="margin-right: 15px" (click)="onCancelDelete()">ANNULER</button>
+      <button type="button" class="green-btn" (click)="onDeleteObs()">OUI</button>
+    </div>
+  </ng-template>
+
 <div *ngIf="!observations" id="spinner">
   <div class="loader-1"></div>
   <div class="loader-2"></div>
   <div class="loader-3"></div>
 </div>
+
+
