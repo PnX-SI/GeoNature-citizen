@@ -30,6 +30,7 @@ export class TopbarComponent implements OnInit {
   canDisplayAbout: boolean = AppConfig.about;
   canSignup: boolean = AppConfig.signup;
   adminUrl: SafeUrl;
+  logoImage: String;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,6 +42,7 @@ export class TopbarComponent implements OnInit {
   ) {
     const tmp = localStorage.getItem("username");
     this.username = tmp ? tmp.replace(/\"/g, "") : "Anonymous";
+    this.logoImage = AppConfig.API_ENDPOINT + "/media/logo.png";
     this.route.data
       .pipe(
         tap((data: { programs: Program[] }) => {
