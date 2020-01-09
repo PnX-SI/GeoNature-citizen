@@ -27,9 +27,10 @@ app-home .section:before {
 } */
 
 #welcome {
-    background: url(../../assets/background.jpg) no-repeat;
+    /* background: url(../../assets/background.jpg) no-repeat; */
     width: 100%;
     background-size: cover;
+    background-repeat: no-repeat;
     position: relative;
     height: calc(100vh - var(--router-outlet-margin-top));
     margin-top: var(--router-outlet-margin-top);
