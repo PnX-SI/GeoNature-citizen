@@ -380,7 +380,7 @@ export class ObsMapComponent implements OnChanges {
           data.image
             ? data.image
             : data.medias && !!data.medias.length
-            ? AppConfig.API_TAXHUB +
+            ? appConfig.API_TAXHUB +
               '/tmedias/thumbnail/' +
               data.medias[0].id_media +
               '?h=80&v=80'
@@ -390,16 +390,15 @@ export class ObsMapComponent implements OnChanges {
       <p>
         <a
           class="espece-link"
-          href="{{ AppConfig.details_espece_url + data.taxref?.cd_nom }}"
+          href="{{ appConfig.details_espece_url + data.taxref?.cd_nom }}"
           target="_blank"
-          i18n
           >{{
             !!data.nom_francais ? data.nom_francais : data.taxref?.nom_vern
           }}</a
         >
         <br />
         <span>
-          <span i18n *ngIf="AppConfig.program_list_observers_names">
+          <span *ngIf="appConfig.program_list_observers_names">
             Observé par
             {{
               data.observer && data.observer.username
@@ -417,5 +416,5 @@ export class ObsMapComponent implements OnChanges {
 })
 export class MarkerPopupComponent {
   @Input() data;
-  AppConfig = AppConfig;
+  public appConfig = AppConfig;
 }

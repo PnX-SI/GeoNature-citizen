@@ -15,7 +15,7 @@ popup {
 }
 
 .marker-cluster {
-  background-image: url(/assets/marker2.svg);
+  background-image: url(../../../../assets/marker2.svg);
 }
 
 .marker-cluster span {

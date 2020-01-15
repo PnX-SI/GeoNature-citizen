@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core";
-import { ModalFlowService } from "src/app/programs/observations/modalflow/modalflow.service";
+import { ModalFlowService } from "../../modalflow.service";
 import { IFlowComponent } from "../../flow/flow";
 import { AppConfig } from "../../../../../../conf/app.config";
 

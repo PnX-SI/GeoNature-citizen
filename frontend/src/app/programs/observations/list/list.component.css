@@ -23,7 +23,14 @@
 #list .espece:hover {
   border: solid 2px;
   border-color: var(--primary);
+}
 
+#list .espece:hover .espece-link{
+  text-decoration: underline;
+}
+
+#list .espece a.espece-link:hover{
+  text-decoration: underline !important;
 }
 
 .espece:hover .hide {

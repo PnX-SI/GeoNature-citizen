@@ -27,7 +27,6 @@ app-home .section:before {
 } */
 
 #welcome {
-    /* background: url(../../assets/background.jpg) no-repeat; */
     width: 100%;
     background-size: cover;
     background-repeat: no-repeat;
@@ -352,6 +351,21 @@ app-observations {
         width: 100% !important;
     }
 }
+
+@media screen and (max-width: 768px) {
+    #welcome{
+        height: inherit;
+        min-height: 280px;
+        max-height: 280px;
+    }
+    #welcome h1{
+        position: absolute;
+    }
+    #welcome a.scroll {
+        display: none;
+    }
+}
+
 @media screen and (min-width: 760px) {
     .carousel-text .collapse:not(.show){
         display: block;

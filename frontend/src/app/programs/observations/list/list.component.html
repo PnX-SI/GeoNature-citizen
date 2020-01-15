@@ -3,7 +3,7 @@
     <select class="form-control rounded-0" id="inputSpecies" [(ngModel)]="selectedTaxon"
       (ngModelChange)="onFilterChange()">
       <option [ngValue]="null" i18n>Toutes espèces</option>
-      <option *ngFor="let s of surveySpecies" [ngValue]="s" i18n>
+      <option *ngFor="let s of surveySpecies" [ngValue]="s">
         {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }} (<i>{{ s.taxref?.nom_complet }}</i>)
       </option>
     </select>
@@ -17,7 +17,7 @@
     </select>
   </div>
   <div class="obs-found">
-    <p i18n>
+    <p >
       {{ (features$ | async)?.length }} { +(features$ | async)?.length, plural, =0 { observation trouvée } =1 {
       observation trouvée !} other { observations trouvées !} }
     </p>
@@ -27,16 +27,16 @@
       <!-- FIXME: hardcoded api media endpoint -->
       <img class="default-img" [src]="
           o.properties.images && !!o.properties.images.length
-            ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
+            ? appConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
             : o.properties.image
             ? o.properties.image
             : o.properties.medias && !!o.properties.medias.length
-            ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + o.properties.medias[0].id_media + '?h=80&v=80'
+            ? appConfig.API_TAXHUB + '/tmedias/thumbnail/' + o.properties.medias[0].id_media + '?h=80&v=80'
             : 'assets/default_image.png'
         " />
       <div class="infos">
-        <a class="espece-link" i18n target="_blank" href="{{AppConfig.details_espece_url + o.properties.cd_nom}}">{{ !!o.properties.nom_francais ? o.properties.nom_francais : o.properties.taxref?.nom_vern }}</a>
-        <p i18n *ngIf="AppConfig.program_list_observers_names">
+        <a class="espece-link" target="_blank" href="{{appConfig.details_espece_url + o.properties.cd_nom}}">{{ !!o.properties.nom_francais ? o.properties.nom_francais : o.properties.taxref?.nom_vern }}</a>
+        <p  *ngIf="appConfig.program_list_observers_names">
           Observé par
           <span>{{
             o.properties.observer?.username
@@ -44,7 +44,7 @@
               : "Anonyme"
           }}</span>
         </p>
-        <p i18n>
+        <p >
           le <span>{{ o.properties.date }}</span>
           <span *ngIf="o.properties.municipality?.name">
             à {{ o.properties.municipality?.name }}</span>
