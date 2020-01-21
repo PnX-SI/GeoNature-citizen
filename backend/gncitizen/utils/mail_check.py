@@ -29,6 +29,9 @@ def confirm_user_email(newuser):
             current_app.config["MAIL"]["MAIL_HOST"],
             int(current_app.config["MAIL"]["MAIL_PORT"]),
         ) as server:
+            server.ehlo()
+            if current_app.config["MAIL"]["MAIL_STARTTLS"]:
+                server.starttls()
             server.login(
                 str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
                 str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
