@@ -63,6 +63,7 @@ export class AuthService {
     localStorage.setItem("refresh_token", user.refresh_token);
     this.authenticated$.next(true);
     localStorage.setItem("username", user.username);
+    localStorage.setItem("userAvatar", user.userAvatar);
   }
 
   logout(): Promise<any> {

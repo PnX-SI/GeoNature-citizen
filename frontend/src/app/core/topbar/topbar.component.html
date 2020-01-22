@@ -33,7 +33,9 @@
           <ng-template #connected>
             <a placement="bottom" i18n-ngbTooltip ngbTooltip="Mon tableau de bord"   (click)="isCollapsed = !isCollapsed" routerLink="mydashboard"
               routerLinkActive="active">
-              <i class="fa fa-fw fa-user-circle"></i> &nbsp;{{ username }}
+              <i *ngIf="!userAvatar" class="fa fa-fw fa-user-circle"></i>
+              <img *ngIf="userAvatar" class="rounded-circle" width="22px" src="{{userAvatar}}" />
+               &nbsp;{{ username }}
             </a>
             <a class="btn btn-sm my-2 my-sm-0" (click)="logout();isCollapsed = true" style="min-width: 147px !important" i18n>
               <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter

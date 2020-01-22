@@ -1,177 +1,73 @@
 <div class="modal-header">
   <h4 class="modal-title" i18n="login|login">Se connecter</h4>
-  <button
-    type="button"
-    class="close rounded-0"
-    aria-label="Close"
-    (click)="activeModal.dismiss('Cross click')"
-  >
+  <button type="button" class="close rounded-0" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     &times;
   </button>
 </div>
 <div class="modal-body">
-  <ngb-alert
-    *ngIf="errorMessage && !successMessage"
-    type="danger"
-    (close)="errorMessage = null"
-    >{{ errorMessage }}</ngb-alert
-  >
-  <ngb-alert
-    *ngIf="successMessage"
-    type="success"
-    (close)="successMessage = null"
-    >{{ successMessage }}</ngb-alert
-  >
+  <ngb-alert *ngIf="errorMessage && !successMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}
+  </ngb-alert>
+  <ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">{{ successMessage }}</ngb-alert>
   <!-- Recover password -->
-  <form
-    *ngIf="!successMessage && recoverPassword"
-    #recoverForm="ngForm"
-    (ngSubmit)="recoverForm.form.valid && onRecoverPassword()"
-  >
-    <div class="form-group">
-      <label for="username" i18n>Utilisateur</label>
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span
-            class="input-group-text"
-            [ngClass]="{
-              'ng-invalid': username.invalid
-            }"
-            ><i class="fa fa-user"></i
-          ></span>
-        </div>
-        <input
-          type="text"
-          class="form-control rounded-0"
-          id="username"
-          i18n-placeholder
-          placeholder="Entrez votre nom d'utilisateur"
-          [(ngModel)]="recovery.username"
-          name="username"
-          autocomplete="username"
-          required
-          #username="ngModel"
-        />
-      </div>
-    </div>
+  <form *ngIf="!errorMessage && !successMessage && recoverPassword" #recoverForm="ngForm"
+    (ngSubmit)="recoverForm.form.valid && onRecoverPassword()">
     <div class="form-group">
       <label for="Email" i18n>Votre Email</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span
-            class="input-group-text"
-            [ngClass]="{
+          <span class="input-group-text" [ngClass]="{
               'ng-invalid': email.invalid
-            }"
-            ><i class="fa fa-envelope"></i
-          ></span>
+            }"><i class="fa fa-envelope"></i></span>
         </div>
-        <input
-          type="email"
-          class="form-control rounded-0"
-          name="email"
-          id="email"
-          i18n-placeholder
-          placeholder="Entrez votre email"
-          [(ngModel)]="recovery.email"
-          #email="ngModel"
-          autocomplete="email"
-          required
-          pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-        />
+        <input type="email" class="form-control rounded-0" name="email" id="email" i18n-placeholder
+          placeholder="Entrez votre email" [(ngModel)]="recovery.email" #email="ngModel" autocomplete="email" required
+          pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$" />
       </div>
     </div>
-    <button
-      *ngIf="(errorMessage || !successMessage) && recoverPassword"
-      class="btn btn-outline-primary rounded-0"
-      expand="block"
-      type="submit"
-      i18n
-      [disabled]="!recoverForm.form.valid"
-    >
+    <button *ngIf="(errorMessage || !successMessage) && recoverPassword" class="btn btn-outline-primary rounded-0"
+      expand="block" type="submit" i18n [disabled]="!recoverForm.form.valid">
       Récupérer le compte
     </button>
     <!-- End recover password -->
   </form>
-  <form
-    *ngIf="!successMessage && !recoverPassword"
-    #loginForm="ngForm"
-    (ngSubmit)="loginForm.form.valid && onLogin()"
-  >
+  <form *ngIf="!successMessage && !recoverPassword" #loginForm="ngForm" (ngSubmit)="loginForm.form.valid && onLogin()">
     <div class="form-group">
       <label for="username" i18n="login|username">Utilisateur</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span
-            class="input-group-text"
-            [ngClass]="{
+          <span class="input-group-text" [ngClass]="{
               'ng-invalid': username.invalid
-            }"
-            ><i class="fa fa-user"></i
-          ></span>
+            }"><i class="fa fa-user"></i></span>
         </div>
-        <input
-          type="text"
-          class="form-control rounded-0"
-          id="username"
-          placeholder="Entrez votre nom d'utilisateur"
-          i18n-placeholder
-          [(ngModel)]="user.username"
-          name="username"
-          autocomplete="username"
-          required
-          #username="ngModel"
-        />
+        <input type="text" class="form-control rounded-0" id="username" placeholder="Entrez votre nom d'utilisateur"
+          i18n-placeholder [(ngModel)]="user.username" name="username" autocomplete="username" required
+          #username="ngModel" />
       </div>
     </div>
     <div class="form-group">
       <label for="password" i18n="login|mdp">Mot de passe</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <span
-            class="input-group-text"
-            [ngClass]="{
+          <span class="input-group-text" [ngClass]="{
               'ng-invalid': password.invalid
-            }"
-            ><i class="fa fa-lock"></i
-          ></span>
+            }"><i class="fa fa-lock"></i></span>
         </div>
-        <input
-          type="password"
-          class="form-control rounded-0"
-          id="password"
-          i18n-placeholder
-          placeholder="Entrez votre mot de passe"
-          [(ngModel)]="user.password"
-          name="password"
-          autocomplete="current-password"
-          required
-          #password="ngModel"
-        />
+        <input type="password" class="form-control rounded-0" id="password" i18n-placeholder
+          placeholder="Entrez votre mot de passe" [(ngModel)]="user.password" name="password"
+          autocomplete="current-password" required #password="ngModel" />
       </div>
     </div>
-    <span id="recoverPassword" (click)="recoverPassword = true" i18n
-      >Mot de passe oublié ?</span
-    >
-    <button
-      *ngIf="errorMessage || !successMessage"
-      type="submit"
-      class="btn btn-outline-primary rounded-0"
-      [disabled]="loginForm.invalid"
-      expand="block"
-      i18n
-    >
+    <div class="form-group d-flex flex-row justify-content-end">
+      <span id="recoverPassword" (click)="recoverPassword = true" i18n>Mot de passe oublié ?</span>
+    </div>
+  
+    <button *ngIf="errorMessage || !successMessage" type="submit" class="btn btn-outline-primary rounded-0"
+      [disabled]="loginForm.invalid" expand="block" i18n>
       Se connecter
     </button>
   </form>
-  <button
-    *ngIf="successMessage"
-    class="btn btn-outline-primary rounded-0"
-    [disabled]="errorMessage || !successMessage"
-    expand="block"
-    i18n
-    (click)="activeModal.dismiss('Success')"
-  >
+  <button *ngIf="successMessage" class="btn btn-outline-primary rounded-0" [disabled]="errorMessage || !successMessage"
+    expand="block" i18n (click)="activeModal.dismiss('Success')">
     Fermer
   </button>
 </div>

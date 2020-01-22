@@ -227,6 +227,7 @@ def login():
                 {
                     "message": """Connecté en tant que "{}".""".format(username),
                     "username": username,
+                    "userAvatar": current_user.as_secured_dict(True).get('avatar'),
                     "access_token": access_token,
                     "refresh_token": refresh_token,
                 },
@@ -462,10 +463,10 @@ def delete_user():
 def reset_user_password():
     request_datas = dict(request.get_json())
     email = request_datas["email"]
-    username = request_datas["username"]
+    #username = request_datas["username"]
 
     try:
-        user = UserModel.query.filter_by(username=username, email=email).one()
+        user = UserModel.query.filter_by(email=email).one()
     except Exception:
         return (
             {"message": """L'email "{}" n'est pas enregistré.""".format(
