@@ -648,42 +648,6 @@ app-observations {
     background: var(--primary);
 }
 
-.programs .text-center .overlay {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    margin-left: 10px;
-    margin-right: 10px;
-    height: calc(100%-60px);
-    width: calc(100%-20px);
-    opacity: 0;
-    transition: .5s ease;
-    background-color: var(--primary);
-    border-radius: 3px;
-}
-
-.programs .text-center:hover .overlay {
-    opacity: 0.9;
-}
-
-.programs .text-center .overlay .overlay-text {
-    text-transform: uppercase;
-    color: #fff !important;
-    font-weight: 1000;
-    font-size: 18px;
-    width: fit-content;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
 
 @media screen and (max-width: 991px) {
     .programs .text-center {
