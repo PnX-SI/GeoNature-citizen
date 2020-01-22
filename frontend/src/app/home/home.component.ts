@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   AppConfig = AppConfig;
   htmlContent: SafeHtml;
   stats: Object;
+  backgroundImage: String;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -43,6 +44,8 @@ export class HomeComponent implements OnInit, AfterViewChecked {
       this.fragment = fragment;
     });
 
+    
+    this.backgroundImage = AppConfig.API_ENDPOINT + "/media/background.jpg";
     this.meta.updateTag({
       name: "description",
       content:

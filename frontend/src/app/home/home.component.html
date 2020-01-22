@@ -1,5 +1,5 @@
 <div class="row">
-    <section id="welcome">
+    <section id="welcome" [style.background-image]="'url('+backgroundImage+')'">
         <h1 [innerHTML]="platform_intro"></h1>
         <p [innerHTML]="platform_teaser"></p>
         <a [routerLink]="['/home']" fragment="programs" class="scroll">

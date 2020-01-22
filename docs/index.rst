@@ -1,5 +1,5 @@
 ====================================
-Installation de Geonature Citizen 
+Installation de GeoNature-citizen 
 ====================================
 
 
@@ -10,10 +10,10 @@ Application développée et installée sur un serveur Debian 9.
 
 Ce serveur doit aussi disposer de : 
 
-- sudo (apt-get install sudo)
+- sudo (``apt-get install sudo``)
 - un utilisateur (``monuser`` dans cette documentation) appartenant au groupe ``sudo`` (pour pouvoir bénéficier des droits d'administrateur)
 
-**1. Créer un utilisateur debian :**
+**1. Créer un utilisateur Debian :**
 
 ::
 
@@ -39,26 +39,26 @@ Ce serveur doit aussi disposer de :
 INSTALLATION DE TAXHUB
 ======================
 
-Pour plus de détails, lien officiel pour l’installation de taxhub :
+Pour plus de détails, lien officiel pour l’installation de TaxHub :
 https://taxhub.readthedocs.io/fr/latest/
 
 Configurer le serveur :
-https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-du-serveur :
+https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-du-serveur
 
-Configurer postgresql :
+Configurer PostgreSQL :
 https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-de-posgresql
 
 Configuration et installation de l’application :
 https://taxhub.readthedocs.io/fr/latest/installation.html
 
 :notes:
- - Bien vérifier de ne pas être en root :
+ - Bien vérifier de ne pas être en ``root`` :
 
   ::
 
     su - nom_utilisateur (geonatadmin)
 
- - Pour avoir les caractéristiques de votre instance:
+ - Pour avoir les caractéristiques de votre instance :
 
   ::
 
@@ -66,17 +66,15 @@ https://taxhub.readthedocs.io/fr/latest/installation.html
     uname -a
 
 
-INSTALLATION DE GEONATURE CITIZEN
+INSTALLATION DE GEONATURE-CITIZEN
 =================================
 
-
-**Etape 1 : Configurer postgresql:**
-
+**Etape 1 : Configurer PostgreSQL :**
 
 :notes:
 
- - Cette étape n'est nécessaire que si Taxhub n’est pas installé
- - voir init_launch_db.rst:  https://github.com/PnX-SI/GeoNature citizen/blob/taxhub_rest/docs/devs/init_launch_db.rst
+ - Cette étape n'est nécessaire que si TaxHub n’est pas installé
+ - voir init_launch_db.rst : https://github.com/PnX-SI/GeoNature-citizen/blob/master/docs/devs/init_launch_db.rst
 
 ::
 
@@ -108,15 +106,15 @@ installer virtualenv :
  virtualenv -p /usr/bin/python3 venv
  source venv/bin/activate
  
-**Etape 3 : Installation du backend et de la base des données:**
+**Etape 3 : Installation du backend et de la base des données :**
 
 :notes:
 
  - init_launch_backend.rst 
  - creation referentiel géo
- - voir : https://github.com/PnX-SI/GeoNature-citizen//blob/taxhub_rest/docs/devs/init_launch_backend.rst
+ - voir : https://github.com/PnX-SI/GeoNature-citizen/blob/master/docs/devs/init_launch_db.rst
 
-Cloner le dépôt github de Geonature Citizen
+Cloner le dépôt Github de GeoNature-citizen
 
 ::
 
@@ -126,7 +124,7 @@ Cloner le dépôt github de Geonature Citizen
  cd citizen/backend
 
 
-Création du référentiel des géométries communales:
+Création du référentiel des géométries communales :
 
 ::
 
@@ -157,28 +155,28 @@ Pour restaurer en cas de besoin :
  psql -d geonature2db -h localhost -p 5432 -U geonatadmin -f /tmp/ref_geo_municipalities.sql
  psql -d geonature2db -h localhost -p 5432 -U geonatadmin -c "DROP TABLE ref_geo.temp_fr_municipalities;"
 
-lancement du backend pour générer les schémas:
+Lancement du backend pour générer les schémas :
 
-en mode debug:
+En mode debug :
 
 ::
 
  export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; export FLASK_APP=wsgi;
  python -m flask run --host=0.0.0.0
 
-enregistrement du module principal:
+Enregistrement du module principal :
 
 ::
 
  insert into gnc_core.t_modules values (1, 'main', 'main', 'main', NULL, false, '2019-05-26 09:38:39.389933', '2019-05-26 09:38:39.389933');
 
-enregistrement d’un programme exemple
+Enregistrement d’un programme exemple
 
 ::
 
  psql -d geonature2db -h localhost -p 5432 -U geonatadmin -c "INSERT INTO gnc_core.t_programs VALUES (1, 'Au 68', 'inventaire  du 68', 'desc', NULL,	NULL,	1,	1,	't', '0106000020E6100000010000000103000000010000000500000001000070947C154042CA401665A5454001000070EE7C15402235D7E667A54540010000D81C7D1540AFBA27365AA5454000000040C47C1540DD9BD74A58A5454001000070947C154042CA401665A54540',	'2019-05-26 09:38:39.389933', '2019-05-26 09:38:39.389933');"
 
-**Etape 4 : éditer le fichier de config  :**
+**Etape 4 : éditer le fichier de config :**
 
 :notes:
 
@@ -221,7 +219,7 @@ enregistrement d’un programme exemple
  cp -v src/assets/badges_* ../media/
 
 
-éditer la conf:
+Editer la conf :
 
 ::
 
@@ -229,14 +227,14 @@ enregistrement d’un programme exemple
  # copier le template css alternatif
  cp src/custom/custom.css.template src/custom/custom.css
 
-Lancer le front:
+Lancer le front :
 
 ::
 
  npm run start -- --host=0.0.0.0
 
 
-ré génération des locales après modification de l’UI:
+Ré-génération des locales après modification de l’UI :
 
 ::
 
