@@ -3,9 +3,7 @@ import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { Subject, throwError } from "rxjs";
 import { debounceTime, map, catchError } from "rxjs/operators";
-
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-
 import { AppConfig } from "../../../conf/app.config";
 import { LoginUser } from "./../models";
 import { AuthService } from "./../auth.service";
@@ -15,6 +13,7 @@ import { AuthService } from "./../auth.service";
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.css"]
 })
+
 export class LoginComponent {
   AppConfig = AppConfig;
   private _error = new Subject<string>();

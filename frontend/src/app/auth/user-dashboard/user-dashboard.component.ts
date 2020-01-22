@@ -242,7 +242,8 @@ export class UserDashboardComponent implements OnInit {
       userForm.avatar = this.userAvatar;
       userForm.extention = this.extentionFile;
     }
-    this.userService.updatePersonalData(userForm).subscribe(() => {
+    this.userService.updatePersonalData(userForm).subscribe((user: any) => {
+      localStorage.setItem("userAvatar", user.features.avatar);
       this.modalRef.close();
     });
   }

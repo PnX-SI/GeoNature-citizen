@@ -57,7 +57,10 @@
           autocomplete="current-password" required #password="ngModel" />
       </div>
     </div>
-    <span id="recoverPassword" (click)="recoverPassword = true" i18n>Mot de passe oublié ?</span>
+    <div class="form-group d-flex flex-row justify-content-end">
+      <span id="recoverPassword" (click)="recoverPassword = true" i18n>Mot de passe oublié ?</span>
+    </div>
+  
     <button *ngIf="errorMessage || !successMessage" type="submit" class="btn btn-outline-primary rounded-0"
       [disabled]="loginForm.invalid" expand="block" i18n>
       Se connecter

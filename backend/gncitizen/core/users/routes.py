@@ -227,6 +227,7 @@ def login():
                 {
                     "message": """Connecté en tant que "{}".""".format(username),
                     "username": username,
+                    "userAvatar": current_user.as_secured_dict(True).get('avatar'),
                     "access_token": access_token,
                     "refresh_token": refresh_token,
                 },

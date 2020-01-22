@@ -30,6 +30,7 @@ export class TopbarComponent implements OnInit {
   canDisplayAbout: boolean = AppConfig.about;
   canSignup: boolean = AppConfig.signup;
   adminUrl: SafeUrl;
+  userAvatar: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -63,6 +64,11 @@ export class TopbarComponent implements OnInit {
       map(value => {
         if (value === true) {
           this.username = localStorage.getItem("username");
+          if (localStorage.getItem("userAvatar") != "null")
+            this.userAvatar =
+              AppConfig.API_ENDPOINT +
+              "/media/" +
+              localStorage.getItem("userAvatar");
         }
         return value;
       })
@@ -93,7 +99,7 @@ export class TopbarComponent implements OnInit {
   programs() {
     this.modalService.open(ProgramsComponent, {
       size: "lg",
-      windowClass: 'programs-modal',
+      windowClass: "programs-modal",
       centered: true
     });
   }

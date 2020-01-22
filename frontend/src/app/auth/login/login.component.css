@@ -23,12 +23,7 @@
 }
 
 #recoverPassword {
-  text-align: right;
-  font-style: italic;
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 15px;
-  transform: translateY(-15px);
+ cursor: pointer;
 }
 
 span.input-group-text {
