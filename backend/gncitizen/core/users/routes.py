@@ -462,10 +462,10 @@ def delete_user():
 def reset_user_password():
     request_datas = dict(request.get_json())
     email = request_datas["email"]
-    username = request_datas["username"]
+    #username = request_datas["username"]
 
     try:
-        user = UserModel.query.filter_by(username=username, email=email).one()
+        user = UserModel.query.filter_by(email=email).one()
     except Exception:
         return (
             {"message": """L'email "{}" n'est pas enregistré.""".format(

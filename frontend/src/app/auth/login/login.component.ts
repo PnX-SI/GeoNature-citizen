@@ -69,9 +69,8 @@ export class LoginComponent {
   onRecoverPassword(): void {
     this.http
       .post(`${AppConfig.API_ENDPOINT}/user/resetpasswd`, this.recovery)
-      .pipe(catchError(error => this.handleError(error)))
       .subscribe(
-        response => {
+        (response) => {      
           const message = response["message"];
           this._success.subscribe(message => (this.successMessage = message));
           this._success.pipe(debounceTime(5000)).subscribe(() => {
@@ -79,11 +78,10 @@ export class LoginComponent {
           });
           this.displaySuccessMessage(message);
         },
-        errorMessage => {
-          console.error("error", errorMessage);
+        (errorMessage) => {
           this.successMessage = null;
-          this.errorMessage = errorMessage;
-          this.displayErrorMessage(errorMessage);
+          this.errorMessage = errorMessage.error.message;
+          this.displayErrorMessage(this.errorMessage);
         }
       );
   }

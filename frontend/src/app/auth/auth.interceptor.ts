@@ -104,6 +104,7 @@ export class AuthInterceptor implements HttpInterceptor {
       (request.url.match(AppConfig.API_ENDPOINT) &&
         (request.url.includes("token_refresh") ||
           request.url.includes("registration") ||
+          request.url.includes("resetpasswd") ||
           request.url.includes("login"))) ||
       !request.url.match(AppConfig.API_ENDPOINT)
     ) {
