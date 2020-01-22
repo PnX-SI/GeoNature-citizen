@@ -6,7 +6,7 @@
 }
 
 .obs-section#slide{
-  /*margin-top: 106px;*/
+  margin-top: 106px;
   margin-bottom: 20px;
 }
 
@@ -297,6 +297,6 @@ section .observations {
 }
 @media screen and (max-width: 576px) {
   section#slide{
-    margin-top: 66px;
+    margin-top: 66px !important;
   }
 }

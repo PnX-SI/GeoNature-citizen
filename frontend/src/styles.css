@@ -1084,12 +1084,8 @@ input:checked~.toggle i {
   app-about .container{
     margin-top: 106px !important;
   }
-  app-about .container h2{
-    font-size: 20px;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
 }
+
 @media screen and (max-width: 576px) {
   .programs-modal .modal-dialog, .obs-modal .modal-dialog{
     margin: 0px !important;

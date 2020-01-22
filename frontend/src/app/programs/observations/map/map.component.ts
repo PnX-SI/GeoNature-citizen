@@ -22,6 +22,7 @@ import "leaflet.markercluster";
 import "leaflet.locatecontrol";
 import "leaflet-gesture-handling";
 
+
 const conf = {
   MAP_ID: "obsMap",
   GEOLOCATION_HIGH_ACCURACY: false,
@@ -218,11 +219,9 @@ export class ObsMapComponent implements OnChanges {
         container.style.background = "rgba(255,255,255,0.5)";
         container.style.textAlign = "left";
         container.className = "mb-0";
-        this.observationMap.on(
-          "zoomstart zoom zoomend",
-          _e =>
-            (gauge.innerHTML = "Zoom level: " + this.observationMap.getZoom())
-        );
+        this.observationMap.on("zoomstart zoom zoomend", _e => {
+          gauge.innerHTML = "Zoom level: " + this.observationMap.getZoom();
+        });
         container.appendChild(gauge);
         return container;
       }
@@ -230,6 +229,13 @@ export class ObsMapComponent implements OnChanges {
     let zv = new ZoomViewer();
     zv.addTo(this.observationMap);
     zv.setPosition("bottomright");
+
+    this.observationMap.on("click", () => {
+      let elemRect =this.observationMap.getContainer().getBoundingClientRect();
+      let bodyRect = document.body.getBoundingClientRect();
+     let offset   = elemRect.top - bodyRect.top;
+     window.scrollTo(0,offset - 120) // 120 topBarre width with padding
+    });
   }
 
   getPopupContent(feature): any {
