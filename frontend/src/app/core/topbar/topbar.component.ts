@@ -71,6 +71,7 @@ export class TopbarComponent implements OnInit {
               AppConfig.API_ENDPOINT +
               "/media/" +
               localStorage.getItem("userAvatar");
+              console.log('this.userAvatar',this.userAvatar);
         }
         return value;
       })
