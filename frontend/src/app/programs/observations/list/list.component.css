@@ -40,13 +40,25 @@
   width: fit-content;
 }
 
-#list .espece img {
+#list .espece .obs-img {
+  margin: 0;
   object-fit: cover;
-  min-width: 80px !important;
-  max-width: 80px !important;
-  height: 80px;
+  min-width: 100px !important;
+  max-width: 100px !important;
+  min-height: 100px !important;
+  max-height: 100px !important;
 }
 
+.avatar-img{
+  box-shadow: 1px 1px 15px -5px black;
+  margin-right: 8px;
+}
+
+.fa-user-circle{
+  color : #00a99c;
+  margin-right: 6px;
+  font-size: 19px;
+}
 .hide {
   transform: translateX(100%);
   transition: all 0.2s ease-in-out;
@@ -58,7 +70,7 @@
   color: #fff;
 }
 
-#list .espece .hide img {
+#list .espece .hide .on-map {
   min-width: 20px !important;
   max-width: 20px !important;
   height: auto !important;

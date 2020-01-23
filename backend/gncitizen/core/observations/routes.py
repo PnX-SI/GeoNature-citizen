@@ -435,6 +435,7 @@ def get_program_observations(
             db.session.query(
                 ObservationModel,
                 UserModel.username,
+                UserModel.avatar,
                 MediaModel.filename.label("image"),
                 LAreas.area_name,
                 LAreas.area_code,
@@ -481,7 +482,8 @@ def get_program_observations(
 
             # Observer
             feature["properties"]["observer"] = {
-                "username": observation.username}
+                "username": observation.username,
+                "userAvatar": observation.avatar, }
 
             # Observer submitted media
             feature["properties"]["image"] = (
