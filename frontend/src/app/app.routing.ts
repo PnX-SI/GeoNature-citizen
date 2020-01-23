@@ -7,7 +7,6 @@ import { ObsComponent } from "./programs/observations/obs.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { ProgramsComponent } from "./programs/programs.component";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
-import { UniqueProgramGuard } from "./programs/default-program.guard";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { AuthGuard } from "./auth/auth.guard";
@@ -23,7 +22,6 @@ const appRoutes: Routes = [
   {
     path: "home",
     component: HomeComponent,
-    canActivate: [UniqueProgramGuard],
     resolve: { programs: ProgramsResolve }
   },
   { path: "about", component: AboutComponent },
