@@ -191,6 +191,13 @@ Enregistrement d’un programme exemple
  -URL_APPLICATION : 'https://ipserveur:4200/'
  -API_ENDPOINT : 'https://ipserveur:5002/api'
  -API_TAXHUB : 'http://ipserveur/taxhub/api/'
+ 
+ - Pour configurer du serveur Smtp renseigner les différents paramètres de votre serveur 
+ dans la partie [MAIL] ( MAIL_HOST,MAIL_PORT ..) 
+  # La partie [RESET_PASSWD] correspond à la configuration du texte du mail a envoyé pour la restauration
+   du mot de passe oublié 
+  # La partie [CONFIRM_EMAIL] correspond à la configuration du texte du mail a envoyé pour l’activation
+  du compte et la confirmation de l’adresse mail de l’utilisateur   
 
 
 **Etape 5 : configuration du supervisor :**
@@ -226,6 +233,8 @@ Editer la conf :
  cp src/conf*.ts.sample src/conf/  # ajuster la conf
  # copier le template css alternatif
  cp src/custom/custom.css.template src/custom/custom.css
+ # Pour configurer le lien externe de la fiche détaillée de l'espèce, éditer l'entrée suivante:
+ details_espece_url: "<url_inpn_or_atlas>/cd_nom/" // !! garder bien le cd_nom/ dans l'url
 
 Lancer le front :
 
