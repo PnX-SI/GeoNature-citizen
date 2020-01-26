@@ -66,7 +66,7 @@ export class TopbarComponent implements OnInit {
       map(value => {
         if (value === true) {
           this.username = localStorage.getItem("username");
-          if (localStorage.getItem("userAvatar") != "null")
+          if (localStorage.getItem("userAvatar") && localStorage.getItem("userAvatar") != "null")
             this.userAvatar =
               AppConfig.API_ENDPOINT +
               "/media/" +

@@ -21,7 +21,7 @@ export class LoginComponent {
   errorMessage: string;
   successMessage: string;
   staticAlertClosed = false;
-  user: LoginUser = { username: "", password: "" };
+  user: LoginUser = { email: "", password: "" };
   recovery = { username: "", email: "" };
   recoverPassword = false;
 

@@ -25,7 +25,7 @@
   <div id="list">
     <div *ngFor="let o of (features$ | async); trackBy: trackByObs" class="espece obs-{{ o.properties.id_observation }}">
       <!-- FIXME: hardcoded api media endpoint -->
-      <img class="default-img" [src]="
+      <img class="obs-img" [src]="
           o.properties.images && !!o.properties.images.length
             ? appConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
             : o.properties.image
@@ -36,21 +36,24 @@
         " />
       <div class="infos">
         <a class="espece-link" target="_blank" href="{{appConfig.details_espece_url + o.properties.cd_nom}}">{{ !!o.properties.nom_francais ? o.properties.nom_francais : o.properties.taxref?.nom_vern }}</a>
-        <p  *ngIf="appConfig.program_list_observers_names">
-          Observé par
+        <div *ngIf="appConfig.program_list_observers_names">
+          <i *ngIf="!o.properties.observer.userAvatar" width="22px" class="fa fa-fw fa-user-circle"></i>
+          <img *ngIf="o.properties.observer.userAvatar" class=" avatar-img rounded-circle" width="22px" [src]="appConfig.API_ENDPOINT + '/media/' + o.properties.observer.userAvatar" />
           <span>{{
             o.properties.observer?.username
               ? o.properties.observer.username
               : "Anonyme"
           }}</span>
-        </p>
+        </div>
+       
+      
         <p >
           le <span>{{ o.properties.date }}</span>
           <span *ngIf="o.properties.municipality?.name">
             à {{ o.properties.municipality?.name }}</span>
         </p>
       </div>
-      <a class="hide" (click)="onObsClick(o)" ><img src="assets/binoculars.png" /></a>
+      <a class="hide" (click)="onObsClick(o)" ><img class="on-map" src="assets/binoculars.png" /></a>
     </div>
   </div>
 </div>

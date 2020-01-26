@@ -35,6 +35,7 @@ form {
   text-align: center;
   transition: all 0.1s ease-in-out;
 }
+
 a::after {
   display: block;
   content: attr(title);
@@ -86,6 +87,10 @@ div.btn-group a:first-child {
   font-weight: bold;
 }
 
+.avatar-img {
+  box-shadow: 1px 1px 15px -5px black;
+}
+
 @media screen and (max-width: 992px) {
   /* FIXME: la nav bar ne se referme qu'à 768, pourquoi 912 ? */
   /*    .navbar-collapse form{
@@ -95,6 +100,7 @@ div.btn-group a:first-child {
   ul.btn-group {
     padding: 0px;
   }
+
   ul.btn-group li {
     /*
     min-width: 120px !important; */
@@ -122,7 +128,7 @@ div.btn-group a:first-child {
   .navbar form ul li {
     min-width: none !important;
     max-width: none !important;
-    text-align : left;
+    text-align: left;
   }
 
   .navbar div.btn-group {
@@ -140,13 +146,18 @@ div.btn-group a:first-child {
   .navbar {
     min-height: 65px !important;
   }
+
   .navbar img {
     height: 40px;
   }
-  .programs-modal .modal-dialog, .obs-modal .modal-dialog{
+
+  .programs-modal .modal-dialog,
+  .obs-modal .modal-dialog {
     margin: 0px !important;
   }
-  .programs-modal .modal-content, .obs-modal .modal-content{
+
+  .programs-modal .modal-content,
+  .obs-modal .modal-content {
     max-height: inherit;
     height: 100vh;
   }

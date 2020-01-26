@@ -26,9 +26,7 @@ export class LogoutComponent {
         .catch(err => {
           console.log(err);
         });
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("username");
+      localStorage.clear();
       this.router.navigate(["/"]);
       this.activeModal.close();
     }

@@ -188,10 +188,10 @@ def login():
         required: true
         schema:
           required:
-            - username
+            - email
             - password
           properties:
-            username:
+            email:
               type: string
             password:
               type: string
@@ -201,18 +201,16 @@ def login():
     """
     try:
         request_datas = dict(request.get_json())
-        username = request_datas["username"]
+        email = request_datas["email"]
         password = request_datas["password"]
-        current_user = UserModel.find_by_username(username)
-        if not current_user:
+        try:
+            current_user = UserModel.query.filter_by(email=email).one()
+        except Exception:
             return (
-                {
-                    "message": """L'utilisateur "{}" n'est pas enregistré.""".format(
-                        username
-                    )
-                },
-                400,
-            )
+            {"message": """L'email "{}" n'est pas enregistré.""".format(
+                email)},
+            400,
+        )
         if not current_user.active:
             return (
                 {
@@ -221,12 +219,13 @@ def login():
                 400,
         )
         if UserModel.verify_hash(password, current_user.password):
-            access_token = create_access_token(identity=username)
-            refresh_token = create_refresh_token(identity=username)
+            access_token = create_access_token(identity=email)
+            refresh_token = create_refresh_token(identity=email)
             return (
                 {
-                    "message": """Connecté en tant que "{}".""".format(username),
-                    "username": username,
+                    "message": """Connecté en tant que "{}".""".format(email),
+                    "email": email,
+                    "username": current_user.as_secured_dict(True).get('username'),
                     "userAvatar": current_user.as_secured_dict(True).get('avatar'),
                     "access_token": access_token,
                     "refresh_token": refresh_token,

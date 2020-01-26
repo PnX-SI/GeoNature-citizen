@@ -46,11 +46,11 @@
 
 <div class="row">
     <!-- LES PROGRAMMES -->
-    <section id="programs" *ngIf="programs.length > 1">
+    <section id="programs" >
         <div id="programs-cards">
             <div class="container-fluid programs">
                 <div class="row justify-content-center align-items-center">
-                    <div class="col-xl-3 col-lg-4 col-xl-3 col-lg-4 col-md-4 col-sm-6" *ngFor="let p of programs">
+                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6" *ngFor="let p of programs">
                         <a [routerLink]="['/programs', p.id_program, 'observations']">
                             <div class="text-center">
                                 <div class="img-hover" [ngbTooltip]="p.short_desc" [ngStyle]="{

@@ -32,15 +32,15 @@
   </form>
   <form *ngIf="!successMessage && !recoverPassword" #loginForm="ngForm" (ngSubmit)="loginForm.form.valid && onLogin()">
     <div class="form-group">
-      <label for="username" i18n="login|username">Utilisateur</label>
+      <label for="username" i18n="login|username">Email</label>
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" [ngClass]="{
               'ng-invalid': username.invalid
             }"><i class="fa fa-user"></i></span>
         </div>
-        <input type="text" class="form-control rounded-0" id="username" placeholder="Entrez votre nom d'utilisateur"
-          i18n-placeholder [(ngModel)]="user.username" name="username" autocomplete="username" required
+        <input type="email" class="form-control rounded-0" id="email" placeholder="Entrez votre nom d'utilisateur"
+          i18n-placeholder [(ngModel)]="user.email" name="email" autocomplete="email" required
           #username="ngModel" />
       </div>
     </div>

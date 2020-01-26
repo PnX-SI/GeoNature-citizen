@@ -165,16 +165,17 @@ export class UserDashboardComponent implements OnInit {
 
   obsExport(obs) {
     this.obsToExport.push({
-      id_observation: obs.properties.id_observation,
-      date: obs.properties.date,
-      programme: obs.properties.program_title,
-      denombrement: obs.properties.count,
-      commentaire: obs.properties.comment,
-      municipalite: obs.properties.municipality.name,
-      cd_nom: obs.properties.taxref.cd_nom,
-      espece: obs.properties.taxref.nom_vern,
-      coordonnee_x: obs.geometry.coordinates[0],
-      coordonnee_y: obs.geometry.coordinates[1]
+      "id_observation": obs.properties.id_observation,
+      "date": obs.properties.date,
+      "programme": obs.properties.program_title,
+      "denombrement": obs.properties.count,
+      "commentaire": obs.properties.comment,
+      "commune": obs.properties.municipality.name,
+      "cd_nom": obs.properties.taxref.cd_nom,
+      "espece": obs.properties.taxref.nom_vern,
+      "nom complet": obs.properties.taxref.nom_complet,
+      "coordonnee_x": obs.geometry.coordinates[0],
+      "coordonnee_y": obs.geometry.coordinates[1]
     });
   }
 
@@ -211,6 +212,7 @@ export class UserDashboardComponent implements OnInit {
       "id_observation",
       "espece",
       "cd_nom",
+      "nom complet",
       "date",
       "programme",
       "denombrement",

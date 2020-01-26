@@ -16,7 +16,7 @@
             <a routerLink="home" routerLinkActive="active" (click)="isCollapsed = true" class="btn my-2 my-sm-0 rounded-0" i18n
               title="Accueil">Accueil</a>
           </li>
-          <li *ngIf="_programs.length > 1">
+          <li>
             <a class="btn my-2 my-sm-0 rounded-0" (click)="programs();isCollapsed = true" i18n title="Les programmes">Les programmes</a>
           </li>
           <li *ngIf="canDisplayAbout">
@@ -34,7 +34,7 @@
             <a placement="bottom" i18n-ngbTooltip ngbTooltip="Mon tableau de bord"   (click)="isCollapsed = !isCollapsed" routerLink="mydashboard"
               routerLinkActive="active">
               <i *ngIf="!userAvatar" class="fa fa-fw fa-user-circle"></i>
-              <img *ngIf="userAvatar" class="rounded-circle" width="22px" src="{{userAvatar}}" />
+              <img *ngIf="userAvatar" class="avatar-img rounded-circle" width="22px" src="{{userAvatar}}" />
                &nbsp;{{ username }}
             </a>
             <a class="btn btn-sm my-2 my-sm-0" (click)="logout();isCollapsed = true" style="min-width: 147px !important" i18n>

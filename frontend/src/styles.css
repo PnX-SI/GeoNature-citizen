@@ -1117,10 +1117,10 @@ input:checked~.toggle i {
   text-align: center;
 }
 
-@media screen and (max-width: 1200px){
-  app-about .container{
-    margin-top: 106px !important;
-  }
+app-about .container{
+  margin-top: 106px !important;
+  padding-top: 50px;
+  min-height: calc(100vh - 274px);
 }
 
 @media screen and (max-width: 576px) {
