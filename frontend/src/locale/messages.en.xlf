@@ -500,9 +500,9 @@
         <note priority="1" from="description">login</note>
         <note priority="1" from="meaning">login</note>
       </trans-unit>
-      <trans-unit id="2ac6448c552ac79b5d52d4c864194460cabc2e32" datatype="html">
+      <trans-unit id="3d38b2d84c7eb5b3a80ca78bcd91b174bc74ef16" datatype="html">
         <source>Utilisateur</source>
-        <target>Username</target>
+        <target>Email</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/login/login.component.html</context>
           <context context-type="linenumber">32</context>
@@ -1403,6 +1403,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
           <context context-type="linenumber">86</context>
+        </context-group>
+      </trans-unit>
+          <trans-unit id="7d7d2b92faf1a5bec370ad3f80d934bbea104b1b" datatype="html">
+        <source>Entrez votre adresse mail</source>
+                <target>Please, type in your email</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
     </body>
