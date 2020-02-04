@@ -875,7 +875,7 @@ def delete_observation(idObs):
     try:
         observation = db.session.query(ObservationModel, UserModel).filter(
             ObservationModel.id_observation == idObs).join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True).first()
-        if (current_user == observation.UserModel.username):
+        if (current_user == observation.UserModel.email):
             ObservationModel.query.filter_by(id_observation=idObs).delete()
             db.session.commit()
             return ('observation deleted successfully'), 200

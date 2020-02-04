@@ -44,8 +44,6 @@ export class AuthService {
   }
 
   register(user: RegisterUser): Observable<any> {
-    console.log('user',user);
-    
     let url: string = `${AppConfig.API_ENDPOINT}/registration`;
     return this.http.post(url, user).pipe(
       map(user => {
