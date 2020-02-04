@@ -2,6 +2,7 @@ app-modalflow  {
     position: absolute;
     bottom: 40px;
     right: 20px;
+    z-index: 999;
 }
 
 @media screen and (max-width: 450px){
