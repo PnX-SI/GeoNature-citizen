@@ -1,6 +1,6 @@
 <nav class="navbar navbar-light navbar-expand-md">
   <a class="navbar-brand" routerLink="home" routerLinkActive="active" aria-label="GeoNature-citizen Home">
-    <img src="{{logoImage}}" width="auto" height="80" class="d-inline-block align-top"
+    <img src="{{logoImage}}" width="auto" height="80" class="d-inline-block align-top logo"
       alt="GeoNature-citizen logo: flamengo origami" />
   </a>
   <button class="navbar-toggler collapsed" type="button" (click)="isCollapsed = !isCollapsed">
@@ -34,7 +34,9 @@
             <a placement="bottom" i18n-ngbTooltip ngbTooltip="Mon tableau de bord"   (click)="isCollapsed = !isCollapsed" routerLink="mydashboard"
               routerLinkActive="active">
               <i *ngIf="!userAvatar" class="fa fa-fw fa-user-circle"></i>
-              <img *ngIf="userAvatar" class="avatar-img rounded-circle" width="22px" src="{{userAvatar}}" />
+              <div *ngIf="userAvatar" class="avatar-wrapper" [style.background-image]="'url('+userAvatar +')'"> 
+</div>
+<!--               <img *ngIf="userAvatar" class="avatar-img rounded-circle" width="22px" src="{{userAvatar}}" /> -->
                &nbsp;{{ username }}
             </a>
             <a class="btn btn-sm my-2 my-sm-0" (click)="logout();isCollapsed = true" style="min-width: 147px !important" i18n>

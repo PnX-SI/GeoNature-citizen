@@ -49,6 +49,17 @@
   max-height: 100px !important;
 }
 
+.avatar-wrapper{
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  background: no-repeat;
+  background-size: contain;
+  background-position: center;
+  float: left;
+  margin-right: 8px;
+}
+
 .avatar-img{
   box-shadow: 1px 1px 15px -5px black;
   margin-right: 8px;

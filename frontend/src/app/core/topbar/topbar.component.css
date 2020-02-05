@@ -141,13 +141,23 @@ div.btn-group a:first-child {
     text-align: right;
   }
 }
+.avatar-wrapper{
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  background: no-repeat;
+  background-size: contain;
+  background-position: center;
+  float: left;
+  margin-right: 8px;
+}
 
 @media screen and (max-width: 576px) {
   .navbar {
     min-height: 65px !important;
   }
 
-  .navbar img {
+  .navbar .logo {
     height: 40px;
   }
 

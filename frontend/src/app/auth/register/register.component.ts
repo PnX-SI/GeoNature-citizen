@@ -36,17 +36,14 @@ export class RegisterComponent {
       .register(this.user)
       .pipe(
         map(user => {
-
           if (user) {
-            console.log('user',user);
-            
             let message = user.message;
             this._success.subscribe(message => (this.successMessage = message));
             this._success.pipe(debounceTime(5000)).subscribe(() => {
               this.successMessage = null;
               this.activeModal.close();
             });
-         
+
             this.displaySuccessMessage(message);
             // redirect ?
             if (this.auth.redirectUrl) {

@@ -336,7 +336,7 @@ def logged_user():
     """
     try:
         current_user = get_jwt_identity()
-        user = UserModel.query.filter_by(username=current_user).one()
+        user = UserModel.query.filter_by(email=current_user).one()
         if flask.request.method == "GET":
             # base stats, to enhance as we go
             result = user.as_secured_dict(True)
@@ -360,7 +360,7 @@ def logged_user():
                 imgdata = base64.b64decode(request_data["avatar"].replace(
                     'data:image/'+extention+';base64,', ''))
                 filename = 'avatar_' + \
-                    current_user + '.' + extention
+                    user.username + '.' + extention
                 request_data['avatar'] = filename
                 if os.path.exists(os.path.join(str(MEDIA_DIR), str(user.as_secured_dict(True)["avatar"]))):
                     os.remove(os.path.join(str(MEDIA_DIR),
@@ -430,13 +430,13 @@ def delete_user():
         current_app.logger.debug(
             "[delete_user] current user is {}".format(current_user)
         )
-        user = UserModel.query.filter_by(username=current_user)
+        user = UserModel.query.filter_by(email=current_user)
         # get username
         username = user.one().username
         # delete user
         try:
             db.session.query(UserModel).filter(
-                UserModel.username == current_user
+                UserModel.username == username
             ).delete()
             db.session.commit()
             current_app.logger.debug(

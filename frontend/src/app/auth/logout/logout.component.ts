@@ -21,7 +21,7 @@ export class LogoutComponent {
       this.auth
         .logout()
         .then(logout => {
-          console.log("LogoutUser Get Status", logout.status);
+          localStorage.clear();
         })
         .catch(err => {
           console.log(err);

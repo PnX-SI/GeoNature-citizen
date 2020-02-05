@@ -38,7 +38,9 @@
         <a class="espece-link" target="_blank" href="{{appConfig.details_espece_url + o.properties.cd_nom}}">{{ !!o.properties.nom_francais ? o.properties.nom_francais : o.properties.taxref?.nom_vern }}</a>
         <div *ngIf="appConfig.program_list_observers_names">
           <i *ngIf="!o.properties.observer.userAvatar" width="22px" class="fa fa-fw fa-user-circle"></i>
-          <img *ngIf="o.properties.observer.userAvatar" class=" avatar-img rounded-circle" width="22px" [src]="appConfig.API_ENDPOINT + '/media/' + o.properties.observer.userAvatar" />
+          <div *ngIf="o.properties.observer.userAvatar" class="avatar-wrapper" [style.background-image]="'url('+ appConfig.API_ENDPOINT + '/media/' + o.properties.observer.userAvatar+')'"> 
+            <!-- <img  class=" avatar-img rounded-circle" width="22px" [src]="appConfig.API_ENDPOINT + '/media/' + o.properties.observer.userAvatar" /> -->
+          </div>
           <span>{{
             o.properties.observer?.username
               ? o.properties.observer.username

@@ -63,7 +63,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.breakpointObserver
-      .observe(["(min-width: 500px)"])
+      .observe(["(min-width: 700px)"])
       .subscribe((state: BreakpointState) => {
         if (state.matches) {
           this.isMobile = false;

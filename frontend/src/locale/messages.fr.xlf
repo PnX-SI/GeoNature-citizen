@@ -530,9 +530,9 @@
           <context context-type="linenumber">91</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="f6c5161a7a582f0f977e99cabf956c98a1ca2813" datatype="html">
+      <trans-unit id="3d38b2d84c7eb5b3a80ca78bcd91b174bc74ef16" datatype="html">
         <source>Utilisateur</source>
-        <target>Utilisateur</target>
+        <target>Email</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/login/login.component.html</context>
           <context context-type="linenumber">102</context>
@@ -1405,6 +1405,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/confirm-email/confirm-email.component.html</context>
           <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+       <trans-unit id="7d7d2b92faf1a5bec370ad3f80d934bbea104b1b" datatype="html">
+        <source>Entrez votre adresse mail</source>
+         <target>Entrez votre adresse mail</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
     </body>
