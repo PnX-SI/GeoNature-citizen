@@ -184,6 +184,7 @@ export class UserDashboardComponent implements OnInit {
     this.auth
       .selfDeleteAccount(access_token)
       .then(data => {
+        localStorage.clear();
         let getBackHome = confirm(
           data.hasOwnProperty("message")
             ? `${data.message}\nRevenir à l'accueil ?`
