@@ -403,8 +403,11 @@ export class ObsFormComponent implements AfterViewInit {
     let obs: ObservationFeature;
     let formData = this.creatFromDataToPost();
     this.observationsService.postObservation(formData).subscribe(
-      (data: PostObservationResponse) => {
+      (data: PostObservationResponse) => {     
         obs = data.features[0];
+        if (obs.properties.observer) {
+          obs.properties.observer.userAvatar = localStorage.getItem('userAvatar')
+        }
         this.newObservation.emit(obs);
         this.flowService.setModalCloseSatus("newObs");
       },
