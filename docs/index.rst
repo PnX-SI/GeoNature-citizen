@@ -21,7 +21,7 @@ Ce serveur doit aussi disposer de :
   usermod -aG sudo nom_utilisateur (geonatadmin)
   su - nom_utilisateur (geonatadmin)
 
-**2. Vérifications que l’utilisateur est correctement créé :**
+**2. Vérifier que l’utilisateur est correctement créé :**
 
 ::
 
@@ -180,7 +180,7 @@ Enregistrement d’un programme exemple
 
 :notes:
 
- - voir : https://github.com/PnX-SI/GeoNature-citizen/blob/taxhub_rest/docs/devs/config_files.rst
+ - voir : https://github.com/PnX-SI/GeoNature-citizen/blob/dev/docs/devs/config_files.rst
 
 ::
 
@@ -199,6 +199,8 @@ Enregistrement d’un programme exemple
   # La partie [CONFIRM_EMAIL] correspond à la configuration du texte du mail a envoyé pour l’activation
   du compte et la confirmation de l’adresse mail de l’utilisateur   
 
+Configuration des badges
+- voir : https://github.com/PnX-SI/GeoNature-citizen/blob/dev/docs/devs/badges.rst
 
 **Etape 5 : configuration du supervisor :**
 
