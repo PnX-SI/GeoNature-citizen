@@ -199,10 +199,10 @@ Enregistrement d’un programme exemple
   # La partie [CONFIRM_EMAIL] correspond à la configuration du texte du mail a envoyé pour l’activation
   du compte et la confirmation de l’adresse mail de l’utilisateur   
 
-Configuration des badges
+**Etape 5 : Configuration des badges : **
 - voir : https://github.com/PnX-SI/GeoNature-citizen/blob/dev/docs/devs/badges.rst
 
-**Etape 5 : configuration du supervisor :**
+**Etape 6 : configuration du supervisor :**
 
 ::
 
@@ -214,7 +214,7 @@ Configuration des badges
  stdout_logfile = /var/log/supervisor/citizen.log
  redirect_stderr = true
 
-**Etape 6 : Installation du frontend :**
+**Etape 7 : Installation du frontend :**
 
 :notes:
 
