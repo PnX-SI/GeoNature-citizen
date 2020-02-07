@@ -5,9 +5,9 @@ Configuration des badges
 **Types de récompense:**
 
 - Seniority: ancienneté d'inscription sur la plateforme
-- all_attendance: participation sur la plateforme( faire des observations)
-- Program_Attendance: participation par programme
-- recognition:  identification d'espèces
+- all_attendance: nombre d'observations totales réalisées sur la plateforme
+- Program_Attendance: nombre d'observations totales réalisées par programme
+- recognition: identification d'espèces
 
  
 **niveaux de récompense:**
@@ -24,9 +24,10 @@ Configuration des badges
 
 Pour les récompenses de type recognition il faut renseigner soit la classe ou la famille du taxref 
 
+Le fichier à configurer est le badges_config.py situé dans le dossier config
+
+Ex : url à intégrer
+
  
 :notes:
  Pour plus d'informations voir : https://github.com/PnX-SI/GeoNature-citizen/issues/7
- 
- 
- 
