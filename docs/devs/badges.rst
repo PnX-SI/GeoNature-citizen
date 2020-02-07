@@ -4,9 +4,9 @@ Configuration des badges
 
 **Types de récompense:**
 
-- Seniority: ancienneté d'inscription sur la plateforme
+- seniority: ancienneté d'inscription sur la plateforme
 - all_attendance: nombre d'observations totales réalisées sur la plateforme
-- Program_Attendance: nombre d'observations totales réalisées par programme
+- program_Attendance: nombre d'observations totales réalisées par programme
 - recognition: identification d'espèces
 
  
@@ -26,7 +26,7 @@ Pour les récompenses de type recognition il faut renseigner soit la classe ou l
 
 Le fichier à configurer est le badges_config.py situé dans le dossier config
 
-Ex : url à intégrer
+Ex : https://github.com/PnX-SI/GeoNature-citizen/blob/dev/config/badges_config.py
 
  
 :notes:
