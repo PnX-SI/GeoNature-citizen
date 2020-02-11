@@ -13,6 +13,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+from pathlib import Path
 import sys
 sys.path.insert(0, os.path.abspath('../backend'))
 
@@ -20,11 +21,15 @@ sys.path.insert(0, os.path.abspath('../backend'))
 # -- Project information -----------------------------------------------------
 
 project = "GeoNature-citizen"
-copyright = "2019, collectif"
+copyright = "2020, collectif"
 author = "lpofredc"
 
 # The short X.Y version
-version = "0.0"
+
+ROOT_DIR = Path(__file__).absolute().parent.parent
+with open(str((ROOT_DIR / "VERSION"))) as v:
+    version = v.read()
+
 # The full version, including alpha/beta/rc tags
 release = "dev"
 

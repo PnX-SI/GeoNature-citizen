@@ -14,4 +14,4 @@ Installer GeoNature-citizen en mode développement
    init_launch_db
    init_launch_backend
    init_launch_frontend
-   backend_functions
+..    backend_functions
