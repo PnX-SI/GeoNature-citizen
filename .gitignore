@@ -257,8 +257,7 @@ media/
 frontend/ssl
 
 # Custom files
-frontend/src/custom/custom.css
-frontend/src/custom/images/*.png
-frontend/src/custom/images/*.jpg
+frontend/src/custom/*
+!frontend/src/custom/**/*.template
 
 data/tmp
