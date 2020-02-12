@@ -22,6 +22,10 @@ CHANGELOG
 *  Correctifs d'UI (fix #184, #130)
 *  Nettoyage de code (par @lpofredc, fix #168)
 
+**⚠️ Version note**
+
+* Lancer le script SQL de mise à jour de la BDD de GeoNature-citizen https://raw.githubusercontent.com/PnX-SI/GeoNature-citizen/master/data/migrations/v0.2.0_to_0.3.0.sql
+
 0.2.0 (2019-11-20)
 ------------------
 
