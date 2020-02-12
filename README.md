@@ -43,7 +43,7 @@ Documentation : https://geonature-citizen.readthedocs.io
 
 * NodeJS 10
 * Angular 8
-* Leaflet
+* LeafletJS
 * Bootstrap 4.1
 
 ### Dépendances
@@ -52,20 +52,10 @@ GeoNature-citizen s'appuie sur [TaxHub](https://github.com/PnX-SI/TaxHub) pour l
 
 ## L'origine du projet
 
-Ce projet est initialement développé pour répondre aux besoins de collectes participatives dans le cadre des démarches d'atlas de biodiversité communal/territorial (ABC/ABT). 
+Ce projet est initialement développé pour répondre aux besoins de collectes participatives dans le cadre des démarches d'atlas de biodiversité communal/territorial (ABC/ABT).
 La première version de ce projet est le fruit d'une démarche mutualisée entre différents projects :
 * Projet d'Atlas de biodiversité de territorie de [Valence Romans Agglo](http://www.valenceromansagglo.fr/fr/index.html), en partenariat avec la [LPO Auvergne-Rhône-Alpes](https://auvergne-rhone-alpes.lpo.fr/).
 * Projets d'inventaires participatifs du [Parc national du Mercantour](http://www.mercantour-parcnational.fr/fr) et du [Syndicat Mixte pour la gestion et la protection de la Camargue Gardoise](https://www.camarguegardoise.com/), avec une réalisation par [Natural Solutions](https://www.natural-solutions.eu/).
 
 Il constitue l'une des briques du projet GeoNature, porté par les [Parcs nationaux de France](http://www.parcsnationaux.fr/fr) et bénéficie de l'appui technique du [Parc national des Ecrins](http://www.ecrins-parcnational.fr/).
 
-## Captures d'écran
-
-
-![Screen Shot 2019-11-20 at 09 44 19](https://user-images.githubusercontent.com/22891423/69222731-5b115680-0b7a-11ea-8cc7-095d9258f8cd.png)
-
-![Screen Shot 2019-11-20 at 09 39 57](https://user-images.githubusercontent.com/22891423/69222565-05d54500-0b7a-11ea-97fa-d03545d617b9.png)
-
-![Screen Shot 2019-11-20 at 09 40 37](https://user-images.githubusercontent.com/22891423/69222574-08379f00-0b7a-11ea-8d25-2bcaeef1e957.png)
-
-![Screen Shot 2019-11-20 at 09 41 28](https://user-images.githubusercontent.com/22891423/69222578-0968cc00-0b7a-11ea-8d4c-7f90175c0cf7.png)
