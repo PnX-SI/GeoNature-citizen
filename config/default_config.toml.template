@@ -11,9 +11,7 @@ JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
 appName = 'GeoNature-citizen'                               # Application name in the home page
 DEFAULT_LANGUAGE = 'fr'
 
-# Nom du zonage du portail
-PORTAL_AREA_NAME = 'zonage'
-
+# Debug
 DEBUG = true
 SQLALCHEMY_DEBUG_LEVEL = 'WARNING'
 
@@ -30,25 +28,10 @@ DEFAULT_CENTER_LAT = 45
 DEFAULT_CENTER_LONG = 5
 
 
-
-SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'MyS3cr3tK3y'
-COOKIE_EXPIRATION = 7200
-COOKIE_AUTORENEW = true
-TRAP_ALL_EXCEPTIONS = false
-HTTPS = false
+CONFIRM_MAIL_SALT = 'your-secret-salt' # secret salt for corfirm mail token
+
 MEDIA_FOLDER = 'media'
-# File
-# BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-UPLOAD_FOLDER = 'static/medias'
-
-
-# Front end configuration
-[FRONTEND]
-    PROD_MOD = true
-    # DISPLAY_HEADER = false
-    # DISPLAY_FOOTER = false
-    # MULTILINGUAL = false
 
 
 [RESET_PASSWD]
@@ -64,22 +47,22 @@ UPLOAD_FOLDER = 'static/medias'
     <a href="{app_url}">Connexion</a>'
     '''
 
+[CONFIRM_EMAIL]
+    SUBJECT = "Activez votre compte"
+    FROM = 'contact@geonature-citizen.fr'
+    HTML_TEMPLATE = '''<p> Bonjour,</p><br /><p>Nous vous confirmons que votre compte a bien été créé.</p>
+     <p> Afin d'activer votre compte veuillez <a href="{activate_url}">cliquer ici.</a>
+     <p>Nous vous souhaitons la bienvenue sur notre site.</p><br />
+     <p>Bien à vous.</p>
+    '''
 
 [MAIL]
+    MAIL_USE_SSL = false
+    MAIL_STARTTLS = true
     MAIL_HOST = 'smtpd host'
     MAIL_PORT = 493   # mandatory SSL port
     MAIL_AUTH_LOGIN = 'smtpd/relay host username'
     MAIL_AUTH_PASSWD = 'smtpd/relay host password'
-
-
-[MAILERROR]
-    MAIL_ON_ERROR = false
-    MAIL_HOST = 'host mail'
-    HOST_PORT = 493
-    MAIL_FROM = 'Email from'
-    MAIL_USERNAME = 'email username'
-    MAIL_PASS = 'email to'
-    MAIL_TO = 'email to'
 
 
 # API flasgger main config

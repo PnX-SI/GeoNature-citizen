@@ -9,6 +9,7 @@ import {
   LOCALE_ID
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
 import { forkJoin } from "rxjs";
 
 import { FeatureCollection, Feature } from "geojson";
@@ -40,16 +41,19 @@ export class ObsComponent implements OnInit, AfterViewInit {
   observations: FeatureCollection;
   programFeature: FeatureCollection;
   surveySpecies: TaxonomyList;
-  @ViewChild(ObsMapComponent, {static: true}) obsMap: ObsMapComponent;
-  @ViewChild(ObsListComponent, {static: true}) obsList: ObsListComponent;
+  @ViewChild(ObsMapComponent, { static: true }) obsMap: ObsMapComponent;
+  @ViewChild(ObsListComponent, { static: true }) obsList: ObsListComponent;
 
   selectedObs: Feature;
+  public isCollapsed: boolean = true;
+  isMobile: boolean;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
     private programService: GncProgramsService,
-    public flowService: ModalFlowService
+    public flowService: ModalFlowService,
+    public breakpointObserver: BreakpointObserver
   ) {
     this.route.params.subscribe(params => (this.program_id = params["id"]));
     this.route.fragment.subscribe(fragment => {
@@ -58,6 +62,16 @@ export class ObsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.breakpointObserver
+      .observe(["(min-width: 700px)"])
+      .subscribe((state: BreakpointState) => {
+        if (state.matches) {
+          this.isMobile = false;
+        } else {
+          this.isMobile = true;
+        }
+      });
+
     this.route.data.subscribe((data: { programs: Program[] }) => {
       this.programs = data.programs;
       this.program = this.programs.find(p => p.id_program == this.program_id);
@@ -89,19 +103,12 @@ export class ObsComponent implements OnInit, AfterViewInit {
     this.coords = p;
   }
 
-  toggleList() {
-    this.obsMap.observationMap.invalidateSize();
-  }
-
   @HostListener("document:NewObservationEvent", ["$event"])
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
+
     this.observations.features.unshift(e.detail);
     this.observations = {
-      type: "FeatureCollection",
-      features: this.observations.features
-    };
-    this.obsList.observations = {
       type: "FeatureCollection",
       features: this.observations.features
     };
@@ -117,6 +124,6 @@ export class ObsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-   this.flowService.closeModal()
+    this.flowService.closeModal();
   }
 }

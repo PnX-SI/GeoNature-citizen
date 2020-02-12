@@ -32,7 +32,6 @@ def get_rewards(id):
             }
         )
         total_obs = total_obs + item.nb_obs
-    print('total_obs',total_obs)
     taxon_classe_query = ObservationModel.query.filter(
         ObservationModel.id_role == id).outerjoin(
             Taxref, Taxref.cd_nom == ObservationModel.cd_nom
@@ -156,3 +155,19 @@ def monthdelta(d1, d2):
         else:
             break
     return delta
+
+
+@routes.route("/stats", methods=["GET"])
+@json_resp
+def get_stat():
+    try:
+        stats = {}
+        stats["nb_obs"] = ObservationModel.query.count()
+        stats["nb_user"] = UserModel.query.count()
+        stats["nb_program"] = ProgramsModel.query.filter(ProgramsModel.is_active == True).count()
+        stats["nb_espece"] = ObservationModel.query.distinct(
+            ObservationModel.cd_nom).count()
+        return (stats, 200)
+    except Exception as e:
+        current_app.logger.critical("[get_observations] Error: %s", str(e))
+        return {"message": str(e)}, 400

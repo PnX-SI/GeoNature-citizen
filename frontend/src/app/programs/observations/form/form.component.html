@@ -1,92 +1,47 @@
-<form
-  id="obsForm"
-  [formGroup]="obsForm"
-  #formRef="ngForm"
-  (ngSubmit)="onFormSubmit()"
->
-  <!--
-    <div class="alert alert-primary rounded-0" role="alert">
-      {{ obsForm.value | json }}
-    </div>
-  -->
-
+<form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
   <div class="form-row">
     <div class="form-group col-lg-8">
       <input formControlName="id_program" type="hidden" />
       <h5 class="m-0">
-        <label for="cd_nom" i18n class="m-0"
-          >{ autocomplete, select, isOn {Rechercher une esp&egrave;ce} isOff
-          {S&eacute;lectionnez une esp&egrave;ce}}</label
-        >
+        <label for="cd_nom" i18n class="m-0">{ autocomplete, select, isOn {Rechercher une esp&egrave;ce} isOff
+          {S&eacute;lectionnez une esp&egrave;ce}}</label>
       </h5>
       <!-- TAXON SELECT -->
-      <div
-        *ngIf="
+      <div *ngIf="
           taxaCount >= taxonSelectInputThreshold &&
           taxaCount < taxonAutocompleteInputThreshold
-        "
-        class="d-inline-flex toolbar"
-      >
+        " class="d-inline-flex toolbar">
         <select formControlName="cd_nom" class="form-control rounded-0">
-          <option
-            *ngFor="let s of (surveySpecies$ | async)"
-            [value]="s.taxref.cd_nom"
-          >
-            {{ !!s.nom_francais ? s.nom_francais : s.taxref[0].nom_vern }} (<i>{{ s.taxref.nom_complet }}</i
-            >)
+          <option *ngFor="let s of (surveySpecies$ | async)" [value]="s.taxref.cd_nom">
+            {{ !!s.nom_francais ? s.nom_francais : s.taxref.nom_vern }} (<i>{{ s.taxref.nom_complet }}</i>)
           </option>
         </select>
       </div>
     </div>
-
     <!-- TAXON PICKER -->
-    <div
-      *ngIf="taxaCount < taxonSelectInputThreshold"
-      class="form-group col-lg-12 d-inline-flex obs-images"
-    >
-      <div
-        class="scroll-img"
-        [class.ng-valid]="selectedTaxon"
-        [class.ng-invalid]="!selectedTaxon"
-      >
+    <div *ngIf="taxaCount < taxonSelectInputThreshold" class="form-group col-lg-12 d-inline-flex obs-images">
+      <div class="scroll-img" [class.ng-valid]="selectedTaxon" [class.ng-invalid]="!selectedTaxon">
         <div *ngFor="let s of (surveySpecies$ | async)">
           <div class="obs-img default-img" [class.selected]="isSelectedTaxon(s)">
-            <img
-              [src]="
+            <img [src]="
                 s.medias && !!s.medias.length
                   ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + s.medias[0].id_media + '?h=100&v=100'
                   : 'assets/default_image.png'
-              "
-              [alt]="!!s.nom_francais ? s.nom_francais : s.taxref.nom_vern"
-              (click)="onTaxonSelected(s)"
-            />
+              " [alt]="!!s.nom_francais ? s.nom_francais : s.taxref.nom_vern" (click)="onTaxonSelected(s)" />
             <span>{{ !!s.nom_francais ? s.nom_francais : s.taxref.nom_vern }}</span>
           </div>
         </div>
       </div>
     </div>
-
     <!-- TAXON AUTOCOMPLETE -->
-    <div
-      *ngIf="taxaCount >= taxonAutocompleteInputThreshold"
-      class="form-group col-lg-8"
-    >
+    <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg-8">
       <ng-template #rt let-r="result" let-t="term">
         <img [src]="r.icon" class="mr-1" style="height: 1em;" />
         <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
       </ng-template>
-      <input
-        id="cd_nom"
-        type="text"
-        class="form-control rounded-0"
-        formControlName="cd_nom"
-        i18n-placeholder
-        placeholder="Nom latin ou vernaculaire ou cd_ref"
-        [editable]="false"
-        [ngbTypeahead]="inputAutoCompleteSearch"
-        [resultTemplate]="rt"
-        [inputFormatter]="inputAutoCompleteFormatter"
-      />
+      <input id="cd_nom" type="text" class="form-control rounded-0" formControlName="cd_nom" i18n-placeholder
+        placeholder="Nom latin ou vernaculaire ou cd_ref" [editable]="false" [ngbTypeahead]="inputAutoCompleteSearch"
+        [resultTemplate]="rt" [inputFormatter]="inputAutoCompleteFormatter" />
     </div>
     <!-- END TAXON SELECTION -->
     <div class="form-group col-lg-6 col-md-12 half">
@@ -95,64 +50,30 @@
         <div class="form-group col-lg-6">
           <div class="input-group">
             <label for="date" i18n>Date de l'observation</label>
-            <input
-              formControlName="date"
-              type="date"
-              class="form-control rounded-0"
-              i18n-placeholder
-              placeholder="jj/mm/aaaa"
-              ngbDatepicker
-              #d="ngbDatepicker"
-              [markDisabled]="disabledDates"
-              (click)="d.toggle()"
-            />
+            <input formControlName="date" type="date" class="form-control rounded-0" i18n-placeholder
+              placeholder="jj/mm/aaaa" ngbDatepicker #d="ngbDatepicker" [markDisabled]="disabledDates"
+              (click)="d.toggle()" />
           </div>
         </div>
         <div class="form-group col-lg-6">
           <label for="counting" i18n>Dénombrement</label>
-          <input
-            type="number"
-            min="1"
-            i18n-placeholder
-            placeholder="Nombre"
-            data-bind="value:replyNumber"
-            class="form-control rounded-0"
-            formControlName="count"
-            id="counting"
-            required
-          />
+          <input type="number" min="1" i18n-placeholder placeholder="Nombre" 
+            class="form-control rounded-0" formControlName="count" id="counting" required />
         </div>
       </div>
 
       <div class="form-group col-lg-12">
         <label for="comment" i18n>Commentaire</label>
-        <textarea
-          i18n-placeholder
-          placeholder="Votre commentaire"
-          class="form-control rounded-0"
-          rows="4"
-          id="comment"
-          formControlName="comment"
-        ></textarea>
+        <textarea i18n-placeholder placeholder="Votre commentaire" class="form-control rounded-0" rows="4" id="comment"
+          formControlName="comment"></textarea>
       </div>
 
 
       <div class="form-group col-lg-12 btn position-relative">
-        <label for="photo" i18n
-          ><i class="fa fa-camera"></i>Ajouter une photo</label
-        >
-        <input
-          #photo
-          id="photo"
-          name="photo"
-          formControlName="photo"
-          class="inputfile"
-          type="file"
-          accept="image/*"
-          capture="environment"
-        />
+        <label for="photo" i18n><i class="fa fa-camera"></i>Ajouter une photo</label>
+        <input #photo id="photo" name="photo" formControlName="photo" class="inputfile" type="file" accept="image/*"
+          capture="environment" />
       </div>
-      
     </div>
 
 
@@ -166,58 +87,31 @@
           </div>
           <button class="btn" (click)="hasZoomAlert = false">OK</button>
         </div>
-        <div
-          id="formMap"
-          class="col-lg-12"
-          [class.ng-invalid]="obsForm.get('geometry').invalid"
-          [class.ng-valid]="obsForm.get('geometry').valid"
-          i18n-data-observation-zoom-statement-warning
-          data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
-        ></div>
+        <div id="formMap" class="col-lg-12" [class.ng-invalid]="obsForm.get('geometry').invalid"
+          [class.ng-valid]="obsForm.get('geometry').valid" i18n-data-observation-zoom-statement-warning
+          data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."></div>
       </div>
-      <input
-        formControlName="geometry"
-        type="hidden"
-        id="geometry"
-        name="geometry"
-        #geometry
-        class="col-lg-12"
-      />
+      <input formControlName="geometry" type="hidden" id="geometry" name="geometry" #geometry class="col-lg-12" />
       <p class="text-right m-0">
-        <em
-          >Cliquez sur la carte pour renseigner le lieu précis de votre
-          observation</em
-        >
+        <em>Cliquez sur la carte pour renseigner le lieu précis de votre
+          observation</em>
       </p>
 
-             <div class="col-lg-12" *ngIf="AppConfig.email_contact && !(isLoggedIn() | async)">
-                          <input 
-                            type="checkbox" 
-                            id="agreeContactRGPD" 
-                            formControlName="agreeContactRGPD"
-                            (change)=onChangeContactCheckBoxRGPD()
-                          />
-                          <small style="margin-left:5px">{{ AppConfig.program_allow_email_contact[localeId] }}</small>
-                    </div>
-                    <div class="form-group col-lg-12" *ngIf="AppConfig.email_contact && !(isLoggedIn() | async)">
-                          <label for="email" style="margin-right:5px" i18n>E-mail de contact </label>
-                          <input
-                            type="text"
-                            i18n-placeholder
-                            placeholder="E-Mail"
-                            id="email"
-                            formControlName="email"
-                          />
-                    </div>
+      <div class="col-lg-12" *ngIf="AppConfig.email_contact && !(isLoggedIn() | async)">
+        <input type="checkbox" id="agreeContactRGPD" formControlName="agreeContactRGPD"
+          (change)=onChangeContactCheckBoxRGPD() />
+        <small style="margin-left:5px">{{ AppConfig.program_allow_email_contact[localeId] }}</small>
+      </div>
+      <div class="form-group col-lg-12" *ngIf="AppConfig.email_contact && !(isLoggedIn() | async)">
+        <label for="email" style="margin-right:5px" i18n>E-mail de contact </label>
+        <input type="text" i18n-placeholder placeholder="E-Mail" id="email" formControlName="email" />
+      </div>
 
     </div>
-    <p
-      class="ng-invalid ng-dirty pl-1 ml-1"
-      *ngIf="
+    <p class="ng-invalid ng-dirty pl-1 ml-1" *ngIf="
         (obsForm.get('date').invalid || obsForm.get('count').invalid) &&
-        (formRef.touched || formRef.dirty)
-      "
-    >
+        (obsForm.touched || obsForm.dirty)
+      ">
       Champs manquants
     </p>
   </div>

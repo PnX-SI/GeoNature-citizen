@@ -61,7 +61,6 @@ export class AuthInterceptor implements HttpInterceptor {
             this.token$.next(data.access_token);
             // Fixme:
             const clone = this.addToken(request, data.access_token);
-            console.debug(clone);
             return next.handle(clone);
           }
           this.router.navigate(["/home"]);
@@ -100,22 +99,29 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(
     request: HttpRequest<any>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<any>> {   
     if (
       (request.url.match(AppConfig.API_ENDPOINT) &&
         (request.url.includes("token_refresh") ||
           request.url.includes("registration") ||
+          request.url.includes("resetpasswd") ||
           request.url.includes("login"))) ||
       !request.url.match(AppConfig.API_ENDPOINT)
     ) {
       return next.handle(request);
     }
+    if 
+      (request.url.match(AppConfig.API_ENDPOINT) &&
+        request.url.includes("confirmEmail") 
+    ) {
 
+      return next.handle(request);
+    }
     // access_token renewal 2min before expiration if interacting with backend api.
     const secondsToExpiration = this.auth.tokenExpiration(
       this.auth.getAccessToken()
     );
-    console.debug(`secs to exp: ${secondsToExpiration}`);
+   
     if (secondsToExpiration && secondsToExpiration <= 120.0) {
       return this.handle401(request, next);
     }

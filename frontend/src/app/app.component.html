@@ -1,9 +1,9 @@
-<header>
-  <app-topbar class="fixed-top"></app-topbar>
-  <!-- <app-sidebar></app-sidebar> -->
-</header>
-<div class="router-app">
+
+<div class="router-app d-flex flex-column justify-content-between">
+    <header>
+        <app-topbar class="fixed-top"></app-topbar>
+        <!-- <app-sidebar></app-sidebar> -->
+      </header>
   <div class="container-fluid"><router-outlet></router-outlet></div>
+  <app-footer *ngIf="appConfig.FRONTEND.DISPLAY_FOOTER"></app-footer>
 </div>
-<app-footer *ngIf="appConfig.FRONTEND.DISPLAY_FOOTER"></app-footer>
-<!-- Routed components go here -->

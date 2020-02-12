@@ -22,6 +22,7 @@ export class RegisterComponent {
   staticAlertClosed = false;
   errorMessage: string;
   successMessage: string;
+  userAvatar: string | ArrayBuffer;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -35,16 +36,14 @@ export class RegisterComponent {
       .register(this.user)
       .pipe(
         map(user => {
-          localStorage.setItem("access_token", user.access_token);
-          localStorage.setItem("refresh_token", user.refresh_token);
-          localStorage.setItem("username", user.username);
           if (user) {
             let message = user.message;
             this._success.subscribe(message => (this.successMessage = message));
-            this._success.pipe(debounceTime(1500)).subscribe(() => {
+            this._success.pipe(debounceTime(5000)).subscribe(() => {
               this.successMessage = null;
               this.activeModal.close();
             });
+
             this.displaySuccessMessage(message);
             // redirect ?
             if (this.auth.redirectUrl) {
@@ -86,11 +85,24 @@ export class RegisterComponent {
 
   displayErrorMessage(message) {
     this._error.next(message);
-    console.error("errorMessage:", message);
   }
 
   displaySuccessMessage(message) {
     this._success.next(message);
-    console.info("successMessage:", message);
+  }
+
+  onUploadAvatar($event) {
+    if ($event) {
+      if ($event.target.files && $event.target.files[0]) {
+        let reader = new FileReader();
+        let file = $event.target.files[0];
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          this.userAvatar = reader.result;
+          this.user.avatar = this.userAvatar;
+          this.user.extention = $event.target.files[0].type.split("/").pop();
+        };
+      }
+    }
   }
 }

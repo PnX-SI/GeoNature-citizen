@@ -4,12 +4,14 @@ export class RegisterUser {
   email?: string;
   name?: string;
   surname?: string;
+  avatar?: string | ArrayBuffer;
+  extention?: string;
 
   constructor() {}
 }
 
 export interface LoginUser {
-  username: string;
+  email: string;
   password: string;
 }
 

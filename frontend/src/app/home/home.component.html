@@ -1,5 +1,5 @@
 <div class="row">
-    <section id="welcome">
+    <section id="welcome" [style.background-image]="'url('+backgroundImage+')'">
         <h1 [innerHTML]="platform_intro"></h1>
         <p [innerHTML]="platform_teaser"></p>
         <a [routerLink]="['/home']" fragment="programs" class="scroll">
@@ -8,13 +8,49 @@
         </a>
     </section>
 </div>
+
+<div *ngIf="stats && AppConfig.FRONTEND.DISPLAY_STATS" class="row row-0 general-stat">
+    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+      <div class="panel panel-teal panel-widget border-right">
+        <div class="no-padding"><em class="fa fa-xl fa-search color-primary"></em>
+          <div class="large">{{stats.nb_obs}}</div>
+          <div class="text-muted" i18n>Observations</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+      <div class="panel panel-blue panel-widget border-right">
+        <div class="no-padding"><em class="fa fa-xl fa fa-leaf color-secondary"></em>
+          <div class="large">{{stats.nb_espece}}</div>
+          <div class="text-muted" i18n>Espèces</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+      <div class="panel panel-orange panel-widget border-right">
+        <div class="no-padding"><em class="fa fa-xl fa-users color-primary"></em>
+          <div class="large">{{stats.nb_user}}</div>
+          <div class="text-muted" i18n> Observateurs </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+      <div class="panel panel-red panel-widget ">
+        <div class="no-padding"><em class="fa fa-xl fa fas fa-share-alt color-secondary"></em>
+          <div class="large">{{stats.nb_program}}</div>
+          <div class="text-muted" i18n>Programmes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <div class="row">
     <!-- LES PROGRAMMES -->
-    <section id="programs" *ngIf="programs.length > 1">
+    <section id="programs" >
         <div id="programs-cards">
             <div class="container-fluid programs">
                 <div class="row justify-content-center align-items-center">
-                    <div class="col-xl-3 col-lg-4 " *ngFor="let p of programs">
+                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6" *ngFor="let p of programs">
                         <a [routerLink]="['/programs', p.id_program, 'observations']">
                             <div class="text-center">
                                 <div class="img-hover" [ngbTooltip]="p.short_desc" [ngStyle]="{
@@ -25,19 +61,16 @@
                                       : 'url(' + 'assets/prog1.jpg' + ')',
                                     'background-size': 'cover'
                                   }"></div>
-
                                 <h5 class="card-title">
                                     {{ p.title }}&nbsp; <span class="badge badge-info"> </span>
                                 </h5>
                                 <p class="short_desc" [innerHTML]="p.html_short_desc"></p>
-
                                 <!-- <a class="btn-big" [routerLink]="['/programs', p.id_program, 'observations']">{{ AppConfig.platform_participate[localeId] }}
                               </a> -->
-                                <div class="overlay">
+                                <div class="overlay-prog">
                                     <p class="overlay-text">{{ AppConfig.platform_participate[localeId] }}</p>
                                 </div>
                             </div>
-
                         </a>
                     </div>
                 </div>
@@ -72,4 +105,7 @@
         </div>
 
     </section>
+</div>
+<div row>
+  <app-home-custom></app-home-custom>
 </div>

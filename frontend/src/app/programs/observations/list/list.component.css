@@ -23,20 +23,53 @@
 #list .espece:hover {
   border: solid 2px;
   border-color: var(--primary);
-  cursor: pointer;
+}
+
+#list .espece:hover .espece-link{
+  text-decoration: underline;
+}
+
+#list .espece a.espece-link:hover{
+  text-decoration: underline !important;
 }
 
 .espece:hover .hide {
   transform: translateX(0);
 }
-
-#list .espece img {
-  object-fit: cover;
-  min-width: 80px !important;
-  max-width: 80px !important;
-  height: 80px;
+.espece-link{
+  width: fit-content;
 }
 
+#list .espece .obs-img {
+  margin: 0;
+  object-fit: cover;
+  min-width: 100px !important;
+  max-width: 100px !important;
+  min-height: 100px !important;
+  max-height: 100px !important;
+}
+
+.avatar-wrapper{
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  background: no-repeat;
+  background-size: contain;
+  background-position: center;
+  float: left;
+  margin-right: 8px;
+}
+
+.avatar-img{
+  box-shadow: 1px 1px 15px -5px black;
+  margin-right: 8px;
+}
+
+.fa-user-circle{
+  color : #00a99c;
+  margin-right: 6px;
+  font-size: 19px;
+}
 .hide {
   transform: translateX(100%);
   transition: all 0.2s ease-in-out;
@@ -48,7 +81,7 @@
   color: #fff;
 }
 
-#list .espece .hide img {
+#list .espece .hide .on-map {
   min-width: 20px !important;
   max-width: 20px !important;
   height: auto !important;
@@ -104,13 +137,11 @@
 
 .obs-found {
   /* background-color: var(--secondary); */
-  background-image: linear-gradient(
-    178deg,
-    var(--secondary) 0%,
-    var(--secondary) 60%,
-    var(--secondary-gradient) 63%,
-    var(--secondary-gradient)
-  ) !important;
+  background-image: linear-gradient(178deg,
+      var(--secondary) 0%,
+      var(--secondary) 60%,
+      var(--secondary-gradient) 63%,
+      var(--secondary-gradient)) !important;
   min-height: 1.5em !important;
 }
 
@@ -140,24 +171,61 @@
 }
 
 @media screen and (max-width: 992px) {
-  #list {
+  .observations #list {
     max-height: 40vh;
     height: inherit;
   }
+
   .toggle {
     display: none;
   }
+
+  div#list:not(.sidebar) {
+    max-height: 33vh;
+  }
+
   .side-bar,
   .map {
     position: static !important;
   }
+
   .map {
     height: auto;
   }
+
   /*  #map{
         height: 50vh;
     } */
   .hide {
     transform: translateX(-0%);
   }
+}
+
+
+.btn-detail-espece {
+  color: #fff !important;
+  background-position: -1px -1px;
+  background-repeat: repeat-x;
+  background-size: 110% 110%;
+  border: 1px solid;
+  border-radius: .25em;
+  background-color: var(--primary);
+  border-color: var(--primary);
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 12px;
+  width: fit-content;
+  position: relative;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+
+}
+
+.btn-detail-espece i {
+  vertical-align: text-bottom;
+  margin-left: 10px;
 }

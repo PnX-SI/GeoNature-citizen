@@ -24,4 +24,4 @@ elif [[ ! -d $LOG_DIR ]]; then
 fi
 
 echo "Starting gunicorn"
-exec gunicorn --error-log $APP_DIR/var/log/gn_errors.log --pid="geonature-citizen.pid" -b :5002 --reload -n "geonature-citizen" wsgi:app
+exec gunicorn3 --error-log $APP_DIR/var/log/gn_errors.log --pid="geonature-citizen.pid" -b :5002 --reload -n "geonature-citizen" wsgi:app

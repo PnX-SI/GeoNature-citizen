@@ -24,11 +24,14 @@ export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
   // isLoggedIn: boolean = false;
   username: any;
+  isCollapsed = true;
   programs$ = new Subject<Program[]>();
   isAdmin = false;
   canDisplayAbout: boolean = AppConfig.about;
   canSignup: boolean = AppConfig.signup;
   adminUrl: SafeUrl;
+  userAvatar: string;
+  logoImage: String;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,6 +43,7 @@ export class TopbarComponent implements OnInit {
   ) {
     const tmp = localStorage.getItem("username");
     this.username = tmp ? tmp.replace(/\"/g, "") : "Anonymous";
+    this.logoImage = AppConfig.API_ENDPOINT + "/media/logo.png";
     this.route.data
       .pipe(
         tap((data: { programs: Program[] }) => {
@@ -62,6 +66,11 @@ export class TopbarComponent implements OnInit {
       map(value => {
         if (value === true) {
           this.username = localStorage.getItem("username");
+          if (localStorage.getItem("userAvatar") && localStorage.getItem("userAvatar") != "null")
+            this.userAvatar =
+              AppConfig.API_ENDPOINT +
+              "/media/" +
+              localStorage.getItem("userAvatar");
         }
         return value;
       })
@@ -92,6 +101,7 @@ export class TopbarComponent implements OnInit {
   programs() {
     this.modalService.open(ProgramsComponent, {
       size: "lg",
+      windowClass: "programs-modal",
       centered: true
     });
   }
