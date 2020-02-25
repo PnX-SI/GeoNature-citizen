@@ -54,7 +54,7 @@ GeoNature-citizen s'appuie sur [TaxHub](https://github.com/PnX-SI/TaxHub) pour l
 
 Ce projet est initialement développé pour répondre aux besoins de collectes participatives dans le cadre des démarches d'atlas de biodiversité communal/territorial (ABC/ABT).
 La première version de ce projet est le fruit d'une démarche mutualisée entre différents projects :
-* Projet d'Atlas de biodiversité de territorie de [Valence Romans Agglo](http://www.valenceromansagglo.fr/fr/index.html), en partenariat avec la [LPO Auvergne-Rhône-Alpes](https://auvergne-rhone-alpes.lpo.fr/).
+* Projet d'Atlas de biodiversité de territoire de [Valence Romans Agglo](http://www.valenceromansagglo.fr/fr/index.html), en partenariat avec la [LPO Auvergne-Rhône-Alpes](https://auvergne-rhone-alpes.lpo.fr/).
 * Projets d'inventaires participatifs du [Parc national du Mercantour](http://www.mercantour-parcnational.fr/fr) et du [Syndicat Mixte pour la gestion et la protection de la Camargue Gardoise](https://www.camarguegardoise.com/), avec une réalisation par [Natural Solutions](https://www.natural-solutions.eu/).
 
 Il constitue l'une des briques du projet GeoNature, porté par les [Parcs nationaux de France](http://www.parcsnationaux.fr/fr) et bénéficie de l'appui technique du [Parc national des Ecrins](http://www.ecrins-parcnational.fr/).
