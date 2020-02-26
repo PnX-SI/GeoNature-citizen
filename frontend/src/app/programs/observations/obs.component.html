@@ -14,8 +14,8 @@
               <h3 class="mobile" [innerHTML]="program.title"></h3>
               <h3 class="desktop" [innerHTML]="program.title"></h3>
               <div>
-                <p [innerHTML]="program.html_short_desc"></p>
-                <div [innerHTML]="program.html_long_desc" id="collapse" [ngbCollapse]="isCollapsed"></div>
+                <h5 class="short-desc" [innerHTML]="program.short_desc"></h5>
+                <div class="long-desc" [innerHTML]="program.html_long_desc" id="collapse" [ngbCollapse]="isCollapsed"></div>
                 <button type="button" class="mobile" (click)="isCollapsed = !isCollapsed"
                   [attr.aria-expanded]="!isCollapsed" aria-controls="collapse"
                   aria-expanded="false"><span>...</span></button>

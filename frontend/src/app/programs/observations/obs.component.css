@@ -157,8 +157,17 @@
   text-align: center;
   margin: 0 auto;
 }
+
 #slider .carousel-text a.btn-big{
   background-color: var(--secondary) !important;
+}
+
+#slider .carousel-text .short-desc {
+  font-weight: bold;
+}
+
+#slider .carousel-text .long-desc {
+  padding-right: 10px;
 }
 
 .mobile-hidden {
