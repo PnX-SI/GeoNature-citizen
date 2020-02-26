@@ -34,6 +34,14 @@ export const AppConfig = {
       fr: "PARTICIPER AU PROGRAMME",
       en: "PARTICIPATE"
     },
+    programs_label: {
+      fr: "Programmes",
+      en: "Surveys"
+    },
+    program_label: {
+      fr: "Le programme",
+      en: "Survey"
+    },
     program_share_an_observation: {
       fr: "PARTAGER UNE OBSERVATION",
       en: "SHARE AN OBSERVATION"

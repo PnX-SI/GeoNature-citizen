@@ -3,8 +3,8 @@
   <section id="slide" class="obs-section">
     <div id="slider" class="carousel slide">
       <div class="carousel-inner">
-        <h2 i18n>
-          Le programme <span [innerHTML]="program.title"></span>
+        <h2>
+          {{AppConfig.program_label[localeId]?AppConfig.program_label[localeId]:'Programme'}} <span>{{ program.title }}</span>
         </h2>
         <div class="carousel-item active">
           <img class="d-block w-100 default-img" [src]="program.image || 'assets/default_program.jpg'"

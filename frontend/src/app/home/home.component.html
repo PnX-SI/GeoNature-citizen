@@ -38,7 +38,7 @@
       <div class="panel panel-red panel-widget ">
         <div class="no-padding"><em class="fa fa-xl fa fas fa-share-alt color-secondary"></em>
           <div class="large">{{stats.nb_program}}</div>
-          <div class="text-muted" i18n>Programmes</div>
+          <div class="text-muted" [innerHtml]="AppConfig.programs_label[localeId]?AppConfig.programs_label[localeId]:'Programmes'"></div>
         </div>
       </div>
     </div>

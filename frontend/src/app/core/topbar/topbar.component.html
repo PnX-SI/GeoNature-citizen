@@ -17,7 +17,9 @@
               title="Accueil">Accueil</a>
           </li>
           <li>
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="programs();isCollapsed = true" i18n title="Les programmes">Les programmes</a>
+            <a class="btn my-2 my-sm-0 rounded-0" (click)="programs();isCollapsed = true" title="Les programmes">
+              {{AppConfig.programs_label[localeId]?AppConfig.programs_label[localeId]:'Programmes'}}
+            </a>
           </li>
           <li *ngIf="canDisplayAbout">
             <a class="btn my-2 my-sm-0 rounded-0" routerLink="/about"   (click)="isCollapsed = !isCollapsed" routerLinkActive="active" i18n title="A propos">A

@@ -145,7 +145,7 @@
 }
 
 #slider .carousel-text div {
-  max-height: 50%;
+  max-height: unset;
   overflow-y: auto;
   margin-bottom: 15px;
   color: black;
