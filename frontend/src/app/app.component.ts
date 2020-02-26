@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
       { property: 'og:title', content: AppConfig.appName },
       { property: 'og:description', content: AppConfig.platform_teaser[this.localeId] },
       { property: 'og:image', content: this.backgroundImage },
-      // { property: 'og:url', content: 'width=device-width, initial-scale=1' },
+      { property: 'og:url', content: AppConfig.URL_APPLICATION },
       { property: 'twitter:title', content: AppConfig.appName },
       { property: 'twitter:description', content: AppConfig.platform_teaser[this.localeId] },
       { property: 'twitter:image', content: this.backgroundImage }

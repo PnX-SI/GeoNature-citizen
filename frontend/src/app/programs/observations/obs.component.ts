@@ -12,7 +12,7 @@ import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from "@angular/router";
 import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
 import { forkJoin } from "rxjs";
-
+import {Router} from "@angular/router";
 import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 
@@ -52,6 +52,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
+    private router: Router ,
     private programService: GncProgramsService,
     public flowService: ModalFlowService,
     public breakpointObserver: BreakpointObserver,
@@ -94,7 +95,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
       this.metaTagService.updateTag({ property: 'og:title', content: AppConfig.appName +' - '+this.program.title});
       this.metaTagService.updateTag({ property: 'og:description', content: this.program.short_desc });
       this.metaTagService.updateTag({ property: 'og:image', content: this.program.image });
-      // { property: 'og:url', content: 'width=device-width, initial-scale=1' },
+      this.metaTagService.updateTag({ property: 'og:url', content: AppConfig.URL_APPLICATION+this.router.url });
       this.metaTagService.updateTag({ property: 'twitter:title', content: AppConfig.appName +' - '+this.program.title});
       this.metaTagService.updateTag({ property: 'twitter:description', content: this.program.short_desc });
       this.metaTagService.updateTag({ property: 'twitter:image', content: this.program.image });
