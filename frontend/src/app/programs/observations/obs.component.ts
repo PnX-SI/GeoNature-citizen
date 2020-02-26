@@ -8,6 +8,7 @@ import {
   Inject,
   LOCALE_ID
 } from "@angular/core";
+import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from "@angular/router";
 import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
 import { forkJoin } from "rxjs";
@@ -53,7 +54,9 @@ export class ObsComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     public flowService: ModalFlowService,
-    public breakpointObserver: BreakpointObserver
+    public breakpointObserver: BreakpointObserver,
+    private titleService: Title,
+    private metaTagService: Meta
   ) {
     this.route.params.subscribe(params => (this.program_id = params["id"]));
     this.route.fragment.subscribe(fragment => {
@@ -84,6 +87,12 @@ export class ObsComponent implements OnInit, AfterViewInit {
         this.surveySpecies = taxa;
         this.programFeature = program;
       });
+      this.titleService.setTitle(this.AppConfig.appName + ' - ' + this.program.title);
+      console.log(this.program);
+      this.metaTagService.updateTag(
+        { name: 'description', content: this.program.short_desc }
+      );
+
     });
   }
 
