@@ -160,6 +160,9 @@ export class ObsFormComponent implements AfterViewInit {
           .locate({
             icon: "fa fa-compass",
             position: map_conf.GEOLOCATION_CONTROL_POSITION,
+            strings: {
+              title: MAP_CONFIG.LOCATE_CONTROL_TITLE[this.localeId] ? MAP_CONFIG.LOCATE_CONTROL_TITLE[this.localeId] : 'Me géolocaliser'
+            },
             getLocationBounds: locationEvent =>
               locationEvent.bounds.extend(L.LatLngBounds),
             onLocationError: locationEvent => {
