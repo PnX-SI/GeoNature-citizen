@@ -1,4 +1,4 @@
-import {Component, OnInit, AfterViewChecked, Inject, LOCALE_ID } from "@angular/core";
+import { Component, OnInit, AfterViewChecked, Inject, LOCALE_ID } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { Title, Meta, SafeHtml, DomSanitizer } from "@angular/platform-browser";
@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
   AppConfig = AppConfig;
   htmlContent: SafeHtml;
   stats: Object;
-  backgroundImage: String;
+  backgroundImage: any;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -32,26 +32,33 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     private observationsService: ObservationsService,
     protected domSanitizer: DomSanitizer,
     protected http: HttpClient
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.data.subscribe((data: { programs: Program[] }) => {
       this.programs = data.programs;
       this.observationsService.getStat().subscribe(
-        (stats) => this.stats=stats
+        (stats) => this.stats = stats
       )
     });
     this.route.fragment.subscribe(fragment => {
       this.fragment = fragment;
     });
 
-    
+
     this.backgroundImage = AppConfig.API_ENDPOINT + "/media/background.jpg";
     this.meta.updateTag({
       name: "description",
       content:
         this.AppConfig.platform_teaser.fr
     });
+    this.meta.updateTag({ property: 'og:title', content: AppConfig.appName });
+    this.meta.updateTag({ property: 'og:description', content: AppConfig.platform_teaser[this.localeId] });
+    this.meta.updateTag({ property: 'og:image', content: this.backgroundImage });
+    // { property: 'og:url', content: 'width=device-width, initial-scale=1' },
+    this.meta.updateTag({ property: 'twitter:title', content: AppConfig.appName });
+    this.meta.updateTag({ property: 'twitter:description', content: AppConfig.platform_teaser[this.localeId] });
+    this.meta.updateTag({ property: 'twitter:image', content: this.backgroundImage });
     this.titleService.setTitle(this.AppConfig.appName);
     this.platform_intro = this.domSanitizer.bypassSecurityTrustHtml(
       AppConfig["platform_intro"][this.localeId]

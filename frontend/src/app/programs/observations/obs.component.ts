@@ -91,7 +91,13 @@ export class ObsComponent implements OnInit, AfterViewInit {
       this.metaTagService.updateTag(
         { name: 'description', content: this.program.short_desc }
       );
-
+      this.metaTagService.updateTag({ property: 'og:title', content: AppConfig.appName +' - '+this.program.title});
+      this.metaTagService.updateTag({ property: 'og:description', content: this.program.short_desc });
+      this.metaTagService.updateTag({ property: 'og:image', content: this.program.image });
+      // { property: 'og:url', content: 'width=device-width, initial-scale=1' },
+      this.metaTagService.updateTag({ property: 'twitter:title', content: AppConfig.appName +' - '+this.program.title});
+      this.metaTagService.updateTag({ property: 'twitter:description', content: this.program.short_desc });
+      this.metaTagService.updateTag({ property: 'twitter:image', content: this.program.image });
     });
   }
 
