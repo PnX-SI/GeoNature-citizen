@@ -4,15 +4,15 @@
     <div id="slider" class="carousel slide">
       <div class="carousel-inner">
         <h2 i18n>
-          Le programme <span>{{ program.title }}</span>
+          Le programme <span [innerHTML]="program.title"></span>
         </h2>
         <div class="carousel-item active">
           <img class="d-block w-100 default-img" [src]="program.image || 'assets/default_program.jpg'"
             alt="program image (fixme context)" />
           <div class="carousel-text-container">
             <div class="carousel-text">
-              <h3 class="mobile">{{ program.title }}</h3>
-              <h3 class="desktop">{{ program.title }}</h3>
+              <h3 class="mobile" [innerHTML]="program.title"></h3>
+              <h3 class="desktop" [innerHTML]="program.title"></h3>
               <div>
                 <p [innerHTML]="program.html_short_desc"></p>
                 <div [innerHTML]="program.html_long_desc" id="collapse" [ngbCollapse]="isCollapsed"></div>
