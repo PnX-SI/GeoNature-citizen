@@ -1,7 +1,7 @@
 import {Component, OnInit, AfterViewChecked, Inject, LOCALE_ID } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
-import { Meta, SafeHtml, DomSanitizer } from "@angular/platform-browser";
+import { Title, Meta, SafeHtml, DomSanitizer } from "@angular/platform-browser";
 
 import { AppConfig } from "../../conf/app.config";
 import { ProgramsResolve } from "../programs/programs-resolve.service";
@@ -28,6 +28,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
     private meta: Meta,
+    private titleService: Title,
     private observationsService: ObservationsService,
     protected domSanitizer: DomSanitizer,
     protected http: HttpClient
@@ -49,8 +50,9 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     this.meta.updateTag({
       name: "description",
       content:
-        "GeoNature-citizen est une application de crowdsourcing des données sur la biodiversité."
+        this.AppConfig.platform_teaser.fr
     });
+    this.titleService.setTitle(this.AppConfig.appName);
     this.platform_intro = this.domSanitizer.bypassSecurityTrustHtml(
       AppConfig["platform_intro"][this.localeId]
     );

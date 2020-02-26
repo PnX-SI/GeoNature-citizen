@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Title, Meta } from '@angular/platform-browser';
 
 import { AppConfig } from "../conf/app.config";
 import { Router, NavigationStart } from "@angular/router";
@@ -16,6 +17,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private metaTagService: Meta,
+    private titleService: Title,
     private modalService: ModalsTopbarService
   ) {
     this.router.events.subscribe(event => {
@@ -27,5 +30,13 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.appConfig = AppConfig;
+
+    this.metaTagService.addTags([
+      { name: 'keywords', content: 'GeoNature-citizen ' + (this.appConfig.META.keywords ? this.appConfig.META.keywords: '') },
+      { name: 'robots', content: 'index, follow' },
+      { name: 'author', content: 'collectif GeoNature' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { charset: 'UTF-8' }
+    ]);
   }
 }
