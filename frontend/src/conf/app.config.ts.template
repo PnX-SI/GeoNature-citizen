@@ -12,7 +12,6 @@ export const AppConfig = {
     },
     META: {
       keywords: 'biodiversite enquetes participatif observations',
-      content: "Une application d'inventaire participatif de la biodiversité"
     },
     about: true,
     URL_APPLICATION:"http://127.0.0.1:4200",

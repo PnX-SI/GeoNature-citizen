@@ -42,7 +42,7 @@
       <app-obs-map #obsMapRef [observations]="observations" [program]="programFeature"
         (onClick)="onMapClicked($event)"></app-obs-map>
       <div class="btn-groups">
-        <app-modalflow [coords]="coords" [program_id]="program_id"></app-modalflow>
+        <app-modalflow [coords]="coords" [program_id]="program_id" [form_message]="program.form_message"></app-modalflow>
       </div>
     </div>
   </section>
@@ -63,7 +63,7 @@
             (onClick)="onMapClicked($event)">
           </app-obs-map>
           <div class="btn-groups">
-            <app-modalflow [coords]="coords" [program_id]="program_id"></app-modalflow>
+            <app-modalflow [coords]="coords" [program_id]="program_id" [form_message]="program.form_message"></app-modalflow>
           </div>
         </ng-template>
       </ngb-tab>
