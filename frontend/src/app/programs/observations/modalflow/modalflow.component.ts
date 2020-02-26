@@ -22,6 +22,7 @@ export class ModalFlowComponent {
   @Input("coords") coords;
   @Input("program_id") program_id;
   @Input("form_message") form_message;
+  @Input("default_image") default_image;
   @Input("updateData") updateData;
   @ViewChild("content", { static: true }) content: ElementRef;
   AppConfig = AppConfig;
@@ -38,7 +39,8 @@ export class ModalFlowComponent {
       coords: this.coords,
       program_id: this.program_id,
       form_message: this.form_message,
-      updateData: this.updateData
+      default_image: this.default_image,
+      updateData: this.updateData,
     });
     this.flowService.open(this.content);
   }

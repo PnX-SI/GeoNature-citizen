@@ -88,7 +88,6 @@ export class ObsComponent implements OnInit, AfterViewInit {
         this.programFeature = program;
       });
       this.titleService.setTitle(this.AppConfig.appName + ' - ' + this.program.title);
-      console.log(this.program);
       this.metaTagService.updateTag(
         { name: 'description', content: this.program.short_desc }
       );
