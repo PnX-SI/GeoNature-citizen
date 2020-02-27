@@ -4,7 +4,7 @@
       (ngModelChange)="onFilterChange()">
       <option [ngValue]="null" i18n>Toutes espèces</option>
       <option *ngFor="let s of surveySpecies" [ngValue]="s">
-        {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }} (<i>{{ s.taxref?.nom_complet }}</i>)
+        {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }} <span *ngIf="appConfig.taxonDisplaySciName">(<i>{{ s.taxref?.nom_complet }}</i>)</span>
       </option>
     </select>
 

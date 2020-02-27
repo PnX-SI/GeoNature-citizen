@@ -62,7 +62,9 @@ export const AppConfig = {
       "nom_vern_eng",
       "cd_nom"
     ],
+    taxonDisplaySciName: true,
     program_list_observers_names: true,
     program_list_sort: "-timestamp_create",
-    details_espece_url: "<url_inpn_or_atlas>/cd_nom/" // !! gardez bien le cd_nom/ dans l'url
+    details_espece_url: "<url_inpn_or_atlas>/cd_nom/", // !! gardez bien le cd_nom/ dans l'url
+    registration_message : "Vous inscrire vous permet de gérer vos observations"
 }
