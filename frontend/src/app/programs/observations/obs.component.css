@@ -168,6 +168,7 @@
 
 #slider .carousel-text .long-desc {
   padding-right: 10px;
+  max-height: unset;
 }
 
 .mobile-hidden {
