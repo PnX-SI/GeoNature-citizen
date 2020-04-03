@@ -44,7 +44,7 @@ depuis l'environnement virtuel python:
     cd ../config
     cp default_config.toml.example default_config.toml
     
-    python -m wsgi.py
+    python -m wsgi
     # debug mode
     # export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; export FLASK_APP=wsgi; python -m flask run --host=0.0.0.0
 
