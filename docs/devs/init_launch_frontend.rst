@@ -27,6 +27,15 @@ Installer angular CLI (version LTS 6) et les dépendances requises:
     npm install -g @angular/cli@v8-lts
     npm install
 
+Préparation des templates
+#########################
+
+Les templates des pages et leur feuille de style doivent être présents avant le lancement.
+Il s'agit notamment des fichiers suivants, pour lesquels un template est disponible:
+* src/custom/about.(html|css)
+* src/custom/home.(html|css)
+* src/custom/custom.css
+
 Lancer du frontend
 ##################
 
