@@ -9,7 +9,7 @@ PostgreSQL et son extension spatiale PostGIS.
 Installer le serveur
 ####################
 
-Pour installer le serveur de base de données, suiviz les \
+Pour installer le serveur de base de données, suivez les \
 instructions du site officiel \
 `PostgreSQL Downloads <https://www.postgresql.org/download/>`_:
 

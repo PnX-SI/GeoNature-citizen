@@ -94,7 +94,7 @@ vers ``app.config.ts``:
 
 .. code-block:: bash
 
-    $ cp default_config.toml.example default_config.toml
+    $ cp app.config.ts.sample app.config.ts
 
 Editez alors les différents paramètres de ce fichier.
 
