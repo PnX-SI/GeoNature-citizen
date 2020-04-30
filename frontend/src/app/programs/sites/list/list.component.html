@@ -11,7 +11,7 @@
           Ajoutée par <span>{{ o.properties.obs_txt }}</span>
         </p>
         <p>
-          le <span>{{ o.properties.timestamp_create.substring(0, 10) | date : longDate }}</span>
+          le <span>{{ o.properties.timestamp_create.substring(0, 10) | date : "longDate" }}</span>
         </p>
       </div>
       <div class="hide" [routerLink]="['/programs', o.properties.id_program, 'sites', o.properties.id_site]" style="cursor:pointer" title="Voir les détails sur cette mare">

@@ -478,7 +478,7 @@
         {
           "key": "remarques",
           "type": "textarea",
-          "notitle": true,
+          "notitle": true
         }
       ]
     }

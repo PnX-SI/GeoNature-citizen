@@ -21,7 +21,6 @@ import { LeafletMouseEvent } from "leaflet";
 import { AppConfig } from "../../../../conf/app.config";
 
 import { GNCFrameworkComponent } from './framework/framework.component';
-import MaresJson from '../../../../../../config/custom/form/mares.json';
 import { ngbDateMaxIsToday } from '../../observations/form/form.component';
 import {SiteService} from "../sites.service";
 
@@ -50,7 +49,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     data: new FormControl("")
   });
   currentStep: number = 1;
-  partialLayout: any;
+  partialLayout: any[] = [];
   advancedMode: boolean = false;
   jsonData: object = {};
   formOptions: any = {
@@ -59,23 +58,35 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     "returnEmptyFields": false,
     "addSubmit": false
   }
-  jsonSchema: any;
+  jsonSchema: any = {};
+  readyToDisplay: boolean = false;
   GNCBootstrap4Framework: any = {
     framework: GNCFrameworkComponent,
   };
-  formInputObject: any = {};
+  formInputObject: object = {};
 
-  photos = [];
+  photos: any[] = [];
 
   constructor(private http: HttpClient, private route: ActivatedRoute, public siteService: SiteService) {}
 
   ngOnInit() {
     console.debug("ngOnInit");
-    console.debug(MaresJson);
-    this.jsonSchema = MaresJson;
-    this.updatePartialLayout();
     console.debug("site_id:", this.site_id);
+    var that = this;
+    this.loadJsonSchema().subscribe((data: any) => {
+      that.initForm(data);
+    });
+  }
+  initForm(json_schema) {
+    this.jsonSchema = json_schema;
+    this.updatePartialLayout();
     this.updateFormInput();
+    this.readyToDisplay = true;
+  }
+  loadJsonSchema() {
+    return this.http.get(
+      `${this.URL}/sites/${this.site_id}/jsonschema`
+    );
   }
   updateFormInput() {
     this.updatePartialLayout();

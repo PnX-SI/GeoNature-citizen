@@ -4,6 +4,7 @@ from gncitizen.core.users.models import UserModel
 from gncitizen.core.commons.models import MediaModel
 import uuid
 import datetime
+import json
 
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
@@ -75,6 +76,18 @@ def get_site(pk):
         photos = get_site_photos(pk)
         formatted_site['properties']['photos'] = photos
         return {"features": [formatted_site]}, 200
+    except Exception as e:
+        return {"error_message": str(e)}, 400
+
+
+@routes.route("/<int:pk>/jsonschema", methods=["GET"])
+@json_resp
+def get_site_jsonschema(pk):
+    try:
+        site = SiteModel.query.get(pk)
+        with site.site_type.form_schema.open() as json_data:
+            data_dict = json.load(json_data)
+            return data_dict, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
 

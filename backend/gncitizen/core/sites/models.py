@@ -14,6 +14,8 @@ from gncitizen.utils.sqlalchemy import serializable, geoserializable
 from gncitizen.core.observations.models import ObservationModel
 from server import db
 from gncitizen.core.commons.models import ProgramsModel
+from gncitizen.utils.env import ROOT_DIR
+import os
 
 
 def create_schema(db):
@@ -26,7 +28,7 @@ class SiteType(enum.Enum):
     (pour l'instant seulement "mare").
     """
 
-    mare = "..."  #TODO: json_schema file path goes here
+    mare = ROOT_DIR / "config/custom/form/mares.json" # json_schema file path
 
     def __init__(self, form_schema):
         self.form_schema = form_schema

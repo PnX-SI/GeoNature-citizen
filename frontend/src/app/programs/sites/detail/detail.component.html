@@ -14,11 +14,11 @@
           <!--<tr><td>Ajoutée par</td><td>{{ site?.properties.obs_txt }}</td></tr>-->
           <!--</tbody>-->
         <!--</table>-->
-       <h6 class="card-subtitle mb-2 text-muted">Ajoutée le {{ site?.properties.timestamp_create.substring(0, 10) | date : longDate }}</h6>
+       <h6 class="card-subtitle mb-2 text-muted">Ajoutée le {{ site?.properties.timestamp_create.substring(0, 10) | date : "longDate" }}</h6>
         <p class="card-text">Inventoriée par {{ site?.properties.obs_txt }}</p>
 
         <p *ngIf="site?.properties.last_visit; else noVisit" class="card-text"><small class="text-muted">
-          Dernière visite: {{ site?.properties.last_visit.date | date : longDate }}
+          Dernière visite: {{ site?.properties.last_visit.date | date : "longDate" }}
         </small></p>
         <ng-template #noVisit>
           <p class="card-text"><small class="text-danger">Aucune visite enregistrée :(</small></p>
@@ -40,7 +40,7 @@
           <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;"
                src="{{ photo.url }}" data-holder-rendered="true">
           <div class="card-body">
-            <p class="card-text">{{ photo.date | date : longDate }}</p>
+            <p class="card-text">{{ photo.date | date : "longDate" }}</p>
             <p class="card-text"><small class="text-muted">{{ photo.author }}</small></p>
           </div>
         </div>
@@ -67,7 +67,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{ clickedPhoto?.date | date : longDate}}</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{ clickedPhoto?.date | date : "longDate"}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
