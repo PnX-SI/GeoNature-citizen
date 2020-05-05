@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Observable, BehaviorSubject } from "rxjs";
 
 import {
   NgbModal,
@@ -24,6 +25,7 @@ export const MODAL_DEFAULTS: NgbModalOptions = {
 })
 export class ModalFlowService extends FlowService {
   modalRef: NgbModalRef;
+  private modalCloseStatus: BehaviorSubject<string> = new BehaviorSubject(null);
 
   constructor(private modalService: NgbModal) {
     super();
@@ -31,8 +33,9 @@ export class ModalFlowService extends FlowService {
 
   open(content, options: NgbModalOptions = {}) {
     this.modalRef = this.modalService.open(content, {
-      ...MODAL_DEFAULTS,
-      ...options
+      size: "lg",
+      windowClass: 'obs-modal',
+      centered: true
     });
     this.modalRef.result.then(
       result => {
@@ -51,15 +54,15 @@ export class ModalFlowService extends FlowService {
             trigger = reason;
             break;
         }
-        console.debug(`dismissed with ${trigger}`);
       }
     );
   }
 
-  next_(data) {}
-
   close(data) {
     this.modalRef.close(data);
+  }
+  closeModal() {
+    if (this.modalRef) this.modalRef.close();
   }
 
   getFlowItems(initialState) {
@@ -69,5 +72,13 @@ export class ModalFlowService extends FlowService {
       new FlowItem(CongratsComponent, { ...initialState, service: this }),
       new FlowItem(RewardComponent, { ...initialState, service: this })
     ];
+  }
+
+  getModalCloseSatus(): Observable<string> {
+    return this.modalCloseStatus.asObservable();
+  }
+
+  setModalCloseSatus(type: "updateObs" | "newObs" | null) {
+    this.modalCloseStatus.next(type);
   }
 }

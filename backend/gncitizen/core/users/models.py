@@ -46,6 +46,8 @@ class UserModel(TimestampMixinModel, db.Model):
     email = db.Column(db.String(150), unique=True, nullable=False)
     phone = db.Column(db.String(15))
     organism = db.Column(db.String(100))
+    avatar = db.Column(db.String())
+    active = db.Column(db.Boolean, default=False)
     admin = db.Column(db.Boolean, default=False)
 
     def save_to_db(self):
@@ -66,8 +68,10 @@ class UserModel(TimestampMixinModel, db.Model):
             "email": self.email,
             "phone": self.phone,
             "organism": self.organism,
+            "avatar": self.avatar,
             "full_name": name + " " + surname,
             "admin": self.admin,
+            "active": self.active,
             "timestamp_create": self.timestamp_create.isoformat(),
             "timestamp_update": self.timestamp_update.isoformat()
             if self.timestamp_update
@@ -130,8 +134,8 @@ class UserRightsModel(TimestampMixinModel, db.Model):
     id_module = db.Column(
         db.Integer, db.ForeignKey(ModulesModel.id_module), nullable=True
     )
-    id_module = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=True
+    id_program = db.Column(
+        db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE"), nullable=True
     )
     right = db.Column(db.String(150), nullable=False)
     create = db.Column(db.Boolean(), default=False)
@@ -148,7 +152,7 @@ class UserGroupsModel(TimestampMixinModel, db.Model):
     id_user_right = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
     id_group = db.Column(
-        db.Integer, db.ForeignKey(GroupsModel.id_group), nullable=False
+        db.Integer, db.ForeignKey(GroupsModel.id_group, ondelete="CASCADE"), nullable=False
     )
 
 
@@ -157,7 +161,7 @@ class ObserverMixinModel(object):
     def id_role(cls):
         return db.Column(
             db.Integer,
-            db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
+            db.ForeignKey(UserModel.id_user, ondelete="CASCADE"),
             nullable=True,
         )
 

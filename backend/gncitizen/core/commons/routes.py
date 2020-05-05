@@ -241,14 +241,12 @@ def post_program():
         try:
             newprogram = ProgramsModel(**datas2db)
         except Exception as e:
-            print(e)
             raise GeonatureApiError(e)
 
         try:
             shape = asShape(request_datas["geometry"])
             newprogram.geom = from_shape(MultiPolygon(shape), srid=4326)
         except Exception as e:
-            print(e)
             raise GeonatureApiError(e)
 
         db.session.add(newprogram)

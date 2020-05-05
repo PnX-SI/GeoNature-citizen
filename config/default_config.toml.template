@@ -1,0 +1,73 @@
+# Database
+SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://geonatuser:monpassachanger@127.0.0.1:5432/geonaturedb"
+SQLALCHEMY_TRACK_MODIFICATIONS = false
+
+# JWT Auth
+JWT_SECRET_KEY = 'jwt-secret-string'
+JWT_BLACKLIST_ENABLED = true
+JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
+
+# Application
+appName = 'GeoNature-citizen'                               # Application name in the home page
+DEFAULT_LANGUAGE = 'fr'
+
+# Debug
+DEBUG = true
+SQLALCHEMY_DEBUG_LEVEL = 'WARNING'
+
+URL_APPLICATION = 'http://url.com/gncitizen'         # Replace my_url.com by your domain or IP
+API_ENDPOINT = 'http://url.com:API_PORT/gncitizen/api'        # Replace my_url.com by your domain or IP
+API_PORT = 5002 # 5000 déjà utilisé par taxhub
+API_TAXHUB ='http://127.0.0.1:5000/api/'
+
+# FlaskAdmin
+# credentials for loading map tiles from mapbox
+MAPBOX_MAP_ID = '...'
+MAPBOX_ACCESS_TOKEN = '...'
+DEFAULT_CENTER_LAT = 45
+DEFAULT_CENTER_LONG = 5
+
+
+SECRET_KEY = 'MyS3cr3tK3y'
+CONFIRM_MAIL_SALT = 'your-secret-salt' # secret salt for corfirm mail token
+
+MEDIA_FOLDER = 'media'
+
+
+[RESET_PASSWD]
+    SUBJECT = "Link"
+    FROM = 'contact@geonature-citizen.fr'
+    TEXT_TEMPLATE = '''
+    Bonjour,\r\nVoici votre nouveau mot de passe :\r\n{passwd}\r\n"{app_url}
+    '''
+    HTML_TEMPLATE = '''
+    Bonjour,<br /><br />Voici votre nouveau mot de passe :<br />
+    {passwd}
+    <br /><br />"
+    <a href="{app_url}">Connexion</a>'
+    '''
+
+[CONFIRM_EMAIL]
+    SUBJECT = "Activez votre compte"
+    FROM = 'contact@geonature-citizen.fr'
+    HTML_TEMPLATE = '''<p> Bonjour,</p><br /><p>Nous vous confirmons que votre compte a bien été créé.</p>
+     <p> Afin d'activer votre compte veuillez <a href="{activate_url}">cliquer ici.</a>
+     <p>Nous vous souhaitons la bienvenue sur notre site.</p><br />
+     <p>Bien à vous.</p>
+    '''
+
+[MAIL]
+    MAIL_USE_SSL = false
+    MAIL_STARTTLS = true
+    MAIL_HOST = 'smtpd host'
+    MAIL_PORT = 493   # mandatory SSL port
+    MAIL_AUTH_LOGIN = 'smtpd/relay host username'
+    MAIL_AUTH_PASSWD = 'smtpd/relay host password'
+
+
+# API flasgger main config
+[SWAGGER]
+    title = 'GeoNature-Citizen API'
+    version = 'x.x.x'
+    produces = ["application/json"]
+    consumes = ["application/json"]

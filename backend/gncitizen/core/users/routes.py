@@ -1,4 +1,5 @@
 import flask
+import os
 from flask import request, Blueprint, current_app
 from flask_jwt_extended import (
     create_access_token,
@@ -10,8 +11,9 @@ from flask_jwt_extended import (
 )
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-
+from gncitizen.utils.mail_check import confirm_user_email, confirm_token
 from gncitizen.utils.errors import GeonatureApiError
+from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.sqlalchemy import json_resp
 from server import db, jwt
 from gncitizen.core.observations.models import ObservationModel
@@ -21,6 +23,7 @@ import uuid
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import base64
 
 
 routes = Blueprint("users", __name__)
@@ -76,19 +79,23 @@ def registration():
     """
     try:
         request_datas = dict(request.get_json())
-
-        # Génération du dictionnaire des données à sauvegarder
         datas_to_save = {}
         for data in request_datas:
             if hasattr(UserModel, data) and data != "password":
                 datas_to_save[data] = request_datas[data]
 
         # Hashed password
-        datas_to_save["password"] = UserModel.generate_hash(request_datas["password"])
+        datas_to_save["password"] = UserModel.generate_hash(
+            request_datas["password"])
 
         # Protection against admin creation from API
         datas_to_save["admin"] = False
-
+        if ('extention' in request_datas and 'avatar' in request_datas):
+            extention = request_datas["extention"]
+            imgdata = base64.b64decode(request_datas["avatar"].replace(
+                'data:image/'+extention+';base64,', ''))
+            filename = 'avatar_' + request_datas["username"] + '.' + extention
+            datas_to_save["avatar"] = filename
         try:
             newuser = UserModel(**datas_to_save)
         except Exception as e:
@@ -132,9 +139,21 @@ def registration():
 
         access_token = create_access_token(identity=newuser.username)
         refresh_token = create_refresh_token(identity=newuser.username)
+
+        # save user avatar
+        if ('extention' in request_datas and 'avatar' in request_datas):
+            handler = open(os.path.join(str(MEDIA_DIR), filename), "wb+")
+            handler.write(imgdata)
+            handler.close()
+        # send confirm mail
+        try:
+            confirm_user_email(newuser)
+        except Exception as e:
+            return {"message mail faild": str(e)}, 500
         return (
             {
-                "message": """Félicitations, l'utilisateur "{}" a été créé""".format(
+                "message": """Félicitations, l'utilisateur "{}" a été créé.  \r\n Vous allez recevoir un email
+                pour activer votre compte """.format(
                     newuser.username
                 ),
                 "username": newuser.username,
@@ -169,10 +188,10 @@ def login():
         required: true
         schema:
           required:
-            - username
+            - email
             - password
           properties:
-            username:
+            email:
               type: string
             password:
               type: string
@@ -182,27 +201,32 @@ def login():
     """
     try:
         request_datas = dict(request.get_json())
-        print(request_datas)
-        username = request_datas["username"]
+        email = request_datas["email"]
         password = request_datas["password"]
-        print(username)
-        current_user = UserModel.find_by_username(username)
-        if not current_user:
+        try:
+            current_user = UserModel.query.filter_by(email=email).one()
+        except Exception:
+            return (
+            {"message": """L'email "{}" n'est pas enregistré.""".format(
+                email)},
+            400,
+        )
+        if not current_user.active:
             return (
                 {
-                    "message": """L'utilisateur "{}" n'est pas enregistré.""".format(
-                        username
-                    )
+                    "message": "Votre compte n'a pas été activé"
                 },
                 400,
-            )
+        )
         if UserModel.verify_hash(password, current_user.password):
-            access_token = create_access_token(identity=username)
-            refresh_token = create_refresh_token(identity=username)
+            access_token = create_access_token(identity=email)
+            refresh_token = create_refresh_token(identity=email)
             return (
                 {
-                    "message": """Connecté en tant que "{}".""".format(username),
-                    "username": username,
+                    "message": """Connecté en tant que "{}".""".format(email),
+                    "email": email,
+                    "username": current_user.as_secured_dict(True).get('username'),
+                    "userAvatar": current_user.as_secured_dict(True).get('avatar'),
                     "access_token": access_token,
                     "refresh_token": refresh_token,
                 },
@@ -292,11 +316,10 @@ def get_allusers():
     """
     # allusers = UserModel.return_all()
     allusers = UserModel.return_all()
-    print(allusers)
     return allusers, 200
 
 
-@routes.route("/user/info", methods=["GET", "POST"])
+@routes.route("/user/info", methods=["GET", "PATCH"])
 @json_resp
 @jwt_required
 def logged_user():
@@ -313,7 +336,7 @@ def logged_user():
     """
     try:
         current_user = get_jwt_identity()
-        user = UserModel.query.filter_by(username=current_user).one()
+        user = UserModel.query.filter_by(email=current_user).one()
         if flask.request.method == "GET":
             # base stats, to enhance as we go
             result = user.as_secured_dict(True)
@@ -327,21 +350,43 @@ def logged_user():
 
             return ({"message": "Vos données personelles", "features": result}, 200)
 
-        if flask.request.method == "POST":
+        if flask.request.method == "PATCH":
             is_admin = user.admin or False
-            current_app.logger.debug("[logged_user] Update current user personnal data")
+            current_app.logger.debug(
+                "[logged_user] Update current user personnal data")
             request_data = dict(request.get_json())
+            if ('extention' in request_data and 'avatar' in request_data):
+                extention = request_data["extention"]
+                imgdata = base64.b64decode(request_data["avatar"].replace(
+                    'data:image/'+extention+';base64,', ''))
+                filename = 'avatar_' + \
+                    user.username + '.' + extention
+                request_data['avatar'] = filename
+                if os.path.exists(os.path.join(str(MEDIA_DIR), str(user.as_secured_dict(True)["avatar"]))):
+                    os.remove(os.path.join(str(MEDIA_DIR),
+                                           str(user.as_secured_dict(True)["avatar"])))
+                try:
+                    handler = open(os.path.join(
+                        str(MEDIA_DIR), str(filename)), "wb+")
+                    handler.write(imgdata)
+                    handler.close()
+                except Exception as e:
+                    return (
+                        {"message": e},
+                        500,
+                    )
+
             for data in request_data:
                 if hasattr(UserModel, data) and data not in {
                     "id_user",
-                    "password",
+                    "username",
                     "admin",
                 }:
                     setattr(user, data, request_data[data])
-
-            user.password = UserModel.generate_hash(request_data["password"])
+            if ('newPassword' in request_data):
+                user.password = UserModel.generate_hash(
+                    request_data["newPassword"])
             user.admin = is_admin
-            # QUESTION: do we want to update corresponding obs IDs ... in any case ?
             user.update()
             return (
                 {
@@ -355,7 +400,7 @@ def logged_user():
         # raise GeonatureApiError(e)
         current_app.logger.error("AUTH ERROR:", str(e))
         return (
-            {"message": "Connectez vous pour obtenir vos données personnelles."},
+            {"message": str(e)},
             400,
         )
 
@@ -385,13 +430,13 @@ def delete_user():
         current_app.logger.debug(
             "[delete_user] current user is {}".format(current_user)
         )
-        user = UserModel.query.filter_by(username=current_user)
+        user = UserModel.query.filter_by(email=current_user)
         # get username
         username = user.one().username
         # delete user
         try:
             db.session.query(UserModel).filter(
-                UserModel.username == current_user
+                UserModel.username == username
             ).delete()
             db.session.commit()
             current_app.logger.debug(
@@ -417,13 +462,14 @@ def delete_user():
 def reset_user_password():
     request_datas = dict(request.get_json())
     email = request_datas["email"]
-    username = request_datas["username"]
+    #username = request_datas["username"]
 
     try:
-        user = UserModel.query.filter_by(username=username, email=email).one()
+        user = UserModel.query.filter_by(email=email).one()
     except Exception:
         return (
-            {"message": """L'email "{}" n'est pas enregistré.""".format(email)},
+            {"message": """L'email "{}" n'est pas enregistré.""".format(
+                email)},
             400,
         )
 
@@ -465,7 +511,8 @@ def reset_user_password():
                 str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
             )
             server.sendmail(
-                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
+                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string(
+                )
             )
             server.quit()
         user.password = passwd_hash
@@ -485,4 +532,38 @@ def reset_user_password():
                 )
             },
             500,
+        )
+
+
+@routes.route('/user/confirmEmail/<token>', methods=["GET"])
+@json_resp
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        return (
+            {
+                "message": "The confirmation link is invalid or has expired."
+            },
+            404,
+        )
+    user = UserModel.query.filter_by(email=email).first_or_404()
+    if user.active:
+        return (
+            {
+                "message": 'Account already confirmed. Please login.',
+                "status" : 208
+            },
+            208,
+        )
+    else:
+        user.active = True
+        user.update()
+        db.session.commit()
+        return (
+            {
+                "message": 'You have confirmed your account. Thanks!',
+                "status": 200
+            },
+            200,
         )

@@ -108,6 +108,10 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
         app.register_blueprint(routes, url_prefix=url_prefix)
 
+        from gncitizen.core.badges.routes import routes
+
+        app.register_blueprint(routes, url_prefix=url_prefix)
+
         from gncitizen.core.taxonomy.routes import routes
 
         app.register_blueprint(routes, url_prefix=url_prefix)
@@ -120,7 +124,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 except Exception as e:
                     current_app.logger.debug(e)
                     prefix = url_prefix
-                print(prefix)
                 app.register_blueprint(
                     module.backend.blueprint.blueprint, url_prefix=prefix
                 )

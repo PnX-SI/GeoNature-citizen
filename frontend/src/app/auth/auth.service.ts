@@ -45,10 +45,10 @@ export class AuthService {
 
   register(user: RegisterUser): Observable<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/registration`;
-    return this.http.post(url, user, { headers: this.headers }).pipe(
+    return this.http.post(url, user).pipe(
       map(user => {
         if (user) {
-          this.authenticate(user);
+          //this.authenticate(user);
         }
         return user;
       })
@@ -61,6 +61,7 @@ export class AuthService {
     localStorage.setItem("refresh_token", user.refresh_token);
     this.authenticated$.next(true);
     localStorage.setItem("username", user.username);
+    localStorage.setItem("userAvatar", user.userAvatar);
   }
 
   logout(): Promise<any> {
@@ -145,5 +146,11 @@ export class AuthService {
     const now: number = new Date().getTime();
     const delta: number = (jwt.payload.exp * 1000 - now) / 1000.0;
     return delta;
+  }
+
+
+  confirmEmail (token): Observable<any> {
+    let url: string = `${AppConfig.API_ENDPOINT}/user/confirmEmail/${token}`;
+    return this.http.get(url)
   }
 }

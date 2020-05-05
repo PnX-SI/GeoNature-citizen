@@ -3,9 +3,9 @@ import { Component, OnInit } from "@angular/core";
 @Component({
   selector: "app-about-custom",
   templateUrl:
-    "../../../../../config/custom/frontend/about/custom.component.html",
+    "../../../custom/about/about.html",
   styleUrls: [
-    "../../../../../config/custom/frontend/about/custom.component.css"
+    "../../../custom/about/about.css"
   ]
 })
 export class AboutCustomComponent implements OnInit {

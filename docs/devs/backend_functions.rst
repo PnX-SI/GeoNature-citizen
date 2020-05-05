@@ -1,38 +1,38 @@
-******************************************************************************
-Fonctions génériques du backend de GeoNature-citizen (``./backend/gncitizen``)
-******************************************************************************
+.. ******************************************************************************
+.. Fonctions génériques du backend de GeoNature-citizen (``./backend/gncitizen``)
+.. ******************************************************************************
 
-utils
-#####
+.. utils
+.. #####
 
 
 
-medias
-******
+.. medias
+.. ******
 
-.. automodule:: gncitizen.utils.media
-   :members: allowed_file,save_upload_files
+.. .. automodule:: gncitizen.utils.media
+..    :members: allowed_file,save_upload_files
 
-geometry
-********
+.. geometry
+.. ********
 
-.. automodule:: gncitizen.utils.geometry
-    :members: geom_from_geojson
+.. .. automodule:: gncitizen.utils.geometry
+..     :members: geom_from_geojson
 
-jwt
-***
+.. jwt
+.. ***
 
-.. automodule:: gncitizen.utils.jwt
-    :members: get_id_role_if_exists, admin_required
+.. .. automodule:: gncitizen.utils.jwt
+..     :members: get_id_role_if_exists, admin_required
 
-taxonomy
-********
+.. taxonomy
+.. ********
 
-.. automodule:: gncitizen.utils.taxonomy
-    :members: get_specie_from_cd_nom
+.. .. automodule:: gncitizen.utils.taxonomy
+..     :members: get_specie_from_cd_nom
 
-toms
-****
+.. toms
+.. ****
 
-.. automodule:: gncitizen.utils.toml
-    :members: load_toml
+.. .. automodule:: gncitizen.utils.toml
+..     :members: load_toml

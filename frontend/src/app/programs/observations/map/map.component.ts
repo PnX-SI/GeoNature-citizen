@@ -1,5 +1,6 @@
-import * as L from 'leaflet';
-import { AppConfig } from '../../../../conf/app.config';
+import * as L from "leaflet";
+import { AppConfig } from "../../../../conf/app.config";
+
 import {
   Component,
   ComponentFactoryResolver,
@@ -9,21 +10,17 @@ import {
   Injector,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
   ViewEncapsulation
-  } from '@angular/core';
-import { Feature, FeatureCollection } from 'geojson';
-import { MAP_CONFIG } from '../../../../conf/map.config';
-import { MarkerClusterGroup } from 'leaflet';
-import 'leaflet.markercluster';
-import 'leaflet.locatecontrol';
-import 'leaflet-gesture-handling';
-
-// import { AppConfig } from '../../../../conf/app.config';
-
+} from "@angular/core";
+import { Feature, FeatureCollection } from "geojson";
+import { MAP_CONFIG } from "../../../../conf/map.config";
+import { MarkerClusterGroup } from "leaflet";
+import "leaflet.markercluster";
+import "leaflet.locatecontrol";
+import "leaflet-gesture-handling";
 
 
 const conf = {
@@ -37,7 +34,7 @@ const conf = {
       maxZoom: baseLayer["maxZoom"],
       bounds: baseLayer["bounds"],
       apiKey: baseLayer["apiKey"],
-      layerName: baseLayer["layerName"],
+      layerName: baseLayer["layerName"]
     };
     if (baseLayer["subdomains"]) {
       layerConf.subdomains = baseLayer["subdomains"];
@@ -123,8 +120,8 @@ const conf = {
   styleUrls: ["./map.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class ObsMapComponent implements OnInit, OnChanges {
-  @ViewChild("map", {static: true}) map: ElementRef;
+export class ObsMapComponent implements OnChanges {
+  @ViewChild("map", { static: true }) map: ElementRef;
   @Input("observations") observations: FeatureCollection;
   @Input("program") program: FeatureCollection;
   @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
@@ -145,50 +142,37 @@ export class ObsMapComponent implements OnInit, OnChanges {
   constructor(
     private resolver: ComponentFactoryResolver,
     private injector: Injector
-  ) { }
-
-  ngOnInit() {
-    this.initMap(conf);
-  }
+  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
-    if (
-      this.observationMap &&
-      changes.program &&
-      changes.program.currentValue
-    ) {
-      this.loadProgramArea();
-    }
-
-    if (
-      this.observationMap &&
-      changes.observations &&
-      changes.observations.currentValue
-    ) {
-      this.loadObservations();
-
-      /*
-      // TODO: revisit fix for disappearing base layer when back in navigation history.
-      // update when switching layers from control.
-      // save configured map state (base_layer, center, zoom) in localStorage ?
-      let base_layer = this.observationMap.options.layers[0];
-      this.observationMap.removeLayer(this.observationMap.options.layers[0]);
-      conf.BASE_LAYERS[base_layer["options"]["name"]].addTo(
-        this.observationMap
-      );
-      this.observationMap.invalidateSize();
-      */
+    if (!this.observationMap) {
+      this.initMap(conf);
+      setTimeout(() => {
+        if (changes.program && changes.program.currentValue) {
+          this.loadProgramArea();
+        }
+        if (changes.observations && changes.observations.currentValue) {
+          this.loadObservations();
+        }
+      }, 400);
+    } else {
+      if (changes.program && changes.program.currentValue) {
+        this.loadProgramArea();
+      }
+      if (changes.observations && changes.observations.currentValue) {
+        this.loadObservations();
+      }
     }
   }
 
-  initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
+  initMap(options: any, LeafletOptions: any = {}): void {
     this.options = options;
+
     this.observationMap = L.map(this.map.nativeElement, {
       layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay ?
       gestureHandling: true,
       ...LeafletOptions
     });
-
     // TODO: inject controls with options
     this.observationMap.zoomControl.setPosition(
       this.options.ZOOM_CONTROL_POSITION
@@ -207,13 +191,14 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
     L.control
       .locate({
+        icon: "fa fa-compass",
         position: this.options.GEOLOCATION_CONTROL_POSITION,
         getLocationBounds: locationEvent =>
           locationEvent.bounds.extend(this.programMaxBounds),
         locateOptions: {
           enableHighAccuracy: this.options.GEOLOCATION_HIGH_ACCURACY
         }
-      })
+      } as any)
       .addTo(this.observationMap);
 
     // this.observationMap.scrollWheelZoom.disable();
@@ -234,19 +219,23 @@ export class ObsMapComponent implements OnInit, OnChanges {
         container.style.background = "rgba(255,255,255,0.5)";
         container.style.textAlign = "left";
         container.className = "mb-0";
-        this.observationMap.on(
-          "zoomstart zoom zoomend",
-          _e =>
-            (gauge.innerHTML = "Zoom level: " + this.observationMap.getZoom())
-        );
+        this.observationMap.on("zoomstart zoom zoomend", _e => {
+          gauge.innerHTML = "Zoom level: " + this.observationMap.getZoom();
+        });
         container.appendChild(gauge);
-
         return container;
       }
     });
     let zv = new ZoomViewer();
     zv.addTo(this.observationMap);
     zv.setPosition("bottomright");
+
+    this.observationMap.on("click", () => {
+      let elemRect =this.observationMap.getContainer().getBoundingClientRect();
+      let bodyRect = document.body.getBoundingClientRect();
+     let offset   = elemRect.top - bodyRect.top;
+     window.scrollTo(0,offset - 120) // 120 topBarre width with padding
+    });
   }
 
   getPopupContent(feature): any {
@@ -287,7 +276,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
           return marker;
         }
       };
-
       this.observationLayer.addLayer(
         L.geoJSON(this.observations, layerOptions)
       );
@@ -327,7 +315,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     if (this.program) {
       if (this.programArea !== undefined) {
         this.observationMap.removeLayer(this.programArea);
-      };
+      }
       this.programArea = L.geoJSON(this.program, {
         style: _feature => this.options.PROGRAM_AREA_STYLE(_feature)
       }).addTo(this.observationMap);
@@ -358,7 +346,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
                 this.observationMap.getContainer(),
                 "observation-zoom-statement-warning"
               );
-            }, 2000);
+            }, 400);
             return;
           }
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
@@ -376,8 +364,11 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.programMaxBounds = programBounds;
     }
   }
-
-  canStart(): void { }
+  ngOnDestroy(): void {
+    this.observationMap.off();
+    this.observationMap.remove();
+  }
+  canStart(): void {}
 
   @HostListener("document:NewObservationEvent", ["$event"])
   newObservationEventHandler(e: CustomEvent) {
@@ -389,25 +380,39 @@ export class ObsMapComponent implements OnInit, OnChanges {
   selector: "popup",
   template: `
     <ng-container>
-      <img class="default-img"
+      <img
+        class="default-img"
         [src]="
           data.image
             ? data.image
             : data.medias && !!data.medias.length
-            ? AppConfig.API_TAXHUB + '/tmedias/thumbnail/' + data.medias[0].id_media + '?h=80&v=80'
+            ? appConfig.API_TAXHUB +
+              '/tmedias/thumbnail/' +
+              data.medias[0].id_media +
+              '?h=80&v=80'
             : 'assets/default_image.png'
         "
       />
       <p>
-        <b i18n>{{ !!data.nom_francais ? data.nom_francais : data.taxref?.nom_vern }}</b> <br />
-        <span i18n>
-          Observé par
-          {{
-            data.observer && data.observer.username
-              ? data.observer.username
-              : "Anonyme"
-          }}
-          <br />
+        <a
+          class="espece-link"
+          href="{{ appConfig.details_espece_url + data.taxref?.cd_nom }}"
+          target="_blank"
+          >{{
+            !!data.nom_francais ? data.nom_francais : data.taxref?.nom_vern
+          }}</a
+        >
+        <br />
+        <span>
+          <span *ngIf="appConfig.program_list_observers_names">
+            Observé par
+            {{
+              data.observer && data.observer.username
+                ? data.observer.username
+                : "Anonyme"
+            }}
+            <br />
+          </span>
           le {{ data.date }}
         </span>
       </p>
@@ -417,5 +422,5 @@ export class ObsMapComponent implements OnInit, OnChanges {
 })
 export class MarkerPopupComponent {
   @Input() data;
-  AppConfig = AppConfig;
+  public appConfig = AppConfig;
 }

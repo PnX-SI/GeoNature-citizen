@@ -3,8 +3,8 @@ import { Component, OnInit } from "@angular/core";
 @Component({
   selector: "app-home-custom",
   templateUrl:
-    "../../../../../config/custom/frontend/home/custom.component.html",
-  styleUrls: ["../../../../../config/custom/frontend/home/custom.component.css"]
+    "../../../custom/home/home.html",
+  styleUrls: ["../../../custom/home/home.css",]
 })
 export class HomeCustomComponent implements OnInit {
   constructor() {}

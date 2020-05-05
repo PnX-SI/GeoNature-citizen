@@ -244,6 +244,11 @@ contrib/gnc_*
 #FrontEnd config files
 frontend/src/conf/*.ts
 
+#Frontend custom files
+frontend/custom/**/*.css
+frontend/custom/**/*.html
+frontend/custom/**/*.ico
+
 # pipenv: comment when migrating from traditional pip+v(irtual)env
 Pipfile
 Pipfile.lock
@@ -252,8 +257,7 @@ media/
 frontend/ssl
 
 # Custom files
-frontend/src/custom/custom.css
-frontend/src/custom/images/*.png
-frontend/src/custom/images/*.jpg
+frontend/src/custom/*
+!frontend/src/custom/**/*.template
 
 data/tmp

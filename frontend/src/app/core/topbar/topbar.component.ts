@@ -2,8 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { Observable, Subject, throwError } from "rxjs";
 import { tap, map, catchError } from "rxjs/operators";
 
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-
 import { AppConfig } from "../../../conf/app.config";
 import { AuthService } from "./../../auth/auth.service";
 import { LoginComponent } from "../../auth/login/login.component";
@@ -15,6 +13,7 @@ import { GncProgramsService } from "../../api/gnc-programs.service";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { ModalsTopbarService } from "./modalTopbar.service";
 
 @Component({
   selector: "app-topbar",
@@ -25,22 +24,26 @@ export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
   // isLoggedIn: boolean = false;
   username: any;
-  modalRef: NgbModalRef;
+  isCollapsed = true;
   programs$ = new Subject<Program[]>();
   isAdmin = false;
   canDisplayAbout: boolean = AppConfig.about;
+  canSignup: boolean = AppConfig.signup;
   adminUrl: SafeUrl;
+  userAvatar: string;
+  logoImage: String;
 
   constructor(
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     private auth: AuthService,
-    private modalService: NgbModal,
+    private modalService: ModalsTopbarService,
     private sanitizer: DomSanitizer,
     protected http: HttpClient
   ) {
     const tmp = localStorage.getItem("username");
     this.username = tmp ? tmp.replace(/\"/g, "") : "Anonymous";
+    this.logoImage = AppConfig.API_ENDPOINT + "/media/logo.png";
     this.route.data
       .pipe(
         tap((data: { programs: Program[] }) => {
@@ -63,48 +66,51 @@ export class TopbarComponent implements OnInit {
       map(value => {
         if (value === true) {
           this.username = localStorage.getItem("username");
+          if (localStorage.getItem("userAvatar") && localStorage.getItem("userAvatar") != "null")
+            this.userAvatar =
+              AppConfig.API_ENDPOINT +
+              "/media/" +
+              localStorage.getItem("userAvatar");
         }
         return value;
       })
     );
   }
 
-
   login() {
-    this.modalRef = this.modalService.open(LoginComponent, {
+    this.modalService.open(LoginComponent, {
       size: "lg",
       centered: true
     });
   }
 
   register() {
-    this.modalRef = this.modalService.open(RegisterComponent, {
+    this.modalService.open(RegisterComponent, {
       size: "lg",
       centered: true
     });
   }
 
   logout() {
-    this.modalRef = this.modalService.open(LogoutComponent, {
+    this.modalService.open(LogoutComponent, {
       size: "lg",
       centered: true
     });
   }
 
   programs() {
-    this.modalRef = this.modalService.open(ProgramsComponent, {
+    this.modalService.open(ProgramsComponent, {
       size: "lg",
+      windowClass: "programs-modal",
       centered: true
     });
   }
 
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
-    console.log("topabr ngOnInit", access_token);
     if (access_token) {
       this.auth.ensureAuthorized().subscribe(
         user => {
-          console.log("ensureAuthorized result", user);
           if (user && user["features"] && user["features"].id_role) {
             this.username = user["features"].username;
             this.isAdmin = user["features"].admin ? true : false;
@@ -157,9 +163,5 @@ export class TopbarComponent implements OnInit {
         })
       );*/
     }
-  }
-
-  close(d) {
-    this.modalRef.close(d);
   }
 }

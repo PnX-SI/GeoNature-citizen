@@ -39,6 +39,15 @@ def load_config(config_file=None):
     return config_gnc
 
 
+def valid_api_url(url):
+    """Return a valid API URL ending with /"""
+    if url[-1:] == '/':
+        url = url
+    else:
+        url = url+'/'
+    return url
+    
+
 app_conf = load_config()
 MEDIA_DIR = str(ROOT_DIR / app_conf["MEDIA_FOLDER"])
 SQLALCHEMY_DATABASE_URI = app_conf["SQLALCHEMY_DATABASE_URI"]
@@ -70,7 +79,8 @@ admin = Admin(
 )
 
 
-taxhub_url = app_conf.get("API_TAXHUB", "")
+taxhub_url = valid_api_url(app_conf.get("API_TAXHUB", ""))
+
 taxhub_lists_url = taxhub_url + "biblistes/"
 
 
@@ -100,6 +110,4 @@ def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):
             sys.path.pop(0)
 
             conf_module = load_toml(str(f / "config/conf_gn_module.toml"))
-            print(conf_module, conf_manifest, module_blueprint)
-
             yield conf_module, conf_manifest, module_blueprint

@@ -8,12 +8,14 @@ import {
   distinctUntilChanged,
   share,
   pluck,
-  filter
+  filter,
+  find
 } from "rxjs/operators";
 
 import { AppConfig } from "../../../../../../conf/app.config";
 import { IFlowComponent } from "../../flow/flow";
 import { AuthService } from "../../../../../auth/auth.service";
+import { ModalFlowService } from "../../modalflow.service";
 
 export interface Badge {
   img: string;
@@ -21,13 +23,13 @@ export interface Badge {
 }
 
 export interface BadgeState {
-  badges: Badge[];
+  badges: any[];
   changes: Badge[];
   loading: boolean;
 }
 
 let _state: BadgeState = {
-  badges: JSON.parse(localStorage.getItem("badges")) || [],
+  badges: [],
   changes: [],
   loading: true
 };
@@ -57,7 +59,13 @@ export class BadgeFacade {
   }
 
   getChanges(): void {
+    _state = {
+      badges: JSON.parse(localStorage.getItem("badges")) || [],
+      changes: [],
+      loading: true
+    };
     const access_token = localStorage.getItem("access_token");
+    
     if (
       access_token && AppConfig["REWARDS"]
     ) {
@@ -66,28 +74,22 @@ export class BadgeFacade {
           if (user["features"]["id_role"]) {
             this.role_id = user["features"]["id_role"];
             this.http
-              .get<Object>(
-                `${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`
-              )
-              .pipe(
-                pluck("badges"),
-                tap((badges: Badge[]) => {
-                  const changes = this.difference(badges);
-                  this.updateState({
-                    ..._state,
-                    badges: badges,
-                    changes: changes,
-                    loading: false
-                  });
-                  localStorage.setItem("badges", JSON.stringify(badges));
-                }),
-                catchError(error => {
-                  console.error(error);
-                  //window.alert(error);
-                  return throwError(error);
-                })
-              )
-              .subscribe();
+            .get<any[]>(`${AppConfig.API_ENDPOINT}/rewards/${this.role_id}`)
+            .subscribe(
+              rewards => {
+                const changes = this.difference(rewards);
+                this.updateState({
+                  ..._state,
+                  badges: rewards,
+                  changes: changes,
+                  loading: false
+                });
+                //localStorage.setItem("badges", JSON.stringify(rewards));
+              },
+              err => {
+                throwError(err);
+              }
+            );
           }
         },
         error => {
@@ -104,9 +106,9 @@ export class BadgeFacade {
     return this.role_id;
   }
 
-  difference(badges: Badge[]): Badge[] {
-    const oldBadges: Badge[] = _state.badges;
-
+  difference(badges: any[]): any[] {
+    const oldBadges: any[] = _state.badges;
+ 
     if (!oldBadges || (oldBadges.length === 0 && badges && !!badges.length)) {
       return badges;
     }
@@ -115,13 +117,11 @@ export class BadgeFacade {
       return [];
     }
 
-    function badgeListComparer(otherArray) {
-      return current =>
-        otherArray.filter(other => other.alt == current.alt).length == 0;
-    }
-
-    const onlyInNewState: Badge[] = badges.filter(badgeListComparer(oldBadges));
-
+    let onlyInNewState: any[] =[];
+    badges.forEach( badge => {
+      if (!oldBadges.find(oldbadge => oldbadge.id == badge.id))
+      onlyInNewState.push(badge)  
+    });
     return onlyInNewState;
   }
 
@@ -134,8 +134,10 @@ export class BadgeFacade {
   selector: "app-reward",
   template: `
     <div *ngIf="(reward$ | async) as rewards">
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+</button>
       <div class="modal-body new-badge" (click)="clicked('background')">
-        <div><img src="assets/user.jpg" /></div>
         <h5 i18n>Félicitations !</h5>
         <h6 i18n>
           { +rewards?.length, plural, =1 { Vous venez d&apos;obtenir ce badge }
@@ -143,10 +145,10 @@ export class BadgeFacade {
         </h6>
         <p>
           <img
-            [ngbTooltip]="b.alt"
+            [ngbTooltip]="b.type + b.name"
             *ngFor="let b of rewards"
-            [src]="AppConfig.API_ENDPOINT + b.img"
-            [alt]="b.alt"
+            [src]="AppConfig.API_ENDPOINT + b.url"
+            [alt]="b.name"
           />
         </p>
       </div>
@@ -161,9 +163,10 @@ export class RewardComponent implements IFlowComponent {
   private _timeout: any;
   private _init = 0;
   @Input() data: any;
-  reward$: Observable<Badge[]>;
+  reward$: Observable<any[]>;
 
-  constructor(public badges: BadgeFacade) {
+  constructor(public badges: BadgeFacade,
+    private modalFlowService :ModalFlowService) {
     if (
       !badges.username || !AppConfig["REWARDS"]
     ) {
@@ -178,7 +181,8 @@ export class RewardComponent implements IFlowComponent {
 
           if (!condition && this._init > 1) {
             if (this._timeout) clearTimeout(this._timeout);
-            this._timeout = setTimeout(() => this.close("NOREWARD"), 0);
+            this._timeout = setTimeout(() => 
+            {this.close("NOREWARD")}, 0);
           }
         }),
         filter(reward => reward && !!reward.length && this._init > 1)
@@ -192,5 +196,8 @@ export class RewardComponent implements IFlowComponent {
 
   clicked(d) {
     this.close(d);
+  }
+  closeModal(){
+    this.modalFlowService.closeModal()
   }
 }

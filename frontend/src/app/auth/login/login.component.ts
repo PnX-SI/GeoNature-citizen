@@ -3,9 +3,7 @@ import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { Subject, throwError } from "rxjs";
 import { debounceTime, map, catchError } from "rxjs/operators";
-
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-
 import { AppConfig } from "../../../conf/app.config";
 import { LoginUser } from "./../models";
 import { AuthService } from "./../auth.service";
@@ -15,6 +13,7 @@ import { AuthService } from "./../auth.service";
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.css"]
 })
+
 export class LoginComponent {
   AppConfig = AppConfig;
   private _error = new Subject<string>();
@@ -22,7 +21,7 @@ export class LoginComponent {
   errorMessage: string;
   successMessage: string;
   staticAlertClosed = false;
-  user: LoginUser = { username: "", password: "" };
+  user: LoginUser = { email: "", password: "" };
   recovery = { username: "", email: "" };
   recoverPassword = false;
 
@@ -69,9 +68,8 @@ export class LoginComponent {
   onRecoverPassword(): void {
     this.http
       .post(`${AppConfig.API_ENDPOINT}/user/resetpasswd`, this.recovery)
-      .pipe(catchError(error => this.handleError(error)))
       .subscribe(
-        response => {
+        (response) => {      
           const message = response["message"];
           this._success.subscribe(message => (this.successMessage = message));
           this._success.pipe(debounceTime(5000)).subscribe(() => {
@@ -79,11 +77,10 @@ export class LoginComponent {
           });
           this.displaySuccessMessage(message);
         },
-        errorMessage => {
-          console.error("error", errorMessage);
+        (errorMessage) => {
           this.successMessage = null;
-          this.errorMessage = errorMessage;
-          this.displayErrorMessage(errorMessage);
+          this.errorMessage = errorMessage.error.message;
+          this.displayErrorMessage(this.errorMessage);
         }
       );
   }

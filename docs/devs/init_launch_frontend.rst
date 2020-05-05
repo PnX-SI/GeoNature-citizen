@@ -12,58 +12,20 @@ Une fois l'environnement installé, installer la dernière version stable de ``n
 
 .. code:: sh
 
-    nvm install --lts
+    nvm install v10.16
 
 Pour utiliser cette version:
 
 .. code:: sh
 
-    nvm use --lts
+    nvm use v10.16
 
 Installer angular CLI (version LTS 6) et les dépendances requises:
 
 .. code:: sh
 
-    npm install -g @angular/cli@v6-lts
+    npm install -g @angular/cli@v8-lts
     npm install
-
-Dans son incarnation actuelle, quelques fichiers de dépendances doivent être patchés pour passer l'étape de compilation.
-
-.. code:: diff
-
-    --- frontend/node_modules/@types/leaflet.locatecontrol/index.d.ts.old	2019-03-07 08:47:03.475859400 +0100
-    +++ frontend/node_modules/@types/leaflet.locatecontrol/index.d.ts	2019-03-07 08:47:23.460562933 +0100
-    @@ -38,6 +38,7 @@
-               onLocationOutsideMapBounds?: any;
-               showPopup?: boolean;
-               strings?: any;
-    +          getLocationBounds?: Function;
-               locateOptions?: L.LocateOptions;
-           }
-       }
-
-.. code:: diff
-
-    --- frontend/node_modules/@types/leaflet/index.d.ts.old  2019-04-10 09:02:08.012010439 +0200
-    +++ frontend/node_modules/@types/leaflet/index.d.ts      2019-04-10 09:02:23.239901103 +0200
-    @@ -495,7 +495,7 @@
-         zoomReverse?: boolean;
-         detectRetina?: boolean;
-         crossOrigin?: boolean;
-    -    // [name: string]: any;
-    +    [name: string]: any;
-         // You are able add additional properties, but it makes this interface unchackable.
-         // See: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/15313
-         // Example:
-    @@ -1025,6 +1025,7 @@
-          tapTolerance?: number;
-          touchZoom?: Zoom;
-          bounceAtZoomLimits?: boolean;
-     +    gestureHandling?: boolean;
-      }
-
-      export type ControlPosition = 'topleft' | 'topright' | 'bottomleft' |
-     'bottomright';
 
 Lancer du frontend
 ##################
@@ -123,11 +85,6 @@ Le transfert d'état s'effectue avec accesseur et mutateur:
       */
     }
 
-Le ``build`` et le démarrage du service sur le port ``4000`` s'effectue via le oneliner :
-
-.. code-block:: sh
-
-    npm run build:ssr && npm run serve:ssr
 
 La redirection de port pourrait se faire au niveau du serveur web / reverse proxy, avec un filtre sur l'entête de requête ``User-Agent``
 

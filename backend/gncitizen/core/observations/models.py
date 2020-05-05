@@ -26,10 +26,9 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     id_observation = db.Column(db.Integer, primary_key=True, unique=True)
     uuid_sinp = db.Column(UUID(as_uuid=True), nullable=False, unique=True)
     id_program = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
+        db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="SET NULL"), nullable=False 
     )
     cd_nom = db.Column(db.Integer, db.ForeignKey(Taxref.cd_nom), nullable=False)
-    # specie = db.Column(db.String(200))
     date = db.Column(db.Date, nullable=False)
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))

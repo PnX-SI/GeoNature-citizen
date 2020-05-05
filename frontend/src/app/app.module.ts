@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { registerLocaleData } from "@angular/common";
 
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { AppComponent } from "./app.component";
 import { routing } from "./app.routing";
@@ -47,6 +48,8 @@ import { AdminComponent } from "./auth/admin/admin.component";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
+import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.component';
+import { LayoutModule } from '@angular/cdk/layout';
 
 @NgModule({
   imports: [
@@ -56,8 +59,10 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
     FormsModule,
     NgbModule,
+    NgxDatatableModule,
     CommonModule,
     BrowserAnimationsModule,
+    LayoutModule,
     ToastrModule.forRoot(
      {
       preventDuplicates: true,
@@ -95,7 +100,8 @@ import { CommonModule } from '@angular/common';
     CongratsComponent,
     ModalFlowComponent,
     RewardComponent,
-    AdminComponent
+    AdminComponent,
+    ConfirmEmailComponent
   ],
   providers: [
     AuthService,
