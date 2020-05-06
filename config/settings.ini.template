@@ -1,0 +1,20 @@
+# Langue du serveur
+# valeur possible : fr_FR.UTF-8, en_US.utf8 
+# locale -a pour voir la liste des locales disponible
+my_local=fr_FR.UTF-8
+
+# My host URL or IP with / at the end
+my_url=https://mondomaine.org/
+
+
+### CONFIGURATION PostgreSQL ###
+
+# Localisation du server PostgreSQL. 
+# Les scripts d'installation automatique ne fonctionnent que si votre BDD est sur le même serveur (localhost)
+pg_host=localhost
+# Port sur lequel PostgreSQL ecoute
+pg_port=5432
+# Nom de l'utilisateur propriétaire des bases UsersHub, GeoNature, TaxHub
+user_pg=dbuser
+# Pass de l'utilisateur propriétaire des bases UsersHub, GeoNature, TaxHub
+user_pg_pass=dbpwd
