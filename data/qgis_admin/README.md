@@ -8,6 +8,6 @@ Vous y renseignerez les paramètres de connexion à la base de données ainsi qu
 
 Ensuite, placez-vous dans ce dossier et éxécutez le script `./generateQgisProject.sh`
 
-Cela génèrera le projet qgis `citizenOnQgis-admin.qgs` que vous pourrez ouvrir directement avec QGIS.
+Cela génèrera le projet qgis `citizenOnQgis-admin.qgs` que vous pourrez ouvrir directement avec QGIS (**Version 3.10 minimum requis**).
 
 ![Capture d'écran](./screenshot.png)
