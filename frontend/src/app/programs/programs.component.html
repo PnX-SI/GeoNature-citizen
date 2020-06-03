@@ -1,7 +1,7 @@
 <div class="container programs">
     <div class="row">
-        <h1 i18n="Programs modal title|PROGRAMMES">
-            PROGRAMMES&nbsp;<span class="badge badge-pill badge-light">{{
+        <h1>
+            {{AppConfig.programs_label[localeId]?AppConfig.programs_label[localeId]:'PROGRAMMES'}}&nbsp;<span class="badge badge-pill badge-light">{{
         (programs$ | async)?.length
       }}</span>  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>

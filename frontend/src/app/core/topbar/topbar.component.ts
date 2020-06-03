@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, LOCALE_ID, Inject } from "@angular/core";
+
 import { Observable, Subject, throwError } from "rxjs";
 import { tap, map, catchError } from "rxjs/operators";
 
@@ -24,6 +25,7 @@ export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
   // isLoggedIn: boolean = false;
   username: any;
+  AppConfig = AppConfig;
   isCollapsed = true;
   programs$ = new Subject<Program[]>();
   isAdmin = false;
@@ -34,6 +36,7 @@ export class TopbarComponent implements OnInit {
   logoImage: String;
 
   constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     private auth: AuthService,

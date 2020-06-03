@@ -9,7 +9,6 @@ import { AppConfig } from "../conf/app.config";
 import { AppComponent } from './app.component'
 import { TopbarComponent } from "./core/topbar/topbar.component"
 import { AuthService } from "./auth/auth.service";
-import { SidebarComponent } from "./core/sidebar/sidebar.component"
 import { FooterComponent } from "./core/footer/footer.component"
 
 
@@ -24,7 +23,6 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent,
         TopbarComponent,
-        SidebarComponent,
         FooterComponent
       ],
       imports: [

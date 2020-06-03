@@ -8,10 +8,11 @@ import {
   Inject,
   LOCALE_ID
 } from "@angular/core";
+import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from "@angular/router";
 import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
 import { forkJoin } from "rxjs";
-
+import {Router} from "@angular/router";
 import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 
@@ -51,9 +52,12 @@ export class ObsComponent implements OnInit, AfterViewInit {
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     private route: ActivatedRoute,
+    private router: Router ,
     private programService: GncProgramsService,
     public flowService: ModalFlowService,
-    public breakpointObserver: BreakpointObserver
+    public breakpointObserver: BreakpointObserver,
+    private titleService: Title,
+    private metaTagService: Meta
   ) {
     this.route.params.subscribe(params => (this.program_id = params["id"]));
     this.route.fragment.subscribe(fragment => {
@@ -84,6 +88,17 @@ export class ObsComponent implements OnInit, AfterViewInit {
         this.surveySpecies = taxa;
         this.programFeature = program;
       });
+      this.titleService.setTitle(this.AppConfig.appName + ' - ' + this.program.title);
+      this.metaTagService.updateTag(
+        { name: 'description', content: this.program.short_desc }
+      );
+      this.metaTagService.updateTag({ property: 'og:title', content: AppConfig.appName +' - '+this.program.title});
+      this.metaTagService.updateTag({ property: 'og:description', content: this.program.short_desc });
+      this.metaTagService.updateTag({ property: 'og:image', content: this.program.image });
+      this.metaTagService.updateTag({ property: 'og:url', content: AppConfig.URL_APPLICATION+this.router.url });
+      this.metaTagService.updateTag({ property: 'twitter:title', content: AppConfig.appName +' - '+this.program.title});
+      this.metaTagService.updateTag({ property: 'twitter:description', content: this.program.short_desc });
+      this.metaTagService.updateTag({ property: 'twitter:image', content: this.program.image });
     });
   }
 

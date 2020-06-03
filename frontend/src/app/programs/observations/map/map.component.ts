@@ -13,7 +13,9 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
-  ViewEncapsulation
+  ViewEncapsulation,
+  Inject,
+  LOCALE_ID
 } from "@angular/core";
 import { Feature, FeatureCollection } from "geojson";
 import { MAP_CONFIG } from "../../../../conf/map.config";
@@ -140,6 +142,7 @@ export class ObsMapComponent implements OnChanges {
   zoomAlertTimeout: any;
 
   constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
     private resolver: ComponentFactoryResolver,
     private injector: Injector
   ) {}
@@ -193,6 +196,9 @@ export class ObsMapComponent implements OnChanges {
       .locate({
         icon: "fa fa-compass",
         position: this.options.GEOLOCATION_CONTROL_POSITION,
+        strings: {
+          title: MAP_CONFIG.LOCATE_CONTROL_TITLE[this.localeId] ? MAP_CONFIG.LOCATE_CONTROL_TITLE[this.localeId] : 'Me géolocaliser'
+        },
         getLocationBounds: locationEvent =>
           locationEvent.bounds.extend(this.programMaxBounds),
         locateOptions: {

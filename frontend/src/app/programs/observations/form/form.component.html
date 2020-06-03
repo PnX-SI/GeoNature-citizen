@@ -13,7 +13,7 @@
         " class="d-inline-flex toolbar">
         <select formControlName="cd_nom" class="form-control rounded-0">
           <option *ngFor="let s of (surveySpecies$ | async)" [value]="s.taxref.cd_nom">
-            {{ !!s.nom_francais ? s.nom_francais : s.taxref.nom_vern }} (<i>{{ s.taxref.nom_complet }}</i>)
+            {{ !!s.nom_francais ? s.nom_francais : s.taxref.nom_vern }} <span *ngIf="appConfig.taxonDisplaySciName">/span>(<i>{{ s.taxref.nom_complet }}</i>)</span>
           </option>
         </select>
       </div>

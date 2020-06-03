@@ -10,7 +10,6 @@ import {
   NgbModal
 } from "@ng-bootstrap/ng-bootstrap"
 
-import { DescModalComponent } from "./desc-modal/desc-modal.component"
 import { GncService } from "../api/gnc.service"
 import { GncProgramsService } from "../api/gnc-programs.service"
 

@@ -15,11 +15,9 @@ import { LoginComponent } from "./auth/login/login.component";
 import { LogoutComponent } from "./auth/logout/logout.component";
 import { RegisterComponent } from "./auth/register/register.component";
 import { FooterComponent } from "./core/footer/footer.component";
-import { SidebarComponent } from "./core/sidebar/sidebar.component";
 import { TopbarComponent } from "./core/topbar/topbar.component";
 import { HomeComponent } from "./home/home.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
-import { DescModalComponent } from "./programs/desc-modal/desc-modal.component";
 import { ProgramsComponent } from "./programs/programs.component";
 import { ObsFormComponent } from "./programs/observations/form/form.component";
 import { ObsListComponent } from "./programs/observations/list/list.component";
@@ -81,8 +79,6 @@ import { LayoutModule } from '@angular/cdk/layout';
     HomeCustomComponent,
     ProgramsComponent,
     PageNotFoundComponent,
-    DescModalComponent,
-    SidebarComponent,
     FooterComponent,
     TopbarComponent,
     LoginComponent,
@@ -120,7 +116,6 @@ import { LayoutModule } from '@angular/cdk/layout';
   ],
   bootstrap: [AppComponent],
   entryComponents: [
-    DescModalComponent,
     LoginComponent,
     LogoutComponent,
     RegisterComponent,

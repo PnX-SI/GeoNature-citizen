@@ -3,19 +3,19 @@
   <section id="slide" class="obs-section">
     <div id="slider" class="carousel slide">
       <div class="carousel-inner">
-        <h2 i18n>
-          Le programme <span>{{ program.title }}</span>
+        <h2>
+          {{AppConfig.program_label[localeId]?AppConfig.program_label[localeId]:'Programme'}} <span>{{ program.title }}</span>
         </h2>
         <div class="carousel-item active">
           <img class="d-block w-100 default-img" [src]="program.image || 'assets/default_program.jpg'"
             alt="program image (fixme context)" />
           <div class="carousel-text-container">
             <div class="carousel-text">
-              <h3 class="mobile">{{ program.title }}</h3>
-              <h3 class="desktop">{{ program.title }}</h3>
+              <h3 class="mobile" [innerHTML]="program.title"></h3>
+              <h3 class="desktop" [innerHTML]="program.title"></h3>
               <div>
-                <p [innerHTML]="program.html_short_desc"></p>
-                <div [innerHTML]="program.html_long_desc" id="collapse" [ngbCollapse]="isCollapsed"></div>
+                <h5 class="short-desc" [innerHTML]="program.short_desc"></h5>
+                <div class="long-desc" [innerHTML]="program.html_long_desc" id="collapse" [ngbCollapse]="isCollapsed"></div>
                 <button type="button" class="mobile" (click)="isCollapsed = !isCollapsed"
                   [attr.aria-expanded]="!isCollapsed" aria-controls="collapse"
                   aria-expanded="false"><span>...</span></button>
@@ -42,7 +42,7 @@
       <app-obs-map #obsMapRef [observations]="observations" [program]="programFeature"
         (onClick)="onMapClicked($event)"></app-obs-map>
       <div class="btn-groups">
-        <app-modalflow [coords]="coords" [program_id]="program_id"></app-modalflow>
+        <app-modalflow [coords]="coords" [program_id]="program_id" [form_message]="program.form_message" [default_image]="program.image"></app-modalflow>
       </div>
     </div>
   </section>
@@ -63,7 +63,7 @@
             (onClick)="onMapClicked($event)">
           </app-obs-map>
           <div class="btn-groups">
-            <app-modalflow [coords]="coords" [program_id]="program_id"></app-modalflow>
+            <app-modalflow [coords]="coords" [program_id]="program_id" [form_message]="program.form_message"></app-modalflow>
           </div>
         </ng-template>
       </ngb-tab>

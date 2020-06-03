@@ -10,6 +10,9 @@ export const AppConfig = {
         DISPLAY_SIDEBAR: true,
         DISPLAY_STATS: true,
     },
+    META: {
+      keywords: 'biodiversite enquetes participatif observations',
+    },
     about: true,
     URL_APPLICATION:"http://127.0.0.1:4200",
     REWARDS: true,
@@ -31,6 +34,14 @@ export const AppConfig = {
       fr: "PARTICIPER AU PROGRAMME",
       en: "PARTICIPATE"
     },
+    programs_label: {
+      fr: "Programmes",
+      en: "Surveys"
+    },
+    program_label: {
+      fr: "Le programme",
+      en: "Survey"
+    },
     program_share_an_observation: {
       fr: "PARTAGER UNE OBSERVATION",
       en: "SHARE AN OBSERVATION"
@@ -51,7 +62,9 @@ export const AppConfig = {
       "nom_vern_eng",
       "cd_nom"
     ],
+    taxonDisplaySciName: true,
     program_list_observers_names: true,
     program_list_sort: "-timestamp_create",
-    details_espece_url: "<url_inpn_or_atlas>/cd_nom/" // !! gardez bien le cd_nom/ dans l'url
+    details_espece_url: "<url_inpn_or_atlas>/cd_nom/", // !! gardez bien le cd_nom/ dans l'url
+    registration_message : "Vous inscrire vous permet de gérer vos observations"
 }

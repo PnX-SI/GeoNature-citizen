@@ -145,7 +145,7 @@
 }
 
 #slider .carousel-text div {
-  max-height: 50%;
+  max-height: unset;
   overflow-y: auto;
   margin-bottom: 15px;
   color: black;
@@ -157,8 +157,18 @@
   text-align: center;
   margin: 0 auto;
 }
+
 #slider .carousel-text a.btn-big{
   background-color: var(--secondary) !important;
+}
+
+#slider .carousel-text .short-desc {
+  font-weight: bold;
+}
+
+#slider .carousel-text .long-desc {
+  padding-right: 10px;
+  max-height: unset;
 }
 
 .mobile-hidden {
