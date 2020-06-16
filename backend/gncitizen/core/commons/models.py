@@ -7,6 +7,7 @@ from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import expression
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm import relationship
 
 from gncitizen.core.taxonomy.models import BibListes
 from gncitizen.utils.env import db
@@ -64,6 +65,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
         nullable=False,
         default=1,
     )
+    module_info = relationship("ModulesModel")
     taxonomy_list = db.Column(
         db.Integer, 
         #ForeignKey(BibListes.id_liste), 

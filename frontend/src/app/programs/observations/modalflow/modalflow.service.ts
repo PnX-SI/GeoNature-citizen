@@ -56,6 +56,7 @@ export class ModalFlowService extends FlowService {
         }
       }
     );
+    return this.modalRef;
   }
 
   close(data) {

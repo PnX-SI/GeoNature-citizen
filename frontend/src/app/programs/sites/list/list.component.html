@@ -1,0 +1,22 @@
+<div id="mapList">
+  <div class="obs-found">
+    <p>{{ sites?.length }} mares dans l'inventaire</p>
+  </div>
+  <div id="list">
+    <div *ngFor="let o of sites" (click)="onSiteClick(o)" class="espece">
+      <img src="{{ o.properties.photo ? apiEndpoint + o.properties.photo.url : 'assets/no_photo_light.png'}}" />
+      <div class="infos">
+        <h5>{{ o.properties.name }}</h5>
+        <p>
+          Ajoutée par <span>{{ o.properties.obs_txt }}</span>
+        </p>
+        <p>
+          le <span>{{ o.properties.timestamp_create.substring(0, 10) | date : "longDate" }}</span>
+        </p>
+      </div>
+      <div class="hide" [routerLink]="['/programs', o.properties.id_program, 'sites', o.properties.id_site]" style="cursor:pointer" title="Voir les détails sur cette mare">
+        <img src="assets/binoculars.png"/>
+      </div>
+    </div>
+  </div>
+</div>

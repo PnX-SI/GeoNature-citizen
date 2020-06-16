@@ -1,0 +1,17 @@
+<!-- Ajouter une observation -->
+<div class="modal-header">
+  <h4 class="modal-title">AJOUTER UN SITE</h4>
+</div>
+
+<div class="modal-body add-obs"><app-site-form [program_id]="data.program_id" [coords]="data.coords"></app-site-form></div>
+
+<div class="modal-footer">
+  <button
+    type="submit"
+    [disabled]="!form.siteForm.valid"
+    class="btn btn-default btn-outline-primary rounded-0"
+    (click)="committed()"
+  >
+    Valider la mare
+  </button>
+</div>

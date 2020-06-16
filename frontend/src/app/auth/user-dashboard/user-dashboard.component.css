@@ -194,7 +194,17 @@ app-modalflow {
   margin: 0 1rem;
   transform: translateY(-8px);
 }
+
+.homeLink {
+  text-align: center;
+}
+
+.homeLink a {
+  color: var(--secondary);
+}
 /* @media screen and (min-width: 992px) {
+
+@media screen and (min-width: 992px) {
   #badges .row div:nth-child(2):before {
     content: " ";
     background-color: #333;

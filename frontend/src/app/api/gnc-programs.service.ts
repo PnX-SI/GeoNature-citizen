@@ -126,6 +126,28 @@ export class GncProgramsService implements OnInit {
       );
   }
 
+  getProgramSites(id: number): Observable<FeatureCollection> {
+    return this.http
+      .get<FeatureCollection>(`${this.URL}/sites/programs/${id}`)
+      .pipe(
+        take(1),
+        catchError(
+          this.handleError<FeatureCollection>(`getProgramObservations id=${id}`)
+        )
+      );
+  }
+
+  getSiteDetails(id: number): Observable<FeatureCollection> {
+    return this.http
+      .get<FeatureCollection>(`${this.URL}/sites/${id}`)
+      .pipe(
+        take(1),
+        catchError(
+          this.handleError<FeatureCollection>(`getProgramObservations id=${id}`)
+        )
+      );
+  }
+
   getProgramTaxonomyList(program_id: number): Observable<TaxonomyList> {
     return this.getAllPrograms().pipe(
       map(programs => programs.find(p => p.id_program == program_id)),

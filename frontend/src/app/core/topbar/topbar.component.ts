@@ -1,5 +1,4 @@
-import { Component, OnInit, LOCALE_ID, Inject } from "@angular/core";
-
+import {Component, OnInit, Input, LOCALE_ID, Inject} from "@angular/core";
 import { Observable, Subject, throwError } from "rxjs";
 import { tap, map, catchError } from "rxjs/operators";
 
@@ -34,6 +33,9 @@ export class TopbarComponent implements OnInit {
   adminUrl: SafeUrl;
   userAvatar: string;
   logoImage: String;
+
+  @Input()
+  displayTopbar: boolean;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
