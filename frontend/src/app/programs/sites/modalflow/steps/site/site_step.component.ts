@@ -17,7 +17,7 @@ import { SiteService } from "../../../sites.service";
 })
 export class SiteStepComponent implements IFlowComponent {
   @Input() data: any;
-  @ViewChild(SiteFormComponent) form: SiteFormComponent;
+  @ViewChild(SiteFormComponent, { static: true }) form: SiteFormComponent;
 
   constructor(public siteService: SiteService) {}
 

@@ -1,16 +1,19 @@
 import {
   Component,
-  ViewEncapsulation,
-  OnInit,
-  Input,
-  Output,
-  OnChanges,
-  SimpleChanges,
-  EventEmitter,
-  ViewChild,
-  ElementRef,
   ComponentFactoryResolver,
-  Injector
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Injector,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+  ViewEncapsulation,
+  Inject,
+  LOCALE_ID
 } from "@angular/core";
 
 import { FeatureCollection, Feature } from "geojson";
@@ -27,14 +30,19 @@ const conf = {
   MAP_ID: "obsMap",
   GEOLOCATION_HIGH_ACCURACY: false,
   BASE_LAYERS: MAP_CONFIG["BASEMAPS"].reduce((acc, baseLayer: Object) => {
-    acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
+    let layerConf: any = {
       name: baseLayer["name"],
       attribution: baseLayer["attribution"],
-      subdomains: baseLayer["subdomains"],
       detectRetina: baseLayer["detectRetina"],
       maxZoom: baseLayer["maxZoom"],
-      bounds: baseLayer["bounds"]
-    });
+      bounds: baseLayer["bounds"],
+      apiKey: baseLayer["apiKey"],
+      layerName: baseLayer["layerName"]
+    };
+    if (baseLayer["subdomains"]) {
+      layerConf.subdomains = baseLayer["subdomains"];
+    }
+    acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], layerConf);
     return acc;
   }, {}),
   DEFAULT_BASE_MAP: () => {
@@ -116,7 +124,7 @@ const conf = {
   encapsulation: ViewEncapsulation.None
 })
 export class SitesMapComponent implements OnInit, OnChanges {
-  @ViewChild("map") map: ElementRef;
+  @ViewChild("map", { static: true }) map: ElementRef;
   @Input("sites") sites: FeatureCollection;
   @Input("program") program: FeatureCollection;
   @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
@@ -134,6 +142,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
   zoomAlertTimeout: any;
 
   constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
     private resolver: ComponentFactoryResolver,
     private injector: Injector
   ) {}
@@ -181,7 +190,7 @@ export class SitesMapComponent implements OnInit, OnChanges {
     }
   }
 
-  initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
+  initMap(options: any, LeafletOptions: any = {}): void {
     var that = this;
     this.options = options;
     this.sitesMap = L.map(this.map.nativeElement, {
@@ -209,12 +218,15 @@ export class SitesMapComponent implements OnInit, OnChanges {
     L.control
       .locate({
         position: this.options.GEOLOCATION_CONTROL_POSITION,
+        strings: {
+          title: MAP_CONFIG.LOCATE_CONTROL_TITLE[this.localeId] ? MAP_CONFIG.LOCATE_CONTROL_TITLE[this.localeId] : 'Me géolocaliser'
+        },
         getLocationBounds: locationEvent =>
           locationEvent.bounds.extend(this.programMaxBounds),
         locateOptions: {
           enableHighAccuracy: this.options.GEOLOCATION_HIGH_ACCURACY
         }
-      })
+      } as any)
       .addTo(this.sitesMap);
 
     // this.sitesMap.scrollWheelZoom.disable();

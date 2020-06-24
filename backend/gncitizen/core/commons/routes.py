@@ -109,22 +109,22 @@ def get_program(pk):
            200:
              description: A list of all programs
          """
-    try:
-        datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
-        if datas.count() != 1:
-          current_app.logger.warning("[get_program] Program not found")        
-          return {"message": "Program not found"}, 400
-        else:
-          features = []
-          for data in datas:
-              feature = data.get_geofeature()
-              # for k, v in data:
-              #     feature['properties'][k] = v
-              features.append(feature)
-          return {"features": features}, 200
-    except Exception as e:
-        current_app.logger.critical("[get_program] error : %s", str(e))
-        return {"message": str(e)}, 400
+    # try:
+    datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
+    if datas.count() != 1:
+      current_app.logger.warning("[get_program] Program not found")        
+      return {"message": "Program not found"}, 400
+    else:
+      features = []
+      for data in datas:
+          feature = data.get_geofeature()
+          # for k, v in data:
+          #     feature['properties'][k] = v
+          features.append(feature)
+      return {"features": features}, 200
+    # except Exception as e:
+    #     current_app.logger.critical("[get_program] error : %s", str(e))
+    #     return {"message": str(e)}, 400
 
 
 @routes.route("/programs", methods=["GET"])

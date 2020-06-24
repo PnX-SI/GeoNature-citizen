@@ -33,8 +33,8 @@ export class SitesComponent implements OnInit, AfterViewChecked {
   sites: FeatureCollection;
   programFeature: FeatureCollection;
   surveySpecies: TaxonomyList;
-  @ViewChild(SitesMapComponent) sitesMap: SitesMapComponent;
-  @ViewChild(SitesListComponent) sitesList: SitesListComponent;
+  @ViewChild(SitesMapComponent, { static: true }) sitesMap: SitesMapComponent;
+  @ViewChild(SitesListComponent, { static: true }) sitesList: SitesListComponent;
 
   constructor(
     private route: ActivatedRoute,

@@ -50,7 +50,7 @@ export class SiteFormComponent implements AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
   @Input("coords") coords: L.Point;
   @Input("program_id") program_id: number;
-  @ViewChild("photo") photo: ElementRef;
+  @ViewChild("photo", { static: true }) photo: ElementRef;
   program: any;
   formMap: L.Map;
   siteForm = new FormGroup({
@@ -72,7 +72,7 @@ export class SiteFormComponent implements AfterViewInit {
         this.program = result;
 
         // build map control
-        const formMap = L.map("formMap", { gestureHandling: true });
+        const formMap = L.map("formMap", { gestureHandling: true } as any);
         this.formMap = formMap;
 
         L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {

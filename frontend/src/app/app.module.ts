@@ -61,7 +61,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { registerLocaleData } from "@angular/common";
 import localeFr from "@angular/common/locales/fr";
 registerLocaleData(localeFr, "fr");
 // import localeFrExtra from "@angular/common/locales/extra/fr";

@@ -16,7 +16,7 @@ import { SiteVisitFormComponent } from "../../../form/form.component";
 })
 export class VisitStepComponent implements IFlowComponent {
   @Input() data: any;
-  @ViewChild(SiteVisitFormComponent) form: SiteVisitFormComponent;
+  @ViewChild(SiteVisitFormComponent, { static: true }) form: SiteVisitFormComponent;
 
   committed() {
     this.form.onFormSubmit();

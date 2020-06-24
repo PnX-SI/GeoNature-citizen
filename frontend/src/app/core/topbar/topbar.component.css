@@ -196,4 +196,5 @@ div.btn-group a:first-child {
   .obs-modal .modal-content {
     max-height: inherit;
     height: 100vh;
+  }
 }

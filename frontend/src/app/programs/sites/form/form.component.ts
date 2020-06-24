@@ -21,7 +21,7 @@ import { LeafletMouseEvent } from "leaflet";
 import { AppConfig } from "../../../../conf/app.config";
 
 import { GNCFrameworkComponent } from './framework/framework.component';
-import { ngbDateMaxIsToday } from '../../observations/form/form.component';
+import { ngbDateMaxIsToday } from '../../observations/form/formValidators';
 import {SiteService} from "../sites.service";
 
 declare let $: any;
