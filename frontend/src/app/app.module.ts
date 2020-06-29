@@ -65,7 +65,7 @@ import localeFr from "@angular/common/locales/fr";
 registerLocaleData(localeFr, "fr");
 // import localeFrExtra from "@angular/common/locales/extra/fr";
 // registerLocaleData(localeFr, "fr-FR", localeFrExtra);
-import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
+import { Bootstrap4FrameworkModule } from '@ajsf/bootstrap4';
 import { GNCFrameworkComponent } from './programs/sites/form/framework/framework.component';
 import { ImageUploadModule } from "angular2-image-upload";
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ɵcd as Bootstrap4FrameworkComponent } from 'angular6-json-schema-form';
+import { Bootstrap4FrameworkComponent } from '@ajsf/bootstrap4';
 
 /* Custom framework component for angular6-json-schema-form */
 @Component({
