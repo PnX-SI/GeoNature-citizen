@@ -116,7 +116,6 @@ const conf = {
     <div
       [id]="options.MAP_ID"
       #map
-      i18n-data-observation-zoom-statement-warning
       data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre site."
     ></div>
   `,

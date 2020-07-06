@@ -12,16 +12,15 @@ import {
   NgbDateStruct
 } from "@ng-bootstrap/ng-bootstrap";
 
-import { SiteFormComponent } from './form.component';
+import { SiteVisitFormComponent } from './form.component';
 
-describe('SiteFormComponent', () => {
-  let component: SiteFormComponent;
-  let fixture: ComponentFixture<SiteFormComponent>;
+describe('SiteVisitFormComponent', () => {
+  let component: SiteVisitFormComponent;
+  let fixture: ComponentFixture<SiteVisitFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgbModule.forRoot(),
         HttpClientTestingModule,
         RouterTestingModule,
         ReactiveFormsModule,
@@ -31,13 +30,13 @@ describe('SiteFormComponent', () => {
         NgbActiveModal,
       ],
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [ SiteFormComponent ]
+      declarations: [ SiteVisitFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SiteFormComponent);
+    fixture = TestBed.createComponent(SiteVisitFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

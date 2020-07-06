@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SiteformComponent } from './siteform.component';
+import { SiteFormComponent } from './siteform.component';
 
-describe('SiteformComponent', () => {
-  let component: SiteformComponent;
-  let fixture: ComponentFixture<SiteformComponent>;
+describe('SiteFormComponent', () => {
+  let component: SiteFormComponent;
+  let fixture: ComponentFixture<SiteFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SiteformComponent ]
+      declarations: [ SiteFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SiteformComponent);
+    fixture = TestBed.createComponent(SiteFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

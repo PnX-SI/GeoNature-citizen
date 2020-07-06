@@ -19,7 +19,6 @@ describe('SitesListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        NgbModule.forRoot(),
         HttpClientTestingModule,
         RouterTestingModule,],
       providers: [
