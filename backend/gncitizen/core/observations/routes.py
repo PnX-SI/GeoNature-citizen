@@ -253,6 +253,14 @@ def post_observation():
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)
 
+        try:
+            json_data = request_datas.get("json_data")
+            if json_data is not None:
+                newobs.json_data = json.loads()
+        except Exception as e:
+            current_app.logger.warning("[post_observation] json_data ", e)
+            raise GeonatureApiError(e)
+
         id_role = get_id_role_if_exists()
         if id_role:
             newobs.id_role = id_role

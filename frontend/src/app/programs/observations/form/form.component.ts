@@ -40,6 +40,8 @@ import { ToastrService } from "ngx-toastr";
 import { ModalFlowService } from "../modalflow/modalflow.service";
 import { ObservationsService } from "../observations.service";
 
+import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
+
 declare let $: any;
 
 const map_conf = {
@@ -99,6 +101,17 @@ export class ObsFormComponent implements AfterViewInit {
   zoomAlertTimeout: any;
   AppConfig = AppConfig;
   obsForm: FormGroup;
+  customForm: object = {};
+  GNCBootstrap4Framework: any = {
+    framework: GNCFrameworkComponent,
+  };
+  formOptions: any = {
+    "loadExternalAssets": false,
+    "debug": false,
+    "returnEmptyFields": false,
+    "addSubmit": false
+  }
+  jsonData: object;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -139,6 +152,15 @@ export class ObsFormComponent implements AfterViewInit {
             share()
           );
         this.surveySpecies$.subscribe();
+
+        if (this.program.features[0].properties.id_form) {
+          // Load custom form if one is attached to program
+          this.programService
+            .getCustomForm(this.program.features[0].properties.id_form)
+            .subscribe((result: object) => {
+              this.customForm = result;
+            })
+        }
 
         // build map control
         const formMap = L.map("formMap", { gestureHandling: true } as any);
@@ -405,6 +427,9 @@ export class ObsFormComponent implements AfterViewInit {
   postObservation() {
     let obs: ObservationFeature;
     let formData = this.creatFromDataToPost();
+    if (this.customForm.json_schema) {
+      formData.append("json_data", JSON.stringify(this.jsonData))
+    }
     this.observationsService.postObservation(formData).subscribe(
       (data: PostObservationResponse) => {     
         obs = data.features[0];
@@ -436,5 +461,9 @@ export class ObsFormComponent implements AfterViewInit {
         return value;
       })
     );
+  }
+
+  customFormOnChange(e) {
+    this.jsonData = e;
   }
 }

@@ -68,6 +68,14 @@
           formControlName="comment"></textarea>
       </div>
 
+      <json-schema-form
+        *ngIf="customForm.json_schema"
+        [form]="customForm.json_schema"
+        [options]="formOptions"
+        [framework]="GNCBootstrap4Framework"
+        (onChanges)="customFormOnChange($event)"
+        >
+      </json-schema-form>
 
       <div class="form-group col-lg-12 btn position-relative">
         <label for="photo" i18n><i class="fa fa-camera"></i>Ajouter une photo</label>

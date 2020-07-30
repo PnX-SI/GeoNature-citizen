@@ -66,7 +66,7 @@ registerLocaleData(localeFr, "fr");
 // import localeFrExtra from "@angular/common/locales/extra/fr";
 // registerLocaleData(localeFr, "fr-FR", localeFrExtra);
 import { Bootstrap4FrameworkModule } from '@ajsf/bootstrap4';
-import { GNCFrameworkComponent } from './programs/sites/form/framework/framework.component';
+import { GNCFrameworkComponent } from './programs/base/jsonform/framework/framework.component';
 import { ImageUploadModule } from "angular2-image-upload";
 
 

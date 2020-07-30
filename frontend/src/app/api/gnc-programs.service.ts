@@ -158,6 +158,16 @@ export class GncProgramsService implements OnInit {
     );
   }
 
+  getCustomForm(id_form) : Observable<object> {
+    return this.http
+      .get<object>(`${this.URL}/customform/${id_form}`)
+      .pipe(
+        catchError(
+          this.handleError<object>(`getCustomForm id=${id_form}`)
+        )
+      );
+  }
+
   private handleError<T>(operation = "operation", result?: T) {
     return (error: any): Observable<T> => {
       // API errors are caught within the interceptor and handled by our
