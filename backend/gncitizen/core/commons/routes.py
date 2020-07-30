@@ -17,7 +17,7 @@ from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.utils.env import admin
 from server import db
 
-from .models import ModulesModel, ProgramsModel
+from .models import ModulesModel, ProgramsModel, CustomFormModel
 from gncitizen.core.users.models import UserModel
 
 try:
@@ -125,6 +125,30 @@ def get_program(pk):
     # except Exception as e:
     #     current_app.logger.critical("[get_program] error : %s", str(e))
     #     return {"message": str(e)}, 400
+
+
+@routes.route("/customform/<int:pk>", methods=["GET"])
+@json_resp
+def get_custom_form(pk):
+    """Get a custom form by id
+         ---
+         tags:
+          - Programs
+         parameters:
+          - name: pk
+            in: path
+            type: integer
+            required: true
+            example: 1
+         responses:
+           200:
+             description: A custom form
+         """
+    try:
+        form = CustomFormModel.query.get(pk)
+        return form.as_dict(True), 200
+    except Exception as e:
+        return {"error_message": str(e)}, 400
 
 
 @routes.route("/programs", methods=["GET"])
