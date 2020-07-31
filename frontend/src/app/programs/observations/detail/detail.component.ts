@@ -39,10 +39,9 @@ export class ObsDetailComponent extends BaseDetailComponent implements AfterView
       .subscribe(obs => {
         this.obs = obs['features'][0];
         this.photos = []
-        this.photos = this.obs.properties.medias;
+        this.photos = this.obs.properties.photos;
         for (var i = 0; i<this.photos.length; i++){
-          // this.photos[i]['url'] = AppConfig.API_ENDPOINT + this.photos[i]['url'];
-          this.photos[i]['url'] = this.photos[i]['url'];
+          this.photos[i]['url'] = AppConfig.API_ENDPOINT + this.photos[i]['url'];
         }
 
         // setup map
