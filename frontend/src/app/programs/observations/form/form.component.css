@@ -59,3 +59,17 @@ app-obs-form .dropdown-menu.show {
   background: rgba(255, 255, 255, 0.8);
   content: attr(data-observation-zoom-statement-warning);
 }
+
+.img-ul-upload {
+  background-color: var(--primary) !important;
+  font-size: 1em !important;
+}
+
+.img-ul-button {
+  text-transform: none !important;
+}
+
+.img-ul-clear {
+  background-color: var(--secondary) !important;
+  font-size: 1em !important;
+}

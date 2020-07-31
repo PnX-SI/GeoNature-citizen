@@ -66,18 +66,34 @@ def generate_observation_geojson(id_observation):
     # Crée le dictionnaire de l'observation
     observation = (
         db.session.query(
-            ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code
+            ObservationModel,
+            UserModel.username,
+            LAreas.area_name,
+            LAreas.area_code
         )
         .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
         .filter(ObservationModel.id_observation == id_observation)
     ).one()
 
+    photos = db.session.query(
+        MediaModel,
+        ObservationModel
+    ).filter(
+        ObservationModel.id_observation == id_observation
+    ).join(
+        ObservationMediaModel,
+        ObservationMediaModel.id_data_source == ObservationModel.id_observation
+    ).join(
+        MediaModel,
+        ObservationMediaModel.id_media == MediaModel.id_media
+    ).all()
+
     result_dict = observation.ObservationModel.as_dict(True)
     result_dict["observer"] = {"username": observation.username}
     result_dict["municipality"] = {
         "name": observation.area_name,
-        "code": observation.area_code,
+        "code": observation.area_code
     }
 
     # Populate "geometry"
@@ -88,6 +104,13 @@ def generate_observation_geojson(id_observation):
     for k in result_dict:
         if k in obs_keys:
             feature["properties"][k] = result_dict[k]
+
+    
+    feature["properties"]["photos"] = [{
+        'url': '/media/{}'.format(p.MediaModel.filename),
+        'date': p.ObservationModel.as_dict()['date'],
+        'author': p.ObservationModel.obs_txt
+    } for p in photos]
 
     if current_app.config.get("API_TAXHUB") is None:
         current_app.logger.debug("Selecting TaxHub Medias schema.")

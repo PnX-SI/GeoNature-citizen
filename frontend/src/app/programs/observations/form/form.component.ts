@@ -80,7 +80,6 @@ export class ObsFormComponent implements AfterViewInit {
   @Output("newObservation") newObservation: EventEmitter<
     ObservationFeature
   > = new EventEmitter();
-  @ViewChild("photo", { static: true }) photo: ElementRef;
   today = new Date();
   program_id: number;
   coords: L.Point;
@@ -112,6 +111,7 @@ export class ObsFormComponent implements AfterViewInit {
     "addSubmit": false
   }
   jsonData: object;
+  photos: any[] = [];
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -291,7 +291,6 @@ export class ObsFormComponent implements AfterViewInit {
           },
           [Validators.required, ngbDateMaxIsToday()]
         ],
-        photo: [""],
         geometry: [
           this.data.coords ? this.coords : "",
           [Validators.required, geometryValidator()]
@@ -391,10 +390,10 @@ export class ObsFormComponent implements AfterViewInit {
     this.obsForm.controls["id_program"].patchValue(this.program_id);
     let formData: FormData = new FormData();
     if (!this.data.updateData) {
-      const files: FileList = this.photo.nativeElement.files;
-      if (files.length > 0) {
-        formData.append("file", files[0], files[0].name);
-      }
+      const files: FileList = this.photos;
+      files.forEach((file) => {
+        formData.append("file", file, file.name);
+      })
     }
     formData.append(
       "geometry",
@@ -465,5 +464,16 @@ export class ObsFormComponent implements AfterViewInit {
 
   customFormOnChange(e) {
     this.jsonData = e;
+  }
+
+  addImage(event) {
+    this.photos.push(event.file);
+  }
+  deleteImage(event) {
+    for (var i=0; i<this.photos.length; i++) {
+      if (this.photos[i] == event.file) {
+        this.photos.splice(i, 1);
+      }
+    }
   }
 }
