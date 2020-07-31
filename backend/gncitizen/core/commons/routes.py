@@ -151,6 +151,33 @@ def get_custom_form(pk):
         return {"error_message": str(e)}, 400
 
 
+@routes.route("/programs/<int:pk>/customform/", methods=["GET"])
+@json_resp
+def get_program_custom_form(pk):
+    """Get a custom form by program id
+         ---
+         tags:
+          - Programs
+         parameters:
+          - name: pk
+            in: path
+            type: integer
+            required: true
+            example: 1
+         responses:
+           200:
+             description: A custom form
+         """
+    try:
+        program = ProgramsModel.query.get(pk)
+        if program.id_form is not None:
+            form = CustomFormModel.query.get(program.id_form)
+            return form.as_dict(True), 200
+        return None, 200
+    except Exception as e:
+        return {"error_message": str(e)}, 400
+
+
 @routes.route("/programs", methods=["GET"])
 @json_resp
 def get_programs():

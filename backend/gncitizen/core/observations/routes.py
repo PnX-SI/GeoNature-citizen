@@ -49,6 +49,7 @@ obs_keys = (
     "date",
     "comment",
     "timestamp_create",
+    "json_data"
 )
 
 
@@ -256,7 +257,7 @@ def post_observation():
         try:
             json_data = request_datas.get("json_data")
             if json_data is not None:
-                newobs.json_data = json.loads()
+                newobs.json_data = json.loads(json_data)
         except Exception as e:
             current_app.logger.warning("[post_observation] json_data ", e)
             raise GeonatureApiError(e)
