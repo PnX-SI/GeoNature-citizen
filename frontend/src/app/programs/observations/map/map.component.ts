@@ -420,7 +420,10 @@ export class ObsMapComponent implements OnChanges {
             <br />
           </span>
           le {{ data.date }}
-        </span>
+        </span><br>
+        <a [routerLink]="['/programs', data.id_program, 'observations', data.id_observation]" style="cursor:pointer">
+          + Voir les détails
+        </a>
       </p>
       <div><img class="icon" src="assets/binoculars.png" /></div>
     </ng-container>
