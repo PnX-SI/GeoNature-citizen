@@ -11,7 +11,8 @@ import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { AuthGuard } from "./auth/auth.guard";
-import {SiteDetailComponent} from "./programs/sites/detail/detail.component";
+import { SiteDetailComponent } from "./programs/sites/detail/detail.component";
+import { ObsDetailComponent } from "./programs/observations/detail/detail.component";
 import { SiteVisitFormComponent } from "./programs/sites/form/form.component";
 import { AdminComponent } from "./auth/admin/admin.component";
 import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.component'
@@ -60,6 +61,7 @@ const appRoutes: Routes = [
   },
   { path: "synthesis/species/:id", component: SpeciesComponent },
   { path: "programs/:program_id/sites/:site_id", component: SiteDetailComponent },
+  { path: "programs/:program_id/observations/:obs_id", component: ObsDetailComponent },
   { path: "**", component: PageNotFoundComponent }
 ];
 

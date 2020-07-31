@@ -101,7 +101,7 @@ export class ObsFormComponent implements AfterViewInit {
   zoomAlertTimeout: any;
   AppConfig = AppConfig;
   obsForm: FormGroup;
-  customForm: object = {};
+  customForm: any = {};
   GNCBootstrap4Framework: any = {
     framework: GNCFrameworkComponent,
   };

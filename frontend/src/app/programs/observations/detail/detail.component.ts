@@ -2,48 +2,47 @@ import {Component, AfterViewInit, ViewEncapsulation} from '@angular/core';
 import {GncProgramsService} from "../../../api/gnc-programs.service";
 import {ActivatedRoute} from "@angular/router";
 import * as L from "leaflet";
-import { SiteModalFlowService } from "../modalflow/modalflow.service";
 import {AppConfig} from "../../../../conf/app.config";
 import { HttpClient } from "@angular/common/http";
-import { BaseDetailComponent, markerIcon } from "../../base/detail/detail.component";
+import { BaseDetailComponent, markerIcon } from "../../base/detail/detail.component"
 
 declare let $: any;
 
 @Component({
-  selector: 'app-site-detail',
+  selector: 'app-obs-detail',
   templateUrl: '../../base/detail/detail.component.html',
   styleUrls: [
     './../../observations/obs.component.css', // for form modal only
     '../../base/detail/detail.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class SiteDetailComponent extends BaseDetailComponent implements AfterViewInit {
-  site_id: any;
-  site: any;
-  module: string = 'sites';
+export class ObsDetailComponent extends BaseDetailComponent implements AfterViewInit {
+  obs_id: any;
+  obs: any;
 
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private programService: GncProgramsService,
-    public flowService: SiteModalFlowService
+    private programService: GncProgramsService
   ) {
     super()
     this.route.params.subscribe(params => {
-      this.site_id = params["site_id"];
+      this.obs_id = params["obs_id"];
       this.program_id = params["program_id"];
     });
-    this.module = "sites";
+    this.module = "observations";
   }
 
   ngAfterViewInit() {
     this.programService
-      .getSiteDetails(this.site_id)
-      .subscribe(sites => {
-        this.site = sites['features'][0];
-        this.photos = this.site.properties.photos;
+      .getObsDetails(this.obs_id)
+      .subscribe(obs => {
+        this.obs = obs['features'][0];
+        this.photos = []
+        this.photos = this.obs.properties.medias;
         for (var i = 0; i<this.photos.length; i++){
-          this.photos[i]['url'] = AppConfig.API_ENDPOINT + this.photos[i]['url'];
+          // this.photos[i]['url'] = AppConfig.API_ENDPOINT + this.photos[i]['url'];
+          this.photos[i]['url'] = this.photos[i]['url'];
         }
 
         // setup map
@@ -52,7 +51,7 @@ export class SiteDetailComponent extends BaseDetailComponent implements AfterVie
           attribution: "OpenStreetMap"
         }).addTo(map);
 
-        let coord = this.site.geometry.coordinates;
+        let coord = this.obs.geometry.coordinates;
         let latLng = L.latLng(coord[1], coord[0]);
         map.setView(latLng, 13);
 
@@ -60,11 +59,11 @@ export class SiteDetailComponent extends BaseDetailComponent implements AfterVie
           .addTo(map);
 
         // prepare data
-        if (this.site.properties.last_visit) {
-          let data = this.site.properties.last_visit.json_data;
+        if (this.obs.properties.json_data) {
+          let data = this.obs.properties.json_data;
           var that = this;
-          this.loadJsonSchema().subscribe((jsonschema: any) => {
-            let schema = jsonschema.schema.properties
+          this.loadJsonSchema().subscribe((customform: any) => {
+            let schema = customform.json_schema.schema.properties
             for (const k in data) {
               let v = data[k];
               that.attributes.push({name: schema[k].title, value: v.toString()})
@@ -76,11 +75,7 @@ export class SiteDetailComponent extends BaseDetailComponent implements AfterVie
 
   loadJsonSchema() {
     return this.http.get(
-      `${this.URL}/sites/${this.site_id}/jsonschema`
+      `${this.URL}/programs/${this.program_id}/customform`
     )
-  }
-
-  addSiteVisit() {
-    this.flowService.addSiteVisit(this.site_id);
   }
 }

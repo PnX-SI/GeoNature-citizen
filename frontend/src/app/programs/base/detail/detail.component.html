@@ -1,19 +1,14 @@
 <div class="container">
   <div class="row">
-    <a [routerLink]="['/programs', program_id, 'sites']" id="back_link">< Retour à la carte</a>
+    <a [routerLink]="['/programs', program_id, module]" id="back_link">< Retour à la carte</a>
   </div>
   <div class="row">
-    <h1 class="mt-3 title">{{ site?.properties.name }}</h1>
+    <h1 class="mt-3 title">{{ (module === "sites" ? site?.properties.name : (!!obs?.properties.nom_francais ? obs?.properties.nom_francais : obs?.properties.taxref?.nom_vern)) }}</h1>
   </div>
   <div class="row mb-4">
-    <div class="col-md-4 pt-4 card box-shadow">
+    <div class="col-md-4 pt-4 card box-shadow" *ngIf="module === 'sites'; else obsDisplay">
       <div class="card-body">
         <h5 class="card-title">Mare #{{ site_id }}</h5>
-        <!--<table class="table">-->
-          <!--<tbody>-->
-          <!--<tr><td>Ajoutée par</td><td>{{ site?.properties.obs_txt }}</td></tr>-->
-          <!--</tbody>-->
-        <!--</table>-->
        <h6 class="card-subtitle mb-2 text-muted">Ajoutée le {{ site?.properties.timestamp_create.substring(0, 10) | date : "longDate" }}</h6>
         <p class="card-text">Inventoriée par {{ site?.properties.obs_txt }}</p>
 
@@ -26,11 +21,20 @@
         <a href="#" (click)="$event.preventDefault();addSiteVisit();" class="btn btn-primary">Ajouter un rapport de visite</a>
       </div>
     </div>
+    <ng-template #obsDisplay>
+    <div class="col-md-4 pt-4 card box-shadow">
+      <div class="card-body">
+        <h5 class="card-title">Observation #{{ obs_id }}</h5>
+       <h6 class="card-subtitle mb-2 text-muted">Ajoutée le {{ obs?.properties.timestamp_create.substring(0, 10) | date : "longDate" }}</h6>
+        <p class="card-text">par {{ obs?.properties.obs_txt }}</p>
+      </div>
+    </div>
+    </ng-template>
     <div class="col-md-8">
       <div id="map" class="col-lg-12"></div>
     </div>
   </div>
-  <div *ngIf="site?.properties.last_visit">
+  <div *ngIf="photos">
     <div *ngIf="photos.length > 0" class="row">
       <h2 class="mt-4 mb-4">Photos</h2>
     </div>
