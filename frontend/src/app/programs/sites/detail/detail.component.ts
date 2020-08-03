@@ -18,9 +18,6 @@ declare let $: any;
   encapsulation: ViewEncapsulation.None
 })
 export class SiteDetailComponent extends BaseDetailComponent implements AfterViewInit {
-  site_id: any;
-  site: any;
-  module: string = 'sites';
 
   constructor(
     private http: HttpClient,

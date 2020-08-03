@@ -17,8 +17,6 @@ declare let $: any;
   encapsulation: ViewEncapsulation.None
 })
 export class ObsDetailComponent extends BaseDetailComponent implements AfterViewInit {
-  obs_id: any;
-  obs: any;
 
   constructor(
     private http: HttpClient,

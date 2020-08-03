@@ -15,6 +15,10 @@ export abstract class BaseDetailComponent {
   photos = [];
   clickedPhoto: any;
   module: string;
+  obs_id: any;
+  obs: any;
+  site_id: any;
+  site: any;
 
   showPhoto(photo) {
     console.log("opening photo:");
