@@ -175,7 +175,8 @@ export class UserDashboardComponent implements OnInit {
       "espece": obs.properties.taxref.nom_vern,
       "nom complet": obs.properties.taxref.nom_complet,
       "coordonnee_x": obs.geometry.coordinates[0],
-      "coordonnee_y": obs.geometry.coordinates[1]
+      "coordonnee_y": obs.geometry.coordinates[1],
+      ...obs.properties.json_data
     });
   }
 
@@ -209,6 +210,14 @@ export class UserDashboardComponent implements OnInit {
   }
 
   onExportObservations() {
+    let all_json_data_keys = new Set()
+    this.observations.forEach((o) => {
+      if (o.properties.json_data) {
+        Object.keys(o.properties.json_data).forEach((k) => {
+          all_json_data_keys.add(k)
+        })
+      }
+    })
     let csv_str = this.userService.ConvertToCSV(this.obsToExport, [
       "id_observation",
       "espece",
@@ -220,7 +229,8 @@ export class UserDashboardComponent implements OnInit {
       "commentaire",
       "commune",
       "coordonnee_x",
-      "coordonnee_y"
+      "coordonnee_y",
+      ...Array.from(all_json_data_keys)
     ]);
     let blob = new Blob([csv_str], { type: "text/csv" });
     saveAs(blob, "mydata.csv");
