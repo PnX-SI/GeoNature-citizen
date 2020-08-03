@@ -901,6 +901,14 @@ def update_observation():
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)
 
+        try:
+            json_data = update_data.get("json_data")
+            if json_data is not None:
+                update_obs["json_data"] = json.loads(json_data)
+        except Exception as e:
+            current_app.logger.warning("[update_observation] json_data ", e)
+            raise GeonatureApiError(e)
+
         ObservationModel.query.filter_by(id_observation=update_data.get(
             'id_observation')).update(update_obs, synchronize_session='fetch')
         db.session.commit()

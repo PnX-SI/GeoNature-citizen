@@ -69,8 +69,8 @@
       </div>
 
       <json-schema-form
-        *ngIf="customForm.json_schema"
-        [form]="customForm.json_schema"
+        *ngIf="jsfInputObject"
+        [form]="jsfInputObject"
         [options]="formOptions"
         [framework]="GNCBootstrap4Framework"
         (onChanges)="customFormOnChange($event)"

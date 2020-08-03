@@ -104,6 +104,7 @@ export class ObsFormComponent implements AfterViewInit {
   GNCBootstrap4Framework: any = {
     framework: GNCFrameworkComponent,
   };
+  jsfInputObject: object;
   formOptions: any = {
     "loadExternalAssets": false,
     "debug": false,
@@ -128,7 +129,10 @@ export class ObsFormComponent implements AfterViewInit {
     this.program_id = this.data.program_id;
     this.coords = this.data.coords;
     this.intiForm();
-    if (this.data.updateData) this.patchForm(this.data.updateData);
+    if (this.data.updateData) {
+      this.patchForm(this.data.updateData);
+      this.jsonData = this.data.updateData.json_data;
+    }
   }
 
   ngAfterViewInit() {
@@ -159,6 +163,7 @@ export class ObsFormComponent implements AfterViewInit {
             .getCustomForm(this.program.features[0].properties.id_form)
             .subscribe((result: object) => {
               this.customForm = result;
+              if (this.customForm.json_schema) this.updatejsfInputObject();
             })
         }
 
@@ -275,6 +280,13 @@ export class ObsFormComponent implements AfterViewInit {
           }
         });
       });
+  }
+
+  updatejsfInputObject() {
+    this.jsfInputObject = {
+      ...this.customForm.json_schema,
+      data: this.jsonData
+    };
   }
 
   intiForm() {
@@ -448,6 +460,9 @@ export class ObsFormComponent implements AfterViewInit {
       "id_observation",
       this.data.updateData.id_observation.toString()
     );
+    if (this.customForm.json_schema) {
+      formData.append("json_data", JSON.stringify(this.jsonData))
+    }
     this.observationsService.updateObservation(formData).subscribe(() => {
       this.flowService.closeModal();
       this.flowService.setModalCloseSatus("updateObs");

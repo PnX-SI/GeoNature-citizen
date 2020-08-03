@@ -159,7 +159,8 @@ export class UserDashboardComponent implements OnInit {
         media: obs.properties.media,
         taxref: obs.properties.taxref
       },
-      coords: coords
+      coords: coords,
+      json_data: obs.properties.json_data
     });
   }
 
