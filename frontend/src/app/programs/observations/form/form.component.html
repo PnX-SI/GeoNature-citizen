@@ -84,10 +84,11 @@
       </div> -->
       <image-upload
           buttonCaption="Ajouter une photo"
-          dropBoxMessage="Déposez vos photos ici !"
+          dropBoxMessage="Déposez vos photos ici ! (5 max)"
           clearButtonCaption="Supprimer"
           (uploadFinished)="addImage($event)"
           (removed)="deleteImage($event)"
+          [max]="5"
         ></image-upload>
     </div>
 
