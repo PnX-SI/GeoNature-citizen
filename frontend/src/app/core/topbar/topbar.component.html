@@ -50,7 +50,7 @@
             </a>
           </li>
         </ul>
-        <div class="btn-group" *ngIf="canSignup">
+        <div class="btn-group navbar-login" *ngIf="canSignup">
           <div *ngIf="(isLoggedIn() | async); then: connected; else: disconnected"></div>
           <ng-template #connected>
             <a placement="bottom" i18n-ngbTooltip ngbTooltip="Mon tableau de bord"   (click)="isCollapsed = !isCollapsed" routerLink="mydashboard"
