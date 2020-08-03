@@ -15,6 +15,7 @@ from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
 from sqlalchemy import desc
+from sqlalchemy import func
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
 from .models import ObservationMediaModel, ObservationModel
@@ -468,7 +469,7 @@ def get_program_observations(
                 ObservationModel,
                 UserModel.username,
                 UserModel.avatar,
-                MediaModel.filename.label("image"),
+                func.array_agg(MediaModel.filename).label("images"),
                 LAreas.area_name,
                 LAreas.area_code,
             )
@@ -490,13 +491,18 @@ def get_program_observations(
                 isouter=True,
             )
             .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
+            .group_by(
+                ObservationModel.id_observation,
+                UserModel.username,
+                UserModel.avatar,
+                LAreas.area_name,
+                LAreas.area_code)
         )
 
         observations = observations.order_by(
             desc(ObservationModel.timestamp_create))
         # current_app.logger.debug(str(observations))
         observations = observations.all()
-
         if current_app.config.get("API_TAXHUB") is not None:
             taxhub_list_id = (
                 ProgramsModel.query.filter_by(
@@ -523,10 +529,10 @@ def get_program_observations(
                     [
                         current_app.config["API_ENDPOINT"],
                         current_app.config["MEDIA_FOLDER"],
-                        observation.image,
+                        observation.images[0]
                     ]
                 )
-                if observation.image
+                if observation.images and observation.images != [None]
                 else None
             )
 
@@ -756,7 +762,7 @@ def get_observations_by_user_id(user_id):
                 ObservationModel,
                 ProgramsModel,
                 UserModel.username,
-                MediaModel.filename.label("image"),
+                func.array_agg(MediaModel.filename).label("images"),
                 LAreas.area_name,
                 LAreas.area_code,
             )
@@ -778,6 +784,12 @@ def get_observations_by_user_id(user_id):
                 isouter=True,
             )
             .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
+            .group_by(
+                ObservationModel.id_observation,
+                ProgramsModel.id_program,
+                UserModel.username,
+                LAreas.area_name,
+                LAreas.area_code)
         )
 
         observations = observations.order_by(
@@ -816,10 +828,10 @@ def get_observations_by_user_id(user_id):
                     [
                         current_app.config["API_ENDPOINT"],
                         current_app.config["MEDIA_FOLDER"],
-                        observation.image,
+                        observation.images[0]
                     ]
                 )
-                if observation.image
+                if observation.images and observation.images != [None]
                 else None
             )
             # Municipality
