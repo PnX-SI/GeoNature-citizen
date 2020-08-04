@@ -43,7 +43,7 @@
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
-      <app-obs-map #obsMapRef [observations]="observations" [program]="programFeature"
+      <app-obs-map #obsMapRef [features]="observations" [program]="programFeature"
         (onClick)="onMapClicked($event)"></app-obs-map>
       <div class="btn-groups">
       </div>
@@ -66,7 +66,7 @@
       </ngb-tab>
       <ngb-tab title="Carte">
         <ng-template ngbTabContent id="tab-map" class="map">
-          <app-obs-map #obsMapRef [observations]="observations" [program]="programFeature"
+          <app-obs-map #obsMapRef [features]="observations" [program]="programFeature"
             (onClick)="onMapClicked($event)">
           </app-obs-map>
           <div class="btn-groups map-modal-btn">

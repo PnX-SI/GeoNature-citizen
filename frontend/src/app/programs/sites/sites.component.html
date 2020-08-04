@@ -17,7 +17,7 @@
     <div class="map col-lg-12 col-md-12" id="map">
       <app-sites-map
         #sitesMapRef
-        [sites]="sites"
+        [features]="sites"
         [program]="programFeature"
         (onClick)="onMapClicked($event)"
       ></app-sites-map>
