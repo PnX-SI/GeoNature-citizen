@@ -89,7 +89,7 @@ export class ObsMapComponent extends BaseMapComponent {
           </span>
           le {{ data.date }}
         </span><br>
-        <a [routerLink]="['/programs', data.id_program, 'features', data.id_observation]" style="cursor:pointer">
+        <a [routerLink]="['/programs', data.id_program, 'observations', data.id_observation]" style="cursor:pointer">
           + Voir les détails
         </a>
       </p>

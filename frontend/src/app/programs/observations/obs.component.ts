@@ -2,7 +2,6 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  AfterViewInit,
   ViewChild,
   HostListener,
   Inject,
@@ -23,6 +22,7 @@ import { ModalFlowService } from "./modalflow/modalflow.service";
 import { TaxonomyList } from "./observation.model";
 import { ObsMapComponent } from "./map/map.component";
 import { ObsListComponent } from "./list/list.component";
+import { ProgramBaseComponent } from "../base/program-base.component";
 import { AppConfig } from "../../../conf/app.config";
 
 @Component({
@@ -32,16 +32,8 @@ import { AppConfig } from "../../../conf/app.config";
   encapsulation: ViewEncapsulation.None,
   providers: [ProgramsResolve]
 })
-export class ObsComponent implements OnInit, AfterViewInit {
-  AppConfig = AppConfig;
-  fragment: string;
-  coords: L.Point;
-  program_id: any;
-  programs: Program[];
-  program: Program;
+export class ObsComponent extends ProgramBaseComponent implements OnInit {
   observations: FeatureCollection;
-  programFeature: FeatureCollection;
-  surveySpecies: TaxonomyList;
   @ViewChild(ObsMapComponent, { static: true }) obsMap: ObsMapComponent;
   @ViewChild(ObsListComponent, { static: true }) obsList: ObsListComponent;
 
@@ -59,6 +51,7 @@ export class ObsComponent implements OnInit, AfterViewInit {
     private titleService: Title,
     private metaTagService: Meta
   ) {
+    super()
     this.route.params.subscribe(params => (this.program_id = params["id"]));
     this.route.fragment.subscribe(fragment => {
       this.fragment = fragment;
@@ -102,22 +95,6 @@ export class ObsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    try {
-      if (this.fragment) {
-        document
-          .querySelector("#" + this.fragment)
-          .scrollIntoView({ behavior: "smooth" });
-      }
-    } catch (e) {
-      //alert(e);
-    }
-  }
-
-  onMapClicked(p: L.Point): void {
-    this.coords = p;
-  }
-
   @HostListener("document:NewObservationEvent", ["$event"])
   newObservationEventHandler(e: CustomEvent) {
     e.stopPropagation();
@@ -136,9 +113,5 @@ export class ObsComponent implements OnInit, AfterViewInit {
       type: "FeatureCollection",
       features: this.observations.features
     };
-  }
-
-  ngOnDestroy(): void {
-    this.flowService.closeModal();
   }
 }

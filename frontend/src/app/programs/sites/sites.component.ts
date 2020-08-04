@@ -2,7 +2,6 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  AfterViewChecked,
   ViewChild
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
@@ -16,6 +15,7 @@ import { TaxonomyList } from "../observations/observation.model";
 import { SiteService } from "./sites.service";
 import { SitesMapComponent } from "./map/map.component";
 import { SitesListComponent } from "./list/list.component";
+import { ProgramBaseComponent } from "../base/program-base.component";
 
 @Component({
   selector: "app-sites",
@@ -23,16 +23,9 @@ import { SitesListComponent } from "./list/list.component";
   styleUrls: ["../observations/obs.component.css", "../../home/home.component.css", "./sites.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class SitesComponent implements OnInit, AfterViewChecked {
+export class SitesComponent extends ProgramBaseComponent implements OnInit {
   title = "Sites";
-  fragment: string;
-  program_id: any;
-  coords: any;
-  programs: Program[];
-  program: Program;
   sites: FeatureCollection;
-  programFeature: FeatureCollection;
-  surveySpecies: TaxonomyList;
   @ViewChild(SitesMapComponent, { static: true }) sitesMap: SitesMapComponent;
   @ViewChild(SitesListComponent, { static: true }) sitesList: SitesListComponent;
 
@@ -73,22 +66,5 @@ export class SitesComponent implements OnInit, AfterViewChecked {
         .subscribe(sites => {
           this.sites = sites;
         });
-  }
-
-  ngAfterViewChecked(): void {
-    try {
-      if (this.fragment) {
-        document
-          .querySelector("#" + this.fragment)
-          .scrollIntoView({ behavior: "smooth" });
-      }
-    } catch (e) {
-      alert(e);
-    }
-  }
-
-  onMapClicked(p): void {
-    this.coords = p;
-    console.debug("map clicked", this.coords);
   }
 }
