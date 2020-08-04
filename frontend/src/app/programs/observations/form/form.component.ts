@@ -39,7 +39,7 @@ import "leaflet-fullscreen/dist/Leaflet.fullscreen";
 import { ToastrService } from "ngx-toastr";
 import { ModalFlowService } from "../modalflow/modalflow.service";
 import { ObservationsService } from "../observations.service";
-import { MapService } from "../../base/map/map.service"
+import { MapService } from "../../base/map/map.service";
 
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 

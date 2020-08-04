@@ -20,6 +20,7 @@ import "leaflet-gesture-handling";
 
 import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
+import { MapService } from "../../base/map/map.service";
 
 declare let $: any;
 
@@ -62,8 +63,27 @@ export class SiteFormComponent implements AfterViewInit {
   MAP_CONFIG = MAP_CONFIG;
   hasZoomAlert: boolean;
   zoomAlertTimeout: any;
+  mapVars: any = {};
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private mapService: MapService
+  ) {}
+
+  ngOnInit(): void {
+    this.mapService.coordsChange.subscribe(value => {
+      this.coords = value;
+      let geo_coords = <Point>{
+        type: "Point",
+        coordinates: <Position>[this.coords.x, this.coords.y]
+      };
+      this.siteForm.patchValue({ geometry: geo_coords });
+      if (this.mapVars.minimapMarker) this.formMap.removeLayer(this.mapVars.minimapMarker);
+      this.mapVars.minimapMarker = L.marker([this.coords.y, this.coords.x], {
+        icon: siteFormMarkerIcon
+      }).addTo(this.formMap);
+    });
+  }
 
   ngAfterViewInit() {
     this.http
@@ -174,6 +194,9 @@ export class SiteFormComponent implements AfterViewInit {
             this.siteForm.patchValue({ geometry: coords });
           }
         });
+        this.mapVars = {
+          minimapMarker: myMarker
+        }
       });
   }
 
