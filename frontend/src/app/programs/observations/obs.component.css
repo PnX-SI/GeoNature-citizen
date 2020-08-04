@@ -310,3 +310,60 @@ section .observations {
     margin-top: 66px !important;
   }
 }
+
+/* NEW OBS MODAL */
+@media screen and (min-width: 992px) {
+  .modal-open { overflow-y: auto !important; }
+
+  .modal-backdrop {
+    width: 0;
+    height: 0;
+  }
+
+  .modal.obs-modal, .modal-dialog {
+    width: 33%;
+  }
+
+  .modal.obs-modal .modal-dialog {
+      position: fixed;
+      margin: auto;
+      width: 33%;
+      height: 100%;
+      -webkit-transform: translate3d(0%, 0, 0);
+          -ms-transform: translate3d(0%, 0, 0);
+           -o-transform: translate3d(0%, 0, 0);
+              transform: translate3d(0%, 0, 0);
+    }
+
+  .modal.obs-modal .modal-content {
+    height: 100%;
+    overflow-y: auto;
+  }
+  .modal.obs-modal .modal-body {
+    padding: 15px 15px 80px;
+  }
+
+  /*.modal.fade .modal-dialog{
+    left: -320px;
+    -webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
+       -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
+         -o-transition: opacity 0.3s linear, left 0.3s ease-out;
+            transition: opacity 0.3s linear, left 0.3s ease-out;
+  }*/
+
+  .modal.obs-modal.fade.in .modal-dialog{
+    left: 0;
+  }
+
+  .obs-modal .modal-content {
+    border-radius: 0;
+    border: none;
+    max-height: 100%;
+  }
+
+  .obs-modal .modal-header {
+    border-bottom-color: #EEEEEE;
+    background-color: #FAFAFA;
+  }
+}
+/* END NEW OBS MODAL */

@@ -39,6 +39,7 @@ import "leaflet-fullscreen/dist/Leaflet.fullscreen";
 import { ToastrService } from "ngx-toastr";
 import { ModalFlowService } from "../modalflow/modalflow.service";
 import { ObservationsService } from "../observations.service";
+import { MapService } from "../map/map.service"
 
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 
@@ -113,6 +114,7 @@ export class ObsFormComponent implements AfterViewInit {
   }
   jsonData: object;
   photos: any[] = [];
+  mapVars: any = {};
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -122,7 +124,8 @@ export class ObsFormComponent implements AfterViewInit {
     private programService: GncProgramsService,
     private flowService: ModalFlowService,
     private toastr: ToastrService,
-    private auth: AuthService
+    private auth: AuthService,
+    private mapService: MapService
   ) {}
 
   ngOnInit(): void {
@@ -133,6 +136,14 @@ export class ObsFormComponent implements AfterViewInit {
       this.patchForm(this.data.updateData);
       this.jsonData = this.data.updateData.json_data;
     }
+    this.mapService.coordsChange.subscribe(value => {
+      this.coords = value;
+      this.obsForm.patchValue({ geometry: this.coords });
+      if (this.mapVars.minimapMarker) this.formMap.removeLayer(this.mapVars.minimapMarker);
+      this.mapVars.minimapMarker = L.marker([this.coords.y, this.coords.x], {
+        icon: obsFormMarkerIcon
+      }).addTo(this.formMap);
+    });
   }
 
   ngAfterViewInit() {
@@ -279,6 +290,10 @@ export class ObsFormComponent implements AfterViewInit {
             this.obsForm.patchValue({ geometry: this.coords });
           }
         });
+
+        this.mapVars = {
+          minimapMarker: myMarker
+        }
       });
   }
 
@@ -491,4 +506,5 @@ export class ObsFormComponent implements AfterViewInit {
       }
     }
   }
+
 }

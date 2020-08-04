@@ -135,24 +135,6 @@
   border-color: var(--primary) !important;
 }
 
-.obs-found {
-  /* background-color: var(--secondary); */
-  background-image: linear-gradient(178deg,
-      var(--secondary) 0%,
-      var(--secondary) 60%,
-      var(--secondary-gradient) 63%,
-      var(--secondary-gradient)) !important;
-  min-height: 1.5em !important;
-}
-
-.obs-found p {
-  white-space: nowrap;
-  margin: 0;
-  font-style: italic;
-  color: #fff;
-  text-align: center;
-}
-
 .toolbar .dropdown button {
   background: none;
   width: 100%;

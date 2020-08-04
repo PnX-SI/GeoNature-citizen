@@ -36,7 +36,11 @@
           </ngx-datatable-column>
           <ngx-datatable-column>
             <ng-template let-row="row" ngx-datatable-cell-template>
-              <app-modalflow [coords]="row.coords" [updateData]="row" [program_id]="row.program_id"></app-modalflow>
+              <app-modalflow [coords]="row.coords" [updateData]="row" [program_id]="row.program_id">
+                <button class="btn btn-secondary" placement="top" ngbTooltip="Editer" btn-open>
+                  <i class="fa fa-edit"></i>
+                </button>
+              </app-modalflow>
               <button class="btn btn-danger" placement="top" ngbTooltip="Supprimer"  (click)="openDeleteModal(deleteModal,row.id_observation )" ><i class="fa fa-trash"></i></button>
             </ng-template>
           </ngx-datatable-column>

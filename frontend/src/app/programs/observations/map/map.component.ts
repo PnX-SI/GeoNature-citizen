@@ -23,6 +23,7 @@ import { MarkerClusterGroup } from "leaflet";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
 import "leaflet-gesture-handling";
+import { MapService } from "./map.service"
 
 
 const conf = {
@@ -144,7 +145,8 @@ export class ObsMapComponent implements OnChanges {
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     private resolver: ComponentFactoryResolver,
-    private injector: Injector
+    private injector: Injector,
+    private mapService: MapService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -362,6 +364,7 @@ export class ObsMapComponent implements OnChanges {
             this.newObsMarker = L.marker(e.latlng, {
               icon: this.options.NEW_OBS_MARKER_ICON()
             }).addTo(this.observationMap);
+            this.mapService.changePoint(coords);
           }
           // emit new coordinates
           this.onClick.emit(coords);

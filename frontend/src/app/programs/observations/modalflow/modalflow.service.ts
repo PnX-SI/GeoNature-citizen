@@ -35,7 +35,9 @@ export class ModalFlowService extends FlowService {
     this.modalRef = this.modalService.open(content, {
       size: "lg",
       windowClass: 'obs-modal',
-      centered: true
+      centered: true,
+      backdrop : 'static'
+      // keyboard : false
     });
     this.modalRef.result.then(
       result => {
