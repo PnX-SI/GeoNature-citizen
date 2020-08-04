@@ -4,7 +4,6 @@ import { AppConfig } from "../../../../conf/app.config";
 import {
   Component,
   ComponentFactoryResolver,
-  HostListener,
   Injector,
   Input,
   ViewEncapsulation,
@@ -24,7 +23,7 @@ import { MapService } from "../../base/map/map.service"
       data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre site."
     ></div>
   `,
-  styleUrls: ["./map.component.css"],
+  styleUrls: ["../../base/map/map.component.css"],
   encapsulation: ViewEncapsulation.None
 })
 export class SitesMapComponent extends BaseMapComponent {
