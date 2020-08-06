@@ -18,6 +18,7 @@ export abstract class ProgramBaseComponent implements AfterViewInit {
   program: Program;
   programFeature: FeatureCollection;
   surveySpecies: TaxonomyList;
+  abstract flowService: any;
 
   ngAfterViewInit(): void {
     try {

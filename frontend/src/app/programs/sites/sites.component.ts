@@ -35,6 +35,7 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
     public flowService: SiteModalFlowService,
     public siteService: SiteService
   ) {
+    super()
     this.route.params.subscribe(params => (this.program_id = params["id"]));
     this.route.fragment.subscribe(fragment => {
       this.fragment = fragment;
