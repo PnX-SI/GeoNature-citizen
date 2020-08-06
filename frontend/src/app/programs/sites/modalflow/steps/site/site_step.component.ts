@@ -35,4 +35,8 @@ export class SiteStepComponent implements IFlowComponent {
       that.data.next({ ...that.data, site_id: site_id });
     })
   }
+
+  closeModal(){
+    this.data.service.closeModal()
+  } 
 }

@@ -9,14 +9,8 @@ import { SiteModalFlowService } from "./modalflow.service";
 
 @Component({
   selector: "app-sitemodalflow",
-  template: `
-    <div class="btn-group">
-      <button class="btn-big" (click)="clicked()">
-        Ajouter une mare
-      </button>
-    </div>
-  `,
-  styleUrls: ["./modalflow.component.css"],
+  templateUrl: "../../observations/modalflow/modalflow.component.html",
+  styleUrls: ["../../observations/modalflow/modalflow.component.css"],
   encapsulation: ViewEncapsulation.None
 })
 export class SiteModalFlowComponent {

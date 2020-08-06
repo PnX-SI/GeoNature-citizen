@@ -27,4 +27,8 @@ export class SiteCongratsComponent implements IFlowComponent {
       this.data.next(this.data);
     }, 2000);
   }
+
+  closeModal(){
+    this.data.service.closeModal()
+  } 
 }

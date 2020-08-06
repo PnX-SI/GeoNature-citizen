@@ -1,6 +1,9 @@
 <!-- Ajouter une observation -->
 <div class="modal-header">
   <h4 class="modal-title">AJOUTER UN RAPPORT DE VISITE</h4>
+  <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
 
 <div class="modal-body add-obs"><app-site-visit-form [site_id]="data.site_id"></app-site-visit-form></div>

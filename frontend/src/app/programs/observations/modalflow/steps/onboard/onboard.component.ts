@@ -93,6 +93,6 @@ export class OnboardComponent implements IFlowComponent, OnInit {
   }
   
   closeModal(){
-    this.flowModal.closeModal()
+    this.data.service.closeModal()
   }
 }

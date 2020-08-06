@@ -11,7 +11,11 @@
         [taxa]="surveySpecies"
         [program_id]="program_id"
         (siteSelect)="sitesMapRef.showPopup($event);"
-      ></app-sites-list>
+      >
+        <app-sitemodalflow [coords]="coords" class="float-right" add-obs>
+          <button type="button" class="btn btn-success mr-4" btn-open>Ajouter</button>
+        </app-sitemodalflow>
+      </app-sites-list>
     </div>
 
     <div class="map col-lg-12 col-md-12" id="map">
@@ -21,9 +25,6 @@
         [program]="programFeature"
         (onClick)="onMapClicked($event)"
       ></app-sites-map>
-      <div class="btn-groups">
-        <app-sitemodalflow [coords]="coords"></app-sitemodalflow>
-      </div>
     </div>
   </section>
 </div>

@@ -24,4 +24,8 @@ export class VisitStepComponent implements IFlowComponent {
     // this.data.next();
     this.data.service.close(null);
   }
+
+  closeModal(){
+    this.data.service.closeModal()
+  } 
 }

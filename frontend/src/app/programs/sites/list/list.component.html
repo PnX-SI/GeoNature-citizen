@@ -1,6 +1,7 @@
 <div id="mapList">
-  <div class="obs-found">
-    <p>{{ sites?.length }} mares dans l'inventaire</p>
+  <div class="col-lg-12 mx-4 mt-2 mb-4">
+    <strong>Sites </strong> <span class="text-muted">({{ sites?.length }})</span>
+    <ng-content select="[add-obs]"></ng-content>
   </div>
   <div id="list">
     <div *ngFor="let o of sites" (click)="onSiteClick(o)" class="espece">
