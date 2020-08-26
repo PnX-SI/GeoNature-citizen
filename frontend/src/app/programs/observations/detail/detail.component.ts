@@ -60,7 +60,7 @@ export class ObsDetailComponent extends BaseDetailComponent implements AfterView
           let data = this.obs.properties.json_data;
           var that = this;
           this.loadJsonSchema().subscribe((customform: any) => {
-            let schema = customform.json_schema.schema.properties
+            let schema = customform.json_schema.schema.properties;
             for (const k in data) {
               let v = data[k];
               that.attributes.push({name: schema[k].title, value: v.toString()})
@@ -72,7 +72,7 @@ export class ObsDetailComponent extends BaseDetailComponent implements AfterView
 
   loadJsonSchema() {
     return this.http.get(
-      `${this.URL}/programs/${this.program_id}/customform`
+      `${this.URL}/programs/${this.program_id}/customform/`
     )
   }
 }
