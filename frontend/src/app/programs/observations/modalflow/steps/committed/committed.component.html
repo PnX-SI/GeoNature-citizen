@@ -4,7 +4,7 @@
   <h4 *ngIf="data.updateData" class="modal-title" i18n>MODIFIER L'OBSERVATION</h4>
   <button type="button" class="close" aria-label="Close" (click)="closeModal()">
     <span aria-hidden="true">&times;</span>
-</button>
+  </button>
 </div>
 
 <div class="modal-body add-obs pb-0">
@@ -18,7 +18,6 @@
     </div>
   </div>
   <!-- </div> -->
-  
 
   <app-obs-form [data]="data" (newObservation)="onNewObservation($event)"></app-obs-form>
 </div>
