@@ -320,7 +320,7 @@ section .observations {
     height: 0;
   }
 
-  .modal.obs-modal, .modal-dialog {
+  .modal.obs-modal .modal-dialog {
     width: 33%;
   }
 
