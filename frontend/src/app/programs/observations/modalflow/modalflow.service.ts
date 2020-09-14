@@ -26,6 +26,7 @@ export const MODAL_DEFAULTS: NgbModalOptions = {
 export class ModalFlowService extends FlowService {
   modalRef: NgbModalRef;
   private modalCloseStatus: BehaviorSubject<string> = new BehaviorSubject(null);
+  display: boolean = false;
 
   constructor(private modalService: NgbModal) {
     super();
@@ -62,10 +63,12 @@ export class ModalFlowService extends FlowService {
   }
 
   close(data) {
-    this.modalRef.close(data);
+    this.closeModal();
+
   }
   closeModal() {
     if (this.modalRef) this.modalRef.close();
+    this.display = false;
   }
 
   getFlowItems(initialState) {
@@ -83,5 +86,9 @@ export class ModalFlowService extends FlowService {
 
   setModalCloseSatus(type: "updateObs" | "newObs" | null) {
     this.modalCloseStatus.next(type);
+  }
+
+  toggleDisplay () {
+    this.display = !this.display;
   }
 }

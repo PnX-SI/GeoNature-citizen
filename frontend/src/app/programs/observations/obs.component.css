@@ -366,3 +366,10 @@ section .observations {
   }
 }
 /* END NEW OBS MODAL */
+
+#newObsDiv {
+  background: #eee;
+  padding: 5px 0px 5px 5px;
+  overflow: scroll;
+  height: calc(105vh - var(--list-obs-offset));
+}

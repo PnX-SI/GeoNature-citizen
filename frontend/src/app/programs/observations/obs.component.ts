@@ -3,6 +3,8 @@ import {
   OnInit,
   ViewEncapsulation,
   ViewChild,
+  ViewChildren,
+  QueryList,
   HostListener,
   Inject,
   LOCALE_ID
@@ -22,6 +24,7 @@ import { ModalFlowService } from "./modalflow/modalflow.service";
 import { TaxonomyList } from "./observation.model";
 import { ObsMapComponent } from "./map/map.component";
 import { ObsListComponent } from "./list/list.component";
+import { ModalFlowComponent } from "./modalflow/modalflow.component";
 import { ProgramBaseComponent } from "../base/program-base.component";
 import { AppConfig } from "../../../conf/app.config";
 
@@ -36,6 +39,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
   observations: FeatureCollection;
   @ViewChild(ObsMapComponent, { static: true }) obsMap: ObsMapComponent;
   @ViewChild(ObsListComponent, { static: true }) obsList: ObsListComponent;
+  @ViewChildren(ModalFlowComponent) modalFlow: QueryList<ModalFlowComponent>;
 
   selectedObs: Feature;
   public isCollapsed: boolean = true;
@@ -113,5 +117,9 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
       type: "FeatureCollection",
       features: this.observations.features
     };
+  }
+
+  addObsClicked () {
+    this.modalFlow.first.clicked();
   }
 }

@@ -24,6 +24,7 @@ export class ModalFlowComponent {
   @Input("form_message") form_message;
   @Input("default_image") default_image;
   @Input("updateData") updateData;
+  @Input("modalversion") modalversion: boolean = true;
   @ViewChild("content", { static: true }) content: ElementRef;
   AppConfig = AppConfig;
   flowitems: FlowItem[];
@@ -42,7 +43,12 @@ export class ModalFlowComponent {
       default_image: this.default_image,
       updateData: this.updateData,
     });
-    this.flowService.open(this.content);
+    if (this.modalversion) {
+      this.flowService.open(this.content);
+    } else {
+      this.flowService.toggleDisplay();
+    }
+    
   }
 
   step(componentName) {}
