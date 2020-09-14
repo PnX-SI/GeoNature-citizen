@@ -23,6 +23,7 @@
 #list .espece:hover {
   border: solid 2px;
   border-color: var(--primary);
+  cursor: pointer;
 }
 
 #list .espece:hover .espece-link{
@@ -31,6 +32,12 @@
 
 #list .espece a.espece-link:hover{
   text-decoration: underline !important;
+}
+
+.detail-link img {
+  min-width: 20px !important;
+  max-width: 20px !important;
+  height: auto !important;
 }
 
 .espece:hover .hide {

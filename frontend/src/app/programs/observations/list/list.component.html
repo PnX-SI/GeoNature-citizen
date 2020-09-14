@@ -22,7 +22,7 @@
     <ng-content select="[add-obs]"></ng-content>
   </div>
   <div id="list">
-    <div *ngFor="let o of (features$ | async); trackBy: trackByObs" class="espece obs-{{ o.properties.id_observation }}">
+    <div *ngFor="let o of (features$ | async); trackBy: trackByObs" (click)="onObsClick(o)" class="espece obs-{{ o.properties.id_observation }}">
       <!-- FIXME: hardcoded api media endpoint -->
       <img class="obs-img" [src]="
           o.properties.images && !!o.properties.images.length
@@ -54,7 +54,10 @@
             à {{ o.properties.municipality?.name }}</span>
         </p>
       </div>
-      <a class="hide" (click)="onObsClick(o)" ><img class="on-map" src="assets/binoculars.png" /></a>
+      <div class="hide detail-link" [routerLink]="['/programs', o.properties.id_program, 'observations', o.properties.id_observation]" style="cursor:pointer" title="Voir les détails de cette observation">
+        <img src="assets/binoculars.png"/>
+      </div>
+      <!-- <a class="hide" ><img class="on-map" src="assets/binoculars.png" /></a> -->
     </div>
   </div>
 </div>

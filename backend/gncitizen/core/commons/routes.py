@@ -152,6 +152,7 @@ def get_custom_form(pk):
 
 
 @routes.route("/programs/<int:pk>/customform/", methods=["GET"])
+@routes.route("/programs/<int:pk>/customform", methods=["GET"])
 @json_resp
 def get_program_custom_form(pk):
     """Get a custom form by program id
