@@ -12,9 +12,8 @@
         [program_id]="program_id"
         (siteSelect)="sitesMapRef.showPopup($event);"
       >
-        <app-sitemodalflow [coords]="coords" class="float-right" add-obs>
-          <button type="button" class="btn btn-success mr-4" btn-open>Ajouter</button>
-        </app-sitemodalflow>
+        <button type="button" class="btn btn-success mr-4 float-right" add-obs (click)="addSiteClicked()">Ajouter</button>
+        <app-sitemodalflow #modalFlowRef [coords]="coords" [modalversion]="false" obs-form></app-sitemodalflow>
       </app-sites-list>
     </div>
 

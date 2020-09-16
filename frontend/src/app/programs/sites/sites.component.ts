@@ -2,7 +2,9 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  ViewChild
+  ViewChild,
+  ViewChildren,
+  QueryList
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
@@ -15,6 +17,7 @@ import { TaxonomyList } from "../observations/observation.model";
 import { SiteService } from "./sites.service";
 import { SitesMapComponent } from "./map/map.component";
 import { SitesListComponent } from "./list/list.component";
+import { SiteModalFlowComponent } from "./modalflow/modalflow.component";
 import { ProgramBaseComponent } from "../base/program-base.component";
 
 @Component({
@@ -28,6 +31,7 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
   sites: FeatureCollection;
   @ViewChild(SitesMapComponent, { static: true }) sitesMap: SitesMapComponent;
   @ViewChild(SitesListComponent, { static: true }) sitesList: SitesListComponent;
+  @ViewChildren(SiteModalFlowComponent) modalFlow: QueryList<SiteModalFlowComponent>;
 
   constructor(
     private route: ActivatedRoute,
@@ -67,5 +71,9 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
         .subscribe(sites => {
           this.sites = sites;
         });
+  }
+
+  addSiteClicked () {
+    this.modalFlow.first.clicked();
   }
 }
