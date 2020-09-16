@@ -58,7 +58,7 @@ export class SitesMapComponent extends BaseMapComponent {
           + Voir les détails
         </a>
         </p>
-      <div [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer" title="Voir les détails sur cette mare">
+      <div [routerLink]="['/programs', data.id_program, 'sites', data.id_site]" style="cursor:pointer" title="Voir les détails sur ce site">
           <img class="icon" src="assets/binoculars.png">
       </div>
     </ng-container>

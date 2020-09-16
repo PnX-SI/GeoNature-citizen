@@ -217,7 +217,7 @@ export class SiteFormComponent implements AfterViewInit {
     };
     this.siteForm.patchValue({
         id_program: this.program_id,
-        site_type: "mare" // TODO : get site type
+        site_type: this.program.features[0].site_types[0]
     });
     return this.http.post<any>(
       `${this.URL}/sites/`,

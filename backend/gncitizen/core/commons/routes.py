@@ -32,6 +32,7 @@ from flask_jwt_extended.utils import (
 )
 from flask_jwt_extended.exceptions import UserLoadError
 from gncitizen.core.commons.admin import ProgramView
+from gncitizen.core.sites.models import CorProgramSiteTypeModel
 
 
 routes = Blueprint("commons", __name__)
@@ -118,8 +119,11 @@ def get_program(pk):
       features = []
       for data in datas:
           feature = data.get_geofeature()
-          # for k, v in data:
-          #     feature['properties'][k] = v
+          # Get sites types for sites programs. TODO condition
+          if feature["properties"]["module_info"]["name"] == "sites":
+            site_types_qs = CorProgramSiteTypeModel.query.filter_by(id_program=pk)
+            site_types = [st.site_type.name for st in site_types_qs]
+            feature["site_types"] = site_types
           features.append(feature)
       return {"features": features}, 200
     # except Exception as e:
