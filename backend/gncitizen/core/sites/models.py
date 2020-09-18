@@ -47,7 +47,7 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
         db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
     )
     name = db.Column(db.String(250))
-    site_type = db.Column(db.Enum(SiteType), nullable=False)
+    site_type = db.Column(db.Enum(SiteType, native_enum=False), nullable=False)
     geom = db.Column(Geometry("POINT", 4326))
 
     def __repr__(self):
@@ -64,7 +64,7 @@ class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE")
     )
-    site_type = db.Column(db.Enum(SiteType), nullable=False)
+    site_type = db.Column(db.Enum(SiteType, native_enum=False), nullable=False)
 
 
 @serializable

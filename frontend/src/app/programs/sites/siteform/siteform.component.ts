@@ -58,7 +58,7 @@ export class SiteFormComponent implements AfterViewInit {
     name: new FormControl("", Validators.required),
     geometry: new FormControl("", Validators.required),
     id_program: new FormControl(),
-    site_type: new FormControl()
+    site_type: new FormControl("", Validators.required)
   });
   MAP_CONFIG = MAP_CONFIG;
   hasZoomAlert: boolean;
@@ -89,7 +89,12 @@ export class SiteFormComponent implements AfterViewInit {
     this.http
       .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
       .subscribe(result => {
-        this.program = result;
+        this.program = result
+        if (this.program.features[0].site_types.length === 1) {
+          this.siteForm.patchValue({
+              site_type: this.program.features[0].site_types[0]
+          });
+        }
 
         // build map control
         const formMap = L.map("formMap", { gestureHandling: true } as any);
@@ -216,8 +221,7 @@ export class SiteFormComponent implements AfterViewInit {
       })
     };
     this.siteForm.patchValue({
-        id_program: this.program_id,
-        site_type: this.program.features[0].site_types[0]
+        id_program: this.program_id
     });
     return this.http.post<any>(
       `${this.URL}/sites/`,

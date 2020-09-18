@@ -10,7 +10,7 @@
       <div class="infos">
         <h5>{{ o.properties.name }}</h5>
         <p>
-          Ajoutée par <span>{{ o.properties.obs_txt }}</span>
+          {{ o.properties.site_type | titlecase }} ajouté(e) par <span>{{ o.properties.obs_txt }}</span>
         </p>
         <p>
           le <span>{{ o.properties.timestamp_create.substring(0, 10) | date : "longDate" }}</span>
