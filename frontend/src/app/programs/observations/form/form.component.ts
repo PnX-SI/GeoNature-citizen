@@ -416,12 +416,12 @@ export class ObsFormComponent implements AfterViewInit {
   creatFromDataToPost(): FormData {
     this.obsForm.controls["id_program"].patchValue(this.program_id);
     let formData: FormData = new FormData();
-    if (!this.data.updateData) {
-      const files = this.photos;
-      files.forEach((file) => {
-        formData.append("file", file, file.name);
-      })
-    }
+
+    const files = this.photos;
+    files.forEach((file) => {
+      formData.append("file", file, file.name);
+    })
+
     formData.append(
       "geometry",
       JSON.stringify(this.obsForm.get("geometry").value)

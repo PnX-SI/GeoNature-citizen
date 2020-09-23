@@ -911,6 +911,24 @@ def update_observation():
 
         ObservationModel.query.filter_by(id_observation=update_data.get(
             'id_observation')).update(update_obs, synchronize_session='fetch')
+
+        try:
+            file = save_upload_files(
+                request.files,
+                "obstax",
+                update_data.get("cd_nom"),
+                update_data.get('id_observation'),
+                ObservationMediaModel,
+            )
+            current_app.logger.debug(
+                "[post_observation] ObsTax UPLOAD FILE {}".format(file))
+            features[0]["properties"]["images"] = file
+
+        except Exception as e:
+            current_app.logger.warning(
+                "[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
+            # raise GeonatureApiError(e)
+
         db.session.commit()
 
         return ('observation updated successfully'), 200
