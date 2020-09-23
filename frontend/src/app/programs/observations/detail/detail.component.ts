@@ -61,9 +61,12 @@ export class ObsDetailComponent extends BaseDetailComponent implements AfterView
           var that = this;
           this.loadJsonSchema().subscribe((customform: any) => {
             let schema = customform.json_schema.schema.properties;
-            for (const k in data) {
-              let v = data[k];
-              that.attributes.push({name: schema[k].title, value: v.toString()})
+            let layout = customform.json_schema.layout;
+            for (const item of layout) {
+              let v = data[item.key];
+              if (v !== undefined) {
+                that.attributes.push({name: schema[item.key].title, value: v.toString()})
+              }
             }
           });
         }
