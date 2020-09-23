@@ -1,3 +1,14 @@
+<div class="row">
+    <section id="welcome" [style.background-image]="'url('+backgroundImage+')'">
+        <h1 [innerHTML]="platform_intro"></h1>
+        <p [innerHTML]="platform_teaser"></p>
+        <a [routerLink]="['/home']" fragment="programs" class="scroll">
+            <span i18n="Scrollez pour en voir plus !">Scrollez pour en voir plus !</span>
+            <img class="d-block" src="assets/scroll.svg" alt="scroll to #programs" />
+        </a>
+    </section>
+</div>
+
 <div *ngIf="stats && AppConfig.FRONTEND.DISPLAY_STATS" class="row row-0 general-stat">
   <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
     <div class="panel panel-teal panel-widget border-right">
@@ -31,17 +42,6 @@
       </div>
     </div>
   </div>
-</div>
-
-<div class="row">
-    <section id="welcome" [style.background-image]="'url('+backgroundImage+')'">
-        <h1 [innerHTML]="platform_intro"></h1>
-        <p [innerHTML]="platform_teaser"></p>
-        <a [routerLink]="['/home']" fragment="programs" class="scroll">
-            <span i18n="Scrollez pour en voir plus !">Scrollez pour en voir plus !</span>
-            <img class="d-block" src="assets/scroll.svg" alt="scroll to #programs" />
-        </a>
-    </section>
 </div>
 
 <div class="row">
