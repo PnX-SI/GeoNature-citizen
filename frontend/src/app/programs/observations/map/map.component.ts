@@ -89,11 +89,10 @@ export class ObsMapComponent extends BaseMapComponent {
           </span>
           le {{ data.date }}
         </span><br>
-        <a [routerLink]="['/programs', data.id_program, 'observations', data.id_observation]" style="cursor:pointer">
-          + Voir les détails
-        </a>
       </p>
-      <div><img class="icon" src="assets/binoculars.png" /></div>
+      <a [routerLink]="['/programs', data.id_program, 'observations', data.id_observation]" style="cursor:pointer" title="Voir les détails">
+        <div><img class="icon" src="assets/binoculars.png" /></div>
+      </a>
     </ng-container>
   `
 })
