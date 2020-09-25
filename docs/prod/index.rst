@@ -2,7 +2,12 @@
 Installation de GeoNature-citizen
 ====================================
 
-.. highlight:: bash
+.. highlight:: sh
+.. _TaxHub: https://github.com/PnX-SI/TaxHub/
+.. _Debian: https://www.debian.org
+.. _Ubuntu: https://ubuntu.com
+
+
 
 Prérequis
 =========
@@ -12,29 +17,35 @@ Cette documentation suppose que vous avez les bases de l'utilisation de la ligne
 Dépendances
 -----------
 
-Cette application développée pour Debian 9 et doit donc être installée sur cette version.
 
-La procédure d'installation dépend de Taxhub, et de certains paquets, qu'il faut installer.
+
+La présente documentation présente l'installation de GeoNature-citizen dans un environnement Linux Debian_ (version 9 et supérieures) et Ubuntu_ (version 18.04 et supérieures).
+
+La procédure d'installation dépend de TaxHub_, et de certains paquets, qu'il faut installer.
 
 Commencez par installer les paquets suivant:
 
 ::
 
   su # vous aurez besoin du mot de passe de l'utilisateur root
-  apt install sudo git python3 python3-pip python3-venv -y
+  apt install sudo git python3 python3-pip python3-venv curl unzip -y
 
-  Ensuite, installez Taxhub, si ce n'est pas déjà fait. Vous pouvez suivre la documentation officielle: https://taxhub.readthedocs.io/fr/latest/
 
-Configurer le serveur : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-du-serveur
+Ensuite : 
 
-Configurer PostgreSQL : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-de-posgresql
+- installez Taxhub, si ce n'est pas déjà fait. Vous pouvez suivre la documentation officielle: https://taxhub.readthedocs.io/fr/latest/
 
-Configuration et installation de l’application : https://taxhub.readthedocs.io/fr/latest/installation.html
+- Configurer le serveur : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-du-serveur
 
-Notez bien les identifiants de connexion à la base de données de Taxhub, car ils seront réutilisés ici.
+- Configurer PostgreSQL : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-de-posgresql
+
+- Configuration et installation de l’application : https://taxhub.readthedocs.io/fr/latest/installation.html
+
+**Notez bien les identifiants de connexion à la base de données de Taxhub, car ils seront réutilisés ici.**
+
 
 Créer un utilisateur pour l'installation
----------------------------------------------
+----------------------------------------
 
 Il faut un utilisateur qui soit capable d'utiliser la commande ``sudo``.
 
@@ -50,14 +61,17 @@ Créer un utilisateur appartenant au groupe ``sudo``. Dans cette documentation, 
   # Connexion avec cet utilisateur
   su - geonatadmin
 
-  Mettre la localisation en français
+Mettre la localisation en français
 ------------------------------------
+
 
 Générer les locales ``en_US.UTF8`` et ``fr_FR.UTF-8`` puis choisir ``fr_FR.UTF-8`` comme locale par default:
 
 ::
 
   sudo dpkg-reconfigure locales
+
+Si le message d'erreur suivant apparait ``sudo: pas de tty présent et pas de programme askpass spécifié``, ajoutez remplacez ``sudo`` par ``sudo -S``.
 
 Cette commande va afficher une liste de codes internationaux, vous pouvez naviguer avec les flèches du clavier et sélectionner une valeur avec la touche espace. Les valeurs sélectionnées ont une étoile (``*``) devant.
 
@@ -72,21 +86,31 @@ Installation de Géonature Citizen
 =================================
 
 Récupération du code source
--------------------------------------------------
+---------------------------
+
+Téléchargez et décompressez la dernière version de l'application (actuellement v0.3.0)
 
 ::
 
-  cd ~
-  git clone https://github.com/PnX-SI/GeoNature-citizen.git
+  # Se positionner dans le dossier par défaut de l'utilisateur (ici /home/geonatadmin)
+  cd ~ 
+  # Téléchargement de l'application
+  curl -OJL https://github.com/PnX-SI/GeoNature-citizen/archive/v0.3.0.zip 
+  # Décompression de l'application
+  unzip GeoNature-citizen-0.3.0.zip
+  # Renommage du dossier contenant l'application
+  mv GeoNature-citizen-0.3.0 gncitizen
 
-Si nécessaire, vous pouvez récupérer une branche ou un tag particulier avec ``cd GeoNature-citizen && git checkout nom_du_tag_ou_de_la_branch``. Par defaut nous utiliserons la branche master, et il n'y a donc rien à faire.
+.. Si nécessaire, vous pouvez récupérer une branche ou un tag particulier avec ``cd GeoNature-citizen && git checkout nom_du_tag_ou_de_la_branch``. Par defaut nous utiliserons la branche master, et il n'y a donc rien à faire.
+
+Décompréssez
 
 Installer les dépendances python
 --------------------------------
 
 ::
 
-  cd ~/GeoNature-citizen/backend
+  cd ~/gncitizen/backend
   # Création et activation d'un environnement virtuel
   python3 -m venv venv
   source venv/bin/activate
@@ -94,7 +118,7 @@ Installer les dépendances python
   pip install wheel
   pip install -r requirements.txt
 
-Les warnings avec le message "Failed building wheel" peuvent être ignorés.
+Les warnings avec le message "`Failed building wheel`" peuvent être ignorés.
 
 Éditer le fichier de configuration
 ------------------------------------
@@ -103,7 +127,7 @@ Créer le fichier de configuration avec des valeurs par défaut:
 
 ::
 
-  cd ~/GeoNature-citizen/config
+  cd ~/gncitizen/config
   cp default_config.toml.template default_config.toml
 
 Vous devez maintenant l'éditer:
@@ -114,12 +138,14 @@ Vous devez maintenant l'éditer:
 
 Et changer les valeurs pour correspondre à la réalité de votre installation. Faites attention à bien respecter les guillemets.
 
-Quelques valeurs importantes:
+**Quelques valeurs importantes :**
 
 SQLALCHEMY_DATABASE_URI
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Geonature (et ses extensions comme citizen) a pour le moment des références au schéma taxonomie de Taxhub, et doit donc être installé sur la même base de données.
+GeoNature-citizen a pour le moment des références au schéma `taxonomie` de TaxHub_ (pour l'utilisation du référentiel taxonomique `TaxRef
+<https://inpn.mnhn.fr/programme/referentiel-taxonomique-taxref>`_). Ce schéma doit donc être installé dans cette même base de données. 
+L'instance de TaxHub définissant les liste d'espèces et les médias associés peut toutefois être une autre instance indépandante.
 
 ``SQLALCHEMY_DATABASE_URI`` valeur doit donc être changée pour correspondre aux valeurs utilisées pour se connecter à la base de Taxhub.
 
@@ -164,19 +190,63 @@ Notez que nous suffixons avec "citizen", ce qui n'est pas obligatoire, mais nous
 EMAILS
 ~~~~~~~~~~~~~~~~~~
 
-Seuls les utilisateurs inscrits peuvent saisir des observations, et pour créer un compte, il faut utiliser le formulaire d'inscription, qui va envoyer un email avec un lien de confirmation (construit à partir de ``URL_APPLICATION``), sur lequel il va falloir cliquer.
+L'inscription à GeoNature-citizen n'est pas obligatoire pour les contributeurs. 
 
-La partie EMAILS est donc indispensable et il faut la remplir sans erreur. À ma connaissance, geonature citizen ne propose pas de moyen simple de tester les paramètres d'email autrement qu'en créant un compte, ni un retour clair d'erreur si le mail n'est pas envoyé pour cause de mauvais paramétrage.
+Toutefois, si un contributeur souhaite créer un compte, un email de vérification de son adresse mail lui est transmis. Ce mail contient un lien permettant l'activation du compte. 
+
+Pour cela, il est nécessaire de configurer un serveur SMTP permettant l'envoie de ces mails de vérification. 
+
+La partie ``EMAILS`` est donc indispensable et il faut la remplir sans erreur.
 
 Les entrées ``RESET_PASSWD`` et ``CONFIRM_EMAIL`` seront utilisées pour formater les emails envoyés par géonature citizen. Changez au moins les deux valeurs ``FROM`` pour correspondre à votre propre email.
 
 Pour que l'envoi fonctionne, il faut ensuite configurer la partie ``MAIL`` avec les paramètres d'envoi via SMTP de votre fournisseur de mail. Ce dernier est le seul à pouvoir vous fournir les informations nécessaires à cette configuration. Chaque valeur de cette section est importante et conditionne si l'email de confirmation va partir ou non. Vérifiez bien les fautes de frappe, et faites-vous aider par quelqu'un qui a l'habitude de configurer l'envoi de mail (via thunderbird, outlook, etc.) si vous le pouvez.
 
+Il également faut bien renseigner la variable ``URL_APPLICATION`` qui est utilisée pour générer  l'adresse du lien d'activation du compte.
+
 Attention, gmail peut être _particulièrement_ difficile à configurer, car il faut aller sur son compte Google pour changer les paramètres de sécurité. Utilisez un autre service si vous le pouvez.
 
 Pour activer un compte manuellement, il est possible de lancer une inscription via le site, et, même sans recevoir le mail, de changer la valeur de la colonne ``active`` du compte utilisateur dans la table ``t_users``. Cela peut permettre de tester le reste de l'installation même si la partie email n'est pas encore prête.
 
-Pour essayer de comprendre pourquoi un email n'est pas envoyé, on peut regarder les erreurs présentes dans ``Geonature-Citizen/var/log/gn_errors.log`` intitulées "send confirm_email failled."
+Pour essayer de comprendre pourquoi un email n'est pas envoyé, on peut regarder les erreurs présentes dans ``Geonature-Citizen/var/log/gn_errors.log`` intitulées "*send confirm_email failled.*"
+
+Voici un exemple de configuration avec office365:
+
+.. code-block:: text
+
+  [RESET_PASSWD]
+    SUBJECT = "Changement de votre mot de passe"
+    FROM = 'monnom@mondomaine.fr'    
+    TEXT_TEMPLATE = '''
+    Bonjour,\r\nVoici votre nouveau mot de passe :\r\n{passwd}\r\n"{app_url}
+    '''
+    HTML_TEMPLATE = '''
+    Bonjour,<br /><br />Voici votre nouveau mot de passe :<br />
+    {passwd}
+    <br /><br />"
+    <a href="{app_url}">Connexion</a>'
+    '''
+
+
+  [CONFIRM_EMAIL]
+    SUBJECT = "Activez votre compte"
+    FROM = 'monnom@mondomaine.fr'
+    HTML_TEMPLATE = '''<p> Bonjour,</p><br /><p>Nous vous confirmons que votre compte a bien été créé.</p>
+     <p> Afin d'activer votre compte veuillez <a href="{activate_url}">cliquer ici.</a>
+     <p>Nous vous souhaitons la bienvenue sur notre site.</p><br />
+     <p>Bien à vous.</p>
+    '''
+
+
+  [MAIL]
+    MAIL_USE_SSL = false
+    MAIL_HOST = 'smtp.office365.com'
+    MAIL_PORT = 587   # mandatory SSL port
+    MAIL_AUTH_LOGIN = 'monnom@mondomaine.fr'
+    MAIL_AUTH_PASSWD = 'monmotdepasse'
+    MAIL_STARTTLS = true
+
+
 
 API_ENDPOINT
 ~~~~~~~~~~~~~~~
@@ -192,7 +262,7 @@ Gardez cette valeur sous la main, nous l'utiliserons dans la configuration Apach
 Authentification MapBox
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Si vous avez des identifiants mapbox, inscrivez-les dans ``MAPBOX_MAP_ID`` et ``MAPBOX_ACCESS_TOKEN``.
+Si vous avez des identifiants mapbox, inscrivez-les dans ``MAPBOX_MAP_ID`` et ``MAPBOX_ACCESS_TOKEN``. Ils sont utilisés pour affichez des fonds de carte dans la partie administration des programmes.
 
 Installation du backend et de la base des données
 -------------------------------------------------
@@ -213,6 +283,7 @@ Téléchargez les données SQL depuis le dépôt de géonature:
 
 Pour importer les données dans la base, munissez-vous du mot de passe que vous avez choisi lors de la création de celle-ci, puis (dans cet exemple, on utilise le système de coordonnées avec le SRID 2154):
 
+:: 
 
   sudo su postgres # les extensions doivent être ajoutées par un admin
   psql -d referentielsdb -c "CREATE EXTENSION postgis;"
@@ -245,8 +316,8 @@ Lancement du backend pour générer les schémas :
 
     # assurez vous de bien être toujours connecté en tant que geonatadmin
     # avec le venv activé avant de lancer cette étape
-    sudo chown geonatadmin:geonatadmin /home/geonatadmin/GeoNature-citizen/ -R
-    cd ~/GeoNature-citizen/backend
+    sudo chown geonatadmin:geonatadmin /home/geonatadmin/gncitizen/ -R
+    cd ~/gncitizen/backend
     export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; export FLASK_APP=wsgi;
     nohup python -m flask run --host=0.0.0.0 > /dev/null 2>&1 &
     serverPID=$!
@@ -258,25 +329,26 @@ Enregistrement du module principal :
 
 ::
 
-  psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "insert into gnc_core.t_modules values (1, 'main', 'main', 'main', NULL, false, '2019-05-26 09:38:39.389933', '2019-05-26 09:38:39.389933');"
+  psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "insert into gnc_core.t_modules values (1, 'observations', 'observations', 'observations', NULL, false, now(), now());"
 
-After de tester le site, vous pouvez ajouter un programme d'exemple:
+Vous pouvez créer un programme test avec la ligne de commande suivante :
 
 ::
 
-  psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "INSERT INTO gnc_core.t_programs VALUES (1, 'Au 68', 'inventaire  du 68', 'desc', NULL,  NULL, 1,  100,  't', '0106000020E6100000010000000103000000010000000500000001000070947C154042CA401665A5454001000070EE7C15402235D7E667A54540010000D81C7D1540AFBA27365AA5454000000040C47C1540DD9BD74A58A5454001000070947C154042CA401665A54540',  '2019-05-26 09:38:39.389933', '2019-05-26 09:38:39.389933');"
+  psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "INSERT INTO gnc_core.t_programs VALUES (1, 'Au 68', 'inventaire  du 68', 'desc', NULL,  NULL, 1,  100,  't', '0106000020E6100000010000000103000000010000000500000001000070947C154042CA401665A5454001000070EE7C15402235D7E667A54540010000D81C7D1540AFBA27365AA5454000000040C47C1540DD9BD74A58A5454001000070947C154042CA401665A54540',  now(), now());"
 
 Celui-ci suppose l'existence d'une liste de taxons dont l'ID est 100, qui normalement existe sur Taxhub par défault. Remplacez la valeur 100 par une liste existante si ce n'est pas le cas, ou créez une liste avec cette ID sur Taxhub.
 
- Mettre en place le système de badge
+Mettre en place le système de badge
 ------------------------------------------------------
+
 
 ::
 
-  mkdir /home/geonatadmin/GeoNature-citizen/media
-  cp -v /home/geonatadmin/GeoNature-citizen/frontend/src/assets/badges_* /home/geonatadmin/GeoNature-citizen/media/
+  mkdir /home/geonatadmin/gncitizen/media
+  cp -v /home/geonatadmin/gncitizen/frontend/src/assets/badges_* /home/geonatadmin/gncitizen/media/
 
-Vous pouvez aussi optionnellement modifier le fichier ``/home/geonatadmin/GeoNature-citizen/GeoNature-citizen/config/badges_config.py`` pour changer les noms, images et nombre d'observations minimum pour obtenir les badges, par programme.
+Vous pouvez aussi optionnellement modifier le fichier ``/home/geonatadmin/gncitizen/config/badges_config.py`` pour changer les noms, images et nombre d'observations minimum pour obtenir les badges, par programme.
 
 Lancement du service
 ------------------------------------------------------
@@ -286,7 +358,7 @@ D'abord, créez un fichier de configuration supervisor (sudo nano /etc/superviso
 ::
 
   [program:citizen]
-  command=/home/geonatadmin/GeoNature-citizen/backend/start_gunicorn.sh
+  command=/home/geonatadmin/gncitizen/backend/start_gunicorn.sh
   user=geonatadmin
   autostart=true
   autorestart=true
@@ -297,7 +369,7 @@ Puis lancez le chargement du service:
 
 ::
 
-  sudo chown geonatadmin:geonatadmin /home/geonatadmin/GeoNature-citizen/ -R
+  sudo chown geonatadmin:geonatadmin /home/geonatadmin/gncitizen/ -R
   sudo supervisorctl reload
 
 
@@ -309,10 +381,10 @@ Installer l'environnement javascript
 
 ::
 
-  cd /home/geonatadmin/GeoNature-citizen/frontend/
+  cd /home/geonatadmin/gncitizen/frontend/
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
   source ~/.bashrc
-  nvm install v10.16
+  nvm install
   npm install
 
 
@@ -347,14 +419,19 @@ Il y a aussi des feuille de style qui permettent de personnaliser la mise en pag
 
 Et des patrons HTML qui permettent de changer le contenu de certaines pages:
 
+::
+
   src/custom/about/about.html # a propos
   src/custom/footer/footer.html # pied de page
   src/custom/home/home.html # accueil
 
 Vous pouvez modifier ces fichiers, leur contenu apparaitra sur le site.
 
+Servir l'application en mode monopage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Faire le build du code du frontend
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Après chaque modification sur un des éléments qui concerne le front end, il faut relancer le processus de build:
 
@@ -363,7 +440,7 @@ Après chaque modification sur un des éléments qui concerne le front end, il f
   npm run ng build -- --prod
 
 Configuration d'Apache
-~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++
 
 Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage:
 
@@ -371,6 +448,7 @@ Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à vot
 
   <VirtualHost *:80>
 
+    ServerName mondomaine.org
     # Les logs sont sockés dans /var/log/apache2
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
@@ -417,22 +495,122 @@ Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à vot
     # La suite de la configuration ne concerne plus les fichiers statiques
     # mais passe simplement les requêtes à un des 3 services
 
-    # Chemin de l'API de Taxhub
-    <Location /api>
-    ProxyPass  http://127.0.0.1:5000/api retry=0
-    ProxyPassReverse  http://127.0.0.1:5000/api
-    </Location>
-
-    # Chemin de l'interface web de taxhub
+    # Chemin de taxhub
     <Location /taxhub>
     ProxyPass  http://127.0.0.1:5000/ retry=0
     ProxyPassReverse  http://127.0.0.1:5000/
     </Location>
 
-    # Chemin de Geonature citizen
-    <Location />
-      ProxyPass  http://127.0.0.1:4000/ retry=0
+
+  </VirtualHost>
+
+Ce fichier se met dans sites-available, par exemple `/etc/apache2/sites-available/citizen.conf`. Il faut ensuite faire un lien symbolique vers sites-enabled:
+
+::
+
+  sudo a2ensite citizen.conf
+
+On vérifie la configuratio d'Apache:
+
+::
+
+  sudo apachectl -t
+
+Si tout est ok, alors on redémarre le service Apache:
+
+::
+
+  sudo service apache2 restart
+
+
+Servir l'application en mode rendu côté serveur (*Server side rendering*)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Installer l'application pm2 pour créer un service permanent
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+`PM2 <https://pm2.keymetrics.io/>`_  permet de lancer une application Javascript en tâche de fond.
+
+::
+
+  su - geonatadmin
+  cd ~/gncitizen/frontend
+  nvm use
+  npm install pm2
+
+
+Faire le build du code du frontend en mode application monopage et créer un service pour le frontend
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Après chaque modification sur un des éléments qui concerne le front end, il faut relancer le processus de build:
+
+::
+
+  npm run ng build:i18n-ssr -- --prod --base-href=/citizen/ # Si l'application est dans le chemin citizen de l'url: http://mondomaine.org/citizen/
+  pm2 start dist/server.js --name gncitizen
+  pm2 save
+
+Configuration d'Apache
+++++++++++++++++++++++
+
+Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage:
+
+::
+
+  <VirtualHost *:80>
+
+    ServerName mondomaine.org
+    # Les logs sont sockés dans /var/log/apache2
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    # Les fichiers statiques tels que les images, le js et le css sont servis
+    # via 4 routes:
+    # - / -> ./frontend/dist/browser/, Ex: /index.html
+    # - /assets/ -> ./frontend/dist/browser/assets, Ex: /assets/default_program.jpg
+    # - /citizen/api/media/ (apache) -> ./frontend/dist/browser/assets, Ex: /citizen/api/media/logo.png
+    # - /citizen/api/media/ (served by python) -> ./media/, Ex: /api/media/obstax_60612_1_20200822_125238.png
+    # Le fichier essaye donc d'accomoder ces routes
+
+    # Tout ce qui arrive sur / va dans DocumentRoot, et donc tous les fichiers
+    # statiques sont par défaut pris dans ce dossier
+
+    # Les demandes qui arrivent sur /citizen/api/media/ peuvent correspondre soit
+    # à un fichier dans le dossier assets, soit à un une demande de fichier à l'API.
+    # Dans un premier temps, on vérifie que le fichier existe dans assets, et si
+    # oui, on réécrit l'URL pour le servir.
+    RewriteEngine on
+    RewriteCond "%{DOCUMENT_ROOT}/assets/$1" -f
+    RewriteRule "^/citizen/api/media/(.*)" "/assets/$1"
+
+    # Si on arrive ici, c'est qu'il n'existe pas de fichier dans assets portant
+    # ce nom, dans ce cas on redirige tout vers l'API
+
+    # Les ports utilisés pour ces 3 Locations doivent correspondre aux ports
+    # utilisés par ces services.
+
+    # Chemin de GeoNature-citizen (frontend)
+    <Location /citizen>
+      ProxyPass http://127.0.0.1:4000/ retry=0
       ProxyPassReverse  http://127.0.0.1:4000/
+    </Location>
+
+
+    # Chemin de GeoNature-citizen (API)
+    <Location /citizen/api>
+      ProxyPass http://127.0.0.1:5002/api retry=0
+      ProxyPassReverse  http://127.0.0.1:5002/api
+    </Location>
+
+
+    # La suite de la configuration ne concerne plus les fichiers statiques
+    # mais passe simplement les requêtes à un des 3 services
+
+
+    # Chemin de l'interface web de taxhub
+    <Location /taxhub>
+    ProxyPass  http://127.0.0.1:5000/ retry=0
+    ProxyPassReverse  http://127.0.0.1:5000/
     </Location>
 
   </VirtualHost>
@@ -441,14 +619,20 @@ Ce fichier se met dans sites-available, par exemple `/etc/apache2/sites-availabl
 
 ::
 
-  sudo ln -s /etc/apache2/sites-available/citizen.conf /etc/apache2/sites-enabled/citizen.conf
+  sudo a2ensite citizen.conf
 
-Et redémarre apache:
+On vérifie la configuratio d'Apache:
+
+::
+
+  sudo apachectl -t
+
+Si tout est ok, alors on redémarre le service Apache:
+
+::
 
   sudo service apache2 restart
 
 
-Server side rendering
-~~~~~~~~~~~~~~~~~~~~~~~~
 
-Le SSR est encore en cours d'être mis au point et sera documenté à sa mise à jour ultérieurement.
+
