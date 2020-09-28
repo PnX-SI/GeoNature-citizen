@@ -345,10 +345,10 @@ Mettre en place le système de badge
 
 ::
 
-  mkdir /home/geonatadmin/gncitizen/media
-  cp -v /home/geonatadmin/gncitizen/frontend/src/assets/badges_* /home/geonatadmin/gncitizen/media/
+  mkdir ~/gncitizen/media
+  cp -v ~/gncitizen/frontend/src/assets/badges_* ~/gncitizen/media/
 
-Vous pouvez aussi optionnellement modifier le fichier ``/home/geonatadmin/gncitizen/config/badges_config.py`` pour changer les noms, images et nombre d'observations minimum pour obtenir les badges, par programme.
+Vous pouvez aussi optionnellement modifier le fichier ``~/gncitizen/config/badges_config.py`` pour changer les noms, images et nombre d'observations minimum pour obtenir les badges, par programme.
 
 Lancement du service
 ------------------------------------------------------
@@ -369,7 +369,7 @@ Puis lancez le chargement du service:
 
 ::
 
-  sudo chown geonatadmin:geonatadmin /home/geonatadmin/gncitizen/ -R
+  sudo chown geonatadmin:geonatadmin ~/gncitizen/ -R
   sudo supervisorctl reload
 
 
@@ -381,7 +381,7 @@ Installer l'environnement javascript
 
 ::
 
-  cd /home/geonatadmin/gncitizen/frontend/
+  cd ~/gncitizen/frontend/
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
   source ~/.bashrc
   nvm install
@@ -395,9 +395,8 @@ De nombreux fichiers peuvent être configurés ou personnalisés côté frontend
 
 ::
 
-  cd /home/geonatadmin/GeoNature-citizen/frontend/
-  find src/conf/ -iname "*template" -exec bash -c 'cp $0 ${0/.template/}' {} \
-  find src/custom/ -iname "*template" -exec bash -c 'cp $0 ${0/.template/}' {} \
+  cd ~/gncitizen/frontend/
+  find . -iname "*.template" -exec bash -c 'for x; do cp -n "$x" "${x/.template/}"; done' _ {} +
 
 Ces commandes vont créer les fichiers de configuration comme:
 
@@ -437,12 +436,22 @@ Après chaque modification sur un des éléments qui concerne le front end, il f
 
 ::
 
+  cd ~/gncitizen/frontend/
   npm run ng build -- --prod
+
+Si vous souhaitez que l'application soit disponible depuis un chemin spécifique (ex: ``mondomaine.org/citizen``), remplacez la dernière commande par 
+
+::
+
+  npm run ng build -- --prod --base-href=/citizen/
+
 
 Configuration d'Apache
 ++++++++++++++++++++++
 
-Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage:
+Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage.
+Si vous souhaitez que l'application soit disponible depuis un chemin spécifique (ex: ``mondomaine.org/citizen``), pensez à décommenter la ligne ``Alias`` 
+
 
 ::
 
@@ -463,9 +472,11 @@ Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à vot
 
     # Tout ce qui arrive sur / va dans DocumentRoot, et donc tous les fichiers
     # statiques sont par défaut pris dans ce dossier
-    DocumentRoot /home/geonatadmin/GeoNature-citizen/frontend/dist/browser/
+    DocumentRoot /home/geonatadmin/gncitizen/frontend/dist/browser/
+    # Si vous souhaitez que l'application soit disponible depuis un chemin spécifique (ex: `mondomaine.org/citizen`), décommentez la ligne suivante
+    #Alias /citizen "/home/geonatadmin/gncitizen/frontend/dist/browser/"
 
-    <Directory /home/geonatadmin/GeoNature-citizen/frontend/dist/browser/>
+    <Directory /home/geonatadmin/gncitizen/frontend/dist/browser/>
         Require all granted
     </Directory>
 
@@ -504,7 +515,7 @@ Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à vot
 
   </VirtualHost>
 
-Ce fichier se met dans sites-available, par exemple `/etc/apache2/sites-available/citizen.conf`. Il faut ensuite faire un lien symbolique vers sites-enabled:
+Ce fichier se met dans sites-available, par exemple ``/etc/apache2/sites-available/citizen.conf``. Il faut ensuite faire un lien symbolique vers sites-enabled:
 
 ::
 
@@ -523,8 +534,8 @@ Si tout est ok, alors on redémarre le service Apache:
   sudo service apache2 restart
 
 
-Servir l'application en mode rendu côté serveur (*Server side rendering*)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Servir l'application en mode rendu côté serveur (*SSR = Server side rendering*)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Installer l'application pm2 pour créer un service permanent
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -533,27 +544,33 @@ Installer l'application pm2 pour créer un service permanent
 
 ::
 
-  su - geonatadmin
   cd ~/gncitizen/frontend
   nvm use
-  npm install pm2
+  npm install -g pm2
 
 
-Faire le build du code du frontend en mode application monopage et créer un service pour le frontend
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Faire le build du code du frontend en mode SSR et créer un service pour le frontend
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Après chaque modification sur un des éléments qui concerne le front end, il faut relancer le processus de build:
 
 ::
 
-  npm run ng build:i18n-ssr -- --prod --base-href=/citizen/ # Si l'application est dans le chemin citizen de l'url: http://mondomaine.org/citizen/
+  npm run build:i18n-ssr
+
+Puis lancer le service pour le mode SSR
+
+::
+
   pm2 start dist/server.js --name gncitizen
   pm2 save
+
+
 
 Configuration d'Apache
 ++++++++++++++++++++++
 
-Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage:
+Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage.
 
 ::
 
@@ -590,7 +607,7 @@ Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à vot
     # utilisés par ces services.
 
     # Chemin de GeoNature-citizen (frontend)
-    <Location /citizen>
+    <Location />
       ProxyPass http://127.0.0.1:4000/ retry=0
       ProxyPassReverse  http://127.0.0.1:4000/
     </Location>
