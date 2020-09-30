@@ -10,7 +10,6 @@ Installer GeoNature-citizen en mode développement
    :caption: Contenu:
 
    contribute
-   config_files
    init_launch_db
    init_launch_backend
    init_launch_frontend
