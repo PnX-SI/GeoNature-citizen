@@ -13,8 +13,9 @@ Documentation de GeoNature-citizen!
    :maxdepth: 3
    :caption: Contenu:
 
-   prod/index
-   prod/badges
+   installation
+   configuration
+   badges
    devs/index
 
 
