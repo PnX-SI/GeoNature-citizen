@@ -32,6 +32,7 @@ import { SiteVisitFormComponent } from "./programs/sites/form/form.component";
 import { SiteDetailComponent } from "./programs/sites/detail/detail.component";
 import { ObsDetailComponent } from "./programs/observations/detail/detail.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
+import { UserObsComponent } from "./auth/user-dashboard/user-observations/user-observations.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { GncService } from "./api/gnc.service";
 import { GncProgramsService } from "./api/gnc-programs.service";
@@ -117,6 +118,7 @@ import { ImageUploadModule } from "angular2-image-upload";
     RegisterComponent,
     LogoutComponent,
     UserDashboardComponent,
+    UserObsComponent,
     SpeciesComponent,
     AboutComponent,
     AboutCustomComponent,

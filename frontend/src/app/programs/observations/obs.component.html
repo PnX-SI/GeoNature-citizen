@@ -1,6 +1,6 @@
 <div class="row">
   <!-- LE PROGRAMME -->
-  <section id="slide" class="obs-section">
+  <section id="slide" class="obs-section" *ngIf="program">
     <div id="slider" class="carousel slide">
       <div class="carousel-inner">
         <h2>
@@ -8,7 +8,7 @@
         </h2>
         <div class="carousel-item active">
           <img class="d-block w-100 default-img" [src]="program.image || 'assets/default_program.jpg'"
-            alt="program image (fixme context)" />
+            alt="program image (fixme context)" *ngIf="program"/>
           <div class="carousel-text-container">
             <div class="carousel-text">
               <h3 class="mobile" [innerHTML]="program.title"></h3>
@@ -34,10 +34,15 @@
     <input id="slide-sidebar" type="checkbox" role="button"/>
     <label class="toggle" for="slide-sidebar"><i class="fa fa-chevron-left"></i></label>
     <div class="col-lg-12 col-md-12 side-bar" id="list">
-      <app-obs-list #obsListRef [observations]="observations" [taxa]="surveySpecies"
-        (obsSelect)="obsMapRef.showPopup($event)">
+      <app-obs-list
+        #obsListRef
+        [observations]="observations"
+        [taxa]="surveySpecies"
+        [displayOwnerActions]="userDashboard"
+        (obsSelect)="obsMapRef.showPopup($event)"
+        (deleteObs)="deleteObs.emit($event)">
           <button type="button" class="btn btn-success mr-4 float-right" add-obs (click)="addObsClicked()">Ajouter une observation</button>
-          <app-modalflow #modalFlowRef [coords]="coords" [program_id]="program_id" [form_message]="program.form_message" [modalversion]="false" obs-form>
+          <app-modalflow #modalFlowRef [coords]="coords" [program_id]="program_id" [form_message]="program?.form_message" [modalversion]="false" obs-form>
             <!-- <button type="button" class="btn btn-success mr-4" btn-open>Ajouter</button> -->
           </app-modalflow>
         </app-obs-list>
@@ -58,7 +63,7 @@
           <div class="side-bar" id="list">
             <app-obs-list #obsListRef [observations]="observations" [taxa]="surveySpecies"
               (obsSelect)="obsMapRef.showPopup($event)">
-                <app-modalflow [coords]="coords" [program_id]="program_id" [form_message]="program.form_message" class="float-right" add-obs>
+                <app-modalflow [coords]="coords" [program_id]="program_id" [form_message]="program?.form_message" class="float-right" add-obs>
                   <button type="button" class="btn btn-success mr-4" btn-open>Ajouter</button>
                 </app-modalflow>
             </app-obs-list>
@@ -71,7 +76,7 @@
             (onClick)="onMapClicked($event)">
           </app-obs-map>
           <div class="btn-groups map-modal-btn">
-            <app-modalflow [coords]="coords" [program_id]="program_id" [form_message]="program.form_message">
+            <app-modalflow [coords]="coords" [program_id]="program_id" [form_message]="program?.form_message">
               <button class="btn-big text-center text-nowrap text-uppercase" btn-open>
                 {{ AppConfig.program_add_an_observation[localeId] }}
               </button>

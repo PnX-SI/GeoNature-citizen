@@ -1,6 +1,6 @@
 .container-fluid,
 .col-lg-12 {
-  margin-top: 106px;
+  /*margin-top: 106px;*/
   padding: 0px !important;
   padding-right: 0px !important;
   padding-left: 0px;
@@ -313,4 +313,8 @@ app-modalflow {
   text-transform: uppercase;
   font-size: 13px;
   width: fit-content;
+}
+
+.observations {
+  margin-top: -160px;
 }

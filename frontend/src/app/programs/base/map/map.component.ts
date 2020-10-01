@@ -146,6 +146,8 @@ export abstract class BaseMapComponent implements OnChanges {
       setTimeout(() => {
         if (changes.program && changes.program.currentValue) {
           this.loadProgramArea();
+        } else if ("user-dashboard") {
+          this.loadProgramArea();
         }
         if (changes.features && changes.features.currentValue) {
           this.loadFeatures();
@@ -235,6 +237,8 @@ export abstract class BaseMapComponent implements OnChanges {
      let offset   = elemRect.top - bodyRect.top;
      window.scrollTo(0,offset - 120) // 120 topBarre width with padding
     });
+
+    // if (!this.program) this.loadProgramArea();
   }
 
   loadProgramArea(canSubmit = true): void {
@@ -242,12 +246,15 @@ export abstract class BaseMapComponent implements OnChanges {
       if (this.programArea !== undefined) {
         this.observationMap.removeLayer(this.programArea);
       }
-      this.programArea = L.geoJSON(this.program, {
-        style: _feature => this.options.PROGRAM_AREA_STYLE(_feature)
-      }).addTo(this.observationMap);
-      const programBounds = this.programArea.getBounds();
-      this.observationMap.fitBounds(programBounds);
-      // this.observationMap.setMaxBounds(programBounds)
+      let programBounds;
+      if (this.program) {
+        this.programArea = L.geoJSON(this.program, {
+          style: _feature => this.options.PROGRAM_AREA_STYLE(_feature)
+        }).addTo(this.observationMap);
+        programBounds = this.programArea.getBounds();
+        this.observationMap.fitBounds(programBounds);
+        // this.observationMap.setMaxBounds(programBounds)
+      }
 
       this.newObsMarker = null;
       if (canSubmit) {
@@ -278,7 +285,7 @@ export abstract class BaseMapComponent implements OnChanges {
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration
           // https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
-          if (programBounds.contains([e.latlng.lat, e.latlng.lng])) {
+          if (this.program && programBounds.contains([e.latlng.lat, e.latlng.lng])) {
             this.newObsMarker = L.marker(e.latlng, {
               icon: this.options.NEW_OBS_MARKER_ICON()
             }).addTo(this.observationMap);
@@ -289,6 +296,18 @@ export abstract class BaseMapComponent implements OnChanges {
         });
       }
       this.programMaxBounds = programBounds;
+    } else { // No program -> user-dashboard -> adapt bounds to observations
+      const xs = this.features.features.map(f => f.coords.x),
+      ys = this.features.features.map(f => f.coords.y);
+      const min_x = Math.min(...xs),
+      max_x = Math.max(...xs),
+      min_y = Math.min(...ys),
+      max_y = Math.max(...ys);
+      let corner1 = L.latLng(max_y, max_x),
+      corner2 = L.latLng(min_y, min_x),
+      bounds = L.latLngBounds(corner1, corner2);
+      this.programMaxBounds = bounds;
+      this.observationMap.fitBounds(this.programMaxBounds);
     }
   }
 

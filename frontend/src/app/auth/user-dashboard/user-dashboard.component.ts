@@ -32,6 +32,7 @@ export class UserDashboardComponent implements OnInit {
   programs_badges: any = [];
   recognition_badges: any = [];
   observations: any;
+  myobs: any;
   rows: any = [];
   obsToExport: any = [];
   userForm: FormGroup;
@@ -111,12 +112,14 @@ export class UserDashboardComponent implements OnInit {
             this.programs_badges.push(badge);
           if (badge.type == "recognition") this.recognition_badges.push(badge);
         });
+        this.myobs = data[1];
         this.observations = data[1].features;
         this.observations.forEach(obs => {
           let coords: Point = new Point(
             obs.geometry.coordinates[0],
             obs.geometry.coordinates[1]
           );
+          obs.coords = coords; // for use in user obs component
           this.rowData(obs, coords);
           this.obsExport(obs);
         });
@@ -127,6 +130,7 @@ export class UserDashboardComponent implements OnInit {
             obs.geometry.coordinates[0],
             obs.geometry.coordinates[1]
           );
+          obs.coords = coords;
           this.rowData(obs, coords);
           this.obsExport(obs);
         });

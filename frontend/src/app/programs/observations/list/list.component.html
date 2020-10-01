@@ -45,6 +45,16 @@
               ? o.properties.observer.username
               : "Anonyme"
           }}</span>
+          <span *ngIf="displayOwnerActions">
+          &nbsp;
+          <app-modalflow [coords]="o.coords" [updateData]="o.properties" [program_id]="o.properties.id_program" *ngIf="'TODO dashboard condition'">
+            <i class="fa fa-edit text-primary" placement="top" ngbTooltip="Editer" btn-open></i>
+          </app-modalflow>
+          &nbsp;
+          <i class="fa fa-trash text-danger" placement="top" ngbTooltip="Supprimer"
+            (click)="deleteObs.emit(o.properties.id_observation)"
+            owner-actions></i>
+          </span>
         </div>
        
       

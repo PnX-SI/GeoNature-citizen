@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <a [routerLink]="['/programs', program_id, module]" id="back_link">< Retour à la carte</a>
+    <a [routerLink]="['/programs', program_id, module]" id="back_link">< Retour au programme</a>
   </div>
   <div class="row">
     <h1 class="mt-3 title">{{ (module === "sites" ? site?.properties.name : (!!obs?.properties.nom_francais ? obs?.properties.nom_francais : obs?.properties.taxref?.nom_vern)) }}</h1>

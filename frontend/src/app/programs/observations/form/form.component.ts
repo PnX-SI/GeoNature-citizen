@@ -331,7 +331,9 @@ export class ObsFormComponent implements AfterViewInit {
   }
 
   patchForm(updateData) {
-    this.onTaxonSelected(updateData.taxon);
+    // console.log("updateData", updateData)
+    const taxon = updateData.taxon || {"media": updateData.taxref.media_url, "taxref": updateData.taxref}
+    this.onTaxonSelected(taxon);
     this.obsForm.patchValue({
       count: updateData.count,
       comment: updateData.comment,

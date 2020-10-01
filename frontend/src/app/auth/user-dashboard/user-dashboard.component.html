@@ -1,4 +1,5 @@
 <div class="container" id="main">
+  <!-- <user-observations [myobs]="myobs" *ngIf="observations" (deleteObs)="openDeleteModal(deleteModal, $event)"></user-observations> -->
   <div class="row">
     <div class="col-lg-12">
       <div class="row">
@@ -14,7 +15,9 @@
           <p (click)="onEditInfos(personalInfos)">{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>
-      <div id="myObs" class="container">
+
+      <user-observations [myobs]="myobs" *ngIf="observations" (deleteObs)="openDeleteModal(deleteModal, $event)"></user-observations>
+      <!-- <div id="myObs" class="container">
         <h3 class="title" i18n>Mes observations</h3>
         <ngx-datatable *ngIf="observations" class="material" [rows]="rows" [headerHeight]="40" [footerHeight]="40"
           [limit]="7" [rowHeight]="'auto'" [reorderable]="reorderable" [scrollbarH]="true"  [selectionType]="'single'">
@@ -69,7 +72,7 @@
               [alt]="r_badge.type + r_badge.name" [ngbTooltip]="r_badge.reward_label +' '+ r_badge.name" />
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="personal-data row">
         <button class="btn-big col-lg-3 col-md-5 col-sm-12 export" (click)="onExportPersonalData()" i18n>
