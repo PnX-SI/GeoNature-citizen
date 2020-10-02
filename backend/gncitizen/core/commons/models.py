@@ -39,12 +39,14 @@ class ModulesModel(TimestampMixinModel, db.Model):
     __tablename__ = "t_modules"
     __table_args__ = {"schema": "gnc_core"}
     id_module = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(50), nullable=False, unique=True)
     label = db.Column(db.String(50), nullable=False)
     desc = db.Column(db.String(200))
     icon = db.Column(db.String(250))
     on_sidebar = db.Column(db.Boolean(), default=False)
 
+    def __repr__(self):
+        return self.name
 
 @serializable
 class CustomFormModel(TimestampMixinModel, db.Model):
@@ -54,6 +56,9 @@ class CustomFormModel(TimestampMixinModel, db.Model):
     id_form = db.Column(db.Integer, primary_key=True, unique=True)
     name = db.Column(db.String(250))
     json_schema = db.Column(JSONB, nullable=True)
+
+    def __repr__(self):
+        return self.name
 
 
 @serializable
@@ -70,13 +75,13 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     form_message = db.Column(db.String(500))
     image = db.Column(db.String(250))
     logo = db.Column(db.String(250))
-    module = db.Column(
+    id_module = db.Column(
         db.Integer,
         ForeignKey(ModulesModel.id_module),
         nullable=False,
         default=1,
     )
-    module_info = relationship("ModulesModel")
+    module = relationship("ModulesModel")
     taxonomy_list = db.Column(
         db.Integer, 
         #ForeignKey(BibListes.id_liste), 
@@ -89,11 +94,15 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     id_form = db.Column(
         db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
     )
+    custom_form = relationship("CustomFormModel")
 
     def get_geofeature(self, recursif=True, columns=None):
         return self.as_geofeature(
             "geom", "id_program", recursif, columns=columns
         )
+
+    def __repr__(self):
+        return self.title
 
 
 @serializable
@@ -106,3 +115,6 @@ class MediaModel(TimestampMixinModel, db.Model):
     __table_args__ = {"schema": "gnc_core"}
     id_media = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return self.filename

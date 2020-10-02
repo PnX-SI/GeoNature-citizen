@@ -31,7 +31,7 @@ from flask_jwt_extended.utils import (
     verify_token_not_blacklisted,
 )
 from flask_jwt_extended.exceptions import UserLoadError
-from gncitizen.core.commons.admin import ProgramView
+from gncitizen.core.commons.admin import ProgramView, CustomFormView, UserView
 from gncitizen.core.sites.models import CorProgramSiteTypeModel
 
 
@@ -41,7 +41,10 @@ routes = Blueprint("commons", __name__)
 
 # response.headers['Content-Security-Policy'] = "frame-ancestors 'self' '\*.somesite.com' current_app.config['URL_APPLICATION']"
 # response.headers['X-Frame-Options'] = 'SAMEORIGIN' # ALLOW-FROM
+admin.add_view(UserView(UserModel, db.session))
 admin.add_view(ProgramView(ProgramsModel, db.session))
+admin.add_view(CustomFormView(CustomFormModel, db.session))
+
 
 
 @routes.route("/modules/<int:pk>", methods=["GET"])
@@ -120,7 +123,7 @@ def get_program(pk):
       for data in datas:
           feature = data.get_geofeature()
           # Get sites types for sites programs. TODO condition
-          if feature["properties"]["module_info"]["name"] == "sites":
+          if feature["properties"]["module"]["name"] == "sites":
             site_types_qs = CorProgramSiteTypeModel.query.filter_by(id_program=pk)
             site_types = [st.site_type.name for st in site_types_qs]
             feature["site_types"] = site_types
