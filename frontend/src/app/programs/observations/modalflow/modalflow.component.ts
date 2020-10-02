@@ -1,12 +1,12 @@
 import {
   Component,
+  OnInit,
   Input,
   ViewChild,
   ElementRef,
   ViewEncapsulation,
   Inject,
-  LOCALE_ID,
-  ngOnInit
+  LOCALE_ID
 } from "@angular/core";
 
 import { FlowItem } from "./flow/flow-item";
@@ -19,7 +19,7 @@ import { AppConfig } from "../../../../conf/app.config";
   styleUrls: ["./modalflow.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class ModalFlowComponent implements ngOnInit {
+export class ModalFlowComponent implements OnInit {
   @Input("coords") coords;
   @Input("program_id") program_id;
   @Input("form_message") form_message;
