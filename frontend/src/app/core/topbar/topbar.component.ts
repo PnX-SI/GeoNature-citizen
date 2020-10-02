@@ -126,10 +126,11 @@ export class TopbarComponent implements OnInit {
                 "admin",
                 ""
               ].join("/");
-              const PROGRAM_ENDPOINT = ADMIN_ENDPOINT + "programsmodel/";
-              this.adminUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-                PROGRAM_ENDPOINT + "?jwt=" + this.auth.getAccessToken()
-              );
+              // const PROGRAM_ENDPOINT = ADMIN_ENDPOINT + "programsmodel/";
+              // this.adminUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+              //   PROGRAM_ENDPOINT + "?jwt=" + this.auth.getAccessToken()
+              // );
+              this.adminUrl = ADMIN_ENDPOINT;
             }
           }
         },
