@@ -68,6 +68,8 @@
         [options]="formOptions"
         [framework]="GNCBootstrap4Framework"
         (onChanges)="customFormOnChange($event)"
+        (isValid)="yourIsValidFn($event)"
+        (validationErrors)="jsonValidationErrors($event)"
         >
       </json-schema-form>
 

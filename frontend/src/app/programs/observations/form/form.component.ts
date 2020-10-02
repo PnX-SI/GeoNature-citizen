@@ -113,6 +113,8 @@ export class ObsFormComponent implements AfterViewInit {
     "addSubmit": false
   }
   jsonData: object;
+  jsonErrors: any;
+  jsonValid: boolean;
   photos: any[] = [];
   existing_photos: any[] = [];
   mapVars: any = {};
@@ -519,6 +521,14 @@ export class ObsFormComponent implements AfterViewInit {
       resp = resp - this.data.updateData.photos.filter(p => !p.checked).length;
     }
     return resp;
+  }
+
+  jsonValidationErrors (data) {
+    this.jsonErrors = data;
+  }
+
+  yourIsValidFn (data) {
+    this.jsonValid = data;
   }
 
 }
