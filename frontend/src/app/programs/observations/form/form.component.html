@@ -13,7 +13,7 @@
         " class="d-inline-flex toolbar">
         <select formControlName="cd_nom" class="form-control rounded-0">
           <option *ngFor="let s of (surveySpecies$ | async)" [value]="s.taxref.cd_nom">
-            {{ !!s.nom_francais ? s.nom_francais : s.taxref.nom_vern }} <span *ngIf="appConfig.taxonDisplaySciName">/span>(<i>{{ s.taxref.nom_complet }}</i>)</span>
+            {{ !!s.nom_francais ? s.nom_francais : s.taxref.nom_vern }} <span *ngIf="AppConfig.taxonDisplaySciName">(<i>{{ s.taxref.nom_complet }}</i>)</span>
           </option>
         </select>
       </div>
@@ -44,7 +44,7 @@
         [resultTemplate]="rt" [inputFormatter]="inputAutoCompleteFormatter" />
     </div>
     <!-- END TAXON SELECTION -->
-    <div class="form-group col-lg-6 col-md-12 half">
+    <div class="form-group col-lg-12 col-md-12">
       <h5 i18n>Informations complémentaires</h5>
       <div class="row">
         <div class="form-group col-lg-6">
@@ -62,22 +62,49 @@
         </div>
       </div>
 
-      <div class="form-group col-lg-12">
+      <json-schema-form
+        *ngIf="jsfInputObject"
+        [form]="jsfInputObject"
+        [options]="formOptions"
+        [framework]="GNCBootstrap4Framework"
+        (onChanges)="customFormOnChange($event)"
+        (isValid)="yourIsValidFn($event)"
+        (validationErrors)="jsonValidationErrors($event)"
+        >
+      </json-schema-form>
+
+      <div class="form-group">
         <label for="comment" i18n>Commentaire</label>
         <textarea i18n-placeholder placeholder="Votre commentaire" class="form-control rounded-0" rows="4" id="comment"
           formControlName="comment"></textarea>
       </div>
 
-
-      <div class="form-group col-lg-12 btn position-relative">
+      <!-- <div class="form-group col-lg-12 btn position-relative">
         <label for="photo" i18n><i class="fa fa-camera"></i>Ajouter une photo</label>
         <input #photo id="photo" name="photo" formControlName="photo" class="inputfile" type="file" accept="image/*"
           capture="environment" />
+      </div> -->
+      <div *ngIf="data.updateData">
+        <label>Photos existantes (cocher pour supprimer)</label>
+        <ul>
+          <li *ngFor="let p of data.updateData.photos">
+            <input type="checkbox" name="" [(ngModel)]="p.checked" [ngModelOptions]="{standalone: true}">
+            <img src="{{ AppConfig.API_ENDPOINT }}{{ p.url }}" height="50">
+          </li>
+        </ul>
       </div>
+      <image-upload
+          buttonCaption="Ajouter une photo"
+          [dropBoxMessage]="'Déposez vos photos ici ! (5 max)'"
+          clearButtonCaption="Supprimer"
+          (uploadFinished)="addImage($event)"
+          (removed)="deleteImage($event)"
+          [max]="maxPhotos()"
+        ></image-upload>
     </div>
 
 
-    <div class="form-group col-lg-6 col-md-12 half">
+    <div class="form-group col-lg-12 col-md-12">
       <h5 i18n>Où avez-vous observé cette espèce ?</h5>
       <div class="position-relative">
         <div class="zoom-alert" *ngIf="hasZoomAlert">
@@ -88,7 +115,8 @@
           <button class="btn" (click)="hasZoomAlert = false">OK</button>
         </div>
         <div id="formMap" class="col-lg-12" [class.ng-invalid]="obsForm.get('geometry').invalid"
-          [class.ng-valid]="obsForm.get('geometry').valid" i18n-data-observation-zoom-statement-warning
+          [class.ng-valid]="obsForm.get('geometry').valid"
+          [class.d-none]="!flowService.modalversion" i18n-data-observation-zoom-statement-warning
           data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."></div>
       </div>
       <input formControlName="geometry" type="hidden" id="geometry" name="geometry" #geometry class="col-lg-12" />

@@ -11,6 +11,7 @@ import { ModalFlowService } from "../../modalflow.service";
 export class CommittedComponent implements IFlowComponent {
   @Input() data: any;
   @ViewChild(ObsFormComponent, { static: true }) form: ObsFormComponent;
+  enableCommit: boolean = true;
 
 
   constructor(
@@ -32,6 +33,7 @@ export class CommittedComponent implements IFlowComponent {
   }
 
   committed() {
+    this.enableCommit = false;
     this.form.onFormSubmit();
   }
 

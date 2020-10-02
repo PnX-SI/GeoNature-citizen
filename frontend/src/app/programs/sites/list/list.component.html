@@ -1,0 +1,24 @@
+<div id="mapList">
+  <ng-content select="[obs-form]"></ng-content>
+  <div class="col-lg-12 mx-4 mt-2 mb-4">
+    <strong>Sites </strong> <span class="text-muted">({{ sites?.length }})</span>
+    <ng-content select="[add-obs]"></ng-content>
+  </div>
+  <div id="list">
+    <div *ngFor="let o of sites" (click)="onSiteClick(o)" class="espece">
+      <img src="{{ o.properties.photo ? apiEndpoint + o.properties.photo.url : 'assets/no_photo_light.png'}}" />
+      <div class="infos">
+        <h5>{{ o.properties.name }}</h5>
+        <p>
+          {{ o.properties.site_type | titlecase }} ajouté(e) par <span>{{ o.properties.obs_txt }}</span>
+        </p>
+        <p>
+          le <span>{{ o.properties.timestamp_create.substring(0, 10) | date : "longDate" }}</span>
+        </p>
+      </div>
+      <div class="hide" [routerLink]="['/programs', o.properties.id_program, 'sites', o.properties.id_site]" style="cursor:pointer" title="Voir les détails sur ce site">
+        <img src="assets/binoculars.png"/>
+      </div>
+    </div>
+  </div>
+</div>

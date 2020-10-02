@@ -15,6 +15,7 @@ from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
 from sqlalchemy import desc
+from sqlalchemy import func
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
 from .models import ObservationMediaModel, ObservationModel
@@ -49,6 +50,7 @@ obs_keys = (
     "date",
     "comment",
     "timestamp_create",
+    "json_data"
 )
 
 
@@ -65,18 +67,34 @@ def generate_observation_geojson(id_observation):
     # Crée le dictionnaire de l'observation
     observation = (
         db.session.query(
-            ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code
+            ObservationModel,
+            UserModel.username,
+            LAreas.area_name,
+            LAreas.area_code
         )
         .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
         .filter(ObservationModel.id_observation == id_observation)
     ).one()
 
+    photos = db.session.query(
+        MediaModel,
+        ObservationModel
+    ).filter(
+        ObservationModel.id_observation == id_observation
+    ).join(
+        ObservationMediaModel,
+        ObservationMediaModel.id_data_source == ObservationModel.id_observation
+    ).join(
+        MediaModel,
+        ObservationMediaModel.id_media == MediaModel.id_media
+    ).all()
+
     result_dict = observation.ObservationModel.as_dict(True)
     result_dict["observer"] = {"username": observation.username}
     result_dict["municipality"] = {
         "name": observation.area_name,
-        "code": observation.area_code,
+        "code": observation.area_code
     }
 
     # Populate "geometry"
@@ -87,6 +105,13 @@ def generate_observation_geojson(id_observation):
     for k in result_dict:
         if k in obs_keys:
             feature["properties"][k] = result_dict[k]
+
+    
+    feature["properties"]["photos"] = [{
+        'url': '/media/{}'.format(p.MediaModel.filename),
+        'date': p.ObservationModel.as_dict()['date'],
+        'author': p.ObservationModel.obs_txt
+    } for p in photos]
 
     if current_app.config.get("API_TAXHUB") is None:
         current_app.logger.debug("Selecting TaxHub Medias schema.")
@@ -253,9 +278,20 @@ def post_observation():
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)
 
+        try:
+            json_data = request_datas.get("json_data")
+            if json_data is not None:
+                newobs.json_data = json.loads(json_data)
+        except Exception as e:
+            current_app.logger.warning("[post_observation] json_data ", e)
+            raise GeonatureApiError(e)
+
         id_role = get_id_role_if_exists()
         if id_role:
             newobs.id_role = id_role
+            role = UserModel.query.get(id_role)
+            newobs.obs_txt = role.username
+            newobs.email = role.email
         else:
             if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
                 newobs.obs_txt = "Anonyme"
@@ -436,7 +472,7 @@ def get_program_observations(
                 ObservationModel,
                 UserModel.username,
                 UserModel.avatar,
-                MediaModel.filename.label("image"),
+                func.array_agg(MediaModel.filename).label("images"),
                 LAreas.area_name,
                 LAreas.area_code,
             )
@@ -458,13 +494,18 @@ def get_program_observations(
                 isouter=True,
             )
             .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
+            .group_by(
+                ObservationModel.id_observation,
+                UserModel.username,
+                UserModel.avatar,
+                LAreas.area_name,
+                LAreas.area_code)
         )
 
         observations = observations.order_by(
             desc(ObservationModel.timestamp_create))
         # current_app.logger.debug(str(observations))
         observations = observations.all()
-
         if current_app.config.get("API_TAXHUB") is not None:
             taxhub_list_id = (
                 ProgramsModel.query.filter_by(
@@ -491,10 +532,10 @@ def get_program_observations(
                     [
                         current_app.config["API_ENDPOINT"],
                         current_app.config["MEDIA_FOLDER"],
-                        observation.image,
+                        observation.images[0]
                     ]
                 )
-                if observation.image
+                if observation.images and observation.images != [None]
                 else None
             )
 
@@ -724,7 +765,8 @@ def get_observations_by_user_id(user_id):
                 ObservationModel,
                 ProgramsModel,
                 UserModel.username,
-                MediaModel.filename.label("image"),
+                func.json_agg(
+                    func.json_build_array(MediaModel.filename, MediaModel.id_media)).label("images"),
                 LAreas.area_name,
                 LAreas.area_code,
             )
@@ -746,6 +788,12 @@ def get_observations_by_user_id(user_id):
                 isouter=True,
             )
             .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
+            .group_by(
+                ObservationModel.id_observation,
+                ProgramsModel.id_program,
+                UserModel.username,
+                LAreas.area_name,
+                LAreas.area_code)
         )
 
         observations = observations.order_by(
@@ -784,12 +832,17 @@ def get_observations_by_user_id(user_id):
                     [
                         current_app.config["API_ENDPOINT"],
                         current_app.config["MEDIA_FOLDER"],
-                        observation.image,
+                        observation.images[0][0]
                     ]
                 )
-                if observation.image
+                if observation.images and observation.images != [[None, None]]
                 else None
             )
+            # Photos
+            feature["properties"]["photos"] = [{
+                'url': '/media/{}'.format(filename),
+                'id_media': id_media
+            } for filename, id_media in observation.images if id_media is not None]
             # Municipality
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
@@ -857,8 +910,48 @@ def update_observation():
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)
 
+        try:
+            json_data = update_data.get("json_data")
+            if json_data is not None:
+                update_obs["json_data"] = json.loads(json_data)
+        except Exception as e:
+            current_app.logger.warning("[update_observation] json_data ", e)
+            raise GeonatureApiError(e)
+
         ObservationModel.query.filter_by(id_observation=update_data.get(
             'id_observation')).update(update_obs, synchronize_session='fetch')
+
+        try:
+            # Delete selected existing media
+            id_media_to_delete = json.loads(update_data.get("delete_media"))
+            if len(id_media_to_delete):
+                db.session.query(ObservationMediaModel).filter(
+                    ObservationMediaModel.id_media.in_(tuple(id_media_to_delete)),
+                    ObservationMediaModel.id_data_source == update_data.get('id_observation')
+                ).delete(synchronize_session='fetch')
+                db.session.query(MediaModel).filter(
+                    MediaModel.id_media.in_(tuple(id_media_to_delete))
+                ).delete(synchronize_session='fetch')
+        except Exception as e:
+            current_app.logger.warning("[update_observation] delete media ", e)
+            raise GeonatureApiError(e)
+
+        try:
+            file = save_upload_files(
+                request.files,
+                "obstax",
+                update_data.get("cd_nom"),
+                update_data.get('id_observation'),
+                ObservationMediaModel,
+            )
+            current_app.logger.debug(
+                "[post_observation] ObsTax UPLOAD FILE {}".format(file))
+
+        except Exception as e:
+            current_app.logger.warning(
+                "[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
+            # raise GeonatureApiError(e)
+
         db.session.commit()
 
         return ('observation updated successfully'), 200

@@ -6,7 +6,8 @@
       "geojson",
       "leaflet",
       "leaflet.markercluster",
-      "leaflet.locatecontrol"
+      "leaflet.locatecontrol",
+      "node"
     ],
     "module": "esnext"
   },

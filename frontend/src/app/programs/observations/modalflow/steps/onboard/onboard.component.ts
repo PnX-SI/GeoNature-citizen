@@ -49,6 +49,14 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     });
   }
 
+  // ngOnInit() {
+  //   // Skip login/register step if already logged in
+  //   let username = localStorage.getItem("username");
+  //   if (username) {
+  //     this.data.next()
+  //   }
+  // }
+
   // Actions
   register() {
     this.RegistrationModalRef = this.modalService.open(RegisterComponent, {
@@ -85,6 +93,6 @@ export class OnboardComponent implements IFlowComponent, OnInit {
   }
   
   closeModal(){
-    this.flowModal.closeModal()
+    this.data.service.closeModal()
   }
 }

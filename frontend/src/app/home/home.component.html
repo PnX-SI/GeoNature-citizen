@@ -10,39 +10,39 @@
 </div>
 
 <div *ngIf="stats && AppConfig.FRONTEND.DISPLAY_STATS" class="row row-0 general-stat">
-    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
-      <div class="panel panel-teal panel-widget border-right">
-        <div class="no-padding"><em class="fa fa-xl fa-search color-primary"></em>
-          <div class="large">{{stats.nb_obs}}</div>
-          <div class="text-muted" i18n>Observations</div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
-      <div class="panel panel-blue panel-widget border-right">
-        <div class="no-padding"><em class="fa fa-xl fa fa-leaf color-secondary"></em>
-          <div class="large">{{stats.nb_espece}}</div>
-          <div class="text-muted" i18n>Espèces</div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
-      <div class="panel panel-orange panel-widget border-right">
-        <div class="no-padding"><em class="fa fa-xl fa-users color-primary"></em>
-          <div class="large">{{stats.nb_user}}</div>
-          <div class="text-muted" i18n> Observateurs </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
-      <div class="panel panel-red panel-widget ">
-        <div class="no-padding"><em class="fa fa-xl fa fas fa-share-alt color-secondary"></em>
-          <div class="large">{{stats.nb_program}}</div>
-          <div class="text-muted" [innerHtml]="AppConfig.programs_label[localeId]?AppConfig.programs_label[localeId]:'Programmes'"></div>
-        </div>
+  <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+    <div class="panel panel-teal panel-widget border-right">
+      <div class="no-padding"><em class="fa fa-xl fa-search color-primary"></em>
+        <div class="large">{{stats.nb_obs}}</div>
+        <div class="text-muted" i18n>Observations</div>
       </div>
     </div>
   </div>
+  <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+    <div class="panel panel-blue panel-widget border-right">
+      <div class="no-padding"><em class="fa fa-xl fa fa-leaf color-secondary"></em>
+        <div class="large">{{stats.nb_espece}}</div>
+        <div class="text-muted" i18n>Espèces</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+    <div class="panel panel-orange panel-widget border-right">
+      <div class="no-padding"><em class="fa fa-xl fa-users color-primary"></em>
+        <div class="large">{{stats.nb_user}}</div>
+        <div class="text-muted" i18n> Observateurs </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+    <div class="panel panel-red panel-widget ">
+      <div class="no-padding"><em class="fa fa-xl fa fas fa-share-alt color-secondary"></em>
+        <div class="large">{{stats.nb_program}}</div>
+        <div class="text-muted" [innerHtml]="AppConfig.programs_label[localeId]?AppConfig.programs_label[localeId]:'Programmes'"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="row">
     <!-- LES PROGRAMMES -->
@@ -51,7 +51,7 @@
             <div class="container-fluid programs">
                 <div class="row justify-content-center align-items-center">
                     <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6" *ngFor="let p of programs">
-                        <a [routerLink]="['/programs', p.id_program, 'observations']">
+                        <a [routerLink]="['/programs', p.id_program, p.module_info.name]">
                             <div class="text-center">
                                 <div class="img-hover" [ngbTooltip]="p.short_desc" [ngStyle]="{
                                     'background-image': p.logo

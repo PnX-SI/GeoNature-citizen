@@ -6,7 +6,6 @@
 }
 
 .obs-section#slide{
-  margin-top: 106px;
   margin-bottom: 20px;
 }
 
@@ -309,4 +308,11 @@ section .observations {
   section#slide{
     margin-top: 66px !important;
   }
+}
+
+#newObsDiv {
+  background: #eee;
+  padding: 5px 0px 5px 5px;
+  overflow: scroll;
+  height: calc(105vh - var(--list-obs-offset));
 }

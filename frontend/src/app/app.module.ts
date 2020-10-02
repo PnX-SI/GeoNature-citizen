@@ -3,10 +3,8 @@ import {BrowserModule, BrowserTransferStateModule} from "@angular/platform-brows
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { registerLocaleData } from "@angular/common";
-
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModule, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-
 import { AppComponent } from "./app.component";
 import { routing } from "./app.routing";
 import { AuthService } from "./auth/auth.service";
@@ -23,7 +21,18 @@ import { ObsFormComponent } from "./programs/observations/form/form.component";
 import { ObsListComponent } from "./programs/observations/list/list.component";
 import {ObsMapComponent, MarkerPopupComponent } from "./programs/observations/map/map.component";
 import { ObsComponent } from "./programs/observations/obs.component";
+import { SitesListComponent } from "./programs/sites/list/list.component";
+import {
+    SitesMapComponent,
+    SiteMarkerPopupComponent
+} from "./programs/sites/map/map.component";
+import { SitesComponent } from "./programs/sites/sites.component";
+import { SiteFormComponent } from "./programs/sites/siteform/siteform.component";
+import { SiteVisitFormComponent } from "./programs/sites/form/form.component";
+import { SiteDetailComponent } from "./programs/sites/detail/detail.component";
+import { ObsDetailComponent } from "./programs/observations/detail/detail.component";
 import { UserDashboardComponent } from "./auth/user-dashboard/user-dashboard.component";
+import { UserObsComponent } from "./auth/user-dashboard/user-observations/user-observations.component";
 import { SpeciesComponent } from "./synthesis/species/species.component";
 import { GncService } from "./api/gnc.service";
 import { GncProgramsService } from "./api/gnc-programs.service";
@@ -37,10 +46,16 @@ import { FlowComponent } from "./programs/observations/modalflow/flow/flow.compo
 import { FlowDirective } from "./programs/observations/modalflow/flow/flow.directive";
 import { OnboardComponent } from "./programs/observations/modalflow/steps/onboard/onboard.component";
 import { CommittedComponent } from "./programs/observations/modalflow/steps/committed/committed.component";
+import { VisitStepComponent } from "./programs/sites/modalflow/steps/visit/visit_step.component";
+import { SiteStepComponent } from "./programs/sites/modalflow/steps/site/site_step.component";
 import { CongratsComponent } from "./programs/observations/modalflow/steps/congrats/congrats.component";
+import { SiteCongratsComponent } from "./programs/sites/modalflow/steps/congrats/congrats.component";
 import { ModalFlowComponent } from "./programs/observations/modalflow/modalflow.component";
+import { SiteModalFlowComponent } from "./programs/sites/modalflow/modalflow.component";
 import { RewardComponent } from "./programs/observations/modalflow/steps/reward/reward.component";
 import { ModalFlowService } from "./programs/observations/modalflow/modalflow.service";
+import { SiteModalFlowService } from "./programs/sites/modalflow/modalflow.service";
+import { SiteService } from "./programs/sites/sites.service";
 import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { AdminComponent } from "./auth/admin/admin.component";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -48,6 +63,14 @@ import { ToastrModule } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.component';
 import { LayoutModule } from '@angular/cdk/layout';
+import localeFr from "@angular/common/locales/fr";
+registerLocaleData(localeFr, "fr");
+// import localeFrExtra from "@angular/common/locales/extra/fr";
+// registerLocaleData(localeFr, "fr-FR", localeFrExtra);
+import { Bootstrap4FrameworkModule } from '@ajsf/bootstrap4';
+import { GNCFrameworkComponent } from './programs/base/jsonform/framework/framework.component';
+import { ImageUploadModule } from "angular2-image-upload";
+
 
 @NgModule({
   imports: [
@@ -66,15 +89,25 @@ import { LayoutModule } from '@angular/cdk/layout';
       preventDuplicates: true,
     }
     ),
-    routing
+    routing,
+    ImageUploadModule.forRoot(),
+    Bootstrap4FrameworkModule
   ],
   declarations: [
     AppComponent,
     ObsComponent,
     ObsMapComponent,
     MarkerPopupComponent,
+    SiteMarkerPopupComponent,
     ObsFormComponent,
     ObsListComponent,
+    SitesComponent,
+    SiteFormComponent,
+    SiteVisitFormComponent,
+    SitesListComponent,
+    SitesMapComponent,
+    SiteDetailComponent,
+    ObsDetailComponent,
     HomeComponent,
     HomeCustomComponent,
     ProgramsComponent,
@@ -85,6 +118,7 @@ import { LayoutModule } from '@angular/cdk/layout';
     RegisterComponent,
     LogoutComponent,
     UserDashboardComponent,
+    UserObsComponent,
     SpeciesComponent,
     AboutComponent,
     AboutCustomComponent,
@@ -93,8 +127,13 @@ import { LayoutModule } from '@angular/cdk/layout';
     FlowDirective,
     OnboardComponent,
     CommittedComponent,
+    VisitStepComponent,
+    SiteStepComponent,
     CongratsComponent,
+    SiteCongratsComponent,
     ModalFlowComponent,
+    SiteModalFlowComponent,
+    GNCFrameworkComponent,
     RewardComponent,
     AdminComponent,
     ConfirmEmailComponent
@@ -106,13 +145,16 @@ import { LayoutModule } from '@angular/cdk/layout';
     ErrorHandler,
     // FlowService,
     ModalFlowService,
+    SiteModalFlowService,
+    SiteService,
     ProgramsResolve,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     },
-    { provide: LOCALE_ID, useValue: "fr" }
+    { provide: LOCALE_ID, useValue: "fr" },
+    NgbActiveModal
   ],
   bootstrap: [AppComponent],
   entryComponents: [
@@ -121,9 +163,15 @@ import { LayoutModule } from '@angular/cdk/layout';
     RegisterComponent,
     OnboardComponent,
     CommittedComponent,
+    VisitStepComponent,
+    SiteStepComponent,
     CongratsComponent,
+    SiteCongratsComponent,
     RewardComponent,
-    MarkerPopupComponent
+    GNCFrameworkComponent,
+    FlowComponent,
+    MarkerPopupComponent,
+    SiteMarkerPopupComponent
   ],
   exports: [AdminComponent]
 })

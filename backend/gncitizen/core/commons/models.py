@@ -7,6 +7,8 @@ from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import expression
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import JSONB
 
 from gncitizen.core.taxonomy.models import BibListes
 from gncitizen.utils.env import db
@@ -45,6 +47,16 @@ class ModulesModel(TimestampMixinModel, db.Model):
 
 
 @serializable
+class CustomFormModel(TimestampMixinModel, db.Model):
+    """Table des Formulaires spécifiques associés aux programmes"""
+    __tablename__ = "t_custom_form"
+    __table_args__ = {"schema": "gnc_core"}
+    id_form = db.Column(db.Integer, primary_key=True, unique=True)
+    name = db.Column(db.String(250))
+    json_schema = db.Column(JSONB, nullable=True)
+
+
+@serializable
 @geoserializable
 class ProgramsModel(TimestampMixinModel, db.Model):
     """Table des Programmes de GeoNature-citizen"""
@@ -64,6 +76,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
         nullable=False,
         default=1,
     )
+    module_info = relationship("ModulesModel")
     taxonomy_list = db.Column(
         db.Integer, 
         #ForeignKey(BibListes.id_liste), 
@@ -73,6 +86,9 @@ class ProgramsModel(TimestampMixinModel, db.Model):
         db.Boolean(), server_default=expression.true(), default=True
     )
     geom = db.Column(Geometry("GEOMETRY", 4326))
+    id_form = db.Column(
+        db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
+    )
 
     def get_geofeature(self, recursif=True, columns=None):
         return self.as_geofeature(
