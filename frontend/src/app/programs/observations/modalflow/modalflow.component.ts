@@ -5,7 +5,8 @@ import {
   ElementRef,
   ViewEncapsulation,
   Inject,
-  LOCALE_ID
+  LOCALE_ID,
+  ngOnInit
 } from "@angular/core";
 
 import { FlowItem } from "./flow/flow-item";
@@ -18,7 +19,7 @@ import { AppConfig } from "../../../../conf/app.config";
   styleUrls: ["./modalflow.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class ModalFlowComponent {
+export class ModalFlowComponent implements ngOnInit {
   @Input("coords") coords;
   @Input("program_id") program_id;
   @Input("form_message") form_message;
@@ -34,6 +35,10 @@ export class ModalFlowComponent {
     @Inject(LOCALE_ID) readonly localeId: string,
     public flowService: ModalFlowService
   ) {}
+
+  ngOnInit () {
+    this.flowService.modalversion = this.modalversion;
+  }
 
   clicked() {
     this.flowitems = this.flowService.getFlowItems({

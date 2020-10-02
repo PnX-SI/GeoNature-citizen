@@ -27,6 +27,7 @@ export class ModalFlowService extends FlowService {
   modalRef: NgbModalRef;
   private modalCloseStatus: BehaviorSubject<string> = new BehaviorSubject(null);
   display: boolean = false;
+  modalversion: boolean;
 
   constructor(private modalService: NgbModal) {
     super();
