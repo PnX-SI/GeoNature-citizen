@@ -47,7 +47,7 @@
           }}</span>
           <span *ngIf="displayOwnerActions">
           &nbsp;
-          <app-modalflow [coords]="o.coords" [updateData]="o.properties" [program_id]="o.properties.id_program" *ngIf="'TODO dashboard condition'">
+          <app-modalflow [coords]="o.properties.coords" [updateData]="o.properties" [program_id]="o.properties.id_program" *ngIf="'TODO dashboard condition'">
             <i class="fa fa-edit text-primary" placement="top" ngbTooltip="Editer" btn-open></i>
           </app-modalflow>
           &nbsp;

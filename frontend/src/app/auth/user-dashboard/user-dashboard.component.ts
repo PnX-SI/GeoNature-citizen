@@ -119,7 +119,7 @@ export class UserDashboardComponent implements OnInit {
             obs.geometry.coordinates[0],
             obs.geometry.coordinates[1]
           );
-          obs.coords = coords; // for use in user obs component
+          obs.properties.coords = coords; // for use in user obs component
           this.rowData(obs, coords);
           this.obsExport(obs);
         });

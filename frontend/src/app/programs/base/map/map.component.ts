@@ -297,8 +297,8 @@ export abstract class BaseMapComponent implements OnChanges {
       }
       this.programMaxBounds = programBounds;
     } else { // No program -> user-dashboard -> adapt bounds to observations
-      const xs = this.features.features.map(f => f.coords.x),
-      ys = this.features.features.map(f => f.coords.y);
+      const xs = this.features.features.map(f => f.properties.coords.x),
+      ys = this.features.features.map(f => f.properties.coords.y);
       const min_x = Math.min(...xs),
       max_x = Math.max(...xs),
       min_y = Math.min(...ys),
