@@ -114,6 +114,7 @@ export class ObsFormComponent implements AfterViewInit {
   }
   jsonData: object;
   photos: any[] = [];
+  existing_photos: any[] = [];
   mapVars: any = {};
 
   constructor(
@@ -334,6 +335,7 @@ export class ObsFormComponent implements AfterViewInit {
     // console.log("updateData", updateData)
     const taxon = updateData.taxon || {"media": updateData.taxref.media_url, "taxref": updateData.taxref}
     this.onTaxonSelected(taxon);
+    updateData.photos.forEach((p) => { p.checked = false; })
     this.obsForm.patchValue({
       count: updateData.count,
       comment: updateData.comment,
@@ -480,6 +482,8 @@ export class ObsFormComponent implements AfterViewInit {
     if (this.customForm.json_schema) {
       formData.append("json_data", JSON.stringify(this.jsonData))
     }
+    const id_media_to_delete = this.data.updateData.photos.filter(p => p.checked).map(p => p.id_media);
+    formData.append("delete_media", JSON.stringify(id_media_to_delete));
     this.observationsService.updateObservation(formData).subscribe(() => {
       this.flowService.closeModal();
       this.flowService.setModalCloseSatus("updateObs");
@@ -507,6 +511,10 @@ export class ObsFormComponent implements AfterViewInit {
         this.photos.splice(i, 1);
       }
     }
+  }
+
+  nbPhotoToDelete() {
+    return this.data.updateData.photos.filter(p => p.checked).length;
   }
 
 }

@@ -765,7 +765,8 @@ def get_observations_by_user_id(user_id):
                 ObservationModel,
                 ProgramsModel,
                 UserModel.username,
-                func.array_agg(MediaModel.filename).label("images"),
+                func.json_agg(
+                    func.json_build_array(MediaModel.filename, MediaModel.id_media)).label("images"),
                 LAreas.area_name,
                 LAreas.area_code,
             )
@@ -831,12 +832,17 @@ def get_observations_by_user_id(user_id):
                     [
                         current_app.config["API_ENDPOINT"],
                         current_app.config["MEDIA_FOLDER"],
-                        observation.images[0]
+                        observation.images[0][0]
                     ]
                 )
-                if observation.images and observation.images != [None]
+                if observation.images and observation.images != [[None, None]]
                 else None
             )
+            # Photos
+            feature["properties"]["photos"] = [{
+                'url': '/media/{}'.format(filename),
+                'id_media': id_media
+            } for filename, id_media in observation.images if id_media is not None]
             # Municipality
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
@@ -916,6 +922,21 @@ def update_observation():
             'id_observation')).update(update_obs, synchronize_session='fetch')
 
         try:
+            # Delete selected existing media
+            id_media_to_delete = json.loads(update_data.get("delete_media"))
+            if len(id_media_to_delete):
+                db.session.query(ObservationMediaModel).filter(
+                    ObservationMediaModel.id_media.in_(tuple(id_media_to_delete)),
+                    ObservationMediaModel.id_data_source == update_data.get('id_observation')
+                ).delete(synchronize_session='fetch')
+                db.session.query(MediaModel).filter(
+                    MediaModel.id_media.in_(tuple(id_media_to_delete))
+                ).delete(synchronize_session='fetch')
+        except Exception as e:
+            current_app.logger.warning("[update_observation] delete media ", e)
+            raise GeonatureApiError(e)
+
+        try:
             file = save_upload_files(
                 request.files,
                 "obstax",
@@ -925,7 +946,6 @@ def update_observation():
             )
             current_app.logger.debug(
                 "[post_observation] ObsTax UPLOAD FILE {}".format(file))
-            features[0]["properties"]["images"] = file
 
         except Exception as e:
             current_app.logger.warning(

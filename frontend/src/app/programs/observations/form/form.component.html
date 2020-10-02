@@ -82,13 +82,20 @@
         <input #photo id="photo" name="photo" formControlName="photo" class="inputfile" type="file" accept="image/*"
           capture="environment" />
       </div> -->
+      <label>Photos existantes (cocher pour supprimer)</label>
+      <ul>
+        <li *ngFor="let p of data.updateData.photos">
+          <input type="checkbox" name="" [(ngModel)]="p.checked" [ngModelOptions]="{standalone: true}">
+          <img src="{{ AppConfig.API_ENDPOINT }}{{ p.url }}" height="50">
+        </li>
+      </ul>
       <image-upload
           buttonCaption="Ajouter une photo"
-          dropBoxMessage="Déposez vos photos ici ! (5 max)"
+          [dropBoxMessage]="'Déposez vos photos ici ! (5 max)'"
           clearButtonCaption="Supprimer"
           (uploadFinished)="addImage($event)"
           (removed)="deleteImage($event)"
-          [max]="5"
+          [max]="5 - data.updateData.photos.length + nbPhotoToDelete()"
         ></image-upload>
     </div>
 
