@@ -513,8 +513,12 @@ export class ObsFormComponent implements AfterViewInit {
     }
   }
 
-  nbPhotoToDelete() {
-    return this.data.updateData.photos.filter(p => p.checked).length;
+  maxPhotos() {
+    let resp = 5;
+    if (this.data.updateData) {
+      resp = resp - this.data.updateData.photos.filter(p => !p.checked).length;
+    }
+    return resp;
   }
 
 }
