@@ -20,19 +20,29 @@ from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
 from wtforms import SelectField
 
+import json
+from flask_admin.contrib.sqla.view import ModelView
+from jinja2 import Markup
+
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import admin
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
 from server import db
 
-from .models import ModulesModel, ProgramsModel
+from .models import ProgramsModel
 from gncitizen.core.taxonomy.models import BibListes
 
 try:
     from flask import _app_ctx_stack as ctx_stack
 except ImportError:  # pragma: no cover
     from flask import _request_ctx_stack as ctx_stack
+
+
+def json_formatter(view, context, model, name):
+    value = getattr(model, name)
+    json_value = json.dumps(value, ensure_ascii=False, indent=2)
+    return Markup('<pre>{}</pre>'.format(json_value))
 
 def taxonomy_lists():
     taxonomy_lists = []
@@ -62,31 +72,42 @@ def taxonomy_lists():
 
 
 class ProgramView(ModelView):
-    form_base_class = SecureForm
+    # form_base_class = SecureForm
     form_overrides = {'long_desc':CKEditorField, 'taxonomy_list':SelectField}
     form_args = {'taxonomy_list':{'choices':taxonomy_lists(), 'coerce':int}}
     create_template = 'edit.html'
     edit_template = 'edit.html'
+    form_excluded_columns = ['timestamp_create','timestamp_update']
 
-    def is_accessible(self):
-        try:
+    # def is_accessible(self):
+    #     try:
 
-            token = request.args.get("jwt")
-            if not token:
-                token = urllib.parse.parse_qsl(request.args.get("url"))[0][1]
-            decoded_token = decode_token(token)
-            verify_token_not_blacklisted(decoded_token, request_type="access")
-            ctx_stack.top.jwt = decoded_token
-            if has_user_loader():
-                user = user_loader(ctx_stack.top.jwt["identity"])
-                if user is None:
-                    raise UserLoadError("user_loader returned None for {}".format(user))
-                else:
-                    ctx_stack.top.jwt_user = user
+    #         token = request.args.get("jwt")
+    #         if not token:
+    #             token = urllib.parse.parse_qsl(request.args.get("url"))[0][1]
+    #         decoded_token = decode_token(token)
+    #         verify_token_not_blacklisted(decoded_token, request_type="access")
+    #         ctx_stack.top.jwt = decoded_token
+    #         if has_user_loader():
+    #             user = user_loader(ctx_stack.top.jwt["identity"])
+    #             if user is None:
+    #                 raise UserLoadError("user_loader returned None for {}".format(user))
+    #             else:
+    #                 ctx_stack.top.jwt_user = user
 
-            current_user = get_jwt_identity()
-            is_admin = UserModel.query.filter_by(email=current_user).one().admin
-            return current_user and is_admin
-        except Exception as e:
-            current_app.logger.critical("FAULTY ADMIN UI ACCESS: %s", str(e))
-            return False
+    #         current_user = get_jwt_identity()
+    #         is_admin = UserModel.query.filter_by(email=current_user).one().admin
+    #         return current_user and is_admin
+    #     except Exception as e:
+    #         current_app.logger.critical("FAULTY ADMIN UI ACCESS: %s", str(e))
+    #         return False
+
+class CustomFormView(ModelView):
+    column_formatters = {
+        'json_schema': json_formatter,
+    }
+
+
+class UserView(ModelView):
+    column_exclude_list = ['password']
+    form_excluded_columns = ['timestamp_create','timestamp_update','password']
