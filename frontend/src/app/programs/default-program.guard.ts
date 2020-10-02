@@ -35,7 +35,7 @@ export class UniqueProgramGuard implements CanActivate, CanActivateChild {
           this.router.navigate([
             "programs",
             programs[0].id_program,
-            programs[0].module_info.name
+            programs[0].module.name
           ]);
           return false;
         }
