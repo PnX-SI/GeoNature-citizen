@@ -652,4 +652,27 @@ Si tout est ok, alors on redémarre le service Apache:
 
 
 
+Sécuriser l'interface d'administration
+++++++++++++++++++++++++++++++++++++++
 
+L'interface d'administration de GeoNature-citizen n'est par défaut pas sécurisée. Sa sécurisation passe par une configuration spécifique du serveur Apache2.
+
+
+::
+
+  mkdir -p /etc/apache2/passwd
+  htpasswd -c /etc/apache2/passwd/gncitizen admin
+
+Puis ajouter les lignes suivants dans la configuration Apache2 du site (``nano /etc/apache2/sites-available/citizen.conf``), après le bloc  ``<Location /citizen/api>...</Location>``.
+
+
+:: 
+
+    # Sécurisation du chemin du backoffice
+    <Location /citizen/api/admin>
+    AuthType Basic
+    AuthName "Restricted Area"
+    AuthBasicProvider file
+    AuthUserFile "/etc/apache2/passwd/gncitizen"
+    Require user admin
+    </Location>
