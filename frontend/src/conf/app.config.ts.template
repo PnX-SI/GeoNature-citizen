@@ -6,9 +6,10 @@ export const AppConfig = {
         PROD_MOD:true,
         MULTILINGUAL:false,
         DISPLAY_FOOTER: true,
-        DISPLAY_TOPBAR: false,
+        DISPLAY_TOPBAR: true,
         DISPLAY_SIDEBAR: true,
         DISPLAY_STATS: true,
+        DISPLAY_BADGES: true
     },
     META: {
       keywords: 'biodiversite enquetes participatif observations',

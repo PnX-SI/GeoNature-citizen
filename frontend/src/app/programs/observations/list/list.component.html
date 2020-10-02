@@ -1,4 +1,5 @@
 <div id="mapList">
+  <ng-content select="[obs-form]"></ng-content>
   <div class="toolbar">
     <select class="form-control rounded-0" id="inputSpecies" [(ngModel)]="selectedTaxon"
       (ngModelChange)="onFilterChange()">
@@ -16,14 +17,12 @@
       }}</option>
     </select>
   </div>
-  <div class="obs-found">
-    <p >
-      {{ (features$ | async)?.length }} { +(features$ | async)?.length, plural, =0 { observation trouvée } =1 {
-      observation trouvée !} other { observations trouvées !} }
-    </p>
+  <div class="col-lg-12 mx-4 mt-2 mb-4">
+    <strong>Observations </strong> <span class="text-muted">({{ (features$ | async)?.length }})</span>
+    <ng-content select="[add-obs]"></ng-content>
   </div>
   <div id="list">
-    <div *ngFor="let o of (features$ | async); trackBy: trackByObs" class="espece obs-{{ o.properties.id_observation }}">
+    <div *ngFor="let o of (features$ | async); trackBy: trackByObs" (click)="onObsClick(o)" class="espece obs-{{ o.properties.id_observation }}">
       <!-- FIXME: hardcoded api media endpoint -->
       <img class="obs-img" [src]="
           o.properties.images && !!o.properties.images.length
@@ -46,6 +45,16 @@
               ? o.properties.observer.username
               : "Anonyme"
           }}</span>
+          <span *ngIf="displayOwnerActions">
+          &nbsp;
+          <app-modalflow [coords]="o.properties.coords" [updateData]="o.properties" [program_id]="o.properties.id_program" *ngIf="'TODO dashboard condition'">
+            <i class="fa fa-edit text-primary" placement="top" ngbTooltip="Editer" btn-open></i>
+          </app-modalflow>
+          &nbsp;
+          <i class="fa fa-trash text-danger" placement="top" ngbTooltip="Supprimer"
+            (click)="deleteObs.emit(o.properties.id_observation)"
+            owner-actions></i>
+          </span>
         </div>
        
       
@@ -55,7 +64,10 @@
             à {{ o.properties.municipality?.name }}</span>
         </p>
       </div>
-      <a class="hide" (click)="onObsClick(o)" ><img class="on-map" src="assets/binoculars.png" /></a>
+      <div class="hide detail-link" [routerLink]="['/programs', o.properties.id_program, 'observations', o.properties.id_observation]" style="cursor:pointer" title="Voir les détails de cette observation">
+        <img src="assets/binoculars.png"/>
+      </div>
+      <!-- <a class="hide" ><img class="on-map" src="assets/binoculars.png" /></a> -->
     </div>
   </div>
 </div>

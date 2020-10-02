@@ -10,6 +10,7 @@ export class Program {
   image: string;
   logo: string;
   module: number;
+  module_info: any;
   taxonomy_list: number;
   on_sidebar: Boolean;
 }

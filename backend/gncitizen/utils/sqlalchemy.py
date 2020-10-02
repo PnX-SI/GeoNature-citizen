@@ -23,6 +23,7 @@ SERIALIZERS = {
     "timestamp": lambda x: str(x) if x else None,
     "uuid": lambda x: str(x) if x else None,
     "numeric": lambda x: str(x) if x else None,
+    "enum": lambda x: x.name if x else None,
 }
 
 
@@ -34,6 +35,7 @@ def create_schemas(db):
     db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_core")
     db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_obstax")
     db.session.execute("CREATE SCHEMA IF NOT EXISTS ref_geo")
+    db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_sites")
     db.session.commit()
 
 

@@ -17,7 +17,7 @@ from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.utils.env import admin
 from server import db
 
-from .models import ModulesModel, ProgramsModel
+from .models import ModulesModel, ProgramsModel, CustomFormModel
 from gncitizen.core.users.models import UserModel
 
 try:
@@ -32,6 +32,7 @@ from flask_jwt_extended.utils import (
 )
 from flask_jwt_extended.exceptions import UserLoadError
 from gncitizen.core.commons.admin import ProgramView
+from gncitizen.core.sites.models import CorProgramSiteTypeModel
 
 
 routes = Blueprint("commons", __name__)
@@ -109,22 +110,77 @@ def get_program(pk):
            200:
              description: A list of all programs
          """
+    # try:
+    datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
+    if datas.count() != 1:
+      current_app.logger.warning("[get_program] Program not found")        
+      return {"message": "Program not found"}, 400
+    else:
+      features = []
+      for data in datas:
+          feature = data.get_geofeature()
+          # Get sites types for sites programs. TODO condition
+          if feature["properties"]["module_info"]["name"] == "sites":
+            site_types_qs = CorProgramSiteTypeModel.query.filter_by(id_program=pk)
+            site_types = [st.site_type.name for st in site_types_qs]
+            feature["site_types"] = site_types
+          features.append(feature)
+      return {"features": features}, 200
+    # except Exception as e:
+    #     current_app.logger.critical("[get_program] error : %s", str(e))
+    #     return {"message": str(e)}, 400
+
+
+@routes.route("/customform/<int:pk>", methods=["GET"])
+@json_resp
+def get_custom_form(pk):
+    """Get a custom form by id
+         ---
+         tags:
+          - Programs
+         parameters:
+          - name: pk
+            in: path
+            type: integer
+            required: true
+            example: 1
+         responses:
+           200:
+             description: A custom form
+         """
     try:
-        datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
-        if datas.count() != 1:
-          current_app.logger.warning("[get_program] Program not found")        
-          return {"message": "Program not found"}, 400
-        else:
-          features = []
-          for data in datas:
-              feature = data.get_geofeature()
-              # for k, v in data:
-              #     feature['properties'][k] = v
-              features.append(feature)
-          return {"features": features}, 200
+        form = CustomFormModel.query.get(pk)
+        return form.as_dict(True), 200
     except Exception as e:
-        current_app.logger.critical("[get_program] error : %s", str(e))
-        return {"message": str(e)}, 400
+        return {"error_message": str(e)}, 400
+
+
+@routes.route("/programs/<int:pk>/customform/", methods=["GET"])
+@routes.route("/programs/<int:pk>/customform", methods=["GET"])
+@json_resp
+def get_program_custom_form(pk):
+    """Get a custom form by program id
+         ---
+         tags:
+          - Programs
+         parameters:
+          - name: pk
+            in: path
+            type: integer
+            required: true
+            example: 1
+         responses:
+           200:
+             description: A custom form
+         """
+    try:
+        program = ProgramsModel.query.get(pk)
+        if program.id_form is not None:
+            form = CustomFormModel.query.get(program.id_form)
+            return form.as_dict(True), 200
+        return None, 200
+    except Exception as e:
+        return {"error_message": str(e)}, 400
 
 
 @routes.route("/programs", methods=["GET"])

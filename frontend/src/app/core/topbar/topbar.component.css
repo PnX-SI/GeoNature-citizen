@@ -1,10 +1,28 @@
-.navbar {
+.navbar-visible {
   min-height: 100px;
   background-color: #fefefe;
   /* color: #60a3bc; */
   color: var(--primary);
   /* border-bottom: 1px solid #60a3bc; */
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.navbar-hidden {
+  min-height: 100px;
+  pointer-events: none;
+}
+
+.navbar-login {
+  pointer-events: auto;
+  background-color: #fefefe;
+}
+
+.navbar-hidden .navbar-login {
+  border: 1px solid var(--primary);
+}
+
+.hidden {
+  display: none!important;
 }
 
 .navbar-brand {
@@ -92,6 +110,7 @@ div.btn-group a:first-child {
 }
 
 @media screen and (max-width: 992px) {
+
   /* FIXME: la nav bar ne se referme qu'à 768, pourquoi 912 ? */
   /*    .navbar-collapse form{
     justify-content: flex-end;
@@ -101,10 +120,17 @@ div.btn-group a:first-child {
     padding: 0px;
   }
 
-  ul.btn-group li {
-    /*
+  ul.btn-group li{/*
     min-width: 120px !important; */
     max-width: 120px !important;
+  }
+
+  .navbar-hidden {
+    pointer-events: auto;
+    min-height: 65px !important;
+  }
+  .navbar-hidden img{
+    height: 40px
   }
 }
 

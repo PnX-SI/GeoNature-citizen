@@ -1,0 +1,50 @@
+import {
+  Component,
+  ViewEncapsulation,
+  ElementRef,
+  Input,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { FlowItem } from "../../observations/modalflow/flow/flow-item";
+import { SiteModalFlowService } from "./modalflow.service";
+import { FlowComponent } from '../../observations/modalflow/flow/flow.component'
+
+@Component({
+  selector: "app-sitemodalflow",
+  templateUrl: "../../observations/modalflow/modalflow.component.html",
+  styleUrls: ["../../observations/modalflow/modalflow.component.css"],
+  encapsulation: ViewEncapsulation.None
+})
+export class SiteModalFlowComponent {
+  @Input("coords") coords;
+  @Input("modalversion") modalversion: boolean = true;
+  @ViewChild("content", { static: true }) content: ElementRef;
+  flowitems: FlowItem[];
+  timeout: any;
+  program_id: any;
+
+  constructor(public flowService: SiteModalFlowService, private route: ActivatedRoute) {
+    this.route.params.subscribe(
+      params => {
+        this.program_id = params["id"];
+      }
+    );
+  }
+
+  clicked() {
+    // this.flowService.openFormModal({ program_id: this.program_id, coords: this.coords });
+    this.flowitems = this.flowService.getFlowItems({ program_id: this.program_id, coords: this.coords });
+    if (this.modalversion) {
+      var modalRef = this.flowService.open(this.content);
+    } else {
+      this.flowService.toggleDisplay();
+    }
+  }
+
+  ngOnDestroy(): void {
+    console.debug("destroyed");
+  }
+
+  step(componentName) {}
+}

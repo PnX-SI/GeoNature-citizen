@@ -61,7 +61,7 @@ export class UseService {
       let line ="" ;
       for (let index in headerList) {
         let head = headerList[index];
-        line += ";" + array[i][head];
+        line += ";" + (array[i][head] || "");
       }
       line = line.slice(1);
       str += line + "\r\n";

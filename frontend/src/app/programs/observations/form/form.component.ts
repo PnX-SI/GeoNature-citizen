@@ -39,6 +39,9 @@ import "leaflet-fullscreen/dist/Leaflet.fullscreen";
 import { ToastrService } from "ngx-toastr";
 import { ModalFlowService } from "../modalflow/modalflow.service";
 import { ObservationsService } from "../observations.service";
+import { MapService } from "../../base/map/map.service";
+
+import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 
 declare let $: any;
 
@@ -78,7 +81,6 @@ export class ObsFormComponent implements AfterViewInit {
   @Output("newObservation") newObservation: EventEmitter<
     ObservationFeature
   > = new EventEmitter();
-  @ViewChild("photo", { static: true }) photo: ElementRef;
   today = new Date();
   program_id: number;
   coords: L.Point;
@@ -99,6 +101,23 @@ export class ObsFormComponent implements AfterViewInit {
   zoomAlertTimeout: any;
   AppConfig = AppConfig;
   obsForm: FormGroup;
+  customForm: any = {};
+  GNCBootstrap4Framework: any = {
+    framework: GNCFrameworkComponent,
+  };
+  jsfInputObject: object;
+  formOptions: any = {
+    "loadExternalAssets": false,
+    "debug": false,
+    "returnEmptyFields": false,
+    "addSubmit": false
+  }
+  jsonData: object;
+  jsonErrors: any;
+  jsonValid: boolean;
+  photos: any[] = [];
+  existing_photos: any[] = [];
+  mapVars: any = {};
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -108,14 +127,26 @@ export class ObsFormComponent implements AfterViewInit {
     private programService: GncProgramsService,
     private flowService: ModalFlowService,
     private toastr: ToastrService,
-    private auth: AuthService
+    private auth: AuthService,
+    private mapService: MapService
   ) {}
 
   ngOnInit(): void {
     this.program_id = this.data.program_id;
     this.coords = this.data.coords;
     this.intiForm();
-    if (this.data.updateData) this.patchForm(this.data.updateData);
+    if (this.data.updateData) {
+      this.patchForm(this.data.updateData);
+      this.jsonData = this.data.updateData.json_data;
+    }
+    this.mapService.coordsChange.subscribe(value => {
+      this.coords = value;
+      this.obsForm.patchValue({ geometry: this.coords });
+      if (this.mapVars.minimapMarker) this.formMap.removeLayer(this.mapVars.minimapMarker);
+      this.mapVars.minimapMarker = L.marker([this.coords.y, this.coords.x], {
+        icon: obsFormMarkerIcon
+      }).addTo(this.formMap);
+    });
   }
 
   ngAfterViewInit() {
@@ -139,6 +170,16 @@ export class ObsFormComponent implements AfterViewInit {
             share()
           );
         this.surveySpecies$.subscribe();
+
+        if (this.program.features[0].properties.id_form) {
+          // Load custom form if one is attached to program
+          this.programService
+            .getCustomForm(this.program.features[0].properties.id_form)
+            .subscribe((result: object) => {
+              this.customForm = result;
+              if (this.customForm.json_schema) this.updatejsfInputObject();
+            })
+        }
 
         // build map control
         const formMap = L.map("formMap", { gestureHandling: true } as any);
@@ -252,7 +293,18 @@ export class ObsFormComponent implements AfterViewInit {
             this.obsForm.patchValue({ geometry: this.coords });
           }
         });
+
+        this.mapVars = {
+          minimapMarker: myMarker
+        }
       });
+  }
+
+  updatejsfInputObject() {
+    this.jsfInputObject = {
+      ...this.customForm.json_schema,
+      data: this.jsonData
+    };
   }
 
   intiForm() {
@@ -269,7 +321,6 @@ export class ObsFormComponent implements AfterViewInit {
           },
           [Validators.required, ngbDateMaxIsToday()]
         ],
-        photo: [""],
         geometry: [
           this.data.coords ? this.coords : "",
           [Validators.required, geometryValidator()]
@@ -283,7 +334,10 @@ export class ObsFormComponent implements AfterViewInit {
   }
 
   patchForm(updateData) {
-    this.onTaxonSelected(updateData.taxon);
+    // console.log("updateData", updateData)
+    const taxon = updateData.taxon || {"media": updateData.taxref.media_url, "taxref": updateData.taxref}
+    this.onTaxonSelected(taxon);
+    updateData.photos.forEach((p) => { p.checked = false; })
     this.obsForm.patchValue({
       count: updateData.count,
       comment: updateData.comment,
@@ -368,12 +422,12 @@ export class ObsFormComponent implements AfterViewInit {
   creatFromDataToPost(): FormData {
     this.obsForm.controls["id_program"].patchValue(this.program_id);
     let formData: FormData = new FormData();
-    if (!this.data.updateData) {
-      const files: FileList = this.photo.nativeElement.files;
-      if (files.length > 0) {
-        formData.append("file", files[0], files[0].name);
-      }
-    }
+
+    const files = this.photos;
+    files.forEach((file) => {
+      formData.append("file", file, file.name);
+    })
+
     formData.append(
       "geometry",
       JSON.stringify(this.obsForm.get("geometry").value)
@@ -405,6 +459,9 @@ export class ObsFormComponent implements AfterViewInit {
   postObservation() {
     let obs: ObservationFeature;
     let formData = this.creatFromDataToPost();
+    if (this.customForm.json_schema) {
+      formData.append("json_data", JSON.stringify(this.jsonData))
+    }
     this.observationsService.postObservation(formData).subscribe(
       (data: PostObservationResponse) => {     
         obs = data.features[0];
@@ -424,6 +481,11 @@ export class ObsFormComponent implements AfterViewInit {
       "id_observation",
       this.data.updateData.id_observation.toString()
     );
+    if (this.customForm.json_schema) {
+      formData.append("json_data", JSON.stringify(this.jsonData))
+    }
+    const id_media_to_delete = this.data.updateData.photos.filter(p => p.checked).map(p => p.id_media);
+    formData.append("delete_media", JSON.stringify(id_media_to_delete));
     this.observationsService.updateObservation(formData).subscribe(() => {
       this.flowService.closeModal();
       this.flowService.setModalCloseSatus("updateObs");
@@ -437,4 +499,36 @@ export class ObsFormComponent implements AfterViewInit {
       })
     );
   }
+
+  customFormOnChange(e) {
+    this.jsonData = e;
+  }
+
+  addImage(event) {
+    this.photos.push(event.file);
+  }
+  deleteImage(event) {
+    for (var i=0; i<this.photos.length; i++) {
+      if (this.photos[i] == event.file) {
+        this.photos.splice(i, 1);
+      }
+    }
+  }
+
+  maxPhotos() {
+    let resp = 5;
+    if (this.data.updateData) {
+      resp = resp - this.data.updateData.photos.filter(p => !p.checked).length;
+    }
+    return resp;
+  }
+
+  jsonValidationErrors (data) {
+    this.jsonErrors = data;
+  }
+
+  yourIsValidFn (data) {
+    this.jsonValid = data;
+  }
+
 }

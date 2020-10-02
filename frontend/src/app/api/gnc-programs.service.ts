@@ -126,6 +126,36 @@ export class GncProgramsService implements OnInit {
       );
   }
 
+  getProgramSites(id: number): Observable<FeatureCollection> {
+    return this.http
+      .get<FeatureCollection>(`${this.URL}/sites/programs/${id}`)
+      .pipe(
+        catchError(
+          this.handleError<FeatureCollection>(`getProgramObservations id=${id}`)
+        )
+      );
+  }
+
+  getSiteDetails(id: number): Observable<FeatureCollection> {
+    return this.http
+      .get<FeatureCollection>(`${this.URL}/sites/${id}`)
+      .pipe(
+        catchError(
+          this.handleError<FeatureCollection>(`getProgramObservations id=${id}`)
+        )
+      );
+  }
+
+  getObsDetails(id: number): Observable<FeatureCollection> {
+    return this.http
+      .get<FeatureCollection>(`${this.URL}/observations/${id}`)
+      .pipe(
+        catchError(
+          this.handleError<FeatureCollection>(`getProgramObservations id=${id}`)
+        )
+      );
+  }
+
   getProgramTaxonomyList(program_id: number): Observable<TaxonomyList> {
     return this.getAllPrograms().pipe(
       map(programs => programs.find(p => p.id_program == program_id)),
@@ -136,6 +166,16 @@ export class GncProgramsService implements OnInit {
       ),
       catchError(this.handleError<TaxonomyList>(`getProgramTaxonomyList`,{}))
     );
+  }
+
+  getCustomForm(id_form) : Observable<object> {
+    return this.http
+      .get<object>(`${this.URL}/customform/${id_form}`)
+      .pipe(
+        catchError(
+          this.handleError<object>(`getCustomForm id=${id_form}`)
+        )
+      );
   }
 
   private handleError<T>(operation = "operation", result?: T) {

@@ -1,0 +1,39 @@
+.form-group .input-group {
+  flex-direction: row;
+}
+
+.input-group input {
+  width: 100% !important;
+}
+
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+#formMap {
+  min-height: 225px; /*50vh*/
+  width: 100%;
+}
+
+.img-ul-upload {
+  background-color: var(--primary) !important;
+  font-size: 1em !important;
+}
+
+.img-ul-button {
+  text-transform: none !important;
+}
+
+.img-ul-clear {
+  background-color: var(--secondary) !important;
+  font-size: 1em !important;
+}
+
+.hidden {
+  display: none!important;
+}

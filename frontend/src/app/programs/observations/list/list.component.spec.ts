@@ -12,7 +12,7 @@ import {
 
 import { ObsListComponent } from './list.component';
 
-describe('ObsListComponent', () => {
+describe('SitesListComponent', () => {
   let component: ObsListComponent;
   let fixture: ComponentFixture<ObsListComponent>;
 

@@ -1,0 +1,59 @@
+<div *ngIf="readyToDisplay">
+  <!-- <div class="alert alert-primary rounded-0" role="alert">
+    {{ jsonData | json }}
+  </div> -->
+  <h3>
+    Etape {{ currentStep }}/{{ totalSteps() }} : {{ jsonSchema.steps[currentStep-1].title }}
+  </h3>
+  <p class="h6" [innerHTML]="jsonSchema.steps[currentStep-1].description"></p>
+  <form id="visitForm" [formGroup]="visitForm">
+    <div class="row" [ngClass]="currentStep === 1 ? '' : 'hidden'">
+      <div class="col-md-4">
+        <div class="input-group">
+          <label for="date" >Date de la visite</label>
+          <input
+            formControlName="date"
+            type="text"
+            class="form-control rounded-0"
+            placeholder="yyyy-mm-dd"
+            ngbDatepicker
+            #d="ngbDatepicker"
+            (click)="d.toggle()"
+          />
+          <div *ngIf="visitForm.get('date').invalid" class="alert alert-danger">
+            <div *ngIf="visitForm.get('date').errors.required">
+              La date est obligatoire
+            </div>
+            <div *ngIf="visitForm.get('date').errors['Parsed a date in the future']">
+              La date doit être antérieure à la date du jour
+            </div>
+            <div *ngIf="visitForm.get('date').errors.ngbDate">
+              Date invalide
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <image-upload
+          buttonCaption="Ajouter une photo"
+          dropBoxMessage="Déposez vos photos ici !"
+          clearButtonCaption="Supprimer"
+          (uploadFinished)="addImage($event)"
+          (removed)="deleteImage($event)"
+        ></image-upload>
+      </div>
+    </div>
+  </form>
+
+  <json-schema-form
+  [form]="formInputObject"
+  [options]="formOptions"
+  (onChanges)="yourOnChangesFn($event)"
+  [framework]="GNCBootstrap4Framework"
+  >
+  </json-schema-form>
+  <!-- <p>
+    <button class="btn btn-link" (click)="toogleAdvancedMode()">{{ advancedMode ? "Masquer" : "Afficher" }} par défaut les champs avancés</button>
+  </p> -->
+</div>
+

@@ -1,7 +1,21 @@
-<nav class="navbar navbar-light navbar-expand-md">
-  <a class="navbar-brand" routerLink="home" routerLinkActive="active" aria-label="GeoNature-citizen Home">
-    <img src="{{logoImage}}" width="auto" height="80" class="d-inline-block align-top logo"
-      alt="GeoNature-citizen logo: flamengo origami" />
+<nav
+  class="navbar navbar-light navbar-expand-md fixed-top"
+  [ngClass]="displayTopbar ? 'navbar-visible' : 'navbar-hidden'"
+>
+  <a
+    class="navbar-brand"
+    routerLink="home"
+    routerLinkActive="active"
+    aria-label="GéoNature Citizen Home"
+  >
+    <img
+      src="{{logoImage}}"
+      width="auto"
+      height="80"
+      class="d-inline-block align-top logo"
+      [ngClass]="displayTopbar ? '' : 'hidden'"
+      alt="GeoNature Citizen logo: flamengo origami"
+    />
   </a>
   <button class="navbar-toggler collapsed" type="button" (click)="isCollapsed = !isCollapsed">
     <i class="fa fa-bars"></i>
@@ -11,7 +25,13 @@
     <div class="navbar-nav mr-auto"></div>
     <div>
       <form class="form-inline mt-2 mt-md-0">
-        <ul *ngIf="(programs$ | async); let _programs" class="btn-group" role="group" aria-label="auth">
+        <ul
+          *ngIf="(programs$ | async); let _programs"
+          class="btn-group"
+          [ngClass]="displayTopbar ? '' : 'hidden'"
+          role="group"
+          aria-label="auth"
+        >
           <li>
             <a routerLink="home" routerLinkActive="active" (click)="isCollapsed = true" class="btn my-2 my-sm-0 rounded-0" i18n
               title="Accueil">Accueil</a>
@@ -30,7 +50,7 @@
             </a>
           </li>
         </ul>
-        <div class="btn-group" *ngIf="canSignup">
+        <div class="btn-group navbar-login" *ngIf="canSignup">
           <div *ngIf="(isLoggedIn() | async); then: connected; else: disconnected"></div>
           <ng-template #connected>
             <a placement="bottom" i18n-ngbTooltip ngbTooltip="Mon tableau de bord"   (click)="isCollapsed = !isCollapsed" routerLink="mydashboard"

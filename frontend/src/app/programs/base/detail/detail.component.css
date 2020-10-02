@@ -1,0 +1,32 @@
+#map {
+  min-height: 250px; /*50vh*/
+  /*width: 100%;*/
+}
+
+.photo {
+    cursor: pointer;
+}
+
+#back_link {
+  padding-top: 1rem;
+  color: var(--primary);
+}
+
+.btn-primary {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+}
+
+h1.title, h2 {
+  color: var(--primary);
+}
+
+h5.card-title {
+  color: var(--secondary);
+}
+
+.modal-body {
+    /*min-height: 60vh;*/
+    max-height: 60vh;
+    overflow: auto;
+}

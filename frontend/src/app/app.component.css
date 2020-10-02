@@ -2,6 +2,18 @@
   height: 100%;
 }
 
+.app-with-topbar {
+    margin-top: 106px;
+}
 
+@media screen and (max-width: 991px) {
+   .app-no-topbar {
+          margin-top: 65px !important;
+   }
+}
 
-
+@media screen and (max-width: 576px){
+    .app-with-topbar {
+        margin-top: 65px !important;
+    }
+}

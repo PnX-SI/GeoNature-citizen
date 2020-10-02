@@ -4,7 +4,7 @@
   <h4 *ngIf="data.updateData" class="modal-title" i18n>MODIFIER L'OBSERVATION</h4>
   <button type="button" class="close" aria-label="Close" (click)="closeModal()">
     <span aria-hidden="true">&times;</span>
-</button>
+  </button>
 </div>
 
 <div class="modal-body add-obs pb-0">
@@ -18,13 +18,12 @@
     </div>
   </div>
   <!-- </div> -->
-  
 
   <app-obs-form [data]="data" (newObservation)="onNewObservation($event)"></app-obs-form>
 </div>
 
 <div class="modal-footer">
-  <button *ngIf="!data.updateData" type="submit" [disabled]="!form.obsForm.valid"
+  <button *ngIf="!data.updateData" type="submit" [disabled]="!form.obsForm.valid || !enableCommit || !form.jsonValid"
     class="btn btn-default btn-big btn-outline-primary rounded-0" (click)="committed()" i18n="Valider l'observation">
     Valider l'observation
   </button>

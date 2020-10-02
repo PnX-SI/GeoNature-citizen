@@ -32,6 +32,7 @@ export class UserDashboardComponent implements OnInit {
   programs_badges: any = [];
   recognition_badges: any = [];
   observations: any;
+  myobs: any;
   rows: any = [];
   obsToExport: any = [];
   userForm: FormGroup;
@@ -111,12 +112,14 @@ export class UserDashboardComponent implements OnInit {
             this.programs_badges.push(badge);
           if (badge.type == "recognition") this.recognition_badges.push(badge);
         });
+        this.myobs = data[1];
         this.observations = data[1].features;
         this.observations.forEach(obs => {
           let coords: Point = new Point(
             obs.geometry.coordinates[0],
             obs.geometry.coordinates[1]
           );
+          obs.properties.coords = coords; // for use in user obs component
           this.rowData(obs, coords);
           this.obsExport(obs);
         });
@@ -127,6 +130,7 @@ export class UserDashboardComponent implements OnInit {
             obs.geometry.coordinates[0],
             obs.geometry.coordinates[1]
           );
+          obs.coords = coords;
           this.rowData(obs, coords);
           this.obsExport(obs);
         });
@@ -159,7 +163,8 @@ export class UserDashboardComponent implements OnInit {
         media: obs.properties.media,
         taxref: obs.properties.taxref
       },
-      coords: coords
+      coords: coords,
+      json_data: obs.properties.json_data
     });
   }
 
@@ -175,7 +180,8 @@ export class UserDashboardComponent implements OnInit {
       "espece": obs.properties.taxref.nom_vern,
       "nom complet": obs.properties.taxref.nom_complet,
       "coordonnee_x": obs.geometry.coordinates[0],
-      "coordonnee_y": obs.geometry.coordinates[1]
+      "coordonnee_y": obs.geometry.coordinates[1],
+      ...obs.properties.json_data
     });
   }
 
@@ -209,6 +215,14 @@ export class UserDashboardComponent implements OnInit {
   }
 
   onExportObservations() {
+    let all_json_data_keys = new Set()
+    this.observations.forEach((o) => {
+      if (o.properties.json_data) {
+        Object.keys(o.properties.json_data).forEach((k) => {
+          all_json_data_keys.add(k)
+        })
+      }
+    })
     let csv_str = this.userService.ConvertToCSV(this.obsToExport, [
       "id_observation",
       "espece",
@@ -220,7 +234,8 @@ export class UserDashboardComponent implements OnInit {
       "commentaire",
       "commune",
       "coordonnee_x",
-      "coordonnee_y"
+      "coordonnee_y",
+      ...Array.from(all_json_data_keys)
     ]);
     let blob = new Blob([csv_str], { type: "text/csv" });
     saveAs(blob, "mydata.csv");
