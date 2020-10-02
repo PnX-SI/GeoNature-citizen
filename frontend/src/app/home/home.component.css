@@ -31,7 +31,7 @@ app-home .section:before {
     background-size: cover;
     background-repeat: no-repeat;
     position: relative;
-    height: calc(100vh - var(--router-outlet-margin-top) - 300px);
+    height: calc(100vh - var(--router-outlet-margin-top));
     margin-top: var(--router-outlet-margin-top);
 }
 
