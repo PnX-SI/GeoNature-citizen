@@ -314,5 +314,5 @@ section .observations {
   background: #eee;
   padding: 5px 0px 5px 5px;
   overflow: scroll;
-  height: calc(105vh - var(--list-obs-offset));
+  height: calc(110vh - var(--list-obs-offset));
 }
