@@ -110,14 +110,15 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     };
   }
 
-  @HostListener("document:ObservationFilterEvent", ["$event"])
-  observationFilterEventHandler(e: CustomEvent) {
-    e.stopPropagation();
-    this.obsList.observations = {
-      type: "FeatureCollection",
-      features: this.observations.features
-    };
-  }
+  // @HostListener("document:ObservationFilterEvent", ["$event"])
+  // observationFilterEventHandler(e: CustomEvent) {
+    // e.stopPropagation();
+    // console.log("FOURTR", this.obsList)
+    // this.obsList.observations = {
+      // type: "FeatureCollection",
+      // features: this.observations.features
+    // };
+  // }
 
   addObsClicked () {
     this.modalFlow.first.clicked();
