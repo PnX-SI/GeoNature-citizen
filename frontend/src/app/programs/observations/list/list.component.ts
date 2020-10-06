@@ -8,6 +8,7 @@ import {
   Output,
   EventEmitter
 } from "@angular/core";
+import { Router } from '@angular/router';
 import { BehaviorSubject, merge } from "rxjs";
 import { pluck, share } from "rxjs/operators";
 
@@ -48,7 +49,7 @@ export class ObsListComponent implements OnChanges {
     )
   );
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef, private router: Router) {}
 
   ngOnChanges(changes: SimpleChanges) {
     this.changes$.next(changes);

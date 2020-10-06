@@ -41,7 +41,12 @@
         [displayOwnerActions]="userDashboard"
         (obsSelect)="obsMapRef.showPopup($event)"
         (deleteObs)="deleteObs.emit($event)">
-          <button type="button" class="btn btn-success mr-4 float-right" add-obs (click)="addObsClicked()">Ajouter une observation</button>
+          <button
+            type="button"
+            class="btn btn-success mr-4 float-right"
+            add-obs
+            (click)="addObsClicked()"
+            *ngIf="!userDashboard">Ajouter une observation</button>
           <app-modalflow #modalFlowRef [coords]="coords" [program_id]="program_id" [form_message]="program?.form_message" [modalversion]="false" obs-form>
             <!-- <button type="button" class="btn btn-success mr-4" btn-open>Ajouter</button> -->
           </app-modalflow>
