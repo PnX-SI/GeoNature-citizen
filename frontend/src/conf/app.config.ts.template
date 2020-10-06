@@ -9,7 +9,8 @@ export const AppConfig = {
         DISPLAY_TOPBAR: true,
         DISPLAY_SIDEBAR: true,
         DISPLAY_STATS: true,
-        DISPLAY_BADGES: true
+        DISPLAY_BADGES: true,
+        NEW_OBS_FORM_MODAL_VERSION: false
     },
     META: {
       keywords: 'biodiversite enquetes participatif observations',
