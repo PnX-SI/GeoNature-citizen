@@ -23,7 +23,6 @@
   background: url(/assets/background.jpg) no-repeat;
   background-size: cover;
   height: calc(100vh - var(--router-outlet-margin-top));
-  margin-top: var(--router-outlet-margin-top);
 }
 
 #welcome h1 {
