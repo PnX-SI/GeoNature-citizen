@@ -13,7 +13,7 @@
         (siteSelect)="sitesMapRef.showPopup($event);"
       >
         <button type="button" class="btn btn-success mr-4 float-right" add-obs (click)="addSiteClicked()">Ajouter un site</button>
-        <app-sitemodalflow #modalFlowRef [coords]="coords" [modalversion]="false" obs-form></app-sitemodalflow>
+        <app-sitemodalflow #modalFlowRef [coords]="coords" [modalversion]="true" obs-form></app-sitemodalflow>
       </app-sites-list>
     </div>
 
