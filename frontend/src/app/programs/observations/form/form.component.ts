@@ -531,4 +531,10 @@ export class ObsFormComponent implements AfterViewInit {
     this.jsonValid = data;
   }
 
+  isValid () {
+    let resp = this.obsForm.valid;
+    if (this.customForm.json_schema) resp = resp && this.jsonValid;
+    return resp
+  }
+
 }

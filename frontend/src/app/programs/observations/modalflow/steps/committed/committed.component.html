@@ -23,7 +23,7 @@
 </div>
 
 <div class="modal-footer">
-  <button *ngIf="!data.updateData" type="submit" [disabled]="!form.obsForm.valid || !enableCommit || !form.jsonValid"
+  <button *ngIf="!data.updateData" type="submit" [disabled]="!form.isValid() || !enableCommit"
     class="btn btn-default btn-big btn-outline-primary rounded-0" (click)="committed()" i18n="Valider l'observation">
     Valider l'observation
   </button>
