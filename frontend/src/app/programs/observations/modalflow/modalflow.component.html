@@ -1,4 +1,4 @@
-<div class="btn-group" (click)="clicked()">
+<div class="btn-group" (click)="clicked()" *ngIf="modalversion">
   <ng-content select="[btn-open]"></ng-content>
 </div>
 <div *ngIf="!modalversion && flowService.display" id="newObsDiv">

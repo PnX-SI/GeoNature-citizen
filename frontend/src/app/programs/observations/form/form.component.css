@@ -21,6 +21,16 @@ app-obs-form #formMap {
   width: 100%;
 }
 
+app-obs-form #formMap.div-form-map {
+  display: none;
+}
+
+@media screen and (max-width: 992px){
+  app-obs-form #formMap.div-form-map {
+    display: block;
+  }
+}
+
 app-obs-form .zoom-alert {
   position: absolute;
   top: 0;

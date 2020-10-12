@@ -1,5 +1,6 @@
 <div id="mapList">
-  <!-- <ng-content select="[obs-form]"></ng-content> -->
+  <ng-content select="[obs-form]" *ngIf="display_form"></ng-content>
+  <span [class.d-none]="display_form">
   <div class="toolbar">
     <select class="form-control rounded-0" id="inputSpecies" [(ngModel)]="selectedTaxon"
       (ngModelChange)="onFilterChange()">
@@ -65,7 +66,7 @@
       <div class="hide detail-link" [routerLink]="['/programs', o.properties.id_program, 'observations', o.properties.id_observation]" style="cursor:pointer" title="Voir les détails de cette observation">
         <img src="assets/binoculars.png"/>
       </div>
-      <!-- <a class="hide" ><img class="on-map" src="assets/binoculars.png" /></a> -->
     </div>
   </div>
+  </span>
 </div>

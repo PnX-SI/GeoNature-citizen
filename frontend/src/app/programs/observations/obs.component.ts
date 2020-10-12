@@ -56,7 +56,10 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     private metaTagService: Meta
   ) {
     super()
-    this.route.params.subscribe(params => (this.program_id = params["id"]));
+    this.route.params.subscribe(params => {
+      this.program_id = params["id"];
+      this.flowService.closeModal(); // Avoid keeping another program's form open
+    });
     this.route.fragment.subscribe(fragment => {
       this.fragment = fragment;
     });
