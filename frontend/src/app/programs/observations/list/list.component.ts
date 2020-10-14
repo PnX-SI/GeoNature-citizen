@@ -50,7 +50,7 @@ export class ObsListComponent implements OnChanges {
     )
   );
 
-  constructor(private cd: ChangeDetectorRef, private router: Router) {}
+  constructor(private cd: ChangeDetectorRef, public router: Router) {}
 
   ngOnChanges(changes: SimpleChanges) {
     this.changes$.next(changes);

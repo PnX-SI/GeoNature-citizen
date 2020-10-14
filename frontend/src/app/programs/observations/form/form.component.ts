@@ -125,7 +125,7 @@ export class ObsFormComponent implements AfterViewInit {
     private formBuilder: FormBuilder,
     private dateParser: NgbDateParserFormatter,
     private programService: GncProgramsService,
-    private flowService: ModalFlowService,
+    public flowService: ModalFlowService,
     private toastr: ToastrService,
     private auth: AuthService,
     private mapService: MapService
