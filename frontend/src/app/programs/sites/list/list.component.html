@@ -1,5 +1,6 @@
 <div id="mapList">
-  <!-- <ng-content select="[obs-form]"></ng-content> -->
+  <ng-content select="[obs-form]" *ngIf="display_form"></ng-content>
+  <span [class.d-none]="display_form">
   <div class="col-lg-12 mx-4 mt-2 mb-4">
     <strong>Sites </strong> <span class="text-muted">({{ sites?.length }})</span>
     <ng-content select="[add-obs]"></ng-content>
@@ -21,4 +22,5 @@
       </div>
     </div>
   </div>
+  </span>
 </div>
