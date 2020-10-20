@@ -32,7 +32,6 @@ app-home .section:before {
     background-repeat: no-repeat;
     position: relative;
     height: calc(100vh - var(--router-outlet-margin-top));
-    margin-top: var(--router-outlet-margin-top);
 }
 
 #welcome:before {

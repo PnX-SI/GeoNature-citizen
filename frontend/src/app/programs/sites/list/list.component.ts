@@ -19,6 +19,7 @@ export class SitesListComponent implements OnChanges {
   @Input("sites") sitesCollection: FeatureCollection;
   @Input("taxa") surveySpecies: any[];
   @Input("program_id") program_id: number;
+  @Input("displayForm") display_form: boolean;
   @Output("siteSelect") siteSelect: EventEmitter<Feature> = new EventEmitter();
   municipalities: string[] = [];
   sites: Feature[] = [];

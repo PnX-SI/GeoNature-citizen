@@ -8,6 +8,7 @@ import {
   Output,
   EventEmitter
 } from "@angular/core";
+import { Router } from '@angular/router';
 import { BehaviorSubject, merge } from "rxjs";
 import { pluck, share } from "rxjs/operators";
 
@@ -29,6 +30,7 @@ export class ObsListComponent implements OnChanges {
   @Input("observations") observations: FeatureCollection;
   @Input("taxa") surveySpecies: TaxonomyList;
   @Input("displayOwnerActions") displayOwnerActions: boolean = false;
+  @Input("displayForm") display_form: boolean;
   @Output("obsSelect") obsSelect: EventEmitter<Feature> = new EventEmitter();
   @Output() deleteObs = new EventEmitter();
   municipalities: any[];
@@ -48,12 +50,12 @@ export class ObsListComponent implements OnChanges {
     )
   );
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef, public router: Router) {}
 
   ngOnChanges(changes: SimpleChanges) {
     this.changes$.next(changes);
 
-    if (this.observations && changes.observations.currentValue) {
+    if (this.observations) {
       this.observationList = this.observations["features"];
       this.observations$.next(this.observations["features"]);
       this.municipalities = this.observations.features

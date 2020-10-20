@@ -79,21 +79,15 @@
           formControlName="comment"></textarea>
       </div>
 
-      <!-- <div class="form-group col-lg-12 btn position-relative">
-        <label for="photo" i18n><i class="fa fa-camera"></i>Ajouter une photo</label>
-        <input #photo id="photo" name="photo" formControlName="photo" class="inputfile" type="file" accept="image/*"
-          capture="environment" />
-      </div> -->
-      <div *ngIf="data.updateData">
-        <label>Photos existantes (cocher pour supprimer)</label>
-        <ul>
-          <li *ngFor="let p of data.updateData.photos">
-            <input type="checkbox" name="" [(ngModel)]="p.checked" [ngModelOptions]="{standalone: true}">
-            <img src="{{ AppConfig.API_ENDPOINT }}{{ p.url }}" height="50">
-          </li>
-        </ul>
+      <div *ngIf="data.updateData" class="mb-3">
+        <label>Photos existantes (cocher pour supprimer)</label><br>
+        <span *ngFor="let p of data.updateData.photos" class="mr-4">
+          <input type="checkbox" name="" [(ngModel)]="p.checked" [ngModelOptions]="{standalone: true}" class="mr-1">
+          <img src="{{ AppConfig.API_ENDPOINT }}{{ p.url }}" height="50">
+        </span>
       </div>
-      <image-upload
+      <div class="mt-3">
+        <image-upload
           buttonCaption="Ajouter une photo"
           [dropBoxMessage]="'Déposez vos photos ici ! (5 max)'"
           clearButtonCaption="Supprimer"
@@ -101,6 +95,7 @@
           (removed)="deleteImage($event)"
           [max]="maxPhotos()"
         ></image-upload>
+      </div>
     </div>
 
 
@@ -116,7 +111,7 @@
         </div>
         <div id="formMap" class="col-lg-12" [class.ng-invalid]="obsForm.get('geometry').invalid"
           [class.ng-valid]="obsForm.get('geometry').valid"
-          [class.d-none]="!flowService.modalversion" i18n-data-observation-zoom-statement-warning
+          [class.div-form-map]="!flowService.modalversion" i18n-data-observation-zoom-statement-warning
           data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."></div>
       </div>
       <input formControlName="geometry" type="hidden" id="geometry" name="geometry" #geometry class="col-lg-12" />

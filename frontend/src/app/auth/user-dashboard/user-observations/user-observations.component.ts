@@ -16,6 +16,7 @@ import { ObsComponent } from "../../../programs/observations/obs.component";
 import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
 import { Point } from "leaflet";
 
+
 @Component({
   selector: "user-observations",
   templateUrl: "../../../programs/observations/obs.component.html",
@@ -38,8 +39,17 @@ export class UserObsComponent extends ObsComponent implements OnInit {
         }
       });
     this.observations = this.myObs;
-    // this.surveySpecies = this.observations.features.map(f => f.properties.taxref);
-    // console.log("FLUTE", this.surveySpecies)
+    // Create species list for filtering
+    let all_species = []
+    let uniq_cd_nom_list = []
+    this.observations.features.map(f => f.properties).forEach((props) => {
+      let cd_nom = props.taxref.cd_nom
+      if (!uniq_cd_nom_list.includes(cd_nom)) {
+        uniq_cd_nom_list.push(cd_nom)
+        all_species.push(props)
+      }
+    })
+    this.surveySpecies = all_species;
   }
 
   getCoords(obs) {

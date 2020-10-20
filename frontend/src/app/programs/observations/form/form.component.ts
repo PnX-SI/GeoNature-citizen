@@ -125,7 +125,7 @@ export class ObsFormComponent implements AfterViewInit {
     private formBuilder: FormBuilder,
     private dateParser: NgbDateParserFormatter,
     private programService: GncProgramsService,
-    private flowService: ModalFlowService,
+    public flowService: ModalFlowService,
     private toastr: ToastrService,
     private auth: AuthService,
     private mapService: MapService
@@ -529,6 +529,12 @@ export class ObsFormComponent implements AfterViewInit {
 
   yourIsValidFn (data) {
     this.jsonValid = data;
+  }
+
+  isValid () {
+    let resp = this.obsForm.valid;
+    if (this.customForm.json_schema) resp = resp && this.jsonValid;
+    return resp
   }
 
 }

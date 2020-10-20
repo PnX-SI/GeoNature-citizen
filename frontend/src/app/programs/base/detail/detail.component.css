@@ -30,3 +30,9 @@ h5.card-title {
     max-height: 60vh;
     overflow: auto;
 }
+
+.card-img-top {
+    width: auto;
+    height: 225px;
+    object-fit: contain;
+}

@@ -23,7 +23,6 @@
   background: url(/assets/background.jpg) no-repeat;
   background-size: cover;
   height: calc(100vh - var(--router-outlet-margin-top));
-  margin-top: var(--router-outlet-margin-top);
 }
 
 #welcome h1 {
@@ -287,19 +286,26 @@ section .observations {
   border-bottom: solid 3px var(--secondary);
 }
 
+#newObsDiv {
+  background: #eee;
+  padding: 5px 0px 5px 5px;
+  overflow: scroll;
+  height: calc(100vh - 150px);
+}
+
 @media screen and (max-width: 1024px){
   #slider .carousel-text {
     min-width: inherit !important;
   }
 }
 @media screen and (max-width: 760px){
-  .obs-tabs .tab-pane.active #mapList #list, .obs-tabs .tab-pane.active #map{
+  .obs-tabs .tab-pane.active #mapList #list, .obs-tabs .tab-pane.active #map {
     max-height: calc(100vh - 295px);
     overflow: scroll;
   }
 }
 @media screen and (max-width: 576px){
-  .obs-tabs .tab-pane.active #mapList #list, .obs-tabs .tab-pane.active #map{
+  .obs-tabs .tab-pane.active #mapList #list, .obs-tabs .tab-pane.active #map {
     max-height: calc(100vh - 260px);
     overflow: scroll;
   }
@@ -308,11 +314,4 @@ section .observations {
   section#slide{
     margin-top: 66px !important;
   }
-}
-
-#newObsDiv {
-  background: #eee;
-  padding: 5px 0px 5px 5px;
-  overflow: scroll;
-  height: calc(105vh - var(--list-obs-offset));
 }

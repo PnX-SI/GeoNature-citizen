@@ -1,5 +1,6 @@
 <div id="mapList">
-  <ng-content select="[obs-form]"></ng-content>
+  <ng-content select="[obs-form]" *ngIf="display_form"></ng-content>
+  <span [class.d-none]="display_form">
   <div class="toolbar">
     <select class="form-control rounded-0" id="inputSpecies" [(ngModel)]="selectedTaxon"
       (ngModelChange)="onFilterChange()">
@@ -18,7 +19,7 @@
     </select>
   </div>
   <div class="col-lg-12 mx-4 mt-2 mb-4">
-    <strong>Observations </strong> <span class="text-muted">({{ (features$ | async)?.length }})</span>
+    <strong><span *ngIf="router.url.includes('mydashboard')">Mes </span>Observations </strong> <span class="text-muted">({{ (features$ | async)?.length }})</span>
     <ng-content select="[add-obs]"></ng-content>
   </div>
   <div id="list">
@@ -56,9 +57,7 @@
             owner-actions></i>
           </span>
         </div>
-       
-      
-        <p >
+        <p>
           le <span>{{ o.properties.date }}</span>
           <span *ngIf="o.properties.municipality?.name">
             à {{ o.properties.municipality?.name }}</span>
@@ -67,7 +66,7 @@
       <div class="hide detail-link" [routerLink]="['/programs', o.properties.id_program, 'observations', o.properties.id_observation]" style="cursor:pointer" title="Voir les détails de cette observation">
         <img src="assets/binoculars.png"/>
       </div>
-      <!-- <a class="hide" ><img class="on-map" src="assets/binoculars.png" /></a> -->
     </div>
   </div>
+  </span>
 </div>

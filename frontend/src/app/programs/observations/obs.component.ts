@@ -56,7 +56,10 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     private metaTagService: Meta
   ) {
     super()
-    this.route.params.subscribe(params => (this.program_id = params["id"]));
+    this.route.params.subscribe(params => {
+      this.program_id = params["id"];
+      this.flowService.closeModal(); // Avoid keeping another program's form open
+    });
     this.route.fragment.subscribe(fragment => {
       this.fragment = fragment;
     });
@@ -110,14 +113,15 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     };
   }
 
-  @HostListener("document:ObservationFilterEvent", ["$event"])
-  observationFilterEventHandler(e: CustomEvent) {
-    e.stopPropagation();
-    this.obsList.observations = {
-      type: "FeatureCollection",
-      features: this.observations.features
-    };
-  }
+  // @HostListener("document:ObservationFilterEvent", ["$event"])
+  // observationFilterEventHandler(e: CustomEvent) {
+    // e.stopPropagation();
+    // console.log("FOURTR", this.obsList)
+    // this.obsList.observations = {
+      // type: "FeatureCollection",
+      // features: this.observations.features
+    // };
+  // }
 
   addObsClicked () {
     this.modalFlow.first.clicked();

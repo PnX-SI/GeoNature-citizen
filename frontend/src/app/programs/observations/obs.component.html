@@ -39,11 +39,18 @@
         [observations]="observations"
         [taxa]="surveySpecies"
         [displayOwnerActions]="userDashboard"
+        [displayForm]="flowService.display"
         (obsSelect)="obsMapRef.showPopup($event)"
         (deleteObs)="deleteObs.emit($event)">
-          <button type="button" class="btn btn-success mr-4 float-right" add-obs (click)="addObsClicked()">Ajouter une observation</button>
-          <app-modalflow #modalFlowRef [coords]="coords" [program_id]="program_id" [form_message]="program?.form_message" [modalversion]="false" obs-form>
-            <!-- <button type="button" class="btn btn-success mr-4" btn-open>Ajouter</button> -->
+>
+          <button
+            type="button"
+            class="btn btn-success mr-4 float-right"
+            add-obs
+            (click)="addObsClicked()"
+            *ngIf="!userDashboard"
+            ngbTooltip="Ajouter une observation">Ajouter</button>
+          <app-modalflow #modalFlowRef [coords]="coords" [program_id]="program_id" [form_message]="program?.form_message" [modalversion]="AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION" obs-form>
           </app-modalflow>
         </app-obs-list>
     </div>
