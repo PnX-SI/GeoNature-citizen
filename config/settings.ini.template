@@ -6,6 +6,13 @@ my_local=fr_FR.UTF-8
 # My host URL or IP with / at the end
 my_url=https://mondomaine.org/
 
+url_application=http://url.com/gncitizen        # Url For the frontend
+api_endpoint=http://51.210.52.65:5002/api        # Url for the geonature api don't forget /api
+api_port=5002
+api_taxhub=http://127.0.0.1:5000/api/             # Url for the taxhub api
+
+# Configuration front
+server_side=false  #true or false for server side rendering
 
 ### CONFIGURATION PostgreSQL ###
 
@@ -14,6 +21,8 @@ my_url=https://mondomaine.org/
 pg_host=localhost
 # Port sur lequel PostgreSQL ecoute
 pg_port=5432
+#Base de donnée Geonature
+pg_dbname=dbname
 # Nom de l'utilisateur propriétaire des bases UsersHub, GeoNature, TaxHub
 user_pg=dbuser
 # Pass de l'utilisateur propriétaire des bases UsersHub, GeoNature, TaxHub
