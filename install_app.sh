@@ -73,6 +73,18 @@ else
 fi
 cd ..
 
+# Création du venv
+FLASKDIR=$(readlink -e "${0%/*}")
+APP_DIR="$(dirname "$FLASKDIR")"
+venv_dir="venv"
+venv_path=$FLASKDIR/$venv_dir
+if [ ! -f $venv_path/bin/activate ]; then
+  python3 -m virtualenv $venv_path
+fi
+source $venv_path/bin/activate
+pip install --upgrade pip
+pip install -r backend/requirements.txt
+deactivate
 
 #Création de la conf supervisor
 sudo -s cp api_geonature-service.conf /etc/supervisor/conf.d/
