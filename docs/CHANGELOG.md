@@ -6,20 +6,32 @@ CHANGELOG
 
 Voir https://github.com/PnX-SI/GeoNature-citizen/compare/dev
 
-**🚀 New features**
+**🚀 Nouveautés**
 
-* Révision et rérganisation complète de la documentation (#000000)
-* Mise en place d'un outil permettant de générer un projet QGIS d'administration des données de GeoNature-citizen (#221)
-* Ajout de métadonnées aux pages web (title, description, description)
+* Développement de la possibilité de créer des programmes d'inventaires et de visites de sites, basés sur des champs additionnels dynamiques stockés en jsonb, uniquement pour des mares pour le moment (https://www.a-vos-mares.org) (#34)
+* Possibilité de définir si un programme est de type "Observations" ou "Sites" (#179, #209)
+* Possibilité d'ajouter des champs additionnels dynamiques stockés en jsonb sur les programmes de type "Observations", utilisant Angular JSON Schema Form (#181)
+* Révision ergonomique du formulaire de saisie, positionné sur la liste des observations (#218)
+* Ajout d'un paramètre ``FRONTEND.NEW_OBS_FORM_MODAL_VERSION``, permettant de définir si le formulaire de saisie est sur la barre latérale ou dans une modale comme précédemment (#218)
+* Possibilité de charger plusieurs photos associées à une observation (#208)
+* Ajout d'une page de détail pour chaque observation, incluant les éventuelles photos associées (#223)
+* Mise en place d'un outil permettant de générer un projet QGIS d'administration des données de GeoNature-citizen (#222)
+* Ajout de métadonnées aux pages web (title, description, mot-clés) (#205)
+* Ajout d'un message paramétrable (``registration_message``) d'incitation à l'inscription (#177)
+* Ajout de la possibilité d'afficher le nom scientifique des taxons (``taxonDisplaySciName``)
+* Sécurisation de l'interface d'administration des programmes (#211)
 * Améliorations diverses du style et de l'ergonomie
+* Révision et réorganisation complète de la documentation (merci @Splendens et @ksamuel) (#166)
 
-**🐛 Fixes**
-
-* 
-
-**⚠️ Version note**
+**🐛 Corrections**
 
 * 
+
+**⚠️ Notes de version**
+
+* Un SQL pour mettre à jour la BDD pour ceux en version 0.3.0 ? data/migrations/v0.3.1_to_0.4.0.sql ? A renommer v0.3.0_to_1.0.0 ?
+* Des scripts ou commandes spécifiques à cette version à exécuter ?
+* Une procédure classique de MAJ de GN-citizen à suivre ?
 
 0.3.0 (2020-02-12)
 ------------------
