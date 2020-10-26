@@ -9,8 +9,8 @@ echo "FLASKDIR: $FLASKDIR"
 echo "APP_DIR: $APP_DIR"
 
 # activate the virtualenv
-source $FLASKDIR/$venv_dir/bin/activate
-echo "VENV: $FLASKDIR/$venv_dir/bin/activate"
+source $FLASKDIR/../$venv_dir/bin/activate
+echo "VENV: $FLASKDIR/../$venv_dir/bin/activate"
 
 cd $FLASKDIR
 
@@ -24,4 +24,4 @@ elif [[ ! -d $LOG_DIR ]]; then
 fi
 
 echo "Starting gunicorn"
-exec gunicorn3 --error-log $APP_DIR/var/log/gn_errors.log --pid="geonature-citizen.pid" -b :5002 --reload -n "geonature-citizen" wsgi:app
+exec gunicorn --error-log $APP_DIR/var/log/gn_errors.log --pid="geonature-citizen.pid" -b :5002 --reload -n "geonature-citizen" wsgi:app

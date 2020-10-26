@@ -1,6 +1,9 @@
 #!/bin/bash
 DIR=$(pwd)
 
+#Installation de gunicorn
+apt update && apt install gunicorn
+
 #création d'un fichier de configuration pour api/back
 if [ ! -f config/settings.ini ]; then
   echo 'Fichier de configuration du projet non existant, copie du template...'
