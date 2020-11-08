@@ -8,51 +8,56 @@ Voir https://github.com/PnX-SI/GeoNature-citizen/compare/dev
 
 **🚀 Nouveautés**
 
-* Développement de la possibilité de créer des programmes d'inventaires et de visites de sites, basés sur des champs additionnels dynamiques stockés en jsonb, uniquement pour des mares pour le moment (https://www.a-vos-mares.org) (#34)
-* Possibilité de définir si un programme est de type "Observations" ou "Sites" (#179, #209)
-* Possibilité d'ajouter des champs additionnels dynamiques stockés en jsonb sur les programmes de type "Observations", utilisant Angular JSON Schema Form (#181)
-* Révision ergonomique du formulaire de saisie, positionné sur la liste des observations (#218)
-* Ajout d'un paramètre ``FRONTEND.NEW_OBS_FORM_MODAL_VERSION``, permettant de définir si le formulaire de saisie est sur la barre latérale ou dans une modale comme précédemment (#218)
-* Possibilité de charger plusieurs photos associées à une observation (#208)
-* Ajout d'une page de détail pour chaque observation, incluant les éventuelles photos associées (#223)
-* Mise en place d'un outil permettant de générer un projet QGIS d'administration des données de GeoNature-citizen (#222)
-* Ajout de métadonnées aux pages web (title, description, mot-clés) (#205)
-* Ajout d'un message paramétrable (``registration_message``) d'incitation à l'inscription (#177)
+* Développement de la possibilité de créer des programmes d'inventaires et de visites de sites, basés sur des champs additionnels dynamiques stockés en jsonb, uniquement pour des mares pour le moment (https://www.a-vos-mares.org) (#34, @QuentinJouet & @jolleon)
+* Possibilité de définir si un programme est de type "Observations" ou "Sites" (#179, #209, @QuentinJouet & @jolleon)
+* Possibilité d'ajouter des champs additionnels dynamiques stockés en jsonb sur les programmes de type "Observations", utilisant Angular JSON Schema Form (#181, @QuentinJouet & @jolleon)
+* Révision ergonomique du formulaire de saisie, positionné sur la liste des observations (#218, @jolleon)
+* Révision du tableau de bord de l'observateur pour un affichage liste/carte semblable à une page de programme (@jolleon) 
+* Exports des observateurs adaptés pour contenir les données de formulaires personnalisés (@jolleon)
+* Ajout d'un paramètre ``FRONTEND.NEW_OBS_FORM_MODAL_VERSION``, permettant de définir si le formulaire de saisie est sur la barre latérale ou dans une modale comme précédemment (#218, @jolleon)
+* Possibilité de charger plusieurs photos associées à une observation (#208, @jolleon)
+* Ajout d'une page de détail pour chaque observation, incluant les éventuelles photos associées (#223, @jolleon)
+* Mise en place d'un outil permettant de générer un projet QGIS d'administration des données de GeoNature-citizen (#222, @lpofredc)
+* Ajout de métadonnées aux pages web (title, description, mot-clés) (#205, @lpofredc)
+* Ajout d'un message paramétrable (``registration_message``) d'incitation à l'inscription (#177, @lpofredc)
+* Ajout d'un message personnalisé en tête du formulaire de saisie d'une observation, personnalisé dans la table de paramétrage du programme (@lpofredc)
 * Ajout de la possibilité d'afficher le nom scientifique des taxons (``taxonDisplaySciName``)
-* Sécurisation de l'interface d'administration des programmes (#211)
-* Améliorations diverses du style et de l'ergonomie
+* Sécurisation de l'interface d'administration des programmes (#211) (@lpofredc) 
+* Enrichissement de l'interface d'administration pour gérer dorénavent les programmes, les formulaires personnalisés (*json schema form*), et les utilisateurs inscrits (@lpofredc)
+* Intitulé des programmes personnalisables (ex: Missions, Enquêtes) (@lpofredc)
+* Améliorations diverses du style et de l'ergonomie (@jolleon, @lpofredc)
 * Révision et réorganisation complète de la documentation (merci @Splendens et @ksamuel) (#166)
 
 **🐛 Corrections**
 
-* 
+* Désactive le bouton d'enregistrement d'une observation après sa validation (évite les enregistrements multiples en cas de réponse lente du backend) (@jolleon)
+
 
 **⚠️ Notes de version**
 
-* Un SQL pour mettre à jour la BDD pour ceux en version 0.3.0 ? data/migrations/v0.3.1_to_0.4.0.sql ? A renommer v0.3.0_to_1.0.0 ?
-* Des scripts ou commandes spécifiques à cette version à exécuter ?
-* Une procédure classique de MAJ de GN-citizen à suivre ?
+* Lancer le script SQL de mise à jour de la BDD de GeoNature-citizen https://raw.githubusercontent.com/PnX-SI/GeoNature-citizen/master/data/migrations/data/migrations/v0.3.1_to_1.0.0.sql
+
 
 0.3.0 (2020-02-12)
 ------------------
 
 **🚀 New features**
 
-* Améliorations du tableau de bord de l'observateur connecté avec personnalisation de l'avatar et gestion des observations personnelles (par @HamoudaAmine, *cf.* #148) 
-* Ajout de l'avatar observateur dans la liste des observations (par @HamoudaAmine) 
-* Amélioration du fonctionnement adaptatif de l'interface (par @HamoudaAmine) 
-* Ajout d'un bloc personnalisable sur la page d'accueil, sous la liste des programmes (par @lpofredc) 
-* Ajout d'un dispositif de validation des nouvelles inscriptions par email (par @HamoudaAmine) 
-* L'authentification se fait maintenant avec l'email de l'utilisateur (par @HamoudaAmine) 
-* L'affichage du bloc de statistiques est optionnel (par @HamoudaAmine, *cf*. #165) 
-* Le nom des espèces est cliquable avec un lien paramétrable finissant par le cd_nom, utilisable avec GeoNature-atlas ou avec espèce le site de l'INPN (par @HamoudaAmine, *cf.* #142) 
-* Amélioration du footer (par @HamoudaAmine *cf.* #102)
+* Améliorations du tableau de bord de l'observateur connecté avec personnalisation de l'avatar et gestion des observations personnelles (#148, @HamoudaAmine) 
+* Ajout de l'avatar observateur dans la liste des observations (@HamoudaAmine) 
+* Amélioration du fonctionnement adaptatif de l'interface (@HamoudaAmine) 
+* Ajout d'un bloc personnalisable sur la page d'accueil, sous la liste des programmes (@lpofredc) 
+* Ajout d'un dispositif de validation des nouvelles inscriptions par email (@HamoudaAmine) 
+* L'authentification se fait maintenant avec l'email de l'utilisateur (@HamoudaAmine) 
+* L'affichage du bloc de statistiques est optionnel (#165, @HamoudaAmine) 
+* Le nom des espèces est cliquable avec un lien paramétrable finissant par le cd_nom, utilisable avec GeoNature-atlas ou avec espèce le site de l'INPN (#142, @HamoudaAmine) 
+* Amélioration du footer (#102, @HamoudaAmine)
 
 **🐛 Fixes**
 
-* La compilation SSR fonctionne (par @HamoudaAmine, fix #120, #192)
-* Correctifs d'UI (fix #184, #130)
-* Nettoyage de code (par @lpofredc, fix #168)
+* La compilation SSR fonctionne (#120, #192, @HamoudaAmine)
+* Correctifs d'UI (#184, #130)
+* Nettoyage de code (#168, @lpofredc)
 
 **⚠️ Version note**
 
@@ -64,11 +69,11 @@ Voir https://github.com/PnX-SI/GeoNature-citizen/compare/dev
 **🚀 New features**
 
 * Better geolocation icon (#162)
-* Allow to desactivate Signup/signin (by @jbdesbas)
-* Allow to add an optional email field in form when observer is not signed in (by @jbdesbas)
-* Allow to desactivate Observers names (by @jbdesbas & @lpofredc)
-* Program selection style in modal similar to home page (by @lpofredc)
-* Add a CHANGELOG file (by @camillemonchicourt)
+* Allow to desactivate Signup/signin (@jbdesbas)
+* Allow to add an optional email field in form when observer is not signed in (@jbdesbas)
+* Allow to desactivate Observers names (@jbdesbas & @lpofredc)
+* Program selection style in modal similar to home page (@lpofredc)
+* Add a CHANGELOG file (@camillemonchicourt)
 * Add demo link into README.md
 
 **🐛 Some fixes**
@@ -83,9 +88,9 @@ End of Natural Solutions mission
 
 **🚀 New features**
 
-* Taxonomy lists are now selectable in program admin backoffice (by @lpofredc)
-* Program description width is now 1/3 (instead of 2/3) of program header (by @HamoudaAmine from @NaturalSolutions)
-* Update badges rules engine (by @HamoudaAmine from @NaturalSolutions)
+* Taxonomy lists are now selectable in program admin backoffice (@lpofredc)
+* Program description width is now 1/3 (instead of 2/3) of program header (@HamoudaAmine from @NaturalSolutions)
+* Update badges rules engine (@HamoudaAmine from @NaturalSolutions)
 
 ![Programs Model - GN-Citizen: Backoffice d'administration](https://user-images.githubusercontent.com/22891423/64546035-27b87d00-d32a-11e9-9ade-e286283decab.jpg)
 
