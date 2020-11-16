@@ -9,8 +9,8 @@ echo "FLASKDIR: $FLASKDIR"
 echo "APP_DIR: $APP_DIR"
 
 # activate the virtualenv
-source $FLASKDIR/$venv_dir/bin/activate
-echo "VENV: $FLASKDIR/$venv_dir/bin/activate"
+source $FLASKDIR/../$venv_dir/bin/activate
+echo "VENV: $FLASKDIR/../$venv_dir/bin/activate"
 
 cd $FLASKDIR
 
