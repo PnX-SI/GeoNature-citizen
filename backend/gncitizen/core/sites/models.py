@@ -1,13 +1,15 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import enum
+# import enum
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.orm import relationship
 
 from gncitizen.core.commons.models import (
     ProgramsModel,
     TimestampMixinModel,
     MediaModel,
+    CustomFormModel
 )
 from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
@@ -23,15 +25,25 @@ def create_schema(db):
     db.session.commit()
 
 
-class SiteType(enum.Enum):
-    """Liste et paramêtres des types de sites supportés
-    (pour l'instant seulement "mare").
-    """
+@serializable
+class SiteTypeModel(TimestampMixinModel, db.Model):
+    """Table des types de sites
+    Formulaire généré par la lib https://github.com/hamzahamidi/ajsf
+    json de création de formulaire enregistré dans custom_form.json_schema"""
 
-    mare = ROOT_DIR / "config/custom/form/mares.json" # json_schema file path
+    __tablename__ = "t_typesite"
+    __table_args__ = {"schema": "gnc_sites"}
+    id_typesite = db.Column(db.Integer, primary_key=True, unique=True)
+    category = db.Column(db.String(200))
+    type = db.Column(db.String(200))
+    id_form = db.Column(
+        db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
+    )
+    custom_form = relationship("CustomFormModel")
+    pictogram = db.Column(db.Text)
 
-    def __init__(self, form_schema):
-        self.form_schema = form_schema
+    def __repr__(self):
+        return "<TypeSite {0}>".format(self.id_typesite)
 
 
 @serializable
@@ -47,7 +59,10 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
         db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
     )
     name = db.Column(db.String(250))
-    site_type = db.Column(db.Enum(SiteType, native_enum=False), nullable=False)
+    id_type = db.Column(
+        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False
+    )
+    site_type = relationship("SiteTypeModel")
     geom = db.Column(Geometry("POINT", 4326))
 
     def __repr__(self):
@@ -64,7 +79,10 @@ class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE")
     )
-    site_type = db.Column(db.Enum(SiteType, native_enum=False), nullable=False)
+    id_typesite = db.Column(
+        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE")
+    )
+    site_type = relationship("SiteTypeModel")
 
 
 @serializable

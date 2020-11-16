@@ -1,5 +1,5 @@
 from flask import Blueprint, request, current_app
-from .models import SiteType, SiteModel, VisitModel, MediaOnVisitModel
+from .models import SiteModel, SiteTypeModel, VisitModel, MediaOnVisitModel
 from gncitizen.core.users.models import UserModel
 from gncitizen.core.commons.models import MediaModel
 import uuid
@@ -33,8 +33,8 @@ def get_types():
     """
     try:
         data = []
-        for t in SiteType:
-            data.append(t.name)
+        for t in SiteTypeModel.query.all():
+            data.append(t.type)
         return {"count": len(data), "site_types": data}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
@@ -85,9 +85,8 @@ def get_site(pk):
 def get_site_jsonschema(pk):
     try:
         site = SiteModel.query.get(pk)
-        with site.site_type.form_schema.open() as json_data:
-            data_dict = json.load(json_data)
-            return data_dict, 200
+        data_dict = site.site_type.custom_form.json_schema
+        return data_dict, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
 
@@ -217,11 +216,11 @@ def post_site():
                   description: Site name
                   default:  none
                   example: "Site 1"
-                site_type:
-                  type: string
-                  description: must be one of the supported site types
+                id_type:
+                  type: integer
+                  description: must be one of the supported site types' id
                   required: True
-                  example: "mare"
+                  example: 1
                 geometry:
                   type: string
                   example: {"type":"Point", "coordinates":[5,45]}

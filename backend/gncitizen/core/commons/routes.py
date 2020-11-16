@@ -125,7 +125,10 @@ def get_program(pk):
           # Get sites types for sites programs. TODO condition
           if feature["properties"]["module"]["name"] == "sites":
             site_types_qs = CorProgramSiteTypeModel.query.filter_by(id_program=pk)
-            site_types = [st.site_type.name for st in site_types_qs]
+            site_types = [
+              { "value" : st.site_type.id_typesite, "text" : st.site_type.type }
+              for st in site_types_qs
+            ]
             feature["site_types"] = site_types
           features.append(feature)
       return {"features": features}, 200
