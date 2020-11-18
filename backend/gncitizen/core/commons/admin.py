@@ -9,6 +9,7 @@ import requests
 from flask import Blueprint, current_app, request
 from flask_admin.contrib.geoa import ModelView
 from flask_admin.form import SecureForm
+from flask_admin.form.upload import FileUploadField
 from flask_ckeditor import CKEditorField
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended.exceptions import UserLoadError
@@ -25,13 +26,14 @@ from flask_admin.contrib.sqla.view import ModelView
 from jinja2 import Markup
 
 from gncitizen.core.users.models import UserModel
-from gncitizen.utils.env import admin
+from gncitizen.utils.env import admin, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
 from server import db
 
 from .models import ProgramsModel
 from gncitizen.core.taxonomy.models import BibListes
+import os
 
 try:
     from flask import _app_ctx_stack as ctx_stack
@@ -111,3 +113,23 @@ class CustomFormView(ModelView):
 class UserView(ModelView):
     column_exclude_list = ['password']
     form_excluded_columns = ['timestamp_create','timestamp_update','password']
+
+
+def get_geom_file_path(obj, file_data):
+    return 'geometries/{}'.format(file_data.filename)
+
+class GeometryView(ModelView):
+    column_exclude_list = ['geom']
+    form_excluded_columns = ['timestamp_create','timestamp_update']
+    form_overrides = dict(geom_file=FileUploadField)
+    form_args = dict(
+        geom_file=dict(
+            label="Geometry file (GeoJSON ou KML)",
+            base_path=str(MEDIA_DIR),
+            allowed_extensions=['json', 'kml'],
+            namegen=get_geom_file_path
+        )
+    )
+
+    def on_model_change(self, form, model, is_created):
+        model.set_geom_from_geom_file()
