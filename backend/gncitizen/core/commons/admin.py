@@ -126,7 +126,7 @@ class GeometryView(ModelView):
         geom_file=dict(
             label="Geometry file (GeoJSON ou KML)",
             base_path=str(MEDIA_DIR),
-            allowed_extensions=['json', 'kml'],
+            allowed_extensions=['geojson', 'json', 'kml'],
             namegen=get_geom_file_path
         )
     )

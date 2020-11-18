@@ -82,7 +82,7 @@ class GeometryModel(TimestampMixinModel, db.Model):
         name, ext = os.path.splitext(self.geom_file)
         with open(self.get_geom_file_path()) as geom_file:
             geo_data = geom_file.read()
-            if ext == '.json':
+            if ext in ['.geojson', '.json']:
                 self.geom = ST_GeomFromGeoJSON(geo_data)
             elif ext == '.kml':
                 self.geom = ST_GeomFromKML(geo_data)
