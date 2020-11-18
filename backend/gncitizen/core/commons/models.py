@@ -11,8 +11,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 
 from gncitizen.core.taxonomy.models import BibListes
-from gncitizen.utils.env import db
+from gncitizen.utils.env import db, MEDIA_DIR
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
+import os
 
 
 class TimestampMixinModel(object):
@@ -60,6 +61,37 @@ class CustomFormModel(TimestampMixinModel, db.Model):
     def __repr__(self):
         return self.name
 
+from geoalchemy2.functions import ST_GeomFromKML, ST_GeomFromGeoJSON
+
+@serializable
+class GeometryModel(TimestampMixinModel, db.Model):
+    """Table des géométries associées aux programmes"""
+
+    __tablename__ = "t_geometries"
+    __table_args__ = {"schema": "gnc_core"}
+    id_geom = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.Text(), nullable=True)
+    geom = db.Column(Geometry("GEOMETRY", 4326))
+    geom_file = db.Column(db.String(250), nullable=True)
+
+    def get_geom_file_path(self):
+        return os.path.join(str(MEDIA_DIR), self.geom_file)
+
+    def set_geom_from_geom_file(self):
+        name, ext = os.path.splitext(self.geom_file)
+        with open(self.get_geom_file_path()) as geom_file:
+            geo_data = geom_file.read()
+            if ext == '.json':
+                self.geom = ST_GeomFromGeoJSON(geo_data)
+            elif ext == '.kml':
+                self.geom = ST_GeomFromKML(geo_data)
+
+    def __repr__(self):
+        return self.name
+
+from geoalchemy2.shape import to_shape
+from geojson import Feature
 
 @serializable
 @geoserializable
@@ -90,16 +122,24 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     is_active = db.Column(
         db.Boolean(), server_default=expression.true(), default=True
     )
-    geom = db.Column(Geometry("GEOMETRY", 4326))
+    # geom = db.Column(Geometry("GEOMETRY", 4326))
+    id_geom = db.Column(
+        db.Integer, db.ForeignKey(GeometryModel.id_geom), nullable=False
+    )
+    geometry = relationship("GeometryModel")
     id_form = db.Column(
         db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
     )
     custom_form = relationship("CustomFormModel")
 
     def get_geofeature(self, recursif=True, columns=None):
-        return self.as_geofeature(
-            "geom", "id_program", recursif, columns=columns
+        geometry = to_shape(self.geometry.geom)
+        feature = Feature(
+            id=self.id_program,
+            geometry=geometry,
+            properties=self.as_dict(True),
         )
+        return feature
 
     def __repr__(self):
         return self.title
