@@ -19,7 +19,8 @@ import { MapService } from "../../base/map/map.service"
   selector: "app-obs-map",
   template: `
     <div
-      [id]="options.MAP_ID"
+      [id]="'obsMap'"
+      class="obsMap"
       #map
       i18n-data-observation-zoom-statement-warning
       data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
@@ -29,7 +30,7 @@ import { MapService } from "../../base/map/map.service"
   encapsulation: ViewEncapsulation.None
 })
 export class ObsMapComponent extends BaseMapComponent {
-  feature_id_key: "id_observation";
+  feature_id_key = "id_observation";
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,

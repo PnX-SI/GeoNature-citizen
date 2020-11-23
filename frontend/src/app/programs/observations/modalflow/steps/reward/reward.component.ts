@@ -191,7 +191,7 @@ export class RewardComponent implements IFlowComponent {
   }
 
   close(d) {
-    this.data.service.close(d);
+    this.modalFlowService.closeModal()
   }
 
   clicked(d) {

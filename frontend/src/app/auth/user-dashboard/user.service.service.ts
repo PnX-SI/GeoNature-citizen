@@ -44,6 +44,12 @@ export class UseService {
     );
   }
 
+  getSitesByUserId(userId: number) {
+    return this.http.get<Object>(
+      `${AppConfig.API_ENDPOINT}/sites/users/${userId}`
+    );
+  }
+
   deleteObsservation(idObs: any) {
     return this.http.delete<Object>(`${AppConfig.API_ENDPOINT}/observations/${idObs}`);
   }

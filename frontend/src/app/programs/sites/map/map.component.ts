@@ -19,6 +19,7 @@ import { MapService } from "../../base/map/map.service"
   template: `
     <div
       [id]="options.MAP_ID"
+      class="obsMap"
       #map
       data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre site."
     ></div>
@@ -27,7 +28,7 @@ import { MapService } from "../../base/map/map.service"
   encapsulation: ViewEncapsulation.None
 })
 export class SitesMapComponent extends BaseMapComponent {
-  feature_id_key: "id_site";
+  feature_id_key = "id_site";
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,

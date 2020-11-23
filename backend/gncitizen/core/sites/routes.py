@@ -184,6 +184,16 @@ def get_program_sites(id):
         return {"error_message": str(e)}, 400
 
 
+@routes.route("/users/<int:user_id>", methods=["GET"])
+@json_resp
+def get_user_sites(user_id):
+    try:
+        created_sites = SiteModel.query.filter_by(id_role=user_id).all()
+        return prepare_sites(created_sites)
+    except Exception as e:
+        return {"error_message": str(e)}, 400
+
+
 @routes.route("/", methods=["POST"])
 @json_resp
 @jwt_optional

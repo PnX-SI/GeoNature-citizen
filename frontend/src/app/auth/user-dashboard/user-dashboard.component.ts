@@ -33,6 +33,7 @@ export class UserDashboardComponent implements OnInit {
   recognition_badges: any = [];
   observations: any;
   myobs: any;
+  mysites: any;
   rows: any = [];
   obsToExport: any = [];
   userForm: FormGroup;
@@ -41,6 +42,7 @@ export class UserDashboardComponent implements OnInit {
   extentionFile: any;
   newAvatar: string | ArrayBuffer;
   idObsToDelete: number;
+  tab: string = 'sites';
 
   constructor(
     private auth: AuthService,
@@ -96,10 +98,14 @@ export class UserDashboardComponent implements OnInit {
     let userObservations = this.userService.getObservationsByUserId(
       this.role_id
     );
+    let userSites = this.userService.getSitesByUserId(
+      this.role_id
+    );
     if (AppConfig["REWARDS"]) {
       data.push(badgeCategories);
     }
     data.push(userObservations);
+    data.push(userSites);
 
     forkJoin(data).subscribe((data: any) => {
       if (data.length > 1) {
@@ -113,6 +119,7 @@ export class UserDashboardComponent implements OnInit {
           if (badge.type == "recognition") this.recognition_badges.push(badge);
         });
         this.myobs = data[1];
+        this.mysites = data[2];
         this.observations = data[1].features;
         this.observations.forEach(obs => {
           let coords: Point = new Point(
@@ -122,6 +129,15 @@ export class UserDashboardComponent implements OnInit {
           obs.properties.coords = coords; // for use in user obs component
           this.rowData(obs, coords);
           this.obsExport(obs);
+        });
+        this.mysites.features.forEach(site => {
+          let coords: Point = new Point(
+            site.geometry.coordinates[0],
+            site.geometry.coordinates[1]
+          );
+          site.properties.coords = coords; // for use in user obs component
+          // this.rowData(obs, coords);
+          // this.obsExport(obs);
         });
       } else {
         this.observations = data[0].features;
