@@ -18,7 +18,7 @@ import { MapService } from "../../base/map/map.service"
   selector: "app-sites-map",
   template: `
     <div
-      [id]="options.MAP_ID"
+      [id]="'sitesMap'"
       class="obsMap"
       #map
       data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre site."

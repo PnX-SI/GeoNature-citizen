@@ -23,7 +23,7 @@
       <user-sites
         [mysites]="mysites"
         *ngIf="mysites && tab === 'sites'"
-        (deleteSite)="openDeleteModal(deleteModal, $event)">
+        (deleteSite)="openSiteDeleteModal(siteDeleteModal, $event)">
       </user-sites>
       <user-observations
         [myobs]="myobs"
@@ -231,6 +231,21 @@
     <div class="modal-delete-footer">
       <button type="button" class="cancel-btn" style="margin-right: 15px" (click)="onCancelDelete()">ANNULER</button>
       <button type="button" class="green-btn" (click)="onDeleteObs()">OUI</button>
+    </div>
+  </ng-template>
+
+  <ng-template #siteDeleteModal let-modal>
+    <div class="modal-delete-header">
+      <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
+    </div>
+    <div class="modal-delete-body">
+      Êtes-vous sûr de vouloir supprimer ce site et toutes les informations qui y sont rattachées ?
+      <br>
+      La suppression sera définitive
+    </div>
+    <div class="modal-delete-footer">
+      <button type="button" class="cancel-btn" style="margin-right: 15px" (click)="onSiteCancelDelete()">ANNULER</button>
+      <button type="button" class="green-btn" (click)="onDeleteSite()">OUI</button>
     </div>
   </ng-template>
 

@@ -110,12 +110,12 @@ class MediaOnVisitModel(TimestampMixinModel, db.Model):
     id_match = db.Column(db.Integer, primary_key=True, unique=True)
     id_data_source = db.Column(
         db.Integer,
-        db.ForeignKey(VisitModel.id_visit, ondelete="SET NULL"),
+        db.ForeignKey(VisitModel.id_visit, ondelete="CASCADE"),
         nullable=False,
     )
     id_media = db.Column(
         db.Integer,
-        db.ForeignKey(MediaModel.id_media, ondelete="SET NULL"),
+        db.ForeignKey(MediaModel.id_media, ondelete="CASCADE"),
         nullable=False,
     )
 

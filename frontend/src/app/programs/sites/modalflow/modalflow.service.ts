@@ -22,7 +22,9 @@ export class SiteModalFlowService extends ModalFlowService {
       items.push(new FlowItem(SiteStepComponent, { ...init_data, service: this }));
       items.push(new FlowItem(SiteCongratsComponent, { service: this, date: new Date().toLocaleDateString()}));
     }
-    items.push(new FlowItem(VisitStepComponent));
+    if (!init_data.updateData) {
+      items.push(new FlowItem(VisitStepComponent));
+    } // else user only edits the site and do not attach visit
     // items.push(new FlowItem(RewardComponent, {service: this}));
     return items;
   }

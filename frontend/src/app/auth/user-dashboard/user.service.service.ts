@@ -54,6 +54,10 @@ export class UseService {
     return this.http.delete<Object>(`${AppConfig.API_ENDPOINT}/observations/${idObs}`);
   }
 
+  deleteSite(idSite: any) {
+    return this.http.delete<Object>(`${AppConfig.API_ENDPOINT}/sites/${idSite}`);
+  }
+
   ConvertToCSV(objArray, headerList) {
     let array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
     let str = "";

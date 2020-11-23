@@ -6,6 +6,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AppConfig } from "../../../conf/app.config";
 import { AuthService } from "./../auth.service";
 import { UseService } from "./user.service.service";
+import { SiteService } from "../../programs/sites/sites.service";
 import { saveAs } from "file-saver";
 import * as _ from "lodash";
 import { Point } from "leaflet";
@@ -42,6 +43,7 @@ export class UserDashboardComponent implements OnInit {
   extentionFile: any;
   newAvatar: string | ArrayBuffer;
   idObsToDelete: number;
+  idSiteToDelete: number;
   tab: string = 'sites';
 
   constructor(
@@ -50,7 +52,8 @@ export class UserDashboardComponent implements OnInit {
     private router: Router,
     private modalService: NgbModal,
     private flowService: ModalFlowService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public siteService: SiteService
   ) {}
 
   ngOnInit(): void {
@@ -75,6 +78,10 @@ export class UserDashboardComponent implements OnInit {
               this.flowService.getModalCloseSatus().subscribe(status => {
                 if (status === "updateObs") this.getData();
               });
+              this.siteService.siteEdited.subscribe(() => {
+                this.mysites = null;
+                this.getData();
+              })
             }
           }),
           catchError(err => throwError(err))
@@ -340,6 +347,27 @@ export class UserDashboardComponent implements OnInit {
       this.modalRefDel.close();
       this.getData();
       this.idObsToDelete = null;
+    });
+  }
+
+  openSiteDeleteModal(deleteModal: any, idSite: number) {
+    this.idSiteToDelete = idSite;
+    this.modalRefDel = this.modalService.open(deleteModal, {
+      windowClass: "delete-modal",
+      centered: true
+    });
+  }
+
+  onSiteCancelDelete() {
+    this.modalRefDel.close();
+  }
+
+  onDeleteSite() {
+    this.userService.deleteSite(this.idSiteToDelete).subscribe(() => {
+      this.modalRefDel.close();
+      this.mysites = null;
+      this.getData();
+      this.idSiteToDelete = null;
     });
   }
 

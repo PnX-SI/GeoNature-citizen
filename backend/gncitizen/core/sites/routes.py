@@ -1,4 +1,5 @@
 from flask import Blueprint, request, current_app
+from sqlalchemy import or_
 from .models import SiteModel, SiteTypeModel, VisitModel, MediaOnVisitModel
 from gncitizen.core.users.models import UserModel
 from gncitizen.core.commons.models import MediaModel
@@ -15,7 +16,7 @@ from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
 from server import db
-from flask_jwt_extended import jwt_optional
+from flask_jwt_extended import jwt_optional, jwt_required, get_jwt_identity
 
 routes = Blueprint("sites_url", __name__)
 
@@ -109,20 +110,26 @@ def get_site_photos(site_id):
             } for p in photos]
 
 
-def format_site(site):
+def format_site(site, dashboard=False):
     feature = get_geojson_feature(site.geom)
     site_dict = site.as_dict(True)
     for k in site_dict:
         if k not in ("id_role", "geom"):
             feature["properties"][k] = site_dict[k]
+    if dashboard:
+        feature["properties"]["creator_can_delete"] = site.id_role\
+            and VisitModel.query.filter_by(
+                id_site=site.id_site).filter(or_(
+                VisitModel.id_role!=site.id_role,
+                VisitModel.id_role.is_(None))).count() == 0
     return feature
 
 
-def prepare_sites(sites):
+def prepare_sites(sites, dashboard=False):
     count = len(sites)
     features = []
     for site in sites:
-        formatted = format_site(site)
+        formatted = format_site(site, dashboard)
         photos = get_site_photos(site.id_site)
         if len(photos) > 0:
             formatted['properties']['photo'] = photos[0]
@@ -187,11 +194,13 @@ def get_program_sites(id):
 @routes.route("/users/<int:user_id>", methods=["GET"])
 @json_resp
 def get_user_sites(user_id):
-    try:
-        created_sites = SiteModel.query.filter_by(id_role=user_id).all()
-        return prepare_sites(created_sites)
-    except Exception as e:
-        return {"error_message": str(e)}, 400
+    # try:
+        created_sites = SiteModel.query.filter_by(
+            id_role=user_id).order_by(
+            SiteModel.timestamp_create.desc()).all()
+        return prepare_sites(created_sites, dashboard=True)
+    # except Exception as e:
+    #     return {"error_message": str(e)}, 400
 
 
 @routes.route("/", methods=["POST"])
@@ -284,6 +293,41 @@ def post_site():
         return {"error_message": str(e)}, 400
 
 
+@routes.route("/", methods=["PATCH"])
+@json_resp
+@jwt_required
+def update_site():
+    try:
+        update_data = dict(request.get_json())
+        update_site = {}
+        for prop in ["name", "id_type"]:
+            update_site[prop] = update_data[prop]
+        try:
+            shape = asShape(update_data["geometry"])
+            update_site["geom"] = from_shape(Point(shape), srid=4326)
+        except Exception as e:
+            current_app.logger.warning("[update_site] coords ", e)
+            raise GeonatureApiError(e)
+
+        try:
+            json_data = update_data.get("json_data")
+            if json_data is not None:
+                update_site["json_data"] = json.loads(json_data)
+        except Exception as e:
+            current_app.logger.warning("[update_site] json_data ", e)
+            raise GeonatureApiError(e)
+
+        SiteModel.query.filter_by(id_site=update_data.get(
+            'id_site')).update(update_site, synchronize_session='fetch')
+
+        db.session.commit()
+
+        return ('site updated successfully'), 200
+    except Exception as e:
+        current_app.logger.critical("[update_site] Error: %s", str(e))
+        return {"message": str(e)}, 400
+
+
 @routes.route("/<int:site_id>/visits", methods=["POST"])
 @json_resp
 @jwt_optional
@@ -341,3 +385,21 @@ def post_photo(site_id, visit_id):
     except Exception as e:
         current_app.logger.warning("Error: %s", str(e))
         return {"error_message": str(e)}, 400
+
+
+@routes.route("/<int:site_id>", methods=["DELETE"])
+@json_resp
+@jwt_required
+def delete_observation(site_id):
+    current_user = get_jwt_identity()
+    try:
+        site = db.session.query(SiteModel, UserModel).filter(
+            SiteModel.id_site == site_id).join(UserModel, SiteModel.id_role == UserModel.id_user, full=True).first()
+        if (current_user == site.UserModel.email):
+            SiteModel.query.filter_by(id_site=site_id).delete()
+            db.session.commit()
+            return ('Site deleted successfully'), 200
+        else:
+            return ('delete unauthorized'), 403
+    except Exception as e:
+        return {"message": str(e)}, 500

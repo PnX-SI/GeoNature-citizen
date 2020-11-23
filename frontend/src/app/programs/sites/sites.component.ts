@@ -44,8 +44,7 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
     this.route.fragment.subscribe(fragment => {
       this.fragment = fragment;
     });
-    this.siteService.newSiteCreated.subscribe(
-      newSiteFeature => { this.loadSites(); })
+    this.siteService.newSiteCreated.subscribe(newSiteFeature => { this.loadSites(); })
   }
 
   ngOnInit() {
@@ -54,11 +53,6 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
       this.programs = data.programs;
       this.program = this.programs.find(p => p.id_program == this.program_id);
       this.loadSites();
-      this.programService
-        .getProgramTaxonomyList(this.program_id)
-        .subscribe(taxa => {
-          this.surveySpecies = taxa;
-        });
       this.programService
         .getProgram(this.program_id)
         .subscribe(program => (this.programFeature = program));

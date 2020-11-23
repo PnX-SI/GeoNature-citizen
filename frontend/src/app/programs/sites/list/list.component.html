@@ -9,7 +9,31 @@
     <div *ngFor="let o of sites" (click)="onSiteClick(o)" class="espece">
       <img src="{{ o.properties.photo ? apiEndpoint + o.properties.photo.url : 'assets/no_photo_light.png'}}" />
       <div class="infos">
-        <h5>{{ o.properties.name }}</h5>
+        <h5>
+          {{ o.properties.name }}
+          <span *ngIf="displayOwnerActions" class="pull-right">
+          &nbsp;
+<!--           <app-modalflow [coords]="o.properties.coords" [updateData]="o.properties" [program_id]="o.properties.id_program" *ngIf="'TODO dashboard condition'">
+            <i class="fa fa-edit text-primary" placement="top" ngbTooltip="Editer" btn-open></i>
+          </app-modalflow> -->
+          <app-sitemodalflow
+            #modalFlowRef
+            [coords]="o.properties.coords"
+            [updateData]="o.properties"
+            [program_id]="o.properties.id_program"
+            >
+            <i class="fa fa-edit text-primary" placement="bottom" ngbTooltip="Editer" btn-open></i>
+          </app-sitemodalflow>
+          &nbsp;
+          <i
+            class="fa fa-trash text-danger"
+            placement="bottom"
+            ngbTooltip="Supprimer"
+            (click)="deleteSite.emit(o.properties.id_site)"
+            *ngIf="o.properties.creator_can_delete"
+            owner-actions></i>
+          </span>
+        </h5>
         <p>
           {{ o.properties.site_type.type | titlecase }} ajouté(e) par <span>{{ o.properties.obs_txt }}</span>
         </p>
