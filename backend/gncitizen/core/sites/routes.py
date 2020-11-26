@@ -311,6 +311,7 @@ def post_site():
 @jwt_required
 def update_site():
     try:
+        current_user = get_jwt_identity()
         update_data = dict(request.get_json())
         update_site = {}
         for prop in ["name", "id_type"]:
@@ -322,19 +323,11 @@ def update_site():
             current_app.logger.warning("[update_site] coords ", e)
             raise GeonatureApiError(e)
 
-        try:
-            json_data = update_data.get("json_data")
-            if json_data is not None:
-                update_site["json_data"] = json.loads(json_data)
-        except Exception as e:
-            current_app.logger.warning("[update_site] json_data ", e)
-            raise GeonatureApiError(e)
-
-        SiteModel.query.filter_by(id_site=update_data.get(
-            'id_site')).update(update_site, synchronize_session='fetch')
-
+        site = SiteModel.query.filter_by(id_site=update_data.get('id_site'))
+        if current_user != UserModel.query.get(site.first().id_role).email:
+            return ('unauthorized'), 403
+        site.update(update_site, synchronize_session='fetch')
         db.session.commit()
-
         return ('site updated successfully'), 200
     except Exception as e:
         current_app.logger.critical("[update_site] Error: %s", str(e))
@@ -423,7 +416,7 @@ def delete_site(site_id):
 def export_sites_xls(user_id):
     current_user = get_jwt_identity()
     try:
-        if (current_user != UserModel.query.get(user_id).email):
+        if current_user != UserModel.query.get(user_id).email:
             return ('unauthorized'), 403
         title_style = xlwt.easyxf('font: bold on')
         date_style = xlwt.easyxf(num_format_str='D/M/YY')
@@ -431,7 +424,6 @@ def export_sites_xls(user_id):
         # SITES SHEET
         ws = wb.add_sheet('mes sites')
         sites = _get_user_sites(user_id)
-        from pprint import pprint
         fields = (
             { "col_name" : "id_site", "getter" : lambda s: s.id_site  },
             { "col_name" : "Programme", "getter" : lambda s: s.program.title },
