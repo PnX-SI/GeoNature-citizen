@@ -15,7 +15,6 @@ import {
 import { AppConfig } from "../../../../../../conf/app.config";
 import { IFlowComponent } from "../../flow/flow";
 import { AuthService } from "../../../../../auth/auth.service";
-import { ModalFlowService } from "../../modalflow.service";
 
 export interface Badge {
   img: string;
@@ -165,8 +164,7 @@ export class RewardComponent implements IFlowComponent {
   @Input() data: any;
   reward$: Observable<any[]>;
 
-  constructor(public badges: BadgeFacade,
-    private modalFlowService :ModalFlowService) {
+  constructor(public badges: BadgeFacade) {
     if (
       !badges.username || !AppConfig["REWARDS"]
     ) {
@@ -191,13 +189,13 @@ export class RewardComponent implements IFlowComponent {
   }
 
   close(d) {
-    this.modalFlowService.closeModal()
+    this.data.service.closeModal()
   }
 
   clicked(d) {
     this.close(d);
   }
   closeModal(){
-    this.modalFlowService.closeModal()
+    this.data.service.closeModal()
   }
 }

@@ -1,5 +1,4 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core";
-import { ModalFlowService } from "../../modalflow.service";
 import { IFlowComponent } from "../../flow/flow";
 import { AppConfig } from "../../../../../../conf/app.config";
 
@@ -15,10 +14,8 @@ export class CongratsComponent implements IFlowComponent {
   obs: any;
   AppConfig = AppConfig;
 
-  constructor(private modalFlowService : ModalFlowService){
-    
+  constructor(){}
 
-  }
   ngOnDestroy(): void {
     if (this.timeout) {
       clearTimeout(this.timeout);
@@ -35,6 +32,6 @@ export class CongratsComponent implements IFlowComponent {
 
 
   closeModal(){
-    this.modalFlowService.closeModal()
+    this.data.service.closeModal()
   } 
 }

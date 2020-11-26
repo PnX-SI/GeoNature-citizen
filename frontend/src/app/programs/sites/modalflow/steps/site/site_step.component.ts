@@ -29,11 +29,11 @@ export class SiteStepComponent implements IFlowComponent {
     // to get new created site's id and pass it to next step as extra_data
     let that = this;
     resp.then( function(result) {
-      if (result.features) {
+      if (result.features) { // Site created
         let site_id = result.features[0].properties.id_site;
         that.siteService.newSiteCreated.emit(result.features[0]);
         that.data.next({ ...that.data, site_id: site_id });
-      } else {
+      } else { // Site edited
         that.data.next(that.data);
         that.siteService.siteEdited.emit();
         that.closeModal();
