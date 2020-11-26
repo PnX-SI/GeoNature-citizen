@@ -1,6 +1,7 @@
 from flask import Blueprint, request, current_app, make_response
 from sqlalchemy import or_
 from .models import SiteModel, SiteTypeModel, VisitModel, MediaOnVisitModel
+from .admin import SiteTypeView
 from gncitizen.core.users.models import UserModel
 from gncitizen.core.commons.models import MediaModel
 import uuid
@@ -16,10 +17,14 @@ from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
+from gncitizen.utils.env import admin
 from server import db
 from flask_jwt_extended import jwt_optional, jwt_required, get_jwt_identity
 
+
 routes = Blueprint("sites_url", __name__)
+
+admin.add_view(SiteTypeView(SiteTypeModel, db.session, "Types de site"))
 
 
 @routes.route("/types", methods=["GET"])

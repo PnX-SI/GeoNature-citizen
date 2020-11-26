@@ -26,6 +26,7 @@ from flask_admin.contrib.sqla.view import ModelView
 from jinja2 import Markup
 
 from gncitizen.core.users.models import UserModel
+from gncitizen.core.sites.models import CorProgramSiteTypeModel
 from gncitizen.utils.env import admin, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
@@ -69,9 +70,10 @@ def taxonomy_lists():
     #current_app.logger.debug(taxonomy_lists)
     return taxonomy_lists
 
-        
+from flask_admin.model.form import InlineFormAdmin
 
-
+class CorProgramSiteTypeModelInlineForm(InlineFormAdmin):
+    form_columns = ('site_type',)
 
 class ProgramView(ModelView):
     # form_base_class = SecureForm
@@ -80,6 +82,11 @@ class ProgramView(ModelView):
     create_template = 'edit.html'
     edit_template = 'edit.html'
     form_excluded_columns = ['timestamp_create','timestamp_update']
+    inline_models = [(
+        CorProgramSiteTypeModel,
+        dict(
+            form_columns=['id_cor_program_typesite', 'site_type'],
+            form_label='Types de site'))]
 
     # def is_accessible(self):
     #     try:

@@ -43,7 +43,7 @@ class SiteTypeModel(TimestampMixinModel, db.Model):
     pictogram = db.Column(db.Text)
 
     def __repr__(self):
-        return "<TypeSite {0}>".format(self.id_typesite)
+        return "<TypeSite {0} : {1}>".format(self.id_typesite, self.type)
 
 
 @serializable
@@ -80,6 +80,7 @@ class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE")
     )
+    program = relationship("ProgramsModel", backref='site_types')
     id_typesite = db.Column(
         db.Integer, db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE")
     )
