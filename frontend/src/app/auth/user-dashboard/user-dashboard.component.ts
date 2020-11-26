@@ -68,6 +68,7 @@ export class UserDashboardComponent implements OnInit {
               this.username = user["features"]["username"];
               this.stats = user["features"]["stats"];
               this.role_id = user["features"]["id_role"];
+              this.userService.role_id = this.role_id;
               if (user["features"]["avatar"])
                 this.userAvatar =
                   this.appConfig.API_ENDPOINT +

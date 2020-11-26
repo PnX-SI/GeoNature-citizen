@@ -9,7 +9,7 @@ import { saveAs } from "file-saver";
   providedIn: "root"
 })
 export class UseService {
- 
+  role_id: number;
   private headers: HttpHeaders = new HttpHeaders({
     "Content-Type": "application/json"
   });

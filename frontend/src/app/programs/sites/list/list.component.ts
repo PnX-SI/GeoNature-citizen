@@ -8,6 +8,7 @@ import {
 
 import { FeatureCollection, Feature } from "geojson";
 import { SiteModalFlowService } from "../modalflow/modalflow.service";
+import { UseService } from "../../../auth/user-dashboard/user.service.service";
 import {AppConfig} from "../../../../conf/app.config";
 
 @Component({
@@ -27,7 +28,10 @@ export class SitesListComponent implements OnChanges {
   taxa: any[] = [];
   apiEndpoint = AppConfig.API_ENDPOINT;
 
-  constructor(public flowService: SiteModalFlowService) {}
+  constructor(
+    public flowService: SiteModalFlowService,
+    private userService: UseService
+  ) {}
 
   ngOnChanges() {
     if (this.sitesCollection) {
