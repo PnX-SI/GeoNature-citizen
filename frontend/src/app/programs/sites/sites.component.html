@@ -10,9 +10,8 @@
         [sites]="sites"
         [program_id]="program_id"
         [displayForm]="flowService.display"
-        [displayOwnerActions]="userDashboard"
+        [userDashboard]="userDashboard"
         (siteSelect)="sitesMapRef.showPopup($event);"
-        (deleteSite)="deleteSite.emit($event)"
       >
         <button 
           type="button"

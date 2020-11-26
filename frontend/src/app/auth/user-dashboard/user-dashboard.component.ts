@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { throwError, forkJoin } from "rxjs";
 import { tap, catchError } from "rxjs/operators";
@@ -21,6 +21,7 @@ import { ModalFlowService } from "../../programs/observations/modalflow/modalflo
 })
 export class UserDashboardComponent implements OnInit {
   public appConfig = AppConfig;
+  @ViewChild('siteDeleteModal', {static: true}) siteDeleteModal; 
   modalRef: NgbModalRef;
   modalRefDel: NgbModalRef;
   username: string = "not defined";
@@ -44,7 +45,7 @@ export class UserDashboardComponent implements OnInit {
   newAvatar: string | ArrayBuffer;
   idObsToDelete: number;
   idSiteToDelete: number;
-  tab: string = 'sites';
+  tab: string = 'observations';
 
   constructor(
     private auth: AuthService,
@@ -90,6 +91,9 @@ export class UserDashboardComponent implements OnInit {
         .subscribe(user => {
           this.currentUser = user;
         });
+      this.siteService.deleteSite.subscribe(($event) => {
+        this.openSiteDeleteModal(this.siteDeleteModal, $event);
+      })
     }
   }
 

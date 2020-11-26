@@ -4,13 +4,10 @@
       <div class="row">
         <div class="user"></div>
         <div class="user-infos">
-          <span i18n>{ +stats?.platform_attendance, plural, =0 { aucune observation} =1
-            {une observation} other
-            {{{stats?.platform_attendance}} observations} }
+          <span>
+            <button (click)="tab = 'observations'" [class]="'btn ' + (tab === 'observations' ? 'btn-primary' : 'btn-dark')">Mes observations ({{stats?.platform_attendance}})</button>
+            <button (click)="tab = 'sites'" [class]="'btn ml-1 ' + (tab === 'sites' ? 'btn-primary' : 'btn-dark')">Mes sites ({{ mysites?.features.length }})</button>
           </span>
-          <!-- <span i18n *ngIf="mysites">{ +mysites.features.length, plural, =0 { aucun site} =1
-            {un site} other
-            {{{ mysites.features.length }} sites} }</span> -->
           <div class="avatar-main-wrapper">
             <div *ngIf="!userAvatar" class="profile-pic" (click)="onEditInfos(personalInfos)" ></div>
             <img *ngIf="userAvatar" class="profile-pic" src="{{userAvatar}}" (click)="onEditInfos(personalInfos)" />
@@ -18,31 +15,15 @@
           <p (click)="onEditInfos(personalInfos)">{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>
-      <button (click)="tab = 'sites'" [class]="'btn ' + (tab === 'sites' ? 'btn-primary' : 'btn-dark')">Mes sites</button>
-      <button (click)="tab = 'observations'" [class]="'btn ml-1 ' + (tab === 'observations' ? 'btn-primary' : 'btn-dark')">Mes observations</button>
       <user-sites
         [mysites]="mysites"
-        *ngIf="mysites && tab === 'sites'"
-        (deleteSite)="openSiteDeleteModal(siteDeleteModal, $event)">
+        *ngIf="mysites && tab === 'sites'">
       </user-sites>
       <user-observations
         [myobs]="myobs"
         *ngIf="observations && tab === 'observations'"
         (deleteObs)="openDeleteModal(deleteModal, $event)">
       </user-observations>
-      <!-- <ngb-tabset [destroyOnHide]="false">
-        <ngb-tab title="Mes sites">
-          <ng-template ngbTabContent>
-            LES SITES
-            <user-sites [mysites]="mysites" *ngIf="mysites" (deleteSite)="openDeleteModal(deleteModal, $event)"></user-sites>
-          </ng-template>
-        </ngb-tab>
-        <ngb-tab title="Mes observations">
-          <ng-template ngbTabContent>
-             <user-observations [myobs]="myobs" *ngIf="observations" (deleteObs)="openDeleteModal(deleteModal, $event)"></user-observations>
-          </ng-template>
-        </ngb-tab>
-      </ngb-tabset> -->
       <!-- <div id="myObs" class="container">
         <h3 class="title" i18n>Mes observations</h3>
         <ngx-datatable *ngIf="observations" class="material" [rows]="rows" [headerHeight]="40" [footerHeight]="40"
@@ -107,7 +88,7 @@
         <button class="btn-big col-lg-3 col-md-5 col-sm-12 export" (click)="onExportObservations()" i18n>
           <i class="fa fa-download"></i>Exporter mes observations
         </button>
-        <button class="btn-big col-lg-3 col-md-5 col-sm-12 export" (click)="onExportSites()" i18n>
+        <button class="btn-big col-lg-3 col-md-5 col-sm-12 export" (click)="onExportSites()">
           <i class="fa fa-download"></i>Exporter mes sites
         </button>
         <button class="btn-big btn-danger col-lg-3 col-md-5 col-sm-12" (click)="onDeletePersonalData()" i18n>
@@ -220,8 +201,6 @@
 </ng-template>
 
 
-
-
 <ng-template #deleteModal let-modal>
     <div class="modal-delete-header">
       <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
@@ -257,5 +236,3 @@
   <div class="loader-2"></div>
   <div class="loader-3"></div>
 </div>
-
-

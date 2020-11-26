@@ -24,7 +24,6 @@ import { Point } from "leaflet";
 })
 export class UserSitesComponent extends SitesComponent implements OnInit {
     @Input("mysites") mySites;
-    @Output() deleteSite = new EventEmitter();
     userDashboard = true;
 
   ngOnInit() {

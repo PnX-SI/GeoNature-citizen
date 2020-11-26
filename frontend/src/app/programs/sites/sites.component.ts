@@ -29,6 +29,7 @@ import { ProgramBaseComponent } from "../base/program-base.component";
 export class SitesComponent extends ProgramBaseComponent implements OnInit {
   title = "Sites";
   sites: FeatureCollection;
+  userDashboard = false;
   @ViewChild(SitesMapComponent, { static: true }) sitesMap: SitesMapComponent;
   @ViewChild(SitesListComponent, { static: true }) sitesList: SitesListComponent;
   @ViewChildren(SiteModalFlowComponent) modalFlow: QueryList<SiteModalFlowComponent>;

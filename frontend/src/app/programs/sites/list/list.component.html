@@ -2,7 +2,7 @@
   <ng-content select="[obs-form]" *ngIf="display_form"></ng-content>
   <span [class.d-none]="display_form">
   <div class="col-lg-12 mx-4 mt-2 mb-4">
-    <strong>Sites </strong> <span class="text-muted">({{ sites?.length }})</span>
+    <strong><span *ngIf="userDashboard">Mes </span>Sites </strong> <span class="text-muted">({{ sites?.length }})</span>
     <ng-content select="[add-obs]"></ng-content>
   </div>
   <div id="list">
@@ -11,7 +11,7 @@
       <div class="infos">
         <h5>
           {{ o.properties.name }}
-          <span *ngIf="displayOwnerActions" class="pull-right">
+          <span *ngIf="userDashboard" class="pull-right">
           &nbsp;
           <app-sitemodalflow
             #modalFlowRef
@@ -31,7 +31,7 @@
             class="fa fa-trash text-danger"
             placement="bottom"
             ngbTooltip="Supprimer"
-            (click)="deleteSite.emit(o.properties.id_site)"
+            (click)="siteService.deleteSite.emit(o.properties.id_site)"
             *ngIf="o.properties.creator_can_delete && o.properties.id_role === userService.role_id"
             owner-actions></i>
           </span>
