@@ -7,7 +7,8 @@ ALTER TABLE gnc_sites.t_sites
 
 ALTER TABLE gnc_sites.cor_program_typesites
     ADD COLUMN id_typesite integer,
-    ADD CONSTRAINT cor_program_typesites_id_typesite_fkey FOREIGN KEY (id_typesite)
+    ADD CONSTRAINT cor_program_typesites_id_typesite_fkey
+    FOREIGN KEY (id_typesite)
     REFERENCES gnc_sites.t_typesite (id_typesite)
     ON DELETE CASCADE;
 
@@ -27,5 +28,5 @@ ALTER TABLE gnc_core.t_programs
     ALTER COLUMN id_geom SET NOT NULL;
 --   Delete old Enum columns
 ALTER TABLE gnc_sites.t_sites DROP COLUMN site_type;
-ALTER TABLE gnc_sites.cor_program_typesites DROP" COLUMN site_type;
+ALTER TABLE gnc_sites.cor_program_typesites DROP COLUMN site_type;
 ALTER TABLE gnc_core.t_programs DROP COLUMN geom;
