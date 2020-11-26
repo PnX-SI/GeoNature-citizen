@@ -264,6 +264,10 @@ export class UserDashboardComponent implements OnInit {
     saveAs(blob, "mydata.csv");
   }
 
+  onExportSites() {
+    this.userService.exportSites(this.role_id);
+  }
+
   onEditInfos(content): void {
     this.userService.getPersonalInfo().subscribe(data => {
       this.personalInfo = data;

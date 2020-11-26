@@ -58,6 +58,7 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
     )
+    program = relationship("ProgramsModel")
     name = db.Column(db.String(250))
     id_type = db.Column(
         db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False
@@ -95,6 +96,7 @@ class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     id_site = db.Column(
         db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE")
     )
+    site = relationship("SiteModel")
     date = db.Column(db.Date)
     json_data = db.Column(JSONB, nullable=True)
 

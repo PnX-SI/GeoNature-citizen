@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AppConfig } from "../../../conf/app.config";
 import { catchError } from "rxjs/operators";
 import { throwError } from "rxjs";
+import { saveAs } from "file-saver";
 
 @Injectable({
   providedIn: "root"
@@ -78,4 +79,23 @@ export class UseService {
     }
     return str;
   }
+
+  downloadFile(route: string, filename: string = null): void{
+    const baseUrl = AppConfig.API_ENDPOINT;
+    const token = 'my JWT';
+    const headers = new HttpHeaders().set('authorization','Bearer '+token);
+    this.http.get(baseUrl + route,{headers, responseType: 'blob' as 'json'}).subscribe(
+      (response: any) =>{
+        let dataType = response.type;
+        let binaryData = [];
+        binaryData.push(response);
+        saveAs(new Blob(binaryData, {type: dataType}), filename);
+      }
+    )
+  }
+
+  exportSites(userId: number) {
+    this.downloadFile(`/sites/export/${userId}`, 'gnc_export_sites.xls');
+  }
+ 
 }

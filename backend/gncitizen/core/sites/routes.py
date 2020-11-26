@@ -1,4 +1,4 @@
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request, current_app, make_response
 from sqlalchemy import or_
 from .models import SiteModel, SiteTypeModel, VisitModel, MediaOnVisitModel
 from gncitizen.core.users.models import UserModel
@@ -6,7 +6,8 @@ from gncitizen.core.commons.models import MediaModel
 import uuid
 import datetime
 import json
-
+import xlwt
+import io
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point
@@ -114,9 +115,10 @@ def format_site(site, dashboard=False):
     feature = get_geojson_feature(site.geom)
     site_dict = site.as_dict(True)
     for k in site_dict:
-        if k not in ("id_role", "geom"):
+        if k not in ("geom",):
             feature["properties"][k] = site_dict[k]
     if dashboard:
+        # Site creator can delete it only if no visit have been added by others
         feature["properties"]["creator_can_delete"] = site.id_role\
             and VisitModel.query.filter_by(
                 id_site=site.id_site).filter(or_(
@@ -191,16 +193,27 @@ def get_program_sites(id):
         return {"error_message": str(e)}, 400
 
 
+def _get_user_sites(user_id):
+    created_sites = SiteModel.query.filter_by(
+        id_role=user_id).order_by(
+        SiteModel.timestamp_create.desc()).all()
+    visited_sites = db.session.query(SiteModel).filter(
+        VisitModel.id_role == user_id).filter(
+        or_(
+            SiteModel.id_role != user_id,
+            SiteModel.id_role.is_(None))).join(
+        VisitModel, SiteModel.id_site == VisitModel.id_site).group_by(SiteModel.id_site).all()
+    user_sites = created_sites + visited_sites
+    return user_sites
+
+
 @routes.route("/users/<int:user_id>", methods=["GET"])
 @json_resp
 def get_user_sites(user_id):
-    # try:
-        created_sites = SiteModel.query.filter_by(
-            id_role=user_id).order_by(
-            SiteModel.timestamp_create.desc()).all()
-        return prepare_sites(created_sites, dashboard=True)
-    # except Exception as e:
-    #     return {"error_message": str(e)}, 400
+    try:
+        return prepare_sites(_get_user_sites(user_id), dashboard=True)
+    except Exception as e:
+        return {"error_message": str(e)}, 400
 
 
 @routes.route("/", methods=["POST"])
@@ -390,7 +403,7 @@ def post_photo(site_id, visit_id):
 @routes.route("/<int:site_id>", methods=["DELETE"])
 @json_resp
 @jwt_required
-def delete_observation(site_id):
+def delete_site(site_id):
     current_user = get_jwt_identity()
     try:
         site = db.session.query(SiteModel, UserModel).filter(
@@ -403,3 +416,86 @@ def delete_observation(site_id):
             return ('delete unauthorized'), 403
     except Exception as e:
         return {"message": str(e)}, 500
+
+
+@routes.route("/export/<int:user_id>", methods=["GET"])
+@jwt_required
+def export_sites_xls(user_id):
+    current_user = get_jwt_identity()
+    try:
+        if (current_user != UserModel.query.get(user_id).email):
+            return ('unauthorized'), 403
+        title_style = xlwt.easyxf('font: bold on')
+        date_style = xlwt.easyxf(num_format_str='D/M/YY')
+        wb = xlwt.Workbook()
+        # SITES SHEET
+        ws = wb.add_sheet('mes sites')
+        sites = _get_user_sites(user_id)
+        from pprint import pprint
+        fields = (
+            { "col_name" : "id_site", "getter" : lambda s: s.id_site  },
+            { "col_name" : "Programme", "getter" : lambda s: s.program.title },
+            { "col_name" : "Type", "getter" : lambda s: s.site_type.type },
+            { "col_name" : "Nom", "getter" : lambda s: s.name },
+            { "col_name" : "Coord. x", "getter" : lambda s: s.coordinates[0] },
+            { "col_name" : "Coord. y", "getter" : lambda s: s.coordinates[1] },
+            { 
+                "col_name" : "Date création",
+                "getter" : lambda s: s.timestamp_create,
+                "style" : date_style
+            },
+        )
+        row = 0
+        for col, field in enumerate(fields):
+            ws.write(row, col, field["col_name"], title_style)
+        row += 1
+        for site in sites:
+            site.coordinates = get_geojson_feature(site.geom)["geometry"]["coordinates"]
+            for col, field in enumerate(fields):
+                args = []
+                if field.get("style"):
+                    args.append(field.get("style"))
+                ws.write(row, col, field["getter"](site), *args)
+            row += 1
+        # VISITS SHEET
+        ws = wb.add_sheet('mes visites')
+        visits = VisitModel.query.filter_by(id_role=user_id)
+        basic_fields = (
+            { "col_name" : "id_visit", "getter" : lambda s: s.id_visit  },
+            { "col_name" : "Site", "getter" : lambda s: s.site.name },
+            { "col_name" : "Date", "getter" : lambda s: s.date, "style" : date_style }
+        )
+        json_keys = list(set([
+            key for v in visits for key in v.json_data.keys()
+        ]))
+        row, col = 0, 0
+        for field in basic_fields:
+            ws.write(row, col, field["col_name"], title_style)
+            col += 1
+        for key in json_keys:
+            ws.write(row, col, key, title_style)
+            col += 1
+        row, col = 1, 0
+        for visit in visits:
+            for field in basic_fields:
+                args = []
+                if field.get("style"):
+                    args.append(field.get("style"))
+                ws.write(row, col, field["getter"](visit), *args)
+                col += 1
+            for key in json_keys:
+                ws.write(row, col, visit.json_data.get(key))
+                col += 1
+            row += 1
+            col = 0
+        # In memory save and return xls file
+        xls_file = io.BytesIO()
+        wb.save(xls_file)
+        output = make_response(xls_file.getvalue())
+        output.headers["Content-Disposition"] = "attachment; filename=" + \
+                                                "export_sites.xls"
+        output.headers["Content-type"] = "application/xls"
+        return output
+    except Exception as e:
+        current_app.logger.warning("Error: %s", str(e))
+        return {"error_message": str(e)}, 400
