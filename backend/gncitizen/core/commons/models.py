@@ -61,7 +61,8 @@ class CustomFormModel(TimestampMixinModel, db.Model):
     def __repr__(self):
         return self.name
 
-from geoalchemy2.functions import ST_GeomFromKML, ST_GeomFromGeoJSON
+from geoalchemy2.functions import (
+    ST_GeomFromKML, ST_GeomFromGeoJSON, ST_SetSRID)
 
 @serializable
 class GeometryModel(TimestampMixinModel, db.Model):
@@ -83,9 +84,9 @@ class GeometryModel(TimestampMixinModel, db.Model):
         with open(self.get_geom_file_path()) as geom_file:
             geo_data = geom_file.read()
             if ext in ['.geojson', '.json']:
-                self.geom = ST_GeomFromGeoJSON(geo_data)
+                self.geom = ST_SetSRID(ST_GeomFromGeoJSON(geo_data), 4326)
             elif ext == '.kml':
-                self.geom = ST_GeomFromKML(geo_data)
+                self.geom = ST_GeomFromKML(geo_data) # KML is always 4326 srid
 
     def __repr__(self):
         return self.name
