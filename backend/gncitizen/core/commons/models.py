@@ -63,6 +63,8 @@ class CustomFormModel(TimestampMixinModel, db.Model):
 
 from geoalchemy2.functions import (
     ST_GeomFromKML, ST_GeomFromGeoJSON, ST_SetSRID)
+import json
+import xml.etree.ElementTree as ET
 
 @serializable
 class GeometryModel(TimestampMixinModel, db.Model):
@@ -80,13 +82,41 @@ class GeometryModel(TimestampMixinModel, db.Model):
         return os.path.join(str(MEDIA_DIR), self.geom_file)
 
     def set_geom_from_geom_file(self):
+        gnc_invalid_err_message = "Géométrie non valide pour GNC"
         name, ext = os.path.splitext(self.geom_file)
         with open(self.get_geom_file_path()) as geom_file:
             geo_data = geom_file.read()
             if ext in ['.geojson', '.json']:
-                self.geom = ST_SetSRID(ST_GeomFromGeoJSON(geo_data), 4326)
+                json_geom = json.loads(geo_data)['features'][0]['geometry']
+                # Validate geometry type
+                if not json_geom["type"] in ["Polygon", "MultiPolygon"]:
+                    raise Exception(gnc_invalid_err_message)
+                else:
+                    # Minimal coordinate system check
+                    coords = json_geom["coordinates"][0][0]
+                    if json_geom["type"] == "MultiPolygon":
+                        coords = coords[0]
+                    x, y = coords
+                    if abs(x) > 180 or abs(y) > 180:
+                        raise Exception("Mauvais système de projection")
+                # Convert Geo
+                self.geom = ST_SetSRID(ST_GeomFromGeoJSON(json.dumps(json_geom)), 4326)
             elif ext == '.kml':
-                self.geom = ST_GeomFromKML(geo_data) # KML is always 4326 srid
+                kml_root = ET.fromstring(geo_data)
+                kml_geom_elt = None
+                # Find first MultiGeometry or Polygon node
+                for child in kml_root.iter():
+                    if "MultiGeometry" in child.tag or "Polygon" in child.tag:
+                        kml_geom_elt = child
+                        if "MultiGeometry" in child.tag:
+                            # We want only Polygon nodes inside the geometry
+                            for elt in kml_geom_elt.getchildren():
+                                if not "Polygon" in elt.tag:
+                                    raise Exception(gnc_invalid_err_message)
+                if kml_geom_elt is None:
+                    raise Exception(gnc_invalid_err_message)
+                kml_geom = ET.tostring(kml_geom_elt, encoding='unicode', method='xml')
+                self.geom = ST_GeomFromKML(kml_geom) # KML is always 4326 srid
 
     def __repr__(self):
         return self.name
