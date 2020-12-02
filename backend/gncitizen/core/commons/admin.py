@@ -6,7 +6,7 @@ import urllib.parse
 
 import requests
 
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request, flash
 from flask_admin.contrib.geoa import ModelView
 from flask_admin.form import SecureForm
 from flask_admin.form.upload import FileUploadField
@@ -131,7 +131,14 @@ class GeometryView(ModelView):
     form_overrides = dict(geom_file=FileUploadField)
     form_args = dict(
         geom_file=dict(
-            label="Geometry file (GeoJSON ou KML)",
+            label="Fichier zone",
+            description="""
+                Le fichier contenant la géométrie de la zone doit être au format geojson ou kml.<br>
+                Seules les types Polygon et MultiPolygon (ou MultiGeometry pour kml) sont acceptées.<br>
+                Les fichiers GeoJson fournis devront être en projection WGS84 (donc SRID 4326) 
+                et respecter le format "FeatureCollection" tel que présenté ici :
+                https://tools.ietf.org/html/rfc7946#section-1.5.
+            """,
             base_path=str(MEDIA_DIR),
             allowed_extensions=['geojson', 'json', 'kml'],
             namegen=get_geom_file_path
@@ -140,3 +147,7 @@ class GeometryView(ModelView):
 
     def on_model_change(self, form, model, is_created):
         model.set_geom_from_geom_file()
+
+    def handle_view_exception(self, exc):
+        flash("Une erreur s'est produite ({})".format(exc), 'error')
+        return True
