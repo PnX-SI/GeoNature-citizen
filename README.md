@@ -52,8 +52,7 @@ GeoNature-citizen s'appuie sur [TaxHub](https://github.com/PnX-SI/TaxHub) pour l
 
 ### Installation
 
-* Installer et configurer [TaxHub](https://github.com/PnX-SI/TaxHub) avec postgresql 
-* Lancer le script install_app.sh
+* Lancer le script install_app.sh pour installer l'application entière ainsi que ses dépendances (postgres, taxhub ...)
 * Au premier lancement le script créera un fichier settings.ini dans config
 * Remplacer toutes les variables par vos données de votre serveur
 * Relancer le script install_app.sh
