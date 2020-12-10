@@ -1,8 +1,5 @@
 #!/bin/bash
 DIR=$(pwd)
-
-#
-
 #création d'un fichier de configuration pour api/back
 if [ ! -f config/settings.ini ]; then
   echo 'Fichier de configuration du projet non existant, copie du template...'
@@ -15,65 +12,71 @@ fi
 . config/settings.ini
 
 #Installation de python / gunicorn / supervisor + dépendances
-apt update && apt -y install python2.7 git gcc curl gunicorn python-setuptools sudo lsb-release apt-transport-https wget
+sudo apt update && sudo apt -y install python2.7 git gcc curl gunicorn python-setuptools sudo lsb-release apt-transport-https wget
 sudo -s apt -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl libbz2-dev
-sudo -s apt install apache2 python-dev libpq-dev libgeos-dev supervisor unzip -y
+sudo -s apt install apache2 python-dev libpq-dev libgeos-dev supervisor unzip virtualenv -y
+sudo -s apt install apt-get install build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev -y
 
 RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME |cut -d "=" -f2)
 echo $RELEASE
-wget https://people.debian.org/~paravoid/python-all/unofficial-python-all.asc
-sudo -s mv unofficial-python-all.asc /etc/apt/trusted.gpg.d/
-echo "deb http://people.debian.org/~paravoid/python-all $RELEASE main" | sudo tee /etc/apt/sources.list.d/python-all.list
-sudo -s apt update && sudo -s apt install -y python3.7
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 50
-sudo -s  apt-get clean
+if [ $RELEASE = "stretch" ]; then
+  wget https://people.debian.org/~paravoid/python-all/unofficial-python-all.asc
+  sudo -s mv unofficial-python-all.asc /etc/apt/trusted.gpg.d/
+  echo "deb http://people.debian.org/~paravoid/python-all $RELEASE main" | sudo tee /etc/apt/sources.list.d/python-all.list
+  sudo -s apt update && sudo -s apt install -y python3.7
+  update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 50
+else
+  sudo -s apt install python3 python3-dev python3-pip -y
+fi
+
+sudo -s apt-get clean
 
 echo `python3 --version`
 
-service supervisor start
-
+sudo service supervisor start
+sudo supervisorctl stop all
 #Installation  de pip
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3 get-pip.py
-
-CURRENT_DIR=$(pwd)
+pip3 install --upgrade pip
+#curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+#python3 get-pip.py
 
 #Installation de nvm / npm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+cp -r ${HOME}/.nvm /home/synthese/.nvm
+chown -R synthese:synthese /home/synthese/.nvm
+
 nvm install 14 --lts
 echo `npm -v`
 
 #Installation de taxhub
 if [ ! -d /home/synthese ]; then
 adduser --gecos "" --home /home/synthese synthese
+sudo passwd -d synthese
 adduser synthese sudo
 adduser synthese root
 adduser synthese www-data
 fi
 cd /home/synthese
 python3 -m pip install virtualenv==20.0.1 --user
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.37.2/install.sh | bash
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-nvm install 14 --lts
-echo `npm -v`
+
 sudo a2enmod rewrite proxy proxy_http
 sudo apache2ctl restart
-sudo apt-get install postgresql postgresql-client postgresql-9.6-postgis-2.3 -y
-PG_VERSION="9.6"
+sudo apt-get install postgresql postgresql-client postgresql -y
+
 sudo adduser postgres sudo
 service postgresql start
-sudo -n -u postgres -s psql -c "CREATE USER $pg_user WITH PASSWORD '$user_pg_pass';"
+sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH PASSWORD '$user_pg_pass';"
+sudo -n -u postgres -s psql -c "ALTER ROLE $user_pg WITH LOGIN;"
 sudo -n -u postgres -s createdb -O $user_pg $db_name -T template0 -E UTF-8
 
 cd /home/synthese
 if [ ! -d /home/synthese/taxhub ]; then
-  wget https://github.com/PnX-SI/TaxHub/archive/1.6.5.zip
-  unzip 1.6.5.zip
-  mv TaxHub-1.6.5/ taxhub/
-  rm 1.6.5
+  wget https://github.com/PnX-SI/TaxHub/archive/1.7.3.zip
+  unzip 1.7.3.zip
+  mv TaxHub-1.7.3/ taxhub/
+  rm 1.7.3
 fi
 cd /home/synthese/taxhub
 
@@ -115,13 +118,14 @@ cd /home/synthese/taxhub
 mkdir var && chown -R synthese:synthese /home/synthese/taxhub
 mkdir -p /tmp/taxhub/ && chown -R synthese:synthese /tmp/taxhub
 mkdir p /tmp/usershub/ && chown -R synthese:synthese /tmp/usershub
-sed -i "s,nano.*$,#,g" install_db.sh
-sed -i "s,PnEcrins,PnX-SI,g" install_db.sh
+#sed -i "s,nano.*$,#,g" install_db.sh
+#sed -i "s,PnEcrins,PnX-SI,g" install_db.sh
+su synthese -c './install_db.sh'
+su synthese -c './install_app.sh'
+cd $DIR
+sudo -u postgres psql $user_pg -c 'create extension postgis;'
 
-sudo passwd -d synthese
-sudo -u  synthese ./install_db.sh
-sudo -u  synthese ./install_app.sh
-cd $CURRENT_DIR
+mkdir -p var/log
 
 if [ ! -f config/default_config.toml ]; then
   echo 'Fichier de configuration API non existant, copie du template...'
@@ -188,7 +192,7 @@ cd ..
 FLASKDIR=$(readlink -e "${0%/*}")
 APP_DIR="$(dirname "$FLASKDIR")"
 venv_dir="venv"
-venv_path=$FLASKDIR/$venv_dir
+venv_path=$FLASKDIR/backend/$venv_dir
 if [ ! -f $venv_path/bin/activate ]; then
   python3 -m virtualenv $venv_path
 fi
@@ -205,3 +209,4 @@ sudo -s sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/api_geonature-service
 #
 sudo -s supervisorctl reread
 sudo -s supervisorctl reload
+echo "End"
