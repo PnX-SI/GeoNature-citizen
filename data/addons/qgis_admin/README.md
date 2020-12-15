@@ -10,4 +10,4 @@ Ensuite, placez-vous dans ce dossier et éxécutez le script `./generateQgisProj
 
 Cela génèrera le projet qgis `citizenOnQgis-admin.qgs` que vous pourrez ouvrir directement avec QGIS (**Version 3.10 minimum requis**).
 
-![Capture d'écran](./screenshot.png)
+![Capture d'écran](screenshot.png)
