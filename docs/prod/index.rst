@@ -34,6 +34,39 @@ Ce serveur doit aussi disposer de :
 
   sudo dpkg-reconfigure locales
     
+INSTALLATION Automatique
+========================
+
+:notes:
+ - Bien vérifier de ne pas être en ``root`` :
+
+  ::
+
+    su - nom_utilisateur (geonatadmin)
+
+ - Se rendre sur la Home de votre utilisateur
+
+  ::
+
+    cd
+
+Lancer le script d'installation :
+
+ ::
+
+  ./install_app.sh
+
+- Le script créera un fichier de config settings.ini, il faut alors le compléter avec les informations de votre installation.
+- Complétez également les fichiers de config Apache situés dans config/apache
+- Relancer le script :
+
+ ::
+
+  ./install_app.sh
+
+Le script crééra la base de données, configurera taxhub si l'installation est demandée, configurera apache et installera toutes les dépendances du projet Geonature-Citizen.
+
+
 
 
 INSTALLATION DE TAXHUB
