@@ -30,12 +30,13 @@ Voir https://github.com/PnX-SI/GeoNature-citizen/compare/dev
 
 **🐛 Corrections**
 
-* Désactive le bouton d'enregistrement d'une observation après sa validation (évite les enregistrements multiples en cas de réponse lente du backend) (@jolleon)
-
+* Désactivation du bouton d'enregistrement d'une observation après sa validation (évite les enregistrements multiples en cas de réponse lente du backend) (@jolleon)
 
 **⚠️ Notes de version**
 
-* Lancer le script SQL de mise à jour de la BDD de GeoNature-citizen https://raw.githubusercontent.com/PnX-SI/GeoNature-citizen/master/data/migrations/data/migrations/v0.3.1_to_1.0.0.sql
+Si vous mettez à jour GeoNature-citizen à partir de la version 0.3.0 :
+
+* Lancer le script SQL de mise à jour de la BDD de GeoNature-citizen https://raw.githubusercontent.com/PnX-SI/GeoNature-citizen/master/data/migrations/data/migrations/v0.3.0_to_1.0.0.sql
 
 
 0.3.0 (2020-02-12)
