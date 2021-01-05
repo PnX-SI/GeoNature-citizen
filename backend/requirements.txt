@@ -30,3 +30,5 @@ toml==0.10.0
 urllib3==1.25.3
 Werkzeug==0.15.5
 WTForms==2.2.1
+gunicorn==20.0.4
+httplib2==0.11.3

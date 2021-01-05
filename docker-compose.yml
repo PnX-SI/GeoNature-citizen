@@ -1,0 +1,10 @@
+version: '3.3'
+
+services:
+  geo:
+    build: ./
+    entrypoint: ["/srv/app/install_app.sh", "bash"]
+    command: "bash"
+    tty: true
+    volumes:
+      - ./:/srv/app
