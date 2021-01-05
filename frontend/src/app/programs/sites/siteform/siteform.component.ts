@@ -11,7 +11,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
 import { map, tap } from "rxjs/operators";
 
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDate, NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { Position, Point } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
@@ -49,6 +49,7 @@ export const myMarkerTitle =
 })
 export class SiteFormComponent implements AfterViewInit {
   private readonly URL = AppConfig.API_ENDPOINT;
+  @Input("data") data;
   @Input("coords") coords: L.Point;
   @Input("program_id") program_id: number;
   @ViewChild("photo", { static: true }) photo: ElementRef;
@@ -58,7 +59,8 @@ export class SiteFormComponent implements AfterViewInit {
     name: new FormControl("", Validators.required),
     geometry: new FormControl("", Validators.required),
     id_program: new FormControl(),
-    site_type: new FormControl("", Validators.required)
+    id_type: new FormControl("", Validators.required),
+    id_site: new FormControl()
   });
   MAP_CONFIG = MAP_CONFIG;
   hasZoomAlert: boolean;
@@ -67,10 +69,14 @@ export class SiteFormComponent implements AfterViewInit {
 
   constructor(
     private http: HttpClient,
-    private mapService: MapService
+    private mapService: MapService,
+    private dateParser: NgbDateParserFormatter,
   ) {}
 
   ngOnInit(): void {
+    if (this.data.updateData) {
+      this.patchForm(this.data.updateData);
+    }
     this.mapService.coordsChange.subscribe(value => {
       this.coords = value;
       let geo_coords = <Point>{
@@ -90,9 +96,9 @@ export class SiteFormComponent implements AfterViewInit {
       .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
       .subscribe(result => {
         this.program = result
-        if (this.program.features[0].site_types.length === 1) {
+        if (this.program.features[0].site_types.length >= 1) {
           this.siteForm.patchValue({
-              site_type: this.program.features[0].site_types[0]
+              id_typesite: this.program.features[0].site_types[0].value
           });
         }
 
@@ -205,9 +211,18 @@ export class SiteFormComponent implements AfterViewInit {
       });
   }
 
+  patchForm(updateData) {
+    this.siteForm.patchValue({
+      name: updateData.name,
+      geometry: this.data.coords ? this.coords : "",
+      id_type: updateData.id_type,
+      id_program: updateData.program_id,
+      id_site: updateData.id_site
+    });
+  }
+
   onFormSubmit(): Promise<object>  {
     console.debug("formValues:", this.siteForm.value);
-
     return this.postSite().toPromise().then(
       data => { return data; },
       err => console.error(err)
@@ -220,13 +235,21 @@ export class SiteFormComponent implements AfterViewInit {
         Accept: "application/json"
       })
     };
-    this.siteForm.patchValue({
-        id_program: this.program_id
-    });
-    return this.http.post<any>(
-      `${this.URL}/sites/`,
-      this.siteForm.value,
-      httpOptions
-    );
+    if (this.data.updateData) {
+      return this.http.patch<any>(
+        `${this.URL}/sites/`,
+        this.siteForm.value,
+        httpOptions
+      );
+    } else {
+      this.siteForm.patchValue({
+          id_program: this.program_id
+      });
+      return this.http.post<any>(
+        `${this.URL}/sites/`,
+        this.siteForm.value,
+        httpOptions
+      );
+    }
   }
 }

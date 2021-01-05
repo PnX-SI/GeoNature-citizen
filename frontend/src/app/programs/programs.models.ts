@@ -9,8 +9,8 @@ export class Program {
   html_long_desc: SafeHtml;
   image: string;
   logo: string;
-  module: number;
-  module_info: any;
+  id_module: number;
+  module: any;
   taxonomy_list: number;
   on_sidebar: Boolean;
 }

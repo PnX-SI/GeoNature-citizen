@@ -96,8 +96,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
       layout: this.partialLayout
     }
   }
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
   nextStep() {
     this.currentStep += 1;
     this.updateFormInput();
@@ -107,17 +106,21 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     this.updateFormInput();
   }
   updatePartialLayout() {
-    this.partialLayout = this.jsonSchema.steps[this.currentStep - 1].layout;
+    if (this.jsonSchema.steps) {
+      this.partialLayout = this.jsonSchema.steps[this.currentStep - 1].layout;
+    } else {
+      this.partialLayout = this.jsonSchema.layout
+    }
     this.partialLayout[this.partialLayout.length - 1].expanded = this.advancedMode;
   }
   isFirstStep() {
     return this.currentStep === 1;
   }
   isLastStep() {
-    return this.currentStep === this.jsonSchema.steps.length;
+    return this.currentStep === this.totalSteps();
   }
   totalSteps() {
-    return this.jsonSchema.steps.length;
+    return (this.jsonSchema.steps ? this.jsonSchema.steps.length : 1)
   }
   invalidStep() {
     return this.currentStep === 1 && this.visitForm.get('date').invalid;

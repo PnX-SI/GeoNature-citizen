@@ -37,7 +37,6 @@ import {
 import "leaflet-gesture-handling";
 import "leaflet-fullscreen/dist/Leaflet.fullscreen";
 import { ToastrService } from "ngx-toastr";
-import { ModalFlowService } from "../modalflow/modalflow.service";
 import { ObservationsService } from "../observations.service";
 import { MapService } from "../../base/map/map.service";
 
@@ -125,7 +124,6 @@ export class ObsFormComponent implements AfterViewInit {
     private formBuilder: FormBuilder,
     private dateParser: NgbDateParserFormatter,
     private programService: GncProgramsService,
-    public flowService: ModalFlowService,
     private toastr: ToastrService,
     private auth: AuthService,
     private mapService: MapService
@@ -469,7 +467,7 @@ export class ObsFormComponent implements AfterViewInit {
           obs.properties.observer.userAvatar = localStorage.getItem('userAvatar')
         }
         this.newObservation.emit(obs);
-        this.flowService.setModalCloseSatus("newObs");
+        this.data.service.setModalCloseSatus("newObs");
       },
       err => console.error(err)
     );
@@ -487,8 +485,8 @@ export class ObsFormComponent implements AfterViewInit {
     const id_media_to_delete = this.data.updateData.photos.filter(p => p.checked).map(p => p.id_media);
     formData.append("delete_media", JSON.stringify(id_media_to_delete));
     this.observationsService.updateObservation(formData).subscribe(() => {
-      this.flowService.closeModal();
-      this.flowService.setModalCloseSatus("updateObs");
+      this.data.service.closeModal();
+      this.data.service.setModalCloseSatus("updateObs");
     });
   }
 

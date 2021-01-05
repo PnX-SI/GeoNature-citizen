@@ -2,7 +2,6 @@ import { Component, Input, ViewChild, ViewEncapsulation } from "@angular/core";
 import { IFlowComponent } from "../../flow/flow";
 import { ObsFormComponent } from "../../../form/form.component";
 import { ObservationFeature } from "../../../observation.model";
-import { ModalFlowService } from "../../modalflow.service";
 @Component({
   templateUrl: "./committed.component.html",
   styleUrls: ["./committed.component.css"],
@@ -14,9 +13,7 @@ export class CommittedComponent implements IFlowComponent {
   enableCommit: boolean = true;
 
 
-  constructor(
-    private modalFlowService :ModalFlowService
-  ){}
+  constructor(){}
   onNewObservation(observation: ObservationFeature) {
     if (observation) {
       this.data.obs = observation;
@@ -42,6 +39,6 @@ export class CommittedComponent implements IFlowComponent {
   }
 
   closeModal(){
-    this.modalFlowService.closeModal()
+    this.data.service.closeModal()
   }
 }

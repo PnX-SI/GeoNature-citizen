@@ -6,8 +6,8 @@
     <div class="form-group col-lg-6 col-md-12 half">
       <h5>Informations</h5>
       <label for="counting">*Type de site&nbsp;</label>
-      <select type="text" formControlName="site_type" class="form-control" *ngIf="program">
-        <option *ngFor="let t of program.features[0].site_types" [value]="t">{{ t }}</option>
+      <select type="text" formControlName="id_type" class="form-control" *ngIf="program">
+        <option *ngFor="let t of program.features[0].site_types" [value]="t.value">{{ t.text }}</option>
       </select>
       <label for="counting">*Nom du site&nbsp;</label>
       <input type="text" formControlName="name" class="form-control"/>
