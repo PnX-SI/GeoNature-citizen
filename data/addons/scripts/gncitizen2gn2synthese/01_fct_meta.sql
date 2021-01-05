@@ -237,9 +237,8 @@ TRIGGER tri_upsert_meta_datasets
     AFTER
 
 INSERT OR
-
 UPDATE
-    on gnc_core.t_programs
+ON gnc_core.t_programs
     FOR EACH ROW
 
 EXECUTE procedure gnc_core.fct_tri_upsert_meta_datasets()
