@@ -11,6 +11,9 @@ api_endpoint=http://51.210.52.65:5002/api        # Url for the geonature api don
 api_port=5002
 api_taxhub=http://127.0.0.1:5000/api/             # Url for the taxhub api
 
+install_taxhub=1
+taxhub_version=1.7.3
+
 # Configuration front
 server_side=false  #true or false for server side rendering
 
