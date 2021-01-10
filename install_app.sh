@@ -13,18 +13,18 @@ fi
 
 #Installation de python / gunicorn / supervisor + dépendances
 sudo apt update && sudo apt -y install python2.7 git gcc curl gunicorn python-setuptools lsb-release apt-transport-https wget
-sudo -s apt -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl libbz2-dev
-sudo -s apt install apache2 python-dev libpq-dev libgeos-dev supervisor unzip virtualenv libcurl4-openssl-dev libssl-dev -y
-sudo -s apt install apt-get install build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev -y
+sudo apt -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl libbz2-dev
+sudo apt -y install apache2 python-dev libpq-dev libgeos-dev supervisor unzip virtualenv libcurl4-openssl-dev libssl-dev
+sudo apt -y install apt-get install build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev
 
 RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME |cut -d "=" -f2)
-sudo -s apt install python3 python3-dev python3-pip -y
+sudo apt install python3 python3-dev python3-pip -y
 
-sudo -s apt-get clean
+sudo apt-get clean
 
 echo `python3 --version`
 
-sudo -s service supervisor start && sudo -s supervisorctl stop all
+sudo service supervisor start && sudo supervisorctl stop all
 #Maj  de pip
 pip3 install --upgrade pip
 
@@ -56,9 +56,9 @@ sudo apt-get install postgresql postgresql-client postgresql postgresql-postgis 
 
 sudo adduser postgres sudo
 sudo service postgresql start
-sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH PASSWORD '$user_pg_pass';"
-sudo -n -u postgres -s psql -c "ALTER ROLE $user_pg WITH LOGIN;"
-sudo -n -u postgres -s createdb -O $user_pg $pg_dbname -T template0 -E UTF-8
+sudo -n -u postgres psql -c "CREATE ROLE $user_pg WITH PASSWORD '$user_pg_pass';"
+sudo -n -u postgres psql -c "ALTER ROLE $user_pg WITH LOGIN;"
+sudo -n -u postgres createdb -O $user_pg $pg_dbname -T template0 -E UTF-8
 
 cd $HOME
 if [ ! -d $HOME/taxhub ] && [ $install_taxhub ]; then
@@ -80,7 +80,7 @@ sed -i "s,user_pg_pass=.*$,user_pg_pass=$user_pg_pass,g" settings.ini
 sed -i "s,db_port=.*$,db_port=$pg_port,g" settings.ini
 sed -i "s,usershub_release=.*$,usershub_release=2.1.3,g" settings.ini
 
-sudo -s printf "
+sudo printf "
 <Location /taxhub> \n
   ProxyPass  http://127.0.0.1:5000/ retry=0 \n
   ProxyPassReverse  http://127.0.0.1:5000/ \n
@@ -92,12 +92,12 @@ Alias '/static' 'HOME_PATH/taxhub/static' \n
   Order allow,deny \n
   Allow from all \n
 </Directory> \n
-" | sed "s,HOME_PATH,$HOME,g" | sudo -s tee /etc/apache2/sites-available/taxhub.conf
+" | sed "s,HOME_PATH,$HOME,g" | sudo tee /etc/apache2/sites-available/taxhub.conf
 
-sudo -s printf '
+sudo printf '
 RewriteEngine  on \n
 RewriteRule    "taxhub$"  "taxhub/"  [R] \n
-' | sudo -s tee /etc/apache2/sites-available/000-default.conf
+' | sudo tee /etc/apache2/sites-available/000-default.conf
 
 sudo a2ensite taxhub.conf
 sudo apache2ctl restart
@@ -108,9 +108,9 @@ mkdir -p $DIR/var/log
 touch $DIR/var/log/api_geonature-errors.log
 mkdir -p /tmp/taxhub/
 mkdir -p /tmp/usershub/
-sudo -s chown -R $(whoami) $HOME/taxhub
-sudo -s chown -R $(whoami) /tmp/taxhub
-sudo -s chown -R $(whoami) /tmp/usershub
+sudo chown -R $(whoami) $HOME/taxhub
+sudo chown -R $(whoami) /tmp/taxhub
+sudo chown -R $(whoami) /tmp/usershub
 #sed -i "s,nano.*$,#,g" install_db.sh
 #sed -i "s,PnEcrins,PnX-SI,g" install_db.sh
 ./install_db.sh
@@ -167,16 +167,21 @@ if [ ! -f src/custom/home/home.css ]; then
 fi
 
 #Install and build
-echo "Installation des dépendances nodes"
+NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
+URL=`echo $my_url |sed 's/http[s]\?:\/\///'`
+echo "L'application sera disponible à l'url $my_url"
 npm install
 if [ $server_side = "true" ]; then
   echo "Build server side project"
   npm run build:i18n-ssr
 #  Installation de la conf
-  cp ../gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
-  sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
-  cat config/apache/gncitizen_frontssr.conf | sed "s,HOME_PATH,$HOME,g" | sudo -s tee /etc/apache2/sites-available/gncitizen_frontssr.conf
-  sudo a2ensite gncitizen_frontssr.conf
+  sudo cp ../gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
+  sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
+  sudo cp config/apache/gncitizen_frontssr.conf /etc/apache2/sites-available/gncitizen.conf
+  sudo sed -i "s/APP_PATH/${DIR}/g" /etc/apache2/sites-available/gncitizen.conf
+  sudo sed -i "s/mydomain.net/$URL/g" /etc/apache2/sites-available/gncitizen.conf
+  
+  # sudo a2ensite gncitizen.conf
 else
   echo "Build initial du projet"
   npm run build
@@ -199,13 +204,17 @@ deactivate
 touch init_done
 
 #Création de la conf supervisor
-sudo -s cp gncitizen_api-service.conf /etc/supervisor/conf.d/
-sudo -s sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_api-service.conf
+sudo cp gncitizen_api-service.conf /etc/supervisor/conf.d/
+sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_api-service.conf
 
-cat config/apache/gncitizen_api.conf | sed "s,HOME_PATH,$HOME,g" | sudo -s tee /etc/apache2/sites-available/gncitizen_api.conf
-sudo a2ensite gncitizen_api.conf
+# cp  config/apache/gncitizen_api.conf  /etc/apache2/sites-available/gncitizen_api.conf 
+# cat config/apache/gncitizen_api.conf | sed "s,HOME_PATH,$HOME,g" | sudo tee /etc/apache2/sites-available/gncitizen_api.conf
+sudo a2ensite gncitizen.conf
 sudo apache2ctl restart
 #
-sudo -s supervisorctl reread
-sudo -s supervisorctl reload
+sudo supervisorctl reread
+sudo supervisorctl reload
+echo "install municipalities"
+./data/ref_geo.sh
+
 echo "End"

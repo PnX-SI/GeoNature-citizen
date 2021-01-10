@@ -29,5 +29,3 @@ from temp_fr_municipalities t
 where id ilike 'commune%'
 ;
 
-reindex index index_l_areas_geom
-;
