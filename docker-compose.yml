@@ -9,7 +9,7 @@ services:
     command: "bash"
     tty: true
     volumes:
-      - ./config/settings.ini:/home/user/citizen/config/settings.ini
+      - ${PWD}/config/settings.ini:/home/appuser/citizen/config/settings.ini
     labels:
       - traefik.http.routers.testcitizen.rule=Host(`testcitizen.lefrezas.net`)
       - traefik.http.routers.testcitizen.tls.certresolver=le
