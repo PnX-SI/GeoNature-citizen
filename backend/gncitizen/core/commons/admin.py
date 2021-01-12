@@ -75,6 +75,14 @@ from flask_admin.model.form import InlineFormAdmin
 class CorProgramSiteTypeModelInlineForm(InlineFormAdmin):
     form_columns = ('site_type',)
 
+class ProjectView(ModelView):
+    form_overrides = {'long_desc': CKEditorField}
+    create_template = 'edit.html'
+    create_template = 'edit.html'
+    edit_template = 'edit.html'
+    form_excluded_columns = ['timestamp_create','timestamp_update']
+
+
 class ProgramView(ModelView):
     # form_base_class = SecureForm
     form_overrides = {'long_desc':CKEditorField, 'taxonomy_list':SelectField}

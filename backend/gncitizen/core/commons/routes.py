@@ -17,7 +17,7 @@ from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.utils.env import admin
 from server import db
 
-from .models import ModulesModel, ProgramsModel, CustomFormModel, GeometryModel
+from .models import ModulesModel, ProjectModel, ProgramsModel, CustomFormModel, GeometryModel
 from gncitizen.core.users.models import UserModel
 
 try:
@@ -32,7 +32,7 @@ from flask_jwt_extended.utils import (
 )
 from flask_jwt_extended.exceptions import UserLoadError
 from gncitizen.core.commons.admin import (
-  ProgramView, CustomFormView, UserView, GeometryView)
+  ProjectView, ProgramView, CustomFormView, UserView, GeometryView)
 from gncitizen.core.sites.models import CorProgramSiteTypeModel
 
 
@@ -43,6 +43,7 @@ routes = Blueprint("commons", __name__)
 # response.headers['Content-Security-Policy'] = "frame-ancestors 'self' '\*.somesite.com' current_app.config['URL_APPLICATION']"
 # response.headers['X-Frame-Options'] = 'SAMEORIGIN' # ALLOW-FROM
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
+admin.add_view(ProjectView(ProjectModel, db.session, "Projets"))
 admin.add_view(ProgramView(ProgramsModel, db.session, "Programmes"))
 admin.add_view(CustomFormView(CustomFormModel, db.session, "Formulaires dynamiques"))
 admin.add_view(GeometryView(GeometryModel, db.session, "Zones geographiques"))
@@ -97,6 +98,36 @@ def get_modules():
         current_app.logger.critical("[get_modules] error : %s", str(e))
         return {"message": str(e)}, 400
 
+@routes.route("/project/<int:pk>", methods=["GET"])
+@json_resp
+def get_project(pk):
+    """Get a program by id
+         ---
+         tags:
+          - Programs
+         parameters:
+          - name: pk
+            in: path
+            type: integer
+            required: true
+            example: 1
+         responses:
+           200:
+             description: A list of all programs
+         """
+    qproject=ProjectModel.query.filter_by(id_project=pk).limit(1)
+    if qproject.count() != 1:
+        current_app.logger.warning("[get_project] Project not found")
+        return {"message": "Project not found"}, 400
+    else:
+        programs = ProgramsModel.query.filter_by(id_project=pk)
+        plist = []
+        for p in programs:
+            plist.append(p.as_dict())
+    project = qproject[0].as_dict()
+    project["programs"]={"count":len(plist), "items":plist}
+    return project
+
 
 @routes.route("/programs/<int:pk>", methods=["GET"])
 @json_resp
@@ -118,7 +149,7 @@ def get_program(pk):
     # try:
     datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
     if datas.count() != 1:
-      current_app.logger.warning("[get_program] Program not found")        
+      current_app.logger.warning("[get_program] Program not found")
       return {"message": "Program not found"}, 400
     else:
       features = []

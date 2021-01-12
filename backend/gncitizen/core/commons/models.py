@@ -134,8 +134,8 @@ class ProjectModel(TimestampMixinModel, db.Model):
     id_project = db.Column(db.Integer, primary_key=True)
     unique_id_project = db.Column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
     name = db.Column(db.String(50), nullable=False)
-    short_desc = db.Column(db.String(200), nullable=False)
-    long_desc = db.Column(db.Text(), nullable=False)
+    short_desc = db.Column(db.String(200), nullable=True)
+    long_desc = db.Column(db.Text(), nullable=True)
 
 
 @serializable
@@ -147,6 +147,9 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     __table_args__ = {"schema": "gnc_core"}
     id_program = db.Column(db.Integer, primary_key=True)
     unique_id_program = db.Column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
+    id_project = db.Column(
+        db.Integer, db.ForeignKey(ProjectModel.id_project), nullable=True
+    )
     title = db.Column(db.String(50), nullable=False)
     short_desc = db.Column(db.String(200), nullable=False)
     long_desc = db.Column(db.Text(), nullable=False)
@@ -167,19 +170,16 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     is_active = db.Column(
         db.Boolean(), server_default=expression.true(), default=True
     )
-    # geom = db.Column(Geometry("GEOMETRY", 4326))
     id_geom = db.Column(
         db.Integer, db.ForeignKey(GeometryModel.id_geom), nullable=False
     )
-    geometry = relationship("GeometryModel")
     id_form = db.Column(
         db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
     )
     custom_form = relationship("CustomFormModel")
-    id_project = db.Column(
-        db.Integer, db.ForeignKey(ProjectModel.id_project), nullable=True
-    )
+    geometry = relationship("GeometryModel")
     project = relationship("ProjectModel")
+
 
     def get_geofeature(self, recursif=True, columns=None):
         geometry = to_shape(self.geometry.geom)
