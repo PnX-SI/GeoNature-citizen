@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+import uuid
 
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import expression
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 from gncitizen.core.taxonomy.models import BibListes
 from gncitizen.utils.env import db
@@ -48,6 +49,7 @@ class ModulesModel(TimestampMixinModel, db.Model):
     def __repr__(self):
         return self.name
 
+
 @serializable
 class CustomFormModel(TimestampMixinModel, db.Model):
     """Table des Formulaires spécifiques associés aux programmes"""
@@ -62,6 +64,18 @@ class CustomFormModel(TimestampMixinModel, db.Model):
 
 
 @serializable
+class ProjectModel(TimestampMixinModel, db.Model):
+    """Table des projets regroupant les programmes"""
+    __tablename__ = "t_projects"
+    __table_args__ = {"schema": "gnc_core"}
+    id_project = db.Column(db.Integer, primary_key=True)
+    unique_id_project = db.Column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    short_desc = db.Column(db.String(200), nullable=False)
+    long_desc = db.Column(db.Text(), nullable=False)
+
+
+@serializable
 @geoserializable
 class ProgramsModel(TimestampMixinModel, db.Model):
     """Table des Programmes de GeoNature-citizen"""
@@ -69,6 +83,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     __tablename__ = "t_programs"
     __table_args__ = {"schema": "gnc_core"}
     id_program = db.Column(db.Integer, primary_key=True)
+    unique_id_program = db.Column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
     title = db.Column(db.String(50), nullable=False)
     short_desc = db.Column(db.String(200), nullable=False)
     long_desc = db.Column(db.Text(), nullable=False)
@@ -83,8 +98,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     )
     module = relationship("ModulesModel")
     taxonomy_list = db.Column(
-        db.Integer, 
-        #ForeignKey(BibListes.id_liste), 
+        db.Integer,
         nullable=True
     )
     is_active = db.Column(
@@ -95,6 +109,10 @@ class ProgramsModel(TimestampMixinModel, db.Model):
         db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
     )
     custom_form = relationship("CustomFormModel")
+    id_project = db.Column(
+        db.Integer, db.ForeignKey(ProjectModel.id_project), nullable=True
+    )
+    project = relationship("ProjectModel")
 
     def get_geofeature(self, recursif=True, columns=None):
         return self.as_geofeature(
