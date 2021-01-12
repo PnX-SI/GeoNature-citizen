@@ -148,7 +148,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     id_program = db.Column(db.Integer, primary_key=True)
     unique_id_program = db.Column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
     id_project = db.Column(
-        db.Integer, db.ForeignKey(ProjectModel.id_project), nullable=True
+        db.Integer, db.ForeignKey(ProjectModel.id_project), nullable=False
     )
     title = db.Column(db.String(50), nullable=False)
     short_desc = db.Column(db.String(200), nullable=False)
