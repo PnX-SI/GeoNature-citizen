@@ -20,21 +20,22 @@ export class SiteModalFlowComponent {
   @Input("coords") coords;
   @Input("modalversion") modalversion: boolean = true;
   @ViewChild("content", { static: true }) content: ElementRef;
+  @Input("updateData") updateData;
+  @Input("program_id") program_id;
   flowitems: FlowItem[];
   timeout: any;
-  program_id: any;
 
-  constructor(public flowService: SiteModalFlowService, private route: ActivatedRoute) {
-    this.route.params.subscribe(
-      params => {
-        this.program_id = params["id"];
-      }
-    );
-  }
+  constructor(
+    public flowService: SiteModalFlowService,
+    private route: ActivatedRoute) {}
 
   clicked() {
     // this.flowService.openFormModal({ program_id: this.program_id, coords: this.coords });
-    this.flowitems = this.flowService.getFlowItems({ program_id: this.program_id, coords: this.coords });
+    this.flowitems = this.flowService.getFlowItems({
+      program_id: this.program_id,
+      coords: this.coords,
+      updateData: this.updateData
+    });
     if (this.modalversion) {
       var modalRef = this.flowService.open(this.content);
     } else {

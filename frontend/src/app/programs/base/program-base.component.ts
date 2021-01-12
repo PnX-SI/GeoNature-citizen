@@ -4,7 +4,6 @@ import {
 } from "@angular/core";
 import { FeatureCollection, Feature } from "geojson";
 import { Program } from "../programs.models";
-import { TaxonomyList } from "../observations/observation.model";
 import * as L from "leaflet";
 import { AppConfig } from "../../../conf/app.config";
 
@@ -17,7 +16,6 @@ export abstract class ProgramBaseComponent implements AfterViewInit {
   programs: Program[];
   program: Program;
   programFeature: FeatureCollection;
-  surveySpecies: TaxonomyList;
   abstract flowService: any;
 
   ngAfterViewInit(): void {

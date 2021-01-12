@@ -37,6 +37,7 @@ import { AppConfig } from "../../../conf/app.config";
 })
 export class ObsComponent extends ProgramBaseComponent implements OnInit {
   observations: FeatureCollection;
+  surveySpecies: TaxonomyList;
   @ViewChild(ObsMapComponent, { static: true }) obsMap: ObsMapComponent;
   @ViewChild(ObsListComponent, { static: true }) obsList: ObsListComponent;
   @ViewChildren(ModalFlowComponent) modalFlow: QueryList<ModalFlowComponent>;

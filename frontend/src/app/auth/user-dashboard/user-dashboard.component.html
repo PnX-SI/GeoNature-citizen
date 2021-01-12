@@ -1,13 +1,13 @@
 <div class="container" id="main">
-  <!-- <user-observations [myobs]="myobs" *ngIf="observations" (deleteObs)="openDeleteModal(deleteModal, $event)"></user-observations> -->
   <div class="row">
     <div class="col-lg-12">
       <div class="row">
         <div class="user"></div>
         <div class="user-infos">
-          <span i18n>{ +stats?.platform_attendance, plural, =0 { aucune observation} =1
-            {une observation} other
-            {{{stats?.platform_attendance}} observations} }</span>
+          <span>
+            <button (click)="tab = 'observations'" [class]="'btn ' + (tab === 'observations' ? 'btn-primary' : 'btn-dark')">Mes observations ({{stats?.platform_attendance}})</button>
+            <button (click)="tab = 'sites'" [class]="'btn ml-1 ' + (tab === 'sites' ? 'btn-primary' : 'btn-dark')">Mes sites ({{ mysites?.features.length }})</button>
+          </span>
           <div class="avatar-main-wrapper">
             <div *ngIf="!userAvatar" class="profile-pic" (click)="onEditInfos(personalInfos)" ></div>
             <img *ngIf="userAvatar" class="profile-pic" src="{{userAvatar}}" (click)="onEditInfos(personalInfos)" />
@@ -15,8 +15,15 @@
           <p (click)="onEditInfos(personalInfos)">{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>
-
-      <user-observations [myobs]="myobs" *ngIf="observations" (deleteObs)="openDeleteModal(deleteModal, $event)"></user-observations>
+      <user-sites
+        [mysites]="mysites"
+        *ngIf="mysites && tab === 'sites'">
+      </user-sites>
+      <user-observations
+        [myobs]="myobs"
+        *ngIf="observations && tab === 'observations'"
+        (deleteObs)="openDeleteModal(deleteModal, $event)">
+      </user-observations>
       <!-- <div id="myObs" class="container">
         <h3 class="title" i18n>Mes observations</h3>
         <ngx-datatable *ngIf="observations" class="material" [rows]="rows" [headerHeight]="40" [footerHeight]="40"
@@ -80,6 +87,9 @@
         </button>
         <button class="btn-big col-lg-3 col-md-5 col-sm-12 export" (click)="onExportObservations()" i18n>
           <i class="fa fa-download"></i>Exporter mes observations
+        </button>
+        <button class="btn-big col-lg-3 col-md-5 col-sm-12 export" (click)="onExportSites()">
+          <i class="fa fa-download"></i>Exporter mes sites
         </button>
         <button class="btn-big btn-danger col-lg-3 col-md-5 col-sm-12" (click)="onDeletePersonalData()" i18n>
           <i class="fa fa-trash"></i>Supprimer mes données personnelles
@@ -191,8 +201,6 @@
 </ng-template>
 
 
-
-
 <ng-template #deleteModal let-modal>
     <div class="modal-delete-header">
       <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
@@ -208,10 +216,23 @@
     </div>
   </ng-template>
 
+  <ng-template #siteDeleteModal let-modal>
+    <div class="modal-delete-header">
+      <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
+    </div>
+    <div class="modal-delete-body">
+      Êtes-vous sûr de vouloir supprimer ce site et toutes les informations qui y sont rattachées ?
+      <br>
+      La suppression sera définitive
+    </div>
+    <div class="modal-delete-footer">
+      <button type="button" class="cancel-btn" style="margin-right: 15px" (click)="onSiteCancelDelete()">ANNULER</button>
+      <button type="button" class="green-btn" (click)="onDeleteSite()">OUI</button>
+    </div>
+  </ng-template>
+
 <div *ngIf="!observations" id="spinner">
   <div class="loader-1"></div>
   <div class="loader-2"></div>
   <div class="loader-3"></div>
 </div>
-
-

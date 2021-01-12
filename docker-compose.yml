@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  geo:
+    image: debian:buster-slim
+    working_dir: "/home/citizen"
+#    entrypoint: ["/srv/app/install_app.sh", "bash -c"]
+    command: "bash"
+    tty: true
+    volumes:
+      - ./:/home/citizen
