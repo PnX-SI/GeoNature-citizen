@@ -138,6 +138,9 @@ class ProjectModel(TimestampMixinModel, db.Model):
     long_desc = db.Column(db.Text(), nullable=True)
 
 
+    def __repr__(self):
+        return self.name
+
 @serializable
 @geoserializable
 class ProgramsModel(TimestampMixinModel, db.Model):
