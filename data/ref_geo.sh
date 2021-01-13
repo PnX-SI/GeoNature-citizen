@@ -1,7 +1,8 @@
 #!/bin/bash
-echo "What is the db name?"
-read db_name
-echo "db name is $db_name"
+. ../config/settings.ini
+echo "PGPASSWORD=$user_pg_pass psql -h $pg_host -d $pg_dbname -U $user_pg -p $pg_port"
+dburi='postgres'
+echo "db name is $pg_dbname"
 echo "--------------------"
 echo "Insert default French municipalities (IGN admin-express)"
 echo "--------------------"
@@ -12,12 +13,12 @@ else
     echo "tmp/geonature/communes_fr_admin_express_2019-01.zip already exist"
 fi
 unzip tmp/geonature/communes_fr_admin_express_2019-01.zip -d tmp/geonature
-sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/fr_municipalities.sql
+PGPASSWORD=$user_pg_pass psql -h $pg_host -d $pg_dbname -U $user_pg -p $pg_port -f tmp/geonature/fr_municipalities.sql
 echo ""
 echo "Insert data in l_areas and li_municipalities tables"
 echo "--------------------"
-sudo -n -u postgres -s psql -d $db_name -f ./ref_geo.sql
+PGPASSWORD=$user_pg_pass psql -h $pg_host -d $pg_dbname -U $user_pg -p $pg_port -f ./data/ref_geo.sql
 echo ""
 echo "Drop french municipalities temp table"
 echo "--------------------"
-#sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_municipalities;"
+PGPASSWORD=$user_pg_pass psql -h $pg_host -d $pg_dbname -U $user_pg -p $pg_port -c "DROP TABLE ref_geo.temp_fr_municipalities;"

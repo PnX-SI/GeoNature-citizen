@@ -9,7 +9,6 @@ import {
 import { ActivatedRoute } from "@angular/router";
 
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ModalFlowService } from "../../modalflow.service";
 import { IFlowComponent } from "../../flow/flow";
 import { RegisterComponent } from "../../../../../auth/register/register.component";
 import { LoginComponent } from "../../../../../auth/login/login.component";
@@ -33,8 +32,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
   constructor(
     private modalService: NgbModal,
     private authService: AuthService,
-    private route: ActivatedRoute,
-    private flowModal : ModalFlowService
+    private route: ActivatedRoute
   ) {}
 
   

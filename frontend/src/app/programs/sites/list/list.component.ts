@@ -8,6 +8,8 @@ import {
 
 import { FeatureCollection, Feature } from "geojson";
 import { SiteModalFlowService } from "../modalflow/modalflow.service";
+import { UseService } from "../../../auth/user-dashboard/user.service.service";
+import { SiteService } from "../sites.service";
 import {AppConfig} from "../../../../conf/app.config";
 
 @Component({
@@ -17,7 +19,7 @@ import {AppConfig} from "../../../../conf/app.config";
 })
 export class SitesListComponent implements OnChanges {
   @Input("sites") sitesCollection: FeatureCollection;
-  @Input("taxa") surveySpecies: any[];
+  @Input("userDashboard") userDashboard: boolean = false;
   @Input("program_id") program_id: number;
   @Input("displayForm") display_form: boolean;
   @Output("siteSelect") siteSelect: EventEmitter<Feature> = new EventEmitter();
@@ -26,7 +28,11 @@ export class SitesListComponent implements OnChanges {
   taxa: any[] = [];
   apiEndpoint = AppConfig.API_ENDPOINT;
 
-  constructor(public flowService: SiteModalFlowService) {}
+  constructor(
+    public flowService: SiteModalFlowService,
+    private userService: UseService,
+    private siteService: SiteService
+  ) {}
 
   ngOnChanges() {
     if (this.sitesCollection) {

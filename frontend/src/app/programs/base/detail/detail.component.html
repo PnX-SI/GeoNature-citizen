@@ -8,7 +8,7 @@
   <div class="row mb-4">
     <div class="col-md-4 pt-4 card box-shadow" *ngIf="module === 'sites'; else obsDisplay">
       <div class="card-body">
-        <h5 class="card-title">{{ site?.properties.site_type | titlecase }} #{{ site_id }}</h5>
+        <h5 class="card-title">{{ site?.properties.site_type.type | titlecase }} #{{ site_id }}</h5>
        <h6 class="card-subtitle mb-2 text-muted">Ajoutée le {{ site?.properties.timestamp_create.substring(0, 10) | date : "longDate" }}</h6>
         <p class="card-text">Inventoriée par {{ site?.properties.obs_txt }}</p>
 

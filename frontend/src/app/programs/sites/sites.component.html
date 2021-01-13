@@ -8,9 +8,9 @@
     <div class="col-lg-4 col-md-12 side-bar" id="list">
       <app-sites-list
         [sites]="sites"
-        [taxa]="surveySpecies"
         [program_id]="program_id"
         [displayForm]="flowService.display"
+        [userDashboard]="userDashboard"
         (siteSelect)="sitesMapRef.showPopup($event);"
       >
         <button 
@@ -18,9 +18,14 @@
           class="btn btn-success mr-4 float-right"
           add-obs
           (click)="addSiteClicked()"
+          *ngIf="!userDashboard"
           ngbTooltip="Ajouter un site"
           placement="bottom">Ajouter</button>
-        <app-sitemodalflow #modalFlowRef [coords]="coords" [modalversion]="AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION" obs-form></app-sitemodalflow>
+        <app-sitemodalflow
+          #modalFlowRef [coords]="coords"
+          [modalversion]="AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION"
+          [program_id]="program_id"
+          obs-form></app-sitemodalflow>
       </app-sites-list>
     </div>
 

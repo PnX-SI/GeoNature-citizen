@@ -50,6 +50,23 @@ Documentation : https://geonature-citizen.readthedocs.io
 
 GeoNature-citizen s'appuie sur [TaxHub](https://github.com/PnX-SI/TaxHub) pour la création des listes d'espèces utilisées dans les programmes.
 
+### Installation
+
+* Lancer le script install_app.sh pour installer l'application entière ainsi que ses dépendances (postgres, taxhub ...)
+* Au premier lancement le script créera un fichier settings.ini dans config
+* Remplacer toutes les variables par vos données de votre serveur
+* Relancer le script install_app.sh
+    * Les fichiers de conf frontend et backend seront alors créés et configurés
+    * Le serveur flask sera lancé via supervisor : api_geonature
+    * Si vous avez choisi le mode Server side pour le frontend, il sera lancé via supervisor : geonature sur le port 4000
+
+### Mise à jour
+
+* Lancer le script update_app.sh
+    * Le script récupérera les modifications depuis git
+    * il va transpiler le front et redémarrer si besoin les services supervisor
+    * [Warning] si des modifications SQL ont été faites, il faudra les faire manuellement 
+
 ## L'origine du projet
 
 Ce projet est initialement développé pour répondre aux besoins de collectes participatives dans le cadre des démarches d'atlas de biodiversité communal/territorial (ABC/ABT).

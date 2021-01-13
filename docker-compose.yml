@@ -1,0 +1,27 @@
+version: '3.3'
+
+services:
+  debian_base:
+    build: .
+    container_name: citizen_base
+    # working_dir: "/home/citizen"
+#    entrypoint: ["/srv/app/install_app.sh", "bash -c"]
+    command: "bash"
+    tty: true
+    volumes:
+      - ${PWD}/config/settings.ini:/home/appuser/citizen/config/settings.ini
+    labels:
+      - traefik.http.routers.testcitizen.rule=Host(`testcitizen.lefrezas.net`)
+      - traefik.http.routers.testcitizen.tls.certresolver=le
+      - traefik.http.routers.testcitizen.entrypoints=web-secure
+      - traefik.http.middlewares.testcitizen.redirectscheme.scheme=https
+      - traefik.http.middlewares.testcitizen.redirectscheme.permanent=true
+      - traefik.http.middlewares.testcitizen.compress=true
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+
+
+
+networks:
+  default:
+    external:
+      name: front

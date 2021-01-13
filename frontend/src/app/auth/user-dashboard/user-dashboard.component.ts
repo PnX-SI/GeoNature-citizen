@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { throwError, forkJoin } from "rxjs";
 import { tap, catchError } from "rxjs/operators";
@@ -6,6 +6,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AppConfig } from "../../../conf/app.config";
 import { AuthService } from "./../auth.service";
 import { UseService } from "./user.service.service";
+import { SiteService } from "../../programs/sites/sites.service";
 import { saveAs } from "file-saver";
 import * as _ from "lodash";
 import { Point } from "leaflet";
@@ -20,6 +21,7 @@ import { ModalFlowService } from "../../programs/observations/modalflow/modalflo
 })
 export class UserDashboardComponent implements OnInit {
   public appConfig = AppConfig;
+  @ViewChild('siteDeleteModal', {static: true}) siteDeleteModal; 
   modalRef: NgbModalRef;
   modalRefDel: NgbModalRef;
   username: string = "not defined";
@@ -33,6 +35,7 @@ export class UserDashboardComponent implements OnInit {
   recognition_badges: any = [];
   observations: any;
   myobs: any;
+  mysites: any;
   rows: any = [];
   obsToExport: any = [];
   userForm: FormGroup;
@@ -41,6 +44,8 @@ export class UserDashboardComponent implements OnInit {
   extentionFile: any;
   newAvatar: string | ArrayBuffer;
   idObsToDelete: number;
+  idSiteToDelete: number;
+  tab: string = 'observations';
 
   constructor(
     private auth: AuthService,
@@ -48,7 +53,8 @@ export class UserDashboardComponent implements OnInit {
     private router: Router,
     private modalService: NgbModal,
     private flowService: ModalFlowService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public siteService: SiteService
   ) {}
 
   ngOnInit(): void {
@@ -63,6 +69,7 @@ export class UserDashboardComponent implements OnInit {
               this.username = user["features"]["username"];
               this.stats = user["features"]["stats"];
               this.role_id = user["features"]["id_role"];
+              this.userService.role_id = this.role_id;
               if (user["features"]["avatar"])
                 this.userAvatar =
                   this.appConfig.API_ENDPOINT +
@@ -73,6 +80,10 @@ export class UserDashboardComponent implements OnInit {
               this.flowService.getModalCloseSatus().subscribe(status => {
                 if (status === "updateObs") this.getData();
               });
+              this.siteService.siteEdited.subscribe(() => {
+                this.mysites = null;
+                this.getData();
+              })
             }
           }),
           catchError(err => throwError(err))
@@ -80,6 +91,9 @@ export class UserDashboardComponent implements OnInit {
         .subscribe(user => {
           this.currentUser = user;
         });
+      this.siteService.deleteSite.subscribe(($event) => {
+        this.openSiteDeleteModal(this.siteDeleteModal, $event);
+      })
     }
   }
 
@@ -96,10 +110,14 @@ export class UserDashboardComponent implements OnInit {
     let userObservations = this.userService.getObservationsByUserId(
       this.role_id
     );
+    let userSites = this.userService.getSitesByUserId(
+      this.role_id
+    );
     if (AppConfig["REWARDS"]) {
       data.push(badgeCategories);
     }
     data.push(userObservations);
+    data.push(userSites);
 
     forkJoin(data).subscribe((data: any) => {
       if (data.length > 1) {
@@ -113,6 +131,7 @@ export class UserDashboardComponent implements OnInit {
           if (badge.type == "recognition") this.recognition_badges.push(badge);
         });
         this.myobs = data[1];
+        this.mysites = data[2];
         this.observations = data[1].features;
         this.observations.forEach(obs => {
           let coords: Point = new Point(
@@ -122,6 +141,15 @@ export class UserDashboardComponent implements OnInit {
           obs.properties.coords = coords; // for use in user obs component
           this.rowData(obs, coords);
           this.obsExport(obs);
+        });
+        this.mysites.features.forEach(site => {
+          let coords: Point = new Point(
+            site.geometry.coordinates[0],
+            site.geometry.coordinates[1]
+          );
+          site.properties.coords = coords; // for use in user obs component
+          // this.rowData(obs, coords);
+          // this.obsExport(obs);
         });
       } else {
         this.observations = data[0].features;
@@ -241,6 +269,10 @@ export class UserDashboardComponent implements OnInit {
     saveAs(blob, "mydata.csv");
   }
 
+  onExportSites() {
+    this.userService.exportSites(this.role_id);
+  }
+
   onEditInfos(content): void {
     this.userService.getPersonalInfo().subscribe(data => {
       this.personalInfo = data;
@@ -324,6 +356,27 @@ export class UserDashboardComponent implements OnInit {
       this.modalRefDel.close();
       this.getData();
       this.idObsToDelete = null;
+    });
+  }
+
+  openSiteDeleteModal(deleteModal: any, idSite: number) {
+    this.idSiteToDelete = idSite;
+    this.modalRefDel = this.modalService.open(deleteModal, {
+      windowClass: "delete-modal",
+      centered: true
+    });
+  }
+
+  onSiteCancelDelete() {
+    this.modalRefDel.close();
+  }
+
+  onDeleteSite() {
+    this.userService.deleteSite(this.idSiteToDelete).subscribe(() => {
+      this.modalRefDel.close();
+      this.mysites = null;
+      this.getData();
+      this.idSiteToDelete = null;
     });
   }
 

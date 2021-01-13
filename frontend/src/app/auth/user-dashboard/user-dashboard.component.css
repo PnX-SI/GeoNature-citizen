@@ -45,13 +45,25 @@
 
 .user-infos span {
   color: #fff;
-  background-color: rgba(255, 255, 255, 0.212);
+  /*background-color: rgba(255, 255, 255, 0.212);*/
   text-transform: uppercase;
   font-weight: bold;
   font-size: 20px;
   width: fit-content;
   padding: 5px 30px;
   margin-bottom: 20px;
+}
+
+.user-infos .btn-primary {
+  text-transform: uppercase;
+  background-color: rgba(0, 123, 255, 0.8);
+  border-color: rgba(0, 123, 255, 0.8);
+}
+
+.user-infos .btn-dark {
+  text-transform: uppercase;
+  background-color: rgba(52, 58, 64, 0.5);
+  border-color: rgba(52, 58, 64, 0.5);
 }
 
 .user-infos img,
