@@ -92,14 +92,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     # JWT Auth
     jwt.init_app(app)
 
-    # Swagger for api documentation
-    app.config["SWAGGER"] = {
-        "title": app.config["appName"],
-        "version": __version__,
-        "produces": ["application/json",],
-        "consumes": ["application/json",],
-    }
-
     swagger.init_app(app)
 
     admin.init_app(app)
