@@ -12,20 +12,13 @@ appName = 'GeoNature-citizen'                               # Application name i
 DEFAULT_LANGUAGE = 'fr'
 
 # Debug
-DEBUG = true
+DEBUG = false
 SQLALCHEMY_DEBUG_LEVEL = 'WARNING'
 
-URL_APPLICATION = "http://url.com/gncitizen"         # Replace my_url.com by your domain or IP
-API_ENDPOINT = "http://url.com:API_PORT/gncitizen/api"        # Replace my_url.com by your domain or IP
-API_PORT = 5002 # 5000 déjà utilisé par taxhub
-API_TAXHUB = "http://127.0.0.1:5000/api/"
+URL_APPLICATION = "http://mydomain.org"         # Replace mydomain.org by your domain
+API_ENDPOINT = "http://mydomain.org/api"        # Replace mydomain.org by your domain
+API_TAXHUB = "http://mytaxhub.org/api/"         # Replace mytaxhub.org by your TaxHub url
 
-# FlaskAdmin
-# credentials for loading map tiles from mapbox
-MAPBOX_MAP_ID = '...'
-MAPBOX_ACCESS_TOKEN = '...'
-DEFAULT_CENTER_LAT = 45
-DEFAULT_CENTER_LONG = 5
 
 
 SECRET_KEY = 'MyS3cr3tK3y'
@@ -66,8 +59,4 @@ MEDIA_FOLDER = 'media'
 
 
 # API flasgger main config
-[SWAGGER]
-    title = 'GeoNature-Citizen API'
-    version = 'x.x.x'
-    produces = ["application/json"]
-    consumes = ["application/json"]
+
