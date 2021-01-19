@@ -1,4 +1,5 @@
 import os
+import logging
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
@@ -21,6 +22,9 @@ with open(str((ROOT_DIR / "VERSION"))) as v:
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/default_config.toml"
 GNC_EXTERNAL_MODULE = ROOT_DIR / "external_modules"
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_config_file_path(config_file=None):
@@ -93,10 +97,15 @@ swagger_config = {
 
 swagger = Swagger(template=swagger_template, config=swagger_config)
 
+if app_conf["DEBUG"]:
+    admin_url = "/api/admin"
+else:
+    admin_url = "/".join([urlparse(app_conf["URL_APPLICATION"]).path, "/api/admin"])
+
 admin = Admin(
     name=f"GN-Citizen: Backoffice d'administration (version: {__version__})",
     template_mode="bootstrap3",
-    url="/api/admin",
+    url=admin_url,
 )
 
 
