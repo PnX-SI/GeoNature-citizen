@@ -5,8 +5,16 @@ import logging
 from flask import Flask, current_app
 from flask_cors import CORS
 
-from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger, admin, ckeditor
+from gncitizen.utils.env import (
+    db,
+    list_and_import_gnc_modules,
+    jwt,
+    swagger,
+    admin,
+    ckeditor,
+)
 from gncitizen.utils.sqlalchemy import create_schemas
+from gncitizen import __version__
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -24,7 +32,7 @@ class ReverseProxied(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name):]
+                environ["PATH_INFO"] = path_info[len(script_name) :]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -53,12 +61,12 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
             )
         )
 
-        logger = logging.getLogger('werkzeug')
+        logger = logging.getLogger("werkzeug")
         logger.addHandler(handler)
         app.logger.removeHandler(default_handler)
 
         for l in logging.Logger.manager.loggerDict.values():
-            if hasattr(l, 'handlers'):
+            if hasattr(l, "handlers"):
                 l.handlers = [handler]
 
     # else:
@@ -67,7 +75,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     #     logger = logging.getLogger()
     #     logger.setLevel(logging.INFO)
     logging.getLogger("sqlalchemy.engine").setLevel(
-        getattr(sys.modules['logging'], app.config["SQLALCHEMY_DEBUG_LEVEL"]))
+        getattr(sys.modules["logging"], app.config["SQLALCHEMY_DEBUG_LEVEL"])
+    )
 
     CORS(app, supports_credentials=True)
     # app.config['PROPAGATE_EXCEPTIONS'] = False
@@ -84,6 +93,13 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     jwt.init_app(app)
 
     # Swagger for api documentation
+    app.config["SWAGGER"] = {
+        "title": app.config["appName"],
+        "version": __version__,
+        "produces": ["application/json",],
+        "consumes": ["application/json",],
+    }
+
     swagger.init_app(app)
 
     admin.init_app(app)
