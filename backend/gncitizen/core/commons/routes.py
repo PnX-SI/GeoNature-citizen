@@ -128,6 +128,7 @@ def get_stat():
 
 
 @routes.route("/projects", methods=["GET"])
+@routes.route("/projects/", methods=["GET"])
 @json_resp
 def get_projects():
     """Get a project description details by id
