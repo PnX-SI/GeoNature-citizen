@@ -96,7 +96,7 @@ swagger = Swagger(template=swagger_template, config=swagger_config)
 admin = Admin(
     name=f"GN-Citizen: Backoffice d'administration (version: {__version__})",
     template_mode="bootstrap3",
-    url="/".join([urlparse(app_conf["API_ENDPOINT"]).path, "admin"]),
+    url="/api/admin",
 )
 
 

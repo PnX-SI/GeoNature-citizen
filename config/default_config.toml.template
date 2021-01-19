@@ -16,7 +16,6 @@ DEBUG = false
 SQLALCHEMY_DEBUG_LEVEL = 'WARNING'
 
 URL_APPLICATION = "http://mydomain.org"         # Replace mydomain.org by your domain
-API_ENDPOINT = "http://mydomain.org/api"        # Replace mydomain.org by your domain
 API_TAXHUB = "http://mytaxhub.org/api/"         # Replace mytaxhub.org by your TaxHub url
 
 

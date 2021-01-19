@@ -10,9 +10,7 @@ class LAreas(db.Model):
     __tablename__ = "l_areas"
     __table_args__ = {"schema": "ref_geo"}
     id_area = db.Column(db.Integer, primary_key=True)
-    id_type = db.Column(
-        db.Integer, db.ForeignKey("ref_geo.bib_areas_types.id_type")
-    )
+    id_type = db.Column(db.Integer, db.ForeignKey("ref_geo.bib_areas_types.id_type"))
     area_name = db.Column(db.Unicode)
     area_code = db.Column(db.Unicode)
     source = db.Column(db.Unicode)
@@ -48,4 +46,3 @@ class LiMunicipalities(db.Model):
         db.Integer, db.ForeignKey("ref_geo.l_areas.id_area"), unique=True
     )
     insee_com = db.Column(db.Integer)
-

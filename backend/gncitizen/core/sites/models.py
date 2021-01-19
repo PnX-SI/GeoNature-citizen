@@ -9,7 +9,7 @@ from gncitizen.core.commons.models import (
     ProgramsModel,
     TimestampMixinModel,
     MediaModel,
-    CustomFormModel
+    CustomFormModel,
 )
 from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
@@ -74,13 +74,11 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
 class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     __tablename__ = "cor_program_typesites"
     __table_args__ = {"schema": "gnc_sites"}
-    id_cor_program_typesite = db.Column(
-        db.Integer, primary_key=True, unique=True
-    )
+    id_cor_program_typesite = db.Column(db.Integer, primary_key=True, unique=True)
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE")
     )
-    program = relationship("ProgramsModel", backref='site_types')
+    program = relationship("ProgramsModel", backref="site_types")
     id_typesite = db.Column(
         db.Integer, db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE")
     )
