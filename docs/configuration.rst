@@ -10,7 +10,7 @@ Côté backend
 ************
 
 Les fichiers de configuration sont dans le dossier ``config``.
-Le fichier à modifier est default_config.toml.
+Le fichier à modifier est ``default_config.toml``.
 Le fichier utilisé par GeoNature-citizen est default_config.toml.
 Il peut-être créé en copiant le fichier ``default_config.toml.example`` \
 vers ``default_config.toml``:
@@ -106,7 +106,7 @@ Les fichiers de configuration du frontend se trouvent dans le dossier ``./fronte
 
 Les fichiers à créer sont ``app.config.ts`` et ``map.config.ts``.
 Il sont créés lors de l"installation ou en copiant les fichiers ``app.config.ts.sample`` \
-vers ``app.config.ts`` et ``map.config.ts``:
+vers ``app.config.ts`` et ``map.config.ts`` :
 
 .. code-block:: bash
 

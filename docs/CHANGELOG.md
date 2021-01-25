@@ -8,11 +8,13 @@ Voir https://github.com/PnX-SI/GeoNature-citizen/compare/dev
 
 **🚀 Nouveautés**
 
-* Développement de la possibilité de créer des programmes d'inventaires et de visites de sites, basés sur des champs additionnels dynamiques stockés en jsonb, uniquement pour des mares pour le moment (https://www.a-vos-mares.org) (#34, @QuentinJouet & @jolleon)
+* Développement de la possibilité de créer des programmes d'inventaires et de visites de sites, basés sur des champs additionnels dynamiques stockés en jsonb (actuellement utilisée par https://www.a-vos-mares.org) (#34, @QuentinJouet & @jolleon)
 * Possibilité de définir si un programme est de type "Observations" ou "Sites" (#179, #209, @QuentinJouet & @jolleon)
 * Possibilité d'ajouter des champs additionnels dynamiques stockés en jsonb sur les programmes de type "Observations", utilisant Angular JSON Schema Form (#181, @QuentinJouet & @jolleon)
 * Révision ergonomique du formulaire de saisie, positionné sur la liste des observations (#218, @jolleon)
-* Révision du tableau de bord de l'observateur pour un affichage liste/carte semblable à une page de programme (@jolleon) 
+* Révision du tableau de bord de l'observateur pour un affichage liste/carte semblable à une page de programme (@jolleon)
+* Tableau de bord : Possibilité de visualiser les sites dans la liste des observations ainsi que sur la carte et pouvoir les éditer (@jolleon)
+* Tableau de bord : Possibilité d'exporter les sites (@jolleon)
 * Exports des observateurs adaptés pour contenir les données de formulaires personnalisés (@jolleon)
 * Ajout d'un paramètre ``FRONTEND.NEW_OBS_FORM_MODAL_VERSION``, permettant de définir si le formulaire de saisie est sur la barre latérale ou dans une modale comme précédemment (#218, @jolleon)
 * Possibilité de charger plusieurs photos associées à une observation (#208, @jolleon)
@@ -22,20 +24,25 @@ Voir https://github.com/PnX-SI/GeoNature-citizen/compare/dev
 * Ajout d'un message paramétrable (``registration_message``) d'incitation à l'inscription (#177, @lpofredc)
 * Ajout d'un message personnalisé en tête du formulaire de saisie d'une observation, personnalisé dans la table de paramétrage du programme (@lpofredc)
 * Ajout de la possibilité d'afficher le nom scientifique des taxons (``taxonDisplaySciName``)
-* Sécurisation de l'interface d'administration des programmes (#211) (@lpofredc) 
+* Sécurisation de l'interface d'administration des programmes (#211) (@lpofredc)
+* Administration : Possibilité de charger une géométrie à partir d'un fichier GeoJSON ou KML pour définir l'emprise géographique d'un programme (@jolleon)
+* Administration : Possibilité de mutualiser les zones géographiques entre plusieurs programmes (#245, @jolleon)
 * Enrichissement de l'interface d'administration pour gérer dorénavent les programmes, les formulaires personnalisés (*json schema form*), et les utilisateurs inscrits (@lpofredc)
 * Intitulé des programmes personnalisables (ex: Missions, Enquêtes) (@lpofredc)
 * Améliorations diverses du style et de l'ergonomie (@jolleon, @lpofredc)
 * Révision et réorganisation complète de la documentation (merci @Splendens et @ksamuel) (#166)
+* Création d'un script pour simplifier et automatiser l'installation de GeoNature-citizen (#167)
 
 **🐛 Corrections**
 
-* Désactive le bouton d'enregistrement d'une observation après sa validation (évite les enregistrements multiples en cas de réponse lente du backend) (@jolleon)
-
+* Désactivation du bouton d'enregistrement d'une observation après sa validation (évite les enregistrements multiples en cas de réponse lente du backend) (@jolleon)
 
 **⚠️ Notes de version**
 
-* Lancer le script SQL de mise à jour de la BDD de GeoNature-citizen https://raw.githubusercontent.com/PnX-SI/GeoNature-citizen/master/data/migrations/data/migrations/v0.3.1_to_1.0.0.sql
+Si vous mettez à jour GeoNature-citizen à partir de la version 0.3.0 :
+
+* Lancer le script SQL de mise à jour de la BDD de GeoNature-citizen https://raw.githubusercontent.com/PnX-SI/GeoNature-citizen/master/data/migrations/data/migrations/v0.3.0_to_1.0.0.sql
+* Autres choses à faire ????
 
 
 0.3.0 (2020-02-12)
