@@ -13,7 +13,7 @@ from gncitizen.utils.env import (
     admin,
     ckeditor,
 )
-from gncitizen.utils.sqlalchemy import create_schemas
+from gncitizen.utils.init_data import create_schemas, populate_modules
 from gncitizen import __version__
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -153,6 +153,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         _app = app
 
         create_schemas(db)
+        populate_modules(db)
         db.create_all()
 
     return app

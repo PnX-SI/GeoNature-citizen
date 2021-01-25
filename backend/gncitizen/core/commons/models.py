@@ -35,14 +35,14 @@ class TimestampMixinModel(object):
 
 
 @serializable
-class ModulesModel(TimestampMixinModel, db.Model):
+class TModules(TimestampMixinModel, db.Model):
     """Table des modules de GeoNature-citizen"""
 
     __tablename__ = "t_modules"
     __table_args__ = {"schema": "gnc_core"}
     id_module = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
-    label = db.Column(db.String(50), nullable=False)
+    label = db.Column(db.String(50), nullable=False, unique=True)
     desc = db.Column(db.String(200))
     icon = db.Column(db.String(250))
     on_sidebar = db.Column(db.Boolean(), default=False)
@@ -169,9 +169,9 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     image = db.Column(db.String(250))
     logo = db.Column(db.String(250))
     id_module = db.Column(
-        db.Integer, ForeignKey(ModulesModel.id_module), nullable=False, default=1,
+        db.Integer, ForeignKey(TModules.id_module), nullable=False, default=1,
     )
-    module = relationship("ModulesModel")
+    module = relationship("TModules")
     taxonomy_list = db.Column(db.Integer, nullable=True)
     is_active = db.Column(db.Boolean(), server_default=expression.true(), default=True)
     id_geom = db.Column(

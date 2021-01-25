@@ -20,7 +20,7 @@ from gncitizen.utils.env import admin
 from server import db
 
 from .models import (
-    ModulesModel,
+    TModules,
     ProjectModel,
     ProgramsModel,
     CustomFormModel,
@@ -50,8 +50,6 @@ from gncitizen.core.sites.models import CorProgramSiteTypeModel
 routes = Blueprint("commons", __name__)
 
 
-# response.headers['Content-Security-Policy'] = "frame-ancestors 'self' '\*.somesite.com' current_app.config['URL_APPLICATION']"
-# response.headers['X-Frame-Options'] = 'SAMEORIGIN' # ALLOW-FROM
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
 admin.add_view(ProjectView(ProjectModel, db.session, "Projets"))
 admin.add_view(ProgramView(ProgramsModel, db.session, "Programmes"))
@@ -77,7 +75,7 @@ def get_module(pk):
              description: A module description
     """
     try:
-        datas = ModulesModel.query.filter_by(id_module=pk).first()
+        datas = TModules.query.filter_by(id_module=pk).first()
         return datas.as_dict(), 200
     except Exception as e:
         current_app.logger.critical("[get_module] error : %s", str(e))
@@ -96,7 +94,7 @@ def get_modules():
             description: A list of all programs
     """
     try:
-        modules = ModulesModel.query.all()
+        modules = TModules.query.all()
         count = len(modules)
         datas = []
         for m in modules:
