@@ -177,7 +177,7 @@ if [ $server_side = "true" ]; then
 #  Installation de la conf
   sudo cp ../gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
-  sudo cp config/apache/gncitizen_frontssr.conf /etc/apache2/sites-available/gncitizen.conf
+  sudo cp ../config/apache/gncitizen_frontssr.conf /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s/APP_PATH/${DIR}/g" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s/mydomain.net/$URL/g" /etc/apache2/sites-available/gncitizen.conf
   
