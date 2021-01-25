@@ -6,13 +6,10 @@ from server import db
 
 @serializable
 class BibNoms(db.Model):
-    __tablename__ = 'bib_noms'
-    __table_args__ = {'schema': 'taxonomie', 'extend_existing': True}
+    __tablename__ = "bib_noms"
+    __table_args__ = {"schema": "taxonomie", "extend_existing": True}
     id_nom = db.Column(db.Integer, primary_key=True)
-    cd_nom = db.Column(
-        db.Integer,
-        nullable=True, unique=True
-    )
+    cd_nom = db.Column(db.Integer, nullable=True, unique=True)
     cd_ref = db.Column(db.Integer)
     nom_francais = db.Column(db.Unicode)
     comments = db.Column(db.Unicode)
@@ -20,8 +17,8 @@ class BibNoms(db.Model):
 
 @serializable
 class BibListes(db.Model):
-    __tablename__ = 'bib_listes'
-    __table_args__ = {'schema': 'taxonomie', 'extend_existing': True}
+    __tablename__ = "bib_listes"
+    __table_args__ = {"schema": "taxonomie", "extend_existing": True}
     id_liste = db.Column(db.Integer, primary_key=True)
     nom_liste = db.Column(db.Unicode)
     desc_liste = db.Column(db.Text)
@@ -32,30 +29,30 @@ class BibListes(db.Model):
     # cnl = db.relationship("CorNomListe", lazy='select')
 
     def __repr__(self):
-        return '<BibListes %r>' % self.nom_liste
+        return "<BibListes %r>" % self.nom_liste
 
 
 @serializable
 class CorNomListe(db.Model):
-    __tablename__ = 'cor_nom_liste'
-    __table_args__ = {'schema': 'taxonomie', 'extend_existing': True}
+    __tablename__ = "cor_nom_liste"
+    __table_args__ = {"schema": "taxonomie", "extend_existing": True}
     id_liste = db.Column(
         db.Integer,
         ForeignKey("taxonomie.bib_listes.id_liste"),
         nullable=False,
-        primary_key=True
+        primary_key=True,
     )
     id_nom = db.Column(
         db.Integer,
         ForeignKey("taxonomie.bib_noms.id_nom"),
         nullable=False,
-        primary_key=True
+        primary_key=True,
     )
-    bib_nom = db.relationship('BibNoms')
-    bib_liste = db.relationship('BibListes')
+    bib_nom = db.relationship("BibNoms")
+    bib_liste = db.relationship("BibListes")
 
     def __repr__(self):
-        return '<CorNomListe %r>' % self.id_liste
+        return "<CorNomListe %r>" % self.id_liste
 
     # listes = db.relationship("CorNomListe", lazy='select')
     # medias = db.relationship("TMedias", lazy='select')
@@ -64,14 +61,14 @@ class CorNomListe(db.Model):
 
 @serializable
 class TMedias(db.Model):
-    __tablename__ = 't_medias'
-    __table_args__ = {'schema': 'taxonomie', 'extend_existing': True}
+    __tablename__ = "t_medias"
+    __table_args__ = {"schema": "taxonomie", "extend_existing": True}
     id_media = db.Column(db.Integer, primary_key=True)
     cd_ref = db.Column(
         db.Integer,
         ForeignKey("taxonomie.bib_noms.cd_ref"),
         nullable=False,
-        primary_key=False
+        primary_key=False,
     )
     titre = db.Column(db.Unicode)
     url = db.Column(db.Unicode)
@@ -85,13 +82,13 @@ class TMedias(db.Model):
     licence = db.Column(db.Text)
 
     def __repr__(self):
-        return '<TMedias %r>' % self.titre
+        return "<TMedias %r>" % self.titre
 
 
 @serializable
 class Taxref(db.Model):
-    __tablename__ = 'taxref'
-    __table_args__ = {'schema': 'taxonomie'}
+    __tablename__ = "taxref"
+    __table_args__ = {"schema": "taxonomie"}
     cd_nom = db.Column(db.Integer, primary_key=True)
     id_statut = db.Column(db.Unicode)
     id_habitat = db.Column(db.Integer)
@@ -118,4 +115,4 @@ class Taxref(db.Model):
     url = db.Column(db.Unicode)
 
     def __repr__(self):
-        return '<Taxref %r>' % self.nom_complet
+        return "<Taxref %r>" % self.nom_complet

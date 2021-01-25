@@ -17,7 +17,7 @@ from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.utils.env import admin
 from server import db
 
-from .models import ModulesModel, ProjectModel, ProgramsModel, CustomFormModel, GeometryModel
+from .models import TModules, ProjectModel, ProgramsModel, CustomFormModel, GeometryModel
 from gncitizen.core.users.models import UserModel
 
 try:
@@ -68,7 +68,7 @@ def get_module(pk):
              description: A module description
     """
     try:
-        datas = ModulesModel.query.filter_by(id_module=pk).first()
+        datas = TModules.query.filter_by(id_module=pk).first()
         return datas.as_dict(), 200
     except Exception as e:
         current_app.logger.critical("[get_module] error : %s", str(e))
@@ -87,7 +87,7 @@ def get_modules():
             description: A list of all programs
     """
     try:
-        modules = ModulesModel.query.all()
+        modules = TModules.query.all()
         count = len(modules)
         datas = []
         for m in modules:

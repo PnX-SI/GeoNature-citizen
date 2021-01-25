@@ -7,7 +7,7 @@ from flasgger import Swagger
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
-from flask_ckeditor import CKEditor, CKEditorField 
+from flask_ckeditor import CKEditor, CKEditorField
 
 from gncitizen.utils.toml import load_toml
 
@@ -41,12 +41,12 @@ def load_config(config_file=None):
 
 def valid_api_url(url):
     """Return a valid API URL ending with /"""
-    if url[-1:] == '/':
+    if url[-1:] == "/":
         url = url
     else:
-        url = url+'/'
+        url = url + "/"
     return url
-    
+
 
 app_conf = load_config()
 MEDIA_DIR = str(ROOT_DIR / app_conf["MEDIA_FOLDER"])

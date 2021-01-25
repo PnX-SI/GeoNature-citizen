@@ -11,10 +11,10 @@ class ObservationsTestCase(unittest.TestCase):
         self.app = get_app(load_config())
         self.client = self.app.test_client
         self.observations_post_data = {
-            'cd_nom': 3582,
-            'obs_txt': 'Tada',
-            'count': 1,
-            'geometry': {"type": "Point", "coordinates": [5, 45]}
+            "cd_nom": 3582,
+            "obs_txt": "Tada",
+            "count": 1,
+            "geometry": {"type": "Point", "coordinates": [5, 45]},
         }
 
     # def login_user(self, data):
@@ -24,8 +24,8 @@ class ObservationsTestCase(unittest.TestCase):
         response = getrequest("observations")
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertEqual(data['type'], "FeatureCollection")
-        self.assertIsInstance(data['features'], list)
+        self.assertEqual(data["type"], "FeatureCollection")
+        self.assertIsInstance(data["features"], list)
 
     # def test_post_observation(self):
     #     response = self.client().post(
@@ -33,4 +33,3 @@ class ObservationsTestCase(unittest.TestCase):
     #     data = response.json()
     #     print(data)
     #     self.assertEqual(response.status_code, 200)
-

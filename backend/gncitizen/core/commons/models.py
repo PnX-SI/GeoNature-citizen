@@ -35,14 +35,14 @@ class TimestampMixinModel(object):
 
 
 @serializable
-class ModulesModel(TimestampMixinModel, db.Model):
+class TModules(TimestampMixinModel, db.Model):
     """Table des modules de GeoNature-citizen"""
 
     __tablename__ = "t_modules"
     __table_args__ = {"schema": "gnc_core"}
     id_module = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
-    label = db.Column(db.String(50), nullable=False)
+    label = db.Column(db.String(50), nullable=False, unique=True)
     desc = db.Column(db.String(200))
     icon = db.Column(db.String(250))
     on_sidebar = db.Column(db.Boolean(), default=False)
@@ -54,6 +54,7 @@ class ModulesModel(TimestampMixinModel, db.Model):
 @serializable
 class CustomFormModel(TimestampMixinModel, db.Model):
     """Table des Formulaires spécifiques associés aux programmes"""
+
     __tablename__ = "t_custom_form"
     __table_args__ = {"schema": "gnc_core"}
     id_form = db.Column(db.Integer, primary_key=True, unique=True)
@@ -63,10 +64,11 @@ class CustomFormModel(TimestampMixinModel, db.Model):
     def __repr__(self):
         return self.name
 
-from geoalchemy2.functions import (
-    ST_GeomFromKML, ST_GeomFromGeoJSON, ST_SetSRID)
+
+from geoalchemy2.functions import ST_GeomFromKML, ST_GeomFromGeoJSON, ST_SetSRID
 import json
 import xml.etree.ElementTree as ET
+
 
 @serializable
 class GeometryModel(TimestampMixinModel, db.Model):
@@ -88,8 +90,8 @@ class GeometryModel(TimestampMixinModel, db.Model):
         name, ext = os.path.splitext(self.geom_file)
         with open(self.get_geom_file_path()) as geom_file:
             geo_data = geom_file.read()
-            if ext in ['.geojson', '.json']:
-                json_geom = json.loads(geo_data)['features'][0]['geometry']
+            if ext in [".geojson", ".json"]:
+                json_geom = json.loads(geo_data)["features"][0]["geometry"]
                 # Validate geometry type
                 if not json_geom["type"] in ["Polygon", "MultiPolygon"]:
                     raise Exception(gnc_invalid_err_message)
@@ -103,7 +105,7 @@ class GeometryModel(TimestampMixinModel, db.Model):
                         raise Exception("Mauvais système de projection")
                 # Convert Geo
                 self.geom = ST_SetSRID(ST_GeomFromGeoJSON(json.dumps(json_geom)), 4326)
-            elif ext == '.kml':
+            elif ext == ".kml":
                 kml_root = ET.fromstring(geo_data)
                 kml_geom_elt = None
                 # Find first MultiGeometry or Polygon node
@@ -117,29 +119,34 @@ class GeometryModel(TimestampMixinModel, db.Model):
                                     raise Exception(gnc_invalid_err_message)
                 if kml_geom_elt is None:
                     raise Exception(gnc_invalid_err_message)
-                kml_geom = ET.tostring(kml_geom_elt, encoding='unicode', method='xml')
-                self.geom = ST_GeomFromKML(kml_geom) # KML is always 4326 srid
+                kml_geom = ET.tostring(kml_geom_elt, encoding="unicode", method="xml")
+                self.geom = ST_GeomFromKML(kml_geom)  # KML is always 4326 srid
 
     def __repr__(self):
         return self.name
+
 
 from geoalchemy2.shape import to_shape
 from geojson import Feature
 
+
 @serializable
 class ProjectModel(TimestampMixinModel, db.Model):
     """Table des projets regroupant les programmes"""
+
     __tablename__ = "t_projects"
     __table_args__ = {"schema": "gnc_core"}
     id_project = db.Column(db.Integer, primary_key=True)
-    unique_id_project = db.Column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
+    unique_id_project = db.Column(
+        UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False
+    )
     name = db.Column(db.String(50), nullable=False)
     short_desc = db.Column(db.String(200), nullable=True)
     long_desc = db.Column(db.Text(), nullable=True)
 
-
     def __repr__(self):
         return self.name
+
 
 @serializable
 @geoserializable
@@ -149,7 +156,9 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     __tablename__ = "t_programs"
     __table_args__ = {"schema": "gnc_core"}
     id_program = db.Column(db.Integer, primary_key=True)
-    unique_id_program = db.Column(UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False)
+    unique_id_program = db.Column(
+        UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False
+    )
     id_project = db.Column(
         db.Integer, db.ForeignKey(ProjectModel.id_project), nullable=False
     )
@@ -160,19 +169,11 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     image = db.Column(db.String(250))
     logo = db.Column(db.String(250))
     id_module = db.Column(
-        db.Integer,
-        ForeignKey(ModulesModel.id_module),
-        nullable=False,
-        default=1,
+        db.Integer, ForeignKey(TModules.id_module), nullable=False, default=1,
     )
-    module = relationship("ModulesModel")
-    taxonomy_list = db.Column(
-        db.Integer,
-        nullable=True
-    )
-    is_active = db.Column(
-        db.Boolean(), server_default=expression.true(), default=True
-    )
+    module = relationship("TModules")
+    taxonomy_list = db.Column(db.Integer, nullable=True)
+    is_active = db.Column(db.Boolean(), server_default=expression.true(), default=True)
     id_geom = db.Column(
         db.Integer, db.ForeignKey(GeometryModel.id_geom), nullable=False
     )
@@ -183,13 +184,10 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     geometry = relationship("GeometryModel")
     project = relationship("ProjectModel")
 
-
     def get_geofeature(self, recursif=True, columns=None):
         geometry = to_shape(self.geometry.geom)
         feature = Feature(
-            id=self.id_program,
-            geometry=geometry,
-            properties=self.as_dict(True),
+            id=self.id_program, geometry=geometry, properties=self.as_dict(True),
         )
         return feature
 
