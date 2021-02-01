@@ -8,7 +8,7 @@ import {
 
 import { FeatureCollection, Feature } from "geojson";
 import { SiteModalFlowService } from "../modalflow/modalflow.service";
-import { UseService } from "../../../auth/user-dashboard/user.service.service";
+import { UserService } from "../../../auth/user-dashboard/user.service.service";
 import { SiteService } from "../sites.service";
 import {AppConfig} from "../../../../conf/app.config";
 
@@ -30,7 +30,7 @@ export class SitesListComponent implements OnChanges {
 
   constructor(
     public flowService: SiteModalFlowService,
-    private userService: UseService,
+    private userService: UserService,
     private siteService: SiteService
   ) {}
 

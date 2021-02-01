@@ -5,7 +5,7 @@ import { tap, catchError } from "rxjs/operators";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AppConfig } from "../../../conf/app.config";
 import { AuthService } from "./../auth.service";
-import { UseService } from "./user.service.service";
+import { UserService } from "./user.service.service";
 import { SiteService } from "../../programs/sites/sites.service";
 import { saveAs } from "file-saver";
 import * as _ from "lodash";
@@ -49,7 +49,7 @@ export class UserDashboardComponent implements OnInit {
 
   constructor(
     private auth: AuthService,
-    private userService: UseService,
+    private userService: UserService,
     private router: Router,
     private modalService: NgbModal,
     private flowService: ModalFlowService,
@@ -276,7 +276,7 @@ export class UserDashboardComponent implements OnInit {
   onEditInfos(content): void {
     this.userService.getPersonalInfo().subscribe(data => {
       this.personalInfo = data;
-      this.intiForm();
+      this.initForm();
       this.modalRef = this.modalService.open(content, {
         size: "lg",
         windowClass: "add-obs-modal",
@@ -313,7 +313,7 @@ export class UserDashboardComponent implements OnInit {
     }
   }
 
-  intiForm() {
+  initForm() {
     this.userForm = this.formBuilder.group(
       {
         username: [

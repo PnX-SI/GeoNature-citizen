@@ -8,7 +8,7 @@ import { saveAs } from "file-saver";
 @Injectable({
   providedIn: "root"
 })
-export class UseService {
+export class UserService {
   role_id: number;
   private headers: HttpHeaders = new HttpHeaders({
     "Content-Type": "application/json"
