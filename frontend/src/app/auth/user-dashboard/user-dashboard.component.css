@@ -1,218 +1,218 @@
 .container-fluid,
 .col-lg-12 {
-  /*margin-top: 106px;*/
-  padding: 0px !important;
-  padding-right: 0px !important;
-  padding-left: 0px;
+    /*margin-top: 106px;*/
+    padding: 0px !important;
+    padding-right: 0px !important;
+    padding-left: 0px;
 }
 
 .container {
-  margin: 0px !important;
-  max-width: none !important;
+    margin: 0px !important;
+    max-width: none !important;
 }
 
 .user {
-  background: url(../../../assets/faune-mercantour.jpg) no-repeat;
-  background-size: cover;
-  background-position: top;
-  /* position: fixed; */
-  width: 100%;
-  position: relative;
-  min-height: 280px;
+    background: url(../../../assets/faune-mercantour.jpg) no-repeat;
+    background-size: cover;
+    background-position: top;
+    /* position: fixed; */
+    width: 100%;
+    position: relative;
+    min-height: 280px;
 }
 
 .user-infos {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 140px;
-  text-align: center;
-  margin-top: -160px;
-  text-align: center;
-  z-index: 999;
-  width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 140px;
+    text-align: center;
+    margin-top: -160px;
+    text-align: center;
+    z-index: 999;
+    width: 100%;
 }
 
 .user-infos img:hover,
 .user-infos svg:hover,
 .user-infos p:hover,
 .user-infos i:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
-.profile-pic{
-  cursor: pointer;
+.profile-pic {
+    cursor: pointer;
 }
 
 .user-infos span {
-  color: #fff;
-  /*background-color: rgba(255, 255, 255, 0.212);*/
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 20px;
-  width: fit-content;
-  padding: 5px 30px;
-  margin-bottom: 20px;
+    color: #fff;
+    /*background-color: rgba(255, 255, 255, 0.212);*/
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 20px;
+    width: fit-content;
+    padding: 5px 30px;
+    margin-bottom: 20px;
 }
 
 .user-infos .btn-primary {
-  text-transform: uppercase;
-  background-color: rgba(0, 123, 255, 0.8);
-  border-color: rgba(0, 123, 255, 0.8);
+    text-transform: uppercase;
+    background-color: rgba(0, 123, 255, 0.8);
+    border-color: rgba(0, 123, 255, 0.8);
 }
 
 .user-infos .btn-dark {
-  text-transform: uppercase;
-  background-color: rgba(52, 58, 64, 0.5);
-  border-color: rgba(52, 58, 64, 0.5);
+    text-transform: uppercase;
+    background-color: rgba(52, 58, 64, 0.5);
+    border-color: rgba(52, 58, 64, 0.5);
 }
 
 .user-infos img,
 .user-infos svg {
-  width: 200px;
-  height: auto;
-  margin: 0 auto;
-  border-radius: 50%;
+    width: 200px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 50%;
     fill: red;
 }
 
 .user-infos p {
-  font-weight: bold;
-  font-size: 18px;
-  margin-top: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 20px;
 }
 
 .user-infos p i {
-  font-size: 23px;
+    font-size: 23px;
 }
 
 section h3 {
-  text-align: center;
-  font-weight: normal;
-  text-transform: uppercase;
+    text-align: center;
+    font-weight: normal;
+    text-transform: uppercase;
 }
 
 #badges.container {
-  margin-top: 30px;
-  max-width: 1130px !important;
-  margin: 0 auto !important;
-  padding: 0px;
+    margin-top: 30px;
+    max-width: 1130px !important;
+    margin: 0 auto !important;
+    padding: 0px;
 }
 
 #badges .inner-row {
-  padding: 8px 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    /* box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); */
 }
 
 #badges div img {
-  margin: 2px 10px;
-  width: 70px;
-  height: 70px;
+    margin: 2px 10px;
+    width: 30px;
+    height: 30px;
 }
 
 .main-photo {
-  margin-left: -14px;
-  object-fit: cover;
-  min-width: 140px !important;
-  max-width: 140px !important;
-  height: 100px;
-
+    margin-left: -14px;
+    object-fit: cover;
+    min-width: 140px !important;
+    max-width: 140px !important;
+    height: 100px;
 }
 
 /* DONNEES PERSO */
 .personal-data {
-  margin: 20px 0px;
-  display: flex;
-  justify-content: space-around;
+    margin: 20px 0px;
+    display: flex;
+    justify-content: space-around;
 }
 
 .personal-data,
 #badges {
-  min-height: inherit !important;
+    min-height: inherit !important;
 }
 
 .personal-data button {
-  font-size: 16px;
-  padding: 10px 30px;
-  margin: 10px 25px;
-  max-height: 115px;
+    font-size: 16px;
+    padding: 10px 30px;
+    margin: 10px 25px;
+    max-height: 115px;
 }
 
 .personal-data button.export {
-  background: var(--primary);
+    background: var(--primary);
 }
 
 .personal-data button i {
-  margin-right: 15px;
+    margin-right: 15px;
 }
 
 #badges .row {
-  padding: 0px 10px;
+    padding: 0px 10px;
 }
 
-form>button {
-  background: var(--primary);
-  padding: 10px 30px;
-  margin: 0 auto;
-  max-height: 115px;
-  width: fit-content;
-  display: block;
+form > button {
+    background: var(--primary);
+    padding: 10px 30px;
+    margin: 0 auto;
+    max-height: 115px;
+    width: fit-content;
+    display: block;
 }
 
 app-modalflow {
-  position: relative;
-  display: contents;
+    position: relative;
+    display: contents;
 }
 
 /* MODIF DATA */
 
 .modal-header {
-  background: var(--secondary);
-  background: var(--modal-header-bg-moz);
-  background: var(--modal-header-bg-webkit);
-  background: var(--modal-header-bg-linear);
-  border-radius: 0px;
-  align-items: center;
-  max-height: 61px;
+    background: var(--secondary);
+    background: var(--modal-header-bg-moz);
+    background: var(--modal-header-bg-webkit);
+    background: var(--modal-header-bg-linear);
+    border-radius: 0px;
+    align-items: center;
+    max-height: 61px;
 }
 
 .modal-header h4 {
-  color: #fff;
-  text-transform: uppercase;
-  margin: 0 auto;
-  font-size: 18px;
+    color: #fff;
+    text-transform: uppercase;
+    margin: 0 auto;
+    font-size: 18px;
 }
 
 .modal-header button {
-  margin: 0;
+    margin: 0;
 }
 
 .title {
-  padding-top: 50px;
-  padding-bottom: 20px;
-  text-align: center;
-  text-transform: uppercase;
-  font-size: 22px;
-  font-weight: 600;
-  color: #626262
+    padding-top: 50px;
+    padding-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 22px;
+    font-weight: 600;
+    color: #626262;
 }
 
 .title::before,
 .title::after {
-  display: inline-block;
-  content: "";
-  border-top: 1px solid #b1b0b0;
-  width: 6rem;
-  margin: 0 1rem;
-  transform: translateY(-8px);
+    display: inline-block;
+    content: '';
+    border-top: 1px solid #b1b0b0;
+    width: 6rem;
+    margin: 0 1rem;
+    transform: translateY(-8px);
 }
 
 .homeLink {
-  text-align: center;
+    text-align: center;
 }
 
 .homeLink a {
-  color: var(--secondary);
+    color: var(--secondary);
 }
 /* @media screen and (min-width: 992px) {
 
@@ -238,95 +238,95 @@ app-modalflow {
     transform: translateY(-50%);
   }
 } */
-.danger{
-  color: red;
+.danger {
+    color: red;
 }
-.btn-danger{
-  color: white !important;
+.btn-danger {
+    color: white !important;
 }
 @media screen and (max-width: 991px) {
-  #badges .row div:nth-child(2):before {
-    content: " ";
-    background-color: #333;
-    top: 0;
-    position: absolute;
-    height: 2px;
-    width: 60%;
-  }
+    #badges .row div:nth-child(2):before {
+        content: ' ';
+        background-color: #333;
+        top: 0;
+        position: absolute;
+        height: 2px;
+        width: 60%;
+    }
 
-  #badges .row div:nth-child(2):after {
-    content: " ";
-    background-color: #333;
-    bottom: 0;
-    position: absolute;
-    height: 2px;
-    width: 60%;
-  }
+    #badges .row div:nth-child(2):after {
+        content: ' ';
+        background-color: #333;
+        bottom: 0;
+        position: absolute;
+        height: 2px;
+        width: 60%;
+    }
 }
 
 @media screen and (max-width: 1024px) {
-  .ngx-datatable .datatable-body .datatable-row-wrapper{
-    overflow-x: scroll;
-  }
+    .ngx-datatable .datatable-body .datatable-row-wrapper {
+        overflow-x: scroll;
+    }
 }
 
 @media screen and (max-width: 775px) {
-  .modal-header h4{
-    font-size: 18px;
-  }
+    .modal-header h4 {
+        font-size: 18px;
+    }
 }
 
 @media screen and (max-width: 577px) {
-  .personal-data button {
-    width: 100% !important;
-  }
-  .title::before,
-  .title::after {
-    width: 1rem;
-  }
+    .personal-data button {
+        width: 100% !important;
+    }
+    .title::before,
+    .title::after {
+        width: 1rem;
+    }
 }
 
 .avatar-main-wrapper {
-  position: relative;
-  height: 160px;
-  width: 160px;
-  border-radius: 50%;
-  margin-top: 8px;
-  overflow: hidden;
-  box-shadow: 1px 1px 15px -5px black;
-  transition: all .3s ease;
+    position: relative;
+    height: 160px;
+    width: 160px;
+    border-radius: 50%;
+    margin-top: 8px;
+    overflow: hidden;
+    box-shadow: 1px 1px 15px -5px black;
+    transition: all 0.3s ease;
 }
 
 .avatar-main-wrapper .profile-pic {
-  height: 100%;
-  width: 100%;
-  transition: all .3s ease;
+    height: 100%;
+    width: 100%;
+    transition: all 0.3s ease;
 }
 
 .avatar-main-wrapper .profile-pic:after {
-  font-family: FontAwesome;
-  content: "\f007";
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  font-size: 140px;
-  background: #ecf0f1;
-  color: #34495e;
-  text-align: center;
+    font-family: FontAwesome;
+    content: '\f007';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    font-size: 140px;
+    background: #ecf0f1;
+    color: #34495e;
+    text-align: center;
 }
 
 .green-btn {
-  background-color: var(--color-green);
-  color: #fff;
-  border: none;
-  padding: 5px 30px;
-  text-transform: uppercase;
-  font-size: 13px;
-  width: fit-content;
+    background-color: var(--color-green);
+    color: #fff;
+    border: none;
+    padding: 5px 30px;
+    text-transform: uppercase;
+    font-size: 13px;
+    width: fit-content;
 }
 
 .observations {
-  margin-top: -160px;
+    margin-top: -160px;
 }
