@@ -24,9 +24,9 @@ export class UserDashboardComponent implements OnInit {
     @ViewChild('siteDeleteModal', { static: true }) siteDeleteModal;
     modalRef: NgbModalRef;
     modalRefDel: NgbModalRef;
-    username: string = 'not defined';
+    username = 'not defined';
     role_id: number;
-    isLoggedIn: boolean = false;
+    isLoggedIn = false;
     stats: any;
     personalInfo: any = {};
     badges: any;
@@ -45,7 +45,7 @@ export class UserDashboardComponent implements OnInit {
     newAvatar: string | ArrayBuffer;
     idObsToDelete: number;
     idSiteToDelete: number;
-    tab: string = 'observations';
+    tab = 'observations';
 
     constructor(
         private auth: AuthService,
@@ -319,8 +319,8 @@ export class UserDashboardComponent implements OnInit {
     onUploadAvatar($event) {
         if ($event) {
             if ($event.target.files && $event.target.files[0]) {
-                let reader = new FileReader();
-                let file = $event.target.files[0];
+                const reader = new FileReader();
+                const file = $event.target.files[0];
                 reader.readAsDataURL(file);
                 reader.onload = () => {
                     this.userAvatar = reader.result;
