@@ -1,88 +1,163 @@
 <div class="container">
-  <div class="row">
-    <a [routerLink]="['/programs', program_id, module]" id="back_link">< Retour au programme</a>
-  </div>
-  <div class="row">
-    <h1 class="mt-3 title">{{ (module === "sites" ? site?.properties.name : (!!obs?.properties.nom_francais ? obs?.properties.nom_francais : obs?.properties.taxref?.nom_vern)) }}</h1>
-  </div>
-  <div class="row mb-4">
-    <div class="col-md-4 pt-4 card box-shadow" *ngIf="module === 'sites'; else obsDisplay">
-      <div class="card-body">
-        <h5 class="card-title">{{ site?.properties.site_type.type | titlecase }} #{{ site_id }}</h5>
-       <h6 class="card-subtitle mb-2 text-muted">Ajoutée le {{ site?.properties.timestamp_create.substring(0, 10) | date : "longDate" }}</h6>
-        <p class="card-text">Inventoriée par {{ site?.properties.obs_txt }}</p>
-
-        <p *ngIf="site?.properties.last_visit; else noVisit" class="card-text"><small class="text-muted">
-          Dernière visite: {{ site?.properties.last_visit.date | date : "longDate" }}
-        </small></p>
-        <ng-template #noVisit>
-          <p class="card-text"><small class="text-danger">Aucune visite enregistrée :(</small></p>
-        </ng-template>
-        <a href="#" (click)="$event.preventDefault();addSiteVisit();" class="btn btn-primary">Ajouter un rapport de visite</a>
-      </div>
-    </div>
-    <ng-template #obsDisplay>
-    <div class="col-md-4 pt-4 card box-shadow">
-      <div class="card-body">
-        <h5 class="card-title">Observation #{{ obs_id }}</h5>
-       <h6 class="card-subtitle mb-2 text-muted">Ajoutée le {{ obs?.properties.timestamp_create.substring(0, 10) | date : "longDate" }}</h6>
-        <p class="card-text">par {{ obs?.properties.obs_txt }}</p>
-      </div>
-    </div>
-    </ng-template>
-    <div class="col-md-8">
-      <div id="map" class="col-lg-12"></div>
-    </div>
-  </div>
-  <div *ngIf="photos">
-    <div *ngIf="photos.length > 0" class="row">
-      <h2 class="mt-4 mb-4">Photos</h2>
+    <div class="row">
+        <a [routerLink]="['/programs', program_id, module]" id="back_link"
+            >< Retour au programme</a
+        >
     </div>
     <div class="row">
-      <div *ngFor="let photo of photos" class="col-md-4 photo" (click)="showPhoto(photo)">
-        <div class="card mb-4 box-shadow">
-          <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]"
-               src="{{ photo.url }}" data-holder-rendered="true">
-          <div class="card-body">
-            <p class="card-text">{{ photo.date | date : "longDate" }}</p>
-            <p class="card-text"><small class="text-muted">{{ photo.author }}</small></p>
-          </div>
-        </div>
-      </div>
+        <h1 class="mt-3 title">
+            {{
+                module === 'sites'
+                    ? site?.properties.name
+                    : !!obs?.properties.nom_francais
+                    ? obs?.properties.nom_francais
+                    : obs?.properties.taxref?.nom_vern
+            }}
+        </h1>
+    </div>
+    <div class="row mb-4">
+        <div
+            class="col-md-4 pt-4 card box-shadow"
+            *ngIf="module === 'sites'; else obsDisplay"
+        >
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ site?.properties.site_type.type | titlecase }} #{{
+                        site_id
+                    }}
+                </h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    Ajoutée le
+                    {{
+                        site?.properties.timestamp_create.substring(0, 10)
+                            | date: 'longDate'
+                    }}
+                </h6>
+                <p class="card-text">
+                    Inventoriée par {{ site?.properties.obs_txt }}
+                </p>
 
+                <p
+                    *ngIf="site?.properties.last_visit; else noVisit"
+                    class="card-text"
+                >
+                    <small class="text-muted">
+                        Dernière visite:
+                        {{
+                            site?.properties.last_visit.date | date: 'longDate'
+                        }}
+                    </small>
+                </p>
+                <ng-template #noVisit>
+                    <p class="card-text">
+                        <small class="text-danger"
+                            >Aucune visite enregistrée :(</small
+                        >
+                    </p>
+                </ng-template>
+                <a
+                    href="#"
+                    (click)="$event.preventDefault(); addSiteVisit()"
+                    class="btn btn-primary"
+                    >Ajouter un rapport de visite</a
+                >
+            </div>
+        </div>
+        <ng-template #obsDisplay>
+            <div class="col-md-4 pt-4 card box-shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Observation #{{ obs_id }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        Ajoutée le
+                        {{
+                            obs?.properties.timestamp_create.substring(0, 10)
+                                | date: 'longDate'
+                        }}
+                    </h6>
+                    <p class="card-text">par {{ obs?.properties.obs_txt }}</p>
+                </div>
+            </div>
+        </ng-template>
+        <div class="col-md-8">
+            <div id="map" class="col-lg-12"></div>
+        </div>
     </div>
-    <div *ngIf="attributes.length > 0" class="row">
-      <h2 class="mt-4 mb-4">Description</h2>
+    <div *ngIf="photos">
+        <div *ngIf="photos.length > 0" class="row">
+            <h2 class="mt-4 mb-4">Photos</h2>
+        </div>
+        <div class="row">
+            <div
+                *ngFor="let photo of photos"
+                class="col-md-4 photo"
+                (click)="showPhoto(photo)"
+            >
+                <div class="card mb-4 box-shadow">
+                    <img
+                        class="card-img-top"
+                        data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail"
+                        alt="Thumbnail [100%x225]"
+                        src="{{ photo.url }}"
+                        data-holder-rendered="true"
+                    />
+                    <div class="card-body">
+                        <p class="card-text">
+                            {{ photo.date | date: 'longDate' }}
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">{{ photo.author }}</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="attributes.length > 0" class="row">
+            <h2 class="mt-4 mb-4">Description</h2>
+        </div>
+        <div class="row bg-light">
+            <table class="table table-striped">
+                <tbody>
+                    <tr *ngFor="let d of attributes" class="d-flex">
+                        <td class="col-4">{{ d.name }}</td>
+                        <td class="col-8">{{ d.value }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="row bg-light">
-      <table class="table table-striped">
-        <tbody>
-        <tr *ngFor="let d of attributes" class="d-flex">
-          <td class="col-4">{{ d.name }}</td>
-          <td class="col-8">{{ d.value }}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
 </div>
 
 <div class="modal fade" id="photoModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{ clickedPhoto?.date | date : "longDate"}}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <img src="{{ clickedPhoto?.url }}" style="width: 100%;">
-        <p class="card-text"><small class="text-muted">{{ clickedPhoto?.author }}</small></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    {{ clickedPhoto?.date | date: 'longDate' }}
+                </h5>
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                >
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="{{ clickedPhoto?.url }}" style="width: 100%" />
+                <p class="card-text">
+                    <small class="text-muted">{{ clickedPhoto?.author }}</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

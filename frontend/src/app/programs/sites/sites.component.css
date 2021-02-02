@@ -1,36 +1,36 @@
 .app-no-topbar .observations {
-  height: calc(100vh);
-  --list-obs-offset: 0px;
-  --router-outlet-offset: 0px;
+    height: calc(100vh);
+    --list-obs-offset: 0px;
+    --router-outlet-offset: 0px;
 }
 
 .observations {
-  margin: 0px;
-  min-height: inherit;
-  height: calc(100vh - 137px);
-  overflow: hidden;
+    margin: 0px;
+    min-height: inherit;
+    height: calc(100vh - 137px);
+    overflow: hidden;
 }
 
 .obs-section {
-  width: 100%;
-  min-height: 70vh;
-  position: relative;
-  margin-bottom: 20px;
+    width: 100%;
+    min-height: 70vh;
+    position: relative;
+    margin-bottom: 20px;
 }
 
 .section:before {
-  content: " ";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #00000056;
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #00000056;
 }
 
 #newObsDiv {
-  background: #eee;
-  padding: 5px 0px 5px 5px;
-  overflow: scroll;
-  height: calc(110vh - var(--list-obs-offset));
+    background: #eee;
+    padding: 5px 0px 5px 5px;
+    overflow: scroll;
+    height: calc(110vh - var(--list-obs-offset));
 }

@@ -1,6 +1,6 @@
 #map {
-  min-height: 250px; /*50vh*/
-  /*width: 100%;*/
+    min-height: 250px; /*50vh*/
+    /*width: 100%;*/
 }
 
 .photo {
@@ -8,21 +8,22 @@
 }
 
 #back_link {
-  padding-top: 1rem;
-  color: var(--primary);
+    padding-top: 1rem;
+    color: var(--primary);
 }
 
 .btn-primary {
-  background-color: var(--secondary);
-  border-color: var(--secondary);
+    background-color: var(--secondary);
+    border-color: var(--secondary);
 }
 
-h1.title, h2 {
-  color: var(--primary);
+h1.title,
+h2 {
+    color: var(--primary);
 }
 
 h5.card-title {
-  color: var(--secondary);
+    color: var(--secondary);
 }
 
 .modal-body {

@@ -1,72 +1,155 @@
 <div id="mapList">
-  <ng-content select="[obs-form]" *ngIf="display_form"></ng-content>
-  <span [class.d-none]="display_form">
-  <div class="toolbar">
-    <select class="form-control rounded-0" id="inputSpecies" [(ngModel)]="selectedTaxon"
-      (ngModelChange)="onFilterChange()">
-      <option [ngValue]="null" i18n>Toutes espèces</option>
-      <option *ngFor="let s of surveySpecies" [ngValue]="s">
-        {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }} <span *ngIf="appConfig.taxonDisplaySciName">(<i>{{ s.taxref?.nom_complet }}</i>)</span>
-      </option>
-    </select>
+    <ng-content select="[obs-form]" *ngIf="display_form"></ng-content>
+    <span [class.d-none]="display_form">
+        <div class="toolbar">
+            <select
+                class="form-control rounded-0"
+                id="inputSpecies"
+                [(ngModel)]="selectedTaxon"
+                (ngModelChange)="onFilterChange()"
+            >
+                <option [ngValue]="null" i18n>Toutes espèces</option>
+                <option *ngFor="let s of surveySpecies" [ngValue]="s">
+                    {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }}
+                    <span *ngIf="appConfig.taxonDisplaySciName"
+                        >(<i>{{ s.taxref?.nom_complet }}</i
+                        >)</span
+                    >
+                </option>
+            </select>
 
-    <select id="municipality" name="municipality" type="text" class="form-control rounded-0 col-lg-6"
-      [(ngModel)]="selectedMunicipality" (ngModelChange)="onFilterChange()">
-      <option [ngValue]="null" i18n>Toutes communes</option>
-      <option *ngFor="let t of municipalities" [ngValue]="t">{{
-        t?.name || "?"
-      }}</option>
-    </select>
-  </div>
-  <div class="col-lg-12 mx-4 mt-2 mb-4">
-    <strong><span *ngIf="router.url.includes('mydashboard')">Mes </span>Observations </strong> <span class="text-muted">({{ (features$ | async)?.length }})</span>
-    <ng-content select="[add-obs]"></ng-content>
-  </div>
-  <div id="list">
-    <div *ngFor="let o of (features$ | async); trackBy: trackByObs" (click)="onObsClick(o)" class="espece obs-{{ o.properties.id_observation }}">
-      <!-- FIXME: hardcoded api media endpoint -->
-      <img class="obs-img" [src]="
-          o.properties.images && !!o.properties.images.length
-            ? appConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
-            : o.properties.image
-            ? o.properties.image
-            : o.properties.medias && !!o.properties.medias.length
-            ? appConfig.API_TAXHUB + '/tmedias/thumbnail/' + o.properties.medias[0].id_media + '?h=80&v=80'
-            : 'assets/default_image.png'
-        " />
-      <div class="infos">
-        <a class="espece-link" target="_blank" href="{{appConfig.details_espece_url + o.properties.cd_nom}}">{{ !!o.properties.nom_francais ? o.properties.nom_francais : o.properties.taxref?.nom_vern }}</a>
-        <div *ngIf="appConfig.program_list_observers_names">
-          <i *ngIf="!o.properties.observer.userAvatar" width="22px" class="fa fa-fw fa-user-circle"></i>
-          <div *ngIf="o.properties.observer.userAvatar" class="avatar-wrapper" [style.background-image]="'url('+ appConfig.API_ENDPOINT + '/media/' + o.properties.observer.userAvatar+')'"> 
-            <!-- <img  class=" avatar-img rounded-circle" width="22px" [src]="appConfig.API_ENDPOINT + '/media/' + o.properties.observer.userAvatar" /> -->
-          </div>
-          <span>{{
-            o.properties.observer?.username
-              ? o.properties.observer.username
-              : "Anonyme"
-          }}</span>
-          <span *ngIf="displayOwnerActions">
-          &nbsp;
-          <app-modalflow [coords]="o.properties.coords" [updateData]="o.properties" [program_id]="o.properties.id_program" *ngIf="'TODO dashboard condition'">
-            <i class="fa fa-edit text-primary" placement="top" ngbTooltip="Editer" btn-open></i>
-          </app-modalflow>
-          &nbsp;
-          <i class="fa fa-trash text-danger" placement="top" ngbTooltip="Supprimer"
-            (click)="deleteObs.emit(o.properties.id_observation)"
-            owner-actions></i>
-          </span>
+            <select
+                id="municipality"
+                name="municipality"
+                type="text"
+                class="form-control rounded-0 col-lg-6"
+                [(ngModel)]="selectedMunicipality"
+                (ngModelChange)="onFilterChange()"
+            >
+                <option [ngValue]="null" i18n>Toutes communes</option>
+                <option *ngFor="let t of municipalities" [ngValue]="t">
+                    {{ t?.name || '?' }}
+                </option>
+            </select>
         </div>
-        <p>
-          le <span>{{ o.properties.date }}</span>
-          <span *ngIf="o.properties.municipality?.name">
-            à {{ o.properties.municipality?.name }}</span>
-        </p>
-      </div>
-      <div class="hide detail-link" [routerLink]="['/programs', o.properties.id_program, 'observations', o.properties.id_observation]" style="cursor:pointer" title="Voir les détails de cette observation">
-        <img src="assets/binoculars.png"/>
-      </div>
-    </div>
-  </div>
-  </span>
+        <div class="col-lg-12 mx-4 mt-2 mb-4">
+            <strong
+                ><span *ngIf="router.url.includes('mydashboard')">Mes </span
+                >Observations
+            </strong>
+            <span class="text-muted">({{ (features$ | async)?.length }})</span>
+            <ng-content select="[add-obs]"></ng-content>
+        </div>
+        <div id="list">
+            <div
+                *ngFor="let o of features$ | async; trackBy: trackByObs"
+                (click)="onObsClick(o)"
+                class="espece obs-{{ o.properties.id_observation }}"
+            >
+                <!-- FIXME: hardcoded api media endpoint -->
+                <img
+                    class="obs-img"
+                    [src]="
+                        o.properties.images && !!o.properties.images.length
+                            ? appConfig.API_ENDPOINT +
+                              '/media/' +
+                              o.properties.images[0]
+                            : o.properties.image
+                            ? o.properties.image
+                            : o.properties.medias &&
+                              !!o.properties.medias.length
+                            ? appConfig.API_TAXHUB +
+                              '/tmedias/thumbnail/' +
+                              o.properties.medias[0].id_media +
+                              '?h=80&v=80'
+                            : 'assets/default_image.png'
+                    "
+                />
+                <div class="infos">
+                    <a
+                        class="espece-link"
+                        target="_blank"
+                        href="{{
+                            appConfig.details_espece_url + o.properties.cd_nom
+                        }}"
+                        >{{
+                            !!o.properties.nom_francais
+                                ? o.properties.nom_francais
+                                : o.properties.taxref?.nom_vern
+                        }}</a
+                    >
+                    <div *ngIf="appConfig.program_list_observers_names">
+                        <i
+                            *ngIf="!o.properties.observer.userAvatar"
+                            width="22px"
+                            class="fa fa-fw fa-user-circle"
+                        ></i>
+                        <div
+                            *ngIf="o.properties.observer.userAvatar"
+                            class="avatar-wrapper"
+                            [style.background-image]="
+                                'url(' +
+                                appConfig.API_ENDPOINT +
+                                '/media/' +
+                                o.properties.observer.userAvatar +
+                                ')'
+                            "
+                        >
+                            <!-- <img  class=" avatar-img rounded-circle" width="22px" [src]="appConfig.API_ENDPOINT + '/media/' + o.properties.observer.userAvatar" /> -->
+                        </div>
+                        <span>{{
+                            o.properties.observer?.username
+                                ? o.properties.observer.username
+                                : 'Anonyme'
+                        }}</span>
+                        <span *ngIf="displayOwnerActions">
+                            &nbsp;
+                            <app-modalflow
+                                [coords]="o.properties.coords"
+                                [updateData]="o.properties"
+                                [program_id]="o.properties.id_program"
+                                *ngIf="'TODO dashboard condition'"
+                            >
+                                <i
+                                    class="fa fa-edit text-primary"
+                                    placement="top"
+                                    ngbTooltip="Editer"
+                                    btn-open
+                                ></i>
+                            </app-modalflow>
+                            &nbsp;
+                            <i
+                                class="fa fa-trash text-danger"
+                                placement="top"
+                                ngbTooltip="Supprimer"
+                                (click)="
+                                    deleteObs.emit(o.properties.id_observation)
+                                "
+                                owner-actions
+                            ></i>
+                        </span>
+                    </div>
+                    <p>
+                        le <span>{{ o.properties.date }}</span>
+                        <span *ngIf="o.properties.municipality?.name">
+                            à {{ o.properties.municipality?.name }}</span
+                        >
+                    </p>
+                </div>
+                <div
+                    class="hide detail-link"
+                    [routerLink]="[
+                        '/programs',
+                        o.properties.id_program,
+                        'observations',
+                        o.properties.id_observation
+                    ]"
+                    style="cursor: pointer"
+                    title="Voir les détails de cette observation"
+                >
+                    <img src="assets/binoculars.png" />
+                </div>
+            </div>
+        </div>
+    </span>
 </div>

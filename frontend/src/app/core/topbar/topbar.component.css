@@ -1,200 +1,200 @@
 .navbar-visible {
-  min-height: 100px;
-  background-color: #fefefe;
-  /* color: #60a3bc; */
-  color: var(--primary);
-  /* border-bottom: 1px solid #60a3bc; */
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+    min-height: 100px;
+    background-color: #fefefe;
+    /* color: #60a3bc; */
+    color: var(--primary);
+    /* border-bottom: 1px solid #60a3bc; */
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .navbar-hidden {
-  min-height: 100px;
-  pointer-events: none;
+    min-height: 100px;
+    pointer-events: none;
 }
 
 .navbar-login {
-  pointer-events: auto;
-  background-color: #fefefe;
+    pointer-events: auto;
+    background-color: #fefefe;
 }
 
 .navbar-hidden .navbar-login {
-  border: 1px solid var(--primary);
+    border: 1px solid var(--primary);
 }
 
 .hidden {
-  display: none!important;
+    display: none !important;
 }
 
 .navbar-brand {
-  font-family: "Open Sans", Helvetica, Arial, sans-serif;
-  color: var(--primary);
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    color: var(--primary);
 }
 
 .main {
-  margin-top: 60px;
-  /* Same as the width of the sidenav */
-  padding: 0px 10px;
+    margin-top: 60px;
+    /* Same as the width of the sidenav */
+    padding: 0px 10px;
 }
 
 main {
-  margin-top: 60px;
-  /* Same as the width of the sidenav */
-  padding: 0px 10px;
+    margin-top: 60px;
+    /* Same as the width of the sidenav */
+    padding: 0px 10px;
 }
 
 form {
-  display: flex;
-  align-items: baseline;
+    display: flex;
+    align-items: baseline;
 }
 
 .btn-group a {
-  /*min-width: 143px !important;*/
-  display: inline-block;
-  text-align: center;
-  transition: all 0.1s ease-in-out;
+    /*min-width: 143px !important;*/
+    display: inline-block;
+    text-align: center;
+    transition: all 0.1s ease-in-out;
 }
 
 a::after {
-  display: block;
-  content: attr(title);
-  font-weight: bold;
-  height: 0;
-  overflow: hidden;
-  visibility: hidden;
+    display: block;
+    content: attr(title);
+    font-weight: bold;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
 }
 
 .btn-group a:hover {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 ul.btn-group li a,
 div.btn-group a {
-  color: #666565;
-  font-size: 14px;
-  padding: 6px 10px;
-  position: relative;
+    color: #666565;
+    font-size: 14px;
+    padding: 6px 10px;
+    position: relative;
 }
 
 ul.btn-group li a.active {
-  color: var(--primary);
-  font-weight: bold;
+    color: var(--primary);
+    font-weight: bold;
 }
 
 ul.btn-group li a.active:before {
-  content: "■ ";
-  color: var(--primary);
+    content: '■ ';
+    color: var(--primary);
 }
 
 div.btn-group {
-  display: flex;
-  flex-direction: column;
-  border-left: solid 1px;
-  border-color: var(--primary);
-  margin-left: 50px;
+    display: flex;
+    flex-direction: column;
+    border-left: solid 1px;
+    border-color: var(--primary);
+    margin-left: 50px;
 }
 
 div.btn-group a {
-  background: none !important;
-  padding-left: 5px;
-  text-align: left;
-  padding: 0px 6px;
+    background: none !important;
+    padding-left: 5px;
+    text-align: left;
+    padding: 0px 6px;
 }
 
 div.btn-group a:first-child {
-  color: var(--primary);
-  font-weight: bold;
+    color: var(--primary);
+    font-weight: bold;
 }
 
 .avatar-img {
-  box-shadow: 1px 1px 15px -5px black;
+    box-shadow: 1px 1px 15px -5px black;
 }
 
 @media screen and (max-width: 992px) {
-
-  /* FIXME: la nav bar ne se referme qu'à 768, pourquoi 912 ? */
-  /*    .navbar-collapse form{
+    /* FIXME: la nav bar ne se referme qu'à 768, pourquoi 912 ? */
+    /*    .navbar-collapse form{
     justify-content: flex-end;
   } */
 
-  ul.btn-group {
-    padding: 0px;
-  }
+    ul.btn-group {
+        padding: 0px;
+    }
 
-  ul.btn-group li{/*
+    ul.btn-group li {
+        /*
     min-width: 120px !important; */
-    max-width: 120px !important;
-  }
+        max-width: 120px !important;
+    }
 
-  .navbar-hidden {
-    pointer-events: auto;
-    min-height: 65px !important;
-  }
-  .navbar-hidden img{
-    height: 40px
-  }
+    .navbar-hidden {
+        pointer-events: auto;
+        min-height: 65px !important;
+    }
+    .navbar-hidden img {
+        height: 40px;
+    }
 }
 
 @media screen and (max-width: 820px) {
-  div.btn-group {
-    margin-left: 0px;
-  }
+    div.btn-group {
+        margin-left: 0px;
+    }
 }
 
 @media screen and (max-width: 767px) {
-  .navbar form {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
+    .navbar form {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
 
-  .navbar form ul {
-    flex-direction: column;
-  }
+    .navbar form ul {
+        flex-direction: column;
+    }
 
-  .navbar form ul li {
-    min-width: none !important;
-    max-width: none !important;
-    text-align: left;
-  }
+    .navbar form ul li {
+        min-width: none !important;
+        max-width: none !important;
+        text-align: left;
+    }
 
-  .navbar div.btn-group {
-    border-left: none;
-    border-right: solid 1px var(--primary);
-  }
+    .navbar div.btn-group {
+        border-left: none;
+        border-right: solid 1px var(--primary);
+    }
 
-  .navbar form ul li a,
-  .navbar form div.btn-group a {
-    text-align: right;
-  }
+    .navbar form ul li a,
+    .navbar form div.btn-group a {
+        text-align: right;
+    }
 }
-.avatar-wrapper{
-  width: 22px;
-  height: 22px;
-  margin: 0;
-  background: no-repeat;
-  background-size: contain;
-  background-position: center;
-  float: left;
-  margin-right: 8px;
+.avatar-wrapper {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    background: no-repeat;
+    background-size: contain;
+    background-position: center;
+    float: left;
+    margin-right: 8px;
 }
 
 @media screen and (max-width: 576px) {
-  .navbar {
-    min-height: 65px !important;
-  }
+    .navbar {
+        min-height: 65px !important;
+    }
 
-  .navbar .logo {
-    height: 40px;
-  }
+    .navbar .logo {
+        height: 40px;
+    }
 
-  .programs-modal .modal-dialog,
-  .obs-modal .modal-dialog {
-    margin: 0px !important;
-  }
+    .programs-modal .modal-dialog,
+    .obs-modal .modal-dialog {
+        margin: 0px !important;
+    }
 
-  .programs-modal .modal-content,
-  .obs-modal .modal-content {
-    max-height: inherit;
-    height: 100vh;
-  }
+    .programs-modal .modal-content,
+    .obs-modal .modal-content {
+        max-height: inherit;
+        height: 100vh;
+    }
 }

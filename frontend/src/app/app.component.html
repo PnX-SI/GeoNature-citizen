@@ -1,10 +1,19 @@
 <div class="router-app d-flex flex-column justify-content-between">
-  <header>
-    <app-topbar class="fixed-top" [displayTopbar]="appConfig.FRONTEND.DISPLAY_TOPBAR"></app-topbar>
-    <!-- <app-sidebar></app-sidebar> -->
-  </header>
-  <div [ngClass]="appConfig.FRONTEND.DISPLAY_TOPBAR ? 'app-with-topbar' : 'app-no-topbar'">
-    <div class="container-fluid"><router-outlet></router-outlet></div>
-  </div>
-  <app-footer *ngIf="appConfig.FRONTEND.DISPLAY_FOOTER"></app-footer>
+    <header>
+        <app-topbar
+            class="fixed-top"
+            [displayTopbar]="appConfig.FRONTEND.DISPLAY_TOPBAR"
+        ></app-topbar>
+        <!-- <app-sidebar></app-sidebar> -->
+    </header>
+    <div
+        [ngClass]="
+            appConfig.FRONTEND.DISPLAY_TOPBAR
+                ? 'app-with-topbar'
+                : 'app-no-topbar'
+        "
+    >
+        <div class="container-fluid"><router-outlet></router-outlet></div>
+    </div>
+    <app-footer *ngIf="appConfig.FRONTEND.DISPLAY_FOOTER"></app-footer>
 </div>

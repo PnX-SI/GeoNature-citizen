@@ -1,116 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>GeoNature-citizen</title>
-    <meta
-      name="description"
-      content="GeoNature-citizen est une solution web gratuite, au code source ouvert, pour les projets de science citoyenne destinés à la collecte de données sur la biodiversité."
-    />
-    <base href="/" />
+    <head>
+        <meta charset="utf-8" />
+        <title>GeoNature-citizen</title>
+        <meta
+            name="description"
+            content="GeoNature-citizen est une solution web gratuite, au code source ouvert, pour les projets de science citoyenne destinés à la collecte de données sur la biodiversité."
+        />
+        <base href="/" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <style>
-      #loading {
-        color: transparent;
-      }
-      .loading-text {
-        text-align: center;
-        /* font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; */
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 5%;
-        color: var(--default-font-color);
-        /* position: absolute !important; */
-        /* padding: 10px; */
-      }
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <style>
+            #loading {
+                color: transparent;
+            }
+            .loading-text {
+                text-align: center;
+                /* font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; */
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 5%;
+                color: var(--default-font-color);
+                /* position: absolute !important; */
+                /* padding: 10px; */
+            }
 
-      .loader-1 {
-        /* border: 1px solid #eeeeee; */
-        border-top: 3px solid var(--primary);
-        border-radius: 50%;
-        position: absolute !important;
-        left: 50%;
-        top: 50%;
-        margin-top: -60px;
-        margin-left: -60px;
-        width: 120px;
-        height: 120px;
-        animation: spin 5s linear infinite;
-        z-index: 999;
-      }
+            .loader-1 {
+                /* border: 1px solid #eeeeee; */
+                border-top: 3px solid var(--primary);
+                border-radius: 50%;
+                position: absolute !important;
+                left: 50%;
+                top: 50%;
+                margin-top: -60px;
+                margin-left: -60px;
+                width: 120px;
+                height: 120px;
+                animation: spin 5s linear infinite;
+                z-index: 999;
+            }
 
-      .loader-2 {
-        /* border: 1px solid #eeeeee; */
-        border-top: 3px solid var(--primary);
-        border-radius: 50%;
-        position: absolute !important;
-        left: 50%;
-        top: 50%;
-        margin-top: -50px;
-        margin-left: -50px;
-        width: 100px;
-        height: 100px;
-        animation: spin 2s linear infinite;
-        animation-direction: reverse;
-        z-index: 999;
-      }
+            .loader-2 {
+                /* border: 1px solid #eeeeee; */
+                border-top: 3px solid var(--primary);
+                border-radius: 50%;
+                position: absolute !important;
+                left: 50%;
+                top: 50%;
+                margin-top: -50px;
+                margin-left: -50px;
+                width: 100px;
+                height: 100px;
+                animation: spin 2s linear infinite;
+                animation-direction: reverse;
+                z-index: 999;
+            }
 
-      .loader-3 {
-        /* border: 1px solid #eeeeee; */
-        border-top: 3px solid var(--primary);
-        border-radius: 50%;
-        position: absolute !important;
-        left: 50%;
-        top: 50%;
-        margin-top: -40px;
-        margin-left: -40px;
-        width: 80px;
-        height: 80px;
-        animation: spin 1s linear infinite;
-        z-index: 999;
-      }
+            .loader-3 {
+                /* border: 1px solid #eeeeee; */
+                border-top: 3px solid var(--primary);
+                border-radius: 50%;
+                position: absolute !important;
+                left: 50%;
+                top: 50%;
+                margin-top: -40px;
+                margin-left: -40px;
+                width: 80px;
+                height: 80px;
+                animation: spin 1s linear infinite;
+                z-index: 999;
+            }
 
-      .loader-icon {
-        color: var(--primary);
-        /* position: absolute !important; */
-        margin: 0;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
+            .loader-icon {
+                color: var(--primary);
+                /* position: absolute !important; */
+                margin: 0;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
 
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-    </style>
-  </head>
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
 
-  <body class="bg-light">
-    <noscript i18n="noscript">
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <app-root>
-      <div id="loading">
-        <div class="loading-text">
-          <h1>GeoNature-citizen</h1>
-          <h4>Chargement en cours...</h4>
-          <p i18n="loading app"></p>
-        </div>
-        <div id="spinner">
-          <div class="loader-1"></div>
-          <div class="loader-2"></div>
-          <div class="loader-3"></div>
-        </div>
-      </div>
-    </app-root>
-  </body>
+    <body class="bg-light">
+        <noscript i18n="noscript">
+            You need to enable JavaScript to run this app.
+        </noscript>
+        <app-root>
+            <div id="loading">
+                <div class="loading-text">
+                    <h1>GeoNature-citizen</h1>
+                    <h4>Chargement en cours...</h4>
+                    <p i18n="loading app"></p>
+                </div>
+                <div id="spinner">
+                    <div class="loader-1"></div>
+                    <div class="loader-2"></div>
+                    <div class="loader-3"></div>
+                </div>
+            </div>
+        </app-root>
+    </body>
 </html>

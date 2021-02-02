@@ -1,21 +1,21 @@
-import { Injectable } from "@angular/core";
-import * as L from "leaflet";
+import { Injectable } from '@angular/core';
+import * as L from 'leaflet';
 import { Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class MapService {
-  coords: L.Point;
-  coordsChange: Subject<L.Point> = new Subject<L.Point>();
+    coords: L.Point;
+    coordsChange: Subject<L.Point> = new Subject<L.Point>();
 
-  constructor()  {
-      this.coordsChange.subscribe((value) => {
-          this.coords = value
-      });
-  }
+    constructor() {
+        this.coordsChange.subscribe((value) => {
+            this.coords = value;
+        });
+    }
 
-  changePoint (coords: L.Point) {
-    this.coordsChange.next(coords);
-  }
+    changePoint(coords: L.Point) {
+        this.coordsChange.next(coords);
+    }
 }

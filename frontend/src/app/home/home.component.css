@@ -5,7 +5,7 @@ app-home section {
 }
 
 app-home .section:before {
-    content: " ";
+    content: ' ';
     position: absolute;
     top: 0;
     left: 0;
@@ -35,36 +35,51 @@ app-home .section:before {
 }
 
 #welcome:before {
-    content: " ";
+    content: ' ';
     position: absolute;
     top: 0;
     bottom: 0;
     right: 0;
     left: 0;
-    background: -moz-linear-gradient( top, rgba(0, 0, 0, 0) 3%, rgba(0, 0, 0, 0.393) 99%, rgba(0, 0, 0, 0.452) 100%);
-    background: -webkit-linear-gradient( top, rgba(0, 0, 0, 0) 3%, rgba(0, 0, 0, 0.393) 99%, rgba(0, 0, 0, 0.452) 100%);
-    background: linear-gradient( to bottom, rgba(0, 0, 0, 0) 3%, rgba(0, 0, 0, 0.393) 99%, rgba(0, 0, 0, 0.452) 100%);
+    background: -moz-linear-gradient(
+        top,
+        rgba(0, 0, 0, 0) 3%,
+        rgba(0, 0, 0, 0.393) 99%,
+        rgba(0, 0, 0, 0.452) 100%
+    );
+    background: -webkit-linear-gradient(
+        top,
+        rgba(0, 0, 0, 0) 3%,
+        rgba(0, 0, 0, 0.393) 99%,
+        rgba(0, 0, 0, 0.452) 100%
+    );
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 3%,
+        rgba(0, 0, 0, 0.393) 99%,
+        rgba(0, 0, 0, 0.452) 100%
+    );
 }
 
-#welcome>h1 {
+#welcome > h1 {
     padding-left: 50%;
     font-size: 60px;
 }
 
-#welcome>p {
+#welcome > p {
     padding-left: 30%;
     font-size: 30px;
 }
 
-#welcome>h1,
-#welcome>p {
-    font-family: "Satisfy";
+#welcome > h1,
+#welcome > p {
+    font-family: 'Satisfy';
     margin-top: 30px;
     color: #fff;
     user-select: none;
 }
 
-#welcome a[role="button"] {
+#welcome a[role='button'] {
     position: absolute;
     bottom: 100px;
     right: 100px;
@@ -89,7 +104,6 @@ app-home .section:before {
     height: auto;
     margin: auto;
 }
-
 
 /* CARDS */
 
@@ -152,7 +166,6 @@ app-home .section:before {
     text-align: center;
 }
 
-
 /* SLIDER */
 
 #slide {
@@ -182,7 +195,7 @@ app-home .section:before {
 }
 
 #slider h2:before {
-    content: " ";
+    content: ' ';
     position: absolute;
     width: 40px;
     height: 21px;
@@ -194,7 +207,9 @@ app-home .section:before {
     width: 15%;
 }
 
-#slider ol.carousel-indicators li:not(.active):not(:first-child):not(:nth-child(2)):not(:nth-child(3)) {
+#slider
+    ol.carousel-indicators
+    li:not(.active):not(:first-child):not(:nth-child(2)):not(:nth-child(3)) {
     display: none !important;
 }
 
@@ -233,15 +248,15 @@ app-home .section:before {
     overflow-y: auto;
     margin-bottom: 1em;
     color: black;
-    font-size: 14px
+    font-size: 14px;
 }
 
 #slider .carousel-text h3 {
-    font-family: "Satisfy";
+    font-family: 'Satisfy';
     color: var(--ternary);
 }
 
-#slider .carousel-text>p {
+#slider .carousel-text > p {
     font-style: italic;
     font-size: 14px;
     color: black;
@@ -254,7 +269,7 @@ app-home .section:before {
     margin: 0 auto;
 }
 
-#slider .carousel-text a.btn-big{
+#slider .carousel-text a.btn-big {
     background-color: var(--secondary) !important;
 }
 
@@ -276,7 +291,6 @@ app-observations {
     min-width: 100%;
 }
 
-
 /* SCROLLBAR CUSTOM */
 
 ::-webkit-scrollbar-thumb {
@@ -293,7 +307,6 @@ app-observations {
     margin: 5px;
     cursor: pointer;
 }
-
 
 /* MEDIA QUERIES */
 
@@ -353,12 +366,12 @@ app-observations {
 }
 
 @media screen and (max-width: 768px) {
-    #welcome{
+    #welcome {
         height: inherit;
         min-height: 280px;
         max-height: 280px;
     }
-    #welcome h1{
+    #welcome h1 {
         position: absolute;
     }
     #welcome a.scroll {
@@ -367,19 +380,19 @@ app-observations {
 }
 
 @media screen and (min-width: 760px) {
-    .carousel-text .collapse:not(.show){
+    .carousel-text .collapse:not(.show) {
         display: block;
     }
 }
 
 @media screen and (max-width: 760px) {
-    #welcome a[role="button"] {
+    #welcome a[role='button'] {
         left: 50%;
         transform: translateX(-50%);
     }
     #programs #programs-cards {
         display: none !important;
-    } 
+    }
     #slider {
         display: block !important;
         width: 100%;
@@ -415,7 +428,7 @@ app-observations {
     #slider .carousel-item {
         max-height: fit-content !important;
     }
-    #slider .carousel-item img{
+    #slider .carousel-item img {
         height: 450px;
     }
     #slider .carousel-text p,
@@ -430,7 +443,7 @@ app-observations {
     #slider .carousel-text {
         min-width: inherit !important;
     }
-    #slider .carousel-text button{
+    #slider .carousel-text button {
         background: #a8a8a8;
         border: none;
         margin: 0 auto;
@@ -443,7 +456,7 @@ app-observations {
         width: 30px;
         height: 20px;
     }
-    #slider .carousel-text button span{
+    #slider .carousel-text button span {
         position: absolute;
         top: -8px;
         left: 7px;
@@ -508,30 +521,29 @@ app-observations {
     }
 }
 
-@media screen and (max-width: 650px){
-    #slider .carousel-item img{
+@media screen and (max-width: 650px) {
+    #slider .carousel-item img {
         height: 400px;
     }
 }
 
-@media screen and (max-width: 600px){
-    #slider .carousel-item img{
+@media screen and (max-width: 600px) {
+    #slider .carousel-item img {
         height: 350px;
     }
 }
 
-@media screen and (max-width: 550px){
-    #slider .carousel-item img{
+@media screen and (max-width: 550px) {
+    #slider .carousel-item img {
         height: 300px;
     }
 }
 
-@media screen and (max-width: 450px){
-    #slider .carousel-item img{
+@media screen and (max-width: 450px) {
+    #slider .carousel-item img {
         height: 250px;
     }
 }
-
 
 /* Programs */
 
@@ -549,9 +561,27 @@ app-observations {
     width: 100%;
     color: #fff;
     background: var(--primary);
-    background: -moz-linear-gradient( 179.4deg, var(--primary) 0%, var(--primary) 50%, var(--dark-primary) 51%, var(--dark-primary) 100%);
-    background: -webkit-linear-gradient( 179.4deg, var(--primary) 0%, var(--primary) 50%, var(--dark-primary) 51%, var(--dark-primary) 100%);
-    background: linear-gradient( 179.4deg, var(--primary) 0%, var(--primary) 50%, var(--dark-primary) 51%, var(--dark-primary) 100%);
+    background: -moz-linear-gradient(
+        179.4deg,
+        var(--primary) 0%,
+        var(--primary) 50%,
+        var(--dark-primary) 51%,
+        var(--dark-primary) 100%
+    );
+    background: -webkit-linear-gradient(
+        179.4deg,
+        var(--primary) 0%,
+        var(--primary) 50%,
+        var(--dark-primary) 51%,
+        var(--dark-primary) 100%
+    );
+    background: linear-gradient(
+        179.4deg,
+        var(--primary) 0%,
+        var(--primary) 50%,
+        var(--dark-primary) 51%,
+        var(--dark-primary) 100%
+    );
     font-size: 1.5rem;
     padding: 6px 16px;
     text-transform: uppercase;
@@ -630,7 +660,7 @@ app-observations {
 }
 
 .programs .text-center .short_desc:before {
-    content: " ";
+    content: ' ';
     background: #eee;
     position: absolute;
     top: -13px;
@@ -647,7 +677,6 @@ app-observations {
 .programs .text-center .btn-big {
     background: var(--primary);
 }
-
 
 @media screen and (max-width: 991px) {
     .programs .text-center {
@@ -667,7 +696,7 @@ app-observations {
 }
 
 @media screen and (max-width: 576px) {
-    #welcome{
+    #welcome {
         margin-top: 66px !important;
         height: calc(100vh - 66px) !important;
     }
@@ -682,125 +711,125 @@ app-observations {
     }
 }
 
-
 .panel-container {
-  padding-top: 20px;
+    padding-top: 20px;
 }
 .panel {
-  margin: 20px 0;
-  background-color: #fff;
-  border: 1px solid transparent;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    margin: 20px 0;
+    background-color: #fff;
+    border: 1px solid transparent;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .no-padding {
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 .panel-widget {
-  padding: 10px 0;
-  position: relative;
-  box-shadow: none;
-  border-radius: 0;
-  background: none;
-  text-align: center;
-  color: #333;
+    padding: 10px 0;
+    position: relative;
+    box-shadow: none;
+    border-radius: 0;
+    background: none;
+    text-align: center;
+    color: #333;
 }
 
 .panel-widget .text-muted {
-  margin-top: -6px;
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 0.8em;
+    margin-top: -6px;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.8em;
 }
 
 .panel-widget .large {
-  color: #373b45;
-  font-size: 3em;
+    color: #373b45;
+    font-size: 3em;
 }
 
 .panel-heading {
-  padding: 10px 15px;
-  border-bottom: 1px solid transparent;
-  font-size: 20px;
-  font-weight: 300;
-  padding-right: 5px;
-  padding-left: 5px;
-  border-color: black;
-  border-width: 1px;
-  border-style: solid;
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    font-size: 20px;
+    font-weight: 300;
+    padding-right: 5px;
+    padding-left: 5px;
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
 }
 
 .panel-body {
-  padding: 15px;
+    padding: 15px;
 }
 
 .panel-default .panel-heading {
-  background: #fff;
-  border-bottom: 1px solid #e9ecf2;
-  color: #444444;
+    background: #fff;
+    border-bottom: 1px solid #e9ecf2;
+    color: #444444;
 }
 
 .panel-default > .panel-heading {
-  color: #333;
-  border-color: #ddd;
+    color: #333;
+    border-color: #ddd;
 }
 
 .text-muted {
-  color: #c5c7cc;
+    color: #c5c7cc;
 }
 
 .fa-xl {
-  font-size: 3em;
+    font-size: 3em;
 }
 
 .large {
-  font-size: 2em;
+    font-size: 2em;
 }
 
 .color-secondary {
-  color: var(--secondary);
+    color: var(--secondary);
 }
 
-.color-primary{
+.color-primary {
     color: var(--primary);
 }
 
 .float-right {
-  float: right;
+    float: right;
 }
 
-.general-stat{
+.general-stat {
     background-color: white;
 }
 
-@media screen and (max-width: 780px){
-    .general-stat .no-padding.col-lg-3{
+@media screen and (max-width: 780px) {
+    .general-stat .no-padding.col-lg-3 {
         width: 50%;
     }
 }
 
-@media screen and (min-width: 760px){
-    .mobile{
+@media screen and (min-width: 760px) {
+    .mobile {
         display: none;
     }
-    .desktop{
+    .desktop {
         display: block;
     }
 }
-@media screen and (max-width: 760px){
-    .mobile{
+@media screen and (max-width: 760px) {
+    .mobile {
         display: block;
     }
-    .desktop{
+    .desktop {
         display: none;
     }
 }
 
 @media screen and (max-width: 576px) {
-    .programs-modal .modal-dialog, .obs-modal .modal-dialog{
+    .programs-modal .modal-dialog,
+    .obs-modal .modal-dialog {
         margin: 0px !important;
     }
 }

@@ -1,41 +1,48 @@
 <div class="row">
-  <!-- LES SITES -->
-  <section id="program" class="observations row obs-section">
-    <input id="slide-sidebar" type="checkbox" role="button" />
-    <label class="toggle" for="slide-sidebar"
-      ><i class="fa fa-chevron-left"></i
-    ></label>
-    <div class="col-lg-4 col-md-12 side-bar" id="list">
-      <app-sites-list
-        [sites]="sites"
-        [program_id]="program_id"
-        [displayForm]="flowService.display"
-        [userDashboard]="userDashboard"
-        (siteSelect)="sitesMapRef.showPopup($event);"
-      >
-        <button 
-          type="button"
-          class="btn btn-success mr-4 float-right"
-          add-obs
-          (click)="addSiteClicked()"
-          *ngIf="!userDashboard"
-          ngbTooltip="Ajouter un site"
-          placement="bottom">Ajouter</button>
-        <app-sitemodalflow
-          #modalFlowRef [coords]="coords"
-          [modalversion]="AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION"
-          [program_id]="program_id"
-          obs-form></app-sitemodalflow>
-      </app-sites-list>
-    </div>
+    <!-- LES SITES -->
+    <section id="program" class="observations row obs-section">
+        <input id="slide-sidebar" type="checkbox" role="button" />
+        <label class="toggle" for="slide-sidebar"
+            ><i class="fa fa-chevron-left"></i
+        ></label>
+        <div class="col-lg-4 col-md-12 side-bar" id="list">
+            <app-sites-list
+                [sites]="sites"
+                [program_id]="program_id"
+                [displayForm]="flowService.display"
+                [userDashboard]="userDashboard"
+                (siteSelect)="sitesMapRef.showPopup($event)"
+            >
+                <button
+                    type="button"
+                    class="btn btn-success mr-4 float-right"
+                    add-obs
+                    (click)="addSiteClicked()"
+                    *ngIf="!userDashboard"
+                    ngbTooltip="Ajouter un site"
+                    placement="bottom"
+                >
+                    Ajouter
+                </button>
+                <app-sitemodalflow
+                    #modalFlowRef
+                    [coords]="coords"
+                    [modalversion]="
+                        AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
+                    "
+                    [program_id]="program_id"
+                    obs-form
+                ></app-sitemodalflow>
+            </app-sites-list>
+        </div>
 
-    <div class="map col-lg-12 col-md-12" id="map">
-      <app-sites-map
-        #sitesMapRef
-        [features]="sites"
-        [program]="programFeature"
-        (onClick)="onMapClicked($event)"
-      ></app-sites-map>
-    </div>
-  </section>
+        <div class="map col-lg-12 col-md-12" id="map">
+            <app-sites-map
+                #sitesMapRef
+                [features]="sites"
+                [program]="programFeature"
+                (onClick)="onMapClicked($event)"
+            ></app-sites-map>
+        </div>
+    </section>
 </div>
