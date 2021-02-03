@@ -37,7 +37,7 @@
                 ><span *ngIf="router.url.includes('mydashboard')">Mes </span
                 >Observations
             </strong>
-            <span class="text-muted">({{ (features$ | async)?.length }})</span>
+            <span class="badge badge-pill badge-info">{{ (features$ | async)?.length }}</span>
             <ng-content select="[add-obs]"></ng-content>
         </div>
         <div id="list">

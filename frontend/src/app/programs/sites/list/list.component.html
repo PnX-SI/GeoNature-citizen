@@ -3,7 +3,7 @@
     <span [class.d-none]="display_form">
         <div class="col-lg-12 mx-4 mt-2 mb-4">
             <strong><span *ngIf="userDashboard">Mes </span>Sites </strong>
-            <span class="text-muted">({{ sites?.length }})</span>
+            <span class="badge badge-pill badge-info">{{ sites?.length }}</span>
             <ng-content select="[add-obs]"></ng-content>
         </div>
         <div id="list">
