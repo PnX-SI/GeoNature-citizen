@@ -15,7 +15,10 @@
                                     : 'btn-dark')
                             "
                         >
-                            Mes observations <strong class="badge badge-pill badge-info">{{ stats?.platform_attendance }}</strong>
+                            Mes observations
+                            <strong class="badge badge-pill badge-info">{{
+                                stats?.platform_attendance
+                            }}</strong>
                         </button>
                         <button
                             *ngIf="mysites?.features.length > 0"
@@ -25,7 +28,10 @@
                                 (tab === 'sites' ? 'btn-primary' : 'btn-dark')
                             "
                         >
-                            Mes sites <strong class="badge badge-pill badge-info">{{ mysites?.features.length }}</strong>
+                            Mes sites
+                            <strong class="badge badge-pill badge-info">{{
+                                mysites?.features.length
+                            }}</strong>
                         </button>
                     </span>
                     <div class="avatar-main-wrapper">
@@ -46,30 +52,63 @@
                     </p>
                 </div>
             </div>
-            <div *ngIf="badges && badges.length > 0 " id="badges" class="container">
-                <h3 class="title" i18n>Mes badges</h3>
-                <div *ngIf="main_badges && main_badges.length > 0 " class="inner-row">
-                  <h5 i18n>Récompenses géneral</h5>
-                  <div class="row">
-                    <img *ngFor="let m_badge of main_badges" [src]="appConfig.API_ENDPOINT + m_badge.url"
-                      [alt]="m_badge.type + m_badge.name" [ngbTooltip]="m_badge.reward_label +' '+ m_badge.name" />
-                  </div>
+            <div
+                *ngIf="badges && badges.length > 0"
+                id="badges"
+                class="container"
+            >
+                <h3 class="title" i18n="My badges@@myBadges">Mes badges</h3>
+                <div
+                    *ngIf="main_badges && main_badges.length > 0"
+                    class="inner-row"
+                >
+                    <h5 i18n="General Awards@@generalAwards">
+                        Récompenses géneral
+                    </h5>
+                    <div class="row">
+                        <img
+                            *ngFor="let m_badge of main_badges"
+                            [src]="appConfig.API_ENDPOINT + m_badge.url"
+                            [alt]="m_badge.type + m_badge.name"
+                            [ngbTooltip]="
+                                m_badge.reward_label + ' ' + m_badge.name
+                            "
+                        />
+                    </div>
                 </div>
-                <div *ngIf="programs_badges && programs_badges.length > 0 " class="inner-row">
-                  <h5>Récompenses par programmes</h5>
-                  <div class="row">
-                    <img *ngFor="let p_badge of programs_badges" [src]="appConfig.API_ENDPOINT + p_badge.url"
-                      [alt]="p_badge.type + p_badge.name" [ngbTooltip]="p_badge.reward_label +' '+ p_badge.name" />
-                  </div>
+                <div
+                    *ngIf="programs_badges && programs_badges.length > 0"
+                    class="inner-row"
+                >
+                    <h5>Récompenses par programmes</h5>
+                    <div class="row">
+                        <img
+                            *ngFor="let p_badge of programs_badges"
+                            [src]="appConfig.API_ENDPOINT + p_badge.url"
+                            [alt]="p_badge.type + p_badge.name"
+                            [ngbTooltip]="
+                                p_badge.reward_label + ' ' + p_badge.name
+                            "
+                        />
+                    </div>
                 </div>
-                <div *ngIf="recognition_badges && recognition_badges.length > 0 " class=" inner-row">
-                  <h5>Récompenses d'identification d'espèces</h5>
-                  <div class="row">
-                    <img *ngFor="let r_badge of recognition_badges" [src]="appConfig.API_ENDPOINT + r_badge.url"
-                      [alt]="r_badge.type + r_badge.name" [ngbTooltip]="r_badge.reward_label +' '+ r_badge.name" />
-                  </div>
+                <div
+                    *ngIf="recognition_badges && recognition_badges.length > 0"
+                    class="inner-row"
+                >
+                    <h5>Récompenses d'identification d'espèces</h5>
+                    <div class="row">
+                        <img
+                            *ngFor="let r_badge of recognition_badges"
+                            [src]="appConfig.API_ENDPOINT + r_badge.url"
+                            [alt]="r_badge.type + r_badge.name"
+                            [ngbTooltip]="
+                                r_badge.reward_label + ' ' + r_badge.name
+                            "
+                        />
+                    </div>
                 </div>
-              </div>
+            </div>
             <user-sites [mysites]="mysites" *ngIf="mysites && tab === 'sites'">
             </user-sites>
             <user-observations
@@ -139,36 +178,48 @@
                 <button
                     class="btn-big col-lg-3 col-md-5 col-sm-12 export"
                     (click)="onExportPersonalData()"
-                    i18n
                 >
-                    <i class="fa fa-download"></i>Exporter mes données
-                    personnelles
+                    <i class="fa fa-download"></i
+                    ><ng-container
+                        i18n="Export personnal data btn@@exportPersonnalDataBtn"
+                        >Exporter mes données personnelles</ng-container
+                    >
                 </button>
                 <button
                     class="btn-big col-lg-3 col-md-5 col-sm-12 export"
                     (click)="onExportObservations()"
-                    i18n
                 >
-                    <i class="fa fa-download"></i>Exporter mes observations
+                    <i class="fa fa-download"></i
+                    ><ng-container
+                        i18n="Export personnal observations btn@@exportPersonnalObsBtn"
+                        >Exporter mes observations</ng-container
+                    >
                 </button>
                 <button
                     class="btn-big col-lg-3 col-md-5 col-sm-12 export"
                     (click)="onExportSites()"
                 >
-                    <i class="fa fa-download"></i>Exporter mes sites
+                    <i class="fa fa-download"></i
+                    ><ng-container
+                        i18n="Export personnal sites btn@@exportPersonnalSitesBtn"
+                        >Exporter mes sites</ng-container
+                    >
                 </button>
                 <button
                     class="btn-big btn-danger col-lg-3 col-md-5 col-sm-12"
                     (click)="onDeletePersonalData()"
-                    i18n
                 >
-                    <i class="fa fa-trash"></i>Supprimer mes données
-                    personnelles
+                    <i class="fa fa-trash"></i
+                    ><ng-container i18n="Delete Account@@deleteAccount"
+                        >Supprimer mon compte</ng-container
+                    >
                 </button>
             </div>
             <section class="homeLink">
                 <a [routerLink]="['/']">
-                    <i class="fa fa-arrow-left"></i> Retour au site
+                    <i class="fa fa-arrow-left"></i>
+                    <ng-container i18n="back@@back"></ng-container>Retour au
+                    site
                 </a>
             </section>
         </div>
@@ -177,7 +228,9 @@
 
 <ng-template #personalInfos let-modal>
     <div class="modal-header">
-        <h4 i18n>Mettre à jour vos données personnelles</h4>
+        <h4 i18n="Update personnal data@@updatePersonnalData">
+            Mettre à jour vos données personnelles
+        </h4>
         <button
             type="button"
             class="close rounded-0"
@@ -221,7 +274,9 @@
             <div class="form-row">
                 <div class="col-md-6 col-sm-12">
                     <div class="form-group">
-                        <label for="username" i18n
+                        <label
+                            for="username"
+                            i18n="your username@@yourUsernameLabel"
                             >Votre nom d'utilisateur *</label
                         >
                         <div class="input-group">
@@ -235,7 +290,9 @@
                                 id="username"
                                 formControlName="username"
                                 class="form-control rounded-0"
-                                i18n-placeholder
+                                i18n-placeholder="
+                                    your username
+                                    placeholder@@yourUsernameInputPlaceholder"
                                 placeholder="Entrez votre nom d'utilisateur"
                             />
                         </div>
@@ -243,7 +300,11 @@
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="form-group">
-                        <label for="email" i18n>Votre email *</label>
+                        <label
+                            for="email"
+                            i18n="your email label@@yourEmailInputLabel"
+                            >Votre email *</label
+                        >
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"
@@ -255,7 +316,9 @@
                                 class="form-control rounded-0"
                                 formControlName="email"
                                 id="email"
-                                i18n-placeholder
+                                i18n-placeholder="
+                                    your email
+                                    placeholder@@yourEmailInputPlaceholder"
                                 placeholder="Entrez votre email"
                             />
                         </div>
@@ -265,26 +328,38 @@
             <div class="form-row">
                 <div class="col-md-6 col-sm-12">
                     <div class="form-group">
-                        <label for="name" i18n>Votre prénom *</label>
+                        <label
+                            for="name"
+                            i18n="your first name@@yourFirstnameInputLabel"
+                            >Votre prénom *</label
+                        >
                         <input
                             type="text"
                             class="form-control rounded-0"
                             id="name"
                             formControlName="name"
-                            i18n-placeholder
+                            i18n-placeholder="
+                                your first name
+                                placeholder@@yourFirstnameInputPlaceholder"
                             placeholder="Entrez votre prénom"
                         />
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="form-group">
-                        <label for="surname" i18n>Votre nom *</label>
+                        <label
+                            for="surname"
+                            i18n="your surname label@@yourSurnameInputLabel"
+                            >Votre nom *</label
+                        >
                         <input
                             type="text"
                             class="form-control rounded-0"
                             id="surname"
                             formControlName="surname"
-                            i18n-placeholder
+                            i18n-placeholder="
+                                your surname
+                                placeholder@@yourSurnameInputPlaceholder"
                             placeholder="Entrez votre nom"
                         />
                     </div>
@@ -298,14 +373,16 @@
                         userForm.get('newPassword').errors) &&
                     userForm.get('confirmPassword').dirty
                 "
-                i18n
+                i18n="error different passwords@@errorDifferentPasswords"
             >
                 Les mots de passe diffèrent.
             </ngb-alert>
             <div class="form-row">
                 <div class="col-md-6 col-sm-12">
                     <div class="form-group">
-                        <label for="newPassword" i18n
+                        <label
+                            for="newPassword"
+                            i18n="your password label@@yourPasswordLabel"
                             >Votre nouveau mot de passe</label
                         >
                         <input
@@ -314,7 +391,9 @@
                             class="form-control rounded-0"
                             id="newPassword"
                             formControlName="newPassword"
-                            i18n-placeholder
+                            i18n-placeholder="
+                                your password
+                                placeholder@@yourPasswordPlaceholder"
                             placeholder="Votre nouveau mot de passe"
                             autocomplete="new-password"
                         />
@@ -322,7 +401,11 @@
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="form-group">
-                        <label for="confirmPassword" i18n
+                        <label
+                            for="confirmPassword"
+                            i18n="
+                                your password confirm
+                                label@@yourConfirmPasswordLabel"
                             >Confirmez votre nouveau mot de passe</label
                         >
                         <input
@@ -330,6 +413,10 @@
                             id="confirmPassword"
                             formControlName="confirmPassword"
                             autocomplete=""
+                            i18n-placeholder="
+                                your password confirm
+                                placeholder@@yourConfirmPasswordPlaceholder"
+                            placeholder="Votre nouveau mot de passe"
                             class="form-control rounded-0"
                         />
                         <p
@@ -349,7 +436,7 @@
             <button
                 type="submit"
                 class="btn btn-default btn-big btn-outline-primary rounded-0"
-                i18n
+                i18n="update personnal data btn@@updatePersonnalDataBtn"
                 [disabled]="userForm.invalid"
             >
                 Mettre à jour

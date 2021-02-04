@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h4 i18n>Créez votre compte</h4>
+    <h4 i18n="Create account@@register">Créez votre compte</h4>
     <button
         type="button"
         class="close rounded-0"
@@ -27,7 +27,7 @@
             [dismissible]="false"
             type="danger"
             *ngIf="email.errors && email.dirty"
-            i18n
+            i18n="Unable to valid email@@emailNotValid"
         >
             Impossible de valider votre email.
         </ngb-alert>
@@ -55,7 +55,7 @@
         <div class="form-row">
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
-                    <label for="username" i18n>Votre nom d'utilisateur</label>
+                    <label for="username" i18n="Your pseudo@@yourUsernameLabel">Votre pseudonyme</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
@@ -67,8 +67,8 @@
                             id="username"
                             name="username"
                             class="form-control rounded-0"
-                            i18n-placeholder
-                            placeholder="Entrez votre nom d'utilisateur"
+                            i18n-placeholder="Enter your pseudo@@yourUsernameInputPlaceHolder"
+                            placeholder="Entrez votre pseudonyme"
                             [(ngModel)]="user.username"
                             #username="ngModel"
                             autocomplete="username"
@@ -79,7 +79,7 @@
             </div>
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
-                    <label for="email" i18n>Votre email</label>
+                    <label for="email" i18n="Your email form label@@yourEmailLabel">Votre email</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
@@ -91,7 +91,7 @@
                             class="form-control rounded-0"
                             name="email"
                             id="email"
-                            i18n-placeholder
+                            i18n-placeholder="Your email input placeholder label@@yourEmailInputPlaceholder"
                             placeholder="Entrez votre email"
                             [(ngModel)]="user.email"
                             #email="ngModel"
@@ -107,13 +107,13 @@
         <div class="form-row">
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
-                    <label for="name" i18n>Votre prénom</label>
+                    <label for="name" i18n="your first name@@yourFirstNameLabel">Votre prénom</label>
                     <input
                         type="text"
                         class="form-control rounded-0"
                         id="fname"
                         name="fname"
-                        i18n-placeholder
+                        i18n-placeholder="your first name@@yourFirstNameLabel"
                         placeholder="Entrez votre prénom"
                         [(ngModel)]="user.name"
                         #fname="ngModel"
@@ -124,13 +124,13 @@
             </div>
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
-                    <label for="surname" i18n>Votre nom</label>
+                    <label for="surname" i18n="your last name label@@yourLastNameLabel">Votre nom</label>
                     <input
                         type="text"
                         class="form-control rounded-0"
                         id="surname"
                         name="surname"
-                        i18n-placeholder
+                        i18n-placeholder="Enter your last name@@yourLastNameInput"
                         placeholder="Entrez votre nom"
                         [(ngModel)]="user.surname"
                         #surname="ngModel"
@@ -148,19 +148,19 @@
                 confirm_password.dirty &&
                 password.dirty
             "
-            i18n
+            i18n="Different password error@@ErrorDifferentPasswords"
         >
             Les mots de passe diffèrent.
         </ngb-alert>
         <div class="form-row">
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
-                    <label for="password" i18n>Votre mot de passe</label>
+                    <label for="password" i18n="Your password label@@yourPasswordInputLabel">Votre mot de passe</label>
                     <input
                         type="password"
                         class="form-control rounded-0"
                         id="password"
-                        i18n-placeholder
+                        i18n-placeholder="Your password input@@yourPasswordInput"
                         placeholder="Votre mot de passe"
                         [(ngModel)]="user.password"
                         name="password"
@@ -183,7 +183,7 @@
                         class="form-control rounded-0"
                         ngModel
                         #confirm_password="ngModel"
-                        i18n-placeholder
+                        i18n-placeholder="Your confirm password input@@yourPasswordConfirmInput"
                         placeholder="Confirmez le mot de passe"
                         autocomplete="new-password"
                         required
@@ -197,7 +197,7 @@
                     [dismissible]="false"
                     type="warning"
                     *ngIf="cgu.errors"
-                    i18n
+                    i18n="Accept UGC@@acceptUGC"
                 >
                     Veuillez accepter les conditions d'utilisation.
                 </ngb-alert>
@@ -208,13 +208,13 @@
                     #cgu="ngModel"
                     ngModel
                     required
-                    i18n
+                    i18n="I Accept@@iAcceptIntro"
                 />
                 J'accepte les
                 <a
                     target="_blank"
                     href="{{ AppConfig['termsOfUse'][localeId] }}"
-                    i18n
+                    i18n="Use condition@@conditionsOfUse"
                     >conditions d&apos;utilisation</a
                 >
             </span>
@@ -224,7 +224,7 @@
             *ngIf="errorMessage || !successMessage"
             type="submit"
             class="btn btn-outline-primary text-right rounded-0"
-            i18n
+            i18n="register link@@registerLink"
             [disabled]="registerForm?.invalid"
         >
             S'enregistrer
@@ -236,7 +236,7 @@
         [disabled]="registerForm?.invalid"
         expand="block"
         (click)="activeModal.dismiss('Cross click')"
-        i18n
+        i18n="close auth modal@@closeModal"
     >
         Fermer
     </button>

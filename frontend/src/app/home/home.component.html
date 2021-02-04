@@ -6,7 +6,7 @@
         <h1 [innerHTML]="platform_intro"></h1>
         <p [innerHTML]="platform_teaser"></p>
         <a [routerLink]="['/home']" fragment="programs" class="scroll">
-            <span i18n="Scrollez pour en voir plus !"
+            <span i18n="Scroll down to see more !@@scrollForMore"
                 >Scrollez pour en voir plus !</span
             >
             <img
@@ -27,7 +27,7 @@
             <div class="no-padding">
                 <em class="fa fa-xl fa-search color-primary"></em>
                 <div class="large">{{ stats.nb_obs }}</div>
-                <div class="text-muted" i18n>Observations</div>
+                <div class="text-muted" i18n="Observations@@observations">Observations</div>
             </div>
         </div>
     </div>
@@ -36,7 +36,7 @@
             <div class="no-padding">
                 <em class="fa fa-xl fa fa-leaf color-secondary"></em>
                 <div class="large">{{ stats.nb_espece }}</div>
-                <div class="text-muted" i18n>Espèces</div>
+                <div class="text-muted" i18n="species@@species">Espèces</div>
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
             <div class="no-padding">
                 <em class="fa fa-xl fa-users color-primary"></em>
                 <div class="large">{{ stats.nb_user }}</div>
-                <div class="text-muted" i18n>Observateurs</div>
+                <div class="text-muted" i18n="Observers@@observers">Observateurs</div>
             </div>
         </div>
     </div>
@@ -131,7 +131,7 @@
                     [class.active]="isFirst"
                 ></li>
             </ol>
-            <h2 i18n="Les programmes du moment">Les programmes du moment</h2>
+            <h2 i18n="Programs of the moment@@momenPrograms">Les programmes du moment</h2>
             <div class="carousel-inner">
                 <div
                     *ngFor="let p of programs; first as isFirst"
@@ -172,7 +172,7 @@
                     class="carousel-control-prev-icon"
                     aria-hidden="true"
                 ></span>
-                <span class="sr-only" i18n="ngb.carousel.previous"
+                <span class="sr-only" i18n="Carousel previous@@ngbCarouselPrev"
                     >Précédent</span
                 >
             </a>
@@ -186,7 +186,7 @@
                     class="carousel-control-next-icon"
                     aria-hidden="true"
                 ></span>
-                <span class="sr-only" i18n="ngb.carousel.next">Prochain</span>
+                <span class="sr-only" i18n="Carousel next@@ngbCarouselNext">Prochain</span>
             </a>
         </div>
     </section>

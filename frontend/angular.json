@@ -82,7 +82,7 @@
                                 }
                             ],
                             "baseHref": "/fr/",
-                            "i18nFile": "src/locale/messages.fr.xlf",
+                            "i18nFile": "src/i18n/messages.fr.xlf",
                             "i18nFormat": "xlf",
                             "i18nLocale": "fr",
                             "i18nMissingTranslation": "error"
@@ -95,6 +95,7 @@
                             "extractCss": true,
                             "namedChunks": false,
                             "aot": true,
+                            
                             "extractLicenses": true,
                             "vendorChunk": false,
                             "buildOptimizer": true,
@@ -105,7 +106,7 @@
                                 }
                             ],
                             "baseHref": "/en/",
-                            "i18nFile": "src/locale/messages.en.xlf",
+                            "i18nFile": "src/i18n/messages.en.xlf",
                             "i18nFormat": "xlf",
                             "i18nLocale": "en",
                             "i18nMissingTranslation": "error"
@@ -172,6 +173,20 @@
                                     "with": "src/environments/environment.prod.ts"
                                 }
                             ]
+                        }
+                    }
+                },
+                "xliffmerge": {
+                    "builder": "@ngx-i18nsupport/tooling:xliffmerge",
+                    "options": {
+                        "xliffmergeOptions": {
+                            "i18nFormat": "xlf",
+                            "supportNgxTranslate": true,
+                            "ngxTranslateExtractionPattern": "ngx-translate",
+                            "srcDir": "src/i18n",
+                            "genDir": "src/i18n",
+                            "defaultLanguage": "fr",
+                            "languages": ["fr", "en"]
                         }
                     }
                 }

@@ -16,15 +16,17 @@ import { MapService } from '../../base/map/map.service';
 
 @Component({
     selector: 'app-obs-map',
-    template: `
-        <div
-            [id]="'obsMap'"
-            class="obsMap"
-            #map
-            i18n-data-observation-zoom-statement-warning
-            data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
-        ></div>
-    `,
+    templateUrl: './map.component.html',
+    // template: `
+    //     <div
+    //         [id]="'obsMap'"
+    //         class="obsMap"
+    //         i18n-data-observation-zoom-statement-warning="
+    //             Zooming instruction@@zoomingInstruction"
+    //         data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
+    //         #map
+    //     ></div>
+    // `,
     styleUrls: ['../../base/map/map.component.css'],
     encapsulation: ViewEncapsulation.None,
 })

@@ -3,8 +3,11 @@
     "version": "0.0.0",
     "scripts": {
         "ng": "ng",
-        "start": "ng serve --poll 2000",
+        "start:fr": "ng serve --poll 2000 --configuration=fr",
+        "start:en": "ng serve --poll 2000 --configuration=en",
         "build": "ng build",
+        "build:fr": "ng build --configuration=fr",
+        "build:en": "ng build --configuration=en",
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e",
@@ -13,7 +16,9 @@
         "build:ssr": "npm run build:client-and-server-bundles && npm run compile:server",
         "build:i18n-ssr": "npm run build:client-and-server-bundles-i18n && npm run compile:server",
         "build:client-and-server-bundles": "ng build --prod && ng run frontend:server:production",
-        "build:client-and-server-bundles-i18n": "ng run frontend:build:fr && ng run frontend:build:en && ng run frontend:server:production"
+        "build:client-and-server-bundles-i18n": "ng run frontend:build:fr && ng run frontend:build:en && ng run frontend:server:production",
+        "extract-i18n": "ng xi18n frontend --i18n-format xlf --output-path i18n --i18n-locale fr && ng run frontend:xliffmerge"
+
     },
     "private": true,
     "dependencies": {
@@ -34,6 +39,7 @@
         "@ng-bootstrap/ng-bootstrap": "^5.1.0",
         "@nguniversal/express-engine": "^8.1.1",
         "@nguniversal/module-map-ngfactory-loader": "8.1.1",
+        "@ngx-i18nsupport/tooling": "^8.0.3",
         "@swimlane/ngx-datatable": "^16.0.2",
         "angular2-image-upload": "^1.0.0-rc.2",
         "bootstrap": "^4.3.1",
@@ -62,6 +68,7 @@
         "@angular/cli": "^8.3.21",
         "@angular/compiler-cli": "^8.2.2",
         "@angular/language-service": "^8.2.2",
+        "@ngx-i18nsupport/ngx-i18nsupport": "^1.1.6",
         "@types/jasmine": "~3.4.0",
         "@types/jasminewd2": "~2.0.6",
         "@types/leaflet": "^1.5.1",

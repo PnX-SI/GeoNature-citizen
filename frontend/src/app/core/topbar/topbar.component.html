@@ -46,7 +46,7 @@
                             routerLinkActive="active"
                             (click)="isCollapsed = true"
                             class="btn my-2 my-sm-0 rounded-0"
-                            i18n
+                            i18n="home@@home"
                             title="Accueil"
                             >Accueil</a
                         >
@@ -70,7 +70,7 @@
                             routerLink="/about"
                             (click)="isCollapsed = !isCollapsed"
                             routerLinkActive="active"
-                            i18n
+                            i18n="about@@about"
                             title="A propos"
                             >A propos</a
                         >
@@ -80,7 +80,7 @@
                             [href]="adminUrl"
                             target="_blank"
                             class="btn my-2 my-sm-0 rounded-0"
-                            i18n
+                            i18n="admin@@admin"
                             title="Admin"
                             (click)="isCollapsed = !isCollapsed"
                             >Admin
@@ -98,7 +98,7 @@
                     <ng-template #connected>
                         <a
                             placement="bottom"
-                            i18n-ngbTooltip
+                            i18n-ngbTooltip="my Dasboard Link@@myDasboardLink"
                             ngbTooltip="Mon tableau de bord"
                             (click)="isCollapsed = !isCollapsed"
                             routerLink="mydashboard"
@@ -122,7 +122,7 @@
                             class="btn btn-sm my-2 my-sm-0"
                             (click)="logout(); isCollapsed = true"
                             style="min-width: 147px !important"
-                            i18n
+                            i18n="logout@@logout"
                         >
                             <i class="fa fa-fw fa-lock"></i> &nbsp;Se
                             déconnecter
@@ -132,14 +132,14 @@
                         <a
                             class="btn my-2 my-sm-0 rounded-0"
                             (click)="login(); isCollapsed = true"
-                            i18n
+                            i18n="login@@login"
                         >
                             Se connecter
                         </a>
                         <a
                             class="btn my-2 my-sm-0 rounded-0"
                             (click)="register(); isCollapsed = true"
-                            i18n
+                            i18n="register@@register"
                         >
                             S'inscrire
                         </a>

@@ -8,7 +8,7 @@
                 [(ngModel)]="selectedTaxon"
                 (ngModelChange)="onFilterChange()"
             >
-                <option [ngValue]="null" i18n>Toutes espèces</option>
+                <option [ngValue]="null" i18n="All species select option@@allSpeciesSelectOption">Toutes espèces</option>
                 <option *ngFor="let s of surveySpecies" [ngValue]="s">
                     {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }}
                     <span *ngIf="appConfig.taxonDisplaySciName"
@@ -26,14 +26,14 @@
                 [(ngModel)]="selectedMunicipality"
                 (ngModelChange)="onFilterChange()"
             >
-                <option [ngValue]="null" i18n>Toutes communes</option>
+                <option [ngValue]="null" i18n="All municipalities select option@@allMunicipalitiesSelectOption">Toutes communes</option>
                 <option *ngFor="let t of municipalities" [ngValue]="t">
                     {{ t?.name || '?' }}
                 </option>
             </select>
         </div>
         <div class="col-lg-12 mx-4 mt-2 mb-4">
-            <strong
+            <strong i18n="My obs@@myObs"
                 ><span *ngIf="router.url.includes('mydashboard')">Mes </span
                 >Observations
             </strong>

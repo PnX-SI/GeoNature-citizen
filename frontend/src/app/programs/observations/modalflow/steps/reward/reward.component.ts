@@ -134,33 +134,34 @@ export class BadgeFacade {
 
 @Component({
     selector: 'app-reward',
-    template: `
-        <div *ngIf="reward$ | async as rewards">
-            <button
-                type="button"
-                class="close"
-                aria-label="Close"
-                (click)="closeModal()"
-            >
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class="modal-body new-badge" (click)="clicked('background')">
-                <h5 i18n>Félicitations !</h5>
-                <h6 i18n>
-                    { +rewards?.length, plural, =1 { Vous venez d&apos;obtenir
-                    ce badge } other { Vous venez d&apos;obtenir ces badges } }
-                </h6>
-                <p>
-                    <img
-                        [ngbTooltip]="b.type + b.name"
-                        *ngFor="let b of rewards"
-                        [src]="AppConfig.API_ENDPOINT + b.url"
-                        [alt]="b.name"
-                    />
-                </p>
-            </div>
-        </div>
-    `,
+    templateUrl: './reward.component.html',
+    // template: `
+    //     <div *ngIf="reward$ | async as rewards">
+    //         <button
+    //             type="button"
+    //             class="close"
+    //             aria-label="Close"
+    //             (click)="closeModal()"
+    //         >
+    //             <span aria-hidden="true">&times;</span>
+    //         </button>
+    //         <div class="modal-body new-badge" (click)="clicked('background')">
+    //             <h5 i18n>Félicitations !</h5>
+    //             <h6 i18n>
+    //                 { +rewards?.length, plural, =1 { Vous venez d&apos;obtenir
+    //                 ce badge } other { Vous venez d&apos;obtenir ces badges } }
+    //             </h6>
+    //             <p>
+    //                 <img
+    //                     [ngbTooltip]="b.type + b.name"
+    //                     *ngFor="let b of rewards"
+    //                     [src]="AppConfig.API_ENDPOINT + b.url"
+    //                     [alt]="b.name"
+    //                 />
+    //             </p>
+    //         </div>
+    //     </div>
+    // `,
     styleUrls: ['./reward.component.css'],
     encapsulation: ViewEncapsulation.None,
     providers: [BadgeFacade],
