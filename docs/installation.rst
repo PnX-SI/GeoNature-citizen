@@ -553,13 +553,14 @@ Faire le build du code du frontend en mode SSR et créer un service pour le fron
 
 Après chaque modification sur un des éléments qui concerne le frontend, il faut relancer le processus de build :
 
-::
+.. code-block:: sh
 
-  npm run build:i18n-ssr
+    npm run build:i18n-ssr && npm run serve:ssr
+
 
 Puis lancer le service pour le mode SSR
 
-::
+.. code-block:: sh
 
   pm2 start dist/server.js --name gncitizen
   pm2 save
@@ -571,7 +572,7 @@ Configuration d'Apache
 
 Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage.
 
-::
+.. code-block:: apacheconf
 
   <VirtualHost *:80>
 

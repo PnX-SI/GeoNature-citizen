@@ -274,15 +274,9 @@ Editer la conf :
  # Pour configurer le lien externe de la fiche détaillée de l'espèce, éditer l'entrée suivante:
  details_espece_url: "<url_inpn_or_atlas>/cd_nom/" // !! garder bien le cd_nom/ dans l'url
 
+
 Lancer le front :
 
-::
+.. code-block:: sh
 
- npm run start -- --host=0.0.0.0
-
-
-Ré-génération des locales après modification de l’UI :
-
-::
-
- for lang in 'fr' 'en'; do npm run -- ng xi18n --output-path locale --out-file _messages.${lang}.xlf --i18n-locale ${lang}; done
+    npm run build:i18n-ssr && npm run serve:ssr
