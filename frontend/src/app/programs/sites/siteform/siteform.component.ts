@@ -54,6 +54,7 @@ export class SiteFormComponent implements AfterViewInit {
     @Input('program_id') program_id: number;
     @ViewChild('photo', { static: true }) photo: ElementRef;
     program: any;
+    site_types: any;
     formMap: L.Map;
     siteForm = new FormGroup({
         name: new FormControl('', Validators.required),
@@ -100,10 +101,10 @@ export class SiteFormComponent implements AfterViewInit {
             .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
             .subscribe((result) => {
                 this.program = result;
-                if (this.program.features[0].site_types.length >= 1) {
+                this.site_types = this.program.features[0].site_types;
+                if (this.site_types.length >= 1) {
                     this.siteForm.patchValue({
-                        id_typesite: this.program.features[0].site_types[0]
-                            .value,
+                        id_typesite: this.site_types[0].value,
                     });
                 }
 

@@ -11,6 +11,7 @@
                 formControlName="id_type"
                 class="form-control"
                 *ngIf="program"
+                [value]="site_types.length == 1 ? site_types[0].value : none"
             >
                 <option
                     *ngFor="let t of program.features[0].site_types"

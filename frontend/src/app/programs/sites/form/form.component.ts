@@ -47,9 +47,9 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         ),
         data: new FormControl(''),
     });
-    currentStep: number = 1;
+    currentStep = 1;
     partialLayout: any[] = [];
-    advancedMode: boolean = false;
+    advancedMode = false;
     jsonData: object = {};
     formOptions: any = {
         loadExternalAssets: false,
@@ -58,7 +58,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         addSubmit: false,
     };
     jsonSchema: any = {};
-    readyToDisplay: boolean = false;
+    readyToDisplay = false;
     GNCBootstrap4Framework: any = {
         framework: GNCFrameworkComponent,
     };
@@ -75,9 +75,9 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         console.debug('ngOnInit');
         console.debug('site_id:', this.site_id);
-        var that = this;
+        // const that = this;
         this.loadJsonSchema().subscribe((data: any) => {
-            that.initForm(data);
+            this.initForm(data);
         });
     }
     initForm(json_schema) {
@@ -134,7 +134,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         this.jsonData[this.currentStep] = e;
     }
     getTotalJsonData() {
-        var resp = {};
+        let resp = {};
         for (const key of Object.keys(this.jsonData)) {
             resp = { ...resp, ...this.jsonData[key] };
         }
@@ -148,7 +148,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         this.photos.push(event.file);
     }
     deleteImage(event) {
-        for (var i = 0; i < this.photos.length; i++) {
+        for (let i = 0; i < this.photos.length; i++) {
             if (this.photos[i] == event.file) {
                 this.photos.splice(i, 1);
             }
@@ -159,7 +159,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         this.postSiteVisit().subscribe(
             (data) => {
                 console.debug(data);
-                let visitId = data['features'][0]['id_visit'];
+                const visitId = data['features'][0]['id_visit'];
                 this.postVisitPhotos(visitId).subscribe(
                     (resp) => {
                         console.debug(resp);
@@ -180,7 +180,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
                 Accept: 'application/json',
             }),
         };
-        let visitDate = NgbDate.from(this.visitForm.controls.date.value);
+        const visitDate = NgbDate.from(this.visitForm.controls.date.value);
         this.visitForm.patchValue({
             data: this.getTotalJsonData(),
             date: new Date(visitDate.year, visitDate.month, visitDate.day)
