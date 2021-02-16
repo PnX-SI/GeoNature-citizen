@@ -297,6 +297,7 @@ export abstract class BaseMapComponent implements OnChanges {
             // No program -> user-dashboard -> adapt bounds to observations
             const obsLayer = L.geoJSON(this.features);
             this.observationMap.fitBounds(obsLayer.getBounds());
+            this.observationMap.setZoom(Math.min(this.observationMap.getZoom(), 17)); // limit zoom (<1 feature)
         }
     }
 
