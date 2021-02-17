@@ -265,3 +265,6 @@ frontend/src/custom/**/*.html
 data/tmp
 *.qgs
 
+# Docker
+docker-compose.override.yaml
+docker-compose.override.yml

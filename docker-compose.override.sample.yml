@@ -2,7 +2,8 @@ version: '3.3'
 
 services:
   debian_base:
-    build: .
     container_name: citizen_base
+    command: "bash"
+    tty: true
     ports:
       - 80:80
