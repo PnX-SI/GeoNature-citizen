@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+echo "------------------------------------------------"
+echo "GeoNature-citizen backend server is starting ..."
+echo "------------------------------------------------"
+
+
 FLASKDIR=$(readlink -e "${0%/*}")
 APP_DIR="$(dirname "$FLASKDIR")"
 venv_dir="venv"
