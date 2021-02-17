@@ -210,6 +210,7 @@ touch init_done
 #Création de la conf supervisor
 sudo cp install/supervisor/gncitizen_api-service.conf /etc/supervisor/conf.d/
 sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_api-service.conf
+sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_api-service.conf
 
 # cp  config/apache/gncitizen_api.conf  /etc/apache2/sites-available/gncitizen_api.conf 
 # cat config/apache/gncitizen_api.conf | sed "s,HOME_PATH,$HOME,g" | sudo tee /etc/apache2/sites-available/gncitizen_api.conf
