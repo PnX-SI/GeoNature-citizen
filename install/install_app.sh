@@ -1,5 +1,8 @@
 #!/bin/bash
+cd $(dirname $(dirname "${BASH_SOURCE[0]:-$0}"))
+
 DIR=$(pwd)
+
 #création d'un fichier de configuration pour api/back
 if [ ! -f config/settings.ini ]; then
   echo 'Fichier de configuration du projet non existant, copie du template...'
@@ -175,9 +178,9 @@ if [ $server_side = "true" ]; then
   echo "Build server side project"
   npm run build:i18n-ssr
 #  Installation de la conf
-  sudo cp ../gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
+  sudo cp ../install/supervisor/gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
-  sudo cp ../config/apache/gncitizen_frontssr.conf /etc/apache2/sites-available/gncitizen.conf
+  sudo cp ../install/apache/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s/APP_PATH/${DIR}/g" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s/mydomain.net/$URL/g" /etc/apache2/sites-available/gncitizen.conf
   
@@ -204,7 +207,7 @@ deactivate
 touch init_done
 
 #Création de la conf supervisor
-sudo cp gncitizen_api-service.conf /etc/supervisor/conf.d/
+sudo cp install/supervisor/gncitizen_api-service.conf /etc/supervisor/conf.d/
 sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_api-service.conf
 
 # cp  config/apache/gncitizen_api.conf  /etc/apache2/sites-available/gncitizen_api.conf 
@@ -214,6 +217,7 @@ sudo apache2ctl restart
 #
 sudo supervisorctl reread
 sudo supervisorctl reload
+
 echo "install municipalities"
 ./data/ref_geo.sh
 
