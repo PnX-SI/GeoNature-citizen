@@ -39,8 +39,10 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 #cp -r ${HOME}/.nvm /home/synthese/.nvm
 #chown -R synthese:synthese /home/synthese/.nvm
 
-nvm install 14 --lts
+cd ${DIR}/frontend
+nvm install
 echo `npm -v`
+cd ${DIR}
 
 #Installation de taxhub
 #if [ ! -d /home/synthese ]; then
@@ -173,7 +175,10 @@ fi
 NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
 URL=`echo $my_url |sed 's/http[s]\?:\/\///'`
 echo "L'application sera disponible à l'url $my_url"
+
+nvm use
 npm install
+
 if [ $server_side = "true" ]; then
   echo "Build server side project"
   npm run build:i18n-ssr
@@ -181,9 +186,9 @@ if [ $server_side = "true" ]; then
   sudo cp ../install/supervisor/gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
-  sudo cp ../install/apache/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
+  sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s/APP_PATH/${DIR}/g" /etc/apache2/sites-available/gncitizen.conf
-  sudo sed -i "s/mydomain.net/$URL/g" /etc/apache2/sites-available/gncitizen.conf
+  sudo sed -i "s/mydomain.net/${URL}/g" /etc/apache2/sites-available/gncitizen.conf
   
   # sudo a2ensite gncitizen.conf
 else
