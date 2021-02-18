@@ -207,6 +207,10 @@ pip install --upgrade pip
 pip install -r backend/requirements.txt
 deactivate
 
+# Copy main medias to media
+mkdir -p $DIR/media
+cp -r $DIR/frontend/src/assets/* $DIR/media
+
 touch init_done
 
 #Création de la conf supervisor
