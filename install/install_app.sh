@@ -173,7 +173,7 @@ fi
 
 #Install and build
 NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
-URL=`echo $my_url |sed 's/http[s]\?:\/\///'`
+URL=`echo $my_url |sed 's/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/'`
 echo "L'application sera disponible à l'url $my_url"
 
 nvm use
@@ -187,8 +187,8 @@ if [ $server_side = "true" ]; then
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
-  sudo sed -i "s/APP_PATH/${DIR}/g" /etc/apache2/sites-available/gncitizen.conf
-  sudo sed -i "s/mydomain.net/${URL}/g" /etc/apache2/sites-available/gncitizen.conf
+  sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
+  sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
   
   # sudo a2ensite gncitizen.conf
 else
@@ -198,7 +198,7 @@ fi
 cd ..
 
 # Création du venv
-venv_path=$DIR/backend/$venv_dir
+venv_path=$DIR/backend/${venv_dir:-"venv"}
 if [ ! -f $venv_path/bin/activate ]; then
   python3 -m virtualenv $venv_path
 fi
