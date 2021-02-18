@@ -198,10 +198,7 @@ fi
 cd ..
 
 # Création du venv
-FLASKDIR=$(readlink -e "${0%/*}")
-APP_DIR="$(dirname "$FLASKDIR")"
-venv_dir="venv"
-venv_path=$FLASKDIR/backend/$venv_dir
+venv_path=$DIR/backend/$venv_dir
 if [ ! -f $venv_path/bin/activate ]; then
   python3 -m virtualenv $venv_path
 fi

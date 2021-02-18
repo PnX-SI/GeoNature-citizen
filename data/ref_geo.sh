@@ -1,4 +1,7 @@
 #!/bin/bash
+
+cd $(dirname "${BASH_SOURCE[0]:-$0}")
+
 . ../config/settings.ini
 echo "PGPASSWORD=$user_pg_pass psql -h $pg_host -d $pg_dbname -U $user_pg -p $pg_port"
 dburi='postgres'
