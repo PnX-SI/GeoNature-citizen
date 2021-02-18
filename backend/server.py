@@ -153,7 +153,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         _app = app
 
         create_schemas(db)
-        populate_modules(db)
         db.create_all()
+        populate_modules(db)
+
 
     return app
