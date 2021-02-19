@@ -97,21 +97,13 @@ swagger_config = {
 
 swagger = Swagger(template=swagger_template, config=swagger_config)
 
-admin_url = "/api/admin" if app_conf["DEBUG"] else "/".join([urlparse(app_conf["URL_APPLICATION"]).path, "/api/admin"])
-
-logger.info(f'admin url = {admin_url}')
-# if app_conf["DEBUG"]:
-#     admin_url = "/api/admin"
-# else:
-#     admin_url = "/".join([urlparse(app_conf["URL_APPLICATION"]).path, "/api/admin"])
+admin_url = "/".join([urlparse(app_conf["URL_APPLICATION"]).path, "/api/admin"])
 
 admin = Admin(
     name=f"GN-Citizen: Backoffice d'administration (version: {__version__})",
     template_mode="bootstrap3",
-    url=admin_url,
+    url="/api/admin",
 )
-
-logger.info(f"ADMIN URL is {admin.url}")
 
 
 taxhub_url = valid_api_url(app_conf.get("API_TAXHUB", ""))
