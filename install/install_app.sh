@@ -198,6 +198,7 @@ password: ${backoffice_password}" > ${DIR}/config/backoffice_access
   htpasswd -b -c ${DIR}/config/backoffice_htpasswd ${backoffice_username} ${backoffice_password}
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
+  sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-available/gncitizen.conf
   
 else
   echo "Build initial du projet"
@@ -226,11 +227,11 @@ sudo cp install/supervisor/gncitizen_api-service.conf /etc/supervisor/conf.d/
 sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_api-service.conf
 sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_api-service.conf
 
-# cp  config/apache/gncitizen_api.conf  /etc/apache2/sites-available/gncitizen_api.conf 
-# cat config/apache/gncitizen_api.conf | sed "s,HOME_PATH,$HOME,g" | sudo tee /etc/apache2/sites-available/gncitizen_api.conf
+# Prise en compte de la nouvelle config Apache
 sudo a2ensite gncitizen.conf
 sudo apache2ctl restart
-#
+
+# Prise en compte de la nouvelle config Supervisor
 sudo supervisorctl reread
 sudo supervisorctl reload
 
