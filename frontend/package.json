@@ -55,7 +55,7 @@
         "leaflet-gesture-handling": "^1.1.8",
         "leaflet.locatecontrol": "^0.68.0",
         "leaflet.markercluster": "^1.4.1",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.19",
         "lodash-es": "^4.17.15",
         "mock-browser": "^0.92.14",
         "ngx-toastr": "^10.1.0",
