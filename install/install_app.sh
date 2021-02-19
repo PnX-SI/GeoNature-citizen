@@ -187,10 +187,14 @@ if [ $server_side = "true" ]; then
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
+  if [ ${backoffice_password:=MotDePasseAChanger} = MotDePasseAChanger ]; then
+    backoffice_password=$(date +%s | sha256sum | base64 | head -c 30 ; echo)
+  fi
+  echo "Backoffice password (${URL}/api/admin):\n\tusername:\t${backoffice_username:=citizen} ${backoffice_password}" > ${DIR}/config/backoffice_access
+  htpasswd -b -c %{DIR}/config/backoffice_htpasswd ${backoffice_username} ${backoffice_password}
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
   
-  # sudo a2ensite gncitizen.conf
 else
   echo "Build initial du projet"
   npm run build
