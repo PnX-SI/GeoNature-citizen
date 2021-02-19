@@ -190,8 +190,12 @@ if [ $server_side = "true" ]; then
   if [ ${backoffice_password:=MotDePasseAChanger} = MotDePasseAChanger ]; then
     backoffice_password=$(date +%s | sha256sum | base64 | head -c 30 ; echo)
   fi
-  echo "Backoffice password (${URL}/api/admin):\n\tusername:\t${backoffice_username:=citizen} ${backoffice_password}" > ${DIR}/config/backoffice_access
-  htpasswd -b -c %{DIR}/config/backoffice_htpasswd ${backoffice_username} ${backoffice_password}
+  echo "Backoffice password
+===================
+url: (${URL}/api/admin)
+username: ${backoffice_username:=citizen}
+password: ${backoffice_password}" > ${DIR}/config/backoffice_access
+  htpasswd -b -c ${DIR}/config/backoffice_htpasswd ${backoffice_username} ${backoffice_password}
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
   
