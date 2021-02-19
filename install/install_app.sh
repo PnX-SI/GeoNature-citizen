@@ -237,4 +237,10 @@ sudo supervisorctl reload
 echo "install municipalities"
 ./data/ref_geo.sh
 
-echo "End"
+echo "End of installation
+You can now access to GeoNature-citizen at ${my_url}
+
+Backoffice access informations are stored in ${DIR}/config/backoffice_access as follows:
+"
+
+cat ${DIR}/config/backoffice_access
