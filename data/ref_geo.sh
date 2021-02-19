@@ -20,7 +20,7 @@ PGPASSWORD=$user_pg_pass psql -h $pg_host -d $pg_dbname -U $user_pg -p $pg_port 
 echo ""
 echo "Insert data in l_areas and li_municipalities tables"
 echo "--------------------"
-PGPASSWORD=$user_pg_pass psql -h $pg_host -d $pg_dbname -U $user_pg -p $pg_port -f ./data/ref_geo.sql
+PGPASSWORD=$user_pg_pass psql -h $pg_host -d $pg_dbname -U $user_pg -p $pg_port -f ./ref_geo.sql
 echo ""
 echo "Drop french municipalities temp table"
 echo "--------------------"
