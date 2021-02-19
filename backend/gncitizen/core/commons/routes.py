@@ -44,17 +44,22 @@ from gncitizen.core.commons.admin import (
     UserView,
     GeometryView,
 )
-from gncitizen.core.sites.models import CorProgramSiteTypeModel
+from gncitizen.core.sites.models import CorProgramSiteTypeModel, SiteTypeModel
+from gncitizen.core.sites.admin import SiteTypeView
 
 
 routes = Blueprint("commons", __name__)
 
 
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
-admin.add_view(ProjectView(ProjectModel, db.session, "Projets"))
-admin.add_view(ProgramView(ProgramsModel, db.session, "Programmes"))
-admin.add_view(CustomFormView(CustomFormModel, db.session, "Formulaires dynamiques"))
-admin.add_view(GeometryView(GeometryModel, db.session, "Zones geographiques"))
+admin.add_view(ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes"))
+admin.add_view(GeometryView(GeometryModel, db.session, "2 - Zones geographiques", category="Enquêtes"))
+admin.add_view(CustomFormView(CustomFormModel, db.session, "3a - Formulaires dynamiques", category="Enquêtes"))
+admin.add_view(SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes"))
+admin.add_view(ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"))
+
+
+
 
 
 @routes.route("/modules/<int:pk>", methods=["GET"])
@@ -126,7 +131,7 @@ def get_stat():
 
 
 @routes.route("/projects", methods=["GET"])
-@routes.route("/projects/", methods=["GET"])
+# @routes.route("/projects", methods=["GET"])
 @json_resp
 def get_projects():
     """Get a project description details by id

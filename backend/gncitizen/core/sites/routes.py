@@ -24,8 +24,6 @@ from flask_jwt_extended import jwt_optional, jwt_required, get_jwt_identity
 
 routes = Blueprint("sites_url", __name__)
 
-admin.add_view(SiteTypeView(SiteTypeModel, db.session, "Types de site"))
-
 
 @routes.route("/types", methods=["GET"])
 @json_resp
