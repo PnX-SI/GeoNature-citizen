@@ -87,22 +87,66 @@ Installation de GeoNature-citizen
 Récupération du code source
 ---------------------------
 
-Téléchargez et décompressez la dernière version de l'application (actuellement v0.3.0)
+Téléchargez et décompressez la dernière version de l'application, disponible ici: https://github.com/PnX-SI/GeoNature-citizen/releases
 
 ::
 
   # Se positionner dans le dossier par défaut de l'utilisateur (ici /home/geonatadmin)
   cd ~ 
   # Téléchargement de l'application
-  curl -OJL https://github.com/PnX-SI/GeoNature-citizen/archive/v0.3.0.zip 
+  curl -OJL https://github.com/PnX-SI/GeoNature-citizen/archive/v0.99.0.zip 
   # Décompression de l'application
-  unzip GeoNature-citizen-0.3.0.zip
+  unzip GeoNature-citizen-0.99.0.zip
   # Renommage du dossier contenant l'application
-  mv GeoNature-citizen-0.3.0 gncitizen
+  mv GeoNature-citizen-0.99.0 gncitizen
 
-.. Si nécessaire, vous pouvez récupérer une branche ou un tag particulier avec ``cd GeoNature-citizen && git checkout nom_du_tag_ou_de_la_branch``. Par defaut nous utiliserons la branche master, et il n'y a donc rien à faire.
 
-Décompréssez
+Installation automatique
+========================
+
+
+.. tip::
+
+ - Bien vérifier de ne pas être en ``root`` :
+
+  .. code-block:: bash
+
+    su - nom_utilisateur (geonatadmin)
+
+ - S'assurer d'avoir le projet Geonature-citizen dans ce dossier ainsi que d'etre propriétaire du dossier et de ses dépendances
+
+ - Se rendre sur la Home de votre utilisateur
+
+  .. code-block:: bash
+
+    cd
+
+Lancer le script d'installation :
+
+.. code-block:: bash
+
+  cd ~/gncitizen/
+  ./install/install_app.sh
+
+- Le script créera un fichier de config settings.ini, il faut alors le compléter avec les informations de votre installation.
+
+.. code-block:: bash
+
+  editor ./config/settings.ini
+
+- Relancer le script :
+
+.. code-block:: bash
+
+  ./install/install_app.sh
+
+Le script crééra la base de données, configurera taxhub si l'installation est demandée, configurera le serveur web Apache et installera toutes les dépendances du projet Geonature-Citizen.
+
+
+Installation manuelle
+=====================
+
+Si vous souhaitez à une installation manuelle, suivez les instructions suivantes.
 
 Installer les dépendances python
 --------------------------------
