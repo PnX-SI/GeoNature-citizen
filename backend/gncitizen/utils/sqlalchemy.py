@@ -10,6 +10,8 @@ from flask import Response, current_app
 from geoalchemy2.shape import from_shape, to_shape
 from geojson import Feature
 from shapely.geometry import asShape
+from werkzeug.datastructures import Headers
+
 
 """
     Liste des types de données sql qui
@@ -23,18 +25,9 @@ SERIALIZERS = {
     "timestamp": lambda x: str(x) if x else None,
     "uuid": lambda x: str(x) if x else None,
     "numeric": lambda x: str(x) if x else None,
+    "enum": lambda x: x.name if x else None,
 }
 
-
-def create_schemas(db):
-    """create db schemas at first launch
-
-    :param db: db connection
-    """
-    db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_core")
-    db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_obstax")
-    db.session.execute("CREATE SCHEMA IF NOT EXISTS ref_geo")
-    db.session.commit()
 
 
 def geom_from_geojson(data):
@@ -61,7 +54,7 @@ def geom_from_geojson(data):
 
 
 def get_geojson_feature(wkb):
-    """ return a geojson feature from WKB
+    """return a geojson feature from WKB
 
     :param wkb: wkb geometry
     :type wkb: str
@@ -83,9 +76,9 @@ def get_geojson_feature(wkb):
 
 def serializable(cls):
     """
-        Décorateur de classe pour les DB.Models
-        Permet de rajouter la fonction as_dict
-        qui est basée sur le mapping SQLAlchemy
+    Décorateur de classe pour les DB.Models
+    Permet de rajouter la fonction as_dict
+    qui est basée sur le mapping SQLAlchemy
     """
 
     """
@@ -95,9 +88,7 @@ def serializable(cls):
     cls_db_columns = [
         (
             db_col.key,
-            SERIALIZERS.get(
-                db_col.type.__class__.__name__.lower(), lambda x: x
-            ),
+            SERIALIZERS.get(db_col.type.__class__.__name__.lower(), lambda x: x),
         )
         for db_col in cls.__mapper__.c
         if not db_col.type.__class__.__name__ == "Geometry"
@@ -130,10 +121,7 @@ def serializable(cls):
         else:
             fprops = cls_db_columns
 
-        out = {
-            item: _serializer(getattr(self, item))
-            for item, _serializer in fprops
-        }
+        out = {item: _serializer(getattr(self, item)) for item, _serializer in fprops}
 
         if recursif is False:
             return out
@@ -155,8 +143,8 @@ def serializable(cls):
 
 def geoserializable(cls):
     """
-        Décorateur de classe
-        Permet de rajouter la fonction as_geofeature à une classe
+    Décorateur de classe
+    Permet de rajouter la fonction as_geofeature à une classe
     """
 
     def serializegeofn(self, geoCol, idCol, recursif=False, columns=()):
@@ -197,6 +185,7 @@ def json_resp(fn):
     @wraps(fn)
     def _json_resp(*args, **kwargs):
         res = fn(*args, **kwargs)
+        current_app.logger.debug(f"args {args}, kwargs{kwargs}")
         if isinstance(res, tuple):
             return to_json_resp(*res)
         else:
@@ -215,9 +204,7 @@ def to_json_resp(res, status=200, filename=None, as_file=False, indent=None):
         headers = Headers()
         headers.add("Content-Type", "application/json")
         headers.add(
-            "Content-Disposition",
-            "attachment",
-            filename="export_%s.json" % filename,
+            "Content-Disposition", "attachment", filename="export_%s.json" % filename,
         )
 
     return Response(

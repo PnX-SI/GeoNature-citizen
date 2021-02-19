@@ -1,12 +1,9 @@
-<div class="btn-group">
-  <button *ngIf="!updateData" class="btn-big text-center text-nowrap text-uppercase" (click)="clicked()">
-    {{ AppConfig.program_add_an_observation[localeId] }}
-  </button>
-  <button class="btn btn-secondary" placement="top" ngbTooltip="Editer" *ngIf="updateData"
-    (click)="clicked()">
-    <i class="fa fa-edit"></i>
-  </button>
+<div class="btn-group" (click)="clicked()" *ngIf="modalversion">
+    <ng-content select="[btn-open]"></ng-content>
+</div>
+<div *ngIf="!modalversion && flowService.display" id="newObsDiv">
+    <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>
 </div>
 <ng-template #content>
-  <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>
+    <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>
 </ng-template>

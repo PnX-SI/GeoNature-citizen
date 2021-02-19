@@ -1,0 +1,1084 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="fr" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="ngb.alert.close" datatype="html">
+        <source>Close</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/alert/alert.d.ts</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.carousel.previous" datatype="html">
+        <source>Previous</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/carousel/carousel.d.ts</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.carousel.next" datatype="html">
+        <source>Next</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/carousel/carousel.d.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.datepicker.previous-month" datatype="html">
+        <source>Previous month</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation.d.ts</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation.d.ts</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.datepicker.next-month" datatype="html">
+        <source>Next month</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation.d.ts</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation.d.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.datepicker.select-month" datatype="html">
+        <source>Select month</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation-select.d.ts</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation-select.d.ts</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.datepicker.select-year" datatype="html">
+        <source>Select year</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation-select.d.ts</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/datepicker-navigation-select.d.ts</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.first" datatype="html">
+        <source>««</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.previous" datatype="html">
+        <source>«</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.next" datatype="html">
+        <source>»</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.last" datatype="html">
+        <source>»»</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.first-aria" datatype="html">
+        <source>First</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.previous-aria" datatype="html">
+        <source>Previous</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.next-aria" datatype="html">
+        <source>Next</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.pagination.last-aria" datatype="html">
+        <source>Last</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/pagination/pagination.d.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.progressbar.value" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{getPercentValue()}}"/>%</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/progressbar/progressbar.d.ts</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.increment-hours" datatype="html">
+        <source>Increment hours</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.HH" datatype="html">
+        <source>HH</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.hours" datatype="html">
+        <source>Hours</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.decrement-hours" datatype="html">
+        <source>Decrement hours</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.increment-minutes" datatype="html">
+        <source>Increment minutes</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.MM" datatype="html">
+        <source>MM</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.minutes" datatype="html">
+        <source>Minutes</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.decrement-minutes" datatype="html">
+        <source>Decrement minutes</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.increment-seconds" datatype="html">
+        <source>Increment seconds</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.SS" datatype="html">
+        <source>SS</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.seconds" datatype="html">
+        <source>Seconds</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.decrement-seconds" datatype="html">
+        <source>Decrement seconds</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.PM" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ i18n.getAfternoonPeriod() }}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.timepicker.AM" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ i18n.getMorningPeriod() }}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/timepicker/timepicker.d.ts</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ngb.toast.close-aria" datatype="html">
+        <source>Close</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../node_modules/@ng-bootstrap/ng-bootstrap/toast/toast.d.ts</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register" datatype="html">
+        <source>Créez votre compte</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+        <note priority="1" from="description">Create account</note>
+      </trans-unit>
+      <trans-unit id="emailNotValid" datatype="html">
+        <source>
+            Impossible de valider votre email.
+        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <note priority="1" from="description">Unable to valid email</note>
+      </trans-unit>
+      <trans-unit id="yourUsernameLabel" datatype="html">
+        <source>Votre pseudonyme</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">280</context>
+        </context-group>
+        <note priority="1" from="description">Your pseudo</note>
+      </trans-unit>
+      <trans-unit id="yourUsernameInputPlaceHolder" datatype="html">
+        <source>Entrez votre pseudonyme</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+        <note priority="1" from="description">Enter your pseudo</note>
+      </trans-unit>
+      <trans-unit id="yourEmailLabel" datatype="html">
+        <source>Votre email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">82</context>
+        </context-group>
+        <note priority="1" from="description">Your email form label</note>
+      </trans-unit>
+      <trans-unit id="yourEmailInputPlaceholder" datatype="html">
+        <source>Entrez votre email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">322</context>
+        </context-group>
+        <note priority="1" from="description">Your email input placeholder label</note>
+      </trans-unit>
+      <trans-unit id="yourFirstNameLabel" datatype="html">
+        <source>Votre prénom</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">117</context>
+        </context-group>
+        <note priority="1" from="description">your first name</note>
+      </trans-unit>
+      <trans-unit id="yourLastNameLabel" datatype="html">
+        <source>Votre nom</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">127</context>
+        </context-group>
+        <note priority="1" from="description">your last name label</note>
+      </trans-unit>
+      <trans-unit id="yourLastNameInput" datatype="html">
+        <source>Entrez votre nom</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">134</context>
+        </context-group>
+        <note priority="1" from="description">Enter your last name</note>
+      </trans-unit>
+      <trans-unit id="ErrorDifferentPasswords" datatype="html">
+        <source>
+            Les mots de passe diffèrent.
+        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">152</context>
+        </context-group>
+        <note priority="1" from="description">Different password error</note>
+      </trans-unit>
+      <trans-unit id="yourPasswordInputLabel" datatype="html">
+        <source>Votre mot de passe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">158</context>
+        </context-group>
+        <note priority="1" from="description">Your password label</note>
+      </trans-unit>
+      <trans-unit id="yourPasswordInput" datatype="html">
+        <source>Votre mot de passe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">164</context>
+        </context-group>
+        <note priority="1" from="description">Your password input</note>
+      </trans-unit>
+      <trans-unit id="83c243fb33445d5db02ab9f9d8df7ee59553c324" datatype="html">
+        <source>Confirmez votre mot de passe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">177</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="yourPasswordConfirmInput" datatype="html">
+        <source>Confirmez le mot de passe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">187</context>
+        </context-group>
+        <note priority="1" from="description">Your confirm password input</note>
+      </trans-unit>
+      <trans-unit id="acceptUGC" datatype="html">
+        <source>
+                    Veuillez accepter les conditions d&apos;utilisation.
+                </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">201</context>
+        </context-group>
+        <note priority="1" from="description">Accept UGC</note>
+      </trans-unit>
+      <trans-unit id="conditionsOfUse" datatype="html">
+        <source>conditions d&apos;utilisation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">218</context>
+        </context-group>
+        <note priority="1" from="description">Use condition</note>
+      </trans-unit>
+      <trans-unit id="registerLink" datatype="html">
+        <source>
+            S&apos;enregistrer
+        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">229</context>
+        </context-group>
+        <note priority="1" from="description">register link</note>
+      </trans-unit>
+      <trans-unit id="closeModal" datatype="html">
+        <source>
+        Fermer
+    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/register/register.component.html</context>
+          <context context-type="linenumber">240</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">151</context>
+        </context-group>
+        <note priority="1" from="description">close auth modal</note>
+      </trans-unit>
+      <trans-unit id="login" datatype="html">
+        <source>Se connecter</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">140</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
+          <context context-type="linenumber">136</context>
+        </context-group>
+        <note priority="1" from="description">login</note>
+      </trans-unit>
+      <trans-unit id="yourEmail" datatype="html">
+        <source>Votre Email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+        <note priority="1" from="description">Your email</note>
+      </trans-unit>
+      <trans-unit id="emailInput" datatype="html">
+        <source>Entrez votre email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+        <note priority="1" from="description">Enter your email</note>
+      </trans-unit>
+      <trans-unit id="recoverAccount" datatype="html">
+        <source>
+            Récupérer le compte
+        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+        <note priority="1" from="description">Recover account</note>
+      </trans-unit>
+      <trans-unit id="emailInputLabel" datatype="html">
+        <source>Email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <note priority="1" from="description">email input label</note>
+      </trans-unit>
+      <trans-unit id="passwordLabel" datatype="html">
+        <source>Mot de passe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+        <note priority="1" from="description">Password input label</note>
+      </trans-unit>
+      <trans-unit id="passwordInput" datatype="html">
+        <source>Entrez votre mot de passe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">118</context>
+        </context-group>
+        <note priority="1" from="description">Password input</note>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordLink" datatype="html">
+        <source>Mot de passe oublié ?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/login/login.component.html</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+        <note priority="1" from="description">Forgotten password link</note>
+      </trans-unit>
+      <trans-unit id="addNewObs" datatype="html">
+        <source>AJOUTER UNE OBSERVATION</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/onboard/onboard.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <note priority="1" from="description">Add new obs</note>
+      </trans-unit>
+      <trans-unit id="registerAndContribute" datatype="html">
+        <source>S&apos;incrire <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>et contribuer au site</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/onboard/onboard.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+        <note priority="1" from="description">register and contribute</note>
+      </trans-unit>
+      <trans-unit id="continueUnregistered" datatype="html">
+        <source>Continuer <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>sans s&apos;enregistrer</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/onboard/onboard.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+        <note priority="1" from="description">continue unregistered</note>
+      </trans-unit>
+      <trans-unit id="inviteToLogin" datatype="html">
+        <source>Vous avez déjà un compte ? Connectez-vous !</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/onboard/onboard.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+        <note priority="1" from="description">Invite to login</note>
+      </trans-unit>
+      <trans-unit id="additionalInfos" datatype="html">
+        <source>
+                Informations complémentaires
+            </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">100</context>
+        </context-group>
+        <note priority="1" from="description">Additional information</note>
+      </trans-unit>
+      <trans-unit id="bservationDate" datatype="html">
+        <source>Date de l&apos;observation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">109</context>
+        </context-group>
+        <note priority="1" from="description">observation date</note>
+      </trans-unit>
+      <trans-unit id="expectedDateFormat" datatype="html">
+        <source>jj/mm/aaaa</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">117</context>
+        </context-group>
+        <note priority="1" from="description">
+                                expected date format</note>
+      </trans-unit>
+      <trans-unit id="enumerationInputLabel" datatype="html">
+        <source>Dénombrement</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+        <note priority="1" from="description">Enumeration Label</note>
+      </trans-unit>
+      <trans-unit id="enumerationInputPlaceHolder" datatype="html">
+        <source>Nombre</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">136</context>
+        </context-group>
+        <note priority="1" from="description">
+                            Enumeration Placeholder</note>
+      </trans-unit>
+      <trans-unit id="commentInputLabel" datatype="html">
+        <source>Commentaire</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">160</context>
+        </context-group>
+        <note priority="1" from="description">Comment Input Label</note>
+      </trans-unit>
+      <trans-unit id="commentInputPlaceholder" datatype="html">
+        <source>Votre commentaire</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">165</context>
+        </context-group>
+        <note priority="1" from="description">
+                        Comment Input Placeholder</note>
+      </trans-unit>
+      <trans-unit id="existingPhotos" datatype="html">
+        <source>Photos existantes (cocher pour supprimer)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">175</context>
+        </context-group>
+        <note priority="1" from="description">Existing Photos</note>
+      </trans-unit>
+      <trans-unit id="addPhoto" datatype="html">
+        <source>Ajouter une photo</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">194</context>
+        </context-group>
+        <note priority="1" from="description">Add photo</note>
+      </trans-unit>
+      <trans-unit id="obsLocation" datatype="html">
+        <source>
+                Où avez-vous observé cette espèce ?
+            </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">205</context>
+        </context-group>
+        <note priority="1" from="description">observation Location</note>
+      </trans-unit>
+      <trans-unit id="ZoomToPointInstruction" datatype="html">
+        <source>
+                        Veuillez zoomer pour localiser votre observation.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
+                        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>(zoom min:
+                            <x id="INTERPOLATION" equiv-text="{{ MAP_CONFIG.ZOOM_LEVEL_RELEVE }}"/>)<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+                    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">213</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="zoomingInstruction" datatype="html">
+        <source>Veuillez zoomer pour localiser votre observation.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">232</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <note priority="1" from="description">
+                        Zooming instruction</note>
+      </trans-unit>
+      <trans-unit id="clickOnMapInstruction" datatype="html">
+        <source>Cliquez sur la carte pour renseigner le lieu précis de
+                    votre observation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">245</context>
+        </context-group>
+        <note priority="1" from="description">click on map instruction</note>
+      </trans-unit>
+      <trans-unit id="contactEmailInputLabel" datatype="html">
+        <source>E-mail de contact
+                </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">272</context>
+        </context-group>
+        <note priority="1" from="description">Contact email input label</note>
+      </trans-unit>
+      <trans-unit id="contactEmailInputPlaceHolder" datatype="html">
+        <source>E-Mail</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">279</context>
+        </context-group>
+        <note priority="1" from="description">
+                        Contact email input
+                        placeholder</note>
+      </trans-unit>
+      <trans-unit id="missingFieldsAlert" datatype="html">
+        <source>
+            Champs manquants
+        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
+          <context context-type="linenumber">292</context>
+        </context-group>
+        <note priority="1" from="description">Missing fields alert</note>
+      </trans-unit>
+      <trans-unit id="updateObs" datatype="html">
+        <source>
+        MODIFIER L&apos;OBSERVATION
+    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+        <note priority="1" from="description">Update obs</note>
+      </trans-unit>
+      <trans-unit id="validObsBtn" datatype="html">
+        <source>
+        Valider l&apos;observation
+    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+        <note priority="1" from="description">Valid obs btn</note>
+      </trans-unit>
+      <trans-unit id="updateObsBtn" datatype="html">
+        <source>
+        Modifier l&apos;observation
+    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+        <note priority="1" from="description">Upddate obs btn</note>
+      </trans-unit>
+      <trans-unit id="cancel" datatype="html">
+        <source>
+        Annuler
+    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+        <note priority="1" from="description">Cancel</note>
+      </trans-unit>
+      <trans-unit id="congrats" datatype="html">
+        <source>Félicitations !</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/congrats/congrats.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/reward/reward.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+        <note priority="1" from="description">Congrats</note>
+      </trans-unit>
+      <trans-unit id="congratsMessage" datatype="html">
+        <source>
+        Votre observation a bien été ajoutée !
+    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/congrats/congrats.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <note priority="1" from="description">Congrats message</note>
+      </trans-unit>
+      <trans-unit id="obsDateObserver" datatype="html">
+        <source>Observé par <x id="INTERPOLATION" equiv-text="{{ username || &apos;Anonyme&apos; }}"/> <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
+        le <x id="INTERPOLATION_1" equiv-text="{{ obs.date }}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/congrats/congrats.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <note priority="1" from="description">Obs date and observer</note>
+      </trans-unit>
+      <trans-unit id="newRewardMessage" datatype="html">
+        <source>
+            <x id="ICU" equiv-text="{ +rewards?.length, plural, =1 {...} other {...}}"/>
+        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/reward/reward.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+        <note priority="1" from="description">New reward message</note>
+      </trans-unit>
+      <trans-unit id="ab0413f2974d14060a3f1b621ef18bd194be83ad" datatype="html">
+        <source>{VAR_PLURAL, plural, =1 {Vous venez d&apos;obtenir
+            ce badge } other {Vous venez d&apos;obtenir ces badges } }</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/modalflow/steps/reward/reward.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="allSpeciesSelectOption" datatype="html">
+        <source>Toutes espèces</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+        <note priority="1" from="description">All species select option</note>
+      </trans-unit>
+      <trans-unit id="allMunicipalitiesSelectOption" datatype="html">
+        <source>Toutes communes</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <note priority="1" from="description">All municipalities select option</note>
+      </trans-unit>
+      <trans-unit id="myObs" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>Mes <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>Observations
+            </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+        <note priority="1" from="description">My obs</note>
+      </trans-unit>
+      <trans-unit id="zoomingWarning" datatype="html">
+        <source>Veuillez zoomer pour localiser votre observation.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+        <note priority="1" from="description">Zooming warning</note>
+      </trans-unit>
+      <trans-unit id="scrollForMore" datatype="html">
+        <source>Scrollez pour en voir plus !</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <note priority="1" from="description">Scroll down to see more !</note>
+      </trans-unit>
+      <trans-unit id="observations" datatype="html">
+        <source>Observations</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <note priority="1" from="description">Observations</note>
+      </trans-unit>
+      <trans-unit id="species" datatype="html">
+        <source>Espèces</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <note priority="1" from="description">species</note>
+      </trans-unit>
+      <trans-unit id="observers" datatype="html">
+        <source>Observateurs</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <note priority="1" from="description">Observers</note>
+      </trans-unit>
+      <trans-unit id="momenPrograms" datatype="html">
+        <source>Les programmes du moment</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">134</context>
+        </context-group>
+        <note priority="1" from="description">Programs of the moment</note>
+      </trans-unit>
+      <trans-unit id="ngbCarouselPrev" datatype="html">
+        <source>Précédent</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">176</context>
+        </context-group>
+        <note priority="1" from="description">Carousel previous</note>
+      </trans-unit>
+      <trans-unit id="ngbCarouselNext" datatype="html">
+        <source>Prochain</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">189</context>
+        </context-group>
+        <note priority="1" from="description">Carousel next</note>
+      </trans-unit>
+      <trans-unit id="logout" datatype="html">
+        <source>Se déconnecter</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/logout/logout.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/logout/logout.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
+          <context context-type="linenumber">126</context>
+        </context-group>
+        <note priority="1" from="description">logout</note>
+        <note priority="1" from="meaning">logout</note>
+      </trans-unit>
+      <trans-unit id="home" datatype="html">
+        <source>Accueil</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+        <note priority="1" from="description">home</note>
+      </trans-unit>
+      <trans-unit id="about" datatype="html">
+        <source>A propos</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+        <note priority="1" from="description">about</note>
+      </trans-unit>
+      <trans-unit id="admin" datatype="html">
+        <source>Admin
+                        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
+          <context context-type="linenumber">86</context>
+        </context-group>
+        <note priority="1" from="description">admin</note>
+      </trans-unit>
+      <trans-unit id="myDasboardLink" datatype="html">
+        <source>Mon tableau de bord</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+        <note priority="1" from="description">my Dasboard Link</note>
+      </trans-unit>
+      <trans-unit id="myBadges" datatype="html">
+        <source>Mes badges</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+        <note priority="1" from="description">My badges</note>
+      </trans-unit>
+      <trans-unit id="generalAwards" datatype="html">
+        <source>
+                        Récompenses géneral
+                    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+        <note priority="1" from="description">General Awards</note>
+      </trans-unit>
+      <trans-unit id="exportPersonnalDataBtn" datatype="html">
+        <source>Exporter mes données personnelles</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">185</context>
+        </context-group>
+        <note priority="1" from="description">Export personnal data btn</note>
+      </trans-unit>
+      <trans-unit id="exportPersonnalObsBtn" datatype="html">
+        <source>Exporter mes observations</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">195</context>
+        </context-group>
+        <note priority="1" from="description">Export personnal observations btn</note>
+      </trans-unit>
+      <trans-unit id="exportPersonnalSitesBtn" datatype="html">
+        <source>Exporter mes sites</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">205</context>
+        </context-group>
+        <note priority="1" from="description">Export personnal sites btn</note>
+      </trans-unit>
+      <trans-unit id="deleteAccount" datatype="html">
+        <source>Supprimer mon compte</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">214</context>
+        </context-group>
+        <note priority="1" from="description">Delete Account</note>
+      </trans-unit>
+      <trans-unit id="updatePersonnalData" datatype="html">
+        <source>
+            Mettre à jour vos données personnelles
+        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">231</context>
+        </context-group>
+        <note priority="1" from="description">Update personnal data</note>
+      </trans-unit>
+      <trans-unit id="yourUsernameInputPlaceholder" datatype="html">
+        <source>Entrez votre nom d&apos;utilisateur</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">296</context>
+        </context-group>
+        <note priority="1" from="description">
+                                    your username
+                                    placeholder</note>
+      </trans-unit>
+      <trans-unit id="yourEmailInputLabel" datatype="html">
+        <source>Votre email *</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">306</context>
+        </context-group>
+        <note priority="1" from="description">your email label</note>
+      </trans-unit>
+      <trans-unit id="yourFirstnameInputLabel" datatype="html">
+        <source>Votre prénom *</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">334</context>
+        </context-group>
+        <note priority="1" from="description">your first name</note>
+      </trans-unit>
+      <trans-unit id="yourFirstnameInputPlaceholder" datatype="html">
+        <source>Entrez votre prénom</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">344</context>
+        </context-group>
+        <note priority="1" from="description">
+                                your first name
+                                placeholder</note>
+      </trans-unit>
+      <trans-unit id="yourSurnameInputLabel" datatype="html">
+        <source>Votre nom *</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">353</context>
+        </context-group>
+        <note priority="1" from="description">your surname label</note>
+      </trans-unit>
+      <trans-unit id="yourSurnameInputPlaceholder" datatype="html">
+        <source>Entrez votre nom</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">363</context>
+        </context-group>
+        <note priority="1" from="description">
+                                your surname
+                                placeholder</note>
+      </trans-unit>
+      <trans-unit id="errorDifferentPasswords" datatype="html">
+        <source>
+                Les mots de passe diffèrent.
+            </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">377</context>
+        </context-group>
+        <note priority="1" from="description">error different passwords</note>
+      </trans-unit>
+      <trans-unit id="yourPasswordLabel" datatype="html">
+        <source>Votre nouveau mot de passe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">386</context>
+        </context-group>
+        <note priority="1" from="description">your password label</note>
+      </trans-unit>
+      <trans-unit id="yourPasswordPlaceholder" datatype="html">
+        <source>Votre nouveau mot de passe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">397</context>
+        </context-group>
+        <note priority="1" from="description">
+                                your password
+                                placeholder</note>
+      </trans-unit>
+      <trans-unit id="yourConfirmPasswordLabel" datatype="html">
+        <source>Confirmez votre nouveau mot de passe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">409</context>
+        </context-group>
+        <note priority="1" from="description">
+                                your password confirm
+                                label</note>
+      </trans-unit>
+      <trans-unit id="yourConfirmPasswordPlaceholder" datatype="html">
+        <source>Votre nouveau mot de passe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">419</context>
+        </context-group>
+        <note priority="1" from="description">
+                                your password confirm
+                                placeholder</note>
+      </trans-unit>
+      <trans-unit id="updatePersonnalDataBtn" datatype="html">
+        <source>
+                Mettre à jour
+            </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">441</context>
+        </context-group>
+        <note priority="1" from="description">update personnal data btn</note>
+      </trans-unit>
+      <trans-unit id="redirectToHome" datatype="html">
+        <source>vous allez être redirigé automatiquement sur la page d&apos;accueil</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/auth/confirm-email/confirm-email.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+        <note priority="1" from="description">Redirect to home</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

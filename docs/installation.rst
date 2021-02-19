@@ -18,12 +18,11 @@ Dépendances
 -----------
 
 
-
 La présente documentation présente l'installation de GeoNature-citizen dans un environnement Linux Debian_ (version 9 et supérieures) et Ubuntu_ (version 18.04 et supérieures).
 
 La procédure d'installation dépend de TaxHub_, et de certains paquets, qu'il faut installer.
 
-Commencez par installer les paquets suivant:
+Commencez par installer les paquets suivants :
 
 ::
 
@@ -33,7 +32,7 @@ Commencez par installer les paquets suivant:
 
 Ensuite : 
 
-- installez Taxhub, si ce n'est pas déjà fait. Vous pouvez suivre la documentation officielle: https://taxhub.readthedocs.io/fr/latest/
+- installez TaxHub, si ce n'est pas déjà fait. Vous pouvez suivre la documentation officielle : https://taxhub.readthedocs.io/fr/latest/
 
 - Configurer le serveur : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-du-serveur
 
@@ -82,28 +81,72 @@ Pour valider, utilisez la touche de tabulation jusqu'à atteindre ``<ok>`` et ap
 Une nouvelle liste apparait, cette fois, déplacez-vous sur ``fr_FR.UTF-8``, et sans avoir besoin de valider avec espace, tabulez jusqu'à ``<ok>`` et appuyez sur la touche entrée.
 
 
-Installation de Géonature Citizen
+Installation de GeoNature-citizen
 =================================
 
 Récupération du code source
 ---------------------------
 
-Téléchargez et décompressez la dernière version de l'application (actuellement v0.3.0)
+Téléchargez et décompressez la dernière version de l'application, disponible ici: https://github.com/PnX-SI/GeoNature-citizen/releases
 
 ::
 
   # Se positionner dans le dossier par défaut de l'utilisateur (ici /home/geonatadmin)
   cd ~ 
   # Téléchargement de l'application
-  curl -OJL https://github.com/PnX-SI/GeoNature-citizen/archive/v0.3.0.zip 
+  curl -OJL https://github.com/PnX-SI/GeoNature-citizen/archive/v0.99.0.zip 
   # Décompression de l'application
-  unzip GeoNature-citizen-0.3.0.zip
+  unzip GeoNature-citizen-0.99.0.zip
   # Renommage du dossier contenant l'application
-  mv GeoNature-citizen-0.3.0 gncitizen
+  mv GeoNature-citizen-0.99.0 gncitizen
 
-.. Si nécessaire, vous pouvez récupérer une branche ou un tag particulier avec ``cd GeoNature-citizen && git checkout nom_du_tag_ou_de_la_branch``. Par defaut nous utiliserons la branche master, et il n'y a donc rien à faire.
 
-Décompréssez
+Installation automatique
+========================
+
+
+.. tip::
+
+ - Bien vérifier de ne pas être en ``root`` :
+
+  .. code-block:: bash
+
+    su - nom_utilisateur (geonatadmin)
+
+ - S'assurer d'avoir le projet Geonature-citizen dans ce dossier ainsi que d'etre propriétaire du dossier et de ses dépendances
+
+ - Se rendre sur la Home de votre utilisateur
+
+  .. code-block:: bash
+
+    cd
+
+Lancer le script d'installation :
+
+.. code-block:: bash
+
+  cd ~/gncitizen/
+  ./install/install_app.sh
+
+- Le script créera un fichier de config settings.ini, il faut alors le compléter avec les informations de votre installation.
+
+.. code-block:: bash
+
+  editor ./config/settings.ini
+
+- Relancer le script :
+
+.. code-block:: bash
+
+  ./install/install_app.sh
+
+Le script crééra la base de données, configurera taxhub si l'installation est demandée, configurera le serveur web Apache et installera toutes les dépendances du projet Geonature-Citizen.
+
+
+Installation manuelle
+=====================
+
+Si vous souhaitez à une installation manuelle, suivez les instructions suivantes.
 
 Installer les dépendances python
 --------------------------------
@@ -123,14 +166,14 @@ Les warnings avec le message "`Failed building wheel`" peuvent être ignorés.
 Éditer le fichier de configuration
 ------------------------------------
 
-Créer le fichier de configuration avec des valeurs par défaut:
+Créer le fichier de configuration avec des valeurs par défaut :
 
 ::
 
   cd ~/gncitizen/config
   cp default_config.toml.template default_config.toml
 
-Vous devez maintenant l'éditer:
+Vous devez maintenant l'éditer :
 
 ::
 
@@ -143,25 +186,25 @@ Et changer les valeurs pour correspondre à la réalité de votre installation. 
 SQLALCHEMY_DATABASE_URI
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GeoNature-citizen a pour le moment des références au schéma `taxonomie` de TaxHub_ (pour l'utilisation du référentiel taxonomique `TaxRef
+GeoNature-citizen a pour le moment des références au schéma ``taxonomie`` de TaxHub_ (pour l'utilisation du référentiel taxonomique `TaxRef
 <https://inpn.mnhn.fr/programme/referentiel-taxonomique-taxref>`_). Ce schéma doit donc être installé dans cette même base de données. 
-L'instance de TaxHub définissant les liste d'espèces et les médias associés peut toutefois être une autre instance indépandante.
+L'instance de TaxHub définissant les listes d'espèces et les médias associés peut toutefois être une autre instance indépendante.
 
-``SQLALCHEMY_DATABASE_URI`` valeur doit donc être changée pour correspondre aux valeurs utilisées pour se connecter à la base de Taxhub.
+La valeur de ``SQLALCHEMY_DATABASE_URI`` doit donc être changée pour correspondre aux valeurs utilisées pour se connecter à la BDD de TaxHub.
 
-Exemple, si on se connecte à la base ``referentielsdb``, avec l'utilisateur ``geonatuser`` et le mot de passe ``admin123``:
+Exemple, si on se connecte à la BDD ``referentielsdb``, avec l'utilisateur ``geonatuser`` et le mot de passe ``admin123``:
 
 ::
 
   SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://geonatuser:admin123@127.0.0.1:5432/referentielsdb"
 
-Référez-vous donc à la configuration de Taxhub pour saisir ce champ.
+Référez-vous donc à la configuration de TaxHub pour saisir ce paramètre.
 
 
 Les clés secrètes
 ~~~~~~~~~~~~~~~~~~
 
-Il y a 3 clés secrètes à changer: ``JWT_SECRET_KEY``, ``SECRET_KEY`` et ``CONFIRM_MAIL_SALT``.
+Il y a 3 clés secrètes à changer : ``JWT_SECRET_KEY``, ``SECRET_KEY`` et ``CONFIRM_MAIL_SALT``.
 
 Elles doivent être changées pour contenir chacune une valeur secrète différente, connue de vous seul. Vous n'aurez jamais à saisir ces valeurs plus tard, donc faites les très longues.
 
@@ -175,9 +218,9 @@ DEBUG
 URL_APPLICATION
 ~~~~~~~~~~~~~~~
 
-L'URL que l'utilisateur final va taper dans son navigateur pour aller visiter votre instance de Géonature Citizen. Elle doit contenir votre nom de domaine ou l'adresse IP de votre serveur.
+L'URL que l'utilisateur final va taper dans son navigateur pour aller visiter votre instance de GeoNature-citizen. Elle doit contenir votre nom de domaine ou l'adresse IP de votre serveur.
 
-Exemple:
+Exemple :
 
 http://votredomaine.com/citizen
 
@@ -185,32 +228,32 @@ Ou:
 
 http://ADRESSE_IP/citizen
 
-Notez que nous suffixons avec "citizen", ce qui n'est pas obligatoire, mais nous utiliserons cette configuration pour apache plus loin. Quelle que soit la valeur choisie, gardez-la sous la main pour cette dernière.
+Notez que nous suffixons avec "citizen", ce qui n'est pas obligatoire, mais nous utiliserons cette configuration pour Apache plus loin. Quelle que soit la valeur choisie, gardez-la sous la main pour cette dernière.
 
 EMAILS
 ~~~~~~~~~~~~~~~~~~
 
 L'inscription à GeoNature-citizen n'est pas obligatoire pour les contributeurs. 
 
-Toutefois, si un contributeur souhaite créer un compte, un email de vérification de son adresse mail lui est transmis. Ce mail contient un lien permettant l'activation du compte. 
+Toutefois, si un contributeur souhaite créer un compte, un email de vérification de son adresse mail lui est transmis. Cet email contient un lien permettant l'activation du compte. 
 
-Pour cela, il est nécessaire de configurer un serveur SMTP permettant l'envoie de ces mails de vérification. 
+Pour cela, il est nécessaire de configurer un serveur SMTP permettant l'envoi de ces emails de vérification. 
 
 La partie ``EMAILS`` est donc indispensable et il faut la remplir sans erreur.
 
-Les entrées ``RESET_PASSWD`` et ``CONFIRM_EMAIL`` seront utilisées pour formater les emails envoyés par géonature citizen. Changez au moins les deux valeurs ``FROM`` pour correspondre à votre propre email.
+Les entrées ``RESET_PASSWD`` et ``CONFIRM_EMAIL`` seront utilisées pour formater les emails envoyés par GeoNature-citizen. Changez au moins les deux valeurs ``FROM`` pour correspondre à votre propre email.
 
-Pour que l'envoi fonctionne, il faut ensuite configurer la partie ``MAIL`` avec les paramètres d'envoi via SMTP de votre fournisseur de mail. Ce dernier est le seul à pouvoir vous fournir les informations nécessaires à cette configuration. Chaque valeur de cette section est importante et conditionne si l'email de confirmation va partir ou non. Vérifiez bien les fautes de frappe, et faites-vous aider par quelqu'un qui a l'habitude de configurer l'envoi de mail (via thunderbird, outlook, etc.) si vous le pouvez.
+Pour que l'envoi fonctionne, il faut ensuite configurer la partie ``MAIL`` avec les paramètres d'envoi via SMTP de votre fournisseur d'email. Ce dernier est le seul à pouvoir vous fournir les informations nécessaires à cette configuration. Chaque valeur de cette section est importante et conditionne si l'email de confirmation va partir ou non. Vérifiez bien les fautes de frappe, et faites-vous aider par quelqu'un qui a l'habitude de configurer l'envoi d'email (via thunderbird, outlook, etc.) si vous le pouvez.
 
-Il également faut bien renseigner la variable ``URL_APPLICATION`` qui est utilisée pour générer  l'adresse du lien d'activation du compte.
+Il faut également bien renseigner la variable ``URL_APPLICATION`` qui est utilisée pour générer l'adresse du lien d'activation du compte.
 
-Attention, gmail peut être _particulièrement_ difficile à configurer, car il faut aller sur son compte Google pour changer les paramètres de sécurité. Utilisez un autre service si vous le pouvez.
+Attention, Gmail peut être _particulièrement_ difficile à configurer, car il faut aller sur son compte Google pour changer les paramètres de sécurité. Utilisez un autre service si vous le pouvez.
 
-Pour activer un compte manuellement, il est possible de lancer une inscription via le site, et, même sans recevoir le mail, de changer la valeur de la colonne ``active`` du compte utilisateur dans la table ``t_users``. Cela peut permettre de tester le reste de l'installation même si la partie email n'est pas encore prête.
+Pour activer un compte manuellement, il est possible de lancer une inscription via le site, et, même sans recevoir l'email, de changer la valeur de la colonne ``active`` du compte utilisateur dans la table ``t_users``. Cela peut permettre de tester le reste de l'installation même si la partie email n'est pas encore prête.
 
 Pour essayer de comprendre pourquoi un email n'est pas envoyé, on peut regarder les erreurs présentes dans ``Geonature-Citizen/var/log/gn_errors.log`` intitulées "*send confirm_email failled.*"
 
-Voici un exemple de configuration avec office365:
+Voici un exemple de configuration avec office365 :
 
 .. code-block:: text
 
@@ -251,18 +294,18 @@ Voici un exemple de configuration avec office365:
 API_ENDPOINT
 ~~~~~~~~~~~~~~~
 
-L'URL que va utiliser geonature citizen pour exposer ses données. Cette valeur doit commencer comme ``URL_APPLICATION``, mais finir par ``/api`` et utiliser le même port que définit par ``API_PORT`` (5002 par défaut, vous n'avez probablement pas besoin de le changer).
+L'URL que va utiliser GeoNature-citizen pour exposer ses données. Cette valeur doit commencer comme ``URL_APPLICATION``, mais finir par ``/api`` et utiliser le même port que définit par ``API_PORT`` (5002 par défaut, vous n'avez probablement pas besoin de le changer).
 
-Exemple:
+Exemple :
 
 http://votredomaine.com:5002/citizen/api
 
 Gardez cette valeur sous la main, nous l'utiliserons dans la configuration Apache plus loin.
 
-Authentification MapBox
+Authentification Mapbox
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Si vous avez des identifiants mapbox, inscrivez-les dans ``MAPBOX_MAP_ID`` et ``MAPBOX_ACCESS_TOKEN``. Ils sont utilisés pour affichez des fonds de carte dans la partie administration des programmes.
+Si vous avez des identifiants Mapbox, inscrivez-les dans ``MAPBOX_MAP_ID`` et ``MAPBOX_ACCESS_TOKEN``. Ils sont utilisés pour afficher des fonds de carte dans la partie administration des programmes.
 
 Installation du backend et de la base des données
 -------------------------------------------------
@@ -271,9 +314,9 @@ Installation du backend et de la base des données
 Création du référentiel des géométries communales
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On continue d'utiliser les identifiants de la base de Taxhub, ici avec les exemples ``referentielsdb`` et ``geonatuser``.
+On continue d'utiliser les identifiants de la BDD de TaxHub, ici avec les exemples ``referentielsdb`` et ``geonatuser``.
 
-Téléchargez les données SQL depuis le dépôt de géonature:
+Téléchargez les données SQL depuis le dépôt de GeoNature:
 
 ::
 
@@ -281,7 +324,7 @@ Téléchargez les données SQL depuis le dépôt de géonature:
   wget https://github.com/PnX-SI/GeoNature/raw/master/data/core/ref_geo.sql -P /tmp
   wget https://github.com/PnX-SI/GeoNature/raw/master/data/core/ref_geo_municipalities.sql -P /tmp
 
-Pour importer les données dans la base, munissez-vous du mot de passe que vous avez choisi lors de la création de celle-ci, puis (dans cet exemple, on utilise le système de coordonnées avec le SRID 2154):
+Pour importer les données dans la BDD, munissez-vous du mot de passe que vous avez choisi lors de la création de celle-ci, puis (dans cet exemple, on utilise le système de coordonnées avec le SRID 2154) :
 
 :: 
 
@@ -293,7 +336,7 @@ Pour importer les données dans la base, munissez-vous du mot de passe que vous 
   sed 's/MYLOCALSRID/2154/g' /tmp/ref_geo.sql > /tmp/ref_geo_2154.sql
   psql -d referentielsdb -h localhost -p 5432 -U geonatuser -f /tmp/ref_geo_2154.sql
 
-Si les municipalités françaises ne sont pas déjà dans la base, les importer:
+Si les communes françaises ne sont pas déjà dans la base, les importer :
 
 ::
 
@@ -305,8 +348,8 @@ Si les municipalités françaises ne sont pas déjà dans la base, les importer:
     psql -d referentielsdb -h localhost -p 5432 -U geonatuser -f /tmp/ref_geo_municipalities.sql
     psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "DROP TABLE ref_geo.temp_fr_municipalities;"
 
-Générer les schémas de citizen
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Générer les schémas de GeoNature-citizen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Il faut maintenant faire au moins une requête au serveur pour le forcer à créer les tables dont il a besoin.
 
@@ -337,7 +380,7 @@ Vous pouvez créer un programme test avec la ligne de commande suivante :
 
   psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "INSERT INTO gnc_core.t_programs VALUES (1, 'Au 68', 'inventaire  du 68', 'desc', NULL,  NULL, 1,  100,  't', '0106000020E6100000010000000103000000010000000500000001000070947C154042CA401665A5454001000070EE7C15402235D7E667A54540010000D81C7D1540AFBA27365AA5454000000040C47C1540DD9BD74A58A5454001000070947C154042CA401665A54540',  now(), now());"
 
-Celui-ci suppose l'existence d'une liste de taxons dont l'ID est 100, qui normalement existe sur Taxhub par défault. Remplacez la valeur 100 par une liste existante si ce n'est pas le cas, ou créez une liste avec cette ID sur Taxhub.
+Celui-ci suppose l'existence d'une liste de taxons dont l'ID est 100, qui normalement existe sur TaxHub par défaut. Remplacez la valeur 100 par une liste existante si ce n'est pas le cas, ou créez une liste avec cet ID sur TaxHub.
 
 Mettre en place le système de badge
 ------------------------------------------------------
@@ -353,7 +396,7 @@ Vous pouvez aussi optionnellement modifier le fichier ``~/gncitizen/config/badge
 Lancement du service
 ------------------------------------------------------
 
-D'abord, créez un fichier de configuration supervisor (sudo nano /etc/supervisor/conf.d/geonature-citizen-service.conf) qui va contenir ceci:
+D'abord, créez un fichier de configuration supervisor (``sudo nano /etc/supervisor/conf.d/geonature-citizen-service.conf``) qui va contenir ceci :
 
 ::
 
@@ -365,7 +408,7 @@ D'abord, créez un fichier de configuration supervisor (sudo nano /etc/superviso
   stdout_logfile=/var/log/supervisor/citizen.log
   redirect_stderr=true
 
-Puis lancez le chargement du service:
+Puis lancez le chargement du service :
 
 ::
 
@@ -391,23 +434,23 @@ Installer l'environnement javascript
 Éditer la conf et les fichiers de personnalisation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-De nombreux fichiers peuvent être configurés ou personnalisés côté frontend. Ils sont nommés avec l'extension ``.template``, et il est nécessaire de les copier une fois sans cette extension pour avoir des fichiers de base sur lesquels travailler:
+De nombreux fichiers peuvent être configurés ou personnalisés côté frontend. Ils sont nommés avec l'extension ``.template``, et il est nécessaire de les copier une fois sans cette extension pour avoir des fichiers de base sur lesquels travailler :
 
 ::
 
   cd ~/gncitizen/frontend/
   find . -iname "*.template" -exec bash -c 'for x; do cp -n "$x" "${x/.template/}"; done' _ {} +
 
-Ces commandes vont créer les fichiers de configuration comme:
+Ces commandes vont créer les fichiers de configuration comme :
 
 ::
 
   src/conf/app.config.ts # configuration du front ends: URL, ports, messages, etc
   src/conf/map.config.ts # tiles de carte
 
-Une modification courante est de changer ``details_espece_url`` dans ``app.config.ts`` popur faire pointer l'adresse vers un autre service. Attention à garder ``cd_nom`` à la fin.
+Une modification courante est de changer ``details_espece_url`` dans ``app.config.ts`` pour faire pointer l'adresse vers un autre service. Attention à garder ``cd_nom`` à la fin.
 
-Il y a aussi des feuille de style qui permettent de personnaliser la mise en page de certaines pages:
+Il y a aussi des feuilles de style qui permettent de personnaliser la mise en page de certaines pages :
 
 ::
 
@@ -416,7 +459,7 @@ Il y a aussi des feuille de style qui permettent de personnaliser la mise en pag
   src/custom/home/home.css # acceuil
   src/custom/about/about.css # à propos
 
-Et des patrons HTML qui permettent de changer le contenu de certaines pages:
+Et des patrons HTML qui permettent de changer le contenu de certaines pages :
 
 ::
 
@@ -432,7 +475,7 @@ Servir l'application en mode monopage
 Faire le build du code du frontend
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Après chaque modification sur un des éléments qui concerne le front end, il faut relancer le processus de build:
+Après chaque modification sur un des éléments qui concerne le frontend, il faut relancer le processus de build :
 
 ::
 
@@ -515,19 +558,19 @@ Si vous souhaitez que l'application soit disponible depuis un chemin spécifique
 
   </VirtualHost>
 
-Ce fichier se met dans sites-available, par exemple ``/etc/apache2/sites-available/citizen.conf``. Il faut ensuite faire un lien symbolique vers sites-enabled:
+Ce fichier se met dans sites-available, par exemple ``/etc/apache2/sites-available/citizen.conf``. Il faut ensuite faire un lien symbolique vers sites-enabled :
 
 ::
 
   sudo a2ensite citizen.conf
 
-On vérifie la configuratio d'Apache:
+On vérifie la configuration d'Apache :
 
 ::
 
   sudo apachectl -t
 
-Si tout est ok, alors on redémarre le service Apache:
+Si tout est OK, alors on redémarre le service Apache :
 
 ::
 
@@ -552,15 +595,16 @@ Installer l'application pm2 pour créer un service permanent
 Faire le build du code du frontend en mode SSR et créer un service pour le frontend
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Après chaque modification sur un des éléments qui concerne le front end, il faut relancer le processus de build:
+Après chaque modification sur un des éléments qui concerne le frontend, il faut relancer le processus de build :
 
-::
+.. code-block:: sh
 
-  npm run build:i18n-ssr
+    npm run build:i18n-ssr && npm run serve:ssr
+
 
 Puis lancer le service pour le mode SSR
 
-::
+.. code-block:: sh
 
   pm2 start dist/server.js --name gncitizen
   pm2 save
@@ -572,7 +616,7 @@ Configuration d'Apache
 
 Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage.
 
-::
+.. code-block:: apacheconf
 
   <VirtualHost *:80>
 
@@ -632,19 +676,19 @@ Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à vot
 
   </VirtualHost>
 
-Ce fichier se met dans sites-available, par exemple `/etc/apache2/sites-available/citizen.conf`. Il faut ensuite faire un lien symbolique vers sites-enabled:
+Ce fichier se met dans sites-available, par exemple `/etc/apache2/sites-available/citizen.conf`. Il faut ensuite faire un lien symbolique vers sites-enabled :
 
 ::
 
   sudo a2ensite citizen.conf
 
-On vérifie la configuratio d'Apache:
+On vérifie la configuration d'Apache :
 
 ::
 
   sudo apachectl -t
 
-Si tout est ok, alors on redémarre le service Apache:
+Si tout est OK, alors on redémarre le service Apache :
 
 ::
 
@@ -652,4 +696,27 @@ Si tout est ok, alors on redémarre le service Apache:
 
 
 
+Sécuriser l'interface d'administration
+++++++++++++++++++++++++++++++++++++++
 
+L'interface d'administration de GeoNature-citizen n'est par défaut pas sécurisée. Sa sécurisation passe par une configuration spécifique du serveur Apache2.
+
+
+::
+
+  mkdir -p /etc/apache2/passwd
+  htpasswd -c /etc/apache2/passwd/gncitizen admin
+
+Puis ajouter les lignes suivantes dans la configuration Apache2 du site (``nano /etc/apache2/sites-available/citizen.conf``), après le bloc  ``<Location /citizen/api>...</Location>``.
+
+
+:: 
+
+    # Sécurisation du chemin du backoffice
+    <Location /citizen/api/admin>
+    AuthType Basic
+    AuthName "Restricted Area"
+    AuthBasicProvider file
+    AuthUserFile "/etc/apache2/passwd/gncitizen"
+    Require user admin
+    </Location>

@@ -1,3 +1,3 @@
 export interface IFlowComponent {
-  data: any
+    data: any;
 }

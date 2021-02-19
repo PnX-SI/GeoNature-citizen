@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 /*
 import { FlowItem } from './flow-item'
@@ -13,18 +13,18 @@ const Context = {
 
 @Injectable()
 export class FlowService {
-  getFlowItems(_initialState: any) {
-    throw "not implemented";
-    // return [
-    //   new FlowItem(SomeComponent1, Context),
-    //   new FlowItem(SomeComponent2, Context),
-    //   new FlowItem(SomeComponent3, Context),
-    //   new FlowItem(SomeComponent4, {...Context, next: 'modal.close()'}),
-    //   new FlowItem(RewardComponent, Context),
-    // ]
-  }
+    getFlowItems(_initialState: any) {
+        throw 'not implemented';
+        // return [
+        //   new FlowItem(SomeComponent1, Context),
+        //   new FlowItem(SomeComponent2, Context),
+        //   new FlowItem(SomeComponent3, Context),
+        //   new FlowItem(SomeComponent4, {...Context, next: 'modal.close()'}),
+        //   new FlowItem(RewardComponent, Context),
+        // ]
+    }
 
-  /*
+    /*
   fsm
   */
 }

@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Documentation de GeoNature-citizen!
-=============================================
+Documentation de GeoNature-citizen
+==================================
 
 .. .. versionadded:: 2.5
 ..    The *spam* parameter.
@@ -17,6 +17,7 @@ Documentation de GeoNature-citizen!
    configuration
    badges
    devs/index
+   prod/index
 
 
 

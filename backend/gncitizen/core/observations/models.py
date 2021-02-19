@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from geoalchemy2 import Geometry
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from gncitizen.core.commons.models import (
     ProgramsModel,
@@ -26,7 +26,9 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     id_observation = db.Column(db.Integer, primary_key=True, unique=True)
     uuid_sinp = db.Column(UUID(as_uuid=True), nullable=False, unique=True)
     id_program = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="SET NULL"), nullable=False 
+        db.Integer,
+        db.ForeignKey(ProgramsModel.id_program, ondelete="SET NULL"),
+        nullable=False,
     )
     cd_nom = db.Column(db.Integer, db.ForeignKey(Taxref.cd_nom), nullable=False)
     date = db.Column(db.Date, nullable=False)
@@ -35,6 +37,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     # FIXME: remove nullable prop from ObservationModel.municipality once debugged
     municipality = db.Column(db.Integer, db.ForeignKey(LAreas.id_area), nullable=True)
     geom = db.Column(Geometry("POINT", 4326))
+    json_data = db.Column(JSONB, nullable=True)
 
 
 class ObservationMediaModel(TimestampMixinModel, db.Model):

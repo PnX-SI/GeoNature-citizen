@@ -1,15 +1,18 @@
 import os
+import logging
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
+from flask import current_app
 
 from flasgger import Swagger
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
-from flask_ckeditor import CKEditor, CKEditorField 
+from flask_ckeditor import CKEditor, CKEditorField
 
 from gncitizen.utils.toml import load_toml
+from gncitizen import __version__
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / "backend"
@@ -19,6 +22,9 @@ with open(str((ROOT_DIR / "VERSION"))) as v:
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/default_config.toml"
 GNC_EXTERNAL_MODULE = ROOT_DIR / "external_modules"
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_config_file_path(config_file=None):
@@ -41,12 +47,12 @@ def load_config(config_file=None):
 
 def valid_api_url(url):
     """Return a valid API URL ending with /"""
-    if url[-1:] == '/':
+    if url[-1:] == "/":
         url = url
     else:
-        url = url+'/'
+        url = url + "/"
     return url
-    
+
 
 app_conf = load_config()
 MEDIA_DIR = str(ROOT_DIR / app_conf["MEDIA_FOLDER"])
@@ -57,25 +63,46 @@ jwt = JWTManager()
 
 ckeditor = CKEditor()
 
+
 swagger_template = {
-    # "openapi": "3.0.0",
-    # "components": {
-    #     "securitySchemes": {
-    #         "bearerAuth": {
-    #             "type": "http",
-    #             "scheme": "bearer",
-    #             "bearerFormat": "JWT",
-    #         }
-    #     }
-    # },
+    "swagger": "2.0",
+    "info": {
+        "title": f"API Doc {app_conf['appName']}",
+        "description": f"Backend API for {app_conf['appName']}, source code available at https://github.com/PnX-SI/GeoNature-citizen",
+        "contact": {"url": "https://github.com/PnX-SI/GeoNature-citizen",},
+        "version": __version__,
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT",}
+        }
+    },
 }
 
-swagger = Swagger(template=swagger_template)
+swagger_config = {
+    "headers": [],
+    "specs": [
+        {
+            "endpoint": "apispec_1",
+            "route": "/apispec_1.json",
+            "rule_filter": lambda rule: True,  # all in
+            "model_filter": lambda tag: True,  # all in
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    # "static_folder": "static",  # must be set by user
+    "swagger_ui": True,
+    "specs_route": "/api/docs/",
+}
+
+swagger = Swagger(template=swagger_template, config=swagger_config)
+
+admin_url = "/".join([urlparse(app_conf["URL_APPLICATION"]).path, "/api/admin"])
 
 admin = Admin(
-    name="GN-Citizen: Backoffice d'administration",
+    name=f"GN-Citizen: Backoffice d'administration (version: {__version__})",
     template_mode="bootstrap3",
-    url="/".join([urlparse(app_conf["API_ENDPOINT"]).path, "admin"]),
+    url="/api/admin",
 )
 
 

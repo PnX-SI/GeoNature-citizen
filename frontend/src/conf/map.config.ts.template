@@ -84,5 +84,9 @@ export const MAP_CONFIG = {
   ZOOM_LEVEL: 6,
   ZOOM_LEVEL_RELEVE: 15,
   NEW_OBS_POINTER: "assets/pointer-blue2.png",
-  OBS_POINTER: "assets/pointer-green.png"
+  OBS_POINTER: "assets/pointer-green.png",
+    LOCATE_CONTROL_TITLE: {
+    'fr':'Me localiser',
+    'en':'Show me where i am'
+  }
 }

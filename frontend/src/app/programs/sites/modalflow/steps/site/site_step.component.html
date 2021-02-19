@@ -1,0 +1,31 @@
+<!-- Ajouter une observation -->
+<div class="modal-header">
+    <h4 class="modal-title">AJOUTER UN SITE</h4>
+    <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="closeModal()"
+    >
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body add-obs">
+    <app-site-form
+        [program_id]="data.program_id"
+        [coords]="data.coords"
+        [data]="data"
+    ></app-site-form>
+</div>
+
+<div class="modal-footer">
+    <button
+        type="submit"
+        [disabled]="!form.siteForm.valid"
+        class="btn btn-default btn-outline-primary rounded-0"
+        (click)="committed()"
+    >
+        Valider le site
+    </button>
+</div>

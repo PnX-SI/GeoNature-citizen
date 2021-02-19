@@ -1,19 +1,19 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable({
-  providedIn: "root"
+    providedIn: 'root',
 })
 export class ModalsTopbarService {
-  modalRef: NgbModalRef;
+    modalRef: NgbModalRef;
 
-  constructor(private modalService: NgbModal) {}
+    constructor(private modalService: NgbModal) {}
 
-  open(content, option) {
-    this.modalRef = this.modalService.open(content, option);
-  }
-  close() {
-    if (this.modalRef) this.modalRef.close();
-  }
+    open(content, option) {
+        this.modalRef = this.modalService.open(content, option);
+    }
+    close() {
+        if (this.modalRef) this.modalRef.close();
+    }
 }

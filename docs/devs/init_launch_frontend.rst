@@ -91,44 +91,22 @@ La redirection de port pourrait se faire au niveau du serveur web / reverse prox
 Gestion de l'internationalisation (i18n)
 ########################################
 
-La fonctionnalité i18n a été intégrée selon `la recette originale <https://angular.io/guide/i18n>`_.
+La fonctionnalité i18n a été intégrée avec `@ngx-i18nsupport <https://github.com/martinroob/ngx-i18nsupport/wiki/Tutorial-for-using-xliffmerge-with-angular-cli>`_.
 
 L'interface est paramétrée par défaut en langue française.
 
+Mettre à jour les traductions
+*****************************
 
-Si l'on souhaitait la servir en langue anglaise:
-
-.. code-block:: sh
-
-    npm run ng serve -- --configuration=en
-
-La stratégie en cas de traduction manquante est de faire remonter une erreur.
-
-(Ré)génération des fichiers de traduction:
-******************************************
+La commande suivante met à jour les fichiers de traduction (ajout/suppression de traductions symbolisées par l'argument ``i18n`` dans les templates.
 
 .. code-block:: sh
 
-    npm run -- ng xi18n --output-path locale --out-file _messages.fr.xlf --i18n-locale fr
+    npm run extract-i18n
 
-.. code-block:: sh
+Les fichiers de traduction sont dans le répertoire ``frontend/src/i18n``.
 
-    npm run -- ng xi18n --output-path locale --out-file _messages.en.xlf --i18n-locale en
-
-
-Les fichiers de traduction se retrouvent dans le répertoire ``frontend/src/locale``.
-
-Les copier en ``messages.fr.xlf`` et ``messages.en.xlf`` après édition (mon approche est de les mettre à jour depuis un éditeur de différence).
-
-Génération du rendu SSR dans le context de l'i18n:
-**************************************************
-
-La commande suivante permet de générer un rendu SSR multilingue et le servir en langue française.
-
-
-.. code-block:: sh
-
-    npm run build:i18n-ssr && npm run serve:ssr
+Mettre à jour les nouvelles traductions (texte dans les balises ``<target></target>`` des fichiers  localisés ``messages.fr.xlf`` et ``messages.en.xlf``.
 
 
 Déploiement
@@ -159,7 +137,7 @@ Exemple de fichier de configuration serveur Apache2:
 ****************************************************
 ``/etc/apache2/sites-enabled/citizen.conf``
 
-.. code-block:: conf
+.. code-block:: apacheconf
 
     # Configuration GeoNature-citizen
     Alias /citizen /home/utilisateur/citizen/frontend/dist/browser
@@ -215,7 +193,7 @@ Utiliser PgAdmin pour la gestion de la BDD distante (production):
 
 ``~/.ssh/config``
 
-.. code-block:: conf
+.. code-block::
 
     Host nom_du_raccourci
     Hostname son_addresse_ip

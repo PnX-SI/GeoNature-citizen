@@ -85,16 +85,18 @@ def registration():
                 datas_to_save[data] = request_datas[data]
 
         # Hashed password
-        datas_to_save["password"] = UserModel.generate_hash(
-            request_datas["password"])
+        datas_to_save["password"] = UserModel.generate_hash(request_datas["password"])
 
         # Protection against admin creation from API
         datas_to_save["admin"] = False
-        if ('extention' in request_datas and 'avatar' in request_datas):
+        if "extention" in request_datas and "avatar" in request_datas:
             extention = request_datas["extention"]
-            imgdata = base64.b64decode(request_datas["avatar"].replace(
-                'data:image/'+extention+';base64,', ''))
-            filename = 'avatar_' + request_datas["username"] + '.' + extention
+            imgdata = base64.b64decode(
+                request_datas["avatar"].replace(
+                    "data:image/" + extention + ";base64,", ""
+                )
+            )
+            filename = "avatar_" + request_datas["username"] + "." + extention
             datas_to_save["avatar"] = filename
         try:
             newuser = UserModel(**datas_to_save)
@@ -141,7 +143,7 @@ def registration():
         refresh_token = create_refresh_token(identity=newuser.username)
 
         # save user avatar
-        if ('extention' in request_datas and 'avatar' in request_datas):
+        if "extention" in request_datas and "avatar" in request_datas:
             handler = open(os.path.join(str(MEDIA_DIR), filename), "wb+")
             handler.write(imgdata)
             handler.close()
@@ -207,17 +209,14 @@ def login():
             current_user = UserModel.query.filter_by(email=email).one()
         except Exception:
             return (
-            {"message": """L'email "{}" n'est pas enregistré.""".format(
-                email)},
-            400,
-        )
+                {"message": """L'email "{}" n'est pas enregistré.""".format(email)},
+                400,
+            )
         if not current_user.active:
             return (
-                {
-                    "message": "Votre compte n'a pas été activé"
-                },
+                {"message": "Votre compte n'a pas été activé"},
                 400,
-        )
+            )
         if UserModel.verify_hash(password, current_user.password):
             access_token = create_access_token(identity=email)
             refresh_token = create_refresh_token(identity=email)
@@ -225,8 +224,8 @@ def login():
                 {
                     "message": """Connecté en tant que "{}".""".format(email),
                     "email": email,
-                    "username": current_user.as_secured_dict(True).get('username'),
-                    "userAvatar": current_user.as_secured_dict(True).get('avatar'),
+                    "username": current_user.as_secured_dict(True).get("username"),
+                    "userAvatar": current_user.as_secured_dict(True).get("avatar"),
                     "access_token": access_token,
                     "refresh_token": refresh_token,
                 },
@@ -352,22 +351,29 @@ def logged_user():
 
         if flask.request.method == "PATCH":
             is_admin = user.admin or False
-            current_app.logger.debug(
-                "[logged_user] Update current user personnal data")
+            current_app.logger.debug("[logged_user] Update current user personnal data")
             request_data = dict(request.get_json())
-            if ('extention' in request_data and 'avatar' in request_data):
+            if "extention" in request_data and "avatar" in request_data:
                 extention = request_data["extention"]
-                imgdata = base64.b64decode(request_data["avatar"].replace(
-                    'data:image/'+extention+';base64,', ''))
-                filename = 'avatar_' + \
-                    user.username + '.' + extention
-                request_data['avatar'] = filename
-                if os.path.exists(os.path.join(str(MEDIA_DIR), str(user.as_secured_dict(True)["avatar"]))):
-                    os.remove(os.path.join(str(MEDIA_DIR),
-                                           str(user.as_secured_dict(True)["avatar"])))
+                imgdata = base64.b64decode(
+                    request_data["avatar"].replace(
+                        "data:image/" + extention + ";base64,", ""
+                    )
+                )
+                filename = "avatar_" + user.username + "." + extention
+                request_data["avatar"] = filename
+                if os.path.exists(
+                    os.path.join(
+                        str(MEDIA_DIR), str(user.as_secured_dict(True)["avatar"])
+                    )
+                ):
+                    os.remove(
+                        os.path.join(
+                            str(MEDIA_DIR), str(user.as_secured_dict(True)["avatar"])
+                        )
+                    )
                 try:
-                    handler = open(os.path.join(
-                        str(MEDIA_DIR), str(filename)), "wb+")
+                    handler = open(os.path.join(str(MEDIA_DIR), str(filename)), "wb+")
                     handler.write(imgdata)
                     handler.close()
                 except Exception as e:
@@ -383,9 +389,8 @@ def logged_user():
                     "admin",
                 }:
                     setattr(user, data, request_data[data])
-            if ('newPassword' in request_data):
-                user.password = UserModel.generate_hash(
-                    request_data["newPassword"])
+            if "newPassword" in request_data:
+                user.password = UserModel.generate_hash(request_data["newPassword"])
             user.admin = is_admin
             user.update()
             return (
@@ -435,9 +440,7 @@ def delete_user():
         username = user.one().username
         # delete user
         try:
-            db.session.query(UserModel).filter(
-                UserModel.username == username
-            ).delete()
+            db.session.query(UserModel).filter(UserModel.username == username).delete()
             db.session.commit()
             current_app.logger.debug(
                 "[delete_user] user {} succesfully deleted".format(username)
@@ -462,14 +465,13 @@ def delete_user():
 def reset_user_password():
     request_datas = dict(request.get_json())
     email = request_datas["email"]
-    #username = request_datas["username"]
+    # username = request_datas["username"]
 
     try:
         user = UserModel.query.filter_by(email=email).one()
     except Exception:
         return (
-            {"message": """L'email "{}" n'est pas enregistré.""".format(
-                email)},
+            {"message": """L'email "{}" n'est pas enregistré.""".format(email)},
             400,
         )
 
@@ -511,8 +513,7 @@ def reset_user_password():
                 str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
             )
             server.sendmail(
-                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string(
-                )
+                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
             )
             server.quit()
         user.password = passwd_hash
@@ -535,25 +536,20 @@ def reset_user_password():
         )
 
 
-@routes.route('/user/confirmEmail/<token>', methods=["GET"])
+@routes.route("/user/confirmEmail/<token>", methods=["GET"])
 @json_resp
 def confirm_email(token):
     try:
         email = confirm_token(token)
     except:
         return (
-            {
-                "message": "The confirmation link is invalid or has expired."
-            },
+            {"message": "The confirmation link is invalid or has expired."},
             404,
         )
     user = UserModel.query.filter_by(email=email).first_or_404()
     if user.active:
         return (
-            {
-                "message": 'Account already confirmed. Please login.',
-                "status" : 208
-            },
+            {"message": "Account already confirmed. Please login.", "status": 208},
             208,
         )
     else:
@@ -561,9 +557,6 @@ def confirm_email(token):
         user.update()
         db.session.commit()
         return (
-            {
-                "message": 'You have confirmed your account. Thanks!',
-                "status": 200
-            },
+            {"message": "You have confirmed your account. Thanks!", "status": 200},
             200,
         )

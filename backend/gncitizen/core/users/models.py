@@ -3,7 +3,7 @@
 from passlib.hash import pbkdf2_sha256 as sha256
 
 from gncitizen.core.commons.models import (
-    ModulesModel,
+    TModules,
     ProgramsModel,
     TimestampMixinModel,
 )
@@ -131,11 +131,11 @@ class UserRightsModel(TimestampMixinModel, db.Model):
     __table_args__ = {"schema": "gnc_core"}
     id_user_right = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
-    id_module = db.Column(
-        db.Integer, db.ForeignKey(ModulesModel.id_module), nullable=True
-    )
+    id_module = db.Column(db.Integer, db.ForeignKey(TModules.id_module), nullable=True)
     id_program = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE"), nullable=True
+        db.Integer,
+        db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE"),
+        nullable=True,
     )
     right = db.Column(db.String(150), nullable=False)
     create = db.Column(db.Boolean(), default=False)
@@ -152,7 +152,9 @@ class UserGroupsModel(TimestampMixinModel, db.Model):
     id_user_right = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
     id_group = db.Column(
-        db.Integer, db.ForeignKey(GroupsModel.id_group, ondelete="CASCADE"), nullable=False
+        db.Integer,
+        db.ForeignKey(GroupsModel.id_group, ondelete="CASCADE"),
+        nullable=False,
     )
 
 
