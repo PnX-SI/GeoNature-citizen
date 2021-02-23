@@ -32,7 +32,7 @@ CHANGELOG
 * Révision et réorganisation complète de la documentation (merci @Splendens et @ksamuel) ([#166](https://github.com/PnX-SI/GeoNature-citizen/issues/166))
 * Création d'un script pour simplifier et automatiser l'installation de GeoNature-citizen ([#167](https://github.com/PnX-SI/GeoNature-citizen/issues/167))
 * Création d'un niveau "Projet" équivalent au cadre d'acquisition de GeoNature ([#247](https://github.com/PnX-SI/GeoNature-citizen/issues/247))
-* Mise à disposition d'un script d'alimentation automatique GeoNature:
+* Mise à disposition d'un script d'alimentation automatique GeoNature (@hypsug0):
     * projet > cadre d'acquisition
     * enquête > jeu de données
     * observation > occurence de taxon en synthèse
