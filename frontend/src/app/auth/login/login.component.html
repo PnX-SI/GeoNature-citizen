@@ -37,8 +37,7 @@
                         [ngClass]="{
                             'ng-invalid': email.invalid
                         }"
-                        ><i class="fa fa-envelope"></i
-                    ></span>
+                        ><strong>@</strong></span>
                 </div>
                 <input
                     type="email"
@@ -73,7 +72,7 @@
         (ngSubmit)="loginForm.form.valid && onLogin()"
     >
         <div class="form-group">
-            <label for="username" i18n="email input label@@emailInputLabel">Email</label>
+            <label for="email" i18n="email input label@@emailInputLabel">Email</label>
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span
@@ -81,14 +80,16 @@
                         [ngClass]="{
                             'ng-invalid': username.invalid
                         }"
-                        ><i class="fa fa-user"></i
-                    ></span>
+                        id="emailInput"
+                        ><strong>@</strong></span>
                 </div>
                 <input
                     type="email"
                     class="form-control rounded-0"
                     id="email"
                     placeholder="Entrez votre adresse mail"
+                    aria-label="Email"
+                    aria-describedby="emailInput"
                     i18n-placeholder="emailInput@@emailInput"
                     [(ngModel)]="user.email"
                     name="email"
