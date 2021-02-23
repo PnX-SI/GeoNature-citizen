@@ -1,6 +1,6 @@
 {
     "name": "frontend",
-    "version": "0.99.1-dev",
+    "version": "0.99.2-dev",
     "scripts": {
         "ng": "ng",
         "start:fr": "ng serve --poll 2000 --configuration=fr",
