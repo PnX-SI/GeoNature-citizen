@@ -49,28 +49,23 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     app = Flask(__name__)
     app.config.update(config)
-
     if app.config["DEBUG"]:
         from flask.logging import default_handler
-        import colorlog
-
-        handler = colorlog.StreamHandler()
-        handler.setFormatter(
-            colorlog.ColoredFormatter(
-                """%(log_color)s%(asctime)s %(levelname)s:%(name)s:%(message)s [in %(pathname)s:%(lineno)d]"""
-            )
-        )
+        import coloredlogs
 
         logger = logging.getLogger("werkzeug")
-        logger.addHandler(handler)
-        app.logger.removeHandler(default_handler)
 
-        for l in logging.Logger.manager.loggerDict.values():
-            if hasattr(l, "handlers"):
-                l.handlers = [handler]
+        coloredlogs.install(
+            level=logging.DEBUG,
+            fmt="%(asctime)s %(hostname)s %(name)s[%(process)d] [in %(pathname)s:%(lineno)d] %(levelname)s %(message)s",
+        )
+        logger.removeHandler(default_handler)
+
+        # for l in logging.Logger.manager.loggerDict.values():
+        #     if hasattr(l, "handlers"):
+        #         l.handlers = [handler]
 
     # else:
-    #     # TODO: sourced from app.config['LOGGING']
     #     logging.basicConfig()
     #     logger = logging.getLogger()
     #     logger.setLevel(logging.INFO)
@@ -155,6 +150,5 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         create_schemas(db)
         db.create_all()
         populate_modules(db)
-
 
     return app
