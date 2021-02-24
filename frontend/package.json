@@ -3,6 +3,7 @@
     "version": "0.99.2-dev",
     "scripts": {
         "ng": "ng",
+        "start": "ng serve --poll 2000",
         "start:fr": "ng serve --poll 2000 --configuration=fr",
         "start:en": "ng serve --poll 2000 --configuration=en",
         "build": "ng build",
