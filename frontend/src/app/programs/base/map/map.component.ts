@@ -298,8 +298,6 @@ export abstract class BaseMapComponent implements OnChanges {
         } else {
             console.debug('this features', this.features);
             // No program -> user-dashboard -> adapt bounds to observations
-            const obsLayer = L.geoJSON(this.features);
-            this.observationMap.fitBounds(obsLayer.getBounds());
             if (this.features) {
                 const obsLayer = L.geoJSON(this.features);
                 console.debug('obsLayerBounds', obsLayer.getBounds());
