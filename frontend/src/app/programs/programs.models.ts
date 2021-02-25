@@ -12,5 +12,5 @@ export class Program {
     id_module: number;
     module: any;
     taxonomy_list: number;
-    on_sidebar: Boolean;
+    on_sidebar: boolean;
 }

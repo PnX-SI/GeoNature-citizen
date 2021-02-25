@@ -1,8 +1,9 @@
 {
     "name": "frontend",
-    "version": "0.0.0",
+    "version": "0.99.2-dev",
     "scripts": {
         "ng": "ng",
+        "start": "ng serve --poll 2000",
         "start:fr": "ng serve --poll 2000 --configuration=fr",
         "start:en": "ng serve --poll 2000 --configuration=en",
         "build": "ng build",
@@ -18,7 +19,6 @@
         "build:client-and-server-bundles": "ng build --prod && ng run frontend:server:production",
         "build:client-and-server-bundles-i18n": "ng run frontend:build:fr && ng run frontend:build:en && ng run frontend:server:production",
         "extract-i18n": "ng xi18n frontend --i18n-format xlf --output-path i18n --i18n-locale fr && ng run frontend:xliffmerge"
-
     },
     "private": true,
     "dependencies": {

@@ -24,8 +24,6 @@ from flask_jwt_extended import jwt_optional, jwt_required, get_jwt_identity
 
 routes = Blueprint("sites_url", __name__)
 
-admin.add_view(SiteTypeView(SiteTypeModel, db.session, "Types de site"))
-
 
 @routes.route("/types", methods=["GET"])
 @json_resp
@@ -385,13 +383,13 @@ def post_photo(site_id, visit_id):
         current_app.logger.debug("UPLOAD FILE? " + str(request.files))
         if request.files:
             files = save_upload_files(
-                request.files, "mares", site_id, visit_id, MediaOnVisitModel,
+                request.files, "site", site_id, visit_id, MediaOnVisitModel,
             )
             current_app.logger.debug("UPLOAD FILE {}".format(files))
             return files, 200
         return [], 200
     except Exception as e:
-        current_app.logger.warning("Error: %s", str(e))
+        current_app.logger.error("Error: %s", str(e))
         return {"error_message": str(e)}, 400
 
 

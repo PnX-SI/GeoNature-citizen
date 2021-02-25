@@ -1,5 +1,8 @@
 #!/bin/bash
+cd $(dirname $(dirname "${BASH_SOURCE[0]:-$0}"))
+
 DIR=$(pwd)
+
 #création d'un fichier de configuration pour api/back
 if [ ! -f config/settings.ini ]; then
   echo 'Fichier de configuration du projet non existant, copie du template...'
@@ -36,8 +39,10 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 #cp -r ${HOME}/.nvm /home/synthese/.nvm
 #chown -R synthese:synthese /home/synthese/.nvm
 
-nvm install 14 --lts
+cd ${DIR}/frontend
+nvm install
 echo `npm -v`
+cd ${DIR}
 
 #Installation de taxhub
 #if [ ! -d /home/synthese ]; then
@@ -168,20 +173,33 @@ fi
 
 #Install and build
 NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
-URL=`echo $my_url |sed 's/http[s]\?:\/\///'`
+URL=`echo $my_url |sed 's/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/'`
 echo "L'application sera disponible à l'url $my_url"
+
+nvm use
 npm install
+
 if [ $server_side = "true" ]; then
   echo "Build server side project"
   npm run build:i18n-ssr
 #  Installation de la conf
-  sudo cp ../gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
+  sudo cp ../install/supervisor/gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
-  sudo cp ../config/apache/gncitizen_frontssr.conf /etc/apache2/sites-available/gncitizen.conf
-  sudo sed -i "s/APP_PATH/${DIR}/g" /etc/apache2/sites-available/gncitizen.conf
-  sudo sed -i "s/mydomain.net/$URL/g" /etc/apache2/sites-available/gncitizen.conf
+  sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
+  sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
+  if [ ${backoffice_password:=MotDePasseAChanger} = MotDePasseAChanger ]; then
+    backoffice_password=$(date +%s | sha256sum | base64 | head -c 30 ; echo)
+  fi
+  echo "Backoffice password
+===================
+url: (${URL}/api/admin)
+username: ${backoffice_username:=citizen}
+password: ${backoffice_password}" > ${DIR}/config/backoffice_access
+  htpasswd -b -c ${DIR}/config/backoffice_htpasswd ${backoffice_username} ${backoffice_password}
+  sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
+  sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
+  sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-available/gncitizen.conf
   
-  # sudo a2ensite gncitizen.conf
 else
   echo "Build initial du projet"
   npm run build
@@ -189,10 +207,7 @@ fi
 cd ..
 
 # Création du venv
-FLASKDIR=$(readlink -e "${0%/*}")
-APP_DIR="$(dirname "$FLASKDIR")"
-venv_dir="venv"
-venv_path=$FLASKDIR/backend/$venv_dir
+venv_path=$DIR/backend/${venv_dir:-"venv"}
 if [ ! -f $venv_path/bin/activate ]; then
   python3 -m virtualenv $venv_path
 fi
@@ -201,20 +216,32 @@ pip install --upgrade pip
 pip install -r backend/requirements.txt
 deactivate
 
+# Copy main medias to media
+mkdir -p $DIR/media
+cp -r $DIR/frontend/src/assets/* $DIR/media
+
 touch init_done
 
 #Création de la conf supervisor
-sudo cp gncitizen_api-service.conf /etc/supervisor/conf.d/
+sudo cp install/supervisor/gncitizen_api-service.conf /etc/supervisor/conf.d/
 sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_api-service.conf
+sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_api-service.conf
 
-# cp  config/apache/gncitizen_api.conf  /etc/apache2/sites-available/gncitizen_api.conf 
-# cat config/apache/gncitizen_api.conf | sed "s,HOME_PATH,$HOME,g" | sudo tee /etc/apache2/sites-available/gncitizen_api.conf
+# Prise en compte de la nouvelle config Apache
 sudo a2ensite gncitizen.conf
 sudo apache2ctl restart
-#
+
+# Prise en compte de la nouvelle config Supervisor
 sudo supervisorctl reread
 sudo supervisorctl reload
+
 echo "install municipalities"
 ./data/ref_geo.sh
 
-echo "End"
+echo "End of installation
+You can now access to GeoNature-citizen at ${my_url}
+
+Backoffice access informations are stored in ${DIR}/config/backoffice_access as follows:
+"
+
+cat ${DIR}/config/backoffice_access

@@ -12,7 +12,7 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 APP_CONF = load_config()
 access_token = None
 refresh_token = None
-mainUrl = "http://localhost:5001/api/"
+mainUrl = "http://localhost:5002/api/"
 mimetype = "application/json"
 headers = {"Content-Type": mimetype, "Accept": mimetype}
 user = "testuser"

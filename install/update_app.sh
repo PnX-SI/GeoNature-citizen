@@ -1,4 +1,9 @@
+#!/bin/bash
+
+cd $(dirname $(dirname "${BASH_SOURCE[0]:-$0}"))
+
 #Mise à jour du git
+
 git pull
 
 . config/settings.ini

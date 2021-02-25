@@ -145,3 +145,4 @@ class GeometryView(ModelView):
     def handle_view_exception(self, exc):
         flash("Une erreur s'est produite ({})".format(exc), "error")
         return True
+

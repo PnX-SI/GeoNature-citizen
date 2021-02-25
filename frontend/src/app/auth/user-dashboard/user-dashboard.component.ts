@@ -104,7 +104,7 @@ export class UserDashboardComponent implements OnInit {
     }
 
     getData() {
-        let data = [];
+        const data = [];
         this.rows = [];
         this.obsToExport = [];
         this.observations = null;
@@ -148,7 +148,7 @@ export class UserDashboardComponent implements OnInit {
                         });
                     }
                 }
-                this.observations = data[1].features;
+                this.observations = this.myobs.features;
                 this.observations.forEach((obs) => {
                     const coords: Point = new Point(
                         obs.geometry.coordinates[0],
@@ -199,7 +199,9 @@ export class UserDashboardComponent implements OnInit {
                     : 'assets/default_image.png',
             taxref: obs.properties.taxref,
             date: obs.properties.date,
-            municipality: obs.properties.municipality.name,
+            municipality: obs.properties.municipality
+                ? obs.properties.municipality.name
+                : null,
             program_id: obs.properties.id_program,
             program: obs.properties.program_title,
             count: obs.properties.count,
@@ -221,7 +223,9 @@ export class UserDashboardComponent implements OnInit {
             programme: obs.properties.program_title,
             denombrement: obs.properties.count,
             commentaire: obs.properties.comment,
-            commune: obs.properties.municipality.name,
+            commune: obs.properties.municipality
+                ? obs.properties.municipality.name
+                : null,
             cd_nom: obs.properties.taxref.cd_nom,
             espece: obs.properties.taxref.nom_vern,
             'nom complet': obs.properties.taxref.nom_complet,

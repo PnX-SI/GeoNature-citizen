@@ -265,3 +265,10 @@ frontend/src/custom/**/*.html
 data/tmp
 *.qgs
 
+# Docker
+docker-compose.override.yaml
+docker-compose.override.yml
+
+# Backoffice secure access:
+config/backoffice_access
+config/backoffice_htpasswd

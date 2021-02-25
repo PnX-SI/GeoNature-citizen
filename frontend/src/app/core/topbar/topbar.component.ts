@@ -23,7 +23,7 @@ import { ModalsTopbarService } from './modalTopbar.service';
 export class TopbarComponent implements OnInit {
     title: string = AppConfig.appName;
     // isLoggedIn: boolean = false;
-    username: any;
+    username: string;
     AppConfig = AppConfig;
     isCollapsed = true;
     programs$ = new Subject<Program[]>();
@@ -32,7 +32,7 @@ export class TopbarComponent implements OnInit {
     canSignup: boolean = AppConfig.signup !== 'never';
     adminUrl: SafeUrl;
     userAvatar: string;
-    logoImage: String;
+    logoImage: string;
 
     @Input()
     displayTopbar: boolean;
@@ -43,7 +43,6 @@ export class TopbarComponent implements OnInit {
         private programService: GncProgramsService,
         private auth: AuthService,
         private modalService: ModalsTopbarService,
-        private sanitizer: DomSanitizer,
         protected http: HttpClient
     ) {
         const tmp = localStorage.getItem('username');
@@ -87,28 +86,28 @@ export class TopbarComponent implements OnInit {
         );
     }
 
-    login() {
+    login(): void {
         this.modalService.open(LoginComponent, {
             size: 'lg',
             centered: true,
         });
     }
 
-    register() {
+    register(): void {
         this.modalService.open(RegisterComponent, {
             size: 'lg',
             centered: true,
         });
     }
 
-    logout() {
+    logout(): void {
         this.modalService.open(LogoutComponent, {
             size: 'lg',
             centered: true,
         });
     }
 
-    programs() {
+    programs(): void {
         this.modalService.open(ProgramsComponent, {
             size: 'lg',
             windowClass: 'programs-modal',

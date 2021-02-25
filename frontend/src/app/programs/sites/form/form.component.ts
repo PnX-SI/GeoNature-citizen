@@ -160,20 +160,23 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
             (data) => {
                 console.debug(data);
                 const visitId = data['features'][0]['id_visit'];
-                this.postVisitPhotos(visitId).subscribe(
-                    (resp) => {
-                        console.debug(resp);
-                        this.siteService.newSiteCreated.emit(true);
-                    },
-                    (err) => console.error(err),
-                    () => console.log('photo upload done')
-                );
+                if (this.photos.length > 0) {
+                    this.postVisitPhotos(visitId).subscribe(
+                        (resp) => {
+                            console.debug(resp);
+                            this.siteService.newSiteCreated.emit(true);
+                        },
+                        (err) => console.error(err),
+                        () => console.log('photo upload done')
+                    );
+                }
             },
             (err) => console.error(err),
             () => console.log('done')
             // TODO: queue obs in list
         );
     }
+
     postSiteVisit(): Observable<any> {
         const httpOptions = {
             headers: new HttpHeaders({
@@ -195,7 +198,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     }
 
     postVisitPhotos(visitId: number) {
-        let formData = new FormData();
+        const formData = new FormData();
         this.photos.forEach((file) => {
             formData.append('file', file);
         });

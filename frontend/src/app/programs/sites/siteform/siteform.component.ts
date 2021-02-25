@@ -80,7 +80,7 @@ export class SiteFormComponent implements AfterViewInit {
         }
         this.mapService.coordsChange.subscribe((value) => {
             this.coords = value;
-            let geo_coords = <Point>{
+            const geo_coords = <Point>{
                 type: 'Point',
                 coordinates: <Position>[this.coords.x, this.coords.y],
             };
@@ -96,17 +96,20 @@ export class SiteFormComponent implements AfterViewInit {
         });
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
         this.http
             .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
             .subscribe((result) => {
                 this.program = result;
                 this.site_types = this.program.features[0].site_types;
-                if (this.site_types.length >= 1) {
+                console.debug('site_types',this.site_types);
+                console.debug('prev', this.siteForm);
+                if (this.site_types.length == 1) {
                     this.siteForm.patchValue({
-                        id_typesite: this.site_types[0].value,
+                        id_type: this.site_types[0].value,
                     });
                 }
+                console.debug('post', this.siteForm);
 
                 // build map control
                 const formMap = L.map('formMap', {
@@ -126,10 +129,10 @@ export class SiteFormComponent implements AfterViewInit {
                     },
                 }).addTo(formMap);
 
-                let ZoomViewer = L.Control.extend({
+                const ZoomViewer = L.Control.extend({
                     onAdd: () => {
-                        let container = L.DomUtil.create('div');
-                        let gauge = L.DomUtil.create('div');
+                        const container = L.DomUtil.create('div');
+                        const gauge = L.DomUtil.create('div');
                         container.style.width = '200px';
                         container.style.background = 'rgba(255,255,255,0.5)';
                         container.style.textAlign = 'left';
@@ -143,7 +146,7 @@ export class SiteFormComponent implements AfterViewInit {
                         return container;
                     },
                 });
-                let zv = new ZoomViewer();
+                const zv = new ZoomViewer();
                 zv.addTo(formMap);
                 zv.setPosition('bottomleft');
 
@@ -160,7 +163,7 @@ export class SiteFormComponent implements AfterViewInit {
                 // Set initial observation marker from main map if already spotted
                 let myMarker = null;
                 if (this.coords) {
-                    let geo_coords = <Point>{
+                    const geo_coords = <Point>{
                         type: 'Point',
                         coordinates: <Position>[this.coords.x, this.coords.y],
                     };
@@ -207,7 +210,7 @@ export class SiteFormComponent implements AfterViewInit {
                         }).addTo(formMap);
                         this.coords = L.point(e.latlng.lng, e.latlng.lat);
                         // this.siteForm.patchValue({ geometry: this.coords });
-                        let coords = <Point>{
+                        const coords = <Point>{
                             type: 'Point',
                             coordinates: <Position>[e.latlng.lng, e.latlng.lat],
                         };
@@ -220,7 +223,7 @@ export class SiteFormComponent implements AfterViewInit {
             });
     }
 
-    patchForm(updateData) {
+    patchForm(updateData): void {
         this.siteForm.patchValue({
             name: updateData.name,
             geometry: this.data.coords ? this.coords : '',

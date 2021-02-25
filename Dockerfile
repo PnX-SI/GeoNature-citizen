@@ -1,5 +1,6 @@
 FROM debian:buster-slim
 
+
 ## install dependencies
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -7,8 +8,9 @@ RUN apt-get update && \
     localedef -i fr_FR -c -f UTF-8 -A /usr/share/locale/locale.alias fr_FR.UTF-8 && \
     apt-get clean
 
-## set LANG env
+## set envs
 ENV LANG fr_FR.utf8
+ENV TERM xterm
 
 RUN adduser --uid 1001 --gecos ""  --disabled-password appuser
 RUN usermod -aG sudo appuser 

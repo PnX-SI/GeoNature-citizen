@@ -38,9 +38,10 @@ INSTALLATION Automatique
 ========================
 
 :notes:
+
  - Bien vérifier de ne pas être en ``root`` :
 
-  ::
+  .. code-block:: bash
 
     su - nom_utilisateur (geonatadmin)
 
@@ -48,26 +49,31 @@ INSTALLATION Automatique
 
  - Se rendre sur la Home de votre utilisateur
 
-  ::
+  .. code-block:: bash
 
     cd
 
 Lancer le script d'installation :
 
- ::
+.. code-block:: bash
 
-  ./install_app.sh
+  ./install/install_app.sh
 
 - Le script créera un fichier de config settings.ini, il faut alors le compléter avec les informations de votre installation.
+
+.. code-block:: bash
+
+  editor ./config/settings.ini
+
+
 - Complétez également les fichiers de config Apache situés dans config/apache
 - Relancer le script :
 
- ::
+.. code-block:: bash
 
-  ./install_app.sh
+  ./install/install_app.sh
 
 Le script crééra la base de données, configurera taxhub si l'installation est demandée, configurera apache et installera toutes les dépendances du projet Geonature-Citizen.
-
 
 
 
