@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 cd $(dirname $(dirname "${BASH_SOURCE[0]:-$0}"))
 
 DIR=$(pwd)
@@ -18,7 +19,7 @@ fi
 sudo apt update && sudo apt -y install python2.7 git gcc curl gunicorn python-setuptools lsb-release apt-transport-https wget
 sudo apt -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl libbz2-dev
 sudo apt -y install apache2 python-dev libpq-dev libgeos-dev supervisor unzip virtualenv libcurl4-openssl-dev libssl-dev
-sudo apt -y install apt-get install build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev
+sudo apt -y install libglib2.0-0 libsm6 libxext6 libxrender-dev
 
 RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME |cut -d "=" -f2)
 sudo apt install python3 python3-dev python3-pip -y
@@ -39,10 +40,12 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 #cp -r ${HOME}/.nvm /home/synthese/.nvm
 #chown -R synthese:synthese /home/synthese/.nvm
 
+set +ex
 cd ${DIR}/frontend
 nvm install
 echo `npm -v`
 cd ${DIR}
+set -ex
 
 #Installation de taxhub
 #if [ ! -d /home/synthese ]; then
@@ -70,7 +73,7 @@ if [ ! -d $HOME/taxhub ] && [ $install_taxhub ]; then
   wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_version.zip
   unzip $taxhub_version.zip
   mv TaxHub-$taxhub_version/ taxhub/
-  rm $taxhub_version
+  rm ${taxhub_version}.zip
 fi
 cd $HOME/taxhub
 
@@ -118,6 +121,7 @@ sudo chown -R $(whoami) /tmp/taxhub
 sudo chown -R $(whoami) /tmp/usershub
 #sed -i "s,nano.*$,#,g" install_db.sh
 #sed -i "s,PnEcrins,PnX-SI,g" install_db.sh
+sed -i "s,^nano,," install_db.sh
 ./install_db.sh
 ./install_app.sh
 
@@ -134,6 +138,8 @@ if [ ! -f config/default_config.toml ]; then
   sed -i "s,API_PORT = .*$,API_PORT = \"$api_port\",g" config/default_config.toml
   sed -i "s,API_TAXHUB = .*$,API_TAXHUB = \"$api_taxhub\",g" config/default_config.toml
 fi
+
+sudo -u postgres psql -c 'CREATE SCHEMA taxonomie AUTHORIZATION dbuser' dbname
 
 #Création d'un fichier de configuration pour le front
 cd frontend
@@ -172,16 +178,13 @@ if [ ! -f src/custom/home/home.css ]; then
 fi
 
 #Install and build
-NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
+export NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
 URL=`echo $my_url |sed 's/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/'`
 echo "L'application sera disponible à l'url $my_url"
 
 nvm use
 npm install
 
-if [ $server_side = "true" ]; then
-  echo "Build server side project"
-  npm run build:i18n-ssr
 #  Installation de la conf
   sudo cp ../install/supervisor/gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
@@ -199,7 +202,10 @@ password: ${backoffice_password}" > ${DIR}/config/backoffice_access
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-available/gncitizen.conf
-  
+
+if [ $server_side = "true" ]; then
+  echo "Build server side project"
+  npm run build:i18n-ssr
 else
   echo "Build initial du projet"
   npm run build
