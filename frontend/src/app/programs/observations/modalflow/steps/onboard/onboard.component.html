@@ -27,7 +27,8 @@
     </div>
     <div class="row">
         <div
-            class="sign col-lg-6 col-md-12"
+            class="sign col-md-12"
+            [class.col-lg-6]="!data.registration_required"
             (click)="register()"
             data-dismiss="modal"
         >
@@ -35,6 +36,7 @@
             <span i18n="register and contribute@@registerAndContribute">S'incrire <br />et contribuer au site</span>
         </div>
         <div
+            *ngIf="!data.registration_required"
             class="sign col-lg-6 col-md-12"
             (click)="continue()"
             data-dismiss="modal"

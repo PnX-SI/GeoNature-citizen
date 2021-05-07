@@ -86,6 +86,9 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     }
 
     continue() {
+        if (this.data.registration_required) {
+            return;
+        }
         console.debug('continue');
         this.data.next();
     }
