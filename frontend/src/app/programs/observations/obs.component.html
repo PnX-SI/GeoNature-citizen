@@ -91,6 +91,7 @@
                     #modalFlowRef
                     [coords]="coords"
                     [program_id]="program_id"
+                    [registration_required]="program.registration_required"
                     [form_message]="program?.form_message"
                     [modalversion]="
                         AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
@@ -126,6 +127,7 @@
                             <app-modalflow
                                 [coords]="coords"
                                 [program_id]="program_id"
+                                [registration_required]="program.registration_required"
                                 [form_message]="program?.form_message"
                                 class="float-right"
                                 add-obs
@@ -155,6 +157,7 @@
                         <app-modalflow
                             [coords]="coords"
                             [program_id]="program_id"
+                            [registration_required]="program.registration_required"
                             [form_message]="program?.form_message"
                         >
                             <button
