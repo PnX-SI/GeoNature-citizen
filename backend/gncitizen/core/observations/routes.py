@@ -10,7 +10,7 @@ from typing import Union, Tuple, Dict
 # from datetime import datetime
 import requests
 from flask import Blueprint, current_app, request, json, send_from_directory
-from flask_jwt_extended import jwt_optional, jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
@@ -36,7 +36,7 @@ from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
 from server import db
 
 
-routes = Blueprint("observations", __name__)
+obstax_api = Blueprint("obstax", __name__)
 
 """Used attributes in observation features"""
 obs_keys = (
@@ -152,7 +152,7 @@ def generate_observation_geojson(id_observation):
     return features
 
 
-@routes.route("/observations/<int:pk>", methods=["GET"])
+@obstax_api.route("/observations/<int:pk>", methods=["GET"])
 @json_resp
 def get_observation(pk):
     """Get on observation by id
@@ -187,9 +187,9 @@ def get_observation(pk):
         return {"message": str(e)}, 400
 
 
-@routes.route("/observations", methods=["POST"])
+@obstax_api.route("/observations", methods=["POST"])
 @json_resp
-@jwt_optional
+@jwt_required(optional=True)
 def post_observation():
     """Post a observation
     add a observation to database
@@ -326,7 +326,7 @@ def post_observation():
         return {"message": str(e)}, 400
 
 
-@routes.route("/observations", methods=["GET"])
+@obstax_api.route("/observations", methods=["GET"])
 @json_resp
 def get_observations():
     """Get all observations
@@ -370,7 +370,7 @@ def get_observations():
         return {"message": str(e)}, 400
 
 
-@routes.route("/observations/lists/<int:id>", methods=["GET"])
+@obstax_api.route("/observations/lists/<int:id>", methods=["GET"])
 @json_resp
 def get_observations_from_list(id):  # noqa: A002
     """Get all observations from a taxonomy list
@@ -432,7 +432,7 @@ def get_observations_from_list(id):  # noqa: A002
             return {"message": str(e)}, 400
 
 
-@routes.route("/programs/<int:program_id>/observations", methods=["GET"])
+@obstax_api.route("/programs/<int:program_id>/observations", methods=["GET"])
 @json_resp
 def get_program_observations(
     program_id: int,
@@ -585,7 +585,7 @@ def get_program_observations(
         return {"message": str(e)}, 400
 
 
-@routes.route("/programs/all/observations", methods=["GET"])
+@obstax_api.route("/programs/all/observations", methods=["GET"])
 @json_resp
 def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
     """Get all observations from all programs
@@ -720,12 +720,9 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         return {"message": str(e)}, 400
 
 
-@routes.route("media/<item>")
-def get_media(item):
-    return send_from_directory(str(MEDIA_DIR), item)
 
 
-@routes.route("/dev_rewards/<int:id>")
+@obstax_api.route("/dev_rewards/<int:id>")
 @json_resp
 def get_rewards(id):
     from gncitizen.utils.rewards import get_rewards, get_badges
@@ -742,7 +739,7 @@ def get_rewards(id):
     )
 
 
-@routes.route("/observations/users/<int:user_id>", methods=["GET"])
+@obstax_api.route("/observations/users/<int:user_id>", methods=["GET"])
 @json_resp
 def get_observations_by_user_id(user_id):
     try:
@@ -881,9 +878,9 @@ def get_observations_by_user_id(user_id):
         return {"message": str(e)}, 400
 
 
-@routes.route("/observations", methods=["PATCH"])
+@obstax_api.route("/observations", methods=["PATCH"])
 @json_resp
-@jwt_required
+@jwt_required()
 def update_observation():
     try:
         update_data = request.form
@@ -956,9 +953,9 @@ def update_observation():
         return {"message": str(e)}, 400
 
 
-@routes.route("/observations/<int:idObs>", methods=["DELETE"])
+@obstax_api.route("/observations/<int:idObs>", methods=["DELETE"])
 @json_resp
-@jwt_required
+@jwt_required()
 def delete_observation(idObs):
     current_user = get_jwt_identity()
     try:

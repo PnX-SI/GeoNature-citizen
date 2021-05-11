@@ -19,13 +19,13 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
 from gncitizen.utils.env import admin
 from server import db
-from flask_jwt_extended import jwt_optional, jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
-routes = Blueprint("sites_url", __name__)
+sites_api = Blueprint("sites", __name__)
 
 
-@routes.route("/types", methods=["GET"])
+@sites_api.route("/types", methods=["GET"])
 @json_resp
 def get_types():
     """Get all sites types
@@ -45,7 +45,7 @@ def get_types():
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/<int:pk>", methods=["GET"])
+@sites_api.route("/<int:pk>", methods=["GET"])
 @json_resp
 def get_site(pk):
     """Get a site by id
@@ -86,7 +86,7 @@ def get_site(pk):
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/<int:pk>/jsonschema", methods=["GET"])
+@sites_api.route("/<int:pk>/jsonschema", methods=["GET"])
 @json_resp
 def get_site_jsonschema(pk):
     try:
@@ -149,7 +149,7 @@ def prepare_sites(sites, dashboard=False):
     return data
 
 
-@routes.route("/", methods=["GET"])
+@sites_api.route("/", methods=["GET"])
 @json_resp
 def get_sites():
     """Get all sites
@@ -175,7 +175,7 @@ def get_sites():
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/programs/<int:id>", methods=["GET"])
+@sites_api.route("/programs/<int:id>", methods=["GET"])
 @json_resp
 def get_program_sites(id):
     """Get all sites
@@ -219,7 +219,7 @@ def _get_user_sites(user_id):
     return user_sites
 
 
-@routes.route("/users/<int:user_id>", methods=["GET"])
+@sites_api.route("/users/<int:user_id>", methods=["GET"])
 @json_resp
 def get_user_sites(user_id):
     try:
@@ -228,9 +228,9 @@ def get_user_sites(user_id):
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/", methods=["POST"])
+@sites_api.route("/", methods=["POST"])
 @json_resp
-@jwt_optional
+@jwt_required(optional=True)
 def post_site():
     """Ajout d'un site
     Post a site
@@ -315,9 +315,9 @@ def post_site():
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/", methods=["PATCH"])
+@sites_api.route("/", methods=["PATCH"])
 @json_resp
-@jwt_required
+@jwt_required()
 def update_site():
     try:
         current_user = get_jwt_identity()
@@ -343,9 +343,9 @@ def update_site():
         return {"message": str(e)}, 400
 
 
-@routes.route("/<int:site_id>/visits", methods=["POST"])
+@sites_api.route("/<int:site_id>/visits", methods=["POST"])
 @json_resp
-@jwt_optional
+@jwt_required(optional=True)
 def post_visit(site_id):
     try:
         request_data = request.get_json()
@@ -375,9 +375,9 @@ def post_visit(site_id):
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/<int:site_id>/visits/<int:visit_id>/photos", methods=["POST"])
+@sites_api.route("/<int:site_id>/visits/<int:visit_id>/photos", methods=["POST"])
 @json_resp
-@jwt_optional
+@jwt_required(optional=True)
 def post_photo(site_id, visit_id):
     try:
         current_app.logger.debug("UPLOAD FILE? " + str(request.files))
@@ -393,9 +393,9 @@ def post_photo(site_id, visit_id):
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/<int:site_id>", methods=["DELETE"])
+@sites_api.route("/<int:site_id>", methods=["DELETE"])
 @json_resp
-@jwt_required
+@jwt_required()
 def delete_site(site_id):
     current_user = get_jwt_identity()
     try:
@@ -415,8 +415,8 @@ def delete_site(site_id):
         return {"message": str(e)}, 500
 
 
-@routes.route("/export/<int:user_id>", methods=["GET"])
-@jwt_required
+@sites_api.route("/export/<int:user_id>", methods=["GET"])
+@jwt_required()
 def export_sites_xls(user_id):
     current_user = get_jwt_identity()
     try:
