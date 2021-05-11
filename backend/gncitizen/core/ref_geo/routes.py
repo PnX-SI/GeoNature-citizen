@@ -8,10 +8,10 @@ from gncitizen.utils.env import load_config
 from gncitizen.utils.sqlalchemy import json_resp, get_geojson_feature
 from .models import LAreas
 
-routes = Blueprint("georepos", __name__)
+geo_api = Blueprint("ref_geo", __name__)
 
 
-@routes.route("/municipality", methods=["GET"])
+@geo_api.route("/municipality", methods=["GET"])
 @json_resp
 def get_municipalities():
     """List all enabled municipalities
@@ -49,7 +49,7 @@ def get_municipalities():
         return {"message": str(e)}, 400
 
 
-@routes.route("/municipality/<insee>", methods=["GET"])
+@geo_api.route("/municipality/<insee>", methods=["GET"])
 @json_resp
 def get_municipality(insee):
     """Get one enabled municipality by insee code

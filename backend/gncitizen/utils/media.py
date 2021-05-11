@@ -7,7 +7,7 @@ import datetime
 import os
 
 from flask import current_app
-from werkzeug import FileStorage
+from werkzeug.datastructures import FileStorage
 
 from gncitizen.core.commons.models import MediaModel
 from gncitizen.utils.env import MEDIA_DIR

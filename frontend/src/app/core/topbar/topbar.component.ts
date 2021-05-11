@@ -29,7 +29,7 @@ export class TopbarComponent implements OnInit {
     programs$ = new Subject<Program[]>();
     isAdmin = false;
     canDisplayAbout: boolean = AppConfig.about;
-    canSignup: boolean = AppConfig.signup;
+    canSignup: boolean = AppConfig.signup !== 'never';
     adminUrl: SafeUrl;
     userAvatar: string;
     logoImage: string;
