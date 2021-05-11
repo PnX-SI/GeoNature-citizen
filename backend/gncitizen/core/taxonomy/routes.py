@@ -17,10 +17,10 @@ else:
     from gncitizen.utils.taxonomy import mkTaxonRepository
 
 
-routes = Blueprint("taxonomy", __name__)
+taxo_api = Blueprint("taxonomy", __name__)
 
 
-@routes.route("/taxonomy/lists", methods=["GET"])
+@taxo_api.route("/taxonomy/lists", methods=["GET"])
 @json_resp
 def get_lists():
     """Renvoie toutes liste d'espèces
@@ -61,7 +61,7 @@ def get_lists():
         return {"message": str(e)}, 400
 
 
-@routes.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
+@taxo_api.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
 @json_resp
 def get_list(id):
     """Renvoie une liste d'espèces spécifiée par son id
@@ -119,7 +119,7 @@ def get_list(id):
             return {"message": str(e)}, 400
 
 
-# @routes.route('/taxonomy/lists/full', methods=['GET'])
+# @taxo_api.route('/taxonomy/lists/full', methods=['GET'])
 # @json_resp
 # def get_fulllists():
 #     """Gestion des listes d'espèces
@@ -164,7 +164,7 @@ def get_list(id):
 #         return jsonify('Erreur de chargement de l \'API', rlists.status_code)
 
 
-# @routes.route('/taxonomy/lists/<int:id>/species', methods=['GET'])
+# @taxo_api.route('/taxonomy/lists/<int:id>/species', methods=['GET'])
 # @json_resp
 # def get_list_species(id):
 #     """Gestion des listes d'espèces
@@ -191,7 +191,7 @@ def get_list(id):
 #         return jsonify('Erreur de chargement de l \'API', rtaxa.status_code)
 
 
-@routes.route("/taxonomy/taxon/<int:cd_nom>", methods=["GET"])
+@taxo_api.route("/taxonomy/taxon/<int:cd_nom>", methods=["GET"])
 @json_resp
 def get_taxon_from_cd_nom(cd_nom):
     """Get taxon TaxRef data from cd_nom

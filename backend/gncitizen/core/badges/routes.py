@@ -7,11 +7,12 @@ from gncitizen.core.taxonomy.models import Taxref
 from sqlalchemy.sql.expression import func
 from datetime import date, datetime, timedelta
 from calendar import monthrange
+from server import db
 
-routes = Blueprint("routes", __name__)
+badges_api = Blueprint("badges", __name__)
 
 
-@routes.route("/rewards/<int:id>", methods=["GET"])
+@badges_api.route("/rewards/<int:id>", methods=["GET"])
 def get_rewards(id):
 
     total_obs = 0
@@ -33,24 +34,25 @@ def get_rewards(id):
         program_scores.append({"id_program": item.id, "nb_obs": item.nb_obs})
         total_obs = total_obs + item.nb_obs
     taxon_classe_query = (
-        ObservationModel.query.filter(ObservationModel.id_role == id)
-        .outerjoin(Taxref, Taxref.cd_nom == ObservationModel.cd_nom)
-        .group_by(Taxref.classe)
-        .values(
-            Taxref.classe.label("classe"), func.count(Taxref.classe).label("nb_obs")
+        db.session.query(
+            Taxref.classe.label("classe"), func.count(Taxref.famille).label("nb_obs")
         )
+        .join(ObservationModel, Taxref.cd_nom == ObservationModel.cd_nom)
+        .filter(ObservationModel.id_role == id)
+        .group_by(Taxref.classe)
     )
     for item in taxon_classe_query:
         taxon_scores.append({"classe": item.classe, "nb_obs": item.nb_obs})
 
     taxon_famille_query = (
-        ObservationModel.query.filter(ObservationModel.id_role == id)
-        .outerjoin(Taxref, Taxref.cd_nom == ObservationModel.cd_nom)
-        .group_by(Taxref.famille)
-        .values(
+        db.session.query(
             Taxref.famille.label("famille"), func.count(Taxref.famille).label("nb_obs")
         )
+        .join(ObservationModel, Taxref.cd_nom == ObservationModel.cd_nom)
+        .filter(ObservationModel.id_role == id)
+        .group_by(Taxref.famille)
     )
+
     for item in taxon_famille_query:
         taxon_scores.append({"famille": item.famille, "nb_obs": item.nb_obs})
 
@@ -156,7 +158,7 @@ def monthdelta(d1, d2):
     return delta
 
 
-@routes.route("/stats", methods=["GET"])
+@badges_api.route("/stats", methods=["GET"])
 @json_resp
 def get_stat():
     try:
