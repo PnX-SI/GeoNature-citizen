@@ -1,6 +1,6 @@
 {
     "name": "frontend",
-    "version": "0.99.2-dev",
+    "version": "0.99.3-dev",
     "scripts": {
         "ng": "ng",
         "start": "ng serve --poll 2000",
@@ -48,14 +48,14 @@
         "express": "^4.17.1",
         "file-saver": "^2.0.5",
         "font-awesome": "^4.7.0",
-        "jquery": "^3.4.1",
+        "jquery": "^3.6.0",
         "jshint": "^2.10.2",
         "leaflet": "^1.5.1",
         "leaflet-fullscreen": "^1.0.2",
         "leaflet-gesture-handling": "^1.1.8",
         "leaflet.locatecontrol": "^0.68.0",
         "leaflet.markercluster": "^1.4.1",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.21",
         "lodash-es": "^4.17.15",
         "mock-browser": "^0.92.14",
         "ngx-toastr": "^10.1.0",
@@ -64,7 +64,7 @@
         "zone.js": "~0.10.2"
     },
     "devDependencies": {
-        "@angular-devkit/build-angular": "^0.803.21",
+        "@angular-devkit/build-angular": "~0.803",
         "@angular/cli": "^8.3.21",
         "@angular/compiler-cli": "^8.2.2",
         "@angular/language-service": "^8.2.2",
