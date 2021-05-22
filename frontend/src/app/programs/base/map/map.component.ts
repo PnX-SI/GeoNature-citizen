@@ -32,11 +32,16 @@ export const conf = {
             bounds: baseLayer['bounds'],
             apiKey: baseLayer['apiKey'],
             layerName: baseLayer['layerName'],
+            layers: baseLayer['layers'],
         };
         if (baseLayer['subdomains']) {
             layerConf.subdomains = baseLayer['subdomains'];
         }
-        acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
+        if (baseLayer['wms']) {
+            acc[baseLayer['name']] = L.tileLayer.wms(baseLayer['layer'], layerConf);
+        } else {
+            acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
+        }
         return acc;
     }, {}),
     DEFAULT_BASE_MAP: () => conf.BASE_LAYERS[MAP_CONFIG['DEFAULT_PROVIDER']],
