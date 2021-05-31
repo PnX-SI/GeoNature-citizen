@@ -3,7 +3,7 @@ from sqlalchemy import or_
 from .models import SiteModel, SiteTypeModel, VisitModel, MediaOnVisitModel
 from .admin import SiteTypeView
 from gncitizen.core.users.models import UserModel
-from gncitizen.core.commons.models import MediaModel
+from gncitizen.core.commons.models import MediaModel, ProgramsModel
 import uuid
 import datetime
 import json
@@ -293,12 +293,16 @@ def post_site():
             current_app.logger.debug(e)
             raise GeonatureApiError(e)
 
+        program = ProgramsModel.query.get(newsite.id_program)
+
         id_role = get_id_role_if_exists()
         if id_role is not None:
             newsite.id_role = id_role
             role = UserModel.query.get(id_role)
             newsite.obs_txt = role.username
             newsite.email = role.email
+        elif program.registration_required:
+            return {"message": "registration required"}, 403
         else:
             if newsite.obs_txt is None or len(newsite.obs_txt) == 0:
                 newsite.obs_txt = "Anonyme"

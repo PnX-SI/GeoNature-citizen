@@ -281,12 +281,16 @@ def post_observation():
             current_app.logger.warning("[post_observation] json_data ", e)
             raise GeonatureApiError(e)
 
+        program = ProgramsModel.query.get(newobs.id_program)
+
         id_role = get_id_role_if_exists()
         if id_role:
             newobs.id_role = id_role
             role = UserModel.query.get(id_role)
             newobs.obs_txt = role.username
             newobs.email = role.email
+        elif program.registration_required:
+            return {"message": "registration required"}, 403
         else:
             if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
                 newobs.obs_txt = "Anonyme"
