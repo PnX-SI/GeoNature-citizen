@@ -16,7 +16,7 @@ echo "info: FLASKDIR: $FLASKDIR"
 echo "info: APP_DIR: $APP_DIR"
 
 # activate the virtualenv
-venv_dir=${venv_dir:-"venv"}
+venv_dir=${venv_dir:-".venv"}
 source $FLASKDIR/$venv_dir/bin/activate
 
 cd $FLASKDIR

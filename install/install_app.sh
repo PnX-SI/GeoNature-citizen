@@ -53,7 +53,7 @@ cd ${DIR}
 #adduser synthese www-data
 #fi
 cd $HOME
-python3 -m pip install virtualenv==20.0.1 --user
+python3 -m pip install poetry --user
 
 sudo a2enmod rewrite proxy proxy_http
 sudo apache2ctl restart
@@ -207,14 +207,13 @@ fi
 cd ..
 
 # Création du venv
-venv_path=$DIR/backend/${venv_dir:-"venv"}
-if [ ! -f $venv_path/bin/activate ]; then
-  python3 -m virtualenv $venv_path
-fi
-source $venv_path/bin/activate
-pip install --upgrade pip
-pip install -r backend/requirements.txt
-deactivate
+# venv_path=$DIR/backend/${venv_dir:-"venv"}
+# if [ ! -f $venv_path/bin/activate ]; then
+#   python3 -m virtualenv $venv_path
+# fi
+cd $DIR/backend
+poetry install
+cd $DIR 
 
 # Copy main medias to media
 mkdir -p $DIR/media
