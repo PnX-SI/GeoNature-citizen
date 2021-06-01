@@ -7,7 +7,7 @@ DIR=$(pwd)
 if [ ! -f config/settings.ini ]; then
   echo 'Fichier de configuration du projet non existant, copie du template...'
   cp config/settings.ini.template config/settings.ini
-  echo "Fichier de config disponible : $DIR."
+  echo "Fichier de config disponible : $DIR/config/settings.ini."
   echo "Merci de renseigner le fichier et de relancer la commande install_app.sh."
   exit
 fi
