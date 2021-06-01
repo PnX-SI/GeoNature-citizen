@@ -45,8 +45,11 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
 def mkTaxonRepository(taxhub_list_id: int) -> List[Taxon]:
     taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
     taxon_ids = [item["id_nom"] for item in taxa.get("items")]
-    return [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
-
+    r = [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
+    current_app.logger.debug(r)
+    
+    # r = r.sort(key=lambda item: item.get('nom_francais'))
+    return sorted(r, key = lambda item: item['nom_francais'])
 
 def get_specie_from_cd_nom(cd_nom):
     """get specie datas from taxref id (cd_nom)
