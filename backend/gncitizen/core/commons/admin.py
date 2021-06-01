@@ -8,7 +8,6 @@ import requests
 
 from flask import Blueprint, current_app, request, flash
 from flask_admin.contrib.geoa import ModelView
-from flask_admin.form import SecureForm
 from flask_admin.form.upload import FileUploadField
 from flask_ckeditor import CKEditorField
 from flask_jwt_extended import get_jwt_identity
@@ -87,7 +86,6 @@ class ProjectView(ModelView):
 
 
 class ProgramView(ModelView):
-    # form_base_class = SecureForm
     form_overrides = {"long_desc": CKEditorField, "taxonomy_list": SelectField}
     form_args = {"taxonomy_list": {"choices": taxonomy_lists(), "coerce": int}}
     create_template = "edit.html"

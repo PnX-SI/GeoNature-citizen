@@ -5,7 +5,6 @@ import json
 import urllib.parse
 from flask import Blueprint, request, current_app
 from flask_jwt_extended import jwt_optional, get_jwt_identity
-from flask_admin.form import SecureForm
 from flask_admin.contrib.geoa import ModelView
 from sqlalchemy.sql import func
 from sqlalchemy import distinct, and_
@@ -52,14 +51,25 @@ routes = Blueprint("commons", __name__)
 
 
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
-admin.add_view(ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes"))
-admin.add_view(GeometryView(GeometryModel, db.session, "2 - Zones geographiques", category="Enquêtes"))
-admin.add_view(CustomFormView(CustomFormModel, db.session, "3a - Formulaires dynamiques", category="Enquêtes"))
-admin.add_view(SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes"))
-admin.add_view(ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"))
-
-
-
+admin.add_view(
+    ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes")
+)
+admin.add_view(
+    GeometryView(
+        GeometryModel, db.session, "2 - Zones geographiques", category="Enquêtes"
+    )
+)
+admin.add_view(
+    CustomFormView(
+        CustomFormModel, db.session, "3a - Formulaires dynamiques", category="Enquêtes"
+    )
+)
+admin.add_view(
+    SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes")
+)
+admin.add_view(
+    ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes")
+)
 
 
 @routes.route("/modules/<int:pk>", methods=["GET"])
