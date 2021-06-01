@@ -17,10 +17,10 @@ else:
     from gncitizen.utils.taxonomy import mkTaxonRepository
 
 
-routes = Blueprint("taxonomy", __name__)
+taxo_api = Blueprint("taxonomy", __name__)
 
 
-@routes.route("/taxonomy/lists", methods=["GET"])
+@taxo_api.route("/taxonomy/lists", methods=["GET"])
 @json_resp
 def get_lists():
     """Renvoie toutes liste d'espèces
@@ -61,7 +61,7 @@ def get_lists():
         return {"message": str(e)}, 400
 
 
-@routes.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
+@taxo_api.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
 @json_resp
 def get_list(id):
     """Renvoie une liste d'espèces spécifiée par son id
@@ -89,37 +89,14 @@ def get_list(id):
             description: A list of all species lists
         """
 
-    if current_app.config.get("API_TAXHUB") is not None:
-        current_app.logger.info("Calling TaxHub REST API.")
-        return mkTaxonRepository(id)
-
-    else:
-        current_app.logger.info("Select TaxHub schema.")
-        try:
-            data = (
-                db.session.query(BibNoms, Taxref, TMedias)
-                .distinct(BibNoms.cd_ref)
-                .join(CorNomListe, CorNomListe.id_nom == BibNoms.id_nom)
-                .join(Taxref, Taxref.cd_ref == BibNoms.cd_ref)
-                .outerjoin(TMedias, TMedias.cd_ref == BibNoms.cd_ref)
-                .filter(CorNomListe.id_liste == id)
-                .all()
-            )
-            # current_app.logger.debug(
-            #     [{'nom': d[0], 'taxref': d[1]} for d in data])
-            return [
-                {
-                    "nom": d[0].as_dict(),
-                    "taxref": d[1].as_dict(),
-                    "medias": d[2].as_dict() if d[2] else None,
-                }
-                for d in data
-            ]
-        except Exception as e:
-            return {"message": str(e)}, 400
+    try:
+      r = mkTaxonRepository(id)
+      return r
+    except Exception as e:
+      return {"message": str(e)}, 400
 
 
-# @routes.route('/taxonomy/lists/full', methods=['GET'])
+# @taxo_api.route('/taxonomy/lists/full', methods=['GET'])
 # @json_resp
 # def get_fulllists():
 #     """Gestion des listes d'espèces
@@ -164,7 +141,7 @@ def get_list(id):
 #         return jsonify('Erreur de chargement de l \'API', rlists.status_code)
 
 
-# @routes.route('/taxonomy/lists/<int:id>/species', methods=['GET'])
+# @taxo_api.route('/taxonomy/lists/<int:id>/species', methods=['GET'])
 # @json_resp
 # def get_list_species(id):
 #     """Gestion des listes d'espèces
@@ -191,7 +168,7 @@ def get_list(id):
 #         return jsonify('Erreur de chargement de l \'API', rtaxa.status_code)
 
 
-@routes.route("/taxonomy/taxon/<int:cd_nom>", methods=["GET"])
+@taxo_api.route("/taxonomy/taxon/<int:cd_nom>", methods=["GET"])
 @json_resp
 def get_taxon_from_cd_nom(cd_nom):
     """Get taxon TaxRef data from cd_nom
