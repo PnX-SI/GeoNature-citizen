@@ -99,7 +99,7 @@ ainsi que leur base de données et leur configuration Apache.
 
     su - nom_utilisateur (geonatadmin)
 
- - S'assurer d'avoir le projet GeoVature-citizen dans ce dossier ainsi que d'être propriétaire du dossier et de ses dépendances
+ - S'assurer d'avoir le projet GeoNature-citizen dans ce dossier ainsi que d'être propriétaire du dossier et de ses dépendances
 
  - Se rendre dans le répertoire ``home`` de votre utilisateur
 
@@ -126,7 +126,7 @@ Lancer le script d'installation :
 
   ./install/install_app.sh
 
-Le script crééra la base de données, configurera taxhub si l'installation est demandée, configurera le serveur web Apache et installera toutes les dépendances du projet Geonature-Citizen.
+Le script crééra la base de données, configurera taxhub si l'installation est demandée, configurera le serveur web Apache et installera toutes les dépendances du projet GeoNature-Citizen.
 
 
 Installation manuelle
