@@ -114,7 +114,7 @@ Lancer le script d'installation :
   cd ~/gncitizen/
   ./install/install_app.sh
 
-- Le script créera un fichier de config settings.ini, il faut alors le compléter avec les informations de votre installation.
+- Au premier lancement, le script créera un fichier de config ``settings.ini``, il faut alors le compléter avec les informations de votre installation.
 
 .. code-block:: bash
 
@@ -126,7 +126,7 @@ Lancer le script d'installation :
 
   ./install/install_app.sh
 
-Le script crééra la base de données, configurera taxhub si l'installation est demandée, configurera le serveur web Apache et installera toutes les dépendances du projet GeoNature-Citizen.
+Le script crééra la base de données, configurera TaxHub si l'installation est demandée, configurera le serveur web Apache et installera toutes les dépendances du projet GeoNature-citizen.
 
 
 Installation manuelle
