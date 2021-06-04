@@ -17,7 +17,6 @@ Cette documentation suppose que vous avez les bases de l'utilisation de la ligne
 Dépendances
 -----------
 
-
 La présente documentation présente l'installation de GeoNature-citizen dans un environnement Linux Debian_ (version 9 et supérieures) et Ubuntu_ (version 18.04 et supérieures).
 
 La procédure d'installation dépend de TaxHub_, et de certains paquets, qu'il faut installer.
@@ -28,20 +27,6 @@ Commencez par installer les paquets suivants :
 
   su # vous aurez besoin du mot de passe de l'utilisateur root
   apt install sudo git python3 python3-pip python3-venv curl unzip -y
-
-
-Ensuite : 
-
-- installez TaxHub, si ce n'est pas déjà fait. Vous pouvez suivre la documentation officielle : https://taxhub.readthedocs.io/fr/latest/
-
-- Configurer le serveur : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-du-serveur
-
-- Configurer PostgreSQL : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-de-posgresql
-
-- Configuration et installation de l’application : https://taxhub.readthedocs.io/fr/latest/installation.html
-
-**Notez bien les identifiants de connexion à la base de données de Taxhub, car ils seront réutilisés ici.**
-
 
 Créer un utilisateur pour l'installation
 ----------------------------------------
@@ -62,7 +47,6 @@ Créer un utilisateur appartenant au groupe ``sudo``. Dans cette documentation, 
 
 Mettre la localisation en français
 ------------------------------------
-
 
 Générer les locales ``en_US.UTF8`` et ``fr_FR.UTF-8`` puis choisir ``fr_FR.UTF-8`` comme locale par default:
 
@@ -93,17 +77,19 @@ Téléchargez et décompressez la dernière version de l'application, disponible
 
   # Se positionner dans le dossier par défaut de l'utilisateur (ici /home/geonatadmin)
   cd ~ 
-  # Téléchargement de l'application
-  curl -OJL https://github.com/PnX-SI/GeoNature-citizen/archive/v0.99.0.zip 
+  # Téléchargement de l'application (en remplaçant X.Y.Z par le numéro de version souhaité)
+  curl -OJL https://github.com/PnX-SI/GeoNature-citizen/archive/X.Y.Z.zip 
   # Décompression de l'application
-  unzip GeoNature-citizen-0.99.0.zip
+  unzip GeoNature-citizen-X.Y.Z.zip
   # Renommage du dossier contenant l'application
-  mv GeoNature-citizen-0.99.0 gncitizen
+  mv GeoNature-citizen-X.Y.Z gncitizen
 
 
 Installation automatique
 ========================
 
+Le script ``install/install_app.sh`` va se charger d'installer automatiquement l'environnement, PostgreSQL, TaxHub et GeoNature-citizen, 
+ainsi que leur base de données et leur configuration Apache.
 
 .. tip::
 
@@ -113,9 +99,9 @@ Installation automatique
 
     su - nom_utilisateur (geonatadmin)
 
- - S'assurer d'avoir le projet Geonature-citizen dans ce dossier ainsi que d'etre propriétaire du dossier et de ses dépendances
+ - S'assurer d'avoir le projet GeoVature-citizen dans ce dossier ainsi que d'être propriétaire du dossier et de ses dépendances
 
- - Se rendre sur la Home de votre utilisateur
+ - Se rendre dans le répertoire ``home`` de votre utilisateur
 
   .. code-block:: bash
 
@@ -148,6 +134,16 @@ Installation manuelle
 
 Si vous souhaitez à une installation manuelle, suivez les instructions suivantes.
 
+Pré-requis
+----------
+
+- Installer TaxHub, si ce n'est pas déjà fait. Vous pouvez suivre la documentation officielle : https://taxhub.readthedocs.io/fr/latest/
+- Configurer le serveur : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-du-serveur
+- Configurer PostgreSQL : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-de-posgresql
+- Configuration et installation de l’application : https://taxhub.readthedocs.io/fr/latest/installation.html
+
+**Notez bien les identifiants de connexion à la base de données de Taxhub, car ils seront réutilisés ici.**
+
 Installer les dépendances python
 --------------------------------
 
@@ -164,7 +160,7 @@ Installer les dépendances python
 Les warnings avec le message "`Failed building wheel`" peuvent être ignorés.
 
 Éditer le fichier de configuration
-------------------------------------
+----------------------------------
 
 Créer le fichier de configuration avec des valeurs par défaut :
 
@@ -184,7 +180,7 @@ Et changer les valeurs pour correspondre à la réalité de votre installation. 
 **Quelques valeurs importantes :**
 
 SQLALCHEMY_DATABASE_URI
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 GeoNature-citizen a pour le moment des références au schéma ``taxonomie`` de TaxHub_ (pour l'utilisation du référentiel taxonomique `TaxRef
 <https://inpn.mnhn.fr/programme/referentiel-taxonomique-taxref>`_). Ce schéma doit donc être installé dans cette même base de données. 
@@ -202,7 +198,7 @@ Référez-vous donc à la configuration de TaxHub pour saisir ce paramètre.
 
 
 Les clés secrètes
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 Il y a 3 clés secrètes à changer : ``JWT_SECRET_KEY``, ``SECRET_KEY`` et ``CONFIRM_MAIL_SALT``.
 
@@ -231,7 +227,7 @@ http://ADRESSE_IP/citizen
 Notez que nous suffixons avec "citizen", ce qui n'est pas obligatoire, mais nous utiliserons cette configuration pour Apache plus loin. Quelle que soit la valeur choisie, gardez-la sous la main pour cette dernière.
 
 EMAILS
-~~~~~~~~~~~~~~~~~~
+~~~~~~
 
 L'inscription à GeoNature-citizen n'est pas obligatoire pour les contributeurs. 
 
@@ -292,7 +288,7 @@ Voici un exemple de configuration avec office365 :
 
 
 API_ENDPOINT
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
 
 L'URL que va utiliser GeoNature-citizen pour exposer ses données. Cette valeur doit commencer comme ``URL_APPLICATION``, mais finir par ``/api`` et utiliser le même port que définit par ``API_PORT`` (5002 par défaut, vous n'avez probablement pas besoin de le changer).
 
@@ -303,7 +299,7 @@ http://votredomaine.com:5002/citizen/api
 Gardez cette valeur sous la main, nous l'utiliserons dans la configuration Apache plus loin.
 
 Authentification Mapbox
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Si vous avez des identifiants Mapbox, inscrivez-les dans ``MAPBOX_MAP_ID`` et ``MAPBOX_ACCESS_TOKEN``. Ils sont utilisés pour afficher des fonds de carte dans la partie administration des programmes.
 
@@ -312,7 +308,7 @@ Installation du backend et de la base des données
 
 
 Création du référentiel des géométries communales
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 On continue d'utiliser les identifiants de la BDD de TaxHub, ici avec les exemples ``referentielsdb`` et ``geonatuser``.
 
@@ -349,7 +345,7 @@ Si les communes françaises ne sont pas déjà dans la base, les importer :
     psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "DROP TABLE ref_geo.temp_fr_municipalities;"
 
 Générer les schémas de GeoNature-citizen
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Il faut maintenant faire au moins une requête au serveur pour le forcer à créer les tables dont il a besoin.
 
