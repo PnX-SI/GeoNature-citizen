@@ -1,6 +1,42 @@
 CHANGELOG
 =========
 
+0.99.4-dev (unreleased)
+-----------------------
+
+**🚀 New features**
+
+* Add a maintenance page
+* Disallow ckeditor cleanup code in backoffice
+* Review and improve installation documentation
+
+**🐛 Fixes**
+
+* Order API taxa list by French name
+* Remove some local taxonomy dependencies
+* Update dependencies versions from ``requirements.txt`` using:
+  - `poetry export --without-hashes > requirements.txt`
+  - `poetry export --without-hashes -D > requirements-dev.txt`
+  - but it's preferable to simply use `poetry install`
+
+0.99.3-dev (2021-02-23)
+-----------------------
+
+**🚀 New features**
+
+* Best new feature: sign up is now configurable (options are : never|optional|always) (by @QuentinJouet, financed by Parc National du Mercantour | @samuelpriou )
+* Feat: backend python management with python-poetry
+* Feat: improve flask-admin UI (hide columns, now use bootstrap 4)
+* Various dependencies updates on both backend and frontend
+
+0.99.1-dev (2021-02-23)
+-----------------------
+
+**🐛 Fixes**
+
+* Latest update broke site form validation when type is set by default when there is only one type site
+* Some other minor updates
+
 0.99.0-dev (2021-02-19)
 -----------------------
 
