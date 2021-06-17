@@ -29,7 +29,9 @@ export class RegisterComponent {
         private auth: AuthService,
         private router: Router,
         public activeModal: NgbActiveModal
-    ) {}
+    ) {
+        this.loadCaptchaScript(localeId);
+    }
 
     onRegister(): void {
         this.auth
@@ -37,7 +39,7 @@ export class RegisterComponent {
             .pipe(
                 map((user) => {
                     if (user) {
-                        let message = user.message;
+                        const message = user.message;
                         this._success.subscribe(
                             (message) => (this.successMessage = message)
                         );
@@ -96,8 +98,8 @@ export class RegisterComponent {
     onUploadAvatar($event) {
         if ($event) {
             if ($event.target.files && $event.target.files[0]) {
-                let reader = new FileReader();
-                let file = $event.target.files[0];
+                const reader = new FileReader();
+                const file = $event.target.files[0];
                 reader.readAsDataURL(file);
                 reader.onload = () => {
                     this.userAvatar = reader.result;
@@ -108,5 +110,16 @@ export class RegisterComponent {
                 };
             }
         }
+    }
+
+    loadCaptchaScript(locale) {
+        if (!AppConfig.HCAPTCHA_SITE_KEY) {
+            return;
+        }
+        const node = document.createElement('script');
+        node.src = 'https://hcaptcha.com/1/api.js?hl=' + locale;
+        node.type = 'text/javascript';
+        node.async = true;
+        document.getElementsByTagName('head')[0].appendChild(node);
     }
 }
