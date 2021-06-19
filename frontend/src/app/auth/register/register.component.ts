@@ -162,4 +162,8 @@ export class RegisterComponent {
             callback: this.captchaCallback.bind(this),
         });
     }
+
+    captchaCallback(token) {
+        this.user.captchaToken = token;
+    }
 }

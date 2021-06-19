@@ -6,6 +6,7 @@ export class RegisterUser {
     surname?: string;
     avatar?: string | ArrayBuffer;
     extention?: string;
+    captchaToken?: string;
 
     constructor() {}
 }
