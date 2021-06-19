@@ -9,6 +9,13 @@ import { RegisterUser } from '../models';
 import { AuthService } from './../auth.service';
 import { AppConfig } from '../../../conf/app.config';
 
+declare global {
+    interface Window {
+        hcaptcha: any;
+    }
+}
+window.hcaptcha = window.hcaptcha || null;
+
 @Component({
     selector: 'register',
     templateUrl: './register.component.html',
@@ -21,6 +28,7 @@ export class RegisterComponent {
     private _success = new Subject<string>();
     staticAlertClosed = false;
     errorMessage: string;
+    locale: string;
     successMessage: string;
     userAvatar: string | ArrayBuffer;
 
@@ -30,7 +38,11 @@ export class RegisterComponent {
         private router: Router,
         public activeModal: NgbActiveModal
     ) {
-        this.loadCaptchaScript(localeId);
+        this.locale = localeId;
+    }
+
+    ngAfterViewInit(): void {
+        this.loadCaptchaScript();
     }
 
     onRegister(): void {
@@ -55,7 +67,7 @@ export class RegisterComponent {
                         }
                     }
                 }),
-                catchError(this.handleError)
+                catchError(this.handleError.bind(this))
             )
             .subscribe(
                 (_data) => {},
@@ -83,6 +95,7 @@ export class RegisterComponent {
                 console.error('server-side error', error);
                 errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
             }
+            this.resetCaptcha();
         }
         return throwError(errorMessage);
     }
@@ -112,14 +125,41 @@ export class RegisterComponent {
         }
     }
 
-    loadCaptchaScript(locale) {
+    loadCaptchaScript() {
         if (!AppConfig.HCAPTCHA_SITE_KEY) {
             return;
         }
         const node = document.createElement('script');
-        node.src = 'https://hcaptcha.com/1/api.js?hl=' + locale;
-        node.type = 'text/javascript';
-        node.async = true;
-        document.getElementsByTagName('head')[0].appendChild(node);
+        node.id = 'hcaptcha-script';
+
+        if (window.hcaptcha === null) {
+            node.type = 'text/javascript';
+            node.async = true;
+            node.onload = function () {
+                this.renderCaptcha();
+            }.bind(this);
+            node.src = 'https://hcaptcha.com/1/api.js?hl=' + this.locale;
+            document.getElementsByTagName('head')[0].appendChild(node);
+        } else {
+            this.renderCaptcha();
+        }
+    }
+
+    resetCaptcha() {
+        if (window.hcaptcha === null) {
+            return;
+        }
+        this.user.captchaToken = null;
+        window.hcaptcha.reset();
+    }
+
+    renderCaptcha() {
+        if (window.hcaptcha === null) {
+            return;
+        }
+        window.hcaptcha.render('h-captcha', {
+            sitekey: AppConfig.HCAPTCHA_SITE_KEY,
+            callback: this.captchaCallback.bind(this),
+        });
     }
 }
