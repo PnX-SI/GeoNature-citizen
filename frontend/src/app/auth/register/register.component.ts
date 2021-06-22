@@ -52,9 +52,10 @@ export class RegisterComponent {
                 map((user) => {
                     if (user) {
                         const message = user.message;
-                        this._success.subscribe(
-                            (message) => (this.successMessage = message)
-                        );
+                        this._success.subscribe((message) => {
+                            this.errorMessage = null;
+                            return (this.successMessage = message);
+                        });
                         this._success.pipe(debounceTime(5000)).subscribe(() => {
                             this.successMessage = null;
                             this.activeModal.close();
