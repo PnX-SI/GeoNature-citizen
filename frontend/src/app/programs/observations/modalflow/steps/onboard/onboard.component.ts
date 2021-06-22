@@ -42,7 +42,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
                 this.timeout = setTimeout(() => this.data.next(), 0);
             }
             if (AppConfig.signup === 'never') {
-                this.data.next();
+                this.continue();
             }
         });
     }
