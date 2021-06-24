@@ -19,7 +19,7 @@ sudo -n -u postgres psql -c "ALTER ROLE $user_pg WITH LOGIN;"
 sudo -n -u postgres createdb -O $user_pg $pg_dbname -T template0 -E UTF-8
 
 cd $HOME
-if [ ! -d $HOME/taxhub ] && [ $install_taxhub ]; then
+if [ ! -d $HOME/taxhub ]; then
   wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_version.zip
   unzip $taxhub_version.zip
   mv TaxHub-$taxhub_version/ taxhub/

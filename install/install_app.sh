@@ -161,7 +161,7 @@ sudo supervisorctl reread
 sudo supervisorctl reload
 
 # Installation de Taxhub si demandée
-if [ $install_taxhub -ne 0 ]; then
+if $install_taxhub; then
   echo "Installing taxhub"
   ./install_taxhub.sh
 fi
