@@ -145,19 +145,19 @@ def registration():
             handler.close()
 
 
-
-        if current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"] == False:
-            message = """Félicitations, l'utilisateur "{}" a été créé.""".format(
-                newuser.username
-            ),
-        else:
-            message = """Félicitations, l'utilisateur "{}" a été créé.  \r\n Vous allez recevoir un email pour activer votre compte """.format(
-                newuser.username
-            ),
-            try:
+        try:
+            if current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"] == False:
+                message = """Félicitations, l'utilisateur "{}" a été créé.""".format(
+                    newuser.username
+                ),
+                confirm_user_email(newuser, with_confirm_link=False)
+            else:
+                message = """Félicitations, l'utilisateur "{}" a été créé.  \r\n Vous allez recevoir un email pour activer votre compte """.format(
+                    newuser.username
+                ),
                 confirm_user_email(newuser)
-            except Exception as e:
-                return {"message mail faild": str(e)}, 500
+        except Exception as e:
+            return {"message mail faild": str(e)}, 500
 
         # send confirm mail
         return (
