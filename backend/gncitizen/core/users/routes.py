@@ -506,7 +506,7 @@ def reset_user_password():
                 str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
             )
             server.sendmail(
-                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
+                current_app.config["RESET_PASSWD"]["FROM"], user.email, msg.as_string()
             )
             server.quit()
         user.password = passwd_hash
