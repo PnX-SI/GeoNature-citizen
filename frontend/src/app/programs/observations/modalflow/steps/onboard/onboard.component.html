@@ -38,6 +38,7 @@
             class="sign col-lg-6 col-md-12"
             (click)="continue()"
             data-dismiss="modal"
+            [hidden]="AppConfig.signup === 'always'"
         >
             <i class="fa fa-user"></i>
             <span i18n="continue unregistered@@continueUnregistered">Continuer <br />sans s'enregistrer</span>

@@ -3,8 +3,8 @@
 
 import json
 import urllib.parse
-from flask import Blueprint, request, current_app
-from flask_jwt_extended import jwt_optional, get_jwt_identity
+from flask import Blueprint, request, current_app, send_from_directory
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_admin.form import SecureForm
 from flask_admin.contrib.geoa import ModelView
 from sqlalchemy.sql import func
@@ -30,13 +30,6 @@ from gncitizen.core.users.models import UserModel
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.sites.models import VisitModel, SiteModel
 
-from flask_jwt_extended.utils import (
-    decode_token,
-    has_user_loader,
-    user_loader,
-    verify_token_not_blacklisted,
-)
-from flask_jwt_extended.exceptions import UserLoadError
 from gncitizen.core.commons.admin import (
     ProjectView,
     ProgramView,
@@ -46,38 +39,54 @@ from gncitizen.core.commons.admin import (
 )
 from gncitizen.core.sites.models import CorProgramSiteTypeModel, SiteTypeModel
 from gncitizen.core.sites.admin import SiteTypeView
+from gncitizen.utils.env import MEDIA_DIR
 
-
-routes = Blueprint("commons", __name__)
+commons_api = Blueprint("commons", __name__)
 
 
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
-admin.add_view(ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes"))
-admin.add_view(GeometryView(GeometryModel, db.session, "2 - Zones geographiques", category="Enquêtes"))
-admin.add_view(CustomFormView(CustomFormModel, db.session, "3a - Formulaires dynamiques", category="Enquêtes"))
-admin.add_view(SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes"))
-admin.add_view(ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"))
+admin.add_view(
+    ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes")
+)
+admin.add_view(
+    GeometryView(
+        GeometryModel, db.session, "2 - Zones geographiques", category="Enquêtes"
+    )
+)
+admin.add_view(
+    CustomFormView(
+        CustomFormModel, db.session, "3a - Formulaires dynamiques", category="Enquêtes"
+    )
+)
+admin.add_view(
+    SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes")
+)
+admin.add_view(
+    ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes")
+)
 
 
+@commons_api.route("media/<item>")
+def get_media(item):
+    return send_from_directory(str(MEDIA_DIR), item)
 
 
-
-@routes.route("/modules/<int:pk>", methods=["GET"])
+@commons_api.route("/modules/<int:pk>", methods=["GET"])
 @json_resp
 def get_module(pk):
     """Get a module by id
-         ---
-         tags:
-          - Core
-         parameters:
-          - name: pk
-            in: path
-            type: integer
-            required: true
-            example: 1
-         responses:
-           200:
-             description: A module description
+    ---
+    tags:
+     - Core
+    parameters:
+     - name: pk
+       in: path
+       type: integer
+       required: true
+       example: 1
+    responses:
+      200:
+        description: A module description
     """
     try:
         datas = TModules.query.filter_by(id_module=pk).first()
@@ -87,16 +96,16 @@ def get_module(pk):
         return {"message": str(e)}, 400
 
 
-@routes.route("/modules", methods=["GET"])
+@commons_api.route("/modules", methods=["GET"])
 @json_resp
 def get_modules():
     """Get all modules
-        ---
-        tags:
-          - Core
-        responses:
-          200:
-            description: A list of all programs
+    ---
+    tags:
+      - Core
+    responses:
+      200:
+        description: A list of all programs
     """
     try:
         modules = TModules.query.all()
@@ -111,7 +120,7 @@ def get_modules():
         return {"message": str(e)}, 400
 
 
-@routes.route("/stats", methods=["GET"])
+@commons_api.route("/stats", methods=["GET"])
 @json_resp
 def get_stat():
     try:
@@ -130,24 +139,24 @@ def get_stat():
         return {"message": str(e)}, 400
 
 
-@routes.route("/projects", methods=["GET"])
-# @routes.route("/projects", methods=["GET"])
+@commons_api.route("/projects", methods=["GET"])
+# @commons_api.route("/projects", methods=["GET"])
 @json_resp
 def get_projects():
     """Get a project description details by id
-         ---
-         tags:
-          - Core
-         parameters:
-          - name: pk
-            in: path
-            type: integer
-            required: true
-            example: 1
-         responses:
-           200:
-             description: Description of a project and their child programs
-         """
+    ---
+    tags:
+     - Core
+    parameters:
+     - name: pk
+       in: path
+       type: integer
+       required: true
+       example: 1
+    responses:
+      200:
+        description: Description of a project and their child programs
+    """
     qprojects = ProjectModel.query.all()
     if len(qprojects) == 0:
         current_app.logger.warning("[get_projects] No projects")
@@ -156,23 +165,23 @@ def get_projects():
     return data
 
 
-@routes.route("/projects/<int:pk>/programs", methods=["GET"])
+@commons_api.route("/projects/<int:pk>/programs", methods=["GET"])
 @json_resp
 def get_project_programs(pk):
     """Get a project description details by id
-         ---
-         tags:
-          - Core
-         parameters:
-          - name: pk
-            in: path
-            type: integer
-            required: true
-            example: 1
-         responses:
-           200:
-             description: Description of a project and their child programs
-         """
+    ---
+    tags:
+     - Core
+    parameters:
+     - name: pk
+       in: path
+       type: integer
+       required: true
+       example: 1
+    responses:
+      200:
+        description: Description of a project and their child programs
+    """
     qproject = ProjectModel.query.filter_by(id_project=pk).first()
     if not qproject:
         current_app.logger.warning("[get_project] Project not found")
@@ -188,23 +197,23 @@ def get_project_programs(pk):
     return project
 
 
-@routes.route("/projects/<int:pk>/stats", methods=["GET"])
+@commons_api.route("/projects/<int:pk>/stats", methods=["GET"])
 @json_resp
 def get_project_stats(pk):
     """Get a project general stats
-         ---
-         tags:
-          - Core
-         parameters:
-          - name: pk
-            in: path
-            type: integer
-            required: true
-            example: 1
-         responses:
-           200:
-             description: Project general statistics (various counters)
-         """
+    ---
+    tags:
+     - Core
+    parameters:
+     - name: pk
+       in: path
+       type: integer
+       required: true
+       example: 1
+    responses:
+      200:
+        description: Project general statistics (various counters)
+    """
     project = ProjectModel.query.filter_by(id_project=pk).first()
     if not project:
         current_app.logger.warning("[get_project] Project not found")
@@ -215,9 +224,9 @@ def get_project_stats(pk):
                 func.count(distinct(ObservationModel.id_observation))
                 + func.count(distinct(VisitModel.id_visit))
             ).label("observations"),
-            func.count(distinct(ObservationModel.id_role),).label(
-                "registered_contributors"
-            ),
+            func.count(
+                distinct(ObservationModel.id_role),
+            ).label("registered_contributors"),
             func.count(distinct(ProgramsModel.id_program)).label("programs"),
             func.count(distinct(ObservationModel.cd_nom)).label("taxa"),
             func.count(distinct(SiteModel.id_site)).label("sites"),
@@ -235,23 +244,23 @@ def get_project_stats(pk):
     return query.first()._asdict()
 
 
-@routes.route("/programs/<int:pk>", methods=["GET"])
+@commons_api.route("/programs/<int:pk>", methods=["GET"])
 @json_resp
 def get_program(pk):
     """Get an observation by id
-         ---
-         tags:
-          - Core
-         parameters:
-          - name: pk
-            in: path
-            type: integer
-            required: true
-            example: 1
-         responses:
-           200:
-             description: A list of all programs
-         """
+    ---
+    tags:
+     - Core
+    parameters:
+     - name: pk
+       in: path
+       type: integer
+       required: true
+       example: 1
+    responses:
+      200:
+        description: A list of all programs
+    """
     # try:
     datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
     if datas.count() != 1:
@@ -276,23 +285,23 @@ def get_program(pk):
     #     return {"message": str(e)}, 400
 
 
-@routes.route("/customform/<int:pk>", methods=["GET"])
+@commons_api.route("/customform/<int:pk>", methods=["GET"])
 @json_resp
 def get_custom_form(pk):
     """Get a custom form by id
-         ---
-         tags:
-          - Core
-         parameters:
-          - name: pk
-            in: path
-            type: integer
-            required: true
-            example: 1
-         responses:
-           200:
-             description: A custom form
-         """
+    ---
+    tags:
+     - Core
+    parameters:
+     - name: pk
+       in: path
+       type: integer
+       required: true
+       example: 1
+    responses:
+      200:
+        description: A custom form
+    """
     try:
         form = CustomFormModel.query.get(pk)
         return form.as_dict(True), 200
@@ -300,24 +309,24 @@ def get_custom_form(pk):
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/programs/<int:pk>/customform/", methods=["GET"])
-@routes.route("/programs/<int:pk>/customform", methods=["GET"])
+@commons_api.route("/programs/<int:pk>/customform/", methods=["GET"])
+@commons_api.route("/programs/<int:pk>/customform", methods=["GET"])
 @json_resp
 def get_program_custom_form(pk):
     """Get a custom form by program id
-         ---
-         tags:
-          - Core
-         parameters:
-          - name: pk
-            in: path
-            type: integer
-            required: true
-            example: 1
-         responses:
-           200:
-             description: A custom form
-         """
+    ---
+    tags:
+     - Core
+    parameters:
+     - name: pk
+       in: path
+       type: integer
+       required: true
+       example: 1
+    responses:
+      200:
+        description: A custom form
+    """
     try:
         program = ProgramsModel.query.get(pk)
         if program.id_form is not None:
@@ -328,21 +337,21 @@ def get_program_custom_form(pk):
         return {"error_message": str(e)}, 400
 
 
-@routes.route("/programs", methods=["GET"])
+@commons_api.route("/programs", methods=["GET"])
 @json_resp
 def get_programs():
     """Get all programs
-        ---
-        tags:
-          - Core
-        parameters:
-          - name: with_geom
-            in: query
-            type: boolean
-            description: geom desired (true) or not (false, default)
-        responses:
-          200:
-            description: A list of all programs
+    ---
+    tags:
+      - Core
+    parameters:
+      - name: with_geom
+        in: query
+        type: boolean
+        description: geom desired (true) or not (false, default)
+    responses:
+      200:
+        description: A list of all programs
     """
     try:
         # get whith_geom argument from url (?with_geom=true)

@@ -4,9 +4,8 @@ from flask import request, Blueprint, current_app
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
-    get_raw_jwt,
+    get_jwt,
     get_jwt_identity,
-    jwt_refresh_token_required,
     jwt_required,
 )
 from sqlalchemy import func
@@ -26,16 +25,10 @@ from email.mime.text import MIMEText
 import base64
 
 
-routes = Blueprint("users", __name__)
+users_api = Blueprint("users", __name__)
 
 
-@jwt.token_in_blacklist_loader
-def check_if_token_in_blacklist(decrypted_token):
-    jti = decrypted_token["jti"]
-    return RevokedTokenModel.is_jti_blacklisted(jti)
-
-
-@routes.route("/registration", methods=["POST"])
+@users_api.route("/registration", methods=["POST"])
 @json_resp
 def registration():
     """
@@ -170,7 +163,7 @@ def registration():
         return {"message": str(e)}, 500
 
 
-@routes.route("/login", methods=["POST"])
+@users_api.route("/login", methods=["POST"])
 @json_resp
 def login():
     """
@@ -237,9 +230,9 @@ def login():
         return {"message": str(e)}, 400
 
 
-@routes.route("/logout", methods=["POST"])
+@users_api.route("/logout", methods=["POST"])
 @json_resp
-@jwt_required
+@jwt_required()
 def logout():
     """
     User logout
@@ -268,7 +261,7 @@ def logout():
         description: user disconnected
 
     """
-    jti = get_raw_jwt()["jti"]
+    jti = get_jwt()["jti"]
     try:
         revoked_token = RevokedTokenModel(jti=jti)
         revoked_token.add()
@@ -277,8 +270,8 @@ def logout():
         return {"message": "Something went wrong"}, 500
 
 
-@routes.route("/token_refresh", methods=["POST"])
-@jwt_refresh_token_required
+@users_api.route("/token_refresh", methods=["POST"])
+@jwt_required(refresh=True)
 @json_resp
 def token_refresh():
     """Refresh token
@@ -297,9 +290,9 @@ def token_refresh():
     return {"access_token": access_token}
 
 
-@routes.route("/allusers", methods=["GET"])
+@users_api.route("/allusers", methods=["GET"])
 @json_resp
-@jwt_required
+@jwt_required()
 @admin_required
 def get_allusers():
     """list all users
@@ -318,9 +311,9 @@ def get_allusers():
     return allusers, 200
 
 
-@routes.route("/user/info", methods=["GET", "PATCH"])
+@users_api.route("/user/info", methods=["GET", "PATCH"])
 @json_resp
-@jwt_required
+@jwt_required()
 def logged_user():
     """current user model
     ---
@@ -410,9 +403,9 @@ def logged_user():
         )
 
 
-@routes.route("/user/delete", methods=["DELETE"])
+@users_api.route("/user/delete", methods=["DELETE"])
 @json_resp
-@jwt_required
+@jwt_required()
 def delete_user():
     """list all logged users
     ---
@@ -460,7 +453,7 @@ def delete_user():
         )
 
 
-@routes.route("/user/resetpasswd", methods=["POST"])
+@users_api.route("/user/resetpasswd", methods=["POST"])
 @json_resp
 def reset_user_password():
     request_datas = dict(request.get_json())
@@ -536,7 +529,7 @@ def reset_user_password():
         )
 
 
-@routes.route("/user/confirmEmail/<token>", methods=["GET"])
+@users_api.route("/user/confirmEmail/<token>", methods=["GET"])
 @json_resp
 def confirm_email(token):
     try:

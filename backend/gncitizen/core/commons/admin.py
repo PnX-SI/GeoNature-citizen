@@ -10,15 +10,8 @@ from flask import Blueprint, current_app, request, flash
 from flask_admin.contrib.geoa import ModelView
 from flask_admin.form import SecureForm
 from flask_admin.form.upload import FileUploadField
-from flask_ckeditor import CKEditorField
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended.exceptions import UserLoadError
-from flask_jwt_extended.utils import (
-    decode_token,
-    has_user_loader,
-    user_loader,
-    verify_token_not_blacklisted,
-)
+from flask_ckeditor import CKEditorField 
+
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
@@ -84,6 +77,7 @@ class ProjectView(ModelView):
     create_template = "edit.html"
     edit_template = "edit.html"
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
+    column_exclude_list = ['long_desc','short_desc']
 
 
 class ProgramView(ModelView):
@@ -93,6 +87,7 @@ class ProgramView(ModelView):
     create_template = "edit.html"
     edit_template = "edit.html"
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
+    column_exclude_list = ['long_desc','form_message','short_desc','image','logo']
     inline_models = [
         (
             CorProgramSiteTypeModel,

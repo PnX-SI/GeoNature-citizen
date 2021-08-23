@@ -22,7 +22,7 @@ export const AppConfig = {
       fr: "assets/cgu.pdf",
       en: "assets/termsOfUse.pdf"
     },
-    signup:true,
+    signup: "optional", // never|optional|always
     email_contact:false,
     platform_intro: {
       fr: "Bienvenue<br /> sur GeoNature Citizen",

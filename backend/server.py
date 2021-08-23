@@ -49,28 +49,24 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     app = Flask(__name__)
     app.config.update(config)
-
     if app.config["DEBUG"]:
         from flask.logging import default_handler
-        import colorlog
+        import coloredlogs
 
-        handler = colorlog.StreamHandler()
-        handler.setFormatter(
-            colorlog.ColoredFormatter(
-                """%(log_color)s%(asctime)s %(levelname)s:%(name)s:%(message)s [in %(pathname)s:%(lineno)d]"""
-            )
-        )
-
+        app.config["SQLALCHEMY_ECHO"] = True
         logger = logging.getLogger("werkzeug")
-        logger.addHandler(handler)
-        app.logger.removeHandler(default_handler)
 
-        for l in logging.Logger.manager.loggerDict.values():
-            if hasattr(l, "handlers"):
-                l.handlers = [handler]
+        coloredlogs.install(
+            level=logging.DEBUG,
+            fmt="%(asctime)s %(hostname)s %(name)s[%(process)d] [in %(pathname)s:%(lineno)d] %(levelname)s %(message)s",
+        )
+        logger.removeHandler(default_handler)
+
+        # for l in logging.Logger.manager.loggerDict.values():
+        #     if hasattr(l, "handlers"):
+        #         l.handlers = [handler]
 
     # else:
-    #     # TODO: sourced from app.config['LOGGING']
     #     logging.basicConfig()
     #     logger = logging.getLogger()
     #     logger.setLevel(logging.INFO)
@@ -88,45 +84,33 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     # Bind app to DB
     db.init_app(app)
-
     # JWT Auth
     jwt.init_app(app)
-
     swagger.init_app(app)
-
     admin.init_app(app)
-
     ckeditor.init_app(app)
 
     with app.app_context():
 
-        from gncitizen.core.users.routes import routes
+        create_schemas(db)
+        db.create_all()
+        populate_modules(db)
 
-        app.register_blueprint(routes, url_prefix=url_prefix)
+        from gncitizen.core.users.routes import users_api
+        from gncitizen.core.commons.routes import commons_api
+        from gncitizen.core.observations.routes import obstax_api
+        from gncitizen.core.ref_geo.routes import geo_api
+        from gncitizen.core.badges.routes import badges_api
+        from gncitizen.core.taxonomy.routes import taxo_api
+        from gncitizen.core.sites.routes import sites_api
 
-        from gncitizen.core.commons.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix)
-
-        from gncitizen.core.observations.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix)
-
-        from gncitizen.core.ref_geo.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix)
-
-        from gncitizen.core.badges.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix)
-
-        from gncitizen.core.taxonomy.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix)
-
-        from gncitizen.core.sites.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix + "/sites")
+        app.register_blueprint(users_api, url_prefix=url_prefix)
+        app.register_blueprint(commons_api, url_prefix=url_prefix)
+        app.register_blueprint(obstax_api, url_prefix=url_prefix)
+        app.register_blueprint(geo_api, url_prefix=url_prefix)
+        app.register_blueprint(badges_api, url_prefix=url_prefix)
+        app.register_blueprint(taxo_api, url_prefix=url_prefix)
+        app.register_blueprint(sites_api, url_prefix=url_prefix + "/sites")
 
         CORS(app, supports_credentials=True)
 
@@ -150,11 +134,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 module.backend.blueprint.blueprint.config = conf
                 app.config[manifest["module_name"]] = conf
 
-        _app = app
+        # _app = app
 
-        create_schemas(db)
-        db.create_all()
-        populate_modules(db)
 
 
     return app

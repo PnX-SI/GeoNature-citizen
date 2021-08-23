@@ -13,8 +13,7 @@ echo "MMMNdyssssssssshmdssoo+odMMMMMNdysssssssssssssshNMMMNsssssMMMNdyssssssssss
 echo "MMMMMMNmddhhhhhdmMMdyssohMMMMMMMMNmdhhhhhhddmNMMMMMMMhhhhhMMMMMMMNmddhhhhhdmNMMM"
 echo ""
 
-
-. ../../config/settings.ini
+. ../../../config/settings.ini
 
 my_url="${my_url//\//\\/}"
 
@@ -24,7 +23,6 @@ if test -f "$FILE"; then
     echo "Suppression du $FILE déjà présent"
     rm citizenOnQgis-admin.qgs
 fi
-
 
 cp citizenOnQgis-admin.qgs.template citizenOnQgis-admin.qgs
 echo ""
