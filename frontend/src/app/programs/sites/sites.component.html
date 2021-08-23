@@ -19,8 +19,9 @@
                     add-obs
                     (click)="addSiteClicked()"
                     *ngIf="!userDashboard"
-                    ngbTooltip="Ajouter un site"
+                    [ngbTooltip]="tooltipAddButton"
                     placement="bottom"
+                    [disabled]="!canAddSite"
                 >
                     Ajouter
                 </button>

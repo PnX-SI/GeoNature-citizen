@@ -19,6 +19,9 @@ import { SitesMapComponent } from './map/map.component';
 import { SitesListComponent } from './list/list.component';
 import { SiteModalFlowComponent } from './modalflow/modalflow.component';
 import { ProgramBaseComponent } from '../base/program-base.component';
+import { conditionallyCreateMapObjectLiteral } from '@angular/compiler/src/render3/view/util';
+import { MapService } from '../base/map/map.service';
+
 
 @Component({
     selector: 'app-sites',
@@ -34,6 +37,8 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
     title = 'Sites';
     sites: FeatureCollection;
     userDashboard = false;
+    canAddSite = false;
+    tooltipAddButton = 'Cliquez d\'abord sur la carte avant d\'ajouter un point';
     @ViewChild(SitesMapComponent, { static: true }) sitesMap: SitesMapComponent;
     @ViewChild(SitesListComponent, { static: true })
     sitesList: SitesListComponent;
@@ -44,7 +49,8 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
         private route: ActivatedRoute,
         private programService: GncProgramsService,
         public flowService: SiteModalFlowService,
-        public siteService: SiteService
+        public siteService: SiteService,
+        private mapService: MapService
     ) {
         super();
         this.route.params.subscribe(
@@ -59,6 +65,11 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.mapService.coordsChange.subscribe((_value) => {
+            this.canAddSite = true;
+            this.tooltipAddButton = 'Ajouter un site';
+        });
+
         this.route.data.subscribe((data: { programs: Program[] }) => {
             // TODO: merge observables
             this.programs = data.programs;
@@ -79,7 +90,6 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
                 this.sites = sites;
             });
     }
-
     addSiteClicked() {
         this.modalFlow.first.clicked();
     }
