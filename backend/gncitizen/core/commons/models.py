@@ -165,6 +165,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     title = db.Column(db.String(50), nullable=False)
     short_desc = db.Column(db.String(200), nullable=False)
     long_desc = db.Column(db.Text(), nullable=False)
+    geometry_type = db.Column(db.String(100))
     form_message = db.Column(db.String(500))
     image = db.Column(db.String(250))
     logo = db.Column(db.String(250))

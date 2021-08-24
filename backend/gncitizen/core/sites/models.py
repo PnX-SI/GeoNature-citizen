@@ -64,7 +64,7 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
         db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False
     )
     site_type = relationship("SiteTypeModel")
-    geom = db.Column(Geometry("POINT", 4326))
+    geom = db.Column(Geometry("GEOMETRY", 4326))
 
     def __repr__(self):
         return "<Site {0}>".format(self.id_site)
