@@ -3,6 +3,7 @@
 
 from datetime import datetime
 import uuid
+import enum
 
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
@@ -147,6 +148,10 @@ class ProjectModel(TimestampMixinModel, db.Model):
     def __repr__(self):
         return self.name
 
+class GeometryTypeEnum(enum.Enum):
+    POINT = 'point'
+    LINESTRING = 'ligne'
+    POLYGON = 'polygone'
 
 @serializable
 @geoserializable
@@ -165,7 +170,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     title = db.Column(db.String(50), nullable=False)
     short_desc = db.Column(db.String(200), nullable=False)
     long_desc = db.Column(db.Text(), nullable=False)
-    geometry_type = db.Column(db.String(100))
+    geometry_type = db.Column(db.Enum(GeometryTypeEnum))
     form_message = db.Column(db.String(500))
     image = db.Column(db.String(250))
     logo = db.Column(db.String(250))
