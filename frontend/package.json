@@ -1,6 +1,6 @@
 {
     "name": "frontend",
-    "version": "0.99.3-dev",
+    "version": "0.99.4-dev",
     "scripts": {
         "ng": "ng",
         "start": "ng serve --poll 2000",

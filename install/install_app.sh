@@ -8,7 +8,7 @@ DIR=$(pwd)
 if [ ! -f config/settings.ini ]; then
   echo 'Fichier de configuration du projet non existant, copie du template...'
   cp config/settings.ini.template config/settings.ini
-  echo "Fichier de config disponible : $DIR."
+  echo "Fichier de config disponible : $DIR/config/settings.ini."
   echo "Merci de renseigner le fichier et de relancer la commande install_app.sh."
   exit
 fi
@@ -19,7 +19,7 @@ fi
 sudo apt update && sudo apt -y install python2.7 git gcc curl gunicorn python-setuptools lsb-release apt-transport-https wget
 sudo apt -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl libbz2-dev
 sudo apt -y install apache2 python-dev libpq-dev libgeos-dev supervisor unzip virtualenv libcurl4-openssl-dev libssl-dev
-sudo apt -y install libglib2.0-0 libsm6 libxext6 libxrender-dev
+sudo apt -y install build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev
 
 RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME |cut -d "=" -f2)
 sudo apt install python3 python3-dev python3-pip -y
@@ -56,7 +56,7 @@ set -ex
 #adduser synthese www-data
 #fi
 cd $HOME
-python3 -m pip install virtualenv==20.0.1 --user
+python3 -m pip install poetry --user
 
 sudo a2enmod rewrite proxy proxy_http
 sudo apache2ctl restart
@@ -213,14 +213,13 @@ fi
 cd ..
 
 # Création du venv
-venv_path=$DIR/backend/${venv_dir:-"venv"}
-if [ ! -f $venv_path/bin/activate ]; then
-  python3 -m virtualenv $venv_path
-fi
-source $venv_path/bin/activate
-pip install --upgrade pip
-pip install -r backend/requirements.txt
-deactivate
+# venv_path=$DIR/backend/${venv_dir:-"venv"}
+# if [ ! -f $venv_path/bin/activate ]; then
+#   python3 -m virtualenv $venv_path
+# fi
+cd $DIR/backend
+poetry install
+cd $DIR 
 
 # Copy main medias to media
 mkdir -p $DIR/media

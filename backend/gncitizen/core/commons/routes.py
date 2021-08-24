@@ -224,9 +224,9 @@ def get_project_stats(pk):
                 func.count(distinct(ObservationModel.id_observation))
                 + func.count(distinct(VisitModel.id_visit))
             ).label("observations"),
-            func.count(
-                distinct(ObservationModel.id_role),
-            ).label("registered_contributors"),
+            func.count(distinct(ObservationModel.id_role),).label(
+                "registered_contributors"
+            ),
             func.count(distinct(ProgramsModel.id_program)).label("programs"),
             func.count(distinct(ObservationModel.cd_nom)).label("taxa"),
             func.count(distinct(SiteModel.id_site)).label("sites"),

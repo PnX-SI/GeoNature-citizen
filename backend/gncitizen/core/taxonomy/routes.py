@@ -89,34 +89,11 @@ def get_list(id):
             description: A list of all species lists
         """
 
-    if current_app.config.get("API_TAXHUB") is not None:
-        current_app.logger.info("Calling TaxHub REST API.")
-        return mkTaxonRepository(id)
-
-    else:
-        current_app.logger.info("Select TaxHub schema.")
-        try:
-            data = (
-                db.session.query(BibNoms, Taxref, TMedias)
-                .distinct(BibNoms.cd_ref)
-                .join(CorNomListe, CorNomListe.id_nom == BibNoms.id_nom)
-                .join(Taxref, Taxref.cd_ref == BibNoms.cd_ref)
-                .outerjoin(TMedias, TMedias.cd_ref == BibNoms.cd_ref)
-                .filter(CorNomListe.id_liste == id)
-                .all()
-            )
-            # current_app.logger.debug(
-            #     [{'nom': d[0], 'taxref': d[1]} for d in data])
-            return [
-                {
-                    "nom": d[0].as_dict(),
-                    "taxref": d[1].as_dict(),
-                    "medias": d[2].as_dict() if d[2] else None,
-                }
-                for d in data
-            ]
-        except Exception as e:
-            return {"message": str(e)}, 400
+    try:
+      r = mkTaxonRepository(id)
+      return r
+    except Exception as e:
+      return {"message": str(e)}, 400
 
 
 # @taxo_api.route('/taxonomy/lists/full', methods=['GET'])
