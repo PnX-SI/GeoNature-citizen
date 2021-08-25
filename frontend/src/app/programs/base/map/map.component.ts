@@ -275,7 +275,7 @@ export abstract class BaseMapComponent implements OnChanges {
                     case 'LINESTRING':
                         this.observationMap.on('mousemove', (e: L.LeafletMouseEvent) => {
                             if (polyline) {
-                                const lastDrawPoint = polyline.getLatLngs()[polyline.getLatLngs().length - 1];
+                                const lastDrawPoint: L.LatLng = polyline.getLatLngs()[polyline.getLatLngs().length - 1] as L.LatLng;
                                 lineDraw.setLatLngs([lastDrawPoint, e.latlng]);
                             }
                         });
