@@ -287,30 +287,31 @@ export abstract class BaseMapComponent implements OnChanges {
                     const z = this.observationMap.getZoom();
                     const coords = L.point(e.latlng.lng, e.latlng.lat);
 
+
+                    if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+                        // this.hasZoomAlert = true;
+                        L.DomUtil.addClass(
+                            this.observationMap.getContainer(),
+                            'observation-zoom-statement-warning'
+                        );
+                        if (this.zoomAlertTimeout) {
+                            clearTimeout(this.zoomAlertTimeout);
+                        }
+                        this.zoomAlertTimeout = setTimeout(() => {
+                            L.DomUtil.removeClass(
+                                this.observationMap.getContainer(),
+                                'observation-zoom-statement-warning'
+                            );
+                        }, 400);
+                        return;
+                    }
+
                     //TODO switch geometryType and add other kind of stuffs than marker
                     switch (geometryType) {
                         case 'POINT':
                         default:
                             if (this.newObsMarker !== null) {
                                 this.observationMap.removeLayer(this.newObsMarker);
-                            }
-
-                            if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
-                                // this.hasZoomAlert = true;
-                                L.DomUtil.addClass(
-                                    this.observationMap.getContainer(),
-                                    'observation-zoom-statement-warning'
-                                );
-                                if (this.zoomAlertTimeout) {
-                                    clearTimeout(this.zoomAlertTimeout);
-                                }
-                                this.zoomAlertTimeout = setTimeout(() => {
-                                    L.DomUtil.removeClass(
-                                        this.observationMap.getContainer(),
-                                        'observation-zoom-statement-warning'
-                                    );
-                                }, 400);
-                                return;
                             }
                             // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
                             // POSSIBLE SOLUTION: See ray casting algorithm for inspiration
