@@ -103,6 +103,7 @@ export abstract class BaseMapComponent implements OnChanges {
     @Input('features') features: FeatureCollection;
     @Input('program') program: FeatureCollection;
     @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
+    @Output() onClick2: EventEmitter<L.Polyline> = new EventEmitter();
     options: any;
     observationMap: L.Map;
     programMaxBounds: L.LatLngBounds;
@@ -346,13 +347,19 @@ export abstract class BaseMapComponent implements OnChanges {
                                 ) {
                                     previousPolyline = polyline;
                                     polyline.setStyle({ color: '#60b15c' });
+                                    this.mapService.changeLine(polyline);
+                                    this.onClick2.emit(polyline);
                                     polyline = null;
-                                    this.mapService.changePoint(coords);
                                 } else {
                                     polyline.addLatLng(e.latlng);
                                     previousLayerPoint = e.layerPoint;
                                 }
                             }
+                            // // emit new coordinates
+                            // this.onClick.emit(coords);
+                            this.onClick2.emit(polyline);
+                            
+                            break;
                     }
                 });
             }

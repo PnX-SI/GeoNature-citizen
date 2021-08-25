@@ -51,6 +51,7 @@ export class SiteFormComponent implements AfterViewInit {
     private readonly URL = AppConfig.API_ENDPOINT;
     @Input('data') data;
     @Input('coords') coords: L.Point;
+    @Input('line') line: L.Polyline;
     @Input('program_id') program_id: number;
     @ViewChild('photo', { static: true }) photo: ElementRef;
     program: any;
@@ -78,13 +79,17 @@ export class SiteFormComponent implements AfterViewInit {
         if (this.data.updateData) {
             this.patchForm(this.data.updateData);
         }
+ 
         this.mapService.coordsChange.subscribe((value) => {
             this.coords = value;
+            //TODO switch geometry_type or find from this.coords
+
             const geo_coords = <Point>{
                 type: 'Point',
                 coordinates: <Position>[this.coords.x, this.coords.y],
             };
             this.siteForm.patchValue({ geometry: geo_coords });
+            //TODO switch geometry_type
             if (this.mapVars.minimapMarker)
                 this.formMap.removeLayer(this.mapVars.minimapMarker);
             this.mapVars.minimapMarker = L.marker(
@@ -94,6 +99,13 @@ export class SiteFormComponent implements AfterViewInit {
                 }
             ).addTo(this.formMap);
         });
+
+        this.mapService.lineChange.subscribe((value) => {
+            this.line = value;
+        });
+        console.log('siteformcomponent class', this);
+        console.log('this.coords in ngOnInit', this.coords);
+        console.log('this.line in ngOnInit', this.line);
     }
 
     ngAfterViewInit(): void {
@@ -102,10 +114,8 @@ export class SiteFormComponent implements AfterViewInit {
             .subscribe((result) => {
                 this.program = result;
                 this.site_types = this.program.features[0].site_types;
-                console.debug('site_types',this.site_types);
+                console.debug('site_types', this.site_types);
                 console.debug('prev', this.siteForm);
-                console.log('program in site form', this.program);
-                console.log('geometry_type in site form', this.program.geometry_type);
                 if (this.site_types.length == 1) {
                     this.siteForm.patchValue({
                         id_type: this.site_types[0].value,
@@ -162,68 +172,91 @@ export class SiteFormComponent implements AfterViewInit {
                 formMap.fitBounds(maxBounds);
                 formMap.setMaxBounds(maxBounds);
 
-                // Set initial observation marker from main map if already spotted
-                
-                
-                // TODO: keep the marker in case of Point, but draw the feature in case of Line/Polygon
-                
-                
+                const geometryType = this.program.features[0].properties.geometry_type;
                 let myMarker = null;
-                if (this.coords) {
-                    const geo_coords = <Point>{
-                        type: 'Point',
-                        coordinates: <Position>[this.coords.x, this.coords.y],
-                    };
-                    this.siteForm.patchValue({ geometry: geo_coords });
 
-                    myMarker = L.marker([this.coords.y, this.coords.x], {
-                        icon: siteFormMarkerIcon,
-                    }).addTo(formMap);
+                console.log('this.coords', this.coords);
+                console.log('this.line', this.line);
+
+                if (this.coords) { // Set initial observation marker from main map if already spotted
+                    switch (geometryType) {
+                        case 'POINT': //TODO: other geom
+                        default:
+                            let geo_coords = <Point>{
+                                type: 'Point',
+                                coordinates: <Position>[this.coords.x, this.coords.y],
+                            };
+                            this.siteForm.patchValue({ geometry: geo_coords });
+                            myMarker = L.marker([this.coords.y, this.coords.x], {
+                                icon: siteFormMarkerIcon,
+                            }).addTo(formMap);
+                            break;
+
+                        case 'LINESTRING':
+                            // let geo_coords = <Point>{
+                            //     type: 'Point',
+                            //     coordinates: <Position>[this.coords.x, this.coords.y],
+                            // };
+                            // this.siteForm.patchValue({ geometry: geo_coords });
+                            //TODO add the line to the map
+                            break;
+                    }
                 }
 
                 // Update marker on click event
                 formMap.on('click', (e: LeafletMouseEvent) => {
-                    let z = formMap.getZoom();
+                    const z = formMap.getZoom();
 
-                    if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
-                        // this.hasZoomAlert = true;
-                        console.debug('ZOOM ALERT', formMap);
-                        L.DomUtil.addClass(
-                            formMap.getContainer(),
-                            'observation-zoom-statement-warning'
-                        );
-                        if (this.zoomAlertTimeout) {
-                            clearTimeout(this.zoomAlertTimeout);
-                        }
-                        this.zoomAlertTimeout = setTimeout(() => {
-                            L.DomUtil.removeClass(
-                                formMap.getContainer(),
-                                'observation-zoom-statement-warning'
-                            );
-                            console.debug('Deactivating overlay', formMap);
-                        }, 2000);
-                        return;
-                    }
-                    // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
-                    // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
-                    if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
-                        if (myMarker) {
-                            // TODO: update marker coods inplace.
-                            // Implement draggable marker
-                            formMap.removeLayer(myMarker);
-                        }
-                        myMarker = L.marker(e.latlng, {
-                            icon: siteFormMarkerIcon,
-                        }).addTo(formMap);
-                        this.coords = L.point(e.latlng.lng, e.latlng.lat);
-                        // this.siteForm.patchValue({ geometry: this.coords });
-                        const coords = <Point>{
-                            type: 'Point',
-                            coordinates: <Position>[e.latlng.lng, e.latlng.lat],
-                        };
-                        this.siteForm.patchValue({ geometry: coords });
+                    switch (geometryType) {
+                        case 'POINT':
+                        default:
+                            if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+                                // this.hasZoomAlert = true;
+                                console.debug('ZOOM ALERT', formMap);
+                                L.DomUtil.addClass(
+                                    formMap.getContainer(),
+                                    'observation-zoom-statement-warning'
+                                );
+                                if (this.zoomAlertTimeout) {
+                                    clearTimeout(this.zoomAlertTimeout);
+                                }
+                                this.zoomAlertTimeout = setTimeout(() => {
+                                    L.DomUtil.removeClass(
+                                        formMap.getContainer(),
+                                        'observation-zoom-statement-warning'
+                                    );
+                                    console.debug('Deactivating overlay', formMap);
+                                }, 2000);
+                                return;
+                            }
+                            // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
+                            // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
+                            if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
+                                if (myMarker) {
+                                    // TODO: update marker coods inplace.
+                                    // Implement draggable marker
+                                    formMap.removeLayer(myMarker);
+                                }
+                                myMarker = L.marker(e.latlng, {
+                                    icon: siteFormMarkerIcon,
+                                }).addTo(formMap);
+                                //this.coords = L.point(e.latlng.lng, e.latlng.lat);
+                                // this.siteForm.patchValue({ geometry: this.coords });
+                                const coords = <Point>{
+                                    type: 'Point',
+                                    coordinates: <Position>[e.latlng.lng, e.latlng.lat],
+                                };
+                                this.siteForm.patchValue({ geometry: coords });
+                            }
+                            break;
+
+                        case 'LINESTRING':
+                            // DO NOT UPDATE on the form map!
+                            break;
+
                     }
                 });
+
                 this.mapVars = {
                     minimapMarker: myMarker,
                 };
@@ -233,7 +266,7 @@ export class SiteFormComponent implements AfterViewInit {
     patchForm(updateData): void {
         this.siteForm.patchValue({
             name: updateData.name,
-            geometry: this.data.coords ? this.coords : '',
+            geometry: this.data.coords ? this.coords : '', //TODO switch geom, or do it in the function above
             id_type: updateData.id_type,
             id_program: updateData.program_id,
             id_site: updateData.id_site,
