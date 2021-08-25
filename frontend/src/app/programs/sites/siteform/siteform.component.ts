@@ -104,6 +104,8 @@ export class SiteFormComponent implements AfterViewInit {
                 this.site_types = this.program.features[0].site_types;
                 console.debug('site_types',this.site_types);
                 console.debug('prev', this.siteForm);
+                console.log('program in site form', this.program);
+                console.log('geometry_type in site form', this.program.geometry_type);
                 if (this.site_types.length == 1) {
                     this.siteForm.patchValue({
                         id_type: this.site_types[0].value,
@@ -161,6 +163,11 @@ export class SiteFormComponent implements AfterViewInit {
                 formMap.setMaxBounds(maxBounds);
 
                 // Set initial observation marker from main map if already spotted
+                
+                
+                // TODO: keep the marker in case of Point, but draw the feature in case of Line/Polygon
+                
+                
                 let myMarker = null;
                 if (this.coords) {
                     const geo_coords = <Point>{

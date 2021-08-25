@@ -62,7 +62,7 @@ export const conf = {
             iconSize: [33, 42],
             iconAnchor: [16, 42],
         }),
-    OBSERVATION_LAYER: () =>
+    OBSERVATION_LAYER: () => //TODO marker or shape as a function of geometry type
         L.markerClusterGroup({
             iconCreateFunction: (clusters) => {
                 const childCount = clusters.getChildCount();
@@ -259,44 +259,100 @@ export abstract class BaseMapComponent implements OnChanges {
 
             this.newObsMarker = null;
             if (canSubmit) {
-                this.observationMap.on('click', (e: L.LeafletMouseEvent) => {
-                    const coords = L.point(e.latlng.lng, e.latlng.lat);
-                    if (this.newObsMarker !== null) {
-                        this.observationMap.removeLayer(this.newObsMarker);
-                    }
-                    const z = this.observationMap.getZoom();
+                let polyline: L.Polyline = null;
+                let previousPolyline: L.Polyline = null;
+                let previousLayerPoint: L.Point = null;
+                const lineDraw = L.polyline([], {
+                    color: '#11aa9e',
+                    dashArray: '6',
+                    lineCap: 'butt',
+                }).addTo(this.observationMap);
 
-                    if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
-                        // this.hasZoomAlert = true;
-                        L.DomUtil.addClass(
-                            this.observationMap.getContainer(),
-                            'observation-zoom-statement-warning'
-                        );
-                        if (this.zoomAlertTimeout) {
-                            clearTimeout(this.zoomAlertTimeout);
-                        }
-                        this.zoomAlertTimeout = setTimeout(() => {
-                            L.DomUtil.removeClass(
-                                this.observationMap.getContainer(),
-                                'observation-zoom-statement-warning'
-                            );
-                        }, 400);
-                        return;
+                const geometryType =
+                    this.program.features[0].properties.geometry_type;
+
+                switch (geometryType){
+                    case 'LINESTRING':
+                        this.observationMap.on('mousemove', (e: L.LeafletMouseEvent) => {
+                            if (polyline) {
+                                const lastDrawPoint = polyline.getLatLngs()[polyline.getLatLngs().length - 1];
+                                lineDraw.setLatLngs([lastDrawPoint, e.latlng]);
+                            }
+                        });
+                        break;
+                }
+
+                this.observationMap.on('click', (e: L.LeafletMouseEvent) => {
+
+                    const z = this.observationMap.getZoom();
+                    const coords = L.point(e.latlng.lng, e.latlng.lat);
+
+                    //TODO switch geometryType and add other kind of stuffs than marker
+                    switch (geometryType) {
+                        case 'POINT':
+                        default:
+                            if (this.newObsMarker !== null) {
+                                this.observationMap.removeLayer(this.newObsMarker);
+                            }
+
+                            if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+                                // this.hasZoomAlert = true;
+                                L.DomUtil.addClass(
+                                    this.observationMap.getContainer(),
+                                    'observation-zoom-statement-warning'
+                                );
+                                if (this.zoomAlertTimeout) {
+                                    clearTimeout(this.zoomAlertTimeout);
+                                }
+                                this.zoomAlertTimeout = setTimeout(() => {
+                                    L.DomUtil.removeClass(
+                                        this.observationMap.getContainer(),
+                                        'observation-zoom-statement-warning'
+                                    );
+                                }, 400);
+                                return;
+                            }
+                            // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
+                            // POSSIBLE SOLUTION: See ray casting algorithm for inspiration
+                            // https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
+                            if (
+                                this.program &&
+                                programBounds.contains([e.latlng.lat, e.latlng.lng])
+                            ) {
+                                this.newObsMarker = L.marker(e.latlng, {
+                                    icon: this.options.NEW_OBS_MARKER_ICON(),
+                                }).addTo(this.observationMap);
+                                this.mapService.changePoint(coords);
+                            }
+                            // emit new coordinates
+                            this.onClick.emit(coords);
+                            break;
+
+                        case 'LINESTRING':
+                            lineDraw.setLatLngs([]);
+                            if (polyline === null) {
+                                if (previousPolyline !== null){
+                                    this.observationMap.removeLayer(previousPolyline);
+                                }
+                                polyline = L.polyline([e.latlng], {
+                                    color: '#11aa9e',
+                                }).addTo(this.observationMap);
+                            } else {
+                                if (
+                                    (previousLayerPoint && e.layerPoint) ?
+                                        this.arePointsSnapped(previousLayerPoint, e.layerPoint) :
+                                        false
+                                ) {
+                                    previousPolyline = polyline;
+                                    polyline.setStyle({ color: '#60b15c' });
+                                    polyline = null;
+                                    this.mapService.changePoint(coords);
+                                } else {
+                                    polyline.addLatLng(e.latlng);
+                                    previousLayerPoint = e.layerPoint;
+                                }
+                            }
                     }
-                    // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
-                    // POSSIBLE SOLUTION: See ray casting algorithm for inspiration
-                    // https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
-                    if (
-                        this.program &&
-                        programBounds.contains([e.latlng.lat, e.latlng.lng])
-                    ) {
-                        this.newObsMarker = L.marker(e.latlng, {
-                            icon: this.options.NEW_OBS_MARKER_ICON(),
-                        }).addTo(this.observationMap);
-                        this.mapService.changePoint(coords);
-                    }
-                    // emit new coordinates
-                    this.onClick.emit(coords);
                 });
             }
             this.programMaxBounds = programBounds;
@@ -389,5 +445,14 @@ export abstract class BaseMapComponent implements OnChanges {
         this.observationMap.off();
         this.observationMap.remove();
     }
+
     canStart(): void {}
+
+    arePointsSnapped(pointA: L.Point, pointB: L.Point): boolean {
+        const SNAP_DISTANCE = 6;
+        const distancePixel = Math.sqrt(
+            Math.abs((pointB.x - pointA.x) ** 2 - (pointB.y - pointA.y) ** 2)
+        );
+        return distancePixel < SNAP_DISTANCE;
+    }
 }
