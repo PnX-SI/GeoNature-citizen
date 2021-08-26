@@ -12,7 +12,7 @@ import {
     SimpleChanges,
     ViewChild,
 } from '@angular/core';
-import { Feature, FeatureCollection, Point, Position } from 'geojson';
+import { Feature, FeatureCollection, Point } from 'geojson';
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { MarkerClusterGroup } from 'leaflet';
 import 'leaflet.markercluster';
@@ -147,7 +147,7 @@ export abstract class BaseMapComponent implements OnChanges {
                 if (changes.features && changes.features.currentValue) {
                     this.loadFeatures();
                 }
-            }, 400);
+            }, 600);
         } else {
             if (changes.program && changes.program.currentValue) {
                 this.loadProgramArea();
@@ -372,7 +372,6 @@ export abstract class BaseMapComponent implements OnChanges {
     }
 
     loadFeatures(): void {
-        console.log('loadFeatures', this.features);
         if (this.features && this.program) {
             const geometryType = this.program.features[0].properties.geometry_type;
             if (this.observationLayer) {
@@ -405,37 +404,39 @@ export abstract class BaseMapComponent implements OnChanges {
             };
 
             let pointFeatures: FeatureCollection;
-            if (geometryType === 'LINESTRING'){ //TODO switch CASE polygon
-                this.observationMap.addLayer(
-                    L.geoJSON(this.features, {
-                        style: function (_feature) {
-                            console.log(_feature);
-                            return { color: '#11aa9e' };
-                        },
-                    })
-                );
-                console.log(this.features.features);
-                const features = this.features.features.map((f) => {
-                    console.log(f.geometry)
-                    const firstPoint: Point = {
-                        type: 'Point',
-                        coordinates: f.geometry.coordinates[0] as Position, //TODO getcentroid
-                    }
-                    const newFeature: Feature = {
-                        type: 'Feature',
-                        properties: f.properties,
-                        geometry: firstPoint,
-                    }
-                    return newFeature;
-                });
-                pointFeatures = {
-                    type: 'FeatureCollection',
-                    features: features,
-                }
-            } else {
-                pointFeatures = this.features;
+            switch (geometryType){
+                case 'POINT':
+                default:
+                    pointFeatures = this.features;
+                    break;
+
+                case 'LINESTRING':
+                    this.observationMap.addLayer(
+                        L.geoJSON(this.features, {
+                            style: function (_feature) {
+                                return { color: '#11aa9e' };
+                            },
+                        })
+                    );
+                    const features = this.features.features.map((f) => {
+                        const firstPoint: Point = {
+                            type: 'Point',
+                            coordinates: f.geometry.type === 'LineString' ? f.geometry.coordinates[0]: [0,0],
+                        }
+                        const newFeature: Feature = {
+                            type: 'Feature',
+                            properties: f.properties,
+                            geometry: firstPoint,
+                        }
+                        return newFeature;
+                    });
+                    pointFeatures = {
+                        type: 'FeatureCollection',
+                        features: features,
+                    };
+                    break;
             }
-            console.log(pointFeatures);
+
             this.observationLayer.addLayer(
                 L.geoJSON(pointFeatures, layerOptions)
             );

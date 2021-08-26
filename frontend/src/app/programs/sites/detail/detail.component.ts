@@ -53,11 +53,30 @@ export class SiteDetailComponent
                 attribution: 'OpenStreetMap',
             }).addTo(map);
 
-            let coord = this.site.geometry.coordinates;
-            let latLng = L.latLng(coord[1], coord[0]);
-            map.setView(latLng, 13);
+            let coord: number[];
+            let latLng: L.LatLng;
+            const geometryType = this.site.properties.program.geometry_type;
 
-            L.marker(latLng, { icon: markerIcon }).addTo(map);
+            switch (geometryType) {
+                case 'POINT':
+                default:
+                    coord = this.site.geometry.coordinates;
+                    latLng = L.latLng(coord[1], coord[0]);
+                    L.marker(latLng, { icon: markerIcon }).addTo(map);
+                    break;
+
+                case 'LINESTRING':
+                    coord = this.site.geometry.coordinates[0];
+                    latLng = L.latLng(coord[1], coord[0]);
+                    const lineLatLng = this.site.geometry.coordinates.map(
+                        (c: number[]) => [c[1], c[0]]
+                    );
+                    L.polyline(lineLatLng, {
+                        color: '#11aa9e',
+                    }).addTo(map);
+                    break;
+            }
+            map.setView(latLng, 13);
 
             // prepare data
             if (this.site.properties.last_visit) {
