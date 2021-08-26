@@ -65,8 +65,6 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
     }
 
     ngOnInit() {
-
-        console.log('SitesComponent:', this)
         this.mapService.coordsChange.subscribe((_value) => {
             this.canAddSite = true;
             this.tooltipAddButton = 'Ajouter un site';

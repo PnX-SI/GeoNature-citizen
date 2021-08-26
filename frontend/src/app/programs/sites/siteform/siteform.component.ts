@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 // import { map, tap } from 'rxjs/operators';
 
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { Position, Point } from 'geojson';
+import { Position, Point, LineString } from 'geojson';
 import * as L from 'leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
@@ -80,20 +80,14 @@ export class SiteFormComponent implements AfterViewInit {
             this.patchForm(this.data.updateData);
         }
  
-        console.log('siteformcomponent class', this);
-        console.log('this.coords in ngOnInit', this.coords);
-        console.log('this.line in ngOnInit', this.line);
-
         this.mapService.coordsChange.subscribe((value) => {
             this.coords = value;
-            //TODO switch geometry_type or find from this.coords
 
             const geo_coords = <Point>{
                 type: 'Point',
                 coordinates: <Position>[this.coords.x, this.coords.y],
             };
             this.siteForm.patchValue({ geometry: geo_coords });
-            //TODO switch geometry_type
             if (this.mapVars.minimapMarker)
                 this.formMap.removeLayer(this.mapVars.minimapMarker);
             this.mapVars.minimapMarker = L.marker(
@@ -107,9 +101,6 @@ export class SiteFormComponent implements AfterViewInit {
         this.mapService.lineChange.subscribe((value) => {
             this.line = value;
         });
-        console.log('siteformcomponent class', this);
-        console.log('this.coords in ngOnInit', this.coords);
-        console.log('this.line in ngOnInit', this.line);
     }
 
     ngAfterViewInit(): void {
@@ -178,15 +169,14 @@ export class SiteFormComponent implements AfterViewInit {
 
                 const geometryType = this.program.features[0].properties.geometry_type;
                 let myMarker = null;
+                let myLine = null;
+                let geo_coords = null;
 
-                console.log('this.coords', this.coords);
-                console.log('this.line', this.line);
-
-                if (this.coords) { // Set initial observation marker from main map if already spotted
+                if (this.coords || this.line) { // Set initial observation marker from main map if already spotted
                     switch (geometryType) {
-                        case 'POINT': //TODO: other geom
+                        case 'POINT': //TODO case POLYGON
                         default:
-                            let geo_coords = <Point>{
+                            geo_coords = <Point>{
                                 type: 'Point',
                                 coordinates: <Position>[this.coords.x, this.coords.y],
                             };
@@ -197,12 +187,16 @@ export class SiteFormComponent implements AfterViewInit {
                             break;
 
                         case 'LINESTRING':
-                            // let geo_coords = <Point>{
-                            //     type: 'Point',
-                            //     coordinates: <Position>[this.coords.x, this.coords.y],
-                            // };
-                            // this.siteForm.patchValue({ geometry: geo_coords });
-                            //TODO add the line to the map
+                            const coordinates = this.line.getLatLngs() as L.LatLng[];
+                            const positions: Position[] = coordinates.map(c => [c.lat, c.lng])
+                            geo_coords = <LineString>{
+                                type: 'LineString',
+                                coordinates: <Position[]>positions,
+                            };
+                            this.siteForm.patchValue({ geometry: geo_coords });
+                            myLine = L.polyline(coordinates, {
+                                color: '#11aa9e',
+                            }).addTo(formMap);
                             break;
                     }
                 }
@@ -211,28 +205,29 @@ export class SiteFormComponent implements AfterViewInit {
                 formMap.on('click', (e: LeafletMouseEvent) => {
                     const z = formMap.getZoom();
 
+                    if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+                        // this.hasZoomAlert = true;
+                        console.debug('ZOOM ALERT', formMap);
+                        L.DomUtil.addClass(
+                            formMap.getContainer(),
+                            'observation-zoom-statement-warning'
+                        );
+                        if (this.zoomAlertTimeout) {
+                            clearTimeout(this.zoomAlertTimeout);
+                        }
+                        this.zoomAlertTimeout = setTimeout(() => {
+                            L.DomUtil.removeClass(
+                                formMap.getContainer(),
+                                'observation-zoom-statement-warning'
+                            );
+                            console.debug('Deactivating overlay', formMap);
+                        }, 2000);
+                        return;
+                    }
+
                     switch (geometryType) {
                         case 'POINT':
                         default:
-                            if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
-                                // this.hasZoomAlert = true;
-                                console.debug('ZOOM ALERT', formMap);
-                                L.DomUtil.addClass(
-                                    formMap.getContainer(),
-                                    'observation-zoom-statement-warning'
-                                );
-                                if (this.zoomAlertTimeout) {
-                                    clearTimeout(this.zoomAlertTimeout);
-                                }
-                                this.zoomAlertTimeout = setTimeout(() => {
-                                    L.DomUtil.removeClass(
-                                        formMap.getContainer(),
-                                        'observation-zoom-statement-warning'
-                                    );
-                                    console.debug('Deactivating overlay', formMap);
-                                }, 2000);
-                                return;
-                            }
                             // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
                             // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
                             if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
@@ -255,7 +250,7 @@ export class SiteFormComponent implements AfterViewInit {
                             break;
 
                         case 'LINESTRING':
-                            // DO NOT UPDATE on the form map!
+                            // UPDATE on the form map not allowed at the moment!
                             break;
 
                     }
@@ -270,7 +265,7 @@ export class SiteFormComponent implements AfterViewInit {
     patchForm(updateData): void {
         this.siteForm.patchValue({
             name: updateData.name,
-            geometry: this.data.coords ? this.coords : '', //TODO switch geom, or do it in the function above
+            geometry: this.data.coords ? this.coords : '',
             id_type: updateData.id_type,
             id_program: updateData.program_id,
             id_site: updateData.id_site,

@@ -25,7 +25,6 @@ export class MapService {
     }
 
     changeLine(line: L.Polyline): void {
-        console.log('changeLine: line: ', line);
         this.lineChange.next(line);
     }
 }

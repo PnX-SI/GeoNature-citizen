@@ -306,7 +306,7 @@ export abstract class BaseMapComponent implements OnChanges {
                         return;
                     }
 
-                    //TODO switch geometryType and add other kind of stuffs than marker
+                    //TODO case POLYGON
                     switch (geometryType) {
                         case 'POINT':
                         default:
@@ -346,7 +346,7 @@ export abstract class BaseMapComponent implements OnChanges {
                                 ) {
                                     previousPolyline = polyline;
                                     polyline.setStyle({ color: '#60b15c' });
-                                    this.mapService.changeLine(polyline); // useful?
+                                    this.mapService.changeLine(polyline);
                                     this.onClickLine.emit(polyline);
                                     polyline = null;
                                 } else {

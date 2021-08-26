@@ -11,7 +11,7 @@ import xlwt
 import io
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
-from shapely.geometry import Point
+from shapely.geometry import Point, LineString, Polygon
 from shapely.geometry import asShape
 from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.media import save_upload_files
@@ -288,7 +288,13 @@ def post_site():
 
         try:
             shape = asShape(request_data["geometry"])
-            newsite.geom = from_shape(Point(shape), srid=4326)
+            if request_data["geometry"]["type"] == "Point":
+                newsite.geom = from_shape(Point(shape), srid=4326)
+            elif request_data["geometry"]["type"] == "LineString":
+                newsite.geom = from_shape(LineString(shape), srid=4326)
+            elif request_data["geometry"]["type"] == "Polygon":
+                newsite.geom = from_shape(Polygon(shape), srid=4326)
+
         except Exception as e:
             current_app.logger.debug(e)
             raise GeonatureApiError(e)
