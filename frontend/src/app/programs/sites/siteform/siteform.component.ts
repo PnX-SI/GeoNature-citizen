@@ -188,7 +188,7 @@ export class SiteFormComponent implements AfterViewInit {
 
                         case 'LINESTRING':
                             const coordinates = this.line.getLatLngs() as L.LatLng[];
-                            const positions: Position[] = coordinates.map(c => [c.lat, c.lng])
+                            const positions: Position[] = coordinates.map(c => [c.lng, c.lat])
                             geo_coords = <LineString>{
                                 type: 'LineString',
                                 coordinates: <Position[]>positions,
