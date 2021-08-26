@@ -80,6 +80,10 @@ export class SiteFormComponent implements AfterViewInit {
             this.patchForm(this.data.updateData);
         }
  
+        console.log('siteformcomponent class', this);
+        console.log('this.coords in ngOnInit', this.coords);
+        console.log('this.line in ngOnInit', this.line);
+
         this.mapService.coordsChange.subscribe((value) => {
             this.coords = value;
             //TODO switch geometry_type or find from this.coords

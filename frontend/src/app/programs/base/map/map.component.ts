@@ -103,7 +103,7 @@ export abstract class BaseMapComponent implements OnChanges {
     @Input('features') features: FeatureCollection;
     @Input('program') program: FeatureCollection;
     @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
-    @Output() onClick2: EventEmitter<L.Polyline> = new EventEmitter();
+    @Output() onClickLine: EventEmitter<L.Polyline> = new EventEmitter();
     options: any;
     observationMap: L.Map;
     programMaxBounds: L.LatLngBounds;
@@ -288,7 +288,6 @@ export abstract class BaseMapComponent implements OnChanges {
                     const z = this.observationMap.getZoom();
                     const coords = L.point(e.latlng.lng, e.latlng.lat);
 
-
                     if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
                         // this.hasZoomAlert = true;
                         L.DomUtil.addClass(
@@ -347,18 +346,14 @@ export abstract class BaseMapComponent implements OnChanges {
                                 ) {
                                     previousPolyline = polyline;
                                     polyline.setStyle({ color: '#60b15c' });
-                                    this.mapService.changeLine(polyline);
-                                    this.onClick2.emit(polyline);
+                                    this.mapService.changeLine(polyline); // useful?
+                                    this.onClickLine.emit(polyline);
                                     polyline = null;
                                 } else {
                                     polyline.addLatLng(e.latlng);
                                     previousLayerPoint = e.layerPoint;
                                 }
                             }
-                            // // emit new coordinates
-                            // this.onClick.emit(coords);
-                            this.onClick2.emit(polyline);
-                            
                             break;
                     }
                 });

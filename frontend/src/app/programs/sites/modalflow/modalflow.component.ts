@@ -18,6 +18,7 @@ import { FlowComponent } from '../../observations/modalflow/flow/flow.component'
 })
 export class SiteModalFlowComponent {
     @Input('coords') coords;
+    @Input('line') line;
     @Input('modalversion') modalversion: boolean = true;
     @ViewChild('content', { static: true }) content: ElementRef;
     @Input('updateData') updateData;
@@ -32,9 +33,11 @@ export class SiteModalFlowComponent {
 
     clicked() {
         // this.flowService.openFormModal({ program_id: this.program_id, coords: this.coords });
+        console.log('SiteModalFlowComponent', this)
         this.flowitems = this.flowService.getFlowItems({
             program_id: this.program_id,
             coords: this.coords,
+            line: this.line,
             updateData: this.updateData,
         });
         if (this.modalversion) {

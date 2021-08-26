@@ -28,6 +28,7 @@
                 <app-sitemodalflow
                     #modalFlowRef
                     [coords]="coords"
+                    [line]="line"
                     [modalversion]="
                         AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
                     "
@@ -43,6 +44,7 @@
                 [features]="sites"
                 [program]="programFeature"
                 (onClick)="onMapClicked($event)"
+                (onClickLine)="onMapFinishedLine($event)"
             ></app-sites-map>
         </div>
     </section>

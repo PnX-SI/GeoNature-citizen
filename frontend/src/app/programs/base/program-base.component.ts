@@ -8,6 +8,7 @@ export abstract class ProgramBaseComponent implements AfterViewInit {
     AppConfig = AppConfig;
     fragment: string;
     coords: L.Point;
+    line: L.Polyline;
     program_id: any;
     programs: Program[];
     program: Program;
@@ -33,5 +34,9 @@ export abstract class ProgramBaseComponent implements AfterViewInit {
     onMapClicked(p: L.Point): void {
         this.coords = p;
         console.debug('map clicked', this.coords);
+    }
+    onMapFinishedLine(l: L.Polyline): void {
+        this.line = l;
+        console.debug('line finished', this.line);
     }
 }
