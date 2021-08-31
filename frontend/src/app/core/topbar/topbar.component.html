@@ -77,6 +77,17 @@
                     </li>
                     <li *ngIf="isAdmin">
                         <a
+                            class="btn my-2 my-sm-0 rounded-0"
+                            routerLink="/dashboard"
+                            (click)="isCollapsed = !isCollapsed"
+                            routerLinkActive="active"
+                            i18n="admin@@admin"
+                            title="Tableau de bord"
+                            >Tableau de bord</a
+                        >
+                    </li>
+                    <li *ngIf="isAdmin">
+                        <a
                             [href]="adminUrl"
                             target="_blank"
                             class="btn my-2 my-sm-0 rounded-0"
