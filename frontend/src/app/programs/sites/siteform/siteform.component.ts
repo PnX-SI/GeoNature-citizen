@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 // import { map, tap } from 'rxjs/operators';
 
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { Position, Point, LineString } from 'geojson';
+import { Position, Point, LineString, Polygon } from 'geojson';
 import * as L from 'leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
@@ -52,6 +52,7 @@ export class SiteFormComponent implements AfterViewInit {
     @Input('data') data;
     @Input('coords') coords: L.Point;
     @Input('line') line: L.Polyline;
+    @Input('polygon') polygon: L.Polygon;
     @Input('program_id') program_id: number;
     @ViewChild('photo', { static: true }) photo: ElementRef;
     program: any;
@@ -100,6 +101,10 @@ export class SiteFormComponent implements AfterViewInit {
 
         this.mapService.lineChange.subscribe((value) => {
             this.line = value;
+        });
+
+        this.mapService.polygonChange.subscribe((value) => {
+            this.polygon = value;
         });
     }
 
@@ -170,11 +175,12 @@ export class SiteFormComponent implements AfterViewInit {
                 const geometryType = this.program.features[0].properties.geometry_type;
                 let myMarker = null;
                 let myLine = null;
+                let myPolygon = null;
                 let geo_coords = null;
 
-                if (this.coords || this.line) { // Set initial observation marker from main map if already spotted
+                if (this.coords || this.line || this.polygon) { // Set initial observation marker from main map if already spotted
                     switch (geometryType) {
-                        case 'POINT': //TODO case POLYGON
+                        case 'POINT':
                         default:
                             geo_coords = <Point>{
                                 type: 'Point',
@@ -195,6 +201,19 @@ export class SiteFormComponent implements AfterViewInit {
                             };
                             this.siteForm.patchValue({ geometry: geo_coords });
                             myLine = L.polyline(coordinates, {
+                                color: '#11aa9e',
+                            }).addTo(formMap);
+                            break;
+
+                        case 'POLYGON':
+                            const coordsPolygon = this.polygon.getLatLngs() as L.LatLng[][];
+                            const positionsPolygon = [coordsPolygon[0].map(c => [c.lng, c.lat])] as Position[][];
+                            geo_coords = <Polygon>{
+                                type: 'Polygon',
+                                coordinates: <Position[][]>positionsPolygon,
+                            };
+                            this.siteForm.patchValue({ geometry: geo_coords });
+                            myPolygon = L.polygon(coordsPolygon, {
                                 color: '#11aa9e',
                             }).addTo(formMap);
                             break;
@@ -250,7 +269,8 @@ export class SiteFormComponent implements AfterViewInit {
                             break;
 
                         case 'LINESTRING':
-                            // UPDATE on the form map not allowed at the moment!
+                        case 'POLYGON':
+                            // UPDATE on the form map when drawing a line or a polygon not allowed at the moment!
                             break;
 
                     }

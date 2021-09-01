@@ -8,8 +8,10 @@ import { Subject } from 'rxjs';
 export class MapService {
     coords: L.Point;
     line: L.Polyline;
+    polygon: L.Polygon;
     coordsChange: Subject<L.Point> = new Subject<L.Point>();
     lineChange: Subject<L.Polyline> = new Subject<L.Polyline>();
+    polygonChange: Subject<L.Polygon> = new Subject<L.Polygon>();
 
     constructor() {
         this.coordsChange.subscribe((value) => {
@@ -17,6 +19,9 @@ export class MapService {
         });
         this.lineChange.subscribe((value) => {
             this.line = value;
+        });
+        this.polygonChange.subscribe((value) => {
+            this.polygon = value;
         });
     }
 
@@ -26,5 +31,9 @@ export class MapService {
 
     changeLine(line: L.Polyline): void {
         this.lineChange.next(line);
+    }
+
+    changePolygon(polygon: L.Polygon): void {
+        this.polygonChange.next(polygon);
     }
 }

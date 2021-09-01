@@ -19,6 +19,7 @@ import { FlowComponent } from '../../observations/modalflow/flow/flow.component'
 export class SiteModalFlowComponent {
     @Input('coords') coords;
     @Input('line') line;
+    @Input('polygon') polygon;
     @Input('modalversion') modalversion: boolean = true;
     @ViewChild('content', { static: true }) content: ElementRef;
     @Input('updateData') updateData;
@@ -38,6 +39,7 @@ export class SiteModalFlowComponent {
             program_id: this.program_id,
             coords: this.coords,
             line: this.line,
+            polygon: this.polygon,
             updateData: this.updateData,
         });
         if (this.modalversion) {

@@ -75,6 +75,11 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
             this.tooltipAddButton = 'Ajouter un site';
         });
 
+        this.mapService.polygonChange.subscribe((_value) => { //TODO could be factorized with coordsChange...
+            this.canAddSite = true;
+            this.tooltipAddButton = 'Ajouter un site';
+        });
+
         this.route.data.subscribe((data: { programs: Program[] }) => {
             // TODO: merge observables
             this.programs = data.programs;

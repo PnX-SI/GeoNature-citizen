@@ -29,6 +29,7 @@
                     #modalFlowRef
                     [coords]="coords"
                     [line]="line"
+                    [polygon]="polygon"
                     [modalversion]="
                         AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
                     "
@@ -45,6 +46,7 @@
                 [program]="programFeature"
                 (onClick)="onMapClicked($event)"
                 (onClickLine)="onMapFinishedLine($event)"
+                (onClickPolygon)="onMapFinishedPolygon($event)"
             ></app-sites-map>
         </div>
     </section>

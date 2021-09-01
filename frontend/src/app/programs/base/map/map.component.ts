@@ -12,7 +12,7 @@ import {
     SimpleChanges,
     ViewChild,
 } from '@angular/core';
-import { Feature, FeatureCollection, Point } from 'geojson';
+import { Feature, FeatureCollection, Point, Position } from 'geojson';
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { MarkerClusterGroup } from 'leaflet';
 import 'leaflet.markercluster';
@@ -104,6 +104,7 @@ export abstract class BaseMapComponent implements OnChanges {
     @Input('program') program: FeatureCollection;
     @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
     @Output() onClickLine: EventEmitter<L.Polyline> = new EventEmitter();
+    @Output() onClickPolygon: EventEmitter<L.Polygon> = new EventEmitter();
     options: any;
     observationMap: L.Map;
     programMaxBounds: L.LatLngBounds;
@@ -263,6 +264,10 @@ export abstract class BaseMapComponent implements OnChanges {
                 let polyline: L.Polyline = null;
                 let previousPolyline: L.Polyline = null;
                 let previousLayerPoint: L.Point = null;
+
+                let polygon: L.Polygon = null;
+                let firstPolygonPoint: L.Point = null;
+
                 const lineDraw = L.polyline([], {
                     color: '#11aa9e',
                     dashArray: '6',
@@ -278,6 +283,16 @@ export abstract class BaseMapComponent implements OnChanges {
                             if (polyline) {
                                 const lastDrawPoint: L.LatLng = polyline.getLatLngs()[polyline.getLatLngs().length - 1] as L.LatLng;
                                 lineDraw.setLatLngs([lastDrawPoint, e.latlng]);
+                            }
+                        });
+                        break;
+                    case 'POLYGON':
+                        this.observationMap.on('mousemove', (e: L.LeafletMouseEvent) => {
+                            if (polygon) {
+                                const coordinates = polygon.getLatLngs() as L.LatLng[][];
+                                const lastPointPolygon = coordinates[0][coordinates[0].length - 1];
+                                const firstPointPolygon = coordinates[0][0];
+                                lineDraw.setLatLngs([firstPointPolygon, e.latlng, lastPointPolygon]);
                             }
                         });
                         break;
@@ -306,7 +321,6 @@ export abstract class BaseMapComponent implements OnChanges {
                         return;
                     }
 
-                    //TODO case POLYGON
                     switch (geometryType) {
                         case 'POINT':
                         default:
@@ -352,6 +366,25 @@ export abstract class BaseMapComponent implements OnChanges {
                                 } else {
                                     polyline.addLatLng(e.latlng);
                                     previousLayerPoint = e.layerPoint;
+                                }
+                            }
+                            break;
+
+                        case 'POLYGON':
+                            lineDraw.setLatLngs([]);
+                            if (polygon === null){
+                                polygon = L.polygon([e.latlng], {
+                                    color: '#11aa9e',
+                                }).addTo(this.observationMap);
+                                firstPolygonPoint = e.layerPoint;
+                            } else {
+                                if (this.arePointsSnapped(firstPolygonPoint, e.layerPoint)) {
+                                    polygon.setStyle({ color: '#60b15c' });
+                                    this.mapService.changePolygon(polygon);
+                                    this.onClickPolygon.emit(polygon);
+                                    polygon = null;
+                                } else {
+                                    polygon.addLatLng(e.latlng);
                                 }
                             }
                             break;
@@ -411,6 +444,7 @@ export abstract class BaseMapComponent implements OnChanges {
                     break;
 
                 case 'LINESTRING':
+                case 'POLYGON':
                     this.observationMap.addLayer(
                         L.geoJSON(this.features, {
                             style: function (_feature) {
@@ -419,9 +453,14 @@ export abstract class BaseMapComponent implements OnChanges {
                         })
                     );
                     const features = this.features.features.map((f) => {
+                        const coordinates = f.geometry.type === 'LineString' ?
+                            f.geometry.coordinates[0] :
+                                f.geometry.type === 'Polygon' ?
+                                    f.geometry.coordinates[0][0] : [0,0] as Position
+
                         const firstPoint: Point = {
                             type: 'Point',
-                            coordinates: f.geometry.type === 'LineString' ? f.geometry.coordinates[0]: [0,0],
+                            coordinates: coordinates,
                         }
                         const newFeature: Feature = {
                             type: 'Feature',

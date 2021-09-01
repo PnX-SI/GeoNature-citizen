@@ -75,6 +75,17 @@ export class SiteDetailComponent
                         color: '#11aa9e',
                     }).addTo(map);
                     break;
+
+                case 'POLYGON': //TODO check if ok
+                    coord = this.site.geometry.coordinates[0][0];
+                    latLng = L.latLng(coord[1], coord[0]);
+                    const polygonLatLng = this.site.geometry.coordinates.map(
+                        (c: number[]) => [[c[1], c[0]]]
+                    );
+                    L.polygon(polygonLatLng, {
+                        color: '#11aa9e',
+                    }).addTo(map);
+                    break;
             }
             map.setView(latLng, 13);
 
