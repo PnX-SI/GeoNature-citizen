@@ -1,0 +1,24 @@
+<div class="container">
+    <h1>Tableau de bord</h1>
+      <div *ngIf="programLine">
+        <h2>{{programLine.features[0].properties.title}}</h2>
+        <div *ngIf="siteLine">
+            <div class="">{{ siteLine.count }} haies répertoriées</div>
+            <div class="">{{ sumLineLength.toFixed(2) }} km de haies</div>
+            <div>
+                <details>
+                    <summary>
+                        Liste des haies répertoriées
+                    </summary>
+                    <ul>
+                        <li *ngFor="let s of siteLine.features">
+                           {{ s.properties.name }}
+                        </li>
+                    </ul>
+                </details>
+            </div>
+        </div>
+    </div>
+</div>
+
+

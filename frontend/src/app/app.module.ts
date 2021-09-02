@@ -77,6 +77,7 @@ import { Bootstrap4FrameworkModule } from '@ajsf/bootstrap4';
 import { GNCFrameworkComponent } from './programs/base/jsonform/framework/framework.component';
 import { ImageUploadModule } from 'angular2-image-upload';
 import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
     imports: [
@@ -142,6 +143,7 @@ import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.
         AdminComponent,
         ConfirmEmailComponent,
         UserSitesComponent,
+        DashboardComponent,
     ],
     providers: [
         AuthService,

@@ -16,6 +16,7 @@ import { ObsDetailComponent } from './programs/observations/detail/detail.compon
 import { SiteVisitFormComponent } from './programs/sites/form/form.component';
 import { AdminComponent } from './auth/admin/admin.component';
 import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const appRoutes: Routes = [
     {
@@ -29,6 +30,7 @@ const appRoutes: Routes = [
         resolve: { programs: ProgramsResolve },
     },
     { path: 'about', component: AboutComponent },
+    { path: 'dashboard', component: DashboardComponent },
     {
         path: 'mydashboard',
         component: UserDashboardComponent,
