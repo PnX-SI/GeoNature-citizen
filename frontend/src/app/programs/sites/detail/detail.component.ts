@@ -76,12 +76,12 @@ export class SiteDetailComponent
                     }).addTo(map);
                     break;
 
-                case 'POLYGON': //TODO check if ok
+                case 'POLYGON':
                     coord = this.site.geometry.coordinates[0][0];
                     latLng = L.latLng(coord[1], coord[0]);
-                    const polygonLatLng = this.site.geometry.coordinates.map(
-                        (c: number[]) => [[c[1], c[0]]]
-                    );
+                    const polygonLatLng = [this.site.geometry.coordinates[0].map(
+                        (c: number[]) => [c[1], c[0]]
+                    )] as L.LatLng[][];
                     L.polygon(polygonLatLng, {
                         color: '#11aa9e',
                     }).addTo(map);

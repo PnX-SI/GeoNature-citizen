@@ -62,7 +62,7 @@ export const conf = {
             iconSize: [33, 42],
             iconAnchor: [16, 42],
         }),
-    OBSERVATION_LAYER: () => //TODO marker or shape as a function of geometry type
+    OBSERVATION_LAYER: () =>
         L.markerClusterGroup({
             iconCreateFunction: (clusters) => {
                 const childCount = clusters.getChildCount();
