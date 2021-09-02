@@ -326,110 +326,110 @@ def post_observation():
         return {"message": str(e)}, 400
 
 
-@obstax_api.route("/observations", methods=["GET"])
-@json_resp
-def get_observations():
-    """Get all observations
-        ---
-        tags:
-          - observations
-        definitions:
-          cd_nom:
-            type: integer
-            description: cd_nom taxref
-          geometry:
-            type: dict
-            description: Géométrie de la donnée
-          name:
-            type: string
-          geom:
-            type: geometry
-        responses:
-          200:
-            description: A list of all observations
-        """
-    try:
-        observations = ObservationModel.query.order_by(
-            desc(ObservationModel.timestamp_create)
-        ).all()
-        features = []
-        for observation in observations:
-            feature = get_geojson_feature(observation.geom)
-            observation_dict = observation.as_dict(True)
-            for k in observation_dict:
-                if k in obs_keys:
-                    feature["properties"][k] = observation_dict[k]
+# @obstax_api.route("/observations", methods=["GET"])
+# @json_resp
+# def get_observations():
+#     """Get all observations
+#         ---
+#         tags:
+#           - observations
+#         definitions:
+#           cd_nom:
+#             type: integer
+#             description: cd_nom taxref
+#           geometry:
+#             type: dict
+#             description: Géométrie de la donnée
+#           name:
+#             type: string
+#           geom:
+#             type: geometry
+#         responses:
+#           200:
+#             description: A list of all observations
+#         """
+#     try:
+#         observations = ObservationModel.query.order_by(
+#             desc(ObservationModel.timestamp_create)
+#         ).all()
+#         features = []
+#         for observation in observations:
+#             feature = get_geojson_feature(observation.geom)
+#             observation_dict = observation.as_dict(True)
+#             for k in observation_dict:
+#                 if k in obs_keys:
+#                     feature["properties"][k] = observation_dict[k]
 
-            taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-            for k in taxref:
-                feature["properties"][k] = taxref[k]
-            features.append(feature)
-        return FeatureCollection(features)
-    except Exception as e:
-        current_app.logger.critical("[get_observations] Error: %s", str(e))
-        return {"message": str(e)}, 400
+#             taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
+#             for k in taxref:
+#                 feature["properties"][k] = taxref[k]
+#             features.append(feature)
+#         return FeatureCollection(features)
+#     except Exception as e:
+#         current_app.logger.critical("[get_observations] Error: %s", str(e))
+#         return {"message": str(e)}, 400
 
 
-@obstax_api.route("/observations/lists/<int:id>", methods=["GET"])
-@json_resp
-def get_observations_from_list(id):  # noqa: A002
-    """Get all observations from a taxonomy list
-    GET
-        ---
-        tags:
-          - observations
-        parameters:
-          - name: id
-            in: path
-            type: integer
-            required: true
-            example: 1
-        definitions:
-          cd_nom:
-            type: integer
-            description: cd_nom taxref
-          geometry:
-            type: dict
-            description: Géométrie de la donnée
-          name:
-            type: string
-          geom:
-            type: geometry
-        responses:
-          200:
-            description: A list of all species lists
-        """
-    # taxhub_url = load_config()['TAXHUB_API_URL']
-    taxhub_lists_taxa_url = taxhub_lists_url + "taxons/" + str(id)
-    rtaxa = requests.get(taxhub_lists_taxa_url)
-    if rtaxa.status_code == 200:
-        try:
-            taxa = rtaxa.json()["items"]
-            current_app.logger.debug(taxa)
-            features = []
-            for t in taxa:
-                current_app.logger.debug("R", t["cd_nom"])
-                datas = (
-                    ObservationModel.query.filter_by(cd_nom=t["cd_nom"])
-                    .order_by(desc(ObservationModel.timestamp_create))
-                    .all()
-                )
-                for d in datas:
-                    feature = get_geojson_feature(d.geom)
-                    observation_dict = d.as_dict(True)
-                    for k in observation_dict:
-                        if k in obs_keys:
-                            feature["properties"][k] = observation_dict[k]
-                    taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-                    for k in taxref:
-                        feature["properties"][k] = taxref[k]
-                    features.append(feature)
-            return FeatureCollection(features)
-        except Exception as e:
-            current_app.logger.critical(
-                "[get_observations_from_list] Error: %s", str(e)
-            )
-            return {"message": str(e)}, 400
+# @obstax_api.route("/observations/lists/<int:id>", methods=["GET"])
+# @json_resp
+# def get_observations_from_list(id):  # noqa: A002
+#     """Get all observations from a taxonomy list
+#     GET
+#         ---
+#         tags:
+#           - observations
+#         parameters:
+#           - name: id
+#             in: path
+#             type: integer
+#             required: true
+#             example: 1
+#         definitions:
+#           cd_nom:
+#             type: integer
+#             description: cd_nom taxref
+#           geometry:
+#             type: dict
+#             description: Géométrie de la donnée
+#           name:
+#             type: string
+#           geom:
+#             type: geometry
+#         responses:
+#           200:
+#             description: A list of all species lists
+#         """
+#     # taxhub_url = load_config()['TAXHUB_API_URL']
+#     taxhub_lists_taxa_url = taxhub_lists_url + "taxons/" + str(id)
+#     rtaxa = requests.get(taxhub_lists_taxa_url)
+#     if rtaxa.status_code == 200:
+#         try:
+#             taxa = rtaxa.json()["items"]
+#             current_app.logger.debug(taxa)
+#             features = []
+#             for t in taxa:
+#                 current_app.logger.debug("R", t["cd_nom"])
+#                 datas = (
+#                     ObservationModel.query.filter_by(cd_nom=t["cd_nom"])
+#                     .order_by(desc(ObservationModel.timestamp_create))
+#                     .all()
+#                 )
+#                 for d in datas:
+#                     feature = get_geojson_feature(d.geom)
+#                     observation_dict = d.as_dict(True)
+#                     for k in observation_dict:
+#                         if k in obs_keys:
+#                             feature["properties"][k] = observation_dict[k]
+#                     taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
+#                     for k in taxref:
+#                         feature["properties"][k] = taxref[k]
+#                     features.append(feature)
+#             return FeatureCollection(features)
+#         except Exception as e:
+#             current_app.logger.critical(
+#                 "[get_observations_from_list] Error: %s", str(e)
+#             )
+#             return {"message": str(e)}, 400
 
 
 @obstax_api.route("/programs/<int:program_id>/observations", methods=["GET"])
@@ -539,32 +539,32 @@ def get_program_observations(
                     feature["properties"][k] = observation_dict[k]
 
             # TaxRef
-            if current_app.config.get("API_TAXHUB") is None:
-                taxref = Taxref.query.filter(
-                    Taxref.cd_nom == observation.ObservationModel.cd_nom
-                ).first()
-                if taxref:
-                    feature["properties"]["taxref"] = taxref.as_dict(True)
+            # if current_app.config.get("API_TAXHUB") is None:
+            #     taxref = Taxref.query.filter(
+            #         Taxref.cd_nom == observation.ObservationModel.cd_nom
+            #     ).first()
+            #     if taxref:
+            #         feature["properties"]["taxref"] = taxref.as_dict(True)
 
-                medias = TMedias.query.filter(
-                    TMedias.cd_ref == observation.ObservationModel.cd_nom
-                ).all()
-                if medias:
-                    feature["properties"]["medias"] = [
-                        media.as_dict(True) for media in medias
-                    ]
-            else:
-                try:
-                    taxon = next(
-                        taxon
-                        for taxon in taxon_repository
-                        if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
-                    )
-                    feature["properties"]["nom_francais"] = taxon["nom_francais"]
-                    feature["properties"]["taxref"] = taxon["taxref"]
-                    feature["properties"]["medias"] = taxon["medias"]
-                except StopIteration:
-                    pass
+            #     medias = TMedias.query.filter(
+            #         TMedias.cd_ref == observation.ObservationModel.cd_nom
+            #     ).all()
+            #     if medias:
+            #         feature["properties"]["medias"] = [
+            #             media.as_dict(True) for media in medias
+            #         ]
+            # else:
+            try:
+                taxon = next(
+                    taxon
+                    for taxon in taxon_repository
+                    if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+                )
+                feature["properties"]["nom_francais"] = taxon["nom_francais"]
+                feature["properties"]["taxref"] = taxon["taxref"]
+                feature["properties"]["medias"] = taxon["medias"]
+            except StopIteration:
+                pass
             features.append(feature)
 
         return FeatureCollection(features)
