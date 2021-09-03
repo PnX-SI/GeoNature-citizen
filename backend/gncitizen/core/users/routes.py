@@ -8,7 +8,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
 )
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.exc import IntegrityError
 from gncitizen.utils.mail_check import confirm_user_email, confirm_token
 from gncitizen.utils.errors import GeonatureApiError
@@ -123,9 +123,7 @@ def registration():
             ):
                 return (
                     {
-                        "message": """Un email correspondant est déjà enregistré.""".format(
-                            newuser.email
-                        )
+                        "message": "Un email correspondant est déjà enregistré."
                     },
                     400,
                 )
@@ -199,10 +197,12 @@ def login():
         email = request_datas["email"]
         password = request_datas["password"]
         try:
-            current_user = UserModel.query.filter_by(email=email).one()
+            current_user = UserModel.query.filter(
+                or_(UserModel.email == email, UserModel.username == email)
+            ).one()
         except Exception:
             return (
-                {"message": """L'email "{}" n'est pas enregistré.""".format(email)},
+                {"message": """L'email ou le pseudo "{}" n'est pas enregistré.""".format(email)},
                 400,
             )
         if not current_user.active:
@@ -306,7 +306,6 @@ def get_allusers():
       200:
         description: list all users
     """
-    # allusers = UserModel.return_all()
     allusers = UserModel.return_all()
     return allusers, 200
 
@@ -458,7 +457,6 @@ def delete_user():
 def reset_user_password():
     request_datas = dict(request.get_json())
     email = request_datas["email"]
-    # username = request_datas["username"]
 
     try:
         user = UserModel.query.filter_by(email=email).one()
@@ -534,7 +532,7 @@ def reset_user_password():
 def confirm_email(token):
     try:
         email = confirm_token(token)
-    except:
+    except Exception:
         return (
             {"message": "The confirmation link is invalid or has expired."},
             404,
