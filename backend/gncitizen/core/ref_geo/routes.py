@@ -5,7 +5,8 @@ from geojson import FeatureCollection, Feature
 
 from gncitizen.utils.env import db
 from gncitizen.utils.env import load_config
-from gncitizen.utils.sqlalchemy import json_resp, get_geojson_feature
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla_geo.generic import get_geojson_feature
 from .models import LAreas
 
 geo_api = Blueprint("ref_geo", __name__)

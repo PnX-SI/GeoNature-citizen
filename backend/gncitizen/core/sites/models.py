@@ -12,7 +12,7 @@ from gncitizen.core.commons.models import (
     CustomFormModel,
 )
 from gncitizen.core.users.models import ObserverMixinModel
-from gncitizen.utils.sqlalchemy import serializable, geoserializable
+from utils_flask_sqla_geo.serializers import serializable, geoserializable
 from gncitizen.core.observations.models import ObservationModel
 from server import db
 from gncitizen.core.commons.models import ProgramsModel

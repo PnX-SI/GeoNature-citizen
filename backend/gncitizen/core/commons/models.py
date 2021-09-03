@@ -13,7 +13,7 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 from gncitizen.core.taxonomy.models import BibListes
 from gncitizen.utils.env import db, MEDIA_DIR
-from gncitizen.utils.sqlalchemy import serializable, geoserializable
+from utils_flask_sqla_geo.serializers import serializable, geoserializable
 import os
 
 
@@ -71,6 +71,7 @@ import xml.etree.ElementTree as ET
 
 
 @serializable
+@geoserializable
 class GeometryModel(TimestampMixinModel, db.Model):
     """Table des géométries associées aux programmes"""
 
@@ -196,7 +197,6 @@ class ProgramsModel(TimestampMixinModel, db.Model):
 
 
 @serializable
-@geoserializable
 class MediaModel(TimestampMixinModel, db.Model):
     """Table des Programmes de GeoNature-citizen
         """

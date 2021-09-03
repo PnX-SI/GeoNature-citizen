@@ -13,7 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from gncitizen.utils.mail_check import confirm_user_email, confirm_token
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.env import MEDIA_DIR
-from gncitizen.utils.sqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from server import db, jwt
 from gncitizen.core.observations.models import ObservationModel
 from .models import UserModel, RevokedTokenModel

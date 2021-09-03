@@ -1,5 +1,5 @@
 from flask import Flask, request, Blueprint, Response, jsonify, current_app
-from gncitizen.utils.sqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.commons.models import ProgramsModel
 from gncitizen.core.users.models import UserModel

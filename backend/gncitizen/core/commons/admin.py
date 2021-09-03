@@ -24,7 +24,7 @@ from gncitizen.core.users.models import UserModel
 from gncitizen.core.sites.models import CorProgramSiteTypeModel
 from gncitizen.utils.env import admin, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.sqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from server import db
 
 from .models import ProgramsModel

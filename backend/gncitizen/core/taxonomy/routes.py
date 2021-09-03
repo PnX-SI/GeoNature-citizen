@@ -3,7 +3,7 @@ from flask import Blueprint, current_app
 
 # from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.env import db
-from gncitizen.utils.sqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 
 if current_app.config.get("API_TAXHUB") is None:
     from gncitizen.core.taxonomy.models import (
