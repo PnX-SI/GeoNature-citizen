@@ -67,17 +67,17 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
     ngOnInit() {
         this.mapService.coordsChange.subscribe((_value) => {
             this.canAddSite = true;
-            this.tooltipAddButton = 'Ajouter un site';
+            this.tooltipAddButton = 'Ajouter un élément';
         });
 
         this.mapService.lineChange.subscribe((_value) => { //TODO could be factorized with coordsChange...
             this.canAddSite = true;
-            this.tooltipAddButton = 'Ajouter un site';
+            this.tooltipAddButton = 'Ajouter un élément';
         });
 
         this.mapService.polygonChange.subscribe((_value) => { //TODO could be factorized with coordsChange...
             this.canAddSite = true;
-            this.tooltipAddButton = 'Ajouter un site';
+            this.tooltipAddButton = 'Ajouter un élément';
         });
 
         this.route.data.subscribe((data: { programs: Program[] }) => {
