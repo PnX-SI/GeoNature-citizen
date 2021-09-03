@@ -16,7 +16,8 @@ from shapely.geometry import asShape
 from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla_geo.generic import get_geojson_feature
 from gncitizen.utils.env import admin
 from server import db
 from flask_jwt_extended import jwt_required, get_jwt_identity

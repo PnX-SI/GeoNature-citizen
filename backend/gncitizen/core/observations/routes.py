@@ -31,7 +31,8 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.geo import get_municipality_id_from_wkb  # , get_area_informations
 from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla_geo.generic import get_geojson_feature
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
 from server import db
 

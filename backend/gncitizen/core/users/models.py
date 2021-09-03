@@ -7,7 +7,7 @@ from gncitizen.core.commons.models import (
     ProgramsModel,
     TimestampMixinModel,
 )
-from gncitizen.utils.sqlalchemy import serializable
+from utils_flask_sqla_geo.serializers import serializable, geoserializable
 from server import db
 from sqlalchemy.ext.declarative import declared_attr
 

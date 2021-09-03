@@ -15,7 +15,7 @@ from shapely.geometry import MultiPolygon, asShape
 from flask_ckeditor import CKEditorField
 
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.sqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from gncitizen.utils.env import admin
 from server import db
 
