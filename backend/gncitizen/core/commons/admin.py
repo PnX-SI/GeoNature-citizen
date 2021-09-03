@@ -7,7 +7,7 @@ import urllib.parse
 import requests
 
 from flask import Blueprint, current_app, request, flash
-from flask_admin.contrib.geoa import ModelView
+from flask_admin.contrib.geoa import ModelView as GeoModelView
 from flask_admin.form.upload import FileUploadField
 from flask_ckeditor import CKEditorField 
 
@@ -31,6 +31,7 @@ from .models import ProgramsModel
 from gncitizen.core.taxonomy.models import BibListes
 import os
 
+logger = current_app.logger
 
 def json_formatter(view, context, model, name):
     value = getattr(model, name)
@@ -66,13 +67,17 @@ def taxonomy_lists():
 from flask_admin.model.form import InlineFormAdmin
 
 
+
 class CorProgramSiteTypeModelInlineForm(InlineFormAdmin):
     form_columns = ("site_type",)
 
 
+class CustomTileView(GeoModelView):
+    tile_layer_url = 'a.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    tile_layer_attribution = 'some string or html goes here'
+
 class ProjectView(ModelView):
     form_overrides = {"long_desc": CKEditorField}
-    create_template = "edit.html"
     create_template = "edit.html"
     edit_template = "edit.html"
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
@@ -112,8 +117,8 @@ def get_geom_file_path(obj, file_data):
     return "geometries/{}".format(file_data.filename)
 
 
-class GeometryView(ModelView):
-    column_exclude_list = ["geom"]
+class GeometryView(CustomTileView):
+    # column_exclude_list = ["geom"]
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
     form_overrides = dict(geom_file=FileUploadField)
     form_args = dict(
@@ -133,12 +138,13 @@ class GeometryView(ModelView):
     )
 
     def on_model_change(self, form, model, is_created):
-        model.set_geom_from_geom_file()
+        logger.debug(f"data {form.data}")
+        logger.debug(f"geom_file {form.geom_file}")
+        logger.debug(f"model {dir(model)}")
+        if form.data['geom_file']:
+            model.set_geom_from_geom_file()
 
     def handle_view_exception(self, exc):
         flash("Une erreur s'est produite ({})".format(exc), "error")
+        logger.critical(exc)
         return True
-
-class ObservationView(ModelView):
-    create_template = "edit.html"
-    edit_template = "edit.html"

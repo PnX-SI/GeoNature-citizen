@@ -36,7 +36,7 @@ from gncitizen.core.commons.admin import (
     CustomFormView,
     UserView,
     GeometryView,
-    ObservationView
+    CustomTileView,
 )
 from gncitizen.core.sites.models import CorProgramSiteTypeModel, SiteTypeModel
 from gncitizen.core.sites.admin import SiteTypeView
@@ -46,7 +46,7 @@ commons_api = Blueprint("commons", __name__)
 
 
 admin.add_view(
-    ObservationView(ObservationModel, db.session, "Observations")
+    CustomTileView(ObservationModel, db.session, "Observations")
 )
 
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
