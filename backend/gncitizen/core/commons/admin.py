@@ -139,3 +139,6 @@ class GeometryView(ModelView):
         flash("Une erreur s'est produite ({})".format(exc), "error")
         return True
 
+class ObservationView(ModelView):
+    create_template = "edit.html"
+    edit_template = "edit.html"
