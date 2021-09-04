@@ -13,7 +13,7 @@ from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point
 from shapely.geometry import asShape
-from gncitizen.utils.jwt import get_id_role_if_exists
+from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.errors import GeonatureApiError
 from utils_flask_sqla.response import json_resp
@@ -321,7 +321,7 @@ def post_site():
 @jwt_required()
 def update_site():
     try:
-        current_user = get_jwt_identity()
+        current_user = get_user_if_exists()
         update_data = dict(request.get_json())
         update_site = {}
         for prop in ["name", "id_type"]:
@@ -334,7 +334,7 @@ def update_site():
             raise GeonatureApiError(e)
 
         site = SiteModel.query.filter_by(id_site=update_data.get("id_site"))
-        if current_user != UserModel.query.get(site.first().id_role).email:
+        if current_user.id_user != site.first().id_role :
             return ("unauthorized"), 403
         site.update(update_site, synchronize_session="fetch")
         db.session.commit()
@@ -398,7 +398,7 @@ def post_photo(site_id, visit_id):
 @json_resp
 @jwt_required()
 def delete_site(site_id):
-    current_user = get_jwt_identity()
+    current_user = get_user_if_exists()
     try:
         site = (
             db.session.query(SiteModel, UserModel)
@@ -406,7 +406,7 @@ def delete_site(site_id):
             .join(UserModel, SiteModel.id_role == UserModel.id_user, full=True)
             .first()
         )
-        if current_user == site.UserModel.email:
+        if current_user.id_user == site.id_role:
             SiteModel.query.filter_by(id_site=site_id).delete()
             db.session.commit()
             return ("Site deleted successfully"), 200
@@ -419,9 +419,9 @@ def delete_site(site_id):
 @sites_api.route("/export/<int:user_id>", methods=["GET"])
 @jwt_required()
 def export_sites_xls(user_id):
-    current_user = get_jwt_identity()
+    current_user = get_user_if_exists()
     try:
-        if current_user != UserModel.query.get(user_id).email:
+        if current_user.id_user != user_id:
             return ("unauthorized"), 403
         title_style = xlwt.easyxf("font: bold on")
         date_style = xlwt.easyxf(num_format_str="D/M/YY")
