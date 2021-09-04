@@ -466,8 +466,8 @@
         </context-group>
         <note priority="1" from="description">Recover account</note>
       </trans-unit>
-      <trans-unit id="emailInputLabel" datatype="html">
-        <source>Email</source><target state="new">Email</target>
+      <trans-unit id="emailOrUsernameInputLabel" datatype="html">
+        <source>Email ou pseudo</source><target state="new">Email or username</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/auth/login/login.component.html</context>
           <context context-type="linenumber">76</context>
@@ -879,7 +879,7 @@
         </context-group>
         <note priority="1" from="description">Carousel previous</note>
       </trans-unit>
-      
+
       <trans-unit id="ngbCarouselNext" datatype="html">
         <source>Prochain</source><target state="new">Next</target>
         <context-group purpose="location">
