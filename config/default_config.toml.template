@@ -40,10 +40,15 @@ MEDIA_FOLDER = 'media'
     '''
 
 [CONFIRM_EMAIL]
+    USE_CONFIRM_EMAIL = true
     SUBJECT = "Activez votre compte"
     FROM = 'contact@geonature-citizen.fr'
     HTML_TEMPLATE = '''<p> Bonjour,</p><br /><p>Nous vous confirmons que votre compte a bien été créé.</p>
      <p> Afin d'activer votre compte veuillez <a href="{activate_url}">cliquer ici.</a>
+     <p>Nous vous souhaitons la bienvenue sur notre site.</p><br />
+     <p>Bien à vous.</p>
+    '''
+    NO_VALIDATION_HTML_TEMPLATE = '''<p> Bonjour,</p><br /><p>Nous vous confirmons que votre compte a bien été créé.</p>
      <p>Nous vous souhaitons la bienvenue sur notre site.</p><br />
      <p>Bien à vous.</p>
     '''
