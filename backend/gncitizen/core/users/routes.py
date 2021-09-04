@@ -17,7 +17,7 @@ from utils_flask_sqla.response import json_resp
 from server import db, jwt
 from gncitizen.core.observations.models import ObservationModel
 from .models import UserModel, RevokedTokenModel
-from gncitizen.utils.jwt import admin_required
+from gncitizen.utils.jwt import admin_required, get_user_if_exists
 import uuid
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -194,15 +194,15 @@ def login():
     """
     try:
         request_datas = dict(request.get_json())
-        email = request_datas["email"]
+        identifier = request_datas["email"]
         password = request_datas["password"]
         try:
             current_user = UserModel.query.filter(
-                or_(UserModel.email == email, UserModel.username == email)
+                or_(UserModel.email == identifier, UserModel.username == identifier)
             ).one()
         except Exception:
             return (
-                {"message": """L'email ou le pseudo "{}" n'est pas enregistré.""".format(email)},
+                {"message": """L'email ou le pseudo "{}" n'est pas enregistré.""".format(identifier)},
                 400,
             )
         if not current_user.active:
@@ -211,12 +211,12 @@ def login():
                 400,
             )
         if UserModel.verify_hash(password, current_user.password):
-            access_token = create_access_token(identity=email)
-            refresh_token = create_refresh_token(identity=email)
+            access_token = create_access_token(identity=identifier)
+            refresh_token = create_refresh_token(identity=identifier)
             return (
                 {
-                    "message": """Connecté en tant que "{}".""".format(email),
-                    "email": email,
+                    "message": """Connecté en tant que "{}".""".format(identifier),
+                    "email": current_user.email,
                     "username": current_user.as_secured_dict(True).get("username"),
                     "userAvatar": current_user.as_secured_dict(True).get("avatar"),
                     "access_token": access_token,
@@ -326,8 +326,7 @@ def logged_user():
         description: current user model
     """
     try:
-        current_user = get_jwt_identity()
-        user = UserModel.query.filter_by(email=current_user).one()
+        user = get_user_if_exists()
         if flask.request.method == "GET":
             # base stats, to enhance as we go
             result = user.as_secured_dict(True)
@@ -422,17 +421,14 @@ def delete_user():
     # Get logged user
     current_app.logger.debug("[delete_user] Delete current user")
 
-    current_user = get_jwt_identity()
+    current_user = get_user_if_exists()
     if current_user:
+        username = current_user.username
         current_app.logger.debug(
-            "[delete_user] current user is {}".format(current_user)
+            "[delete_user] current user is {}".format(username)
         )
-        user = UserModel.query.filter_by(email=current_user)
-        # get username
-        username = user.one().username
-        # delete user
         try:
-            db.session.query(UserModel).filter(UserModel.username == username).delete()
+            db.session.query(UserModel).filter(UserModel.id_user == current_user.id_user).delete()
             db.session.commit()
             current_app.logger.debug(
                 "[delete_user] user {} succesfully deleted".format(username)
@@ -504,7 +500,7 @@ def reset_user_password():
                 str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
             )
             server.sendmail(
-                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
+                current_app.config["MAIL"]["MAIL_AUTH_LOGIN"], user.email, msg.as_string()
             )
             server.quit()
         user.password = passwd_hash

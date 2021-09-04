@@ -10,7 +10,7 @@ from typing import Union, Tuple, Dict
 # from datetime import datetime
 import requests
 from flask import Blueprint, current_app, request, json, send_from_directory
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
@@ -28,7 +28,7 @@ from gncitizen.core.taxonomy.models import Taxref, TMedias
 
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.jwt import get_id_role_if_exists
+from gncitizen.utils.jwt import get_user_if_exists, get_id_role_if_exists
 from gncitizen.utils.geo import get_municipality_id_from_wkb  # , get_area_informations
 from gncitizen.utils.media import save_upload_files
 from utils_flask_sqla.response import json_resp
@@ -58,11 +58,11 @@ obs_keys = (
 def generate_observation_geojson(id_observation):
     """generate observation in geojson format from observation id
 
-      :param id_observation: Observation unique id
-      :type id_observation: int
+    :param id_observation: Observation unique id
+    :type id_observation: int
 
-      :return features: Observations as a Feature dict
-      :rtype features: dict
+    :return features: Observations as a Feature dict
+    :rtype features: dict
     """
 
     # Crée le dictionnaire de l'observation
@@ -157,30 +157,30 @@ def generate_observation_geojson(id_observation):
 @json_resp
 def get_observation(pk):
     """Get on observation by id
-         ---
-         tags:
-          - observations
-         parameters:
-          - name: pk
-            in: path
-            type: integer
-            required: true
-            example: 1
-         definitions:
-           cd_nom:
-             type: integer
-             description: cd_nom taxref
-           geometry:
-             type: dict
-             description: Géométrie de la donnée
-           name:
-             type: string
-           geom:
-             type: geojson
-         responses:
-           200:
-             description: A list of all observations
-         """
+    ---
+    tags:
+     - observations
+    parameters:
+     - name: pk
+       in: path
+       type: integer
+       required: true
+       example: 1
+    definitions:
+      cd_nom:
+        type: integer
+        description: cd_nom taxref
+      geometry:
+        type: dict
+        description: Géométrie de la donnée
+      name:
+        type: string
+      geom:
+        type: geojson
+    responses:
+      200:
+        description: A list of all observations
+    """
     try:
         features = generate_observation_geojson(pk)
         return {"features": features}, 200
@@ -249,7 +249,7 @@ def post_observation():
         responses:
           200:
             description: Adding a observation
-        """
+    """
     try:
         request_datas = request.form
         current_app.logger.debug("[post_observation] request data:", request_datas)
@@ -463,7 +463,7 @@ def get_program_observations(
         responses:
           200:
             description: A list of all species lists
-        """
+    """
     try:
         observations = (
             db.session.query(
@@ -597,7 +597,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         responses:
           200:
             description: A list of all species lists
-        """
+    """
     try:
         observations = (
             db.session.query(
@@ -663,7 +663,11 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             # Observer submitted media
             feature["properties"]["image"] = (
                 "/".join(
-                    ["/api", current_app.config["MEDIA_FOLDER"], observation.image,]
+                    [
+                        "/api",
+                        current_app.config["MEDIA_FOLDER"],
+                        observation.image,
+                    ]
                 )
                 if observation.image
                 else None
@@ -719,8 +723,6 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         raise e
         current_app.logger.critical("[get_program_observations] Error: %s", str(e))
         return {"message": str(e)}, 400
-
-
 
 
 @obstax_api.route("/dev_rewards/<int:id>")
@@ -954,20 +956,15 @@ def update_observation():
         return {"message": str(e)}, 400
 
 
-@obstax_api.route("/observations/<int:idObs>", methods=["DELETE"])
+@obstax_api.route("/observations/<int:id_obs>", methods=["DELETE"])
 @json_resp
 @jwt_required()
-def delete_observation(idObs):
-    current_user = get_jwt_identity()
+def delete_observation(id_obs):
+    current_user = get_user_if_exists()
+    
     try:
-        observation = (
-            db.session.query(ObservationModel, UserModel)
-            .filter(ObservationModel.id_observation == idObs)
-            .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
-            .first()
-        )
-        if current_user == observation.UserModel.email:
-            ObservationModel.query.filter_by(id_observation=idObs).delete()
+        if current_user:
+            ObservationModel.query.filter(ObservationModel.id_observation==id_obs, ObservationModel.id_role == current_user.id_user).delete()
             db.session.commit()
             return ("observation deleted successfully"), 200
         else:
