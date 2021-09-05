@@ -8,7 +8,12 @@
                 [(ngModel)]="selectedTaxon"
                 (ngModelChange)="onFilterChange()"
             >
-                <option [ngValue]="null" i18n="All species select option@@allSpeciesSelectOption">Toutes espèces</option>
+                <option
+                    [ngValue]="null"
+                    i18n="All species select option@@allSpeciesSelectOption"
+                >
+                    Toutes espèces
+                </option>
                 <option *ngFor="let s of surveySpecies" [ngValue]="s">
                     {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }}
                     <span *ngIf="appConfig.taxonDisplaySciName"
@@ -26,7 +31,14 @@
                 [(ngModel)]="selectedMunicipality"
                 (ngModelChange)="onFilterChange()"
             >
-                <option [ngValue]="null" i18n="All municipalities select option@@allMunicipalitiesSelectOption">Toutes communes</option>
+                <option
+                    [ngValue]="null"
+                    i18n="
+                        All municipalities select
+                        option@@allMunicipalitiesSelectOption"
+                >
+                    Toutes communes
+                </option>
                 <option *ngFor="let t of municipalities" [ngValue]="t">
                     {{ t?.name || '?' }}
                 </option>
@@ -37,7 +49,9 @@
                 ><span *ngIf="router.url.includes('mydashboard')">Mes </span
                 >Observations
             </strong>
-            <span class="badge badge-pill badge-info">{{ (features$ | async)?.length }}</span>
+            <span class="badge badge-pill badge-info">{{
+                (features$ | async)?.length
+            }}</span>
             <ng-content select="[add-obs]"></ng-content>
         </div>
         <div id="list">
@@ -61,7 +75,7 @@
                             ? appConfig.API_TAXHUB +
                               '/tmedias/thumbnail/' +
                               o.properties.medias[0].id_media +
-                              '?h=80&v=80'
+                              '?h=80'
                             : 'assets/default_image.png'
                     "
                 />
