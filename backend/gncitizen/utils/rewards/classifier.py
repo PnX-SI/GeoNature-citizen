@@ -1,4 +1,5 @@
 from typing import Any, List, Optional
+
 from .rule import Rule
 
 

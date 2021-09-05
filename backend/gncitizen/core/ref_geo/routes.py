@@ -1,12 +1,12 @@
 from flask import Blueprint
 from geoalchemy2 import func
 from geoalchemy2.shape import to_shape
-from geojson import FeatureCollection, Feature
-
-from gncitizen.utils.env import db
-from gncitizen.utils.env import load_config
+from geojson import Feature, FeatureCollection
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
+
+from gncitizen.utils.env import db, load_config
+
 from .models import LAreas
 
 geo_api = Blueprint("ref_geo", __name__)
@@ -16,22 +16,22 @@ geo_api = Blueprint("ref_geo", __name__)
 @json_resp
 def get_municipalities():
     """List all enabled municipalities
-        ---
-        tags:
-          - Reférentiel géo
-        definitions:
-          area_name:
-            type: string
-            description: Municipality name
-          area_code:
-            type: string
-            description: Municipality insee code
-          geometry:
-            type: geometry
-        responses:
-          200:
-            description: A list of municipalities
-        """
+    ---
+    tags:
+      - Reférentiel géo
+    definitions:
+      area_name:
+        type: string
+        description: Municipality name
+      area_code:
+        type: string
+        description: Municipality insee code
+      geometry:
+        type: geometry
+    responses:
+      200:
+        description: A list of municipalities
+    """
     try:
         q = db.session.query(
             LAreas.area_name,
@@ -54,28 +54,28 @@ def get_municipalities():
 @json_resp
 def get_municipality(insee):
     """Get one enabled municipality by insee code
-        ---
-        tags:
-          - Reférentiel géo
-        parameters:
-          - name: insee
-            in: path
+    ---
+    tags:
+      - Reférentiel géo
+    parameters:
+      - name: insee
+        in: path
+        type: string
+        required: true
+        default: none
+        properties:
+          area_name:
             type: string
-            required: true
-            default: none
-            properties:
-              area_name:
-                type: string
-                description: Municipality name
-              area_code:
-                type: string
-                description: Municipality insee code
-              geometry:
-                type: geometry
-        responses:
-          200:
-            description: A municipality
-        """
+            description: Municipality name
+          area_code:
+            type: string
+            description: Municipality insee code
+          geometry:
+            type: geometry
+    responses:
+      200:
+        description: A municipality
+    """
     try:
         q = (
             db.session.query(
@@ -84,7 +84,9 @@ def get_municipality(insee):
                 func.ST_Transform(LAreas.geom, 4326).label("geom"),
             )
             .filter(
-                LAreas.enable, LAreas.area_code == str(insee), LAreas.id_type == 101
+                LAreas.enable,
+                LAreas.area_code == str(insee),
+                LAreas.id_type == 101,
             )
             .limit(1)
         )

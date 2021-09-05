@@ -1,23 +1,22 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # import enum
+
 from geoalchemy2 import Geometry
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import relationship
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 from gncitizen.core.commons.models import (
+    CustomFormModel,
+    MediaModel,
     ProgramsModel,
     TimestampMixinModel,
-    MediaModel,
-    CustomFormModel,
 )
-from gncitizen.core.users.models import ObserverMixinModel
-from utils_flask_sqla_geo.serializers import serializable, geoserializable
 from gncitizen.core.observations.models import ObservationModel
-from server import db
-from gncitizen.core.commons.models import ProgramsModel
+from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.env import ROOT_DIR
-import os
+from server import db
 
 
 def create_schema(db):
@@ -74,13 +73,16 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
 class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     __tablename__ = "cor_program_typesites"
     __table_args__ = {"schema": "gnc_sites"}
-    id_cor_program_typesite = db.Column(db.Integer, primary_key=True, unique=True)
+    id_cor_program_typesite = db.Column(
+        db.Integer, primary_key=True, unique=True
+    )
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE")
     )
     program = relationship("ProgramsModel", backref="site_types")
     id_typesite = db.Column(
-        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE")
+        db.Integer,
+        db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE"),
     )
     site_type = relationship("SiteTypeModel")
 

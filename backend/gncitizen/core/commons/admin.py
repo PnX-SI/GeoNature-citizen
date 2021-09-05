@@ -1,42 +1,23 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
-
-import json
-import urllib.parse
-
 import requests
-
-from flask import Blueprint, current_app, request, flash
-from flask_admin.contrib.geoa import ModelView as GeoModelView
+from flask import current_app, flash
+from flask_admin.contrib.sqla.view import ModelView
 from flask_admin.form.upload import FileUploadField
-from flask_ckeditor import CKEditorField 
-
-from geoalchemy2.shape import from_shape
-from geojson import FeatureCollection
-from shapely.geometry import MultiPolygon, asShape
+from flask_admin.model.form import InlineFormAdmin
+from flask_ckeditor import CKEditorField
 from wtforms import SelectField
 
-import json
-from flask_admin.contrib.sqla.view import ModelView
-from jinja2 import Markup
-
-from gncitizen.core.users.models import UserModel
 from gncitizen.core.sites.models import CorProgramSiteTypeModel
-from gncitizen.utils.env import admin, MEDIA_DIR
-from gncitizen.utils.errors import GeonatureApiError
-from utils_flask_sqla.response import json_resp
-from server import db
-
-from .models import ProgramsModel
 from gncitizen.core.taxonomy.models import BibListes
-import os
+from gncitizen.utils.admin import (
+    CustomJSONField,
+    CustomTileView,
+    json_formatter,
+)
+from gncitizen.utils.env import MEDIA_DIR
 
 logger = current_app.logger
-
-def json_formatter(view, context, model, name):
-    value = getattr(model, name)
-    json_value = json.dumps(value, ensure_ascii=False, indent=2)
-    return Markup("<pre>{}</pre>".format(json_value))
 
 
 def taxonomy_lists():
@@ -64,24 +45,16 @@ def taxonomy_lists():
     return taxonomy_lists
 
 
-from flask_admin.model.form import InlineFormAdmin
-
-
-
 class CorProgramSiteTypeModelInlineForm(InlineFormAdmin):
     form_columns = ("site_type",)
 
-
-class CustomTileView(GeoModelView):
-    tile_layer_url = 'a.tile.openstreetmap.org/{z}/{x}/{y}.png'
-    tile_layer_attribution = 'some string or html goes here'
 
 class ProjectView(ModelView):
     form_overrides = {"long_desc": CKEditorField}
     create_template = "edit.html"
     edit_template = "edit.html"
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
-    column_exclude_list = ['long_desc','short_desc']
+    column_exclude_list = ["long_desc", "short_desc"]
 
 
 class ProgramView(ModelView):
@@ -90,7 +63,13 @@ class ProgramView(ModelView):
     create_template = "edit.html"
     edit_template = "edit.html"
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
-    column_exclude_list = ['long_desc','form_message','short_desc','image','logo']
+    column_exclude_list = [
+        "long_desc",
+        "form_message",
+        "short_desc",
+        "image",
+        "logo",
+    ]
     inline_models = [
         (
             CorProgramSiteTypeModel,
@@ -103,6 +82,7 @@ class ProgramView(ModelView):
 
 
 class CustomFormView(ModelView):
+    form_overrides = {"json_schema": CustomJSONField}
     column_formatters = {
         "json_schema": json_formatter,
     }
@@ -110,7 +90,11 @@ class CustomFormView(ModelView):
 
 class UserView(ModelView):
     column_exclude_list = ["password"]
-    form_excluded_columns = ["timestamp_create", "timestamp_update", "password"]
+    form_excluded_columns = [
+        "timestamp_create",
+        "timestamp_update",
+        "password",
+    ]
 
 
 def get_geom_file_path(obj, file_data):
@@ -127,7 +111,7 @@ class GeometryView(CustomTileView):
             description="""
                 Le fichier contenant la géométrie de la zone doit être au format geojson ou kml.<br>
                 Seules les types Polygon et MultiPolygon (ou MultiGeometry pour kml) sont acceptées.<br>
-                Les fichiers GeoJson fournis devront être en projection WGS84 (donc SRID 4326) 
+                Les fichiers GeoJson fournis devront être en projection WGS84 (donc SRID 4326)
                 et respecter le format "FeatureCollection" tel que présenté ici :
                 https://tools.ietf.org/html/rfc7946#section-1.5.
             """,
@@ -141,7 +125,7 @@ class GeometryView(CustomTileView):
         logger.debug(f"data {form.data}")
         logger.debug(f"geom_file {form.geom_file}")
         logger.debug(f"model {dir(model)}")
-        if form.data['geom_file']:
+        if form.data["geom_file"]:
             model.set_geom_from_geom_file()
 
     def handle_view_exception(self, exc):
