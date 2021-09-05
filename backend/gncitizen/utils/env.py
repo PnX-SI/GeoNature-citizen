@@ -2,7 +2,6 @@ import logging
 import os
 import sys
 from pathlib import Path
-from urllib.parse import urlparse
 
 from flasgger import Swagger
 from flask import current_app

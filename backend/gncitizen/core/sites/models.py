@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # import enum
-import os
 
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import JSONB, UUID

@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 
 import json
-import urllib.parse
 
 from flask import Blueprint, current_app, request, send_from_directory
 from flask_admin.contrib.geoa import ModelView

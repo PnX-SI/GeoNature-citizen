@@ -43,8 +43,8 @@ def postrequest(url):
     try:
         r = response.json()
         return r
-    except:
-        print("can't get json response")
+    except Exception as e:
+        logger.error(f"can't get json response, error {e}")
 
 
 def getrequest(url):
@@ -59,8 +59,8 @@ def getrequest(url):
     try:
         r = response.json()
         return r
-    except:
-        print("can't get json response")
+    except Exception as e:
+        logger.error(f"can't get json response, error {e}")
 
 
 def registration():

@@ -2,6 +2,7 @@ import json
 
 from flask_admin.contrib.geoa import ModelView
 from flask_admin.form.fields import JSONField
+from jinja2 import Markup
 
 
 def json_formatter(view, context, model, name):

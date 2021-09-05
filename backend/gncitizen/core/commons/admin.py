@@ -1,36 +1,21 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
-
-import json
-import os
-import urllib.parse
-
 import requests
-from flask import Blueprint, current_app, flash, request
-from flask_admin.contrib.geoa import ModelView as GeoModelView
+from flask import current_app, flash
 from flask_admin.contrib.sqla.view import ModelView
 from flask_admin.form.upload import FileUploadField
+from flask_admin.model.form import InlineFormAdmin
 from flask_ckeditor import CKEditorField
-from geoalchemy2.shape import from_shape
-from geojson import FeatureCollection
-from jinja2 import Markup
-from shapely.geometry import MultiPolygon, asShape
-from utils_flask_sqla.response import json_resp
 from wtforms import SelectField
 
 from gncitizen.core.sites.models import CorProgramSiteTypeModel
 from gncitizen.core.taxonomy.models import BibListes
-from gncitizen.core.users.models import UserModel
 from gncitizen.utils.admin import (
     CustomJSONField,
     CustomTileView,
     json_formatter,
 )
-from gncitizen.utils.env import MEDIA_DIR, admin
-from gncitizen.utils.errors import GeonatureApiError
-from server import db
-
-from .models import ProgramsModel
+from gncitizen.utils.env import MEDIA_DIR
 
 logger = current_app.logger
 
@@ -58,9 +43,6 @@ def taxonomy_lists():
                 current_app.logger.critical(str(e))
     # current_app.logger.debug(taxonomy_lists)
     return taxonomy_lists
-
-
-from flask_admin.model.form import InlineFormAdmin
 
 
 class CorProgramSiteTypeModelInlineForm(InlineFormAdmin):
@@ -129,7 +111,7 @@ class GeometryView(CustomTileView):
             description="""
                 Le fichier contenant la géométrie de la zone doit être au format geojson ou kml.<br>
                 Seules les types Polygon et MultiPolygon (ou MultiGeometry pour kml) sont acceptées.<br>
-                Les fichiers GeoJson fournis devront être en projection WGS84 (donc SRID 4326) 
+                Les fichiers GeoJson fournis devront être en projection WGS84 (donc SRID 4326)
                 et respecter le format "FeatureCollection" tel que présenté ici :
                 https://tools.ietf.org/html/rfc7946#section-1.5.
             """,

@@ -1,5 +1,5 @@
 from calendar import monthrange
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
 from flask import Blueprint, Flask, Response, current_app, jsonify, request
 from sqlalchemy.sql.expression import func
