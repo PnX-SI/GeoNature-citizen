@@ -3,10 +3,10 @@
 """ Fichier de test de l'application backend
 """
 
-import requests
 import json
-
 import logging
+
+import requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -1,20 +1,27 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+import json
+import os
 import uuid
+import xml.etree.ElementTree as ET
+from datetime import datetime
 
 from geoalchemy2 import Geometry
+from geoalchemy2.functions import (
+    ST_GeomFromGeoJSON,
+    ST_GeomFromKML,
+    ST_SetSRID,
+)
 from sqlalchemy import ForeignKey
-from sqlalchemy.sql import expression
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.sql import expression
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 from gncitizen.core.taxonomy.models import BibListes
-from gncitizen.utils.env import db, MEDIA_DIR
-from utils_flask_sqla_geo.serializers import serializable, geoserializable
-import os
+from gncitizen.utils.env import MEDIA_DIR, db
 
 
 class TimestampMixinModel(object):
@@ -64,14 +71,6 @@ class CustomFormModel(TimestampMixinModel, db.Model):
     def __repr__(self):
         return self.name
 
-
-from geoalchemy2.functions import (
-    ST_GeomFromKML,
-    ST_GeomFromGeoJSON,
-    ST_SetSRID,
-)
-import json
-import xml.etree.ElementTree as ET
 
 
 @serializable

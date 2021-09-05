@@ -10,9 +10,8 @@ from flask import current_app
 from werkzeug.datastructures import FileStorage
 
 from gncitizen.core.commons.models import MediaModel
-from gncitizen.utils.env import MEDIA_DIR
+from gncitizen.utils.env import ALLOWED_EXTENSIONS, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.env import ALLOWED_EXTENSIONS
 from server import db
 
 

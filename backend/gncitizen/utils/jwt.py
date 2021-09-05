@@ -5,9 +5,9 @@
 
 from functools import wraps
 
-from flask import jsonify, current_app
-from sqlalchemy import func, or_
+from flask import current_app, jsonify
 from flask_jwt_extended import get_jwt_identity
+from sqlalchemy import func, or_
 
 from gncitizen.core.users.models import UserModel
 

@@ -1,8 +1,7 @@
 import json
 import unittest
 
-from tests.common import postrequest, getrequest
-
+from tests.common import getrequest, postrequest
 
 CREATE_SITE_BODY = {
     "id_program": 2,

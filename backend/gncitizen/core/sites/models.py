@@ -1,23 +1,23 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # import enum
+import os
+
 from geoalchemy2 import Geometry
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import relationship
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 from gncitizen.core.commons.models import (
+    CustomFormModel,
+    MediaModel,
     ProgramsModel,
     TimestampMixinModel,
-    MediaModel,
-    CustomFormModel,
 )
-from gncitizen.core.users.models import ObserverMixinModel
-from utils_flask_sqla_geo.serializers import serializable, geoserializable
 from gncitizen.core.observations.models import ObservationModel
-from server import db
-from gncitizen.core.commons.models import ProgramsModel
+from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.env import ROOT_DIR
-import os
+from server import db
 
 
 def create_schema(db):

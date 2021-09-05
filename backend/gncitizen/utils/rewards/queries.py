@@ -1,27 +1,17 @@
 import logging
-from gncitizen.core.observations.models import (
-    # ObservationMediaModel,
+
+from gncitizen.core.commons.models import ProgramsModel  # MediaModel,
+from gncitizen.core.observations.models import (  # ObservationMediaModel,
     ObservationModel,
 )
-from gncitizen.core.users.models import (
-    # ObserverMixinModel,
-    # UserGroupsModel,
-    # GroupsModel,
-    UserModel,
-)
-from gncitizen.core.taxonomy.models import (
-    # BibNoms,
-    # BibListes,
-    # CorNomListe,
-    # TMedias,
+from gncitizen.core.taxonomy.models import (  # BibNoms,; BibListes,; CorNomListe,; TMedias,
     Taxref,
 )
-from .models import recognition_model
-
-from gncitizen.core.commons.models import (
-    #     MediaModel,
-    ProgramsModel,
+from gncitizen.core.users.models import (  # ObserverMixinModel,; UserGroupsModel,; GroupsModel,
+    UserModel,
 )
+
+from .models import recognition_model
 
 logger = logging.getLogger()
 

@@ -1,8 +1,9 @@
-from flask import current_app
-from itsdangerous import URLSafeTimedSerializer
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
+from flask import current_app
+from itsdangerous import URLSafeTimedSerializer
 
 
 def confirm_user_email(newuser, with_confirm_link=True):

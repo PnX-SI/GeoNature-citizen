@@ -32,6 +32,7 @@ utils-flask-sqlalchemy-geo = {git = "https://github.com/PnX-SI/Utils-Flask-SQLAl
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
 isort = "^5.8.0"
+flake8 = "^3.9.2"
 
 [tool.isort]
 include_trailing_comma = true

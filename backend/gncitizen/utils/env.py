@@ -1,18 +1,18 @@
-import os
 import logging
+import os
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
-from flask import current_app
 
 from flasgger import Swagger
-from flask_jwt_extended import JWTManager
-from flask_sqlalchemy import SQLAlchemy
+from flask import current_app
 from flask_admin import Admin
 from flask_ckeditor import CKEditor, CKEditorField
+from flask_jwt_extended import JWTManager
+from flask_sqlalchemy import SQLAlchemy
 
-from gncitizen.utils.toml import load_toml
 from gncitizen import __version__
+from gncitizen.utils.toml import load_toml
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / "backend"

@@ -1,12 +1,12 @@
 from flask import Blueprint
 from geoalchemy2 import func
 from geoalchemy2.shape import to_shape
-from geojson import FeatureCollection, Feature
-
-from gncitizen.utils.env import db
-from gncitizen.utils.env import load_config
+from geojson import Feature, FeatureCollection
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
+
+from gncitizen.utils.env import db, load_config
+
 from .models import LAreas
 
 geo_api = Blueprint("ref_geo", __name__)

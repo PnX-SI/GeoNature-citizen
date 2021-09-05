@@ -2,39 +2,35 @@
 # -*- coding:utf-8 -*-
 
 import json
+import os
 import urllib.parse
 
 import requests
-
-from flask import Blueprint, current_app, request, flash
+from flask import Blueprint, current_app, flash, request
 from flask_admin.contrib.geoa import ModelView as GeoModelView
+from flask_admin.contrib.sqla.view import ModelView
 from flask_admin.form.upload import FileUploadField
-from gncitizen.utils.admin import (
-    json_formatter,
-    CustomJSONField,
-    CustomTileView,
-)
 from flask_ckeditor import CKEditorField
-
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
+from jinja2 import Markup
 from shapely.geometry import MultiPolygon, asShape
+from utils_flask_sqla.response import json_resp
 from wtforms import SelectField
 
-import json
-from flask_admin.contrib.sqla.view import ModelView
-from jinja2 import Markup
-
-from gncitizen.core.users.models import UserModel
 from gncitizen.core.sites.models import CorProgramSiteTypeModel
-from gncitizen.utils.env import admin, MEDIA_DIR
+from gncitizen.core.taxonomy.models import BibListes
+from gncitizen.core.users.models import UserModel
+from gncitizen.utils.admin import (
+    CustomJSONField,
+    CustomTileView,
+    json_formatter,
+)
+from gncitizen.utils.env import MEDIA_DIR, admin
 from gncitizen.utils.errors import GeonatureApiError
-from utils_flask_sqla.response import json_resp
 from server import db
 
 from .models import ProgramsModel
-from gncitizen.core.taxonomy.models import BibListes
-import os
 
 logger = current_app.logger
 

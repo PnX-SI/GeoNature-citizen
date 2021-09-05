@@ -1,6 +1,12 @@
-import flask
+import base64
 import os
-from flask import request, Blueprint, current_app
+import smtplib
+import uuid
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+import flask
+from flask import Blueprint, current_app, request
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -10,20 +16,16 @@ from flask_jwt_extended import (
 )
 from sqlalchemy import func, or_
 from sqlalchemy.exc import IntegrityError
-from gncitizen.utils.mail_check import confirm_user_email, confirm_token
-from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.env import MEDIA_DIR
 from utils_flask_sqla.response import json_resp
-from server import db, jwt
-from gncitizen.core.observations.models import ObservationModel
-from .models import UserModel, RevokedTokenModel
-from gncitizen.utils.jwt import admin_required, get_user_if_exists
-import uuid
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import base64
 
+from gncitizen.core.observations.models import ObservationModel
+from gncitizen.utils.env import MEDIA_DIR
+from gncitizen.utils.errors import GeonatureApiError
+from gncitizen.utils.jwt import admin_required, get_user_if_exists
+from gncitizen.utils.mail_check import confirm_token, confirm_user_email
+from server import db, jwt
+
+from .models import RevokedTokenModel, UserModel
 
 users_api = Blueprint("users", __name__)
 

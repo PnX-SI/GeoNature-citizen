@@ -1,13 +1,14 @@
 import logging
-from typing import Union, List
-from .rule import Rule
+from typing import List, Union
+
 from .models import (
     attendance_model,
-    seniority_model,
     program_attendance_model,
     program_date_bounds_model,
     recognition_model,
+    seniority_model,
 )
+from .rule import Rule
 
 
 # ATTENDANCE

@@ -1,6 +1,6 @@
 from sqlalchemy import ForeignKey
-
 from utils_flask_sqla.serializers import serializable
+
 from server import db
 
 

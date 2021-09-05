@@ -1,6 +1,7 @@
-from flask_admin.form.fields import JSONField
-from flask_admin.contrib.geoa import ModelView
 import json
+
+from flask_admin.contrib.geoa import ModelView
+from flask_admin.form.fields import JSONField
 
 
 def json_formatter(view, context, model, name):

@@ -1,7 +1,7 @@
 from gncitizen.utils.admin import (
-    json_formatter,
     CustomJSONField,
     CustomTileView,
+    json_formatter,
 )
 
 

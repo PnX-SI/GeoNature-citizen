@@ -1,12 +1,14 @@
-from flask import Flask, request, Blueprint, Response, jsonify, current_app
-from utils_flask_sqla.response import json_resp
-from gncitizen.core.observations.models import ObservationModel
-from gncitizen.core.commons.models import ProgramsModel
-from gncitizen.core.users.models import UserModel
-from gncitizen.core.taxonomy.models import Taxref
-from sqlalchemy.sql.expression import func
-from datetime import date, datetime, timedelta
 from calendar import monthrange
+from datetime import date, datetime, timedelta
+
+from flask import Blueprint, Flask, Response, current_app, jsonify, request
+from sqlalchemy.sql.expression import func
+from utils_flask_sqla.response import json_resp
+
+from gncitizen.core.commons.models import ProgramsModel
+from gncitizen.core.observations.models import ObservationModel
+from gncitizen.core.taxonomy.models import Taxref
+from gncitizen.core.users.models import UserModel
 from server import db
 
 badges_api = Blueprint("badges", __name__)

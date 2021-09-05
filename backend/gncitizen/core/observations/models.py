@@ -2,17 +2,17 @@
 # -*- coding: utf-8 -*-
 
 from geoalchemy2 import Geometry
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 from gncitizen.core.commons.models import (
+    MediaModel,
     ProgramsModel,
     TimestampMixinModel,
-    MediaModel,
 )
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import ObserverMixinModel
-from utils_flask_sqla_geo.serializers import serializable, geoserializable
 from server import db
 
 

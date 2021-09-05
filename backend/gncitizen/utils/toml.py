@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import toml
+
 from gncitizen.utils.errors import GeoNatureError
 
 

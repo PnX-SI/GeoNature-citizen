@@ -1,5 +1,5 @@
 from geoalchemy2 import Geometry
-from utils_flask_sqla_geo.serializers import serializable, geoserializable
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 from server import db
 

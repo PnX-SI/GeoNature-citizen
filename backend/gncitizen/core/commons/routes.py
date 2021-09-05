@@ -3,44 +3,47 @@
 
 import json
 import urllib.parse
-from flask import Blueprint, request, current_app, send_from_directory
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask_admin.form import SecureForm
+
+from flask import Blueprint, current_app, request, send_from_directory
 from flask_admin.contrib.geoa import ModelView
-from sqlalchemy.sql import func
-from sqlalchemy import distinct, and_
+from flask_admin.form import SecureForm
+from flask_ckeditor import CKEditorField
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
-from flask_ckeditor import CKEditorField
-
-from gncitizen.utils.errors import GeonatureApiError
+from sqlalchemy import and_, distinct
+from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
-from gncitizen.utils.env import admin
+
+from gncitizen.core.commons.admin import (
+    CustomFormView,
+    CustomTileView,
+    GeometryView,
+    ProgramView,
+    ProjectView,
+    UserView,
+)
+from gncitizen.core.observations.models import ObservationModel
+from gncitizen.core.sites.admin import SiteTypeView
+from gncitizen.core.sites.models import (
+    CorProgramSiteTypeModel,
+    SiteModel,
+    SiteTypeModel,
+    VisitModel,
+)
+from gncitizen.core.users.models import UserModel
+from gncitizen.utils.env import MEDIA_DIR, admin
+from gncitizen.utils.errors import GeonatureApiError
 from server import db
 
 from .models import (
-    TModules,
-    ProjectModel,
-    ProgramsModel,
     CustomFormModel,
     GeometryModel,
+    ProgramsModel,
+    ProjectModel,
+    TModules,
 )
-from gncitizen.core.users.models import UserModel
-from gncitizen.core.observations.models import ObservationModel
-from gncitizen.core.sites.models import VisitModel, SiteModel
-
-from gncitizen.core.commons.admin import (
-    ProjectView,
-    ProgramView,
-    CustomFormView,
-    UserView,
-    GeometryView,
-    CustomTileView,
-)
-from gncitizen.core.sites.models import CorProgramSiteTypeModel, SiteTypeModel
-from gncitizen.core.sites.admin import SiteTypeView
-from gncitizen.utils.env import MEDIA_DIR
 
 commons_api = Blueprint("commons", __name__)
 

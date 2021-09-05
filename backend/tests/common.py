@@ -1,10 +1,11 @@
 import json
-import requests
-
-from gncitizen.utils.env import load_config
 
 # disable loud logs from urllib3
 import logging
+
+import requests
+
+from gncitizen.utils.env import load_config
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 

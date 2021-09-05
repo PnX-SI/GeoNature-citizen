@@ -1,8 +1,9 @@
 #!/usr/bin/python
 """Init db datas"""
 
-from gncitizen.core.commons.models import TModules
 from flask import current_app
+
+from gncitizen.core.commons.models import TModules
 
 
 def create_schemas(db):

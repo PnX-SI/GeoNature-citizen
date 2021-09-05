@@ -3,42 +3,43 @@
 
 
 import uuid
-from typing import Union, Tuple, Dict
-
-# from sqlalchemy import func
+from typing import Dict, Tuple, Union
 
 # from datetime import datetime
 import requests
-from flask import Blueprint, current_app, request, json, send_from_directory
+from flask import Blueprint, current_app, json, request, send_from_directory
 from flask_jwt_extended import jwt_required
-from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
+from geojson import FeatureCollection
 from shapely.geometry import Point, asShape
-from sqlalchemy import desc
-from sqlalchemy import func
+from sqlalchemy import desc, func
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla_geo.generic import get_geojson_feature
+
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
-from .models import ObservationMediaModel, ObservationModel
-from gncitizen.core.users.models import UserModel
-
 from gncitizen.core.taxonomy.models import Taxref, TMedias
+from gncitizen.core.users.models import UserModel
+from gncitizen.utils.env import MEDIA_DIR, admin, taxhub_lists_url
+from gncitizen.utils.errors import GeonatureApiError
+from gncitizen.utils.geo import (  # , get_area_informations
+    get_municipality_id_from_wkb,
+)
+from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
+from gncitizen.utils.media import save_upload_files
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
+from server import db
+
+from .admin import ObservationView
+from .models import ObservationMediaModel, ObservationModel
+
+# from sqlalchemy import func
+
+
 
 # DOING: TaxRef REST as alternative
 # from gncitizen.core.taxonomy.routes import get_list
 
-from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
-from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.jwt import get_user_if_exists, get_id_role_if_exists
-from gncitizen.utils.geo import (
-    get_municipality_id_from_wkb,
-)  # , get_area_informations
-from gncitizen.utils.media import save_upload_files
-from utils_flask_sqla.response import json_resp
-from utils_flask_sqla_geo.generic import get_geojson_feature
-from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
-from server import db
-from .admin import ObservationView
-from gncitizen.utils.env import admin
 
 obstax_api = Blueprint("obstax", __name__)
 
@@ -793,7 +794,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
 @obstax_api.route("/dev_rewards/<int:id>")
 @json_resp
 def get_rewards(id):
-    from gncitizen.utils.rewards import get_rewards, get_badges
+    from gncitizen.utils.rewards import get_badges, get_rewards
 
     badges, rewards = get_badges(id), get_rewards(id)
     current_app.logger.debug("rewards: %s", json.dumps(rewards, indent=4))

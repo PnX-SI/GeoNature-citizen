@@ -3,8 +3,9 @@
 
 """A module to manage taxonomy"""
 
-from typing import Dict, List, Union
 from functools import lru_cache
+from typing import Dict, List, Union
+
 from flask import current_app
 
 if current_app.config.get("API_TAXHUB") is None:
