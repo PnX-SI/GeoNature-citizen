@@ -19,7 +19,12 @@ def create_schemas(db):
 
 
 def populate_modules(db):
-    if db.session.query(TModules).filter(TModules.label == "observations").count() == 0:
+    if (
+        db.session.query(TModules)
+        .filter(TModules.label == "observations")
+        .count()
+        == 0
+    ):
         current_app.logger.info('Insert "Observations" into modules table')
         data = {
             "id_module": 1,
@@ -30,7 +35,10 @@ def populate_modules(db):
         m = TModules(**data)
         db.session.add(m)
         db.session.commit()
-    if db.session.query(TModules).filter(TModules.label == "sites").count() == 0:
+    if (
+        db.session.query(TModules).filter(TModules.label == "sites").count()
+        == 0
+    ):
         current_app.logger.info('Insert "Sites" into modules table')
         data = {
             "id_module": 2,

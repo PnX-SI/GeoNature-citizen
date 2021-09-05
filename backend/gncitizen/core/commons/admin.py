@@ -9,8 +9,12 @@ import requests
 from flask import Blueprint, current_app, request, flash
 from flask_admin.contrib.geoa import ModelView as GeoModelView
 from flask_admin.form.upload import FileUploadField
-from gncitizen.utils.admin import json_formatter, CustomJSONField, CustomTileView
-from flask_ckeditor import CKEditorField 
+from gncitizen.utils.admin import (
+    json_formatter,
+    CustomJSONField,
+    CustomTileView,
+)
+from flask_ckeditor import CKEditorField
 
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
@@ -63,7 +67,6 @@ def taxonomy_lists():
 from flask_admin.model.form import InlineFormAdmin
 
 
-
 class CorProgramSiteTypeModelInlineForm(InlineFormAdmin):
     form_columns = ("site_type",)
 
@@ -73,7 +76,7 @@ class ProjectView(ModelView):
     create_template = "edit.html"
     edit_template = "edit.html"
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
-    column_exclude_list = ['long_desc','short_desc']
+    column_exclude_list = ["long_desc", "short_desc"]
 
 
 class ProgramView(ModelView):
@@ -82,7 +85,13 @@ class ProgramView(ModelView):
     create_template = "edit.html"
     edit_template = "edit.html"
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
-    column_exclude_list = ['long_desc','form_message','short_desc','image','logo']
+    column_exclude_list = [
+        "long_desc",
+        "form_message",
+        "short_desc",
+        "image",
+        "logo",
+    ]
     inline_models = [
         (
             CorProgramSiteTypeModel,
@@ -95,17 +104,19 @@ class ProgramView(ModelView):
 
 
 class CustomFormView(ModelView):
-    form_overrides = {"json_schema":CustomJSONField}
+    form_overrides = {"json_schema": CustomJSONField}
     column_formatters = {
         "json_schema": json_formatter,
     }
 
 
-
-
 class UserView(ModelView):
     column_exclude_list = ["password"]
-    form_excluded_columns = ["timestamp_create", "timestamp_update", "password"]
+    form_excluded_columns = [
+        "timestamp_create",
+        "timestamp_update",
+        "password",
+    ]
 
 
 def get_geom_file_path(obj, file_data):
@@ -136,7 +147,7 @@ class GeometryView(CustomTileView):
         logger.debug(f"data {form.data}")
         logger.debug(f"geom_file {form.geom_file}")
         logger.debug(f"model {dir(model)}")
-        if form.data['geom_file']:
+        if form.data["geom_file"]:
             model.set_geom_from_geom_file()
 
     def handle_view_exception(self, exc):

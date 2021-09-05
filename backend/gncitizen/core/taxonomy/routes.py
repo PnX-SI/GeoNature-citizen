@@ -46,7 +46,7 @@ def get_lists():
         responses:
           200:
             description: A list of all species lists
-        """
+    """
     # r = requests.get(taxhub_lists_url)
     # if r.status_code == 200:
     #     result = r.json()
@@ -87,13 +87,13 @@ def get_list(id):
         responses:
           200:
             description: A list of all species lists
-        """
+    """
 
     try:
-      r = mkTaxonRepository(id)
-      return r
+        r = mkTaxonRepository(id)
+        return r
     except Exception as e:
-      return {"message": str(e)}, 400
+        return {"message": str(e)}, 400
 
 
 # @taxo_api.route('/taxonomy/lists/full', methods=['GET'])
@@ -172,22 +172,22 @@ def get_list(id):
 @json_resp
 def get_taxon_from_cd_nom(cd_nom):
     """Get taxon TaxRef data from cd_nom
-         ---
-         tags:
-          - taxon
-         parameters:
-          - name: cd_nom
-            in: path
-            type: integer
-            required: true
-            example: 1
-         definitions:
-           cd_nom:
-             type: integer
-             description: cd_nom from TaxRef
-         responses:
-           200:
-             description: Taxon data from Taxref
+    ---
+    tags:
+     - taxon
+    parameters:
+     - name: cd_nom
+       in: path
+       type: integer
+       required: true
+       example: 1
+    definitions:
+      cd_nom:
+        type: integer
+        description: cd_nom from TaxRef
+    responses:
+      200:
+        description: Taxon data from Taxref
     """
     """Renvoie la fiche TaxRef de l'espèce d'après le cd_nom"""
     taxon = Taxref.query.filter_by(cd_nom=cd_nom).first()

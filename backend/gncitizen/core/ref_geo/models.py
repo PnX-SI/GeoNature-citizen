@@ -10,7 +10,9 @@ class LAreas(db.Model):
     __tablename__ = "l_areas"
     __table_args__ = {"schema": "ref_geo"}
     id_area = db.Column(db.Integer, primary_key=True)
-    id_type = db.Column(db.Integer, db.ForeignKey("ref_geo.bib_areas_types.id_type"))
+    id_type = db.Column(
+        db.Integer, db.ForeignKey("ref_geo.bib_areas_types.id_type")
+    )
     area_name = db.Column(db.Unicode)
     area_code = db.Column(db.Unicode)
     source = db.Column(db.Unicode)
@@ -19,7 +21,6 @@ class LAreas(db.Model):
 
     def __str__(self):
         return f"{self.area_name} - {self.area_code}"
-            
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom", "id_area", recursif)

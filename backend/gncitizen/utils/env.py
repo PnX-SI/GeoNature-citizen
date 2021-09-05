@@ -28,11 +28,11 @@ logger = logging.getLogger(__name__)
 
 
 def get_config_file_path(config_file=None):
-    """ Return the config file path by checking several sources
+    """Return the config file path by checking several sources
 
-        1 - Parameter passed
-        2 - GNCITIZEN_CONFIG_FILE env var
-        3 - Default config file value
+    1 - Parameter passed
+    2 - GNCITIZEN_CONFIG_FILE env var
+    3 - Default config file value
     """
     config_file = config_file or os.environ.get("GNCITIZEN_CONFIG_FILE")
     return Path(config_file or DEFAULT_CONFIG_FILE)
@@ -69,12 +69,18 @@ swagger_template = {
     "info": {
         "title": f"API Doc {app_conf['appName']}",
         "description": f"Backend API for {app_conf['appName']}, source code available at https://github.com/PnX-SI/GeoNature-citizen",
-        "contact": {"url": "https://github.com/PnX-SI/GeoNature-citizen",},
+        "contact": {
+            "url": "https://github.com/PnX-SI/GeoNature-citizen",
+        },
         "version": __version__,
     },
     "components": {
         "securitySchemes": {
-            "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT",}
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+            }
         }
     },
 }
@@ -113,7 +119,7 @@ taxhub_lists_url = taxhub_url + "biblistes/"
 
 def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):
     """
-        Get all the module enabled from gn_commons.t_modules
+    Get all the module enabled from gn_commons.t_modules
     """
     # with app.app_context():
     #     data = db.session.query(TModules).filter(

@@ -35,7 +35,8 @@ def get_rewards(id):
         total_obs = total_obs + item.nb_obs
     taxon_classe_query = (
         db.session.query(
-            Taxref.classe.label("classe"), func.count(Taxref.famille).label("nb_obs")
+            Taxref.classe.label("classe"),
+            func.count(Taxref.famille).label("nb_obs"),
         )
         .join(ObservationModel, Taxref.cd_nom == ObservationModel.cd_nom)
         .filter(ObservationModel.id_role == id)
@@ -46,7 +47,8 @@ def get_rewards(id):
 
     taxon_famille_query = (
         db.session.query(
-            Taxref.famille.label("famille"), func.count(Taxref.famille).label("nb_obs")
+            Taxref.famille.label("famille"),
+            func.count(Taxref.famille).label("nb_obs"),
         )
         .join(ObservationModel, Taxref.cd_nom == ObservationModel.cd_nom)
         .filter(ObservationModel.id_role == id)
@@ -59,7 +61,9 @@ def get_rewards(id):
     user = UserModel.query.filter(UserModel.id_user == id).one()
     result = user.as_secured_dict(True)
     user_date_create = result["timestamp_create"]
-    user_date_create = datetime.strptime(user_date_create, "%Y-%m-%dT%H:%M:%S.%f")
+    user_date_create = datetime.strptime(
+        user_date_create, "%Y-%m-%dT%H:%M:%S.%f"
+    )
 
     for reward in rewards:
 

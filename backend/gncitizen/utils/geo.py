@@ -24,7 +24,9 @@ def get_municipality_id_from_wkb(wkb):
     :rtype: int
     """
     try:
-        srid = db.session.query(func.Find_SRID("ref_geo", "l_areas", "geom")).one()[0]
+        srid = db.session.query(
+            func.Find_SRID("ref_geo", "l_areas", "geom")
+        ).one()[0]
         current_app.logger.debug(
             "[get_municipality_id_from_wkb_point] SRID: {}".format(srid)
         )

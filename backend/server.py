@@ -136,6 +136,4 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
         # _app = app
 
-
-
     return app

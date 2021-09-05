@@ -41,8 +41,12 @@ def attendance_data(role_id):
 # Count observations the current user submitted program wise
 def program_attendance(attendance_data):
     return [
-        attendance_data.filter(ObservationModel.id_program == program.id_program)
-        for program in ProgramsModel.query.distinct(ProgramsModel.id_program).all()
+        attendance_data.filter(
+            ObservationModel.id_program == program.id_program
+        )
+        for program in ProgramsModel.query.distinct(
+            ProgramsModel.id_program
+        ).all()
     ]
 
 
@@ -61,13 +65,16 @@ def filter_class_or_order(model, query):
 
 
 def get_occ(attendance_data):
-    base_query = attendance_data.join(Taxref, Taxref.cd_nom == ObservationModel.cd_nom)
+    base_query = attendance_data.join(
+        Taxref, Taxref.cd_nom == ObservationModel.cd_nom
+    )
     # .filter(
     #     ObservationModel.id_role == role_id,
     #     ObservationModel.id_program == program_id
     # )
     return [
-        filter_class_or_order(item, base_query).count() for item in recognition_model
+        filter_class_or_order(item, base_query).count()
+        for item in recognition_model
     ]
 
 

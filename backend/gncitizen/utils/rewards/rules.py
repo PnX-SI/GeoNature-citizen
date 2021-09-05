@@ -62,7 +62,9 @@ def program_attendance_action(data) -> str:
     ]
 
 
-program_attendance_rule = Rule(program_attendance_condition, program_attendance_action)
+program_attendance_rule = Rule(
+    program_attendance_condition, program_attendance_action
+)
 
 
 # PROGRAM_DATE_BOUNDS
@@ -99,7 +101,9 @@ def recognition_action(data) -> Union[List[str], str]:
         for category, threshold in recognition_model[i]["attendance"].items():
             if q and q[i] >= threshold:
                 r.append(
-                    "{}.{}".format(recognition_model[i]["specialization"], category)
+                    "{}.{}".format(
+                        recognition_model[i]["specialization"], category
+                    )
                 )
     return r if len(r) > 0 else "Recognition.None"
 

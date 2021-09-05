@@ -33,6 +33,35 @@ utils-flask-sqlalchemy-geo = {git = "https://github.com/PnX-SI/Utils-Flask-SQLAl
 black = "^20.8b1"
 isort = "^5.8.0"
 
+[tool.isort]
+include_trailing_comma = true
+line_length = 79
+multi_line_output = 3
+profile = "black"
+
+[tool.black]
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''
+include = '\.pyi?$'
+line-length = 79
+target-version = ['py37']
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

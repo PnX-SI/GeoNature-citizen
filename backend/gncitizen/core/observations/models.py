@@ -35,12 +35,18 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
     # FIXME: remove nullable prop from ObservationModel.municipality once debugged
-    municipality = db.Column(db.Integer, db.ForeignKey(LAreas.id_area), nullable=True)
+    municipality = db.Column(
+        db.Integer, db.ForeignKey(LAreas.id_area), nullable=True
+    )
     geom = db.Column(Geometry("POINT", 4326))
     json_data = db.Column(JSONB, nullable=True)
 
-    program_ref = db.relationship("ProgramsModel", backref=db.backref('t_obstax', lazy='dynamic'))
-    municipality_ref = db.relationship("LAreas", backref=db.backref('l_areas', lazy='dynamic'))
+    program_ref = db.relationship(
+        "ProgramsModel", backref=db.backref("t_obstax", lazy="dynamic")
+    )
+    municipality_ref = db.relationship(
+        "LAreas", backref=db.backref("l_areas", lazy="dynamic")
+    )
 
 
 class ObservationMediaModel(TimestampMixinModel, db.Model):

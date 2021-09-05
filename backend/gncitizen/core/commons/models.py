@@ -65,7 +65,11 @@ class CustomFormModel(TimestampMixinModel, db.Model):
         return self.name
 
 
-from geoalchemy2.functions import ST_GeomFromKML, ST_GeomFromGeoJSON, ST_SetSRID
+from geoalchemy2.functions import (
+    ST_GeomFromKML,
+    ST_GeomFromGeoJSON,
+    ST_SetSRID,
+)
 import json
 import xml.etree.ElementTree as ET
 
@@ -105,7 +109,9 @@ class GeometryModel(TimestampMixinModel, db.Model):
                     if abs(x) > 180 or abs(y) > 180:
                         raise Exception("Mauvais système de projection")
                 # Convert Geo
-                self.geom = ST_SetSRID(ST_GeomFromGeoJSON(json.dumps(json_geom)), 4326)
+                self.geom = ST_SetSRID(
+                    ST_GeomFromGeoJSON(json.dumps(json_geom)), 4326
+                )
             elif ext == ".kml":
                 kml_root = ET.fromstring(geo_data)
                 kml_geom_elt = None
@@ -120,7 +126,9 @@ class GeometryModel(TimestampMixinModel, db.Model):
                                     raise Exception(gnc_invalid_err_message)
                 if kml_geom_elt is None:
                     raise Exception(gnc_invalid_err_message)
-                kml_geom = ET.tostring(kml_geom_elt, encoding="unicode", method="xml")
+                kml_geom = ET.tostring(
+                    kml_geom_elt, encoding="unicode", method="xml"
+                )
                 self.geom = ST_GeomFromKML(kml_geom)  # KML is always 4326 srid
 
     def __repr__(self):
@@ -170,11 +178,16 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     image = db.Column(db.String(250))
     logo = db.Column(db.String(250))
     id_module = db.Column(
-        db.Integer, ForeignKey(TModules.id_module), nullable=False, default=1,
+        db.Integer,
+        ForeignKey(TModules.id_module),
+        nullable=False,
+        default=1,
     )
     module = relationship("TModules")
     taxonomy_list = db.Column(db.Integer, nullable=True)
-    is_active = db.Column(db.Boolean(), server_default=expression.true(), default=True)
+    is_active = db.Column(
+        db.Boolean(), server_default=expression.true(), default=True
+    )
     id_geom = db.Column(
         db.Integer, db.ForeignKey(GeometryModel.id_geom), nullable=False
     )
@@ -188,7 +201,9 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     def get_geofeature(self, recursif=True, columns=None):
         geometry = to_shape(self.geometry.geom)
         feature = Feature(
-            id=self.id_program, geometry=geometry, properties=self.as_dict(True),
+            id=self.id_program,
+            geometry=geometry,
+            properties=self.as_dict(True),
         )
         return feature
 
@@ -198,8 +213,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
 
 @serializable
 class MediaModel(TimestampMixinModel, db.Model):
-    """Table des Programmes de GeoNature-citizen
-        """
+    """Table des Programmes de GeoNature-citizen"""
 
     __tablename__ = "t_medias"
     __table_args__ = {"schema": "gnc_core"}

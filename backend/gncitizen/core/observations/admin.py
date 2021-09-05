@@ -1,4 +1,8 @@
-from gncitizen.utils.admin import json_formatter, CustomJSONField, CustomTileView
+from gncitizen.utils.admin import (
+    json_formatter,
+    CustomJSONField,
+    CustomTileView,
+)
 
 
 class ObservationView(CustomTileView):
@@ -8,5 +12,21 @@ class ObservationView(CustomTileView):
     column_formatters = {
         "json_schema": json_formatter,
     }
-    column_filters = ('email','cd_nom','date', 'id_program','program_ref.title','program_ref.unique_id_program','municipality_ref.area_name','municipality_ref.area_code')
-    column_searchable_list = ('email','date','program_ref.title','program_ref.unique_id_program','municipality_ref.area_name','municipality_ref.area_code')
+    column_filters = (
+        "email",
+        "cd_nom",
+        "date",
+        "id_program",
+        "program_ref.title",
+        "program_ref.unique_id_program",
+        "municipality_ref.area_name",
+        "municipality_ref.area_code",
+    )
+    column_searchable_list = (
+        "email",
+        "date",
+        "program_ref.title",
+        "program_ref.unique_id_program",
+        "municipality_ref.area_name",
+        "municipality_ref.area_code",
+    )

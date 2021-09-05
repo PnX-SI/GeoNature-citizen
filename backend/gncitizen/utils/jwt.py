@@ -15,8 +15,7 @@ logger = current_app.logger
 
 
 def get_user_if_exists() -> UserModel:
-    """[summary]
-    """
+    """[summary]"""
     current_user = get_jwt_identity()
     return (
         UserModel.query.filter(
@@ -24,11 +23,11 @@ def get_user_if_exists() -> UserModel:
                 UserModel.email == current_user,
                 UserModel.username == current_user,
             )
-        )
-        .one()
+        ).one()
         if current_user
         else None
     )
+
 
 def get_id_role_if_exists():
     """get id_role if exists from ``get_jwt_identity()``

@@ -25,13 +25,17 @@ Taxon = Dict[str, Union[str, Dict[str, str], List[Dict]]]
 
 
 def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
-    payload = {"existing": "true", "order": "asc", "orderby": "taxref.nom_complet"}
+    payload = {
+        "existing": "true",
+        "order": "asc",
+        "orderby": "taxref.nom_complet",
+    }
     res = requests.get(
         "{}biblistes/taxons/{}".format(TAXHUB_API, taxhub_list_id),
         params=payload,
         timeout=1,
     )
-    logger.debug(f"<taxhub_rest_get_taxon_list> URL {res.url}")   
+    logger.debug(f"<taxhub_rest_get_taxon_list> URL {res.url}")
     res.raise_for_status()
     return res.json()
 
@@ -43,20 +47,24 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
     logger.debug(f"<taxhub_rest_get_taxon> URL {res.url}")
     res.raise_for_status()
     data = res.json()
-    data.pop('listes', None)
-    data.pop('attributs', None)
+    data.pop("listes", None)
+    data.pop("attributs", None)
     logger.debug(f"MEDIAS Length = {len(data['medias'])}")
-    if len(data['medias'])>0:
-        media_types = ('Photo_gncitizen','Photo_principale','Photo')
+    if len(data["medias"]) > 0:
+        media_types = ("Photo_gncitizen", "Photo_principale", "Photo")
         i = 0
         while i < len(media_types):
-            filtered_medias = [d for d in data['medias'] if d['nom_type_media'] == media_types[i]]
+            filtered_medias = [
+                d
+                for d in data["medias"]
+                if d["nom_type_media"] == media_types[i]
+            ]
             if len(filtered_medias) >= 1:
                 break
             i += 1
         medias = filtered_medias[:1]
         logger.debug(f"MEDIAS Filtered {medias}")
-        data['medias'] = medias
+        data["medias"] = medias
 
     return data
 
@@ -67,9 +75,9 @@ def mkTaxonRepository(taxhub_list_id: int) -> List[Taxon]:
     taxon_ids = [item["id_nom"] for item in taxa.get("items")]
     r = [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
     logger.debug(r)
-    
+
     # r = r.sort(key=lambda item: item.get('nom_francais'))
-    return sorted(r, key = lambda item: item['nom_francais'])
+    return sorted(r, key=lambda item: item["nom_francais"])
 
 
 def get_specie_from_cd_nom(cd_nom):
