@@ -39,6 +39,9 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     geom = db.Column(Geometry("POINT", 4326))
     json_data = db.Column(JSONB, nullable=True)
 
+    program_ref = db.relationship("ProgramsModel", backref=db.backref('t_obstax', lazy='dynamic'))
+    municipality_ref = db.relationship("LAreas", backref=db.backref('l_areas', lazy='dynamic'))
+
 
 class ObservationMediaModel(TimestampMixinModel, db.Model):
     """Table de correspondances des médias (photos) avec les observations"""

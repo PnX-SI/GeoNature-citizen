@@ -45,10 +45,6 @@ from gncitizen.utils.env import MEDIA_DIR
 commons_api = Blueprint("commons", __name__)
 
 
-admin.add_view(
-    CustomTileView(ObservationModel, db.session, "Observations")
-)
-
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
 admin.add_view(
     ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes")

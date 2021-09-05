@@ -9,6 +9,7 @@ import requests
 from flask import Blueprint, current_app, request, flash
 from flask_admin.contrib.geoa import ModelView as GeoModelView
 from flask_admin.form.upload import FileUploadField
+from gncitizen.utils.admin import json_formatter, CustomJSONField, CustomTileView
 from flask_ckeditor import CKEditorField 
 
 from geoalchemy2.shape import from_shape
@@ -32,11 +33,6 @@ from gncitizen.core.taxonomy.models import BibListes
 import os
 
 logger = current_app.logger
-
-def json_formatter(view, context, model, name):
-    value = getattr(model, name)
-    json_value = json.dumps(value, ensure_ascii=False, indent=2)
-    return Markup("<pre>{}</pre>".format(json_value))
 
 
 def taxonomy_lists():
@@ -72,10 +68,6 @@ class CorProgramSiteTypeModelInlineForm(InlineFormAdmin):
     form_columns = ("site_type",)
 
 
-class CustomTileView(GeoModelView):
-    tile_layer_url = 'a.tile.openstreetmap.org/{z}/{x}/{y}.png'
-    tile_layer_attribution = 'some string or html goes here'
-
 class ProjectView(ModelView):
     form_overrides = {"long_desc": CKEditorField}
     create_template = "edit.html"
@@ -103,9 +95,12 @@ class ProgramView(ModelView):
 
 
 class CustomFormView(ModelView):
+    form_overrides = {"json_schema":CustomJSONField}
     column_formatters = {
         "json_schema": json_formatter,
     }
+
+
 
 
 class UserView(ModelView):

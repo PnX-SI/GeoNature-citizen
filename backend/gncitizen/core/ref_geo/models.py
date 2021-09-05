@@ -17,6 +17,10 @@ class LAreas(db.Model):
     enable = db.Column(db.Boolean)
     geom = db.Column(Geometry("GEOMETRY", 4326))
 
+    def __str__(self):
+        return f"{self.area_name} - {self.area_code}"
+            
+
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom", "id_area", recursif)
 

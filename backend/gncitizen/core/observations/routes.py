@@ -35,9 +35,14 @@ from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
 from server import db
-
+from .admin import ObservationView
+from gncitizen.utils.env import admin
 
 obstax_api = Blueprint("obstax", __name__)
+
+admin.add_view(
+    ObservationView(ObservationModel, db.session, "Observations")
+)
 
 """Used attributes in observation features"""
 obs_keys = (
