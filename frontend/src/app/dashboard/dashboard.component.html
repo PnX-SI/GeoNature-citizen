@@ -1,6 +1,27 @@
 <div class="container">
     <h1>Tableau de bord</h1>
-      <div *ngIf="programLine">
+
+
+    <div *ngIf="programPoint">
+        <h2>{{programPoint.features[0].properties.title}}</h2>
+        <div *ngIf="sitePoint">
+            <div class="">{{ sitePoint.count }} arbres répertoriés</div>
+            <div>
+                <details>
+                    <summary>
+                        Liste des arbres répertoriés
+                    </summary>
+                    <ul>
+                        <li *ngFor="let s of sitePoint.features">
+                           {{ s.properties.name }}
+                        </li>
+                    </ul>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="programLine">
         <h2>{{programLine.features[0].properties.title}}</h2>
         <div *ngIf="siteLine">
             <div class="">{{ siteLine.count }} haies répertoriées</div>
@@ -19,6 +40,28 @@
             </div>
         </div>
     </div>
+
+    <div *ngIf="programPolygon">
+        <h2>{{programPolygon.features[0].properties.title}}</h2>
+        <div *ngIf="sitePolygon">
+            <div class="">{{ sitePolygon.count }} zones naturelles répertoriées</div>
+            <div>
+                <details>
+                    <summary>
+                        Liste des zones répertoriées
+                    </summary>
+                    <ul>
+                        <li *ngFor="let s of sitePolygon.features">
+                           {{ s.properties.name }}
+                        </li>
+                    </ul>
+                </details>
+            </div>
+        </div>
+    </div>
+
+
+
 </div>
 
 
