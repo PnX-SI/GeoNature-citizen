@@ -28,10 +28,7 @@
         "@angular/common": "^8.2.14",
         "@angular/compiler": "^8.2.14",
         "@angular/core": "^8.2.14",
-        "@angular/flex-layout": "^6.0.0-beta.18",
         "@angular/forms": "^8.2.14",
-        "@angular/http": "^7.2.16",
-        "@angular/material": "^7.3.3",
         "@angular/platform-browser": "^8.2.14",
         "@angular/platform-browser-dynamic": "^8.2.14",
         "@angular/platform-server": "^8.2.14",
@@ -94,7 +91,7 @@
         "ts-loader": "^6.2.2",
         "ts-node": "~8.3.0",
         "tslint": "~5.18.0",
-        "typescript": "~3.7",
+        "typescript": "~3.5",
         "webpack-cli": "^3.3.12"
     }
 }
