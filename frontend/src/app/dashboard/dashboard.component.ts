@@ -4,6 +4,7 @@ import { AppConfig } from '../../conf/app.config';
 import { Title } from '@angular/platform-browser';
 import { GncProgramsService } from '../api/gnc-programs.service';
 import { FeatureCollection, Geometry } from 'geojson';
+import { Program } from '../programs/programs.models';
 
 @Component({
     selector: 'app-dashboard',
@@ -11,8 +12,13 @@ import { FeatureCollection, Geometry } from 'geojson';
     styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
+    programs: Program[];
+    sitePoint: FeatureCollection;
     siteLine: FeatureCollection;
+    sitePolygon: FeatureCollection;
+    programPoint: FeatureCollection;
     programLine: FeatureCollection;
+    programPolygon: FeatureCollection;
     sumLineLength: number;
     constructor(
         private router: Router,
@@ -23,21 +29,49 @@ export class DashboardComponent implements OnInit {
     ngOnInit(): void {
         this.titleService.setTitle(`${AppConfig.appName} - tableau de bord`);
 
-        // TODO récupérer le programme (pour la forme, il est connu)
 
-        this.programService.getProgram(1).subscribe((program) => {
-            this.programLine = program;
-            //this.count= sites.count;
-            console.log('this.programLine:', this.programLine);
-        });
+        this.programService.getAllPrograms().subscribe((programs) => {
+            this.programs = programs;
+            console.log('this.programs: ', this.programs);
 
-        // Récupérer tous les sites du programme
-        this.programService.getProgramSites(1).subscribe((site) => {
-            this.siteLine = site;
-            console.log('this.siteLines:', this.siteLine);
-            this.sumLineLength = this.computeTotalLength(this.siteLine);
+            for (let p of this.programs) {
+                console.log(p);
+                this.programService.getProgram(p.id_program).subscribe((program) => {
+                    if ( program.features[0].properties.short_desc.includes('arbres') ) {
+                        this.programPoint = program;
+                        console.log('this.programPoint:', this.programPoint);
+
+                        this.programService.getProgramSites(p.id_program).subscribe((site) => {
+                            this.sitePoint = site;
+                            console.log('this.sitePoint:', this.sitePoint);
+                        });
+                    }
+
+                    if ( program.features[0].properties.short_desc.includes('haies') ) {
+                        this.programLine = program;
+                        console.log('this.programLine:', this.programLine);
+
+                        this.programService.getProgramSites(p.id_program).subscribe((site) => {
+                            this.siteLine = site;
+                            console.log('this.siteLines:', this.siteLine);
+                            this.sumLineLength = this.computeTotalLength(this.siteLine);
+                        });
+                    }
+
+                    if ( program.features[0].properties.short_desc.includes('zones') ) {
+                        this.programPolygon = program;
+                        console.log('this.programZones:', this.programPolygon);
+
+                        this.programService.getProgramSites(p.id_program).subscribe((site) => {
+                            this.sitePolygon = site;
+                            console.log('this.sitePolygon:', this.sitePolygon);
+                        });
+                    }
+
+                });
+            }
+
         });
-        // TODO remettre les features sur une carte
     }
 
     computeTotalLength(featureCollection: FeatureCollection): number {
