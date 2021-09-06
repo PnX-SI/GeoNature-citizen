@@ -38,7 +38,7 @@
         "@nguniversal/module-map-ngfactory-loader": "8.1.1",
         "@ngx-i18nsupport/tooling": "^8.0.3",
         "@swimlane/ngx-datatable": "^16.1.1",
-        "angular2-image-upload": "git+https://github.com/Nekmo/ng2-image-upload.git#angular-11",
+        "angular2-image-upload": "^1.0.0-rc.2",
         "bootstrap": "^4.6.0",
         "core-js": "^3.17.2",
         "domino": "^2.1.6",
