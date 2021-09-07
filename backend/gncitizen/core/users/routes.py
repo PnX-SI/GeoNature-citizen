@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import flask
+import requests
 from flask import Blueprint, current_app, request
 from flask_jwt_extended import (
     create_access_token,
@@ -23,7 +24,7 @@ from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import admin_required, get_user_if_exists
 from gncitizen.utils.mail_check import confirm_token, confirm_user_email
-from server import db, jwt
+from server import db
 
 from .models import RevokedTokenModel, UserModel
 
@@ -74,6 +75,32 @@ def registration():
     """
     try:
         request_datas = dict(request.get_json())
+
+        if (
+            "HCAPTCHA_SECRET_KEY" in current_app.config
+            and current_app.config["HCAPTCHA_SECRET_KEY"] is not None
+        ):
+            if (
+                not "captchaToken" in request_datas
+                or request_datas["captchaToken"] is None
+            ):
+                return (
+                    {"message": "Veuillez confirmer que vous êtes un humain."},
+                    400,
+                )
+
+            params = {
+                "response": request_datas["captchaToken"],
+                "secret": current_app.config["HCAPTCHA_SECRET_KEY"],
+            }
+            response = requests.post(
+                "https://hcaptcha.com/siteverify", data=params
+            )
+            captchaResponse = response.json()
+
+            if not captchaResponse["success"]:
+                return ({"message": "Captcha non valide."}, 400)
+
         datas_to_save = {}
         for data in request_datas:
             if hasattr(UserModel, data) and data != "password":
