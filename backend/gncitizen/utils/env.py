@@ -6,12 +6,15 @@ from pathlib import Path
 from flasgger import Swagger
 from flask import current_app
 from flask_admin import Admin
-from flask_ckeditor import CKEditor, CKEditorField
+from flask_ckeditor import CKEditor
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 
 from gncitizen import __version__
 from gncitizen.utils.toml import load_toml
+
+logger = current_app.logger
+# logger = logging.getLogger(__name__)
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / "backend"
@@ -21,9 +24,6 @@ with open(str((ROOT_DIR / "VERSION"))) as v:
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/default_config.toml"
 GNC_EXTERNAL_MODULE = ROOT_DIR / "external_modules"
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
-
-
-logger = logging.getLogger(__name__)
 
 
 def get_config_file_path(config_file=None):
@@ -136,7 +136,6 @@ def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):
             module_parent_dir = str(module_path.parent)
             module_name = "{}.config.conf_schema_toml".format(module_path.name)
             sys.path.insert(0, module_parent_dir)
-            module = __import__(module_name, globals=globals())
             module_name = "{}.backend.blueprint".format(module_path.name)
             module_blueprint = __import__(module_name, globals=globals())
             sys.path.pop(0)
