@@ -57,6 +57,7 @@ export const AppConfig = {
       fr: "J'accepte que mon adresse e-mail puisse être utilisée pour recontacter à propos de mon observation",
       en : "I agree that my e-mail address can be used to recontact about my observation"
     },
+    taxonDisplayImageWhenUnique: true,
     taxonSelectInputThreshold: 7,
     taxonAutocompleteInputThreshold: 12,
     taxonAutocompleteFields: [
