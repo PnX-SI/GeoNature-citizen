@@ -6,13 +6,11 @@ import * as L from 'leaflet';
 import {
     AfterViewInit,
     Component,
-    ElementRef,
     EventEmitter,
     Inject,
     Input,
     LOCALE_ID,
     Output,
-    ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
 import { AppConfig } from '../../../../conf/app.config';
@@ -60,6 +58,10 @@ const taxonAutocompleteInputThreshold =
     AppConfig.taxonAutocompleteInputThreshold;
 const taxonAutocompleteFields = AppConfig.taxonAutocompleteFields;
 const taxonAutocompleteMaxResults = 10;
+const taxonDisplayImageWhenUnique =
+    'taxonDisplayImageWhenUnique' in AppConfig
+        ? AppConfig.taxonDisplayImageWhenUnique
+        : true;
 
 // TODO: migrate to conf
 export const obsFormMarkerIcon = L.icon({
@@ -85,6 +87,7 @@ export class ObsFormComponent implements AfterViewInit {
     modalflow;
     taxonSelectInputThreshold = taxonSelectInputThreshold;
     taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
+    taxonDisplayImageWhenUnique = taxonDisplayImageWhenUnique;
     autocomplete = 'isOff';
     MAP_CONFIG = MAP_CONFIG;
     formMap: L.Map;
@@ -155,7 +158,8 @@ export class ObsFormComponent implements AfterViewInit {
             .getProgram(this.program_id)
             .subscribe((result: FeatureCollection) => {
                 this.program = result;
-                this.taxonomyListID = this.program.features[0].properties.taxonomy_list;
+                this.taxonomyListID =
+                    this.program.features[0].properties.taxonomy_list;
                 this.surveySpecies$ = this.programService
                     .getProgramTaxonomyList(this.program_id)
                     .pipe(
@@ -493,9 +497,8 @@ export class ObsFormComponent implements AfterViewInit {
             (data: PostObservationResponse) => {
                 obs = data.features[0];
                 if (obs.properties.observer) {
-                    obs.properties.observer.userAvatar = localStorage.getItem(
-                        'userAvatar'
-                    );
+                    obs.properties.observer.userAvatar =
+                        localStorage.getItem('userAvatar');
                 }
                 this.newObservation.emit(obs);
                 this.data.service.setModalCloseSatus('newObs');

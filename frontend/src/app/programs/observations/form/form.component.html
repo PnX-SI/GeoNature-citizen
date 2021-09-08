@@ -1,14 +1,41 @@
 <form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
+    <div
+        *ngIf="
+            taxaCount == 1 &&
+            taxa[0].medias &&
+            !!taxa[0].medias.length &&
+            taxonDisplayImageWhenUnique
+        "
+        class="mono-taxa-img"
+    >
+        <img
+            [src]="
+                taxa[0].medias && !!taxa[0].medias.length
+                    ? AppConfig.API_TAXHUB +
+                      '/tmedias/thumbnail/' +
+                      taxa[0].medias[0].id_media +
+                      '?w=800'
+                    : 'assets/default_image.png'
+            "
+            [alt]="
+                !!taxa[0].nom_francais
+                    ? taxa[0].nom_francais
+                    : taxa[0].taxref.nom_vern
+            "
+            class="object-fit-cover"
+        />
+    </div>
     <div class="form-row">
         <div class="form-group col-lg-8">
             <input formControlName="id_program" type="hidden" />
-            <h5 class="m-0">
+            <h5 *ngIf="taxaCount > 1" class="m-0">
                 <label for="cd_nom" class="m-0"
                     >{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
                     isOff {S&eacute;lectionnez une esp&egrave;ce}}</label
                 >
             </h5>
             <!-- TAXON SELECT -->
+
             <div
                 *ngIf="
                     taxaCount >= taxonSelectInputThreshold &&
@@ -36,7 +63,7 @@
         </div>
         <!-- TAXON PICKER -->
         <div
-            *ngIf="taxaCount < taxonSelectInputThreshold"
+            *ngIf="taxaCount < taxonSelectInputThreshold && taxaCount > 1"
             class="form-group col-lg-12 d-inline-flex obs-images"
         >
             <div
