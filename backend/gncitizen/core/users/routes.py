@@ -190,7 +190,7 @@ def registration():
                 )
                 confirm_user_email(newuser)
         except Exception as e:
-            return {"message mail faild": str(e)}, 500
+            return {"message mail failed": str(e)}, 500
 
         # send confirm mail
         return (
