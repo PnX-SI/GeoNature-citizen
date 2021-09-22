@@ -1,66 +1,90 @@
 <div class="container">
     <h1>Tableau de bord</h1>
 
-
-    <div *ngIf="programPoint">
-        <h2>{{programPoint.features[0].properties.title}}</h2>
-        <div *ngIf="sitePoint">
-            <div class="">{{ sitePoint.count }} arbres répertoriés</div>
-            <div>
-                <details>
-                    <summary>
-                        Liste des arbres répertoriés
-                    </summary>
-                    <ul>
-                        <li *ngFor="let s of sitePoint.features">
-                           {{ s.properties.name }}
-                        </li>
-                    </ul>
-                </details>
-            </div>
-        </div>
+    <div>
+        <h2>Données de base</h2>
+        <div>Superficie: <span>{{ dashboardData.base.area }}</span> km²</div>
+        <div>Habitants: <span>{{ dashboardData.base.population }}</span> hab.</div>
+        <div>Densité de population: <span>{{ (dashboardData.base.population / dashboardData.base.area).toFixed(2) }}</span> hab/km²</div>
     </div>
 
-    <div *ngIf="programLine">
-        <h2>{{programLine.features[0].properties.title}}</h2>
-        <div *ngIf="siteLine">
-            <div class="">{{ siteLine.count }} haies répertoriées</div>
-            <div class="">{{ sumLineLength.toFixed(2) }} km de haies</div>
-            <div>
-                <details>
-                    <summary>
-                        Liste des haies répertoriées
-                    </summary>
-                    <ul>
-                        <li *ngFor="let s of siteLine.features">
-                           {{ s.properties.name }}
-                        </li>
-                    </ul>
-                </details>
-            </div>
-        </div>
+    <div>
+        <h2>Occupation du sol</h2>
+        <h3>Les groupes d'occupation du sol</h3>
+        <ul>
+            <li *ngFor="let l of dashboardData.landuse">
+               {{ l.name }} : {{ l.area }} ha ( {{ (l.area / 100 / dashboardData.base.area * 100).toFixed(0) }} %)
+            </li>
+        </ul>
+        <h3>Les principales cultures</h3>
+        <ul>
+            <li *ngFor="let l of dashboardData.production">
+               {{ l.name }} : {{ l.area }} ha
+            </li>
+        </ul>
     </div>
 
-    <div *ngIf="programPolygon">
-        <h2>{{programPolygon.features[0].properties.title}}</h2>
-        <div *ngIf="sitePolygon">
-            <div class="">{{ sitePolygon.count }} zones naturelles répertoriées</div>
-            <div>
-                <details>
-                    <summary>
-                        Liste des zones répertoriées
-                    </summary>
-                    <ul>
-                        <li *ngFor="let s of sitePolygon.features">
-                           {{ s.properties.name }}
-                        </li>
-                    </ul>
-                </details>
+    <div>
+        <h2>Les programmes</h2>
+        <div *ngIf="programPoint">
+            <h3>{{programPoint.features[0].properties.title}}</h3>
+            <div *ngIf="sitePoint">
+                <div class="">{{ sitePoint.count }} arbres répertoriés</div>
+                <div>
+                    <details>
+                        <summary>
+                            Liste des arbres répertoriés
+                        </summary>
+                        <ul>
+                            <li *ngFor="let s of sitePoint.features">
+                               {{ s.properties.name }}
+                            </li>
+                        </ul>
+                    </details>
+                </div>
             </div>
         </div>
+
+        <div *ngIf="programLine">
+            <h3>{{programLine.features[0].properties.title}}</h3>
+            <div *ngIf="siteLine">
+                <div class="">{{ siteLine.count }} haies répertoriées</div>
+                <div class="">{{ sumLineLength.toFixed(2) }} km de haies</div>
+                <div>
+                    <details>
+                        <summary>
+                            Liste des haies répertoriées
+                        </summary>
+                        <ul>
+                            <li *ngFor="let s of siteLine.features">
+                               {{ s.properties.name }}
+                            </li>
+                        </ul>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="programPolygon">
+            <h3>{{programPolygon.features[0].properties.title}}</h3>
+            <div *ngIf="sitePolygon">
+                <div class="">{{ sitePolygon.count }} zones naturelles répertoriées</div>
+                <div>
+                    <details>
+                        <summary>
+                            Liste des zones répertoriées
+                        </summary>
+                        <ul>
+                            <li *ngFor="let s of sitePolygon.features">
+                               {{ s.properties.name }}
+                            </li>
+                        </ul>
+                    </details>
+                </div>
+            </div>
+        </div>
+
     </div>
-
-
 
 </div>
 

@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { GncProgramsService } from '../api/gnc-programs.service';
 import { FeatureCollection, Geometry } from 'geojson';
 import { Program } from '../programs/programs.models';
+import { dashboardData, dashboardDataType } from '../../conf/dashboard.config';
 
 @Component({
     selector: 'app-dashboard',
@@ -12,6 +13,7 @@ import { Program } from '../programs/programs.models';
     styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
+    dashboardData: dashboardDataType;
     programs: Program[];
     sitePoint: FeatureCollection;
     siteLine: FeatureCollection;
@@ -27,8 +29,10 @@ export class DashboardComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.titleService.setTitle(`${AppConfig.appName} - tableau de bord`);
 
+        this.dashboardData = dashboardData;
+        console.log(dashboardData)
+        this.titleService.setTitle(`${AppConfig.appName} - tableau de bord`);
 
         this.programService.getAllPrograms().subscribe((programs) => {
             this.programs = programs;
