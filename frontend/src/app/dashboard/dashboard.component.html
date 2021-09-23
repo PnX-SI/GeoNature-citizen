@@ -76,7 +76,12 @@
                         <div *ngIf="siteLine">
                             <div class="">{{ siteLine.count }} haies répertoriées</div>
                             <div class="">dont {{ siteLine.countImport }} haies importées</div>
-                            <div class="">{{ sumLineLength.toFixed(2) }} km de haies</div>
+                            <div class="">{{ siteLine.sumLineLength.toFixed(2) }} km de haies</div>
+                            <table>
+                                <tr *ngFor="let l of siteLine.especes">
+                                    <td>{{ l }}</td>
+                                </tr>
+                            </table>
                             <div>
                                 <details>
                                     <summary>

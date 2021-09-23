@@ -77,10 +77,12 @@ export class DashboardComponent implements OnInit {
                             this.siteLine = site;
                             Object.assign(this.siteLine, {
                                 countImport: countImport,
+                                sumLineLength: this.computeTotalLength(this.siteLine),
+                                especes: this.getVisitsData('espece', this.siteLine)
                             });
 
                             console.log('this.siteLines:', this.siteLine);
-                            this.sumLineLength = this.computeTotalLength(this.siteLine);
+                            // this.sumLineLength = this.computeTotalLength(this.siteLine);
                         });
                     }
 
@@ -145,4 +147,19 @@ export class DashboardComponent implements OnInit {
         const d = Math.sqrt(x * x + y * y);
         return R * d;
     }
+
+    getVisitsData(key: string, program: FeatureCollection): any[] {
+        console.log(program);
+        let visitsData = [];
+        program.features.forEach((f) => {
+            if (f.properties.hasOwnProperty('visits')) {
+                if (f.properties.visits[f.properties.visits.length - 1].data.hasOwnProperty(key)) {
+                    const data = f.properties.visits[f.properties.visits.length - 1].data[key];
+                    visitsData.push(data);
+                }
+            }
+        });
+        return visitsData;
+    } //TODO count in another function the number of especes and send back an object with [{name: 'truc', count: 2} , {name: 'troc', count: 3} ]
+
 }
