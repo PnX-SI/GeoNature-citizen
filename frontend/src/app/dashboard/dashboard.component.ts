@@ -12,6 +12,11 @@ interface ExtraFeatureCollection extends FeatureCollection {
     [key: string]: any
 }
 
+interface CountByKey {
+    name: string;
+    count: number;
+}
+
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
@@ -59,6 +64,7 @@ export class DashboardComponent implements OnInit {
                             this.sitePoint = site;
                             Object.assign(this.sitePoint, {
                                 countImport: countImport,
+                                especesTable: this.countVisitsDataByKey('espece', this.sitePoint)
                             });
                             console.log('this.sitePoint:', this.sitePoint);
                         });
@@ -78,7 +84,7 @@ export class DashboardComponent implements OnInit {
                             Object.assign(this.siteLine, {
                                 countImport: countImport,
                                 sumLineLength: this.computeTotalLength(this.siteLine),
-                                especes: this.getVisitsData('espece', this.siteLine)
+                                especesTable: this.countVisitsDataByKey('espece', this.siteLine)
                             });
 
                             console.log('this.siteLines:', this.siteLine);
@@ -148,9 +154,8 @@ export class DashboardComponent implements OnInit {
         return R * d;
     }
 
-    getVisitsData(key: string, program: FeatureCollection): any[] {
-        console.log(program);
-        let visitsData = [];
+    getVisitsDataByKey(key: string, program: FeatureCollection): any[] {
+        const visitsData: any[] = [];
         program.features.forEach((f) => {
             if (f.properties.hasOwnProperty('visits')) {
                 if (f.properties.visits[f.properties.visits.length - 1].data.hasOwnProperty(key)) {
@@ -162,4 +167,20 @@ export class DashboardComponent implements OnInit {
         return visitsData;
     } //TODO count in another function the number of especes and send back an object with [{name: 'truc', count: 2} , {name: 'troc', count: 3} ]
 
+    countVisitsDataByKey(key: string, program: FeatureCollection): CountByKey[] {
+        const data = this.getVisitsDataByKey(key, program);
+        const uniqueData = data.filter((v, i, a) => a.indexOf(v) === i);
+        console.log(uniqueData);
+        const results = [];
+        uniqueData.forEach((d) => {
+            results.push({
+                name: d,
+                count: data.filter((v) => v === d).length,
+            });
+        });
+
+        results.sort((a, b) => b.count - a.count);
+
+        return results;
+    }
 }

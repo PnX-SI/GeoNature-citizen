@@ -20,7 +20,7 @@
             <div class="row dashboard-occsol">
                 <div class="dashboard-occsol-occsol col-lg-6">
                     <h3>Les groupes d'occupation du sol</h3>
-                    <table>
+                    <table class="dashboard-table table table-striped">
                         <tr *ngFor="let l of dashboardData.landuse">
                             <td>{{ l.name }}</td>
                             <td>{{ l.area }} ha</td>
@@ -30,7 +30,7 @@
                 </div>
                 <div class="dashboard-occsol-cultures col-lg-6">
                     <h3>Les principales cultures</h3>
-                    <table>
+                    <table class="dashboard-table table table-striped">
                         <tr *ngFor="let l of dashboardData.production">
                             <td>{{ l.name }}</td>
                             <td>{{ l.area }} ha</td>
@@ -51,11 +51,20 @@
 
                 <div class="col-lg-6">
 
-                    <div class="border" *ngIf="programPoint">
+                    <div class="dashboard-program border" *ngIf="programPoint">
                         <h3>{{programPoint.features[0].properties.title}}</h3>
                         <div *ngIf="sitePoint">
                             <div class="">{{ sitePoint.count }} arbres répertoriés</div>
                             <div class="">dont {{ sitePoint.countImport }} arbres importés</div>
+                            <div>
+                                <div>Occurrence des espèces</div>
+                                <table class="dashboard-table table">
+                                    <tr *ngFor="let l of sitePoint.especesTable">
+                                        <td>{{ l.name }}</td>
+                                        <td>{{ l.count }}</td>
+                                    </tr>
+                                </table>
+                            </div>
                             <div>
                                 <details>
                                     <summary>
@@ -71,17 +80,22 @@
                         </div>
                     </div>
 
-                    <div class="border" *ngIf="programLine">
+                    <div class="dashboard-program border" *ngIf="programLine">
                         <h3>{{programLine.features[0].properties.title}}</h3>
                         <div *ngIf="siteLine">
                             <div class="">{{ siteLine.count }} haies répertoriées</div>
                             <div class="">dont {{ siteLine.countImport }} haies importées</div>
                             <div class="">{{ siteLine.sumLineLength.toFixed(2) }} km de haies</div>
-                            <table>
-                                <tr *ngFor="let l of siteLine.especes">
-                                    <td>{{ l }}</td>
-                                </tr>
-                            </table>
+                            <div>
+                                <div>Occurrence des espèces</div>
+                                <table class="dashboard-table table">
+                                    <tr *ngFor="let l of siteLine.especesTable">
+                                        <td>{{ l.name }}</td>
+                                        <td>{{ l.count }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+
                             <div>
                                 <details>
                                     <summary>
@@ -97,7 +111,7 @@
                         </div>
                     </div>
 
-                    <div class="border" *ngIf="programPolygon">
+                    <div class="dashboard-program border" *ngIf="programPolygon">
                         <h3>{{programPolygon.features[0].properties.title}}</h3>
                         <div *ngIf="sitePolygon">
                             <div class="">{{ sitePolygon.count }} zones naturelles répertoriées</div>
