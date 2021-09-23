@@ -56,14 +56,19 @@
                         <div *ngIf="sitePoint">
                             <div class="">{{ sitePoint.count }} arbres répertoriés</div>
                             <div class="">dont {{ sitePoint.countImport }} arbres importés</div>
+                            <div class="">{{ sitePoint.especesTable.length }} espèces différentes</div>
                             <div>
-                                <div>Occurrence des espèces</div>
-                                <table class="dashboard-table table">
-                                    <tr *ngFor="let l of sitePoint.especesTable">
-                                        <td>{{ l.name }}</td>
-                                        <td>{{ l.count }}</td>
-                                    </tr>
-                                </table>
+                                <details>
+                                    <summary>
+                                        Liste des espèces répertoriées
+                                    </summary>
+                                    <table class="dashboard-table table">
+                                        <tr *ngFor="let l of sitePoint.especesTable">
+                                            <td>{{ l.name }}</td>
+                                            <td>{{ l.count }}</td>
+                                        </tr>
+                                    </table>
+                                </details>
                             </div>
                             <div>
                                 <details>
@@ -86,16 +91,20 @@
                             <div class="">{{ siteLine.count }} haies répertoriées</div>
                             <div class="">dont {{ siteLine.countImport }} haies importées</div>
                             <div class="">{{ siteLine.sumLineLength.toFixed(2) }} km de haies</div>
+                            <div class="">{{ siteLine.especesTable.length }} espèces différentes</div>
                             <div>
-                                <div>Occurrence des espèces</div>
-                                <table class="dashboard-table table">
-                                    <tr *ngFor="let l of siteLine.especesTable">
-                                        <td>{{ l.name }}</td>
-                                        <td>{{ l.count }}</td>
-                                    </tr>
-                                </table>
+                                <details>
+                                    <summary>
+                                        Liste des espèces répertoriées
+                                    </summary>
+                                    <table class="dashboard-table table">
+                                        <tr *ngFor="let l of siteLine.especesTable">
+                                            <td>{{ l.name }}</td>
+                                            <td>{{ l.count }}</td>
+                                        </tr>
+                                    </table>
+                                </details>
                             </div>
-
                             <div>
                                 <details>
                                     <summary>
