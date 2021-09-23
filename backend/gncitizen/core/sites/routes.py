@@ -114,6 +114,23 @@ def get_site_photos(site_id):
         for p in photos
     ]
 
+def get_site_visits(site_id):
+    visits = (
+        db.session.query(VisitModel,)
+        .filter(VisitModel.id_site == site_id)
+        .order_by(VisitModel.timestamp_update.desc())
+        .all()
+    )
+
+    return [
+        {
+            "id_visit": v.id_visit,
+            "date": v.as_dict()["date"],
+            "data": v.json_data,
+            "author": v.obs_txt,
+        }
+        for v in visits
+    ]
 
 def format_site(site, dashboard=False):
     feature = get_geojson_feature(site.geom)
@@ -143,6 +160,9 @@ def prepare_sites(sites, dashboard=False):
         photos = get_site_photos(site.id_site)
         if len(photos) > 0:
             formatted["properties"]["photo"] = photos[0]
+        visits = get_site_visits(site.id_site)
+        if len(visits) > 0:
+            formatted["properties"]["visits"] = visits
         features.append(formatted)
     data = FeatureCollection(features)
     data["count"] = count
