@@ -1,85 +1,120 @@
 <div class="container">
-    <h1>Tableau de bord</h1>
-
-    <div>
-        <h2>Données de base</h2>
-        <div>Superficie: <span>{{ dashboardData.base.area }}</span> km²</div>
-        <div>Habitants: <span>{{ dashboardData.base.population }}</span> hab.</div>
-        <div>Densité de population: <span>{{ (dashboardData.base.population / dashboardData.base.area).toFixed(2) }}</span> hab/km²</div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 >{{ dashboardData.base.name }}</h1>
+        </div>
     </div>
 
-    <div>
-        <h2>Occupation du sol</h2>
-        <h3>Les groupes d'occupation du sol</h3>
-        <ul>
-            <li *ngFor="let l of dashboardData.landuse">
-               {{ l.name }} : {{ l.area }} ha ( {{ (l.area / 100 / dashboardData.base.area * 100).toFixed(0) }} %)
-            </li>
-        </ul>
-        <h3>Les principales cultures</h3>
-        <ul>
-            <li *ngFor="let l of dashboardData.production">
-               {{ l.name }} : {{ l.area }} ha
-            </li>
-        </ul>
-    </div>
-
-    <div>
-        <h2>Les programmes</h2>
-        <div *ngIf="programPoint">
-            <h3>{{programPoint.features[0].properties.title}}</h3>
-            <div *ngIf="sitePoint">
-                <div class="">{{ sitePoint.count }} arbres répertoriés</div>
-                <div>
-                    <details>
-                        <summary>
-                            Liste des arbres répertoriés
-                        </summary>
-                        <ul>
-                            <li *ngFor="let s of sitePoint.features">
-                               {{ s.properties.name }}
-                            </li>
-                        </ul>
-                    </details>
-                </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h2>Données de base</h2>
+            <div class="row dashboard-base">
+                <div class="col-lg-4 border-right">Superficie: <span>{{ dashboardData.base.area }}</span> km²</div>
+                <div class="col-lg-4 border-right">Habitants: <span>{{ dashboardData.base.population }}</span> hab.</div>
+                <div class="col-lg-4">Densité de population: <span>{{ (dashboardData.base.population / dashboardData.base.area).toFixed(2) }}</span> hab/km²</div>
             </div>
         </div>
 
-        <div *ngIf="programLine">
-            <h3>{{programLine.features[0].properties.title}}</h3>
-            <div *ngIf="siteLine">
-                <div class="">{{ siteLine.count }} haies répertoriées</div>
-                <div class="">{{ sumLineLength.toFixed(2) }} km de haies</div>
-                <div>
-                    <details>
-                        <summary>
-                            Liste des haies répertoriées
-                        </summary>
-                        <ul>
-                            <li *ngFor="let s of siteLine.features">
-                               {{ s.properties.name }}
-                            </li>
-                        </ul>
-                    </details>
+        <div class="col-lg-12">
+            <h2>Occupation du sol</h2>
+            <div class="row dashboard-occsol">
+                <div class="dashboard-occsol-occsol col-lg-6">
+                    <h3>Les groupes d'occupation du sol</h3>
+                    <table>
+                        <tr *ngFor="let l of dashboardData.landuse">
+                            <td>{{ l.name }}</td>
+                            <td>{{ l.area }} ha</td>
+                            <td>{{ (l.area / 100 / dashboardData.base.area * 100).toFixed(0) }} %</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="dashboard-occsol-cultures col-lg-6">
+                    <h3>Les principales cultures</h3>
+                    <table>
+                        <tr *ngFor="let l of dashboardData.production">
+                            <td>{{ l.name }}</td>
+                            <td>{{ l.area }} ha</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div *ngIf="programPolygon">
-            <h3>{{programPolygon.features[0].properties.title}}</h3>
-            <div *ngIf="sitePolygon">
-                <div class="">{{ sitePolygon.count }} zones naturelles répertoriées</div>
-                <div>
-                    <details>
-                        <summary>
-                            Liste des zones répertoriées
-                        </summary>
-                        <ul>
-                            <li *ngFor="let s of sitePolygon.features">
-                               {{ s.properties.name }}
-                            </li>
-                        </ul>
-                    </details>
+    <div class="row">
+        <div class="col-lg-12">
+            <h2>Les programmes</h2>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="row">
+
+                <div class="col-lg-6">
+
+                    <div class="border" *ngIf="programPoint">
+                        <h3>{{programPoint.features[0].properties.title}}</h3>
+                        <div *ngIf="sitePoint">
+                            <div class="">{{ sitePoint.count }} arbres répertoriés</div>
+                            <div class="">dont {{ sitePoint.countImport }} arbres importés</div>
+                            <div>
+                                <details>
+                                    <summary>
+                                        Liste des arbres répertoriés
+                                    </summary>
+                                    <ul>
+                                        <li *ngFor="let s of sitePoint.features">
+                                            {{ s.properties.name }}
+                                        </li>
+                                    </ul>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border" *ngIf="programLine">
+                        <h3>{{programLine.features[0].properties.title}}</h3>
+                        <div *ngIf="siteLine">
+                            <div class="">{{ siteLine.count }} haies répertoriées</div>
+                            <div class="">dont {{ siteLine.countImport }} haies importées</div>
+                            <div class="">{{ sumLineLength.toFixed(2) }} km de haies</div>
+                            <div>
+                                <details>
+                                    <summary>
+                                        Liste des haies répertoriées
+                                    </summary>
+                                    <ul>
+                                        <li *ngFor="let s of siteLine.features">
+                                            {{ s.properties.name }}
+                                        </li>
+                                    </ul>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border" *ngIf="programPolygon">
+                        <h3>{{programPolygon.features[0].properties.title}}</h3>
+                        <div *ngIf="sitePolygon">
+                            <div class="">{{ sitePolygon.count }} zones naturelles répertoriées</div>
+                            <div>
+                                <details>
+                                    <summary>
+                                        Liste des zones répertoriées
+                                    </summary>
+                                    <ul>
+                                        <li *ngFor="let s of sitePolygon.features">
+                                            {{ s.properties.name }}
+                                        </li>
+                                    </ul>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-6">
+                    [MAP]
                 </div>
             </div>
         </div>

@@ -6,6 +6,11 @@ import { GncProgramsService } from '../api/gnc-programs.service';
 import { FeatureCollection, Geometry } from 'geojson';
 import { Program } from '../programs/programs.models';
 import { dashboardData, dashboardDataType } from '../../conf/dashboard.config';
+import { SitesComponent } from '../programs/sites/sites.component';
+
+interface ExtraFeatureCollection extends FeatureCollection {
+    [key: string]: any
+}
 
 @Component({
     selector: 'app-dashboard',
@@ -15,9 +20,9 @@ import { dashboardData, dashboardDataType } from '../../conf/dashboard.config';
 export class DashboardComponent implements OnInit {
     dashboardData: dashboardDataType;
     programs: Program[];
-    sitePoint: FeatureCollection;
-    siteLine: FeatureCollection;
-    sitePolygon: FeatureCollection;
+    sitePoint: ExtraFeatureCollection;
+    siteLine: ExtraFeatureCollection;
+    sitePolygon: ExtraFeatureCollection;
     programPoint: FeatureCollection;
     programLine: FeatureCollection;
     programPolygon: FeatureCollection;
@@ -26,12 +31,12 @@ export class DashboardComponent implements OnInit {
         private router: Router,
         private titleService: Title,
         private programService: GncProgramsService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
 
         this.dashboardData = dashboardData;
-        console.log(dashboardData)
+
         this.titleService.setTitle(`${AppConfig.appName} - tableau de bord`);
 
         this.programService.getAllPrograms().subscribe((programs) => {
@@ -41,28 +46,45 @@ export class DashboardComponent implements OnInit {
             for (let p of this.programs) {
                 console.log(p);
                 this.programService.getProgram(p.id_program).subscribe((program) => {
-                    if ( program.features[0].properties.short_desc.includes('arbres') ) {
+                    if (program.features[0].properties.short_desc.includes('arbres')) {
                         this.programPoint = program;
                         console.log('this.programPoint:', this.programPoint);
 
                         this.programService.getProgramSites(p.id_program).subscribe((site) => {
+
+                            const countImport = site.features.filter(
+                                (f) => f.properties.obs_txt === 'import'
+                            ).length;
+
                             this.sitePoint = site;
+                            Object.assign(this.sitePoint, {
+                                countImport: countImport,
+                            });
                             console.log('this.sitePoint:', this.sitePoint);
                         });
                     }
 
-                    if ( program.features[0].properties.short_desc.includes('haies') ) {
+                    if (program.features[0].properties.short_desc.includes('haies')) {
                         this.programLine = program;
                         console.log('this.programLine:', this.programLine);
 
                         this.programService.getProgramSites(p.id_program).subscribe((site) => {
+
+                            const countImport = site.features.filter(
+                                (f) => f.properties.obs_txt === 'import'
+                            ).length;
+
                             this.siteLine = site;
+                            Object.assign(this.siteLine, {
+                                countImport: countImport,
+                            });
+
                             console.log('this.siteLines:', this.siteLine);
                             this.sumLineLength = this.computeTotalLength(this.siteLine);
                         });
                     }
 
-                    if ( program.features[0].properties.short_desc.includes('zones') ) {
+                    if (program.features[0].properties.short_desc.includes('zones')) {
                         this.programPolygon = program;
                         console.log('this.programZones:', this.programPolygon);
 
