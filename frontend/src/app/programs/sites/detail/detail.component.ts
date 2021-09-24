@@ -90,19 +90,26 @@ export class SiteDetailComponent
             map.setView(latLng, 13);
 
             // prepare data
-            if (this.site.properties.last_visit) {
-                let data = this.site.properties.last_visit.json_data;
-                var that = this;
-                this.loadJsonSchema().subscribe((jsonschema: any) => {
-                    let schema = jsonschema.schema.properties;
-                    for (const k in data) {
-                        let v = data[k];
-                        that.attributes.push({
-                            name: schema[k].title,
-                            value: v.toString(),
-                        });
-                    }
-                });
+            if (this.site.properties.visits) {
+                for (let visit of this.site.properties.visits) {
+                    const data = visit.json_data;
+                    var that = this;
+                    const visitData = [{
+                        name: 'date',
+                        value: visit.date,
+                    }];
+                    this.loadJsonSchema().subscribe((jsonschema: any) => {
+                        const schema = jsonschema.schema.properties;
+                        for (const k in data) {
+                            const v = data[k];
+                            visitData.push({
+                                name: schema[k].title,
+                                value: v.toString(),
+                            });
+                        }
+                    });
+                    that.attributes.push(visitData);
+                }
             }
         });
     }

@@ -80,7 +80,9 @@ def get_site(pk):
         if last_visit is not None:
             formatted_site["properties"]["last_visit"] = last_visit.as_dict()
         photos = get_site_photos(pk)
+        visits = get_site_visits(pk)
         formatted_site["properties"]["photos"] = photos
+        formatted_site["properties"]["visits"] = visits
         return {"features": [formatted_site]}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
@@ -126,7 +128,7 @@ def get_site_visits(site_id):
         {
             "id_visit": v.id_visit,
             "date": v.as_dict()["date"],
-            "data": v.json_data,
+            "json_data": v.json_data,
             "author": v.obs_txt,
         }
         for v in visits

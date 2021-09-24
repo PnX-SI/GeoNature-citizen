@@ -158,8 +158,8 @@ export class DashboardComponent implements OnInit {
         const visitsData: any[] = [];
         program.features.forEach((f) => {
             if (f.properties.hasOwnProperty('visits')) {
-                if (f.properties.visits[f.properties.visits.length - 1].data.hasOwnProperty(key)) {
-                    const data = f.properties.visits[f.properties.visits.length - 1].data[key];
+                if (f.properties.visits[f.properties.visits.length - 1].json_data.hasOwnProperty(key)) {
+                    const data = f.properties.visits[f.properties.visits.length - 1].json_data[key];
                     visitsData.push(data);
                 }
             }
