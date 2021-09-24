@@ -27,25 +27,32 @@
                     }}
                 </h5>
                 <h6 class="card-subtitle mb-2 text-muted">
-                    Ajoutée le
+                    Ajouté(e) le
                     {{
                         site?.properties.timestamp_create.substring(0, 10)
                             | date: 'longDate'
                     }}
                 </h6>
                 <p class="card-text">
-                    Inventoriée par {{ site?.properties.obs_txt }}
+                    Inventorié(e) par {{ site?.properties.obs_txt }}
                 </p>
 
                 <p
-                    *ngIf="site?.properties.last_visit; else noVisit"
+                    *ngIf="site?.properties.visits; else noVisit"
                     class="card-text"
                 >
                     <small class="text-muted">
-                        Dernière visite:
-                        {{
-                            site?.properties.last_visit.date | date: 'longDate'
-                        }}
+                        Visites:
+                        <span *ngIf="site?.properties.visits.length === 1">
+                            {{
+                                v.date | date: 'longDate'
+                            }}
+                        </span>
+                        <span *ngIf="site?.properties.visits.length > 1">
+                            {{
+                                site?.properties.visits.length
+                            }} visites.
+                        </span>
                     </small>
                 </p>
                 <ng-template #noVisit>
@@ -111,18 +118,39 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="attributes.length > 0" class="row">
-            <h2 class="mt-4 mb-4">Description</h2>
+        <div *ngIf="module === 'sites';">
+            <div *ngIf="attributes.length > 0" class="row">
+                <h2 class="mt-4 mb-4">Description</h2>
+            </div>
+            <div *ngFor="let a of attributes" class="row bg-light">
+                <h3>
+                    {{ a[0].value | date: 'longDate' }}
+                </h3>
+                <table class="table table-striped">
+                    <tbody>
+                        <tr *ngFor="let d of a" class="d-flex">
+                            <td *ngIf="d.name !== 'date'" class="col-4">{{ d.name }}</td>
+                            <td *ngIf="d.name !== 'date'" class="col-8">{{ d.value }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="row bg-light">
-            <table class="table table-striped">
-                <tbody>
-                    <tr *ngFor="let d of attributes" class="d-flex">
-                        <td class="col-4">{{ d.name }}</td>
-                        <td class="col-8">{{ d.value }}</td>
-                    </tr>
-                </tbody>
-            </table>
+
+        <div *ngIf="module === 'observations';">
+            <div *ngIf="attributes.length > 0" class="row">
+                <h2 class="mt-4 mb-4">Description</h2>
+            </div>
+            <div class="row bg-light">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr *ngFor="let d of attributes" class="d-flex">
+                            <td class="col-4">{{ d.name }}</td>
+                            <td class="col-8">{{ d.value }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
