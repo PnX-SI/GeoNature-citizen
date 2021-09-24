@@ -38,7 +38,7 @@
                 </p>
 
                 <p
-                    *ngIf="site?.properties.visits; else noVisit"
+                    *ngIf="site?.properties.visits.length > 0; else noVisit"
                     class="card-text"
                 >
                     <small class="text-muted">
