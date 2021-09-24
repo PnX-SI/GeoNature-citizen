@@ -49,7 +49,6 @@ export class DashboardComponent implements OnInit {
             console.log('this.programs: ', this.programs);
 
             for (let p of this.programs) {
-                console.log(p);
                 this.programService.getProgram(p.id_program).subscribe((program) => {
                     if (program.features[0].properties.short_desc.includes('arbres')) {
                         this.programPoint = program;
@@ -170,7 +169,6 @@ export class DashboardComponent implements OnInit {
     countVisitsDataByKey(key: string, program: FeatureCollection): CountByKey[] {
         const data = this.getVisitsDataByKey(key, program);
         const uniqueData = data.filter((v, i, a) => a.indexOf(v) === i);
-        console.log(uniqueData);
         const results = [];
         uniqueData.forEach((d) => {
             results.push({

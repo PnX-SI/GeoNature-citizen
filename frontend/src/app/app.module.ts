@@ -78,6 +78,7 @@ import { GNCFrameworkComponent } from './programs/base/jsonform/framework/framew
 import { ImageUploadModule } from 'angular2-image-upload';
 import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardMapComponent } from './dashboard/map/map.component';
 
 @NgModule({
     imports: [
@@ -144,6 +145,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
         ConfirmEmailComponent,
         UserSitesComponent,
         DashboardComponent,
+        DashboardMapComponent,
     ],
     providers: [
         AuthService,
