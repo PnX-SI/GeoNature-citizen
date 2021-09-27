@@ -42,16 +42,15 @@
                     class="card-text"
                 >
                     <small class="text-muted">
-                        Visites:
                         <span *ngIf="site?.properties.visits.length === 1">
-                            {{
-                                v.date | date: 'longDate'
+                            Visite du {{
+                                site?.properties.visits[0].date | date: 'longDate'
                             }}
                         </span>
                         <span *ngIf="site?.properties.visits.length > 1">
                             {{
                                 site?.properties.visits.length
-                            }} visites.
+                            }} visites
                         </span>
                     </small>
                 </p>

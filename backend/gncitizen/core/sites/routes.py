@@ -72,13 +72,6 @@ def get_site(pk):
     try:
         site = SiteModel.query.get(pk)
         formatted_site = format_site(site)
-        last_visit = (
-            VisitModel.query.filter_by(id_site=pk)
-            .order_by(VisitModel.timestamp_update.desc())
-            .first()
-        )
-        if last_visit is not None:
-            formatted_site["properties"]["last_visit"] = last_visit.as_dict()
         photos = get_site_photos(pk)
         visits = get_site_visits(pk)
         formatted_site["properties"]["photos"] = photos

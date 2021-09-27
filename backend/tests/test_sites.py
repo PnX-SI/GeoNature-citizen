@@ -89,12 +89,12 @@ class VisitsTestCase(unittest.TestCase):
 
         self.assertNotEqual(visit1["id_visit"], visit2["id_visit"])
 
-        # Query site and check last_visit
+        # Query site and check visits
         response = getrequest("sites/{}".format(self.site_id))
         self.assertEqual(response.status_code, 200)
         data = response.json()
         site = data["features"][0]["properties"]
-        self.assertEqual(site["last_visit"]["id_visit"], visit2["id_visit"])
+        self.assertEqual(site["visits"][-1]["id_visit"], visit2["id_visit"])
 
     def get_photos(self):
         resp = getrequest("sites/{}".format(self.site_id))
