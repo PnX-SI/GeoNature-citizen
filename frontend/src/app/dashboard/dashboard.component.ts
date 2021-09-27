@@ -206,10 +206,7 @@ export class DashboardComponent implements AfterViewInit {
            // gestureHandling: true,
             ...LeafletOptions,
         });
-        this.dashboardMap.setView(
-            [this.dashboardData.base.lat, this.dashboardData.base.lon],
-            11
-        );
+ 
 
         this.dashboardMap.zoomControl.setPosition(
             this.options.ZOOM_CONTROL_POSITION
@@ -294,6 +291,10 @@ export class DashboardComponent implements AfterViewInit {
         );
         this.dashboardMap.addLayer(observationLayer);
 
+        this.dashboardMap.setView(
+            [this.dashboardData.base.lat, this.dashboardData.base.lon],
+            11
+        );
         // L.geoJSON(layer, {
         //     style: (_feature) =>
         //         this.options.PROGRAM_AREA_STYLE(_feature),
