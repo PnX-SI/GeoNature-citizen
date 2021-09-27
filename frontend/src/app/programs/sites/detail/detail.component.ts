@@ -10,8 +10,6 @@ import {
     markerIcon,
 } from '../../base/detail/detail.component';
 
-declare let $: any;
-
 @Component({
     selector: 'app-site-detail',
     templateUrl: '../../base/detail/detail.component.html',
@@ -23,7 +21,8 @@ declare let $: any;
 })
 export class SiteDetailComponent
     extends BaseDetailComponent
-    implements AfterViewInit {
+    implements AfterViewInit
+{
     constructor(
         private http: HttpClient,
         private route: ActivatedRoute,
@@ -42,10 +41,14 @@ export class SiteDetailComponent
         this.programService.getSiteDetails(this.site_id).subscribe((sites) => {
             this.site = sites['features'][0];
             this.photos = this.site.properties.photos;
-            for (var i = 0; i < this.photos.length; i++) {
+            this.photos.forEach((e, i) => {
                 this.photos[i]['url'] =
                     AppConfig.API_ENDPOINT + this.photos[i]['url'];
-            }
+            });
+            // for (var i = 0; i < this.photos.length; i++) {
+            //     this.photos[i]['url'] =
+            //         AppConfig.API_ENDPOINT + this.photos[i]['url'];
+            // }
 
             // setup map
             const map = L.map('map');
@@ -53,33 +56,33 @@ export class SiteDetailComponent
                 attribution: 'OpenStreetMap',
             }).addTo(map);
 
-            let coord = this.site.geometry.coordinates;
-            let latLng = L.latLng(coord[1], coord[0]);
+            const coord = this.site.geometry.coordinates;
+            const latLng = L.latLng(coord[1], coord[0]);
             map.setView(latLng, 13);
 
             L.marker(latLng, { icon: markerIcon }).addTo(map);
 
             // prepare data
             if (this.site.properties.visits) {
-                for (let visit of this.site.properties.visits) {
-                    const data = visit.json_data;
-                    var that = this;
-                    const visitData = [{
-                        name: 'date',
-                        value: visit.date,
-                    }];
+                this.site.properties.visits.forEach((e) => {
+                    const data = e.json_data;
+                    const visitData = { date: e.date, author: e.author };
                     this.loadJsonSchema().subscribe((jsonschema: any) => {
                         const schema = jsonschema.schema.properties;
+                        const custom_data = [];
                         for (const k in data) {
                             const v = data[k];
-                            visitData.push({
+                            custom_data.push({
                                 name: schema[k].title,
                                 value: v.toString(),
                             });
                         }
+                        if (custom_data.length > 0) {
+                            visitData['data'] = custom_data;
+                        }
                     });
-                    that.attributes.push(visitData);
-                }
+                    this.attributes.push(visitData);
+                });
             }
         });
     }
