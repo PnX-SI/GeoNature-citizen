@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnChanges, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppConfig } from '../../conf/app.config';
 import { Title } from '@angular/platform-browser';
@@ -24,7 +24,7 @@ interface CountByKey {
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements AfterViewInit {
     dashboardData: dashboardDataType;
     programs: Program[];
     sitePoint: ExtraFeatureCollection;
@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
         private programService: GncProgramsService
     ) { }
 
-    ngOnInit(): void {
+    ngAfterViewInit(): void {
 
         this.dashboardData = dashboardData;
 
@@ -52,7 +52,11 @@ export class DashboardComponent implements OnInit {
             this.programs = programs;
             console.log('this.programs: ', this.programs);
 
-            this.initMap(conf);
+            const mapContainer = document.getElementById('dashboardMap');
+            console.log('mapcontainer: ', mapContainer)
+            if (mapContainer) {
+                this.initMap(conf);
+            }
 
             for (let p of this.programs) {
                 this.programService.getProgram(p.id_program).subscribe((program) => {

@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h1 >{{ dashboardData.base.name }}</h1>
+            <h1 >{{ dashboardData?.base.name }}</h1>
         </div>
     </div>
 
@@ -9,9 +9,9 @@
         <div class="col-lg-12">
             <h2>Données de base</h2>
             <div class="row dashboard-base">
-                <div class="col-lg-4 border-right">Superficie: <span>{{ dashboardData.base.area }}</span> km²</div>
-                <div class="col-lg-4 border-right">Habitants: <span>{{ dashboardData.base.population }}</span> hab.</div>
-                <div class="col-lg-4">Densité de population: <span>{{ (dashboardData.base.population / dashboardData.base.area).toFixed(2) }}</span> hab/km²</div>
+                <div class="col-lg-4 border-right">Superficie: <span>{{ dashboardData?.base.area }}</span> km²</div>
+                <div class="col-lg-4 border-right">Habitants: <span>{{ dashboardData?.base.population }}</span> hab.</div>
+                <div class="col-lg-4">Densité de population: <span>{{ (dashboardData?.base.population / dashboardData?.base.area).toFixed(2) }}</span> hab/km²</div>
             </div>
         </div>
 
@@ -21,17 +21,17 @@
                 <div class="dashboard-occsol-occsol col-lg-6">
                     <h3>Les groupes d'occupation du sol</h3>
                     <table class="dashboard-table table table-striped">
-                        <tr *ngFor="let l of dashboardData.landuse">
+                        <tr *ngFor="let l of dashboardData?.landuse">
                             <td>{{ l.name }}</td>
                             <td>{{ l.area }} ha</td>
-                            <td>{{ (l.area / 100 / dashboardData.base.area * 100).toFixed(0) }} %</td>
+                            <td>{{ (l.area / 100 / dashboardData?.base.area * 100).toFixed(0) }} %</td>
                         </tr>
                     </table>
                 </div>
                 <div class="dashboard-occsol-cultures col-lg-6">
                     <h3>Les principales cultures</h3>
                     <table class="dashboard-table table table-striped">
-                        <tr *ngFor="let l of dashboardData.production">
+                        <tr *ngFor="let l of dashboardData?.production">
                             <td>{{ l.name }}</td>
                             <td>{{ l.area }} ha</td>
                         </tr>
@@ -63,7 +63,7 @@
                                         Liste des espèces répertoriées
                                     </summary>
                                     <table class="dashboard-table table">
-                                        <tr *ngFor="let l of sitePoint.especesTable">
+                                        <tr *ngFor="let l of sitePoint?.especesTable">
                                             <td>{{ l.name }}</td>
                                             <td>{{ l.count }}</td>
                                         </tr>
@@ -76,7 +76,7 @@
                                         Liste des arbres répertoriés
                                     </summary>
                                     <ul>
-                                        <li *ngFor="let s of sitePoint.features">
+                                        <li *ngFor="let s of sitePoint?.features">
                                             {{ s.properties.name }}
                                         </li>
                                     </ul>
@@ -98,7 +98,7 @@
                                         Liste des espèces répertoriées
                                     </summary>
                                     <table class="dashboard-table table">
-                                        <tr *ngFor="let l of siteLine.especesTable">
+                                        <tr *ngFor="let l of siteLine?.especesTable">
                                             <td>{{ l.name }}</td>
                                             <td>{{ l.count }}</td>
                                         </tr>
@@ -111,7 +111,7 @@
                                         Liste des haies répertoriées
                                     </summary>
                                     <ul>
-                                        <li *ngFor="let s of siteLine.features">
+                                        <li *ngFor="let s of siteLine?.features">
                                             {{ s.properties.name }}
                                         </li>
                                     </ul>
@@ -130,7 +130,7 @@
                                         Liste des zones répertoriées
                                     </summary>
                                     <ul>
-                                        <li *ngFor="let s of sitePolygon.features">
+                                        <li *ngFor="let s of sitePolygon?.features">
                                             {{ s.properties.name }}
                                         </li>
                                     </ul>
