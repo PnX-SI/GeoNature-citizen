@@ -1,12 +1,14 @@
+import * as L from 'leaflet';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppConfig } from '../../conf/app.config';
 import { Title } from '@angular/platform-browser';
 import { GncProgramsService } from '../api/gnc-programs.service';
-import { FeatureCollection, Geometry } from 'geojson';
+import { Feature, FeatureCollection, Geometry, Point, Position } from 'geojson';
 import { Program } from '../programs/programs.models';
 import { dashboardData, dashboardDataType } from '../../conf/dashboard.config';
-import { SitesComponent } from '../programs/sites/sites.component';
+import { conf } from '../programs/base/map/map.component';
+import { MAP_CONFIG } from '../../conf/map.config';
 
 interface ExtraFeatureCollection extends FeatureCollection {
     [key: string]: any
@@ -31,7 +33,9 @@ export class DashboardComponent implements OnInit {
     programPoint: FeatureCollection;
     programLine: FeatureCollection;
     programPolygon: FeatureCollection;
-    sumLineLength: number;
+    dashboardMap: L.Map;
+    programMaxBounds: L.LatLngBounds;
+    options: any;
     constructor(
         private router: Router,
         private titleService: Title,
@@ -47,6 +51,8 @@ export class DashboardComponent implements OnInit {
         this.programService.getAllPrograms().subscribe((programs) => {
             this.programs = programs;
             console.log('this.programs: ', this.programs);
+
+            this.initMap(conf);
 
             for (let p of this.programs) {
                 this.programService.getProgram(p.id_program).subscribe((program) => {
@@ -66,6 +72,8 @@ export class DashboardComponent implements OnInit {
                                 especesTable: this.countVisitsDataByKey('espece', this.sitePoint)
                             });
                             console.log('this.sitePoint:', this.sitePoint);
+
+                            this.addLayerToMap(this.sitePoint);
                         });
                     }
 
@@ -87,7 +95,8 @@ export class DashboardComponent implements OnInit {
                             });
 
                             console.log('this.siteLines:', this.siteLine);
-                            // this.sumLineLength = this.computeTotalLength(this.siteLine);
+
+                            this.addLayerToMap(this.siteLine);
                         });
                     }
 
@@ -98,9 +107,10 @@ export class DashboardComponent implements OnInit {
                         this.programService.getProgramSites(p.id_program).subscribe((site) => {
                             this.sitePolygon = site;
                             console.log('this.sitePolygon:', this.sitePolygon);
+
+                            this.addLayerToMap(this.sitePolygon);
                         });
                     }
-
                 });
             }
 
@@ -180,5 +190,110 @@ export class DashboardComponent implements OnInit {
         results.sort((a, b) => b.count - a.count);
 
         return results;
+    }
+
+    initMap(options: any, LeafletOptions: any = {}): void {
+        console.log('options', options);
+
+        this.options = options;
+
+        this.dashboardMap = L.map('dashboardMap', {
+            layers: [this.options.DEFAULT_BASE_MAP()],
+           // gestureHandling: true,
+            ...LeafletOptions,
+        });
+        this.dashboardMap.setView(
+            [this.dashboardData.base.lat, this.dashboardData.base.lon],
+            11
+        );
+
+        this.dashboardMap.zoomControl.setPosition(
+            this.options.ZOOM_CONTROL_POSITION
+        );
+
+        L.control
+            .scale({ position: this.options.SCALE_CONTROL_POSITION })
+            .addTo(this.dashboardMap);
+
+        L.control
+            .layers(this.options.BASE_LAYERS, null, {
+                collapsed: this.options.BASE_LAYER_CONTROL_INIT_COLLAPSED,
+                position: this.options.BASE_LAYER_CONTROL_POSITION,
+            })
+            .addTo(this.dashboardMap);
+
+
+    }
+
+    addLayerToMap(features) {
+        console.log('layer in addtoMap', features);
+
+        let observationLayer = this.options.OBSERVATION_LAYER();
+
+        const layerOptions = {
+            pointToLayer: (_feature, latlng): L.Marker => {
+                let marker: L.Marker<any> = L.marker(latlng, {
+                    icon: conf.OBS_MARKER_ICON(),
+                });
+
+                // this.markers.push({
+                //     feature: _feature,
+                //     marker: marker,
+                // });
+                return marker;
+            },
+        };
+
+        let pointFeatures: FeatureCollection;
+        const geometryType = features.features[0].geometry.type.toUpperCase();
+        switch (geometryType){
+            case 'POINT':
+            default:
+                pointFeatures = features;
+                break;
+
+            case 'LINESTRING':
+            case 'POLYGON':
+                this.dashboardMap.addLayer(
+                    L.geoJSON(features, {
+                        style: function (_feature) {
+                            return { color: '#11aa9e' };
+                        },
+                    })
+                );
+                const polygonToPointFeatures = features.features.map((f) => {
+                    const coordinates = f.geometry.type === 'LineString' ?
+                        f.geometry.coordinates[0] :
+                            f.geometry.type === 'Polygon' ?
+                                f.geometry.coordinates[0][0] : [0,0] as Position
+
+                    const firstPoint: Point = {
+                        type: 'Point',
+                        coordinates: coordinates,
+                    }
+                    const newFeature: Feature = {
+                        type: 'Feature',
+                        properties: f.properties,
+                        geometry: firstPoint,
+                    }
+                    return newFeature;
+                });
+                pointFeatures = {
+                    type: 'FeatureCollection',
+                    features: polygonToPointFeatures,
+                };
+                break;
+        }
+
+        observationLayer.addLayer(
+            L.geoJSON(pointFeatures, layerOptions)
+        );
+        this.dashboardMap.addLayer(observationLayer);
+
+        // L.geoJSON(layer, {
+        //     style: (_feature) =>
+        //         this.options.PROGRAM_AREA_STYLE(_feature),
+        // }
+        // ).addTo(this.dashboardMap);
     }
 }

@@ -12,6 +12,7 @@ import { dashboardData, dashboardDataType } from '../../../conf/dashboard.config
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.css'],
 })
+
 export class DashboardMapComponent implements OnInit {
     dashboardData: dashboardDataType;
     localeId: string;
@@ -32,11 +33,10 @@ export class DashboardMapComponent implements OnInit {
             this.addLayers(programs);
         })
 
-
     }
 
     initMap(options: any, LeafletOptions: any = {}): void {
-        console.log('options', options)
+        console.log('options', options);
 
         this.options = options;
 
@@ -45,7 +45,10 @@ export class DashboardMapComponent implements OnInit {
            // gestureHandling: true,
             ...LeafletOptions,
         });
-        this.dashboardMap.setView([this.dashboardData.base.lat, this.dashboardData.base.lon], 11);
+        this.dashboardMap.setView(
+            [this.dashboardData.base.lat, this.dashboardData.base.lon],
+            11
+        );
 
         // const map = L.map('dashboardMap');
         // L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

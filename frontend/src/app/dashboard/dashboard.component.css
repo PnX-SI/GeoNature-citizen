@@ -5,3 +5,7 @@ table.dashboard-table {
 div.dashboard-program {
     padding: 5px;
 }
+
+div#dashboardMap {
+    height: 100%;
+}
