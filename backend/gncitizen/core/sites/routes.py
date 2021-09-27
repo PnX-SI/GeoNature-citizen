@@ -72,15 +72,10 @@ def get_site(pk):
     try:
         site = SiteModel.query.get(pk)
         formatted_site = format_site(site)
-        last_visit = (
-            VisitModel.query.filter_by(id_site=pk)
-            .order_by(VisitModel.timestamp_update.desc())
-            .first()
-        )
-        if last_visit is not None:
-            formatted_site["properties"]["last_visit"] = last_visit.as_dict()
         photos = get_site_photos(pk)
+        visits = get_site_visits(pk)
         formatted_site["properties"]["photos"] = photos
+        formatted_site["properties"]["visits"] = visits
         return {"features": [formatted_site]}, 200
     except Exception as e:
         return {"error_message": str(e)}, 400
@@ -122,6 +117,23 @@ def get_site_photos(site_id):
         for p in photos
     ]
 
+def get_site_visits(site_id):
+    visits = (
+        db.session.query(VisitModel,)
+        .filter(VisitModel.id_site == site_id)
+        .order_by(VisitModel.timestamp_update.desc())
+        .all()
+    )
+
+    return [
+        {
+            "id_visit": v.id_visit,
+            "date": v.as_dict()["date"],
+            "json_data": v.json_data,
+            "author": v.obs_txt,
+        }
+        for v in visits
+    ]
 
 def format_site(site, dashboard=False):
     feature = get_geojson_feature(site.geom)
