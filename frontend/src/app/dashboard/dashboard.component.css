@@ -8,4 +8,5 @@ div.dashboard-program {
 
 div#dashboardMap {
     height: 100%;
+    min-height: 450px;
 }
