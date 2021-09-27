@@ -1,26 +1,26 @@
-from flask import Blueprint, request, current_app, make_response
-from sqlalchemy import or_
-from .models import SiteModel, SiteTypeModel, VisitModel, MediaOnVisitModel
-from .admin import SiteTypeView
-from gncitizen.core.users.models import UserModel
-from gncitizen.core.commons.models import MediaModel
-import uuid
-import datetime
-import json
-import xlwt
 import io
-from geojson import FeatureCollection
-from geoalchemy2.shape import from_shape
-from shapely.geometry import Point
-from shapely.geometry import asShape
-from gncitizen.utils.jwt import get_id_role_if_exists
-from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
-from gncitizen.utils.env import admin
-from server import db
-from flask_jwt_extended import jwt_required, get_jwt_identity
+import uuid
 
+import xlwt
+from flask import Blueprint, current_app, make_response, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from geoalchemy2.shape import from_shape
+from geojson import FeatureCollection
+from shapely.geometry import Point, asShape
+from sqlalchemy import or_
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla_geo.generic import get_geojson_feature
+
+from gncitizen.core.commons.models import MediaModel
+from gncitizen.core.users.models import UserModel
+from gncitizen.utils.env import admin
+from gncitizen.utils.errors import GeonatureApiError
+from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
+from gncitizen.utils.media import save_upload_files
+from server import db
+
+from .admin import SiteTypeView
+from .models import MediaOnVisitModel, SiteModel, SiteTypeModel, VisitModel
 
 sites_api = Blueprint("sites", __name__)
 
@@ -29,12 +29,12 @@ sites_api = Blueprint("sites", __name__)
 @json_resp
 def get_types():
     """Get all sites types
-        ---
-        tags:
-          - Sites (External module)
-        responses:
-          200:
-            description: A list of all site types
+    ---
+    tags:
+      - Sites (External module)
+    responses:
+      200:
+        description: A list of all site types
     """
     try:
         data = []
@@ -94,10 +94,18 @@ def get_site_jsonschema(pk):
 
 def get_site_photos(site_id):
     photos = (
-        db.session.query(MediaModel, VisitModel,)
+        db.session.query(
+            MediaModel,
+            VisitModel,
+        )
         .filter(VisitModel.id_site == site_id)
-        .join(MediaOnVisitModel, MediaOnVisitModel.id_media == MediaModel.id_media)
-        .join(VisitModel, VisitModel.id_visit == MediaOnVisitModel.id_data_source)
+        .join(
+            MediaOnVisitModel,
+            MediaOnVisitModel.id_media == MediaModel.id_media,
+        )
+        .join(
+            VisitModel, VisitModel.id_visit == MediaOnVisitModel.id_data_source
+        )
         .all()
     )
     return [
@@ -139,7 +147,10 @@ def format_site(site, dashboard=False):
             site.id_role
             and VisitModel.query.filter_by(id_site=site.id_site)
             .filter(
-                or_(VisitModel.id_role != site.id_role, VisitModel.id_role.is_(None))
+                or_(
+                    VisitModel.id_role != site.id_role,
+                    VisitModel.id_role.is_(None),
+                )
             )
             .count()
             == 0
@@ -283,7 +294,7 @@ def post_site():
         responses:
           200:
             description: Site created
-        """
+    """
     try:
         request_data = dict(request.get_json())
 
@@ -321,7 +332,10 @@ def post_site():
         db.session.commit()
         # Réponse en retour
         result = SiteModel.query.get(newsite.id_site)
-        return {"message": "New site created.", "features": [format_site(result)]}, 200
+        return {
+            "message": "New site created.",
+            "features": [format_site(result)],
+        }, 200
     except Exception as e:
         current_app.logger.warning("Error: %s", str(e))
         return {"error_message": str(e)}, 400
@@ -332,7 +346,7 @@ def post_site():
 @jwt_required()
 def update_site():
     try:
-        current_user = get_jwt_identity()
+        current_user = get_user_if_exists()
         update_data = dict(request.get_json())
         update_site = {}
         for prop in ["name", "id_type"]:
@@ -345,7 +359,7 @@ def update_site():
             raise GeonatureApiError(e)
 
         site = SiteModel.query.filter_by(id_site=update_data.get("id_site"))
-        if current_user != UserModel.query.get(site.first().id_role).email:
+        if current_user.id_user != site.first().id_role:
             return ("unauthorized"), 403
         site.update(update_site, synchronize_session="fetch")
         db.session.commit()
@@ -363,7 +377,9 @@ def post_visit(site_id):
         request_data = request.get_json()
 
         new_visit = VisitModel(
-            id_site=site_id, date=request_data["date"], json_data=request_data["data"]
+            id_site=site_id,
+            date=request_data["date"],
+            json_data=request_data["data"],
         )
 
         id_role = get_id_role_if_exists()
@@ -381,13 +397,18 @@ def post_visit(site_id):
 
         # Réponse en retour
         result = VisitModel.query.get(new_visit.id_visit)
-        return {"message": "New visit created.", "features": [result.as_dict()]}, 200
+        return {
+            "message": "New visit created.",
+            "features": [result.as_dict()],
+        }, 200
     except Exception as e:
         current_app.logger.warning("Error: %s", str(e))
         return {"error_message": str(e)}, 400
 
 
-@sites_api.route("/<int:site_id>/visits/<int:visit_id>/photos", methods=["POST"])
+@sites_api.route(
+    "/<int:site_id>/visits/<int:visit_id>/photos", methods=["POST"]
+)
 @json_resp
 @jwt_required(optional=True)
 def post_photo(site_id, visit_id):
@@ -395,7 +416,11 @@ def post_photo(site_id, visit_id):
         current_app.logger.debug("UPLOAD FILE? " + str(request.files))
         if request.files:
             files = save_upload_files(
-                request.files, "site", site_id, visit_id, MediaOnVisitModel,
+                request.files,
+                "site",
+                site_id,
+                visit_id,
+                MediaOnVisitModel,
             )
             current_app.logger.debug("UPLOAD FILE {}".format(files))
             return files, 200
@@ -409,7 +434,7 @@ def post_photo(site_id, visit_id):
 @json_resp
 @jwt_required()
 def delete_site(site_id):
-    current_user = get_jwt_identity()
+    current_user = get_user_if_exists()
     try:
         site = (
             db.session.query(SiteModel, UserModel)
@@ -417,7 +442,7 @@ def delete_site(site_id):
             .join(UserModel, SiteModel.id_role == UserModel.id_user, full=True)
             .first()
         )
-        if current_user == site.UserModel.email:
+        if current_user.id_user == site.id_role:
             SiteModel.query.filter_by(id_site=site_id).delete()
             db.session.commit()
             return ("Site deleted successfully"), 200
@@ -430,9 +455,9 @@ def delete_site(site_id):
 @sites_api.route("/export/<int:user_id>", methods=["GET"])
 @jwt_required()
 def export_sites_xls(user_id):
-    current_user = get_jwt_identity()
+    current_user = get_user_if_exists()
     try:
-        if current_user != UserModel.query.get(user_id).email:
+        if current_user.id_user != user_id:
             return ("unauthorized"), 403
         title_style = xlwt.easyxf("font: bold on")
         date_style = xlwt.easyxf(num_format_str="D/M/YY")
@@ -458,7 +483,9 @@ def export_sites_xls(user_id):
             ws.write(row, col, field["col_name"], title_style)
         row += 1
         for site in sites:
-            site.coordinates = get_geojson_feature(site.geom)["geometry"]["coordinates"]
+            site.coordinates = get_geojson_feature(site.geom)["geometry"][
+                "coordinates"
+            ]
             for col, field in enumerate(fields):
                 args = []
                 if field.get("style"):
@@ -471,9 +498,15 @@ def export_sites_xls(user_id):
         basic_fields = (
             {"col_name": "id_visit", "getter": lambda s: s.id_visit},
             {"col_name": "Site", "getter": lambda s: s.site.name},
-            {"col_name": "Date", "getter": lambda s: s.date, "style": date_style},
+            {
+                "col_name": "Date",
+                "getter": lambda s: s.date,
+                "style": date_style,
+            },
         )
-        json_keys = list(set([key for v in visits for key in v.json_data.keys()]))
+        json_keys = list(
+            set([key for v in visits for key in v.json_data.keys()])
+        )
         row, col = 0, 0
         for field in basic_fields:
             ws.write(row, col, field["col_name"], title_style)

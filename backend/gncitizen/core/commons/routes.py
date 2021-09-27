@@ -2,44 +2,47 @@
 # -*- coding:utf-8 -*-
 
 import json
-import urllib.parse
-from flask import Blueprint, request, current_app, send_from_directory
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask_admin.form import SecureForm
+
+from flask import Blueprint, current_app, request, send_from_directory
 from flask_admin.contrib.geoa import ModelView
-from sqlalchemy.sql import func
-from sqlalchemy import distinct, and_
+from flask_admin.form import SecureForm
+from flask_ckeditor import CKEditorField
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import MultiPolygon, asShape
-from flask_ckeditor import CKEditorField
+from sqlalchemy import and_, distinct
+from sqlalchemy.sql import func
+from utils_flask_sqla.response import json_resp
 
+from gncitizen.core.commons.admin import (
+    CustomFormView,
+    CustomTileView,
+    GeometryView,
+    ProgramView,
+    ProjectView,
+    UserView,
+)
+from gncitizen.core.observations.models import ObservationModel
+from gncitizen.core.sites.admin import SiteTypeView
+from gncitizen.core.sites.models import (
+    CorProgramSiteTypeModel,
+    SiteModel,
+    SiteTypeModel,
+    VisitModel,
+)
+from gncitizen.core.users.models import UserModel
+from gncitizen.utils.env import MEDIA_DIR, admin
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.sqlalchemy import json_resp
-from gncitizen.utils.env import admin
 from server import db
 
 from .models import (
-    TModules,
-    ProjectModel,
-    ProgramsModel,
     CustomFormModel,
     GeometryModel,
+    ProgramsModel,
+    ProjectModel,
+    TModules,
 )
-from gncitizen.core.users.models import UserModel
-from gncitizen.core.observations.models import ObservationModel
-from gncitizen.core.sites.models import VisitModel, SiteModel
-
-from gncitizen.core.commons.admin import (
-    ProjectView,
-    ProgramView,
-    CustomFormView,
-    UserView,
-    GeometryView,
-)
-from gncitizen.core.sites.models import CorProgramSiteTypeModel, SiteTypeModel
-from gncitizen.core.sites.admin import SiteTypeView
-from gncitizen.utils.env import MEDIA_DIR
 
 commons_api = Blueprint("commons", __name__)
 
@@ -50,19 +53,29 @@ admin.add_view(
 )
 admin.add_view(
     GeometryView(
-        GeometryModel, db.session, "2 - Zones geographiques", category="Enquêtes"
+        GeometryModel,
+        db.session,
+        "2 - Zones geographiques",
+        category="Enquêtes",
     )
 )
 admin.add_view(
     CustomFormView(
-        CustomFormModel, db.session, "3a - Formulaires dynamiques", category="Enquêtes"
+        CustomFormModel,
+        db.session,
+        "3a - Formulaires dynamiques",
+        category="Enquêtes",
     )
 )
 admin.add_view(
-    SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes")
+    SiteTypeView(
+        SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes"
+    )
 )
 admin.add_view(
-    ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes")
+    ProgramView(
+        ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"
+    )
 )
 
 
@@ -232,15 +245,24 @@ def get_project_stats(pk):
             func.count(distinct(SiteModel.id_site)).label("sites"),
         )
         .select_from(ProjectModel)
-        .join(ProgramsModel, ProgramsModel.id_project == ProjectModel.id_project)
+        .join(
+            ProgramsModel, ProgramsModel.id_project == ProjectModel.id_project
+        )
         .outerjoin(
-            ObservationModel, ObservationModel.id_program == ProgramsModel.id_program
+            ObservationModel,
+            ObservationModel.id_program == ProgramsModel.id_program,
         )
         .outerjoin(SiteModel, SiteModel.id_program == ProgramsModel.id_program)
         .outerjoin(VisitModel, VisitModel.id_site == SiteModel.id_site)
-        .filter(and_(ProjectModel.id_project == pk, ProgramsModel.is_active == True))
+        .filter(
+            and_(
+                ProjectModel.id_project == pk, ProgramsModel.is_active == True
+            )
+        )
     )
-    current_app.logger.debug(f"Query {type(query.first())} {dir(query.first())}")
+    current_app.logger.debug(
+        f"Query {type(query.first())} {dir(query.first())}"
+    )
     return query.first()._asdict()
 
 
@@ -262,7 +284,9 @@ def get_program(pk):
         description: A list of all programs
     """
     # try:
-    datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
+    datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(
+        1
+    )
     if datas.count() != 1:
         current_app.logger.warning("[get_program] Program not found")
         return {"message": "Program not found"}, 400
@@ -272,9 +296,14 @@ def get_program(pk):
             feature = data.get_geofeature()
             # Get sites types for sites programs. TODO condition
             if feature["properties"]["module"]["name"] == "sites":
-                site_types_qs = CorProgramSiteTypeModel.query.filter_by(id_program=pk)
+                site_types_qs = CorProgramSiteTypeModel.query.filter_by(
+                    id_program=pk
+                )
                 site_types = [
-                    {"value": st.site_type.id_typesite, "text": st.site_type.type}
+                    {
+                        "value": st.site_type.id_typesite,
+                        "text": st.site_type.type,
+                    }
                     for st in site_types_qs
                 ]
                 feature["site_types"] = site_types

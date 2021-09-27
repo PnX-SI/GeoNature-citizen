@@ -1,20 +1,20 @@
-import sys
-import os
 import logging
+import os
+import sys
 
 from flask import Flask, current_app
 from flask_cors import CORS
 
+from gncitizen import __version__
 from gncitizen.utils.env import (
-    db,
-    list_and_import_gnc_modules,
-    jwt,
-    swagger,
     admin,
     ckeditor,
+    db,
+    jwt,
+    list_and_import_gnc_modules,
+    swagger,
 )
 from gncitizen.utils.init_data import create_schemas, populate_modules
-from gncitizen import __version__
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -50,8 +50,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     app = Flask(__name__)
     app.config.update(config)
     if app.config["DEBUG"]:
-        from flask.logging import default_handler
         import coloredlogs
+        from flask.logging import default_handler
 
         app.config["SQLALCHEMY_ECHO"] = True
         logger = logging.getLogger("werkzeug")
@@ -96,13 +96,13 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         db.create_all()
         populate_modules(db)
 
-        from gncitizen.core.users.routes import users_api
+        from gncitizen.core.badges.routes import badges_api
         from gncitizen.core.commons.routes import commons_api
         from gncitizen.core.observations.routes import obstax_api
         from gncitizen.core.ref_geo.routes import geo_api
-        from gncitizen.core.badges.routes import badges_api
-        from gncitizen.core.taxonomy.routes import taxo_api
         from gncitizen.core.sites.routes import sites_api
+        from gncitizen.core.taxonomy.routes import taxo_api
+        from gncitizen.core.users.routes import users_api
 
         app.register_blueprint(users_api, url_prefix=url_prefix)
         app.register_blueprint(commons_api, url_prefix=url_prefix)
@@ -135,7 +135,5 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 app.config[manifest["module_name"]] = conf
 
         # _app = app
-
-
 
     return app

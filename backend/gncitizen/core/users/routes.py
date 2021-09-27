@@ -1,6 +1,13 @@
-import flask
+import base64
 import os
-from flask import request, Blueprint, current_app
+import smtplib
+import uuid
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+import flask
+import requests
+from flask import Blueprint, current_app, request
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -8,22 +15,18 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
 )
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.exc import IntegrityError
-from gncitizen.utils.mail_check import confirm_user_email, confirm_token
-from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.env import MEDIA_DIR
-from gncitizen.utils.sqlalchemy import json_resp
-from server import db, jwt
-from gncitizen.core.observations.models import ObservationModel
-from .models import UserModel, RevokedTokenModel
-from gncitizen.utils.jwt import admin_required
-import uuid
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import base64
+from utils_flask_sqla.response import json_resp
 
+from gncitizen.core.observations.models import ObservationModel
+from gncitizen.utils.env import MEDIA_DIR
+from gncitizen.utils.errors import GeonatureApiError
+from gncitizen.utils.jwt import admin_required, get_user_if_exists
+from gncitizen.utils.mail_check import confirm_token, confirm_user_email
+from server import db
+
+from .models import RevokedTokenModel, UserModel
 
 users_api = Blueprint("users", __name__)
 
@@ -72,13 +75,44 @@ def registration():
     """
     try:
         request_datas = dict(request.get_json())
+
+        if (
+            "HCAPTCHA_SECRET_KEY" in current_app.config
+            and current_app.config["HCAPTCHA_SECRET_KEY"] is not None
+        ):
+            if (
+                not "captchaToken" in request_datas
+                or request_datas["captchaToken"] is None
+            ):
+                return (
+                    {"message": "Veuillez confirmer que vous êtes un humain."},
+                    400,
+                )
+
+            params = {
+                "response": request_datas["captchaToken"],
+                "secret": current_app.config["HCAPTCHA_SECRET_KEY"],
+            }
+            response = requests.post(
+                "https://hcaptcha.com/siteverify", data=params
+            )
+            captchaResponse = response.json()
+
+            if not captchaResponse["success"]:
+                return ({"message": "Captcha non valide."}, 400)
+
         datas_to_save = {}
         for data in request_datas:
             if hasattr(UserModel, data) and data != "password":
                 datas_to_save[data] = request_datas[data]
 
         # Hashed password
-        datas_to_save["password"] = UserModel.generate_hash(request_datas["password"])
+        datas_to_save["password"] = UserModel.generate_hash(
+            request_datas["password"]
+        )
+
+        if current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"] == False:
+            datas_to_save["active"] = True
 
         # Protection against admin creation from API
         datas_to_save["admin"] = False
@@ -122,11 +156,7 @@ def registration():
                 .one()
             ):
                 return (
-                    {
-                        "message": """Un email correspondant est déjà enregistré.""".format(
-                            newuser.email
-                        )
-                    },
+                    {"message": "Un email correspondant est déjà enregistré."},
                     400,
                 )
             else:
@@ -140,24 +170,38 @@ def registration():
             handler = open(os.path.join(str(MEDIA_DIR), filename), "wb+")
             handler.write(imgdata)
             handler.close()
-        # send confirm mail
+
         try:
-            confirm_user_email(newuser)
+            if (
+                current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"]
+                == False
+            ):
+                message = (
+                    """Félicitations, l'utilisateur "{}" a été créé.""".format(
+                        newuser.username
+                    ),
+                )
+                confirm_user_email(newuser, with_confirm_link=False)
+            else:
+                message = (
+                    """Félicitations, l'utilisateur "{}" a été créé.  \r\n Vous allez recevoir un email pour activer votre compte """.format(
+                        newuser.username
+                    ),
+                )
+                confirm_user_email(newuser)
         except Exception as e:
-            return {"message mail faild": str(e)}, 500
+            return {"message mail failed": str(e)}, 500
+
+        # send confirm mail
         return (
             {
-                "message": """Félicitations, l'utilisateur "{}" a été créé.  \r\n Vous allez recevoir un email
-                pour activer votre compte """.format(
-                    newuser.username
-                ),
+                "message": message,
                 "username": newuser.username,
                 "access_token": access_token,
                 "refresh_token": refresh_token,
             },
             200,
         )
-
     except Exception as e:
         current_app.logger.critical("grab all: %s", str(e))
         return {"message": str(e)}, 500
@@ -196,13 +240,22 @@ def login():
     """
     try:
         request_datas = dict(request.get_json())
-        email = request_datas["email"]
+        identifier = request_datas["email"]
         password = request_datas["password"]
         try:
-            current_user = UserModel.query.filter_by(email=email).one()
+            current_user = UserModel.query.filter(
+                or_(
+                    UserModel.email == identifier,
+                    UserModel.username == identifier,
+                )
+            ).one()
         except Exception:
             return (
-                {"message": """L'email "{}" n'est pas enregistré.""".format(email)},
+                {
+                    "message": """L'email ou le pseudo "{}" n'est pas enregistré.""".format(
+                        identifier
+                    )
+                },
                 400,
             )
         if not current_user.active:
@@ -211,21 +264,29 @@ def login():
                 400,
             )
         if UserModel.verify_hash(password, current_user.password):
-            access_token = create_access_token(identity=email)
-            refresh_token = create_refresh_token(identity=email)
+            access_token = create_access_token(identity=identifier)
+            refresh_token = create_refresh_token(identity=identifier)
             return (
                 {
-                    "message": """Connecté en tant que "{}".""".format(email),
-                    "email": email,
-                    "username": current_user.as_secured_dict(True).get("username"),
-                    "userAvatar": current_user.as_secured_dict(True).get("avatar"),
+                    "message": """Connecté en tant que "{}".""".format(
+                        identifier
+                    ),
+                    "email": current_user.email,
+                    "username": current_user.as_secured_dict(True).get(
+                        "username"
+                    ),
+                    "userAvatar": current_user.as_secured_dict(True).get(
+                        "avatar"
+                    ),
                     "access_token": access_token,
                     "refresh_token": refresh_token,
                 },
                 200,
             )
         else:
-            return {"message": """Mauvaises informations d'identification"""}, 400
+            return {
+                "message": """Mauvaises informations d'identification"""
+            }, 400
     except Exception as e:
         return {"message": str(e)}, 400
 
@@ -306,7 +367,6 @@ def get_allusers():
       200:
         description: list all users
     """
-    # allusers = UserModel.return_all()
     allusers = UserModel.return_all()
     return allusers, 200
 
@@ -327,8 +387,7 @@ def logged_user():
         description: current user model
     """
     try:
-        current_user = get_jwt_identity()
-        user = UserModel.query.filter_by(email=current_user).one()
+        user = get_user_if_exists()
         if flask.request.method == "GET":
             # base stats, to enhance as we go
             result = user.as_secured_dict(True)
@@ -340,11 +399,16 @@ def logged_user():
                 .one()[0]
             }
 
-            return ({"message": "Vos données personelles", "features": result}, 200)
+            return (
+                {"message": "Vos données personelles", "features": result},
+                200,
+            )
 
         if flask.request.method == "PATCH":
             is_admin = user.admin or False
-            current_app.logger.debug("[logged_user] Update current user personnal data")
+            current_app.logger.debug(
+                "[logged_user] Update current user personnal data"
+            )
             request_data = dict(request.get_json())
             if "extention" in request_data and "avatar" in request_data:
                 extention = request_data["extention"]
@@ -357,16 +421,20 @@ def logged_user():
                 request_data["avatar"] = filename
                 if os.path.exists(
                     os.path.join(
-                        str(MEDIA_DIR), str(user.as_secured_dict(True)["avatar"])
+                        str(MEDIA_DIR),
+                        str(user.as_secured_dict(True)["avatar"]),
                     )
                 ):
                     os.remove(
                         os.path.join(
-                            str(MEDIA_DIR), str(user.as_secured_dict(True)["avatar"])
+                            str(MEDIA_DIR),
+                            str(user.as_secured_dict(True)["avatar"]),
                         )
                     )
                 try:
-                    handler = open(os.path.join(str(MEDIA_DIR), str(filename)), "wb+")
+                    handler = open(
+                        os.path.join(str(MEDIA_DIR), str(filename)), "wb+"
+                    )
                     handler.write(imgdata)
                     handler.close()
                 except Exception as e:
@@ -383,7 +451,9 @@ def logged_user():
                 }:
                     setattr(user, data, request_data[data])
             if "newPassword" in request_data:
-                user.password = UserModel.generate_hash(request_data["newPassword"])
+                user.password = UserModel.generate_hash(
+                    request_data["newPassword"]
+                )
             user.admin = is_admin
             user.update()
             return (
@@ -423,17 +493,16 @@ def delete_user():
     # Get logged user
     current_app.logger.debug("[delete_user] Delete current user")
 
-    current_user = get_jwt_identity()
+    current_user = get_user_if_exists()
     if current_user:
+        username = current_user.username
         current_app.logger.debug(
-            "[delete_user] current user is {}".format(current_user)
+            "[delete_user] current user is {}".format(username)
         )
-        user = UserModel.query.filter_by(email=current_user)
-        # get username
-        username = user.one().username
-        # delete user
         try:
-            db.session.query(UserModel).filter(UserModel.username == username).delete()
+            db.session.query(UserModel).filter(
+                UserModel.id_user == current_user.id_user
+            ).delete()
             db.session.commit()
             current_app.logger.debug(
                 "[delete_user] user {} succesfully deleted".format(username)
@@ -458,13 +527,16 @@ def delete_user():
 def reset_user_password():
     request_datas = dict(request.get_json())
     email = request_datas["email"]
-    # username = request_datas["username"]
 
     try:
         user = UserModel.query.filter_by(email=email).one()
     except Exception:
         return (
-            {"message": """L'email "{}" n'est pas enregistré.""".format(email)},
+            {
+                "message": """L'email "{}" n'est pas enregistré.""".format(
+                    email
+                )
+            },
             400,
         )
 
@@ -506,13 +578,17 @@ def reset_user_password():
                 str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
             )
             server.sendmail(
-                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
+                current_app.config["MAIL"]["MAIL_AUTH_LOGIN"],
+                user.email,
+                msg.as_string(),
             )
             server.quit()
         user.password = passwd_hash
         db.session.commit()
         return (
-            {"message": "Check your email, you credentials have been updated."},
+            {
+                "message": "Check your email, you credentials have been updated."
+            },
             200,
         )
     except Exception as e:
@@ -534,7 +610,7 @@ def reset_user_password():
 def confirm_email(token):
     try:
         email = confirm_token(token)
-    except:
+    except Exception:
         return (
             {"message": "The confirmation link is invalid or has expired."},
             404,
@@ -542,7 +618,10 @@ def confirm_email(token):
     user = UserModel.query.filter_by(email=email).first_or_404()
     if user.active:
         return (
-            {"message": "Account already confirmed. Please login.", "status": 208},
+            {
+                "message": "Account already confirmed. Please login.",
+                "status": 208,
+            },
             208,
         )
     else:
@@ -550,6 +629,9 @@ def confirm_email(token):
         user.update()
         db.session.commit()
         return (
-            {"message": "You have confirmed your account. Thanks!", "status": 200},
+            {
+                "message": "You have confirmed your account. Thanks!",
+                "status": 200,
+            },
             200,
         )

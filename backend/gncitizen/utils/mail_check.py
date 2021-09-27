@@ -1,11 +1,12 @@
-from flask import current_app
-from itsdangerous import URLSafeTimedSerializer
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from flask import current_app
+from itsdangerous import URLSafeTimedSerializer
 
-def confirm_user_email(newuser):
+
+def confirm_user_email(newuser, with_confirm_link=True):
 
     token = generate_confirmation_token(newuser.email)
     msg = MIMEMultipart("alternative")
@@ -21,11 +22,15 @@ def confirm_user_email(newuser):
         url_application = url_application + "/"
     print("url_application", url_application)
     activate_url = url_application + "confirmEmail/" + token
+
     # Record the MIME  text/html.
+    template = current_app.config["CONFIRM_EMAIL"]["HTML_TEMPLATE"]
+    if not with_confirm_link:
+        template = current_app.config["CONFIRM_EMAIL"][
+            "NO_VALIDATION_HTML_TEMPLATE"
+        ]
     msg_body = MIMEText(
-        current_app.config["CONFIRM_EMAIL"]["HTML_TEMPLATE"].format(
-            activate_url=activate_url
-        ),
+        template.format(activate_url=activate_url),
         "html",
     )
 
@@ -51,24 +56,33 @@ def confirm_user_email(newuser):
             str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
         )
         server.sendmail(
-            current_app.config["CONFIRM_EMAIL"]["FROM"], newuser.email, msg.as_string()
+            current_app.config["CONFIRM_EMAIL"]["FROM"],
+            newuser.email,
+            msg.as_string(),
         )
         server.quit()
 
     except Exception as e:
         current_app.logger.warning("send confirm_email failled. %s", str(e))
-        return {"message": """ send confirm_email failled: "{}".""".format(str(e))}
+        return {
+            "message": """ send confirm_email failled: "{}".""".format(str(e))
+        }
 
 
 def generate_confirmation_token(email):
     serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
-    return serializer.dumps(email, salt=current_app.config["CONFIRM_MAIL_SALT"])
+    return serializer.dumps(
+        email, salt=current_app.config["CONFIRM_MAIL_SALT"]
+    )
 
 
 def confirm_token(token):
     serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
     try:
-        email = serializer.loads(token, salt=current_app.config["CONFIRM_MAIL_SALT"],)
+        email = serializer.loads(
+            token,
+            salt=current_app.config["CONFIRM_MAIL_SALT"],
+        )
     except:
         raise Exception("error token")
     return email
