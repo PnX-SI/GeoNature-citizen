@@ -6,6 +6,11 @@ div.dashboard-program {
     padding: 5px;
 }
 
+div.dashboard-program-header {
+    display: flex;
+    justify-content: space-between;
+}
+
 div#dashboardMap {
     height: 100%;
     min-height: 450px;

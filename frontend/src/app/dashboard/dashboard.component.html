@@ -52,18 +52,20 @@
                 <div class="col-lg-6">
 
                     <div class="dashboard-program border" *ngIf="programPoint">
-                        <h3>{{programPoint.features[0].properties.title}}</h3>
-                        <div *ngIf="sitePoint">
+                        <div class="dashboard-program-header">
+                            <h3>{{programPoint.features[0].properties.title}}</h3>
                             <div>
                                 <button
                                     type="button"
                                     class="btn btn-light mr-4 float-right"
                                     (click)="togglePointLayer()"
                                 >
-                                <i *ngIf="showLayerPoint else elseBlock" class="fa fa-eye"></i>
-                                <ng-template #elseBlock><i class="fa fa-eye-slash"></i></ng-template>
+                                <i *ngIf="showLayerPoint else elseBlockPoint" class="fa fa-eye"></i>
+                                <ng-template #elseBlockPoint><i class="fa fa-eye-slash"></i></ng-template>
                                 </button>
                             </div>
+                        </div>
+                        <div *ngIf="sitePoint">
                             <div class="">{{ sitePoint.count }} arbres répertoriés</div>
                             <div class="">dont {{ sitePoint.countImport }} arbres importés <span><img src="assets/pointer-orange.png"></span></div>
                             <div class="">{{ sitePoint.especesTable.length }} espèces différentes</div>
@@ -96,7 +98,19 @@
                     </div>
 
                     <div class="dashboard-program border" *ngIf="programLine">
-                        <h3>{{programLine.features[0].properties.title}}</h3>
+                        <div class="dashboard-program-header">
+                            <h3>{{programLine.features[0].properties.title}}</h3>
+                            <div>
+                                <button
+                                    type="button"
+                                    class="btn btn-light mr-4 float-right"
+                                    (click)="toggleLineLayer()"
+                                >
+                                <i *ngIf="showLayerLine else elseBlockLine" class="fa fa-eye"></i>
+                                <ng-template #elseBlockLine><i class="fa fa-eye-slash"></i></ng-template>
+                                </button>
+                            </div>
+                        </div>
                         <div *ngIf="siteLine">
                             <div class="">{{ siteLine.count }} haies répertoriées</div>
                             <div class="">dont {{ siteLine.countImport }} haies importées</div>
@@ -131,7 +145,19 @@
                     </div>
 
                     <div class="dashboard-program border" *ngIf="programPolygon">
-                        <h3>{{programPolygon.features[0].properties.title}}</h3>
+                        <div class="dashboard-program-header">
+                            <h3>{{programPolygon.features[0].properties.title}}</h3>
+                            <div *ngIf="sitePolygon">
+                                <button
+                                    type="button"
+                                    class="btn btn-light mr-4 float-right"
+                                    (click)="togglePolygonLayer()"
+                                >
+                                <i *ngIf="showLayerPolygon else elseBlockPolygon" class="fa fa-eye"></i>
+                                <ng-template #elseBlockPolygon><i class="fa fa-eye-slash"></i></ng-template>
+                                </button>
+                            </div>
+                        </div>
                         <div *ngIf="sitePolygon">
                             <div class="">{{ sitePolygon.count }} zones naturelles répertoriées</div>
                             <div>
