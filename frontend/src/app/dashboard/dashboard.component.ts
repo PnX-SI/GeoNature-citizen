@@ -1,10 +1,10 @@
 import * as L from 'leaflet';
-import { AfterViewInit, Component, OnChanges, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppConfig } from '../../conf/app.config';
 import { Title } from '@angular/platform-browser';
 import { GncProgramsService } from '../api/gnc-programs.service';
-import { Feature, FeatureCollection, Geometry, Point, Position } from 'geojson';
+import { FeatureCollection, Geometry } from 'geojson';
 import { Program } from '../programs/programs.models';
 import { dashboardData, dashboardDataType } from '../../conf/dashboard.config';
 import { conf } from '../programs/base/map/map.component';
@@ -206,7 +206,6 @@ export class DashboardComponent implements AfterViewInit {
            // gestureHandling: true,
             ...LeafletOptions,
         });
- 
 
         this.dashboardMap.zoomControl.setPosition(
             this.options.ZOOM_CONTROL_POSITION
@@ -223,38 +222,28 @@ export class DashboardComponent implements AfterViewInit {
             })
             .addTo(this.dashboardMap);
 
-
     }
 
     addLayerToMap(features) {
         console.log('layer in addtoMap', features);
 
-        let observationLayer = this.options.OBSERVATION_LAYER();
-
-        const layerOptions = {
-            pointToLayer: (_feature, latlng): L.Marker => {
-                let marker: L.Marker<any> = L.marker(latlng, {
-                    icon: conf.OBS_MARKER_ICON(),
-                });
-
-                // this.markers.push({
-                //     feature: _feature,
-                //     marker: marker,
-                // });
-                return marker;
-            },
-        };
-
-        let pointFeatures: FeatureCollection;
         const geometryType = features.features[0].geometry.type.toUpperCase();
-        switch (geometryType){
+        switch (geometryType) {
             case 'POINT':
             default:
-                pointFeatures = features;
+                this.dashboardMap.addLayer(
+                    L.geoJSON(features, {
+                        pointToLayer: (_feature, latlng): L.Marker => {
+                            const marker: L.Marker<any> = L.marker(latlng, {
+                                icon: conf.OBS_MARKER_ICON(),
+                            });
+                            return marker;
+                        },
+                    })
+                );
                 break;
 
             case 'LINESTRING':
-            case 'POLYGON':
                 this.dashboardMap.addLayer(
                     L.geoJSON(features, {
                         style: function (_feature) {
@@ -262,43 +251,21 @@ export class DashboardComponent implements AfterViewInit {
                         },
                     })
                 );
-                const polygonToPointFeatures = features.features.map((f) => {
-                    const coordinates = f.geometry.type === 'LineString' ?
-                        f.geometry.coordinates[0] :
-                            f.geometry.type === 'Polygon' ?
-                                f.geometry.coordinates[0][0] : [0,0] as Position
-
-                    const firstPoint: Point = {
-                        type: 'Point',
-                        coordinates: coordinates,
-                    }
-                    const newFeature: Feature = {
-                        type: 'Feature',
-                        properties: f.properties,
-                        geometry: firstPoint,
-                    }
-                    return newFeature;
-                });
-                pointFeatures = {
-                    type: 'FeatureCollection',
-                    features: polygonToPointFeatures,
-                };
+                break;
+            case 'POLYGON':
+                this.dashboardMap.addLayer(
+                    L.geoJSON(features, {
+                        style: function (_feature) {
+                            return { color: '#11aa25' };
+                        },
+                    })
+                );
                 break;
         }
-
-        observationLayer.addLayer(
-            L.geoJSON(pointFeatures, layerOptions)
-        );
-        this.dashboardMap.addLayer(observationLayer);
 
         this.dashboardMap.setView(
             [this.dashboardData.base.lat, this.dashboardData.base.lon],
             11
         );
-        // L.geoJSON(layer, {
-        //     style: (_feature) =>
-        //         this.options.PROGRAM_AREA_STYLE(_feature),
-        // }
-        // ).addTo(this.dashboardMap);
     }
 }
