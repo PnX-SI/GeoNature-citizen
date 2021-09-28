@@ -53,7 +53,7 @@ export class DashboardComponent implements AfterViewInit {
             console.log('this.programs: ', this.programs);
 
             const mapContainer = document.getElementById('dashboardMap');
-            console.log('mapcontainer: ', mapContainer)
+
             if (mapContainer) {
                 this.initMap(conf);
             }
@@ -197,13 +197,11 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     initMap(options: any, LeafletOptions: any = {}): void {
-        console.log('options', options);
 
         this.options = options;
 
         this.dashboardMap = L.map('dashboardMap', {
             layers: [this.options.DEFAULT_BASE_MAP()],
-           // gestureHandling: true,
             ...LeafletOptions,
         });
 
@@ -225,7 +223,6 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     addLayerToMap(features) {
-        console.log('layer in addtoMap', features);
 
         const layerOptions = {
             onEachFeature: (feature, layer) => {
@@ -281,7 +278,6 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     getPopupContent(feature: Feature): string {
-        console.log(feature);
         let content = `<div></div>`;
         content =
             content +
