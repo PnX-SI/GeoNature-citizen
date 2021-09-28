@@ -54,8 +54,18 @@
                     <div class="dashboard-program border" *ngIf="programPoint">
                         <h3>{{programPoint.features[0].properties.title}}</h3>
                         <div *ngIf="sitePoint">
+                            <div>
+                                <button
+                                    type="button"
+                                    class="btn btn-light mr-4 float-right"
+                                    (click)="togglePointLayer()"
+                                >
+                                <i *ngIf="showLayerPoint else elseBlock" class="fa fa-eye"></i>
+                                <ng-template #elseBlock><i class="fa fa-eye-slash"></i></ng-template>
+                                </button>
+                            </div>
                             <div class="">{{ sitePoint.count }} arbres répertoriés</div>
-                            <div class="">dont {{ sitePoint.countImport }} arbres importés</div>
+                            <div class="">dont {{ sitePoint.countImport }} arbres importés <span><img src="assets/pointer-orange.png"></span></div>
                             <div class="">{{ sitePoint.especesTable.length }} espèces différentes</div>
                             <div>
                                 <details>

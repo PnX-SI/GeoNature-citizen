@@ -33,6 +33,12 @@ export class DashboardComponent implements AfterViewInit {
     programPoint: FeatureCollection;
     programLine: FeatureCollection;
     programPolygon: FeatureCollection;
+    layerPoint: L.Layer;
+    layerLine: L.Layer;
+    layerPolygon: L.Layer;
+    showLayerPoint: boolean;
+    showLayerLine: boolean;
+    showLayerPolygon: boolean;
     dashboardMap: L.Map;
     programMaxBounds: L.LatLngBounds;
     options: any;
@@ -237,16 +243,18 @@ export class DashboardComponent implements AfterViewInit {
             default:
                 Object.assign(layerOptions, {
                     pointToLayer: (f: Feature, latlng): L.Marker => {
-                        console.log(f);
                         const marker: L.Marker<any> = L.marker(latlng, {
-                            icon: f.properties.obs_txt === 'import'
-                                ? conf.ORANGE_MARKER_ICON()
-                                : conf.OBS_MARKER_ICON(),
+                            icon:
+                                f.properties.obs_txt === 'import'
+                                    ? conf.ORANGE_MARKER_ICON()
+                                    : conf.OBS_MARKER_ICON(),
                         });
                         return marker;
                     },
                 });
-                this.dashboardMap.addLayer(L.geoJSON(features, layerOptions));
+                this.layerPoint = L.geoJSON(features, layerOptions);
+                this.dashboardMap.addLayer(this.layerPoint);
+                this.showLayerPoint = true;
                 break;
 
             case 'LINESTRING':
@@ -256,7 +264,9 @@ export class DashboardComponent implements AfterViewInit {
                             ? { color: '#ff6600' }
                             : { color: '#11aa9e' }
                 });
-                this.dashboardMap.addLayer(L.geoJSON(features, layerOptions));
+                this.layerLine = L.geoJSON(features, layerOptions);
+                this.dashboardMap.addLayer(this.layerLine);
+                this.showLayerLine = true;
                 break;
 
             case 'POLYGON':
@@ -266,7 +276,9 @@ export class DashboardComponent implements AfterViewInit {
                             ? { color: '#ff6600' }
                             : { color: '#11aa25' }
                 });
-                this.dashboardMap.addLayer(L.geoJSON(features, layerOptions));
+                this.layerPolygon = L.geoJSON(features, layerOptions);
+                this.dashboardMap.addLayer(this.layerPolygon);
+                this.showLayerPolygon = true;
                 break;
         }
 
@@ -288,5 +300,35 @@ export class DashboardComponent implements AfterViewInit {
         </div>`;
 
         return content;
+    }
+
+    togglePointLayer() {
+        if (this.showLayerPoint) {
+            this.dashboardMap.removeLayer(this.layerPoint);
+            this.showLayerPoint = false;
+        } else {
+            this.dashboardMap.addLayer(this.layerPoint);
+            this.showLayerPoint = true;
+        }
+    }
+
+    toggleLineLayer() {
+        if (this.showLayerLine) {
+            this.dashboardMap.removeLayer(this.layerLine);
+            this.showLayerLine = false;
+        } else {
+            this.dashboardMap.addLayer(this.layerLine);
+            this.showLayerLine = true;
+        }
+    }
+
+    togglePolygonLayer() {
+        if (this.showLayerPolygon) {
+            this.dashboardMap.removeLayer(this.layerPolygon);
+            this.showLayerPolygon = false;
+        } else {
+            this.dashboardMap.addLayer(this.layerPolygon);
+            this.showLayerPolygon = true;
+        }
     }
 }
