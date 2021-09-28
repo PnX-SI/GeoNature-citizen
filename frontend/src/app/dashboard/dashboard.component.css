@@ -10,3 +10,7 @@ div#dashboardMap {
     height: 100%;
     min-height: 450px;
 }
+
+p.dashboard-popup {
+    padding: 10px;
+}

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AppConfig } from '../../conf/app.config';
 import { Title } from '@angular/platform-browser';
 import { GncProgramsService } from '../api/gnc-programs.service';
-import { FeatureCollection, Geometry } from 'geojson';
+import { FeatureCollection, Geometry, Feature } from 'geojson';
 import { Program } from '../programs/programs.models';
 import { dashboardData, dashboardDataType } from '../../conf/dashboard.config';
 import { conf } from '../programs/base/map/map.component';
@@ -227,38 +227,49 @@ export class DashboardComponent implements AfterViewInit {
     addLayerToMap(features) {
         console.log('layer in addtoMap', features);
 
+        const layerOptions = {
+            onEachFeature: (feature, layer) => {
+                const popupContent = this.getPopupContent(feature);
+                layer.bindPopup(popupContent);
+            },
+        };
+
         const geometryType = features.features[0].geometry.type.toUpperCase();
         switch (geometryType) {
             case 'POINT':
             default:
+                Object.assign(layerOptions, {
+                    pointToLayer: (_feature, latlng): L.Marker => {
+                        const marker: L.Marker<any> = L.marker(latlng, {
+                            icon: conf.OBS_MARKER_ICON(),
+                        });
+                        return marker;
+                    },
+                });
                 this.dashboardMap.addLayer(
-                    L.geoJSON(features, {
-                        pointToLayer: (_feature, latlng): L.Marker => {
-                            const marker: L.Marker<any> = L.marker(latlng, {
-                                icon: conf.OBS_MARKER_ICON(),
-                            });
-                            return marker;
-                        },
-                    })
+                    L.geoJSON(features, layerOptions)
                 );
                 break;
 
             case 'LINESTRING':
+                Object.assign(layerOptions, {
+                    style: function (_feature) {
+                        return { color: '#11aa9e' };
+                    },
+                });
                 this.dashboardMap.addLayer(
-                    L.geoJSON(features, {
-                        style: function (_feature) {
-                            return { color: '#11aa9e' };
-                        },
-                    })
+                    L.geoJSON(features, layerOptions)
                 );
                 break;
+
             case 'POLYGON':
+                Object.assign(layerOptions, {
+                    style: function (_feature) {
+                        return { color: '#11aa25' };
+                    },
+                });
                 this.dashboardMap.addLayer(
-                    L.geoJSON(features, {
-                        style: function (_feature) {
-                            return { color: '#11aa25' };
-                        },
-                    })
+                    L.geoJSON(features, layerOptions)
                 );
                 break;
         }
@@ -267,5 +278,20 @@ export class DashboardComponent implements AfterViewInit {
             [this.dashboardData.base.lat, this.dashboardData.base.lon],
             11
         );
+    }
+
+    getPopupContent(feature: Feature): string {
+        console.log(feature);
+        let content = `<div></div>`;
+        content =
+            content +
+            `<p class="dashboard-popup">${feature.properties.name} <i>par</i> ${feature.properties.obs_txt}</p>`;
+        content =
+            content +
+            `<div>
+            <a target="_blank" href=/fr/programs/${feature.properties.id_program}/sites/${feature.properties.id_site}><img class="icon" src="assets/binoculars.png"></a>
+        </div>`;
+
+        return content;
     }
 }
