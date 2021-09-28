@@ -236,38 +236,37 @@ export class DashboardComponent implements AfterViewInit {
             case 'POINT':
             default:
                 Object.assign(layerOptions, {
-                    pointToLayer: (_feature, latlng): L.Marker => {
+                    pointToLayer: (f: Feature, latlng): L.Marker => {
+                        console.log(f);
                         const marker: L.Marker<any> = L.marker(latlng, {
-                            icon: conf.OBS_MARKER_ICON(),
+                            icon: f.properties.obs_txt === 'import'
+                                ? conf.ORANGE_MARKER_ICON()
+                                : conf.OBS_MARKER_ICON(),
                         });
                         return marker;
                     },
                 });
-                this.dashboardMap.addLayer(
-                    L.geoJSON(features, layerOptions)
-                );
+                this.dashboardMap.addLayer(L.geoJSON(features, layerOptions));
                 break;
 
             case 'LINESTRING':
                 Object.assign(layerOptions, {
-                    style: function (_feature) {
-                        return { color: '#11aa9e' };
-                    },
+                    style: (f: Feature) =>
+                        f.properties.obs_txt === 'import'
+                            ? { color: '#ff6600' }
+                            : { color: '#11aa9e' }
                 });
-                this.dashboardMap.addLayer(
-                    L.geoJSON(features, layerOptions)
-                );
+                this.dashboardMap.addLayer(L.geoJSON(features, layerOptions));
                 break;
 
             case 'POLYGON':
                 Object.assign(layerOptions, {
-                    style: function (_feature) {
-                        return { color: '#11aa25' };
-                    },
+                    style: (f: Feature) =>
+                        f.properties.obs_txt === 'import'
+                            ? { color: '#ff6600' }
+                            : { color: '#11aa25' }
                 });
-                this.dashboardMap.addLayer(
-                    L.geoJSON(features, layerOptions)
-                );
+                this.dashboardMap.addLayer(L.geoJSON(features, layerOptions));
                 break;
         }
 
