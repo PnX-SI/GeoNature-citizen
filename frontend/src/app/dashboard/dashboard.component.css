@@ -64,7 +64,7 @@ div.dashboard-map-legend img {
     header, div.dashboard-print, div.dashboard-map-switch, div.dashboard-toggle-layer {
         display: none!important;
     }
-    div.dashboard-base {
+    div.dashboard-base > div {
         border: none!important;
     }
     div.dashboard-map {
