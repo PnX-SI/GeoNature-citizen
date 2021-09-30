@@ -78,7 +78,7 @@ export class DashboardComponent implements AfterViewInit {
                         this.programService.getProgramSites(p.id_program).subscribe((site) => {
 
                             const countImport = site.features.filter(
-                                (f) => f.properties.obs_txt === 'import'
+                                (f) => f.properties.obs_txt === 'import' || f.properties.obs_txt === 'géoportail wallon'
                             ).length;
 
                             this.sitePoint = site;
@@ -99,7 +99,7 @@ export class DashboardComponent implements AfterViewInit {
                         this.programService.getProgramSites(p.id_program).subscribe((site) => {
 
                             const countImport = site.features.filter(
-                                (f) => f.properties.obs_txt === 'import'
+                                (f) => f.properties.obs_txt === 'import' || f.properties.obs_txt === 'géoportail wallon'
                             ).length;
 
                             this.siteLine = site;
@@ -258,7 +258,7 @@ export class DashboardComponent implements AfterViewInit {
                     pointToLayer: (f: Feature, latlng): L.Marker => {
                         const marker: L.Marker<any> = L.marker(latlng, {
                             icon:
-                                f.properties.obs_txt === 'import'
+                                f.properties.obs_txt === 'import' || f.properties.obs_txt === 'géoportail wallon'
                                     ? conf.ORANGE_MARKER_ICON()
                                     : conf.OBS_MARKER_ICON(),
                         });
@@ -273,7 +273,7 @@ export class DashboardComponent implements AfterViewInit {
             case 'LINESTRING':
                 Object.assign(layerOptions, {
                     style: (f: Feature) =>
-                        f.properties.obs_txt === 'import'
+                        f.properties.obs_txt === 'import' || f.properties.obs_txt === 'géoportail wallon'
                             ? { color: '#ff6600' }
                             : { color: '#11aa9e' }
                 });
@@ -285,7 +285,7 @@ export class DashboardComponent implements AfterViewInit {
             case 'POLYGON':
                 Object.assign(layerOptions, {
                     style: (f: Feature) =>
-                        f.properties.obs_txt === 'import'
+                        f.properties.obs_txt === 'import' || f.properties.obs_txt === 'géoportail wallon'
                             ? { color: '#ff6600' }
                             : { color: '#11aa25' }
                 });
