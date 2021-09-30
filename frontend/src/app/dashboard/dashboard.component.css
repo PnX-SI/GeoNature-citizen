@@ -31,6 +31,12 @@ div#dashboardMap {
 
 div.largeMap {
     height: 800px!important;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.reverse {
+    flex-direction: column-reverse;
 }
 
 p.dashboard-popup {
@@ -68,11 +74,15 @@ div.dashboard-map-legend img {
         border: none!important;
     }
     div.dashboard-map {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin-top: 600px;
+        margin-bottom: 800px;
+        /* page-break-before: always; /* does not work with float, display:flex, ...
+        page-break-after: always; */
+        display: block;
     }
     div#dashboardMap {
         height: 800px;
         width: 900px;
+        margin: 0 auto;
     }
 }

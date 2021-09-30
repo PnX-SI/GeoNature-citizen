@@ -363,7 +363,10 @@ export class DashboardComponent implements AfterViewInit {
             const d = detailsTags[i];
             d.setAttribute('open', 'true');
         }
-        //this.dashboardMap.invalidateSize();
+        this.showMapLarge = true;
+        setTimeout(() => {
+            this.dashboardMap.invalidateSize();
+        }, 400);
         setTimeout(() => {
             window.print();
         }, 400);
