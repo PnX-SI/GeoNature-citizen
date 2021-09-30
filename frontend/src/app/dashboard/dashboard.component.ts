@@ -9,6 +9,7 @@ import { Program } from '../programs/programs.models';
 import { dashboardData, dashboardDataType } from '../../conf/dashboard.config';
 import { conf } from '../programs/base/map/map.component';
 import { MAP_CONFIG } from '../../conf/map.config';
+import { features } from 'process';
 
 interface ExtraFeatureCollection extends FeatureCollection {
     [key: string]: any
@@ -40,7 +41,6 @@ export class DashboardComponent implements AfterViewInit {
     showLayerLine: boolean;
     showLayerPolygon: boolean;
     dashboardMap: L.Map;
-    programMaxBounds: L.LatLngBounds;
     options: any;
     constructor(
         private router: Router,
@@ -69,6 +69,10 @@ export class DashboardComponent implements AfterViewInit {
                     if (program.features[0].properties.short_desc.includes('arbres')) {
                         this.programPoint = program;
                         console.log('this.programPoint:', this.programPoint);
+
+                        if (this.programPoint) {
+                            this.addProgramLayer(this.programPoint);
+                        }
 
                         this.programService.getProgramSites(p.id_program).subscribe((site) => {
 
@@ -225,11 +229,17 @@ export class DashboardComponent implements AfterViewInit {
                 position: this.options.BASE_LAYER_CONTROL_POSITION,
             })
             .addTo(this.dashboardMap);
-
     }
 
-    addLayerToMap(features) {
+    addProgramLayer(features: FeatureCollection): void {
+        const programLayer = L.geoJSON(features, {
+            style: (_feature) => this.options.PROGRAM_AREA_STYLE(_feature),
+        }).addTo(this.dashboardMap);
+        const programBounds = programLayer.getBounds();
+        this.dashboardMap.fitBounds(programBounds);
+    }
 
+    addLayerToMap(features: FeatureCollection): void {
         const layerOptions = {
             onEachFeature: (feature, layer) => {
                 const popupContent = this.getPopupContent(feature);
