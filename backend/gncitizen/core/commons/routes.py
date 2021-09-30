@@ -133,6 +133,8 @@ def get_stat():
         stats["nb_espece"] = ObservationModel.query.distinct(
             ObservationModel.cd_nom
         ).count()
+        stats["nb_sites"] = SiteModel.query.count()
+        stats["nb_visits"] = VisitModel.query.count()
         return (stats, 200)
     except Exception as e:
         current_app.logger.critical("[get_observations] Error: %s", str(e))

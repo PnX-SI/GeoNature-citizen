@@ -825,6 +825,22 @@
         </context-group>
         <note priority="1" from="description">Observers</note>
       </trans-unit>
+      <trans-unit id="sites" datatype="html">
+        <source>Sites</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <note priority="1" from="description">Sites</note>
+      </trans-unit>
+      <trans-unit id="visits" datatype="html">
+        <source>Visites</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <note priority="1" from="description">Visites</note>
+      </trans-unit>
       <trans-unit id="momenPrograms" datatype="html">
         <source>Les programmes du moment</source>
         <context-group purpose="location">

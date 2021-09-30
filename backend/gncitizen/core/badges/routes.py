@@ -1,6 +1,7 @@
 from flask import Flask, request, Blueprint, Response, jsonify, current_app
 from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.core.observations.models import ObservationModel
+from gncitizen.core.sites.models import SiteModel, VisitModel
 from gncitizen.core.commons.models import ProgramsModel
 from gncitizen.core.users.models import UserModel
 from gncitizen.core.taxonomy.models import Taxref
@@ -171,6 +172,8 @@ def get_stat():
         stats["nb_espece"] = ObservationModel.query.distinct(
             ObservationModel.cd_nom
         ).count()
+        stats["nb_sites"] = SiteModel.query.count()
+        stats["nb_visits"] = VisitModel.query.count()
         return (stats, 200)
     except Exception as e:
         current_app.logger.critical("[get_observations] Error: %s", str(e))
