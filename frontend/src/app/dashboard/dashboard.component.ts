@@ -40,6 +40,7 @@ export class DashboardComponent implements AfterViewInit {
     showLayerPoint: boolean;
     showLayerLine: boolean;
     showLayerPolygon: boolean;
+    showMapLarge: boolean;
     dashboardMap: L.Map;
     options: any;
     constructor(
@@ -229,6 +230,8 @@ export class DashboardComponent implements AfterViewInit {
                 position: this.options.BASE_LAYER_CONTROL_POSITION,
             })
             .addTo(this.dashboardMap);
+
+        this.showMapLarge = false;
     }
 
     addProgramLayer(features: FeatureCollection): void {
@@ -312,7 +315,7 @@ export class DashboardComponent implements AfterViewInit {
         return content;
     }
 
-    togglePointLayer() {
+    togglePointLayer(): void {
         if (this.showLayerPoint) {
             this.dashboardMap.removeLayer(this.layerPoint);
             this.showLayerPoint = false;
@@ -322,7 +325,7 @@ export class DashboardComponent implements AfterViewInit {
         }
     }
 
-    toggleLineLayer() {
+    toggleLineLayer(): void {
         if (this.showLayerLine) {
             this.dashboardMap.removeLayer(this.layerLine);
             this.showLayerLine = false;
@@ -332,13 +335,24 @@ export class DashboardComponent implements AfterViewInit {
         }
     }
 
-    togglePolygonLayer() {
+    togglePolygonLayer(): void {
         if (this.showLayerPolygon) {
             this.dashboardMap.removeLayer(this.layerPolygon);
             this.showLayerPolygon = false;
         } else {
             this.dashboardMap.addLayer(this.layerPolygon);
             this.showLayerPolygon = true;
+        }
+    }
+
+    toggleMapLarge(): void {
+        setTimeout(() => {
+            this.dashboardMap.invalidateSize();
+        }, 400);
+        if (this.showMapLarge) {
+            this.showMapLarge = false;
+        } else {
+            this.showMapLarge = true;
         }
     }
 }

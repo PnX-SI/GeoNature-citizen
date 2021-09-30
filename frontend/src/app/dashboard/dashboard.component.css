@@ -2,6 +2,10 @@ table.dashboard-table {
     font-size: 0.85em;
 }
 
+div.dashboard-section {
+    margin-bottom: 16px;
+}
+
 div.dashboard-program {
     padding: 5px;
 }
@@ -13,9 +17,36 @@ div.dashboard-program-header {
 
 div#dashboardMap {
     height: 100%;
-    min-height: 450px;
+    min-height: 500px;
+}
+
+div.largeMap {
+    height: 800px!important;
 }
 
 p.dashboard-popup {
     padding: 10px;
+}
+
+div.dashboard-map-switch {
+    position: absolute;
+    top: 5px;
+    left: 20px;
+    z-index: 500;
+}
+
+div.dashboard-map-legend {
+    position: absolute;
+    bottom: 40px;
+    left: 20px;
+    font-size: 0.9em;
+    z-index: 500;
+    background-color: white;
+    border-radius: 4px;
+    padding: 6px;
+    border: 2px solid rgba(0,0,0,.2);
+}
+
+div.dashboard-map-legend img {
+    height: 22px;
 }

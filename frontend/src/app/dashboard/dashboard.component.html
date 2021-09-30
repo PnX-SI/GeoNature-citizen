@@ -6,7 +6,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-12 dashboard-section">
             <h2>Données de base</h2>
             <div class="row dashboard-base">
                 <div class="col-lg-4 border-right">Superficie: <span>{{ dashboardData?.base.area }}</span> km²</div>
@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <div class="col-lg-12">
+        <div class="col-lg-12 dashboard-section">
             <h2>Occupation du sol</h2>
             <div class="row dashboard-occsol">
                 <div class="dashboard-occsol-occsol col-lg-6">
@@ -49,7 +49,7 @@
         <div class="col-lg-12">
             <div class="row">
 
-                <div class="col-lg-6">
+                <div *ngIf=!showMapLarge class="col-lg-6">
 
                     <div class="dashboard-program border" *ngIf="programPoint">
                         <div class="dashboard-program-header">
@@ -67,7 +67,7 @@
                         </div>
                         <div *ngIf="sitePoint">
                             <div class="">{{ sitePoint.count }} arbres répertoriés</div>
-                            <div class="">dont {{ sitePoint.countImport }} arbres importés <span><img src="assets/pointer-orange.png"></span></div>
+                            <div class="">dont {{ sitePoint.countImport }} arbres importés</div>
                             <div class="">{{ sitePoint.especesTable.length }} espèces différentes</div>
                             <div>
                                 <details>
@@ -177,8 +177,22 @@
 
                 </div>
 
-                <div class="col-lg-6">
-                    <div class="col-lg-12" id="dashboardMap"></div>
+                <div [ngClass]="{'col-lg-12': showMapLarge, 'col-lg-6': !showMapLarge}" >
+                    <div class="col-lg-12" id="dashboardMap" [ngClass]="{'largeMap': showMapLarge}"></div>
+                    <div class="dashboard-map-switch">
+                        <button
+                            type="button"
+                            class="btn btn-light mr-4 float-right"
+                            (click)="toggleMapLarge()"
+                        >
+                        <i *ngIf="showMapLarge else elseBlockMap" class="fa fa-arrow-right"></i>
+                        <ng-template #elseBlockMap><i class="fa fa-arrow-left"></i></ng-template>
+                        </button>
+                    </div>
+                    <div class="dashboard-map-legend">
+                        <div>Relevé <span><img src="assets/pointer-green.png"></span></div>
+                        <div>Import <span><img src="assets/pointer-orange.png"></span></div>
+                    </div>
                 </div>
             </div>
         </div>
