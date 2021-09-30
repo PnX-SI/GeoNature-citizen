@@ -1,3 +1,7 @@
+body {
+    overscroll-behavior: none;
+}
+
 .router-app {
     height: 100%;
 }
