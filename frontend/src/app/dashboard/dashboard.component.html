@@ -1,7 +1,16 @@
 <div class="container">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-12 dashboard-header">
             <h1 >{{ dashboardData?.base.name }}</h1>
+            <div class='dashboard-print'>
+                <button
+                    type="button"
+                    class="btn btn-light mr-4 float-right"
+                    (click)="print()"
+                >
+                <i class="fa fa-print"></i>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -54,7 +63,7 @@
                     <div class="dashboard-program border" *ngIf="programPoint">
                         <div class="dashboard-program-header">
                             <h3>{{programPoint.features[0].properties.title}}</h3>
-                            <div>
+                            <div class="dashboard-toggle-layer">
                                 <button
                                     type="button"
                                     class="btn btn-light mr-4 float-right"
@@ -100,7 +109,7 @@
                     <div class="dashboard-program border" *ngIf="programLine">
                         <div class="dashboard-program-header">
                             <h3>{{programLine.features[0].properties.title}}</h3>
-                            <div>
+                            <div class="dashboard-toggle-layer">
                                 <button
                                     type="button"
                                     class="btn btn-light mr-4 float-right"
@@ -147,7 +156,7 @@
                     <div class="dashboard-program border" *ngIf="programPolygon">
                         <div class="dashboard-program-header">
                             <h3>{{programPolygon.features[0].properties.title}}</h3>
-                            <div *ngIf="sitePolygon">
+                            <div class="dashboard-toggle-layer">
                                 <button
                                     type="button"
                                     class="btn btn-light mr-4 float-right"
@@ -177,7 +186,7 @@
 
                 </div>
 
-                <div [ngClass]="{'col-lg-12': showMapLarge, 'col-lg-6': !showMapLarge}" >
+                <div [ngClass]="{'col-lg-12': showMapLarge, 'col-lg-6': !showMapLarge}" class="dashboard-map" >
                     <div class="col-lg-12" id="dashboardMap" [ngClass]="{'largeMap': showMapLarge}"></div>
                     <div class="dashboard-map-switch">
                         <button

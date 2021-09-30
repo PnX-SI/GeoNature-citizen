@@ -355,4 +355,17 @@ export class DashboardComponent implements AfterViewInit {
             this.showMapLarge = true;
         }
     }
+
+    print(): void {
+        // open all the details html tag
+        const detailsTags = document.querySelectorAll('details');
+        for (let i = 0; i < detailsTags.length; i++) {
+            const d = detailsTags[i];
+            d.setAttribute('open', 'true');
+        }
+        //this.dashboardMap.invalidateSize();
+        setTimeout(() => {
+            window.print();
+        }, 400);
+    }
 }

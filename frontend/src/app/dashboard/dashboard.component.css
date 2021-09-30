@@ -2,6 +2,15 @@ table.dashboard-table {
     font-size: 0.85em;
 }
 
+div.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+div.dashboard-header > div {
+    margin-top: 10px;
+}
+
 div.dashboard-section {
     margin-bottom: 16px;
 }
@@ -49,4 +58,21 @@ div.dashboard-map-legend {
 
 div.dashboard-map-legend img {
     height: 22px;
+}
+
+@media print {
+    header, div.dashboard-print, div.dashboard-map-switch, div.dashboard-toggle-layer {
+        display: none!important;
+    }
+    div.dashboard-base {
+        border: none!important;
+    }
+    div.dashboard-map {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    div#dashboardMap {
+        height: 800px;
+        width: 900px;
+    }
 }
