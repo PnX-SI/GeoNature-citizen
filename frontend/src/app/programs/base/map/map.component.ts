@@ -199,9 +199,10 @@ export abstract class BaseMapComponent implements OnChanges {
                         : 'Me géolocaliser',
                 },
                 getLocationBounds: (locationEvent) =>
-                    locationEvent.bounds.extend(this.programMaxBounds),
+                    this.observationMap.panTo(locationEvent.latlng),
                 locateOptions: {
                     enableHighAccuracy: this.options.GEOLOCATION_HIGH_ACCURACY,
+                    keepCurrentZoomLevel: true,
                 },
             } as any)
             .addTo(this.observationMap);
