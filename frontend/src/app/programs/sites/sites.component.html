@@ -15,7 +15,7 @@
             >
                 <button
                     type="button"
-                    class="btn btn-success mr-4 float-right"
+                    class="d-none d-sm-block btn btn-success mr-4 float-right"
                     add-obs
                     (click)="addSiteClicked()"
                     *ngIf="!userDashboard"
@@ -54,9 +54,14 @@
         <button
             type="button"
             class="btn btn-success mr-4 float-right"
-            (click)="toTop()"
-            >
-            Retour au sommet
+            add-obs
+            (click)="addSiteClicked()"
+            *ngIf="!userDashboard"
+            [ngbTooltip]="tooltipAddButton"
+            placement="bottom"
+            [disabled]="!canAddSite"
+        >
+            Ajouter
         </button>
     </div>
 </div>
