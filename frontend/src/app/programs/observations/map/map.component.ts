@@ -65,7 +65,7 @@ export class ObsMapComponent extends BaseMapComponent {
                         ? appConfig.API_TAXHUB +
                           '/tmedias/thumbnail/' +
                           data.medias[0].id_media +
-                          '?h=80&v=80'
+                          '?h=80'
                         : 'assets/default_image.png'
                 "
             />

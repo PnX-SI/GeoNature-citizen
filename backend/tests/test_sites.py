@@ -1,8 +1,7 @@
 import json
 import unittest
 
-from tests.common import postrequest, getrequest
-
+from tests.common import getrequest, postrequest
 
 CREATE_SITE_BODY = {
     "id_program": 2,
@@ -43,7 +42,9 @@ class SitesTestCase(unittest.TestCase):
         response = postrequest("sites/", json.dumps(body))
         self.assertEqual(response.status_code, 400)
         data = response.json()
-        self.assertIn("invalid input value for enum sitetype", data["error_message"])
+        self.assertIn(
+            "invalid input value for enum sitetype", data["error_message"]
+        )
 
         # Success for mare
         body["site_type"] = "mare"
@@ -73,7 +74,8 @@ class VisitsTestCase(unittest.TestCase):
 
     def create_visit(self):
         response = postrequest(
-            "sites/{}/visits".format(self.site_id), json.dumps(self.create_visit_body)
+            "sites/{}/visits".format(self.site_id),
+            json.dumps(self.create_visit_body),
         )
         self.assertEqual(response.status_code, 200)
         data = response.json()
@@ -89,12 +91,12 @@ class VisitsTestCase(unittest.TestCase):
 
         self.assertNotEqual(visit1["id_visit"], visit2["id_visit"])
 
-        # Query site and check last_visit
+        # Query site and check visits
         response = getrequest("sites/{}".format(self.site_id))
         self.assertEqual(response.status_code, 200)
         data = response.json()
         site = data["features"][0]["properties"]
-        self.assertEqual(site["last_visit"]["id_visit"], visit2["id_visit"])
+        self.assertEqual(site["visits"][-1]["id_visit"], visit2["id_visit"])
 
     def get_photos(self):
         resp = getrequest("sites/{}".format(self.site_id))
@@ -107,7 +109,9 @@ class VisitsTestCase(unittest.TestCase):
 
         # post a photo
         response = postrequest(
-            "sites/{}/visits/{}/photos".format(self.site_id, self.visit["id_visit"]),
+            "sites/{}/visits/{}/photos".format(
+                self.site_id, self.visit["id_visit"]
+            ),
             None,
             file="../frontend/src/assets/Azure-Commun-019.JPG",
         )

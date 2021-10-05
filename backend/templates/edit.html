@@ -3,4 +3,8 @@
 {% block tail %} 
     {{ super() }} 
     {{ ckeditor.load() }} 
+
+    <script>
+		CKEDITOR.config.allowedContent = true
+	</script>
 {% endblock %}

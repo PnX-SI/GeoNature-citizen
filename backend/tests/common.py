@@ -1,10 +1,11 @@
 import json
-import requests
-
-from gncitizen.utils.env import load_config
 
 # disable loud logs from urllib3
 import logging
+
+import requests
+
+from gncitizen.utils.env import load_config
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
@@ -72,7 +73,9 @@ def postrequest(url, params=None, file=None):
     files = None
     if file is not None:
         files = {"file": open(file, "rb")}
-        del h["Content-Type"]  # let requests set proper Content-Type with boundaries
+        del h[
+            "Content-Type"
+        ]  # let requests set proper Content-Type with boundaries
     response = requests.post(myUrl, headers=h, data=params, files=files)
     return response
 
