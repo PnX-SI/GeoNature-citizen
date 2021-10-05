@@ -23,7 +23,11 @@ from gncitizen.core.observations.models import ObservationModel
 from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import admin_required, get_user_if_exists
-from gncitizen.utils.mail_check import confirm_token, confirm_user_email
+from gncitizen.utils.mail_check import (
+    confirm_token,
+    confirm_user_email,
+    send_user_email,
+)
 from server import db
 
 from .models import RevokedTokenModel, UserModel
@@ -174,7 +178,7 @@ def registration():
         try:
             if (
                 current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"]
-                == False
+                is False
             ):
                 message = (
                     """Félicitations, l'utilisateur "{}" a été créé.""".format(
@@ -184,7 +188,8 @@ def registration():
                 confirm_user_email(newuser, with_confirm_link=False)
             else:
                 message = (
-                    """Félicitations, l'utilisateur "{}" a été créé.  \r\n Vous allez recevoir un email pour activer votre compte """.format(
+                    """Félicitations, l'utilisateur "{}" a été créé.  \r\n
+                    Vous allez recevoir un email pour activer votre compte """.format(
                         newuser.username
                     ),
                 )
@@ -543,46 +548,19 @@ def reset_user_password():
     passwd = uuid.uuid4().hex[0:6]
     passwd_hash = UserModel.generate_hash(passwd)
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = current_app.config["RESET_PASSWD"]["SUBJECT"]
-    msg["From"] = current_app.config["RESET_PASSWD"]["FROM"]
-    msg["To"] = user.email
-
-    # Record the MIME types of both parts - text/plain and text/html.
-    part1 = MIMEText(
-        current_app.config["RESET_PASSWD"]["TEXT_TEMPLATE"].format(
-            passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
-        ),
-        "plain",
+    subject = current_app.config["RESET_PASSWD"]["SUBJECT"]
+    to = user.email
+    plain_message = current_app.config["RESET_PASSWD"]["TEXT_TEMPLATE"].format(
+        passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
     )
-    part2 = MIMEText(
-        current_app.config["RESET_PASSWD"]["HTML_TEMPLATE"].format(
-            passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
-        ),
-        "html",
+    html_message = current_app.config["RESET_PASSWD"]["HTML_TEMPLATE"].format(
+        passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
     )
-
-    # Attach parts into message container.
-    # According to RFC 2046, the last part of a multipart message, in this case
-    # the HTML message, is best and preferred.
-    msg.attach(part1)
-    msg.attach(part2)
 
     try:
-        with smtplib.SMTP_SSL(
-            current_app.config["MAIL"]["MAIL_HOST"],
-            int(current_app.config["MAIL"]["MAIL_PORT"]),
-        ) as server:
-            server.login(
-                str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
-                str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
-            )
-            server.sendmail(
-                current_app.config["MAIL"]["MAIL_AUTH_LOGIN"],
-                user.email,
-                msg.as_string(),
-            )
-            server.quit()
+        send_user_email(
+            subject, to, plain_message=plain_message, html_message=html_message
+        )
         user.password = passwd_hash
         db.session.commit()
         return (
