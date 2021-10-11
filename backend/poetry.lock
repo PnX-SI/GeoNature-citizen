@@ -219,6 +219,17 @@ aws = ["boto"]
 azure = ["azure-storage-blob"]
 
 [[package]]
+name = "flask-caching"
+version = "1.10.1"
+description = "Adds caching support to your Flask application"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+Flask = "*"
+
+[[package]]
 name = "flask-ckeditor"
 version = "0.4.6"
 description = "CKEditor integration for Flask."
@@ -788,7 +799,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "7cdb4d554b227de858e72b8072e0233df11084a41184caacbe5a5849453a45b5"
+content-hash = "3c5314ffa578472ce46f0aca7dc2a93180f53c26cace58ef09f529351caf59ec"
 
 [metadata.files]
 appdirs = [
@@ -858,6 +869,10 @@ flask = [
 ]
 flask-admin = [
     {file = "Flask-Admin-1.5.8.tar.gz", hash = "sha256:eb06a1f31b98881dee53a55c64faebd1990d6aac38826364b280df0b2679ff74"},
+]
+flask-caching = [
+    {file = "Flask-Caching-1.10.1.tar.gz", hash = "sha256:cf19b722fcebc2ba03e4ae7c55b532ed53f0cbf683ce36fafe5e881789a01c00"},
+    {file = "Flask_Caching-1.10.1-py3-none-any.whl", hash = "sha256:bcda8acbc7508e31e50f63e9b1ab83185b446f6b6318bd9dd1d45626fba2e903"},
 ]
 flask-ckeditor = [
     {file = "Flask-CKEditor-0.4.6.tar.gz", hash = "sha256:4b6aa0e831616b86c8c393cb1e5dcae8f62c66c16ef4316071dc7ccf77d4c9a1"},

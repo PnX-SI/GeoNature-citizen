@@ -20,12 +20,12 @@ sudo apt -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libns
 sudo apt -y install apache2 python-dev libpq-dev libgeos-dev supervisor unzip virtualenv libcurl4-openssl-dev libssl-dev
 sudo apt -y install build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev
 
-RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME |cut -d "=" -f2)
+RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d "=" -f2)
 sudo apt install python3 python3-dev python3-pip -y
 
 sudo apt-get clean
 
-echo `python3 --version`
+echo $(python3 --version)
 
 sudo service supervisor start && sudo supervisorctl stop all
 #Maj  de pip
@@ -41,7 +41,7 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 
 cd ${DIR}/frontend
 nvm install
-echo `npm -v`
+echo $(npm -v)
 cd ${DIR}
 
 #Installation de taxhub
@@ -53,6 +53,10 @@ cd ${DIR}
 #adduser synthese www-data
 #fi
 cd $HOME
+echo "export PATH=\$PATH:~/.local/bin" >>~/.bashrc
+
+exec $SHELL
+
 python3 -m pip install poetry --user
 
 sudo a2enmod rewrite proxy proxy_http
@@ -173,7 +177,7 @@ fi
 
 #Install and build
 NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
-URL=`echo $my_url |sed 's/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/'`
+URL=$(echo $my_url | sed 's/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/')
 echo "L'application sera disponible à l'url $my_url"
 
 nvm use
@@ -182,24 +186,27 @@ npm install
 if [ $server_side = "true" ]; then
   echo "Build server side project"
   npm run build:i18n-ssr
-#  Installation de la conf
+  #  Installation de la conf
   sudo cp ../install/supervisor/gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
   if [ ${backoffice_password:=MotDePasseAChanger} = MotDePasseAChanger ]; then
-    backoffice_password=$(date +%s | sha256sum | base64 | head -c 30 ; echo)
+    backoffice_password=$(
+      date +%s | sha256sum | base64 | head -c 30
+      echo
+    )
   fi
   echo "Backoffice password
 ===================
 url: (${URL}/api/admin)
 username: ${backoffice_username:=citizen}
-password: ${backoffice_password}" > ${DIR}/config/backoffice_access
+password: ${backoffice_password}" >${DIR}/config/backoffice_access
   htpasswd -b -c ${DIR}/config/backoffice_htpasswd ${backoffice_username} ${backoffice_password}
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-available/gncitizen.conf
-  
+
 else
   echo "Build initial du projet"
   npm run build
@@ -213,7 +220,7 @@ cd ..
 # fi
 cd $DIR/backend
 poetry install
-cd $DIR 
+cd $DIR
 
 # Copy main medias to media
 mkdir -p $DIR/media

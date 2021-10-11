@@ -26,6 +26,7 @@ Commencez par installer les paquets suivants :
 ::
 
   su # vous aurez besoin du mot de passe de l'utilisateur root
+  apt update
   apt install sudo git python3 python3-pip python3-venv curl unzip -y
 
 Créer un utilisateur pour l'installation

@@ -11,7 +11,6 @@ from gncitizen.core.commons.models import (
     TimestampMixinModel,
 )
 from gncitizen.core.ref_geo.models import LAreas
-from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import ObserverMixinModel
 from server import db
 

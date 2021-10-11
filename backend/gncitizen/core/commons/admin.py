@@ -9,39 +9,40 @@ from flask_ckeditor import CKEditorField
 from wtforms import SelectField
 
 from gncitizen.core.sites.models import CorProgramSiteTypeModel
-from gncitizen.core.taxonomy.models import BibListes
+
+# from gncitizen.core.taxonomy.models import BibListes
 from gncitizen.utils.admin import (
     CustomJSONField,
     CustomTileView,
     json_formatter,
 )
-from gncitizen.utils.env import MEDIA_DIR
+from gncitizen.utils.env import MEDIA_DIR, taxhub_lists_url
 
 logger = current_app.logger
 
 
 def taxonomy_lists():
     taxonomy_lists = []
-    if current_app.config.get("API_TAXHUB") is None:
-        biblistes = BibListes.query.all()
-        for tlist in biblistes:
-            l = (tlist.id_liste, tlist.nom_liste)
-            taxonomy_lists.append(l)
-    else:
-        from gncitizen.utils.env import taxhub_lists_url
+    # if current_app.config.get("API_TAXHUB") is None:
+    #     biblistes = BibListes.query.all()
+    #     for tlist in biblistes:
+    #         l = (tlist.id_liste, tlist.nom_liste)
+    #         taxonomy_lists.append(l)
+    # else:
 
-        rtlists = requests.get(taxhub_lists_url)
-        # current_app.logger.warning(rtlists)
-        if rtlists.status_code == 200:
-            try:
-                tlists = rtlists.json()["data"]
-                # current_app.logger.debug(tlists)
-                for tlist in tlists:
-                    l = (tlist["id_liste"], tlist["nom_liste"])
-                    taxonomy_lists.append(l)
-            except Exception as e:
-                current_app.logger.critical(str(e))
-    # current_app.logger.debug(taxonomy_lists)
+    taxa_lists = requests.get(taxhub_lists_url)
+    logger.debug(taxa_lists)
+    if taxa_lists.status_code == 200:
+        try:
+            taxa_lists = taxa_lists.json()["data"]
+            logger.debug(tlists)
+            for taxa_list in taxa_lists:
+                taxonomy_lists.append(
+                    (taxa_list["id_liste"], taxa_list["nom_liste"])
+                )
+        except Exception as e:
+            logger.critical(str(e))
+    logger.debug(taxonomy_lists)
     return taxonomy_lists
 
 
