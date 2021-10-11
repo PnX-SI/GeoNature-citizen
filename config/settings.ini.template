@@ -11,7 +11,8 @@ api_endpoint=http://mydomain.net/api        # Url for the geonature api don't fo
 api_port=5002
 api_taxhub=http://mydomain.net/taxhub/api/             # Url for the taxhub api
 
-install_taxhub=1
+# Choix installation de taxhub
+install_taxhub=true
 taxhub_version=1.7.3
 
 # Configuration front
