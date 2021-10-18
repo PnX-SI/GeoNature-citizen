@@ -36,4 +36,8 @@ export class MapService {
     changePolygon(polygon: L.Polygon): void {
         this.polygonChange.next(polygon);
     }
+
+    // updOpacity(name:string, opacity: number): void{
+    //     console.log(name)
+    // }
 }
