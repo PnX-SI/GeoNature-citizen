@@ -9,7 +9,7 @@ import {
     ViewEncapsulation,
     Inject,
     LOCALE_ID,
-    ElementRef,
+    Renderer2,
 } from '@angular/core';
 import { BaseMapComponent } from '../../base/map/map.component';
 import { MapService } from '../../base/map/map.service';
@@ -35,9 +35,9 @@ export class SitesMapComponent extends BaseMapComponent {
         resolver: ComponentFactoryResolver,
         injector: Injector,
         mapService: MapService,
-        elementRef: ElementRef,
+        renderer2: Renderer2
     ) {
-        super(resolver, injector, mapService, elementRef);
+        super(resolver, injector, mapService, renderer2);
     }
 
     getPopupComponentFactory(): any {

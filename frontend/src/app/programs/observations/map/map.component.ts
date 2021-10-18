@@ -10,6 +10,7 @@ import {
     ViewEncapsulation,
     Inject,
     LOCALE_ID,
+    Renderer2,
 } from '@angular/core';
 import { BaseMapComponent, conf } from '../../base/map/map.component';
 import { MapService } from '../../base/map/map.service';
@@ -37,9 +38,10 @@ export class ObsMapComponent extends BaseMapComponent {
         @Inject(LOCALE_ID) readonly localeId: string,
         resolver: ComponentFactoryResolver,
         injector: Injector,
-        mapService: MapService
+        mapService: MapService,
+        renderer2: Renderer2
     ) {
-        super(resolver, injector, mapService);
+        super(resolver, injector, mapService, renderer2);
     }
 
     getPopupComponentFactory(): any {

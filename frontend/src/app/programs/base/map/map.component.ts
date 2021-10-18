@@ -9,9 +9,9 @@ import {
     Input,
     OnChanges,
     Output,
+    Renderer2,
     SimpleChanges,
     ViewChild,
-    HostListener,
 } from '@angular/core';
 import { Feature, FeatureCollection, Point, Position } from 'geojson';
 import { MAP_CONFIG } from '../../../../conf/map.config';
@@ -21,17 +21,10 @@ import 'leaflet.locatecontrol';
 import 'leaflet-gesture-handling';
 import { MapService } from './map.service';
 
-// const slider =
-//     `<input id="slide" type="range" min="0" max="1" step="0.1" value="0" onchange="this.updateOpacity('foo', this.value)">`;
-
-const makeSlider = (layerName: string): string =>
-    `<input id="slide" type="range" min="0" max="1" step="0.1" value="0" onchange="this.updateOpacity(${layerName}, this.value)">`;
-
-
 export const conf = {
     MAP_ID: 'obsMap',
     GEOLOCATION_HIGH_ACCURACY: false,
-    BASE_LAYERS: MAP_CONFIG['BASEMAPS'].reduce((acc, baseLayer: Object) => {
+    BASE_LAYERS: MAP_CONFIG['BASEMAPS'].reduce((acc, baseLayer: Object, i) => {
         const layerConf: any = {
             name: baseLayer['name'],
             attribution: baseLayer['attribution'],
@@ -40,16 +33,14 @@ export const conf = {
             bounds: baseLayer['bounds'],
             apiKey: baseLayer['apiKey'],
             layerName: baseLayer['layerName'],
-            layers: baseLayer['layers'],
+            layers: baseLayer['layers'],//TODO put an id
+            id: i,
         };
         if (baseLayer['subdomains']) {
             layerConf.subdomains = baseLayer['subdomains'];
         }
         if (baseLayer['wms']) {
-            // const legendName = `${baseLayer['name']} - ${slider}`;
-            // const legendName = `${baseLayer['name']} - ${makeSlider(baseLayer['name'])}`;
-            const legendName = baseLayer['name'];
-            acc[legendName] = L.tileLayer.wms(baseLayer['layer'], layerConf);
+            acc[baseLayer['name']] = L.tileLayer.wms(baseLayer['layer'], layerConf);
         } else {
             acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
         }
@@ -115,18 +106,6 @@ export const conf = {
     },
 };
 
-export const updateOpacity = (e): void => {
-    console.log(e);
-    //console.log(opacity);
-    //TODO find the layer and setOpacity
-    // this.observationMap.eachLayer((l) => {
-    //     console.log(l);
-    //     // if (l.name === layerName) { 
-    //     //     l.setOpacity(opacity);
-    //     // }
-    // });
-}
-
 export abstract class BaseMapComponent implements OnChanges {
     @ViewChild('map', { static: true }) map: ElementRef;
     @Input('features') features: FeatureCollection;
@@ -151,6 +130,7 @@ export abstract class BaseMapComponent implements OnChanges {
     injector: Injector;
     mapService: MapService;
     elementRef: ElementRef;
+    renderer2: Renderer2;
     abstract localeId: string;
     abstract feature_id_key: string;
     abstract getPopupComponentFactory(): any;
@@ -159,12 +139,12 @@ export abstract class BaseMapComponent implements OnChanges {
         resolver: ComponentFactoryResolver,
         injector: Injector,
         mapService: MapService,
-        elementRef: ElementRef,
+        renderer2: Renderer2
     ) {
         this.resolver = resolver;
         this.injector = injector;
         this.mapService = mapService;
-        this.elementRef = elementRef;
+        this.renderer2 = renderer2;
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -191,32 +171,20 @@ export abstract class BaseMapComponent implements OnChanges {
         }
     }
 
-    makeSlider(layerName: string): string {
-        const updateOpacity = (layerName: string, opacity: number): void => {
-            console.log(layerName);
-            console.log(opacity);
-            //TODO find the layer and setOpacity
-            this.observationMap.eachLayer((l) => {
-                console.log(l);
-                // if (l.name === layerName) { 
-                //     l.setOpacity(opacity);
-                // }
-            });
-        }
-        //return `<input id="slide" type="range" min="0" max="1" step="0.1" value="0" onchange="updateOpacity('${layerName}', this.value)">`;
-        //return `<input id="${layerName}" type="range" min="0" max="1" step="0.1" value="0">`;
-        //return `<input id="9999" type="range" min="0" max="1" step="0.1" value="0">`;
-        return `<input id="slide" type="range" min="0" max="1" step="0.1" value="0" onchange="updateOpacity">`;
+    makeSlider(layerId: string): string {
+        return `<input data-slider=true id="${layerId}" type="range" min="0" max="1" step="0.1" value="1">`;
     }
 
-    prepareOverlays(options: any): L.LayerGroup {
+    prepareOverlays(options: any): L.Control.LayersObject {
         const overlays = {};
+        console.log('baselayers: ', options.BASE_LAYERS);
+        console.log('default: ', options.DEFAULT_BASE_MAP());
         for (let l in options.BASE_LAYERS) {
-            const overlayName = `${l} --- ${this.makeSlider(l)}`;
-            overlays[overlayName] = options.BASE_LAYERS[l];
+            if (l !== options.DEFAULT_BASE_MAP().options.name) {
+                const overlayName = `${l} ${this.makeSlider(options.BASE_LAYERS[l].options.id)}`;
+                overlays[overlayName] = options.BASE_LAYERS[l];
+            }
         }
-        console.log(overlays);
-
         return overlays;
     }
 
@@ -237,10 +205,6 @@ export abstract class BaseMapComponent implements OnChanges {
             .scale({ position: this.options.SCALE_CONTROL_POSITION })
             .addTo(this.observationMap);
 
-        console.log(this.options.DEFAULT_BASE_MAP());
-        console.log(this.options.BASE_LAYERS);
-
-        //const overlays = this.options.BASE_LAYERS;
         const overlays = this.prepareOverlays(this.options);
 
         L.control
@@ -250,29 +214,11 @@ export abstract class BaseMapComponent implements OnChanges {
             })
             .addTo(this.observationMap);
 
-        const truc = this.elementRef.nativeElement.querySelector('input [type="range"]');
-        console.log('truc', truc)
-        if (truc) {
-            truc.addEventListener('click', console.log('change!'));
-        }
-
-        const truc2 = document.querySelector('input [type="range"]');
-        console.log('truc2', truc2)
-
-        // const slider = document.getElementById('Hydrographie').addEventListener('click', (e) => {
-        //     console.log(e);
-        //     this.updateOpacity(e);
-        // });
-        // console.log(slider);
-        // if (slider) {
-        //     slider.addEventListener('click', (e) => {
-        //         console.log(e);
-        //         this.updateOpacity(e);
-        //     });
-        // }
-
-        document.addEventListener('keyup', function() {
-            console.log('keys pressed');
+        this.renderer2.listen('document', 'click', (e) => {
+            const target = e.target;
+            if (target.getAttribute('data-slider')) {
+                this.updateOpacity(Number(target.getAttribute('id')), target.value);
+            }
         });
 
         L.control
@@ -495,7 +441,6 @@ export abstract class BaseMapComponent implements OnChanges {
                 this.observationMap.setZoom(Math.min(this.observationMap.getZoom(), 17)); // limit zoom (eg single feature)
             }
         }
-        this.initSliders();
     }
 
     loadFeatures(): void {
@@ -629,32 +574,12 @@ export abstract class BaseMapComponent implements OnChanges {
         return distancePixel < SNAP_DISTANCE;
     }
 
-    updateOpacity(e): void {
-        console.log(e);
-        //console.log(opacity);
-        //TODO find the layer and setOpacity
-        // this.observationMap.eachLayer((l) => {
-        //     console.log(l);
-        //     // if (l.name === layerName) { 
-        //     //     l.setOpacity(opacity);
-        //     // }
-        // });
-    }
-
-    initSliders(): void {
-        window.addEventListener('DOMContentLoaded', (event) => {
-            console.log('DOM fully loaded and parsed');
-            const updateOpacity = (layerName: string, opacity: number): void => {
-                console.log(layerName);
-                console.log(opacity);
-                //TODO find the layer and setOpacity
-                this.observationMap.eachLayer((l) => {
-                    console.log(l);
-                    // if (l.name === layerName) { 
-                    //     l.setOpacity(opacity);
-                    // }
-                });
+    updateOpacity(layerId: number, opacity: number): void {
+        this.observationMap.eachLayer((l: L.TileLayer) => {
+            if (this.observationMap.hasLayer(l) && Number(l.options.id) === layerId) {
+                l.setOpacity(opacity);
             }
         });
     }
+
 }
