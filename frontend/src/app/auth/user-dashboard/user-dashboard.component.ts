@@ -45,7 +45,7 @@ export class UserDashboardComponent implements OnInit {
     newAvatar: string | ArrayBuffer;
     idObsToDelete: number;
     idSiteToDelete: number;
-    tab = 'observations';
+    tab = 'sites';
 
     constructor(
         private auth: AuthService,
@@ -129,6 +129,7 @@ export class UserDashboardComponent implements OnInit {
             if (data.length > 1) {
                 this.myobs = data[0];
                 this.mysites = data[1];
+                this.tab = this.mysites.features.length > this.myobs.features.length ? 'sites' : 'observations';
                 if (AppConfig['REWARDS']) {
                     console.log('data3', data[2]);
                     this.badges = data[2];
