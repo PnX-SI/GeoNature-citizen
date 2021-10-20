@@ -186,7 +186,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         const visitDate = NgbDate.from(this.visitForm.controls.date.value);
         this.visitForm.patchValue({
             data: this.getTotalJsonData(),
-            date: new Date(visitDate.year, visitDate.month, visitDate.day)
+            date: new Date(visitDate.year, visitDate.month - 1, visitDate.day, 12)
                 .toISOString()
                 .match(/\d{4}-\d{2}-\d{2}/)[0],
         });
