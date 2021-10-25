@@ -208,6 +208,43 @@
 
     </div>
 
+    <div class="col-lg-12 dashboard-section">
+        <h2>Biomasse</h2>
+        <div class="row dashboard-biomasse">
+            <div class="dashboard-biomasse-method-1 col-lg-6">
+                <h3>Méthode "GAL Tiges & Chavées"</h3>
+                <table class="dashboard-table table table-striped">
+                    <tr>
+                        <td>Potentiel théorique estimé des superficies agricoles</td>
+                        <td>{{ dashboardData?.biomasse.agri_area * 1 }} MWh</td>
+                    </tr>
+                    <tr>
+                        <td>Potentiel théorique estimé des superficies forestières</td>
+                        <td>{{ dashboardData?.biomasse.forest_area * 1 }} MWh</td>
+                    </tr>
+                    <tr>
+                        <td>Captation théorique</td>
+                        <td><b>{{ (dashboardData?.biomasse.agri_area * 1 +  dashboardData?.biomasse.forest_area * 1 ) * 0.2 }} MWh</b></td>
+                    </tr>
+                </table>
+            </div>
+            <div *ngIf="siteLine" class="dashboard-biomasse-method-2 col-lg-6">
+                <h3>Méthode "PN Viroin"</h3>
+                <table class="dashboard-table table table-striped">
+                    <tr>
+                        <td>Longueur totale des haies</td>
+                        <td>{{ siteLine.sumLineLength.toFixed(2) }} km</td>
+                    </tr>
+                    <tr>
+                        <td>Productivité MAP au 100 m pour 10 ans</td>
+                        <td>{{ (siteLine.sumLineLength * 10 * 12).toFixed() }} MAP</td>
+                    </tr>
+                </table>
+                <p>Actuellement, les ressources enregistrées permettrait de chauffer {{ ((siteLine.sumLineLength * 10 * 12) / 30).toFixed() }} habitations (150 m²).</p>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
