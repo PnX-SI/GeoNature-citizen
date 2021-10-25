@@ -169,6 +169,8 @@
                         </div>
                         <div *ngIf="sitePolygon">
                             <div class="">{{ sitePolygon.count }} zones naturelles répertoriées</div>
+                            <div class="">dont {{ sitePolygon.countImport }} zones importées</div>
+                            <div *ngIf="sitePolygon.sumArea" class="">{{ sitePolygon.sumArea.toFixed(2) }} ha</div>
                             <div>
                                 <details>
                                     <summary>

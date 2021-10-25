@@ -9,7 +9,6 @@ import { Program } from '../programs/programs.models';
 import { dashboardData, dashboardDataType } from '../../conf/dashboard.config';
 import { conf } from '../programs/base/map/map.component';
 import { MAP_CONFIG } from '../../conf/map.config';
-import { features } from 'process';
 
 interface ExtraFeatureCollection extends FeatureCollection {
     [key: string]: any
@@ -99,13 +98,9 @@ export class DashboardComponent implements AfterViewInit {
 
                         this.programService.getProgramSites(p.id_program).subscribe((site) => {
 
-                            const countImport = site.features.filter(
-                                (f) => f.properties.obs_txt === 'import' || f.properties.obs_txt === 'géoportail wallon'
-                            ).length;
-
                             this.siteLine = site;
                             Object.assign(this.siteLine, {
-                                countImport: countImport,
+                                countImport: this.countImport(this.siteLine),
                                 sumLineLength: this.computeTotalLength(this.siteLine),
                                 especesTable: this.countVisitsDataByKey('espece', this.siteLine)
                             });
@@ -123,6 +118,10 @@ export class DashboardComponent implements AfterViewInit {
                         this.programService.getProgramSites(p.id_program).subscribe((site) => {
                             this.sitePolygon = site;
                             console.log('this.sitePolygon:', this.sitePolygon);
+                            Object.assign(this.sitePolygon, {
+                                countImport: this.countImport(this.sitePolygon),
+                                sumArea: this.computeTotalArea(this.sitePolygon),
+                            });
 
                             this.addLayerToMap(this.sitePolygon);
                         });
@@ -133,6 +132,99 @@ export class DashboardComponent implements AfterViewInit {
         });
     }
 
+
+    countImport(featureCollection: FeatureCollection): number {
+        return featureCollection.features.filter(
+            (f) => f.properties.obs_txt === 'import' || f.properties.obs_txt === 'géoportail wallon'
+        ).length;
+    }
+
+    computeArea(coordinates: number[]): number {
+        // from https://github.com/mapbox/geojson-area
+
+        const RADIUS = 6378137;
+
+        /**
+         * Calculate the approximate area of the polygon were it projected onto
+         *     the earth.  Note that this area will be positive if ring is oriented
+         *     clockwise, otherwise it will be negative.
+         *
+         * Reference:
+         * Robert. G. Chamberlain and William H. Duquette, "Some Algorithms for
+         *     Polygons on a Sphere", JPL Publication 07-03, Jet Propulsion
+         *     Laboratory, Pasadena, CA, June 2007 http://trs-new.jpl.nasa.gov/dspace/handle/2014/40409
+         *
+         * Returns:
+         * {float} The approximate signed geodesic area of the polygon in square
+         *     meters.
+         */
+
+        const ringArea = (coords): number => {
+            let p1, p2, p3, lowerIndex, middleIndex, upperIndex, i,
+            area = 0,
+            coordsLength = coords.length;
+
+            if (coordsLength > 2) {
+                for (i = 0; i < coordsLength; i++) {
+                    if (i === coordsLength - 2) {// i = N-2
+                        lowerIndex = coordsLength - 2;
+                        middleIndex = coordsLength - 1;
+                        upperIndex = 0;
+                    } else if (i === coordsLength - 1) {// i = N-1
+                        lowerIndex = coordsLength - 1;
+                        middleIndex = 0;
+                        upperIndex = 1;
+                    } else { // i = 0 to N-3
+                        lowerIndex = i;
+                        middleIndex = i + 1;
+                        upperIndex = i + 2;
+                    }
+                    p1 = coords[lowerIndex];
+                    p2 = coords[middleIndex];
+                    p3 = coords[upperIndex];
+                    area += (rad(p3[0]) - rad(p1[0])) * Math.sin(rad(p2[1]));
+                }
+
+                area = area * RADIUS * RADIUS / 2;
+            }
+
+            return area;
+        };
+
+        const rad = (_): number => {
+            return _ * Math.PI / 180;
+        };
+
+        const polygonArea = (coords): number => {
+            let area = 0;
+            if (coords && coords.length > 0) {
+                area += Math.abs(ringArea(coords[0]));
+                for (let i = 1; i < coords.length; i++) {
+                    area -= Math.abs(ringArea(coords[i]));
+                }
+            }
+            return area;
+        };
+
+        return polygonArea(coordinates);
+    }
+
+    /**
+     * Sum the polygon area in ha
+     */
+    computeTotalArea(featureCollection: FeatureCollection): number {
+        let total = 0;
+        console.log(featureCollection.features);
+
+        featureCollection.features.forEach((f) => {
+            total = total + this.computeArea(f.geometry.coordinates);
+        });
+        return total / 10000;
+    }
+
+    /**
+     * Sum the line length in km
+     */
     computeTotalLength(featureCollection: FeatureCollection): number {
         let total = 0;
         featureCollection.features.forEach((f) => {
