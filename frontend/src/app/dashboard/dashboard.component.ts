@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AppConfig } from '../../conf/app.config';
 import { Title } from '@angular/platform-browser';
 import { GncProgramsService } from '../api/gnc-programs.service';
-import { FeatureCollection, Geometry, Feature } from 'geojson';
+import { FeatureCollection, Geometry, Feature, Polygon, Position } from 'geojson';
 import { Program } from '../programs/programs.models';
 import { dashboardData, dashboardDataType } from '../../conf/dashboard.config';
 import { conf } from '../programs/base/map/map.component';
@@ -139,7 +139,7 @@ export class DashboardComponent implements AfterViewInit {
         ).length;
     }
 
-    computeArea(coordinates: number[]): number {
+    computeArea(coordinates: Position[][]): number {
         // from https://github.com/mapbox/geojson-area
 
         const RADIUS = 6378137;
@@ -217,7 +217,8 @@ export class DashboardComponent implements AfterViewInit {
         console.log(featureCollection.features);
 
         featureCollection.features.forEach((f) => {
-            total = total + this.computeArea(f.geometry.coordinates);
+            const geom = f.geometry as Polygon;
+            total = total + this.computeArea(geom.coordinates);
         });
         return total / 10000;
     }
