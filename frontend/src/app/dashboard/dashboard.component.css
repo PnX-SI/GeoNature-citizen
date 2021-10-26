@@ -19,6 +19,10 @@ div.dashboard-program {
     padding: 5px;
 }
 
+div.programs div.border:not(:first-child) {
+    border-top: 0!important;
+}
+
 div.dashboard-program-header {
     display: flex;
     justify-content: space-between;
