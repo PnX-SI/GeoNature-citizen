@@ -18,7 +18,6 @@ from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
-from gncitizen.core.taxonomy.models import Taxref, TMedias
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin, taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
@@ -34,7 +33,6 @@ from .admin import ObservationView
 from .models import ObservationMediaModel, ObservationModel
 
 # from sqlalchemy import func
-
 
 
 # DOING: TaxRef REST as alternative
@@ -129,45 +127,24 @@ def generate_observation_geojson(id_observation):
         for p in photos
     ]
 
-    if current_app.config.get("API_TAXHUB") is None:
-        current_app.logger.debug("Selecting TaxHub Medias schema.")
-        # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref
-        # taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-        # for k in taxref:
-        #     feature["properties"][k] = taxref[k]
-        taxref = Taxref.query.filter(
-            Taxref.cd_nom == observation.ObservationModel.cd_nom
-        ).first()
-        if taxref:
-            feature["properties"]["taxref"] = taxref.as_dict(True)
-
-        medias = TMedias.query.filter(
-            TMedias.cd_ref == observation.ObservationModel.cd_nom
-        ).all()
-        if medias:
-            feature["properties"]["medias"] = [
-                media.as_dict(True) for media in medias
-            ]
-
-    else:
-        taxhub_list_id = (
-            ProgramsModel.query.filter_by(
-                id_program=observation.ObservationModel.id_program
-            )
-            .one()
-            .taxonomy_list
+    taxhub_list_id = (
+        ProgramsModel.query.filter_by(
+            id_program=observation.ObservationModel.id_program
         )
-        taxon_repository = mkTaxonRepository(taxhub_list_id)
-        try:
-            taxon = next(
-                taxon
-                for taxon in taxon_repository
-                if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
-            )
-            feature["properties"]["taxref"] = taxon["taxref"]
-            feature["properties"]["medias"] = taxon["medias"]
-        except StopIteration:
-            pass
+        .one()
+        .taxonomy_list
+    )
+    taxon_repository = mkTaxonRepository(taxhub_list_id)
+    try:
+        taxon = next(
+            taxon
+            for taxon in taxon_repository
+            if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+        )
+        feature["properties"]["taxref"] = taxon["taxref"]
+        feature["properties"]["medias"] = taxon["medias"]
+    except StopIteration:
+        pass
 
     features.append(feature)
     return features
@@ -584,22 +561,6 @@ def get_program_observations(
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
 
-            # TaxRef
-            # if current_app.config.get("API_TAXHUB") is None:
-            #     taxref = Taxref.query.filter(
-            #         Taxref.cd_nom == observation.ObservationModel.cd_nom
-            #     ).first()
-            #     if taxref:
-            #         feature["properties"]["taxref"] = taxref.as_dict(True)
-
-            #     medias = TMedias.query.filter(
-            #         TMedias.cd_ref == observation.ObservationModel.cd_nom
-            #     ).all()
-            #     if medias:
-            #         feature["properties"]["medias"] = [
-            #             media.as_dict(True) for media in medias
-            #         ]
-            # else:
             try:
                 taxon = next(
                     taxon
@@ -742,33 +703,17 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
 
-            # TaxRef
-            if current_app.config.get("API_TAXHUB") is None:
-                taxref = Taxref.query.filter(
-                    Taxref.cd_nom == observation.ObservationModel.cd_nom
-                ).first()
-                if taxref:
-                    feature["properties"]["taxref"] = taxref.as_dict(True)
-
-                medias = TMedias.query.filter(
-                    TMedias.cd_ref == observation.ObservationModel.cd_nom
-                ).all()
-                if medias:
-                    feature["properties"]["medias"] = [
-                        media.as_dict(True) for media in medias
-                    ]
-            else:
-                try:
-                    taxon = next(
-                        taxon
-                        for taxon in taxon_repository
-                        if taxon
-                        and taxon["cd_nom"] == feature["properties"]["cd_nom"]
-                    )
-                    feature["properties"]["taxref"] = taxon["taxref"]
-                    feature["properties"]["medias"] = taxon["medias"]
-                except StopIteration:
-                    pass
+            try:
+                taxon = next(
+                    taxon
+                    for taxon in taxon_repository
+                    if taxon
+                    and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+                )
+                feature["properties"]["taxref"] = taxon["taxref"]
+                feature["properties"]["medias"] = taxon["medias"]
+            except StopIteration:
+                pass
             features.append(feature)
 
         return FeatureCollection(features)
@@ -929,40 +874,22 @@ def get_observations_by_user_id(user_id):
                         program
                     ]
             # TaxRef
-            if current_app.config.get("API_TAXHUB") is None:
-                taxref = Taxref.query.filter(
-                    Taxref.cd_nom == observation.ObservationModel.cd_nom
-                ).first()
-                if taxref:
-                    feature["properties"]["taxref"] = taxref.as_dict(True)
 
-                medias = TMedias.query.filter(
-                    TMedias.cd_ref == observation.ObservationModel.cd_nom
-                ).all()
-                if medias:
-                    feature["properties"]["medias"] = [
-                        media.as_dict(True) for media in medias
-                    ]
-            else:
-                try:
-                    for taxon_rep in taxon_repository:
-                        for taxon in taxon_rep:
-                            if (
-                                taxon["taxref"]["cd_nom"]
-                                == observation.ObservationModel.cd_nom
-                            ):
-                                feature["properties"]["nom_francais"] = taxon[
-                                    "nom_francais"
-                                ]
-                                feature["properties"]["taxref"] = taxon[
-                                    "taxref"
-                                ]
-                                feature["properties"]["medias"] = taxon[
-                                    "medias"
-                                ]
+            try:
+                for taxon_rep in taxon_repository:
+                    for taxon in taxon_rep:
+                        if (
+                            taxon["taxref"]["cd_nom"]
+                            == observation.ObservationModel.cd_nom
+                        ):
+                            feature["properties"]["nom_francais"] = taxon[
+                                "nom_francais"
+                            ]
+                            feature["properties"]["taxref"] = taxon["taxref"]
+                            feature["properties"]["medias"] = taxon["medias"]
 
-                except StopIteration:
-                    pass
+            except StopIteration:
+                pass
             features.append(feature)
 
         return FeatureCollection(features), 200

@@ -5,60 +5,63 @@ from utils_flask_sqla.response import json_resp
 # from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.env import db
 
-if current_app.config.get("API_TAXHUB") is None:
-    from gncitizen.core.taxonomy.models import (
-        BibListes,
-        BibNoms,
-        CorNomListe,
-        Taxref,
-        TMedias,
-    )
-else:
-    from gncitizen.utils.taxonomy import mkTaxonRepository
+#     from gncitizen.core.taxonomy.models import (
+#         BibListes,
+#         BibNoms,
+#         CorNomListe,
+#         Taxref,
+#         TMedias,
+#     )
+# else:
+from gncitizen.utils.taxonomy import mkTaxonRepository
+
+# if current_app.config.get("API_TAXHUB") is None:
+
+#     print(f'NO API TAXHUB: {current_app.config.get("API_TAXHUB")}')
 
 
 taxo_api = Blueprint("taxonomy", __name__)
 
 
-@taxo_api.route("/taxonomy/lists", methods=["GET"])
-@json_resp
-def get_lists():
-    """Renvoie toutes liste d'espèces
-    GET
-        ---
-        tags:
-          - TaxHub api
-        definitions:
-          id_liste:
-            type: integer
-          nb_taxons:
-            type: integer
-          desc_liste:
-            type: string
-          picto:
-            type: string
-          group2inpn:
-            type: string
-          nom_liste:
-            type: string
-          regne:
-            type: string
-        responses:
-          200:
-            description: A list of all species lists
-    """
-    # r = requests.get(taxhub_lists_url)
-    # if r.status_code == 200:
-    #     result = r.json()
-    #     return result
-    # else:
-    #     return jsonify('Erreur de chargement de l \'API', r.status_code)
-    try:
-        data = BibListes.query.all()
-        # current_app.logger.debug([l.as_dict() for l in data])
-        return [l.as_dict() for l in data]
-    except Exception as e:
-        return {"message": str(e)}, 400
+# @taxo_api.route("/taxonomy/lists", methods=["GET"])
+# @json_resp
+# def get_lists():
+#     """Renvoie toutes liste d'espèces
+#     GET
+#         ---
+#         tags:
+#           - TaxHub api
+#         definitions:
+#           id_liste:
+#             type: integer
+#           nb_taxons:
+#             type: integer
+#           desc_liste:
+#             type: string
+#           picto:
+#             type: string
+#           group2inpn:
+#             type: string
+#           nom_liste:
+#             type: string
+#           regne:
+#             type: string
+#         responses:
+#           200:
+#             description: A list of all species lists
+#     """
+#     # r = requests.get(taxhub_lists_url)
+#     # if r.status_code == 200:
+#     #     result = r.json()
+#     #     return result
+#     # else:
+#     #     return jsonify('Erreur de chargement de l \'API', r.status_code)
+#     try:
+#         data = BibListes.query.all()
+#         # current_app.logger.debug([l.as_dict() for l in data])
+#         return [l.as_dict() for l in data]
+#     except Exception as e:
+#         return {"message": str(e)}, 400
 
 
 @taxo_api.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
@@ -168,27 +171,27 @@ def get_list(id):
 #         return jsonify('Erreur de chargement de l \'API', rtaxa.status_code)
 
 
-@taxo_api.route("/taxonomy/taxon/<int:cd_nom>", methods=["GET"])
-@json_resp
-def get_taxon_from_cd_nom(cd_nom):
-    """Get taxon TaxRef data from cd_nom
-    ---
-    tags:
-     - taxon
-    parameters:
-     - name: cd_nom
-       in: path
-       type: integer
-       required: true
-       example: 1
-    definitions:
-      cd_nom:
-        type: integer
-        description: cd_nom from TaxRef
-    responses:
-      200:
-        description: Taxon data from Taxref
-    """
-    """Renvoie la fiche TaxRef de l'espèce d'après le cd_nom"""
-    taxon = Taxref.query.filter_by(cd_nom=cd_nom).first()
-    return taxon.as_dict(True)
+# @taxo_api.route("/taxonomy/taxon/<int:cd_nom>", methods=["GET"])
+# @json_resp
+# def get_taxon_from_cd_nom(cd_nom):
+#     """Get taxon TaxRef data from cd_nom
+#     ---
+#     tags:
+#      - taxon
+#     parameters:
+#      - name: cd_nom
+#        in: path
+#        type: integer
+#        required: true
+#        example: 1
+#     definitions:
+#       cd_nom:
+#         type: integer
+#         description: cd_nom from TaxRef
+#     responses:
+#       200:
+#         description: Taxon data from Taxref
+#     """
+#     """Renvoie la fiche TaxRef de l'espèce d'après le cd_nom"""
+#     taxon = Taxref.query.filter_by(cd_nom=cd_nom).first()
+#     return taxon.as_dict(True)

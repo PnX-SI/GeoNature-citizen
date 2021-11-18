@@ -20,7 +20,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
 from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
-from gncitizen.core.taxonomy.models import BibListes
 from gncitizen.utils.env import MEDIA_DIR, db
 
 
@@ -70,7 +69,6 @@ class CustomFormModel(TimestampMixinModel, db.Model):
 
     def __repr__(self):
         return self.name
-
 
 
 @serializable
