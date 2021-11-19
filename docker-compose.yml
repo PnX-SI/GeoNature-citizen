@@ -1,6 +1,16 @@
-version: '3.3'
+version: "3.4"
 
 services:
-  debian_base:
-    build: .
-    container_name: citizen_base
+  frontend:
+    container_name: citizen-front
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+    # depends_on:
+    #   - backend
+    # networks:
+    #   - geo-lpo
+    ports:
+      - "${PORT-4200}:${PORT-4200}"
