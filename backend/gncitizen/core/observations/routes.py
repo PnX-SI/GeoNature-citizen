@@ -18,7 +18,6 @@ from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
-from gncitizen.core.taxonomy.models import Taxref, TMedias
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin, taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
@@ -130,25 +129,7 @@ def generate_observation_geojson(id_observation):
     ]
 
     if current_app.config.get("API_TAXHUB") is None:
-        current_app.logger.debug("Selecting TaxHub Medias schema.")
-        # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref
-        # taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-        # for k in taxref:
-        #     feature["properties"][k] = taxref[k]
-        taxref = Taxref.query.filter(
-            Taxref.cd_nom == observation.ObservationModel.cd_nom
-        ).first()
-        if taxref:
-            feature["properties"]["taxref"] = taxref.as_dict(True)
-
-        medias = TMedias.query.filter(
-            TMedias.cd_ref == observation.ObservationModel.cd_nom
-        ).all()
-        if medias:
-            feature["properties"]["medias"] = [
-                media.as_dict(True) for media in medias
-            ]
-
+       raise RuntimeError('No API_TAXHUB env var declared...')
     else:
         taxhub_list_id = (
             ProgramsModel.query.filter_by(
@@ -744,19 +725,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
 
             # TaxRef
             if current_app.config.get("API_TAXHUB") is None:
-                taxref = Taxref.query.filter(
-                    Taxref.cd_nom == observation.ObservationModel.cd_nom
-                ).first()
-                if taxref:
-                    feature["properties"]["taxref"] = taxref.as_dict(True)
-
-                medias = TMedias.query.filter(
-                    TMedias.cd_ref == observation.ObservationModel.cd_nom
-                ).all()
-                if medias:
-                    feature["properties"]["medias"] = [
-                        media.as_dict(True) for media in medias
-                    ]
+                raise RuntimeError('No API_TAXHUB env var declared...')
             else:
                 try:
                     taxon = next(
@@ -930,19 +899,7 @@ def get_observations_by_user_id(user_id):
                     ]
             # TaxRef
             if current_app.config.get("API_TAXHUB") is None:
-                taxref = Taxref.query.filter(
-                    Taxref.cd_nom == observation.ObservationModel.cd_nom
-                ).first()
-                if taxref:
-                    feature["properties"]["taxref"] = taxref.as_dict(True)
-
-                medias = TMedias.query.filter(
-                    TMedias.cd_ref == observation.ObservationModel.cd_nom
-                ).all()
-                if medias:
-                    feature["properties"]["medias"] = [
-                        media.as_dict(True) for media in medias
-                    ]
+                raise RuntimeError('No API_TAXHUB env var declared...')
             else:
                 try:
                     for taxon_rep in taxon_repository:

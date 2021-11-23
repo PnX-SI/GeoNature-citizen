@@ -8,9 +8,43 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/app
-    # depends_on:
-    #   - backend
-    # networks:
-    #   - geo-lpo
+    depends_on:
+      - backend
+    networks:
+      - citizen-kane
     ports:
-      - "${PORT-4200}:${PORT-4200}"
+      - "${FRONT_PORT-4200}:${FRONT_PORT-4200}"
+
+  backend:
+    container_name: citizen-back
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+      - ./VERSION:/VERSION
+      - ./config:/config
+      - ./external_modules:/external_modules
+    depends_on:
+      - db
+    ports:
+      - "${API_PORT-5002}:${API_PORT-5002}"
+    networks:
+      - citizen-kane
+
+  db:
+    container_name: citizen-db
+    image: postgis/postgis:10-2.5-alpine
+    ports:
+      - "${DB_PORT-8465}:${DB_PORT-5432}"
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB=${DB_NAME-geocitizen}
+      - POSTGRES_USER=${DB_USER-geonatuser}
+      - POSTGRES_PASSWORD=${DB_PASSWORD-monpassachanger}
+    networks:
+      - citizen-kane
+
+networks:
+  citizen-kane:
+    external: false

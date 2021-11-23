@@ -92,9 +92,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     with app.app_context():
 
-        create_schemas(db)
-        db.create_all()
-        populate_modules(db)
 
         from gncitizen.core.badges.routes import badges_api
         from gncitizen.core.commons.routes import commons_api
@@ -136,4 +133,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
         # _app = app
 
+        create_schemas(db)
+        db.create_all()
+        populate_modules(db)
+        
     return app

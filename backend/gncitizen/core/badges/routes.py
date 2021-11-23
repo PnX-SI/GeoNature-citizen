@@ -7,7 +7,6 @@ from utils_flask_sqla.response import json_resp
 
 from gncitizen.core.commons.models import ProgramsModel
 from gncitizen.core.observations.models import ObservationModel
-from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import UserModel
 from server import db
 
@@ -35,27 +34,29 @@ def get_rewards(id):
     for item in scores_query:
         program_scores.append({"id_program": item.id, "nb_obs": item.nb_obs})
         total_obs = total_obs + item.nb_obs
-    taxon_classe_query = (
-        db.session.query(
-            Taxref.classe.label("classe"),
-            func.count(Taxref.famille).label("nb_obs"),
-        )
-        .join(ObservationModel, Taxref.cd_nom == ObservationModel.cd_nom)
-        .filter(ObservationModel.id_role == id)
-        .group_by(Taxref.classe)
-    )
-    for item in taxon_classe_query:
+    # taxon_classe_query = (
+    #     db.session.query(
+    #         Taxref.classe.label("classe"),
+    #         func.count(Taxref.famille).label("nb_obs"),
+    #     )
+    #     .join(ObservationModel, Taxref.cd_nom == ObservationModel.cd_nom)
+    #     .filter(ObservationModel.id_role == id)
+    #     .group_by(Taxref.classe)
+    # )
+    taxon_class_query = get_taxon_class_from_cdnom(cd_nom=111111111111)
+    for item in taxon_class_query:
         taxon_scores.append({"classe": item.classe, "nb_obs": item.nb_obs})
 
-    taxon_famille_query = (
-        db.session.query(
-            Taxref.famille.label("famille"),
-            func.count(Taxref.famille).label("nb_obs"),
-        )
-        .join(ObservationModel, Taxref.cd_nom == ObservationModel.cd_nom)
-        .filter(ObservationModel.id_role == id)
-        .group_by(Taxref.famille)
-    )
+    # taxon_famille_query = (
+    #     db.session.query(
+    #         Taxref.famille.label("famille"),
+    #         func.count(Taxref.famille).label("nb_obs"),
+    #     )
+    #     .join(ObservationModel, Taxref.cd_nom == ObservationModel.cd_nom)
+    #     .filter(ObservationModel.id_role == id)
+    #     .group_by(Taxref.famille)
+    # )
+    taxon_famille_query = get_taxon_family_from_cdnom(cd_nom=111111111111)
 
     for item in taxon_famille_query:
         taxon_scores.append({"famille": item.famille, "nb_obs": item.nb_obs})
@@ -151,6 +152,11 @@ def get_rewards(id):
                                 id = id + 1
     return jsonify(awarded_badges)
 
+def get_taxon_class_from_cdnom(cd_nom: int):
+    return []
+
+def get_taxon_family_from_cdnom(cd_nom: int):
+    return []
 
 def monthdelta(d1, d2):
     delta = 0

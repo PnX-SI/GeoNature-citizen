@@ -5,7 +5,7 @@ from server import db
 
 
 @serializable
-class BibNoms(db.Model):
+class BibNoms():
     __tablename__ = "bib_noms"
     __table_args__ = {"schema": "taxonomie", "extend_existing": True}
     id_nom = db.Column(db.Integer, primary_key=True)
@@ -16,7 +16,7 @@ class BibNoms(db.Model):
 
 
 @serializable
-class BibListes(db.Model):
+class BibListes():
     __tablename__ = "bib_listes"
     __table_args__ = {"schema": "taxonomie", "extend_existing": True}
     id_liste = db.Column(db.Integer, primary_key=True)
@@ -33,7 +33,7 @@ class BibListes(db.Model):
 
 
 @serializable
-class CorNomListe(db.Model):
+class CorNomListe():
     __tablename__ = "cor_nom_liste"
     __table_args__ = {"schema": "taxonomie", "extend_existing": True}
     id_liste = db.Column(
@@ -60,7 +60,7 @@ class CorNomListe(db.Model):
 
 
 @serializable
-class TMedias(db.Model):
+class TMedias():
     __tablename__ = "t_medias"
     __table_args__ = {"schema": "taxonomie", "extend_existing": True}
     id_media = db.Column(db.Integer, primary_key=True)
@@ -86,7 +86,7 @@ class TMedias(db.Model):
 
 
 @serializable
-class Taxref(db.Model):
+class Taxref():
     __tablename__ = "taxref"
     __table_args__ = {"schema": "taxonomie"}
     cd_nom = db.Column(db.Integer, primary_key=True)

@@ -9,7 +9,6 @@ from flask_ckeditor import CKEditorField
 from wtforms import SelectField
 
 from gncitizen.core.sites.models import CorProgramSiteTypeModel
-from gncitizen.core.taxonomy.models import BibListes
 from gncitizen.utils.admin import (
     CustomJSONField,
     CustomTileView,
@@ -23,10 +22,7 @@ logger = current_app.logger
 def taxonomy_lists():
     taxonomy_lists = []
     if current_app.config.get("API_TAXHUB") is None:
-        biblistes = BibListes.query.all()
-        for tlist in biblistes:
-            l = (tlist.id_liste, tlist.nom_liste)
-            taxonomy_lists.append(l)
+        raise RuntimeError('No API_TAXHUB env var declared...')
     else:
         from gncitizen.utils.env import taxhub_lists_url
 
