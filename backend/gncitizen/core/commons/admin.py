@@ -14,29 +14,25 @@ from gncitizen.utils.admin import (
     CustomTileView,
     json_formatter,
 )
-from gncitizen.utils.env import MEDIA_DIR
+from gncitizen.utils.env import MEDIA_DIR, taxhub_lists_url
 
 logger = current_app.logger
 
 
 def taxonomy_lists():
     taxonomy_lists = []
-    if current_app.config.get("API_TAXHUB") is None:
-        raise RuntimeError('No API_TAXHUB env var declared...')
-    else:
-        from gncitizen.utils.env import taxhub_lists_url
 
-        rtlists = requests.get(taxhub_lists_url)
-        # current_app.logger.warning(rtlists)
-        if rtlists.status_code == 200:
-            try:
-                tlists = rtlists.json()["data"]
-                # current_app.logger.debug(tlists)
-                for tlist in tlists:
-                    l = (tlist["id_liste"], tlist["nom_liste"])
-                    taxonomy_lists.append(l)
-            except Exception as e:
-                current_app.logger.critical(str(e))
+    rtlists = requests.get(taxhub_lists_url)
+    # current_app.logger.warning(rtlists)
+    if rtlists.status_code == 200:
+        try:
+            tlists = rtlists.json()["data"]
+            # current_app.logger.debug(tlists)
+            for tlist in tlists:
+                l = (tlist["id_liste"], tlist["nom_liste"])
+                taxonomy_lists.append(l)
+        except Exception as e:
+            current_app.logger.critical(str(e))
     # current_app.logger.debug(taxonomy_lists)
     return taxonomy_lists
 
