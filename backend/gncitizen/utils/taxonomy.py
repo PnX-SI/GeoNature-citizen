@@ -98,9 +98,6 @@ def get_specie_from_cd_nom(cd_nom):
     :rtype: dict
     """
 
-    # result = Taxref.query.filter_by(cd_nom=cd_nom).first()
-    # official_taxa = Taxref.query.filter_by(cd_nom=result.cd_ref).first()
-
     res = requests.get(f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}")
     official_taxa = res.json().get('items', [{}])[0]
 
