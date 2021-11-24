@@ -25,6 +25,7 @@ services:
       - ./VERSION:/VERSION
       - ./config:/config
       - ./external_modules:/external_modules
+      - ./media:/media
     depends_on:
       - db
     ports:
@@ -42,9 +43,13 @@ services:
       - POSTGRES_DB=${DB_NAME-geocitizen}
       - POSTGRES_USER=${DB_USER-geonatuser}
       - POSTGRES_PASSWORD=${DB_PASSWORD-monpassachanger}
+    volumes:
+      - citizen_data:/var/lib/postgresql/data/pgdata
     networks:
       - citizen-kane
 
 networks:
   citizen-kane:
     external: false
+volumes:
+  citizen_data:
