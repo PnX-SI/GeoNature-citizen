@@ -2,19 +2,10 @@
 from flask import Blueprint, current_app
 from utils_flask_sqla.response import json_resp
 
-# from gncitizen.utils.env import taxhub_lists_url
-from gncitizen.utils.env import db
-
-if current_app.config.get("API_TAXHUB") is None:
-    from gncitizen.core.taxonomy.models import (
-        BibListes,
-        BibNoms,
-        CorNomListe,
-        Taxref,
-        TMedias,
-    )
-else:
-    from gncitizen.utils.taxonomy import mkTaxonRepository
+from gncitizen.utils.taxonomy import (
+    mkTaxonRepository, 
+    taxhub_rest_get_all_lists,
+    get_specie_from_cd_nom)
 
 
 taxo_api = Blueprint("taxonomy", __name__)
@@ -47,18 +38,10 @@ def get_lists():
           200:
             description: A list of all species lists
     """
-    # r = requests.get(taxhub_lists_url)
-    # if r.status_code == 200:
-    #     result = r.json()
-    #     return result
-    # else:
-    #     return jsonify('Erreur de chargement de l \'API', r.status_code)
     try:
-        data = BibListes.query.all()
-        # current_app.logger.debug([l.as_dict() for l in data])
-        return [l.as_dict() for l in data]
+      return taxhub_rest_get_all_lists()
     except Exception as e:
-        return {"message": str(e)}, 400
+      return {"message": str(e)}, 400
 
 
 @taxo_api.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
@@ -190,5 +173,7 @@ def get_taxon_from_cd_nom(cd_nom):
         description: Taxon data from Taxref
     """
     """Renvoie la fiche TaxRef de l'espèce d'après le cd_nom"""
-    taxon = Taxref.query.filter_by(cd_nom=cd_nom).first()
-    return taxon.as_dict(True)
+    try:
+      return get_specie_from_cd_nom(cd_nom=cd_nom)
+    except Exception as e:
+      return {"message": str(e)}, 400

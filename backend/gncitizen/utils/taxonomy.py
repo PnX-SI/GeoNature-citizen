@@ -41,6 +41,13 @@ def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
     return res.json()
 
 
+def taxhub_rest_get_all_lists() -> Dict:
+    res = requests.get("{}biblistes".format(TAXHUB_API))
+    logger.debug(f"<taxhub_rest_get_all_lists> URL {res.url}")
+    res.raise_for_status()
+    return res.json().get('data', [])
+
+
 def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
     if not taxhub_id:
         raise ValueError("Null value for taxhub taxon id")
@@ -91,17 +98,20 @@ def get_specie_from_cd_nom(cd_nom):
     :rtype: dict
     """
 
-    result = Taxref.query.filter_by(cd_nom=cd_nom).first()
-    official_taxa = Taxref.query.filter_by(cd_nom=result.cd_ref).first()
+    # result = Taxref.query.filter_by(cd_nom=cd_nom).first()
+    # official_taxa = Taxref.query.filter_by(cd_nom=result.cd_ref).first()
 
-    common_names = official_taxa.nom_vern
+    res = requests.get(f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}")
+    official_taxa = res.json().get('items', [{}])[0]
+
+    common_names = official_taxa.get("nom_vern", "")
     common_name = common_names.split(",")[0]
-    common_name_eng = official_taxa.get("nom_vern_eng")
-    sci_name = official_taxa.lb_nom
+    common_name_eng = official_taxa.get("nom_vern_eng", "")
+    sci_name = official_taxa.get("lb_nom", "")
     taxref = {}
     taxref["common_name"] = common_name
     taxref["common_name_eng"] = common_name_eng
     taxref["sci_name"] = sci_name
     for k in official_taxa:
-        taxref[k] = official_taxa[k]
+        taxref[k] = official_taxa.get(k, "")
     return taxref
