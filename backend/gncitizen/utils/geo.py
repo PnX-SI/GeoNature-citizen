@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from flask import current_app
-from geoalchemy2 import func
+import requests
 
-from gncitizen.core.ref_geo.models import BibAreasTypes, LAreas
-from gncitizen.utils.env import db
+from gncitizen.utils.env import MUNICIPALITY_URL
 
 # Get municipality id
 #       newobs.municipality = get_municipality_id_from_wkb_point(
@@ -23,30 +22,12 @@ def get_municipality_id_from_wkb(wkb):
     :rtype: int
     """
     try:
-        srid = db.session.query(
-            func.Find_SRID("ref_geo", "l_areas", "geom")
-        ).one()[0]
-        current_app.logger.debug(
-            "[get_municipality_id_from_wkb_point] SRID: {}".format(srid)
-        )
-        query = (
-            db.session.query(LAreas)
-            .join(BibAreasTypes)
-            .filter(
-                LAreas.geom.ST_Intersects(wkb.ST_Transform(srid)),
-                BibAreasTypes.type_name == "Communes",
-            )
-            .first()
-        )
-        current_app.logger.debug(
-            "[get_municipality_id_from_wkb_point] Query: {}".format(query)
-        )
-        municipality_id = query.id_area
-        current_app.logger.debug(
-            "[get_municipality_id_from_wkb_point] municipality id is {}".format(
-                municipality_id
-            )
-        )
+        municipality = get_municipality_from_lat_long(
+                                        lat=wkb["y"], 
+                                        lon=wkb["x"])
+        municipality_id = municipality.get('city', None)
+        if municipality_id is None:
+            municipality_id = municipality.get('town', None)
     except Exception as e:
         current_app.logger.debug(
             "[get_municipality_id_from_wkb_point] Can't get municipality id: {}".format(
@@ -54,23 +35,13 @@ def get_municipality_id_from_wkb(wkb):
             )
         )
         raise
-        municipality_id = None
     return municipality_id
 
 
-def get_area_informations(id_area):
-    try:
-        query = db.session.query(LAreas).filter(LAreas.id_area == id_area)
-        result = query.first()
-        area = {}
-        area["name"] = result.area_name
-        area["code"] = result.area_code
-    except Exception as e:
-        current_app.logger.debug(
-            "[get_municipality_id_from_wkb_point] Can't get municipality id: {}".format(
-                str(e)
-            )
-        )
-        raise
-        area = None
-    return area
+def get_municipality_from_lat_long(lat: int, lon: int) -> dict:
+    municipality = {}
+    resp = requests.get(f'{MUNICIPALITY_URL}?lat={lat}&lon={lon}&format=json',timeout=10)
+    if resp.ok:
+        municipality = resp.json().get('address', {})
+    return municipality
+

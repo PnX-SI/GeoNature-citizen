@@ -19,14 +19,12 @@ class ObservationView(CustomTileView):
         "id_program",
         "program_ref.title",
         "program_ref.unique_id_program",
-        "municipality_ref.area_name",
-        "municipality_ref.area_code",
+        "municipality",
     )
     column_searchable_list = (
         "email",
         "date",
         "program_ref.title",
         "program_ref.unique_id_program",
-        "municipality_ref.area_name",
-        "municipality_ref.area_code",
+        "municipality",
     )

@@ -17,6 +17,8 @@ SQLALCHEMY_DEBUG_LEVEL = 'WARNING'
 
 URL_APPLICATION = "http://mydomain.org"         # Replace mydomain.org by your domain
 API_TAXHUB = "http://mytaxhub.org/api/"         # Replace mytaxhub.org by your TaxHub url
+# URL to get info about a municipality (from a latitude and a longitude)
+MUNICIPALITY_URL = "https://nominatim.openstreetmap.org/reverse"
 
 
 
