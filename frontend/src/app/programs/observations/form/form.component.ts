@@ -39,6 +39,7 @@ import { ObservationsService } from '../observations.service';
 import { MapService } from '../../base/map/map.service';
 
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
+import { RefGeoService } from 'src/app/api/refgeo.service';
 
 declare let $: any;
 
@@ -84,6 +85,7 @@ export class ObsFormComponent implements AfterViewInit {
     today = new Date();
     program_id: number;
     coords: L.Point;
+    municipality: string;
     modalflow;
     taxonSelectInputThreshold = taxonSelectInputThreshold;
     taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
@@ -128,12 +130,14 @@ export class ObsFormComponent implements AfterViewInit {
         private programService: GncProgramsService,
         private toastr: ToastrService,
         private auth: AuthService,
-        private mapService: MapService
+        private mapService: MapService,
+        private _refGeoService: RefGeoService
     ) {}
 
     ngOnInit(): void {
         this.program_id = this.data.program_id;
         this.coords = this.data.coords;
+        this.updateMunicipality();
         this.intiForm();
         if (this.data.updateData) {
             this.patchForm(this.data.updateData);
@@ -312,6 +316,7 @@ export class ObsFormComponent implements AfterViewInit {
                             icon: obsFormMarkerIcon,
                         }).addTo(formMap);
                         this.coords = L.point(e.latlng.lng, e.latlng.lat);
+                        this.updateMunicipality();
                         this.obsForm.patchValue({ geometry: this.coords });
                     }
                 });
@@ -327,6 +332,14 @@ export class ObsFormComponent implements AfterViewInit {
             ...this.customForm.json_schema,
             data: this.jsonData,
         };
+    }
+
+    updateMunicipality() {
+        this._refGeoService
+            .getMunicipality(this.coords.y, this.coords.x)
+            .toPromise()
+            .then((municipality) => (this.municipality = municipality))
+            .catch((err) => console.log(err));
     }
 
     intiForm() {
@@ -347,6 +360,7 @@ export class ObsFormComponent implements AfterViewInit {
                     this.data.coords ? this.coords : '',
                     [Validators.required, geometryValidator()],
                 ],
+                municipality: [''],
                 id_program: [this.program_id],
                 email: [{ value: '', disabled: true }],
                 agreeContactRGPD: [''],
@@ -481,6 +495,7 @@ export class ObsFormComponent implements AfterViewInit {
             .toISOString()
             .match(/\d{4}-\d{2}-\d{2}/)[0];
         formData.append('date', normDate);
+        formData.append('municipality', this.municipality);
         for (let item of ['count', 'comment', 'id_program', 'email']) {
             formData.append(item, this.obsForm.get(item).value);
         }

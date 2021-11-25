@@ -287,7 +287,8 @@ def post_observation():
             if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
                 newobs.obs_txt = "Anonyme"
 
-        newobs.municipality = get_municipality_id_from_wkb(_coordinates)
+        if not newobs.municipality:
+            newobs.municipality = get_municipality_id_from_wkb(_coordinates)
         newobs.uuid_sinp = uuid.uuid4()
         db.session.add(newobs)
         db.session.commit()
@@ -906,14 +907,15 @@ def update_observation():
     try:
         update_data = request.form
         update_obs = {}
-        for prop in ["cd_nom", "count", "comment", "date"]:
+        for prop in ["cd_nom", "count", "comment", "date", "municipality"]:
             update_obs[prop] = update_data[prop]
         try:
             _coordinates = json.loads(update_data["geometry"])
             _point = Point(_coordinates["x"], _coordinates["y"])
             _shape = asShape(_point)
             update_obs["geom"] = from_shape(Point(_shape), srid=4326)
-            update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
+            if not update_obs["municipality"]:
+                update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
         except Exception as e:
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)
