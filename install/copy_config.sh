@@ -9,37 +9,36 @@ if [ ! -f config/default_config.toml ]; then
 fi
 
 #Création d'un fichier de configuration pour le front
-cd frontend
-if [ ! -f src/conf/app.config.ts ]; then
+if [ ! -f frontend/src/conf/app.config.ts ]; then
   echo 'Fichier de configuration frontend non existant, copie du template...'
-  cp src/conf/app.config.ts.template src/conf/app.config.ts
-  sed -i "s|API_ENDPOINT:.*$|API_ENDPOINT:\"$api_endpoint\",|g" src/conf/app.config.ts
-  sed -i "s|API_TAXHUB:.*$|API_TAXHUB:\"$api_taxhub\",|g" src/conf/app.config.ts
-  sed -i "s|URL_APPLICATION:.*$|URL_APPLICATION:\"$url_application\",|g" src/conf/app.config.ts
+  cp frontend/src/conf/app.config.ts.template frontend/src/conf/app.config.ts
+  sed -i "s|API_ENDPOINT:.*$|API_ENDPOINT:\"$api_endpoint\",|g" frontend/src/conf/app.config.ts
+  sed -i "s|API_TAXHUB:.*$|API_TAXHUB:\"$api_taxhub\",|g" frontend/src/conf/app.config.ts
+  sed -i "s|URL_APPLICATION:.*$|URL_APPLICATION:\"$url_application\",|g" frontend/src/conf/app.config.ts
 
 fi
-if [ ! -f src/conf/map.config.ts ]; then
+if [ ! -f frontend/src/conf/map.config.ts ]; then
   echo 'Fichier map non existant, copie du template...'
-  cp src/conf/map.config.ts.template src/conf/map.config.ts
+  cp frontend/src/conf/map.config.ts.template frontend/src/conf/map.config.ts
 fi
 
 #Copie des fichiers custom
-if [ ! -f src/custom/custom.css ]; then
+if [ ! -f frontend/src/custom/custom.css ]; then
   echo 'Fichier custom.css non existant, copie du template...'
-  cp src/custom/custom.css.template src/custom/custom.css
+  cp frontend/src/custom/custom.css.template frontend/src/custom/custom.css
 fi
-if [ ! -f src/custom/about/about.css ]; then
+if [ ! -f frontend/src/custom/about/about.css ]; then
   echo 'Fichiers about non existant, copie du template...'
-  cp src/custom/about/about.css.template src/custom/about/about.css
-  cp src/custom/about/about.html.template src/custom/about/about.html
+  cp frontend/src/custom/about/about.css.template frontend/src/custom/about/about.css
+  cp frontend/src/custom/about/about.html.template frontend/src/custom/about/about.html
 fi
-if [ ! -f src/custom/footer/footer.css ]; then
+if [ ! -f frontend/src/custom/footer/footer.css ]; then
   echo 'Fichiers footer non existant, copie du template...'
-  cp src/custom/footer/footer.css.template src/custom/footer/footer.css
-  cp src/custom/footer/footer.html.template src/custom/footer/footer.html
+  cp frontend/src/custom/footer/footer.css.template frontend/src/custom/footer/footer.css
+  cp frontend/src/custom/footer/footer.html.template frontend/src/custom/footer/footer.html
 fi
-if [ ! -f src/custom/home/home.css ]; then
+if [ ! -f frontend/src/custom/home/home.css ]; then
   echo 'Fichiers footer non existant, copie du template...'
-  cp src/custom/home/home.css.template src/custom/home/home.css
-  cp src/custom/home/home.html.template src/custom/home/home.html
+  cp frontend/src/custom/home/home.css.template frontend/src/custom/home/home.css
+  cp frontend/src/custom/home/home.html.template frontend/src/custom/home/home.html
 fi

@@ -27,5 +27,8 @@ fi
 # Generate password
 . ./install/generate_password.sh
 
+# Prepare directories
+mkdir -p media
+
 # Launch everything
 docker-compose up
