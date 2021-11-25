@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
             this.fragment = fragment;
         });
 
-        this.backgroundImage = AppConfig.API_ENDPOINT + '/media/background.jpg';
+        this.backgroundImage = '/assets/background.jpg';
         this.metaTagService.updateTag({
             name: 'description',
             content: this.AppConfig.platform_teaser.fr,

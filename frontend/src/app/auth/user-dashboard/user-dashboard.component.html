@@ -68,7 +68,7 @@
                     <div class="row">
                         <img
                             *ngFor="let m_badge of main_badges"
-                            [src]="appConfig.API_ENDPOINT + m_badge.url"
+                            [src]="m_badge.url"
                             [alt]="m_badge.type + m_badge.name"
                             [ngbTooltip]="
                                 m_badge.reward_label + ' ' + m_badge.name
@@ -84,7 +84,7 @@
                     <div class="row">
                         <img
                             *ngFor="let p_badge of programs_badges"
-                            [src]="appConfig.API_ENDPOINT + p_badge.url"
+                            [src]="p_badge.url"
                             [alt]="p_badge.type + p_badge.name"
                             [ngbTooltip]="
                                 p_badge.reward_label + ' ' + p_badge.name
@@ -100,7 +100,7 @@
                     <div class="row">
                         <img
                             *ngFor="let r_badge of recognition_badges"
-                            [src]="appConfig.API_ENDPOINT + r_badge.url"
+                            [src]="r_badge.url"
                             [alt]="r_badge.type + r_badge.name"
                             [ngbTooltip]="
                                 r_badge.reward_label + ' ' + r_badge.name

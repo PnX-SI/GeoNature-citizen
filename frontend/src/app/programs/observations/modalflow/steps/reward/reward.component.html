@@ -17,7 +17,7 @@
             <img
                 [ngbTooltip]="b.type + b.name"
                 *ngFor="let b of rewards"
-                [src]="AppConfig.API_ENDPOINT + b.url"
+                [src]="b.url"
                 [alt]="b.name"
             />
         </p>
