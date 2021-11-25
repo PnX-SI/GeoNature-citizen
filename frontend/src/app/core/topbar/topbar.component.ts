@@ -47,7 +47,7 @@ export class TopbarComponent implements OnInit {
     ) {
         const tmp = localStorage.getItem('username');
         this.username = tmp ? tmp.replace(/\"/g, '') : 'Anonymous';
-        this.logoImage = '/assets/logo.png';
+        this.logoImage = 'assets/logo.png';
         this.route.data
             .pipe(
                 tap((data: { programs: Program[] }) => {
