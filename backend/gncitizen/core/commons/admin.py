@@ -22,18 +22,19 @@ logger = current_app.logger
 def taxonomy_lists():
     taxonomy_lists = []
 
-    rtlists = requests.get(taxhub_lists_url)
-    # current_app.logger.warning(rtlists)
-    if rtlists.status_code == 200:
+    taxa_lists = requests.get(taxhub_lists_url)
+    logger.debug(taxa_lists)
+    if taxa_lists.status_code == 200:
         try:
-            tlists = rtlists.json()["data"]
-            # current_app.logger.debug(tlists)
-            for tlist in tlists:
-                l = (tlist["id_liste"], tlist["nom_liste"])
-                taxonomy_lists.append(l)
+            taxa_lists = taxa_lists.json()["data"]
+            logger.debug(taxa_lists)
+            for taxa_list in taxa_lists:
+                taxonomy_lists.append(
+                    (taxa_list["id_liste"], taxa_list["nom_liste"])
+                )
         except Exception as e:
-            current_app.logger.critical(str(e))
-    # current_app.logger.debug(taxonomy_lists)
+            logger.critical(str(e))
+    logger.debug(taxonomy_lists)
     return taxonomy_lists
 
 
