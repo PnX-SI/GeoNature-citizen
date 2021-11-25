@@ -39,7 +39,7 @@ import { ObservationsService } from '../observations.service';
 import { MapService } from '../../base/map/map.service';
 
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
-import { RefGeoService } from 'src/app/api/refgeo.service';
+import { RefGeoService } from '../../../api/refgeo.service';
 
 declare let $: any;
 
