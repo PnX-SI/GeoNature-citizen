@@ -20,14 +20,17 @@ API_TAXHUB = "http://mytaxhub.org/api/"         # Replace mytaxhub.org by your T
 # URL to get info about a municipality (from a latitude and a longitude)
 API_CITY = "https://nominatim.openstreetmap.org/reverse"
 
-
-
 SECRET_KEY = 'MyS3cr3tK3y'
 CONFIRM_MAIL_SALT = 'your-secret-salt' # secret salt for corfirm mail token
 
 MEDIA_FOLDER = 'media'
 
-HCAPTCHA_SECRET_KEY=
+#HCAPTCHA_SECRET_KEY=
+
+
+# Rewards
+REWARDS_ENABLED = false
+
 
 [RESET_PASSWD]
     SUBJECT = "Link"

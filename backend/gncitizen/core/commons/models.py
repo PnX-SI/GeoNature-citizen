@@ -71,7 +71,6 @@ class CustomFormModel(TimestampMixinModel, db.Model):
         return self.name
 
 
-
 @serializable
 @geoserializable
 class GeometryModel(TimestampMixinModel, db.Model):
