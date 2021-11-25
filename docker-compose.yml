@@ -3,6 +3,7 @@ version: "3.4"
 services:
   frontend:
     container_name: citizen-front
+    image: gnc-front
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -13,6 +14,7 @@ services:
 
   backend:
     container_name: citizen-back
+    image: gnc-back
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -41,6 +43,7 @@ services:
 
   nginx:
     container_name: citizen-nginx
+    image: gnc-proxy
     build:
       context: ./nginx
       dockerfile: Dockerfile
