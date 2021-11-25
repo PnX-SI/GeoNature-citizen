@@ -82,9 +82,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     ckeditor.init_app(app)
 
     with app.app_context():
-
-
-        from gncitizen.core.badges.routes import badges_api
         from gncitizen.core.commons.routes import commons_api
         from gncitizen.core.observations.routes import obstax_api
         from gncitizen.core.ref_geo.routes import geo_api
@@ -132,8 +129,4 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     # _app = app
 
-        create_schemas(db)
-        db.create_all()
-        populate_modules(db)
-        
     return app
