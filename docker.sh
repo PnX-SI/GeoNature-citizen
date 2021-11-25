@@ -23,6 +23,11 @@ if ! docker --version; then
   newgrp docker
 fi
 
+# Check htpasswd utility is installed
+if ! htpasswd; then
+  sudo apt-get install apache2-utils
+fi
+
 # Copy configurations
 . ./install/copy_config.sh
 
