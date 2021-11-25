@@ -47,7 +47,7 @@ def get_rewards(id):
     classes = {}
     families = {}
     for query in taxon_query:
-        taxon = get_taxon_class_from_cdnom(cd_nom=query.cd_nom)
+        taxon = get_specie_from_cd_nom(cd_nom=query.cd_nom)
         class_ = taxon.get('classe', '')
         family = taxon.get('famille', '')
         if classes.get(class_) is not None:
@@ -154,10 +154,6 @@ def get_rewards(id):
                                 awarded_badges.append(badge)
                                 id = id + 1
     return jsonify(awarded_badges)
-
-
-def get_taxon_class_from_cdnom(cd_nom: list) -> list:
-    return get_specie_from_cd_nom(cd_nom=cd_nom)
 
 
 def monthdelta(d1, d2):
