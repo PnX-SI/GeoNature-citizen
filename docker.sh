@@ -1,3 +1,5 @@
+DIR=$(pwd)
+
 # Check settings file exists
 ./install/check_settings.sh
 
