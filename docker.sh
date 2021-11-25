@@ -25,7 +25,7 @@ fi
 
 # Check htpasswd utility is installed
 if ! htpasswd; then
-  sudo apt-get install apache2-utils
+  sudo apt-get -y install apache2-utils
 fi
 
 # Copy configurations
