@@ -4,7 +4,7 @@
 from flask import current_app
 import requests
 
-from gncitizen.utils.env import MUNICIPALITY_URL
+from gncitizen.utils.env import API_CITY
 
 # Get municipality id
 #       newobs.municipality = get_municipality_id_from_wkb_point(
@@ -45,7 +45,7 @@ def get_municipality_id_from_wkb(wkb):
 def get_municipality_from_lat_long(lat: int, lon: int) -> dict:
     municipality = {}
     try:
-        resp = requests.get(f'{MUNICIPALITY_URL}?lat={lat}&lon={lon}&format=json',timeout=10)
+        resp = requests.get(f'{API_CITY}?lat={lat}&lon={lon}&format=json',timeout=10)
         if resp.ok:
             municipality = resp.json().get('address', {})
     except Exception as e:
