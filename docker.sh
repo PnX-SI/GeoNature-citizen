@@ -37,5 +37,7 @@ fi
 # Prepare directories
 mkdir -p media
 
-# Launch everything
-docker-compose up
+# Down everything
+docker-compose down
+# Launch everything in detached mode
+docker-compose up -d
