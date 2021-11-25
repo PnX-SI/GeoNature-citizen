@@ -48,6 +48,19 @@ services:
     networks:
       - citizen-kane
 
+  nginx:
+    container_name: citizen-nginx
+    image: nginx
+    depends_on:
+      - frontend
+    ports:
+      - "${NGINX_PORT-80}:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/.htpasswd:/etc/nginx/conf/.htpasswd
+    networks:
+      - citizen-kane
+
 networks:
   citizen-kane:
     external: false
