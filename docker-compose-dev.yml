@@ -5,30 +5,39 @@ services:
     container_name: citizen-front
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app
     depends_on:
       - backend
     networks:
       - citizen-kane
+    ports:
+      - "${FRONT_PORT-4200}:${FRONT_PORT-4200}"
 
   backend:
     container_name: citizen-back
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
+      - ./backend:/app
       - ./VERSION:/VERSION
       - ./config:/config
       - ./external_modules:/external_modules
       - ./media:/media
     depends_on:
       - db
+    ports:
+      - "${API_PORT-5002}:${API_PORT-5002}"
     networks:
       - citizen-kane
 
   db:
     container_name: citizen-db
     image: postgis/postgis:10-2.5-alpine
+    ports:
+      - "${DB_PORT-8465}:${DB_PORT-5432}"
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_DB=${DB_NAME-geocitizen}
@@ -41,14 +50,13 @@ services:
 
   nginx:
     container_name: citizen-nginx
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: nginx
     depends_on:
       - frontend
     ports:
       - "${NGINX_PORT-80}:80"
     volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./config/backoffice_htpasswd:/etc/nginx/conf/.htpasswd
     networks:
       - citizen-kane
