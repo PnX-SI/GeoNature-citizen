@@ -1,3 +1,3 @@
 echo "Creating Citizen database..."
-sudo -u postgres -s createdb -O $user_pg $pg_dbname -T template0 -E UTF-8 -l $my_local
+echo "SELECT 'CREATE DATABASE $pg_dbname' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '$pg_dbname')\gexec" | sudo -u postgres psql
 sudo -u postgres -s psql -d $pg_dbname -c "CREATE EXTENSION IF NOT EXISTS postgis;"
