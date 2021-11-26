@@ -13,7 +13,7 @@ services:
     networks:
       - citizen-kane
     ports:
-      - "${FRONT_PORT-4200}:${FRONT_PORT-4200}"
+      - "${FRONT_PORT-4000}:${FRONT_PORT-4000}"
 
   backend:
     container_name: citizen-back

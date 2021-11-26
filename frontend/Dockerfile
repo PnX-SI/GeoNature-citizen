@@ -16,5 +16,4 @@ COPY . .
 
 RUN npm run build:i18n-ssr
 
-ENV PORT=4200
 CMD ["npm", "run", "serve:ssr"]
