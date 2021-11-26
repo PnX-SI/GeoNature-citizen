@@ -335,11 +335,13 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     updateMunicipality() {
-        this._refGeoService
-            .getMunicipality(this.coords.y, this.coords.x)
-            .toPromise()
-            .then((municipality) => (this.municipality = municipality))
-            .catch((err) => console.log(err));
+        if (this.coords) {
+            this._refGeoService
+                .getMunicipality(this.coords.y, this.coords.x)
+                .toPromise()
+                .then((municipality) => (this.municipality = municipality))
+                .catch((err) => console.log(err));
+        }
     }
 
     intiForm() {
