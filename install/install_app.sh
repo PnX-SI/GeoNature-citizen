@@ -52,9 +52,6 @@ cd ${DIR}
 #adduser synthese www-data
 #fi
 
-echo "export PATH=\$PATH:~/.local/bin" >>~/.bashrc
-exec $SHELL
-
 python3 -m pip install poetry --user
 
 cd ${DIR}
@@ -122,9 +119,6 @@ sudo apache2ctl restart
 # Prise en compte de la nouvelle config Supervisor
 sudo supervisorctl reread
 sudo supervisorctl reload
-
-echo "install municipalities"
-./data/ref_geo.sh
 
 # Installation de Taxhub si demandée
 if $install_taxhub; then
