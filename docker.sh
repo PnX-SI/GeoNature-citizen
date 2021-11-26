@@ -35,10 +35,18 @@ fi
 . config/settings.ini
 # Overwrite pg_db_name variable since the dbname is the
 # docker-compose service
-pg_dbname=citizen-db
+pg_host=citizen-db
 
 # Copy configurations
 . ./install/copy_config.sh
+
+# Generate .env file for docker-compose to have the correct
+# infos about the database
+echo "Generating .env file"
+echo "DB_NAME=${pg_dbname}
+DB_USER=${user_pg}
+DB_PASSWORD=${user_pg_pass}
+NGINX_PORT=80" > .env
 
 # Generate password
 . ./install/generate_password.sh
