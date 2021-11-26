@@ -32,5 +32,4 @@ WORKDIR /app
 COPY --from=poetry $PYSETUP_PATH $PYSETUP_PATH
 COPY . .
 
-CMD /bin/bash
 CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:5002", "--timeout=30", "--reload", "wsgi:app"]
