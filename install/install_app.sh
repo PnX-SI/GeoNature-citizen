@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 cd $(dirname $(dirname "${BASH_SOURCE[0]:-$0}"))
 
 DIR=$(pwd)
@@ -24,10 +26,10 @@ echo $(python3 --version)
 sudo service supervisor start && sudo supervisorctl stop all
 
 # Create the database
-. ./create_db.sh
+. ./install/create_db.sh
 
 # Add a new user in database
-. ./create_db_user.sh
+. ./install/create_db_user.sh
 
 #Maj  de pip
 pip3 install --upgrade pip
@@ -77,7 +79,7 @@ if [ $server_side = "true" ]; then
   sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
   
   cd ${DIR}
-  . /install/generate_password.sh
+  . ./install/generate_password.sh
 
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
@@ -102,6 +104,9 @@ cd $DIR
 mkdir -p $DIR/media
 # cp -r $DIR/frontend/src/assets/* $DIR/media
 
+# Creation des repertoires de log
+mkdir -p var/log
+
 touch init_done
 
 #Création de la conf supervisor
@@ -118,14 +123,14 @@ sudo apache2ctl restart
 sudo supervisorctl reread
 sudo supervisorctl reload
 
+echo "install municipalities"
+./data/ref_geo.sh
+
 # Installation de Taxhub si demandée
 if $install_taxhub; then
   echo "Installing taxhub"
-  ./install_taxhub.sh
+  . ./install/install_taxhub.sh
 fi
-
-# Creation des repertoires de log
-mkdir -p var/log
 
 echo "End of installation
 You can now access to GeoNature-citizen at ${my_url}
