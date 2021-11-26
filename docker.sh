@@ -1,3 +1,6 @@
+# Exit on error
+set -e
+
 DIR=$(pwd)
 
 # Check settings file exists
@@ -24,9 +27,15 @@ if ! docker --version; then
 fi
 
 # Check htpasswd utility is installed
-if ! htpasswd; then
+if ! command -v htpasswd &> /dev/null
+then
   sudo apt-get -y install apache2-utils
 fi
+# Source config
+. config/settings.ini
+# Overwrite pg_db_name variable since the dbname is the
+# docker-compose service
+pg_dbname=citizen-db
 
 # Copy configurations
 . ./install/copy_config.sh
