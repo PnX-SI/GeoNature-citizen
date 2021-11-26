@@ -9,8 +9,8 @@ DIR=$(pwd)
 # Check if docker installed
 if ! docker --version; then
   # https://docs.docker.com/engine/install/debian/
-  sudo apt-get update
-  sudo apt-get install \
+  sudo apt-get update -y
+  sudo apt-get install -y \
       ca-certificates \
       curl \
       gnupg \
@@ -19,8 +19,8 @@ if ! docker --version; then
   echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
     $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  sudo apt-get update
-  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose
+  sudo apt-get update -y
+  sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose
   sudo groupadd docker
   sudo usermod -aG docker $USER
   newgrp docker
