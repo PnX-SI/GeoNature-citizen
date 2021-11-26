@@ -13,7 +13,7 @@ sudo apt update && sudo apt -y install python2.7 git gcc curl gunicorn python-se
 sudo apt -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl libbz2-dev
 sudo apt -y install apache2 python-dev libpq-dev libgeos-dev supervisor unzip virtualenv libcurl4-openssl-dev libssl-dev
 sudo apt -y install build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev
-
+sudo apt -y install postgresql postgis
 # RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME |cut -d "=" -f2)
 sudo apt install python3 python3-dev python3-pip -y
 
@@ -22,6 +22,13 @@ sudo apt-get clean
 echo $(python3 --version)
 
 sudo service supervisor start && sudo supervisorctl stop all
+
+# Create the database
+. ./create_db.sh
+
+# Add a new user in database
+. ./create_db_user.sh
+
 #Maj  de pip
 pip3 install --upgrade pip
 
@@ -103,6 +110,7 @@ sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_api-service.co
 sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_api-service.conf
 
 # Prise en compte de la nouvelle config Apache
+sudo a2enmod proxy_http
 sudo a2ensite gncitizen.conf
 sudo apache2ctl restart
 
@@ -115,6 +123,9 @@ if $install_taxhub; then
   echo "Installing taxhub"
   ./install_taxhub.sh
 fi
+
+# Creation des repertoires de log
+mkdir -p var/log
 
 echo "End of installation
 You can now access to GeoNature-citizen at ${my_url}
