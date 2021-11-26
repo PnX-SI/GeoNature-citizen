@@ -3,7 +3,7 @@
     "version": "0.99.4-dev",
     "scripts": {
         "ng": "ng",
-        "start": "ng serve --poll 2000 --host 0.0.0.0",
+        "start": "ng serve --poll 2000 --host 0.0.0.0 --port 4000",
         "start:fr": "ng serve --poll 2000 --configuration=fr",
         "start:en": "ng serve --poll 2000 --configuration=en",
         "build": "ng build",
