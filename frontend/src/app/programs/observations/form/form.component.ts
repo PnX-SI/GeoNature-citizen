@@ -487,12 +487,14 @@ export class ObsFormComponent implements AfterViewInit {
         if (isNaN(cd_nom)) {
             cd_nom = Number.parseInt(taxon.cd_nom);
         }
+        // Need to convert the defined interface to an array to have
+        // access to the filter function
         const tempTaxa = this.taxa as Array<unknown> as Array<TempTaxa>;
         const taxon_name: TempTaxa = tempTaxa.filter(
             (t) => t.cd_nom == cd_nom
         )[0];
         formData.append('cd_nom', cd_nom.toString());
-        formData.append('taxon_name', taxon_name.nom_francais);
+        formData.append('nom_francais', taxon_name.nom_francais);
         const obsDateControlValue = NgbDate.from(
             this.obsForm.controls.date.value
         );
