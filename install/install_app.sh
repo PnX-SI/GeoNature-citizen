@@ -6,7 +6,7 @@ cd $(dirname $(dirname "${BASH_SOURCE[0]:-$0}"))
 DIR=$(pwd)
 
 # Vérification de la configuration et copie du settings.ini
-./install/check_settings.sh
+. ./install/check_settings.sh
 
 . config/settings.ini
 
@@ -55,7 +55,7 @@ cd ${DIR}
 python3 -m pip install poetry --user
 
 cd ${DIR}
-./install/copy_config.sh
+. ./install/copy_config.sh
 cd ${DIR}/frontend
 
 #Install and build
