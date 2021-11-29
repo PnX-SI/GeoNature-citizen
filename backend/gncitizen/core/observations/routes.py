@@ -876,7 +876,7 @@ def update_observation():
     try:
         update_data = request.form
         update_obs = {}
-        for prop in ["cd_nom", "count", "comment", "date", "municipality"]:
+        for prop in ["cd_nom", "name", "count", "comment", "date", "municipality"]:
             update_obs[prop] = update_data[prop]
         try:
             _coordinates = json.loads(update_data["geometry"])

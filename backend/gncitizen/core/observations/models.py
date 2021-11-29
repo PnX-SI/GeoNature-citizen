@@ -30,7 +30,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     )
     cd_nom = db.Column(db.Integer, nullable=False)
     # String(1000) taken from taxonomie.bib_noms:
-    nom_francais = db.Column(db.String(1000), nullable=False)
+    name = db.Column(db.String(1000), nullable=False)
     date = db.Column(db.Date, nullable=False)
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
