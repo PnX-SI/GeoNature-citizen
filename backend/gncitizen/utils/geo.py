@@ -27,11 +27,15 @@ def get_municipality_id_from_wkb(wkb):
                                         lon=wkb["x"])
         # Chaining if conditions since the nominatim API does not return
         # the same attributes depending on the "city"
-        municipality_id = municipality.get('city', None)
-        if municipality_id is None:
-            municipality_id = municipality.get('town', None)
-            if municipality_id is None:
-                municipality_id = municipality.get('village', 'Non trouve')
+        available_city_keys = ['village',
+                               'town',
+                               'municipality',
+                               'city']
+        municipality_id = None
+        i = 0
+        while municipality_id is None and i < len(available_city_keys) - 1:
+            municipality_id = municipality.get(available_city_keys[i], None)
+            i += 1
     except Exception as e:
         current_app.logger.debug(
             "[get_municipality_id_from_wkb_point] Can't get municipality id: {}".format(

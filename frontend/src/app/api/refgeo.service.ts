@@ -22,6 +22,7 @@ type Address = {
     city: string | null;
     town: string | null;
     village: string | null;
+    municipality: string | null;
 };
 
 @Injectable({
@@ -39,12 +40,14 @@ export class RefGeoService {
             .pipe(
                 map((municipality) => {
                     const address = municipality.address;
-                    const city = address.city
-                        ? address.city
+                    const city = address.village
+                        ? address.village
                         : address.town
                         ? address.town
-                        : address.village
-                        ? address.village
+                        : address.municipality
+                        ? address.municipality
+                        : address.city
+                        ? address.city
                         : 'Non trouvé';
                     return city;
                 })
