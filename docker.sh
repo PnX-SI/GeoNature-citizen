@@ -52,6 +52,7 @@ NGINX_PORT=80" > .env
 
 # Prepare directories
 mkdir -p media
+cp -r frontend/src/assets/* media/.
 
 # Down everything
 docker-compose down
