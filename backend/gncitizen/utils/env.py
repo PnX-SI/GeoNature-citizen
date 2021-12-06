@@ -114,7 +114,7 @@ taxhub_url = valid_api_url(app_conf.get("API_TAXHUB", ""))
 
 taxhub_lists_url = taxhub_url + "biblistes/"
 
-API_CITY = app_conf.get("API_CITY", "")
+API_CITY = app_conf.get("API_CITY", "https://nominatim.openstreetmap.org/reverse")
 
 
 def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):
