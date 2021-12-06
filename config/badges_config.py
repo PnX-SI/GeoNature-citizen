@@ -7,17 +7,17 @@ REWARDS = [
             {
                 "name": "Bronze",
                 "min_obs": 10,
-                "url": "assets/badges_Novice.svg"
+                "url": "/media/badges_Novice.svg"
             },
             {
                 "name": "Argent",
                 "min_obs": 20,
-                "url": "assets/badges_Confirme.svg"
+                "url": "/media/badges_Confirme.svg"
             },
             {
                 "name": "Or",
                 "min_obs": 30,
-                "url": "assets/badges_Expert.svg"
+                "url": "/media/badges_Expert.svg"
             }
         ]
     },
@@ -29,17 +29,17 @@ REWARDS = [
             {
                 "name": "Oeuf",
                 "min_date": "1d",
-                "url": "assets/badges_Novice.svg"
+                "url": "/media/badges_Novice.svg"
             },
             {
                 "name": "Chenille",
                 "min_date": "1m",
-                "url": "assets/badges_Confirme.svg"
+                "url": "/media/badges_Confirme.svg"
             },
             {
                 "name": "Papillon",
                 "min_date": "1y",
-                "url": "assets/badges_Expert.svg"
+                "url": "/media/badges_Expert.svg"
             }
         ]
     },
@@ -51,17 +51,17 @@ REWARDS = [
             {
                 "name": "Bronze",
                 "min_obs": 3,
-                "url": "assets/badges_Novice.svg"
+                "url": "/media/badges_Novice.svg"
             },
             {
                 "name": "Argent",
                 "min_obs": 5,
-                "url": "assets/badges_Confirme.svg"
+                "url": "/media/badges_Confirme.svg"
             },
             {
                 "name": "Or",
                 "min_obs": 10,
-                "url": "assets/badges_Expert.svg"
+                "url": "/media/badges_Expert.svg"
             }
         ]
     },
@@ -73,17 +73,17 @@ REWARDS = [
             {
                 "name": "Bronze",
                 "min_obs": 1,
-                "url": "assets/badges_Novice.svg"
+                "url": "/media/badges_Novice.svg"
             },
             {
                 "name": "Argent",
                 "min_obs": 3,
-                "url": "assets/badges_Confirme.svg"
+                "url": "/media/badges_Confirme.svg"
             },
             {
                 "name": "Or",
                 "min_obs": 6,
-                "url": "assets/badges_Expert.svg"
+                "url": "/media/badges_Expert.svg"
             }
         ]
     },
@@ -95,17 +95,17 @@ REWARDS = [
             {
                 "name": "Bronze",
                 "min_obs": 1,
-                "url": "assets/badges_Novice.svg"
+                "url": "/media/badges_Novice.svg"
             },
             {
                 "name": "Argent",
                 "min_obs": 3,
-                "url": "assets/badges_Petit-mam.svg"
+                "url": "/media/badges_Petit-mam.svg"
             },
             {
                 "name": "Or",
                 "min_obs": 6,
-                "url": "assets/badges_Grand-mam.svg"
+                "url": "/media/badges_Grand-mam.svg"
             }
         ]
     },
@@ -117,17 +117,17 @@ REWARDS = [
             {
                 "name": "Bronze",
                 "min_obs": 1,
-                "url": "assets/badges_Novice.svg"
+                "url": "/media/badges_Novice.svg"
             },
             {
                 "name": "Argent",
                 "min_obs": 3,
-                "url": "assets/badges_Oiseau.svg"
+                "url": "/media/badges_Oiseau.svg"
             },
             {
                 "name": "Or",
                 "min_obs": 6,
-                "url": "assets/badges_Oiseau-proie.svg"
+                "url": "/media/badges_Oiseau-proie.svg"
             }
         ]
     },
@@ -139,17 +139,17 @@ REWARDS = [
             {
                 "name": "Bronze",
                 "min_obs": 1,
-                "url": "assets/badges_Humide.svg"
+                "url": "/media/badges_Humide.svg"
             },
             {
                 "name": "Argent",
                 "min_obs": 3,
-                "url": "assets/badges_Humide.svg"
+                "url": "/media/badges_Humide.svg"
             },
             {
                 "name": "Or",
                 "min_obs": 6,
-                "url": "assets/badges_Humide.svg"
+                "url": "/media/badges_Humide.svg"
             }
         ]
     }

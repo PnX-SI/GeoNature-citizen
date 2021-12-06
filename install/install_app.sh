@@ -99,7 +99,7 @@ cd $DIR
 
 # Copy main medias to media
 mkdir -p $DIR/media
-# cp -r $DIR/frontend/src/assets/* $DIR/media
+cp -r $DIR/frontend/src/assets/* $DIR/media
 
 # Creation des repertoires de log
 mkdir -p var/log

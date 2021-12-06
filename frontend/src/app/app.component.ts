@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.appConfig = AppConfig;
-        this.backgroundImage = 'assets/background.jpg';
+        this.backgroundImage = AppConfig.API_ENDPOINT + '/media/background.jpg';
         this.metaTagService.addTags([
             {
                 name: 'keywords',
