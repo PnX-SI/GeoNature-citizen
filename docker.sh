@@ -55,7 +55,7 @@ mkdir -p media
 cp -r frontend/src/assets/* media/.
 
 # Down everything
-docker-compose down
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
 # Launch everything in detached mode
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
