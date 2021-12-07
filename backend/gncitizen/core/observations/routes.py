@@ -283,8 +283,15 @@ def post_observation():
             if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
                 newobs.obs_txt = "Anonyme"
 
+        # If municipality is not provided: call API_CITY
         if not newobs.municipality:
             newobs.municipality = get_municipality_id_from_wkb(_coordinates)
+        
+        # If taxon name is not provided: call taxhub
+        if not newobs.name:
+            taxon = get_specie_from_cd_nom(newobs.cd_nom)
+            newobs.name = taxon.get('nom_vern', '')
+
         newobs.uuid_sinp = uuid.uuid4()
         db.session.add(newobs)
         db.session.commit()
