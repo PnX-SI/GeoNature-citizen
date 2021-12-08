@@ -43,7 +43,7 @@ sqlalchemy==1.4.15; (python_version >= "2.7" and python_full_version < "3.0.0") 
 toml==0.10.2; (python_version >= "2.6" and python_full_version < "3.0.0") or (python_full_version >= "3.3.0")
 typing-extensions==3.10.0.0; python_version >= "3.6" and python_full_version < "3.0.0" and python_version < "3.8" or python_full_version >= "3.6.0" and python_version < "3.8" and python_version >= "3.6"
 urllib3==1.26.4; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version < "4"
-utils-flask-sqlalchemy @ git+https://github.com/hypsug0/Utils-Flask-SQLAlchemy@master
+utils-flask-sqlalchemy @ git+https://github.com/PnX-SI/Utils-Flask-SQLAlchemy@master
 utils-flask-sqlalchemy-geo @ git+https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo@0.2.1
 werkzeug==2.0.0; python_version >= "3.6" and python_full_version < "3.0.0" and python_version < "4" or python_full_version >= "3.5.0" and python_version >= "3.6" and python_version < "4"
 wtforms==2.3.3
