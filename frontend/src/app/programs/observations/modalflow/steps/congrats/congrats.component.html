@@ -1,22 +1,33 @@
 <!-- Observation ajoutée -->
 <div class="modal-body obs-added">
-  <div>
-    <!-- FIXME: hardcoded backend media url -->
-    <img
-      [src]="
-        obs.images[0]
-          ? AppConfig.API_ENDPOINT + '/media/' + obs.images[0]
-          : 'assets/Azure-Commun-019.JPG'
-      "
-    />
-  </div>
-  <h5 i18n="Congrats|Félicitations !">Félicitations !</h5>
-  <h6 i18n="Congrats|Votre observation a bien été ajoutée !">
-    Votre observation a bien été ajoutée !
-  </h6>
-  <p>{{ obs.common_name }}</p>
-  <span i18n="Congrats|observé par OBSERVATEUR le DATE "
-    >Observé par {{ username || "Anonyme" }} <br />
-    le {{ obs.date }}</span
-  >
+    <div>
+        <!-- FIXME: hardcoded backend media url -->
+        <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="closeModal()"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <img
+            class="default-img"
+            [src]="
+                obs.images[0]
+                    ? AppConfig.API_ENDPOINT + '/media/' + obs.images[0]
+                    : data.default_image
+                    ? data.default_image
+                    : 'assets/default_program.jpg'
+            "
+        />
+    </div>
+    <h5 i18n="Congrats@@congrats">Félicitations !</h5>
+    <h6 i18n="Congrats message@@congratsMessage">
+        Votre observation a bien été ajoutée !
+    </h6>
+    <p >{{ obs.taxref?.nom_vern }}</p>
+    <span i18n="Obs date and observer@@obsDateObserver"
+        >Observé par {{ username || 'Anonyme' }} <br />
+        le {{ obs.date }}</span
+    >
 </div>

@@ -1,37 +1,22 @@
 import logging
 import os
-
-# import datetime
-
+import sys
 
 from flask import Flask, current_app
 from flask_cors import CORS
 
-from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger, admin
-from gncitizen.utils.sqlalchemy import create_schemas
+from gncitizen import __version__
+from gncitizen.utils.env import (
+    admin,
+    ckeditor,
+    db,
+    jwt,
+    list_and_import_gnc_modules,
+    swagger,
+)
+from gncitizen.utils.init_data import create_schemas, populate_modules
 
-logger = logging.getLogger()
-logger.setLevel(10)
 basedir = os.path.abspath(os.path.dirname(__file__))
-
-app = Flask(__name__)
-
-app.debug = True
-if app.config["DEBUG"]:
-    import colorlog
-
-    handler = colorlog.StreamHandler()
-    handler.setFormatter(
-        colorlog.ColoredFormatter(
-            "%(log_color)s %(asctime)s %(levelname)s:%(name)s:%(message)s [in %(pathname)s:%(lineno)d]"
-        )
-    )
-
-    logger = colorlog.getLogger()
-    logger.addHandler(handler)
-
-    logging.basicConfig()
-    logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
 
 
 class ReverseProxied(object):
@@ -64,48 +49,71 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     app = Flask(__name__)
     app.config.update(config)
+    if app.config["DEBUG"]:
+        import coloredlogs
+        from flask.logging import default_handler
+
+        app.config["SQLALCHEMY_ECHO"] = True
+        logger = logging.getLogger("werkzeug")
+
+        coloredlogs.install(
+            level=logging.DEBUG,
+            fmt="%(asctime)s %(hostname)s %(name)s[%(process)d] [in %(pathname)s:%(lineno)d] %(levelname)s %(message)s",
+        )
+        logger.removeHandler(default_handler)
+
+        # for l in logging.Logger.manager.loggerDict.values():
+        #     if hasattr(l, "handlers"):
+        #         l.handlers = [handler]
+
+    # else:
+    #     logging.basicConfig()
+    #     logger = logging.getLogger()
+    #     logger.setLevel(logging.INFO)
+    logging.getLogger("sqlalchemy.engine").setLevel(
+        getattr(sys.modules["logging"], app.config["SQLALCHEMY_DEBUG_LEVEL"])
+    )
+
+    CORS(app, supports_credentials=True)
+    # app.config['PROPAGATE_EXCEPTIONS'] = False
+    # ... brings back those cors headers on error response in debug mode
+    # to trace client-side error handling
+    # but drops the embedded debugger ¯\_(ツ)_/¯
+    # https://github.com/corydolphin/flask-cors/issues/67
+    # https://stackoverflow.com/questions/29825235/getting-cors-headers-in-a-flask-500-error
 
     # Bind app to DB
     db.init_app(app)
-
     # JWT Auth
     jwt.init_app(app)
-    # wip token refresh Warning not < 130 (see frontend/auth/interceptor)!!!!
-    # app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=130)
-
-    # Swagger for api documentation
     swagger.init_app(app)
-
     admin.init_app(app)
+    ckeditor.init_app(app)
 
     with app.app_context():
-        # db.create_all()
 
-        from gncitizen.core.users.routes import routes
+        create_schemas(db)
+        db.create_all()
+        populate_modules(db)
 
-        app.register_blueprint(routes, url_prefix=url_prefix)
+        from gncitizen.core.badges.routes import badges_api
+        from gncitizen.core.commons.routes import commons_api
+        from gncitizen.core.observations.routes import obstax_api
+        from gncitizen.core.ref_geo.routes import geo_api
+        from gncitizen.core.sites.routes import sites_api
+        from gncitizen.core.taxonomy.routes import taxo_api
+        from gncitizen.core.users.routes import users_api
 
-        from gncitizen.core.commons.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix)
-
-        from gncitizen.core.observations.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix)
-
-        from gncitizen.core.ref_geo.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix)
-
-        from gncitizen.core.taxonomy.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix)
-
-        from gncitizen.core.sites.routes import routes
-
-        app.register_blueprint(routes, url_prefix=url_prefix + "/sites")
+        app.register_blueprint(users_api, url_prefix=url_prefix)
+        app.register_blueprint(commons_api, url_prefix=url_prefix)
+        app.register_blueprint(obstax_api, url_prefix=url_prefix)
+        app.register_blueprint(geo_api, url_prefix=url_prefix)
+        app.register_blueprint(badges_api, url_prefix=url_prefix)
+        app.register_blueprint(taxo_api, url_prefix=url_prefix)
+        app.register_blueprint(sites_api, url_prefix=url_prefix + "/sites")
 
         CORS(app, supports_credentials=True)
+
         # Chargement des mosdules tiers
         if with_external_mods:
             for conf, manifest, module in list_and_import_gnc_modules(app):
@@ -114,7 +122,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 except Exception as e:
                     current_app.logger.debug(e)
                     prefix = url_prefix
-                print(prefix)
                 app.register_blueprint(
                     module.backend.blueprint.blueprint, url_prefix=prefix
                 )
@@ -127,9 +134,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 module.backend.blueprint.blueprint.config = conf
                 app.config[manifest["module_name"]] = conf
 
-        _app = app
-
-        create_schemas(db)
-        db.create_all()
+        # _app = app
 
     return app

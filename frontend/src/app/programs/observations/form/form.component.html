@@ -1,176 +1,323 @@
 <form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
-  <!--
-    <div class="alert alert-primary rounded-0" role="alert">
-      {{ obsForm.value | json }}
-    </div>
-  -->
-
-  <div class="form-row">
-    <div class="form-group col-lg-8">
-      <input formControlName="id_program" type="hidden" />
-      <h5 class="m-0"><label for="cd_nom" i18n class="m-0"
-        >{ autocomplete, select, isOn {Rechercher une esp&egrave;ce} isOff
-        {S&eacute;lectionnez une esp&egrave;ce}}</label
-      ></h5>
-      <!-- TAXON SELECT -->
-      <div
+    <div
         *ngIf="
-          taxaCount >= taxonSelectInputThreshold &&
-          taxaCount < taxonAutocompleteInputThreshold
+            taxaCount == 1 &&
+            taxa[0].medias &&
+            !!taxa[0].medias.length &&
+            taxonDisplayImageWhenUnique
         "
-        class="d-inline-flex toolbar"
-      >
-        <select formControlName="cd_nom" class="form-control rounded-0">
-          <option
-            *ngFor="let s of (surveySpecies$ | async)"
-            [value]="s.taxref.cd_nom"
-          >
-            {{ s.nom.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
-            >)
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <!-- TAXON PICKER -->
-    <div
-      *ngIf="taxaCount < taxonSelectInputThreshold"
-      class="form-group col-lg-12 d-inline-flex obs-images"
+        class="mono-taxa-img"
     >
-      <div
-        class="scroll-img"
-        [class.ng-valid]="selectedTaxon"
-        [class.ng-invalid]="!selectedTaxon"
-      >
-        <div *ngFor="let s of (surveySpecies$ | async)">
-          <div class="obs-img" [class.selected]="isTaxonSelected(s)">
-            <img
-              src="{{(s.medias?.url)?s.medias.url:'assets/Azure-Commun-019.JPG'}}"
-              alt="{{s.nom.nom_francais}}"
-              (click)="onTaxonSelected(s)"
-            />
-            <span>{{ s.nom.nom_francais }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAXON AUTOCOMPLETE -->
-    <div
-      *ngIf="taxaCount >= taxonAutocompleteInputThreshold"
-      class="form-group col-lg-8"
-    >
-      <ng-template #rt let-r="result" let-t="term">
-        <img [src]="r.icon" class="mr-1" style="height: 1em;" />
-        <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
-      </ng-template>
-      <input
-        id="cd_nom"
-        type="text"
-        class="form-control rounded-0"
-        formControlName="cd_nom"
-        i18n-placeholder
-        placeholder="Nom latin ou vernaculaire ou cd_ref"
-        [editable]="false"
-        [ngbTypeahead]="inputAutoCompleteSearch"
-        [resultTemplate]="rt"
-        [inputFormatter]="inputAutoCompleteFormatter"
-      />
-    </div>
-    <!-- END TAXON SELECTION -->
-    <div class="form-group col-lg-6 col-md-12 half">
-      <h5 i18n>Informations complémentaires</h5>
-      <div class="row">
-        <div class="form-group col-lg-6">
-          <div class="input-group">
-            <label for="date" i18n>Date de l'observation</label>
-            <input
-              formControlName="date"
-              type="date"
-              class="form-control rounded-0"
-              i18n-placeholder
-              placeholder="jj/mm/aaaa"
-              ngbDatepicker
-              #d="ngbDatepicker"
-              [markDisabled]="disabledDates"
-              (click)="d.toggle()"
-            />
-          </div>
-        </div>
-        <div class="form-group col-lg-6">
-          <label for="counting" i18n>Dénombrement</label>
-          <input
-            type="number"
-            min="1"
-            i18n-placeholder
-            placeholder="Nombre"
-            data-bind="value:replyNumber"
-            class="form-control rounded-0"
-            formControlName="count"
-            id="counting"
-            required
-          />
-        </div>
-      </div>
-
-      <div class="form-group col-lg-12">
-        <label for="comment" i18n>Commentaire</label>
-        <textarea
-          i18n-placeholder
-          placeholder="Votre commentaire"
-          class="form-control rounded-0"
-          rows="4"
-          id="comment"
-          formControlName="comment"
-        ></textarea>
-      </div>
-
-      <div class="form-group col-lg-12 btn position-relative">
-        <label for="photo" i18n
-          ><i class="fa fa-camera"></i>Ajouter une photo</label
-        >
-        <input
-          #photo
-          id="photo"
-          name="photo"
-          formControlName="photo"
-          class="inputfile"
-          type="file"
-          accept="image/*"
-          capture="environment"
+        <img
+            [src]="
+                taxa[0].medias && !!taxa[0].medias.length
+                    ? AppConfig.API_TAXHUB +
+                      '/tmedias/thumbnail/' +
+                      taxa[0].medias[0].id_media +
+                      '?w=800'
+                    : 'assets/default_image.png'
+            "
+            [alt]="
+                !!taxa[0].nom_francais
+                    ? taxa[0].nom_francais
+                    : taxa[0].taxref.nom_vern
+            "
+            class="object-fit-cover"
         />
-      </div>
     </div>
+    <div class="form-row">
+        <div class="form-group col-lg-8">
+            <input formControlName="id_program" type="hidden" />
+            <h5 *ngIf="taxaCount > 1" class="m-0">
+                <label for="cd_nom" class="m-0"
+                    >{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
+                    isOff {S&eacute;lectionnez une esp&egrave;ce}}</label
+                >
+            </h5>
+            <!-- TAXON SELECT -->
 
-    <div class="form-group col-lg-6 col-md-12 half">
-      <h5 i18n>Où avez-vous observé cette espèce ?</h5>
-      <div class="position-relative">
-        <div class="zoom-alert" *ngIf="hasZoomAlert">
-          <div class="mb-2 text-center" i18n>
-            Veuillez zoomer pour localiser votre observation.<br />
-            <span>(zoom min: {{ MAP_CONFIG.ZOOM_LEVEL_RELEVE }})</span>
-          </div>
-          <button class="btn" (click)="hasZoomAlert = false">OK</button>
+            <div
+                *ngIf="
+                    taxaCount >= taxonSelectInputThreshold &&
+                    taxaCount < taxonAutocompleteInputThreshold
+                "
+                class="d-inline-flex toolbar"
+            >
+                <select formControlName="cd_nom" class="form-control rounded-0">
+                    <option
+                        *ngFor="let s of surveySpecies$ | async"
+                        [value]="s.taxref.cd_nom"
+                    >
+                        {{
+                            !!s.nom_francais
+                                ? s.nom_francais
+                                : s.taxref.nom_vern
+                        }}
+                        <span *ngIf="AppConfig.taxonDisplaySciName"
+                            >(<i>{{ s.taxref.nom_complet }}</i
+                            >)</span
+                        >
+                    </option>
+                </select>
+            </div>
         </div>
+        <!-- TAXON PICKER -->
         <div
-          id="formMap"
-          class="col-lg-12"
-          [class.ng-invalid]="obsForm.get('geometry').invalid"
-          [class.ng-valid]="obsForm.get('geometry').valid"
-          i18n-data-observation-zoom-statement-warning
-          data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
-        ></div>
-      </div>
-      <input
-        formControlName="geometry"
-        type="hidden"
-        id="geometry"
-        name="geometry"
-        #geometry
-        class="col-lg-12"
-      />
-      <p class="text-right m-0"><em>Cliquez sur la carte pour renseigner le lieu précis de votre observation</em></p>
+            *ngIf="taxaCount < taxonSelectInputThreshold && taxaCount > 1"
+            class="form-group col-lg-12 d-inline-flex obs-images"
+        >
+            <div
+                class="scroll-img"
+                [class.ng-valid]="selectedTaxon"
+                [class.ng-invalid]="!selectedTaxon"
+            >
+                <div *ngFor="let s of surveySpecies$ | async">
+                    <div
+                        class="obs-img default-img"
+                        [class.selected]="isSelectedTaxon(s)"
+                    >
+                        <img
+                            [src]="
+                                s.medias && !!s.medias.length
+                                    ? AppConfig.API_TAXHUB +
+                                      '/tmedias/thumbnail/' +
+                                      s.medias[0].id_media +
+                                      '?h=100'
+                                    : 'assets/default_image.png'
+                            "
+                            [alt]="
+                                !!s.nom_francais
+                                    ? s.nom_francais
+                                    : s.taxref.nom_vern
+                            "
+                            (click)="onTaxonSelected(s)"
+                        />
+                        <span>{{
+                            !!s.nom_francais
+                                ? s.nom_francais
+                                : s.taxref.nom_vern
+                        }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- TAXON AUTOCOMPLETE -->
+        <div
+            *ngIf="taxaCount >= taxonAutocompleteInputThreshold"
+            class="form-group col-lg-8"
+        >
+            <ng-template #rt let-r="result" let-t="term">
+                <img [src]="r.icon" class="mr-1" style="height: 1em" />
+                <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+            </ng-template>
+            <input
+                id="cd_nom"
+                type="text"
+                class="form-control rounded-0"
+                formControlName="cd_nom"
+                placeholder="Nom latin ou vernaculaire ou cd_ref"
+                [editable]="false"
+                [ngbTypeahead]="inputAutoCompleteSearch"
+                [resultTemplate]="rt"
+                [inputFormatter]="inputAutoCompleteFormatter"
+            />
+        </div>
+        <!-- END TAXON SELECTION -->
+        <div class="form-group col-lg-12 col-md-12">
+            <h5 i18n="Additional information@@additionalInfos">
+                Informations complémentaires
+            </h5>
+            <div class="row">
+                <div class="form-group col-lg-6">
+                    <div class="input-group">
+                        <label
+                            for="date"
+                            i18n="observation date@@bservationDate"
+                            >Date de l'observation</label
+                        >
+                        <input
+                            formControlName="date"
+                            type="date"
+                            class="form-control rounded-0"
+                            i18n-placeholder="
+                                expected date format@@expectedDateFormat"
+                            placeholder="jj/mm/aaaa"
+                            ngbDatepicker
+                            #d="ngbDatepicker"
+                            [markDisabled]="disabledDates"
+                            (click)="d.toggle()"
+                        />
+                    </div>
+                </div>
+                <div class="form-group col-lg-6">
+                    <label
+                        for="counting"
+                        i18n="Enumeration Label@@enumerationInputLabel"
+                        >Dénombrement</label
+                    >
+                    <input
+                        type="number"
+                        min="1"
+                        i18n-placeholder="
+                            Enumeration Placeholder@@enumerationInputPlaceHolder"
+                        placeholder="Nombre"
+                        class="form-control rounded-0"
+                        formControlName="count"
+                        id="counting"
+                        required
+                    />
+                </div>
+            </div>
+
+            <json-schema-form
+                *ngIf="jsfInputObject"
+                [form]="jsfInputObject"
+                [options]="formOptions"
+                [framework]="GNCBootstrap4Framework"
+                (onChanges)="customFormOnChange($event)"
+                (isValid)="yourIsValidFn($event)"
+                (validationErrors)="jsonValidationErrors($event)"
+            >
+            </json-schema-form>
+
+            <div class="form-group">
+                <label
+                    for="comment"
+                    i18n="Comment Input Label@@commentInputLabel"
+                    >Commentaire</label
+                >
+                <textarea
+                    i18n-placeholder="
+                        Comment Input Placeholder@@commentInputPlaceholder"
+                    placeholder="Votre commentaire"
+                    class="form-control rounded-0"
+                    rows="4"
+                    id="comment"
+                    formControlName="comment"
+                ></textarea>
+            </div>
+
+            <div *ngIf="data.updateData" class="mb-3">
+                <label i18n="Existing Photos@@existingPhotos"
+                    >Photos existantes (cocher pour supprimer)</label
+                ><br />
+                <span *ngFor="let p of data.updateData.photos" class="mr-4">
+                    <input
+                        type="checkbox"
+                        name=""
+                        [(ngModel)]="p.checked"
+                        [ngModelOptions]="{ standalone: true }"
+                        class="mr-1"
+                    />
+                    <img
+                        src="{{ AppConfig.API_ENDPOINT }}{{ p.url }}"
+                        height="50"
+                    />
+                </span>
+            </div>
+            <div class="mt-3">
+                <image-upload
+                    i18n-buttonCaption="Add photo@@addPhoto"
+                    buttonCaption="Ajouter une photo"
+                    [dropBoxMessage]="'Déposez vos photos ici ! (5 max)'"
+                    clearButtonCaption="Supprimer"
+                    (uploadFinished)="addImage($event)"
+                    (removed)="deleteImage($event)"
+                    [max]="maxPhotos()"
+                ></image-upload>
+            </div>
+        </div>
+
+        <div class="form-group col-lg-12 col-md-12">
+            <h5 i18n="observation Location@@obsLocation">
+                Où avez-vous observé cette espèce ?
+            </h5>
+            <div class="position-relative">
+                <div class="zoom-alert" *ngIf="hasZoomAlert">
+                    <div
+                        class="mb-2 text-center"
+                        i18n="@@ZoomToPointInstruction"
+                    >
+                        Veuillez zoomer pour localiser votre observation.<br />
+                        <span
+                            >(zoom min:
+                            {{ MAP_CONFIG.ZOOM_LEVEL_RELEVE }})</span
+                        >
+                    </div>
+                    <button class="btn" (click)="hasZoomAlert = false">
+                        OK
+                    </button>
+                </div>
+                <div
+                    id="formMap"
+                    class="col-lg-12"
+                    [class.ng-invalid]="obsForm.get('geometry').invalid"
+                    [class.ng-valid]="obsForm.get('geometry').valid"
+                    [class.div-form-map]="!data.service.modalversion"
+                    i18n-data-observation-zoom-statement-warning="
+                        Zooming instruction@@zoomingInstruction"
+                    data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
+                ></div>
+            </div>
+            <input
+                formControlName="geometry"
+                type="hidden"
+                id="geometry"
+                name="geometry"
+                #geometry
+                class="col-lg-12"
+            />
+            <p class="text-right m-0">
+                <em i18n="click on map instruction@@clickOnMapInstruction"
+                    >Cliquez sur la carte pour renseigner le lieu précis de
+                    votre observation</em
+                >
+            </p>
+
+            <div
+                class="col-lg-12"
+                *ngIf="AppConfig.email_contact && !(isLoggedIn() | async)"
+            >
+                <input
+                    type="checkbox"
+                    id="agreeContactRGPD"
+                    formControlName="agreeContactRGPD"
+                    (change)="onChangeContactCheckBoxRGPD()"
+                />
+                <small style="margin-left: 5px">{{
+                    AppConfig.program_allow_email_contact[localeId]
+                }}</small>
+            </div>
+            <div
+                class="form-group col-lg-12"
+                *ngIf="AppConfig.email_contact && !(isLoggedIn() | async)"
+            >
+                <label
+                    for="email"
+                    style="margin-right: 5px"
+                    i18n="Contact email input label@@contactEmailInputLabel"
+                    >E-mail de contact
+                </label>
+                <input
+                    type="text"
+                    i18n-placeholder="
+                        Contact email input
+                        placeholder@@contactEmailInputPlaceHolder"
+                    placeholder="E-Mail"
+                    id="email"
+                    formControlName="email"
+                />
+            </div>
+        </div>
+        <p
+            class="ng-invalid ng-dirty pl-1 ml-1"
+            *ngIf="
+                (obsForm.get('date').invalid || obsForm.get('count').invalid) &&
+                (obsForm.touched || obsForm.dirty)
+            "
+            i18n="Missing fields alert@@missingFieldsAlert"
+        >
+            Champs manquants
+        </p>
     </div>
-    <p class="ng-invalid pl-1 ml-1">Champs manquants</p>
-  </div>
 </form>

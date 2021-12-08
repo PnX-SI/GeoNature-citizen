@@ -1,69 +1,69 @@
 .modal-header {
-  background: var(--secondary);
-  background: var(--modal-header-bg-moz);
-  background: var(--modal-header-bg-webkit);
-  background: var(--modal-header-bg-linear);
-  border-radius: 0px;
-  align-items: center;
-  max-height: 61px;
+    background: var(--secondary);
+    background: var(--modal-header-bg-moz);
+    background: var(--modal-header-bg-webkit);
+    background: var(--modal-header-bg-linear);
+    border-radius: 0px;
+    align-items: center;
+    max-height: 61px;
 }
 
 .modal-header h4 {
-  color: #fff;
-  text-transform: uppercase;
-  margin: 0 auto;
+    color: #fff;
+    text-transform: uppercase;
+    margin: 0 auto;
 }
 
 .modal-header button {
-  margin: 0;
+    margin: 0;
 }
 
 .modal-body {
-  border-radius: 0px;
+    border-radius: 0px;
 }
 
 #recoverPassword {
-  text-align: right;
-  font-style: italic;
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 15px;
-  transform: translateY(-15px);
+    cursor: pointer;
 }
 
 span.input-group-text {
-  background-color: var(--secondary);
-  color: #fff;
+    background-color: var(--secondary);
+    color: #fff;
 }
 
 .modal-body input {
-  border: solid 1px transparent;
-  border: solid 1px #bbb;
-  transition: all 0.2s ease-in-out;
+    border: solid 1px transparent;
+    border: solid 1px #bbb;
+    transition: all 0.2s ease-in-out;
 }
 
 .modal-body input::placeholder {
-  font-style: italic;
+    font-style: italic;
 }
 
 .modal-body .form-row:first-child,
 .modal-body .form-row:nth-child(2n) {
-  border-bottom: solid 1px;
-  border-bottom-color: var(--secondary);
-  margin-bottom: 10px;
+    border-bottom: solid 1px;
+    border-bottom-color: var(--secondary);
+    margin-bottom: 10px;
 }
 
 .modal-body button {
-  background-color: var(--secondary) !important;
-  color: #fff;
-  border: solid 1px transparent;
-  display: flex;
-  margin: 0 auto;
+    background-color: var(--secondary) !important;
+    color: #fff;
+    border: solid 1px transparent;
+    display: flex;
+    margin: 0 auto;
 }
 
 .modal-body button:hover {
-  background: transparent;
-  color: var(--secondary);
-  border: solid 1px;
-  border-color: var(--secondary);
+    background: transparent;
+    border: solid 1px;
+    border-color: var(--secondary);
+}
+
+@media screen and (max-width: 775px) {
+    .modal-header h4 {
+        font-size: 18px;
+    }
 }

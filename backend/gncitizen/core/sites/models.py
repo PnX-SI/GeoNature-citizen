@@ -1,21 +1,22 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import enum
+# import enum
+
 from geoalchemy2 import Geometry
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.orm import relationship
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 from gncitizen.core.commons.models import (
+    CustomFormModel,
+    MediaModel,
     ProgramsModel,
     TimestampMixinModel,
-    MediaModel,
 )
-from gncitizen.core.users.models import ObserverMixinModel
-from gncitizen.utils.sqlalchemy import serializable, geoserializable
 from gncitizen.core.observations.models import ObservationModel
-from server import db
-from gncitizen.core.commons.models import ProgramsModel
+from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.env import ROOT_DIR
-import os
+from server import db
 
 
 def create_schema(db):
@@ -23,15 +24,25 @@ def create_schema(db):
     db.session.commit()
 
 
-class SiteType(enum.Enum):
-    """Liste et paramêtres des types de sites supportés
-    (pour l'instant seulement "mare").
-    """
+@serializable
+class SiteTypeModel(TimestampMixinModel, db.Model):
+    """Table des types de sites
+    Formulaire généré par la lib https://github.com/hamzahamidi/ajsf
+    json de création de formulaire enregistré dans custom_form.json_schema"""
 
-    mare = ROOT_DIR / "config/custom/form/mares.json" # json_schema file path
+    __tablename__ = "t_typesite"
+    __table_args__ = {"schema": "gnc_sites"}
+    id_typesite = db.Column(db.Integer, primary_key=True, unique=True)
+    category = db.Column(db.String(200))
+    type = db.Column(db.String(200))
+    id_form = db.Column(
+        db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
+    )
+    custom_form = relationship("CustomFormModel")
+    pictogram = db.Column(db.Text)
 
-    def __init__(self, form_schema):
-        self.form_schema = form_schema
+    def __repr__(self):
+        return "<TypeSite {0} : {1}>".format(self.id_typesite, self.type)
 
 
 @serializable
@@ -46,8 +57,12 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
     )
+    program = relationship("ProgramsModel")
     name = db.Column(db.String(250))
-    site_type = db.Column(db.Enum(SiteType), nullable=False)
+    id_type = db.Column(
+        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False
+    )
+    site_type = relationship("SiteTypeModel")
     geom = db.Column(Geometry("POINT", 4326))
 
     def __repr__(self):
@@ -64,7 +79,12 @@ class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE")
     )
-    site_type = db.Column(db.Enum(SiteType), nullable=False)
+    program = relationship("ProgramsModel", backref="site_types")
+    id_typesite = db.Column(
+        db.Integer,
+        db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE"),
+    )
+    site_type = relationship("SiteTypeModel")
 
 
 @serializable
@@ -77,6 +97,7 @@ class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     id_site = db.Column(
         db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE")
     )
+    site = relationship("SiteModel")
     date = db.Column(db.Date)
     json_data = db.Column(JSONB, nullable=True)
 
@@ -92,12 +113,12 @@ class MediaOnVisitModel(TimestampMixinModel, db.Model):
     id_match = db.Column(db.Integer, primary_key=True, unique=True)
     id_data_source = db.Column(
         db.Integer,
-        db.ForeignKey(VisitModel.id_visit, ondelete="SET NULL"),
+        db.ForeignKey(VisitModel.id_visit, ondelete="CASCADE"),
         nullable=False,
     )
     id_media = db.Column(
         db.Integer,
-        db.ForeignKey(MediaModel.id_media, ondelete="SET NULL"),
+        db.ForeignKey(MediaModel.id_media, ondelete="CASCADE"),
         nullable=False,
     )
 

@@ -1,26 +1,43 @@
 <!-- Ajouter une observation -->
 <div class="modal-header">
-  <h4 class="modal-title">AJOUTER UN RAPPORT DE VISITE</h4>
+    <h4 class="modal-title">AJOUTER UN RAPPORT DE VISITE</h4>
+    <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="closeModal()"
+    >
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 
-<div class="modal-body add-obs"><app-site-visit-form [site_id]="data.site_id"></app-site-visit-form></div>
+<div class="modal-body add-obs">
+    <app-site-visit-form [site_id]="data.site_id"></app-site-visit-form>
+</div>
 
 <div class="modal-footer" *ngIf="form.readyToDisplay">
-  <button class="btn btn-danger rounded-0" (click)="form.previousStep()" *ngIf="!form.isFirstStep()">Etape précédente</button>
-  <button 
-    class="btn btn-warning rounded-0"
-    (click)="form.nextStep()"
-    *ngIf="!form.isLastStep()"
-    [disabled]="form.invalidStep()">
-      Etape suivante
+    <button
+        class="btn btn-danger rounded-0"
+        (click)="form.previousStep()"
+        *ngIf="!form.isFirstStep()"
+    >
+        Etape précédente
     </button>
-  <button
-    type="submit"
-    [disabled]="!form.visitForm.valid"
-    class="btn btn-default btn-outline-primary rounded-0"
-    (click)="committed()"
-    *ngIf="form.isLastStep()"
-  >
-    Valider la visite
-  </button>
+    <button
+        class="btn btn-warning rounded-0"
+        (click)="form.nextStep()"
+        *ngIf="!form.isLastStep()"
+        [disabled]="form.invalidStep()"
+    >
+        Etape suivante
+    </button>
+    <button
+        type="submit"
+        [disabled]="!form.visitForm.valid"
+        class="btn btn-default btn-outline-primary rounded-0"
+        (click)="committed()"
+        *ngIf="form.isLastStep()"
+    >
+        Valider la visite
+    </button>
 </div>

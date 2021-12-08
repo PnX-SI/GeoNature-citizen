@@ -1,28 +1,27 @@
 import json
+
+# disable loud logs from urllib3
+import logging
+
 import requests
 
 from gncitizen.utils.env import load_config
 
-# disable loud logs from urllib3
-import logging
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 APP_CONF = load_config()
 access_token = None
 refresh_token = None
-mainUrl = "http://localhost:5001/api/"
-mimetype = 'application/json'
-headers = {
-    'Content-Type': mimetype,
-    'Accept': mimetype
-}
-user = 'testuser'
-pwd = 'testpwd'  # noqa: S105
-name = 'tester'
-surname = 'testersurname'
-email = 'tester@test.com'
-'''\
+mainUrl = "http://localhost:5002/api/"
+mimetype = "application/json"
+headers = {"Content-Type": mimetype, "Accept": mimetype}
+user = "testuser"
+pwd = "testpwd"  # noqa: S105
+name = "tester"
+surname = "testersurname"
+email = "tester@test.com"
+"""\
 INSERT INTO
     gnc_core.t_users (
         id_user,
@@ -47,7 +46,7 @@ INSERT INTO
         NULL,
         NULL
     );
-'''
+"""
 
 
 def set_tokens(access, refresh):
@@ -58,11 +57,11 @@ def set_tokens(access, refresh):
 
 def auth():
     myParams = {}
-    myParams['username'] = user
-    myParams['password'] = pwd
-    myParams['name'] = name
-    myParams['surname'] = surname
-    myParams['email'] = email
+    myParams["username"] = user
+    myParams["password"] = pwd
+    myParams["name"] = name
+    myParams["surname"] = surname
+    myParams["email"] = email
     return json.dumps(myParams)
 
 
@@ -70,11 +69,13 @@ def postrequest(url, params=None, file=None):
     myUrl = mainUrl + url
     h = headers.copy()
     if access_token:
-        h.update({'Authorization': 'Bearer {}'.format(access_token)})
+        h.update({"Authorization": "Bearer {}".format(access_token)})
     files = None
     if file is not None:
-        files = {'file': open(file, 'rb')}
-        del h['Content-Type'] # let requests set proper Content-Type with boundaries
+        files = {"file": open(file, "rb")}
+        del h[
+            "Content-Type"
+        ]  # let requests set proper Content-Type with boundaries
     response = requests.post(myUrl, headers=h, data=params, files=files)
     return response
 

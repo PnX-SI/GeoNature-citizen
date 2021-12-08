@@ -1,34 +1,30 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing'
+import { RouterTestingModule } from '@angular/router/testing';
 import {
-  HttpClientTestingModule,
-  HttpTestingController
-} from '@angular/common/http/testing'
+    HttpClientTestingModule,
+    HttpTestingController,
+} from '@angular/common/http/testing';
 
-import { ObsMapComponent } from './map.component';
+import { SitesMapComponent } from './map.component';
 
-describe('ObsMapComponent', () => {
-  let component: ObsMapComponent;
-  let fixture: ComponentFixture<ObsMapComponent>;
+describe('SitesMapComponent', () => {
+    let component: SitesMapComponent;
+    let fixture: ComponentFixture<SitesMapComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ],
-      declarations: [ ObsMapComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule, RouterTestingModule],
+            declarations: [SitesMapComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ObsMapComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(SitesMapComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

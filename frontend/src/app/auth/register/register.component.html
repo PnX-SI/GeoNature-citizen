@@ -1,214 +1,248 @@
 <div class="modal-header">
-  <h4 i18n>Créez votre compte</h4>
-  <button
-    type="button"
-    class="close rounded-0"
-    aria-label="Close"
-    (click)="activeModal.dismiss('Cross click')"
-  >
-    &times;
-  </button>
+    <h4 i18n="Create account@@register">Créez votre compte</h4>
+    <button
+        type="button"
+        class="close rounded-0"
+        aria-label="Close"
+        (click)="activeModal.dismiss('Cross click')"
+    >
+        &times;
+    </button>
 </div>
 <div class="modal-body">
-  <ngb-alert
-    *ngIf="errorMessage && !successMessage"
-    type="danger"
-    (close)="errorMessage = null"
-    >{{ errorMessage }}
-  </ngb-alert>
-  <ngb-alert
-    *ngIf="successMessage"
-    type="success"
-    (close)="successMessage = null"
-    >{{ successMessage }}</ngb-alert
-  >
-  <form
-    *ngIf="errorMessage || !successMessage"
-    #registerForm="ngForm"
-    (ngSubmit)="registerForm.valid && onRegister()"
-  >
     <ngb-alert
-      [dismissible]="false"
-      type="danger"
-      *ngIf="email.errors && email.dirty"
-      i18n
-    >
-      Impossible de valider votre email.
+        *ngIf="errorMessage && !successMessage"
+        type="danger"
+        (close)="errorMessage = null"
+        >{{ errorMessage }}
     </ngb-alert>
-    <div class="form-row">
-      <div class="col-md-6 col-sm-12">
-        <div class="form-group">
-          <label for="username" i18n>Votre nom d'utilisateur</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fa fa-user"></i></span>
-            </div>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              class="form-control rounded-0"
-              i18n-placeholder
-              placeholder="Entrez votre nom d'utilisateur"
-              [(ngModel)]="user.username"
-              #username="ngModel"
-              autocomplete="username"
-              required
-            />
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6 col-sm-12">
-        <div class="form-group">
-          <label for="email" i18n>Votre email</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"
-                ><i class="fa fa-envelope"></i
-              ></span>
-            </div>
-            <input
-              type="email"
-              class="form-control rounded-0"
-              name="email"
-              id="email"
-              i18n-placeholder
-              placeholder="Entrez votre email"
-              [(ngModel)]="user.email"
-              #email="ngModel"
-              autocomplete="email"
-              required
-              pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="col-md-6 col-sm-12">
-        <div class="form-group">
-          <label for="name" i18n>Votre prénom</label>
-          <input
-            type="text"
-            class="form-control rounded-0"
-            id="fname"
-            name="fname"
-            i18n-placeholder
-            placeholder="Entrez votre prénom"
-            [(ngModel)]="user.name"
-            #fname="ngModel"
-            autocomplete="fname"
-            required
-          />
-        </div>
-      </div>
-      <div class="col-md-6 col-sm-12">
-        <div class="form-group">
-          <label for="surname" i18n>Votre nom</label>
-          <input
-            type="text"
-            class="form-control rounded-0"
-            id="surname"
-            name="surname"
-            i18n-placeholder
-            placeholder="Entrez votre nom"
-            [(ngModel)]="user.surname"
-            #surname="ngModel"
-            autocomplete="lname"
-            required
-          />
-        </div>
-      </div>
-    </div>
-    <ngb-alert
-      [dismissible]="false"
-      type="danger"
-      *ngIf="
-        (confirm_password.errors && confirm_password.dirty) ||
-        (password.errors && password.dirty)
-      "
-      i18n
-    >
-      Les mots de passe diffèrent.
-    </ngb-alert>
-    <div class="form-row">
-      <div class="col-md-6 col-sm-12">
-        <div class="form-group">
-          <label for="password" i18n>Votre mot de passe</label>
-          <input
-            type="password"
-            class="form-control rounded-0"
-            id="password"
-            i18n-placeholder
-            placeholder="Votre mot de passe"
-            [(ngModel)]="user.password"
-            name="password"
-            #password="ngModel"
-            autocomplete="new-password"
-            minlength="6"
-            required
-            #password="ngModel"
-          />
-        </div>
-      </div>
-      <div class="col-md-6 col-sm-12">
-        <div class="form-group">
-          <label for="confirm-password" i18n
-            >Confirmez votre mot de passe</label
-          >
-          <input
-            type="password"
-            id="confirm-password"
-            name="confirm-password"
-            class="form-control rounded-0"
-            ngModel
-            #confirm_password="ngModel"
-            i18n-placeholder
-            placeholder="Confirmez le mot de passe"
-            autocomplete="new-password"
-            required
-            pattern="^{{ password.value }}$"
-          />
-        </div>
-      </div>
-      <span>
-        <ngb-alert [dismissible]="false" type="warning" *ngIf="cgu.errors" i18n>
-          Veuillez accepter les conditions d'utilisation.
-        </ngb-alert>
-        <input
-          type="checkbox"
-          id="cgu"
-          name="cgu"
-          #cgu="ngModel"
-          ngModel
-          required
-          i18n
-        />
-        J'accepte les
-        <a href="{{AppConfig['termsOfUse'][localeId]}}" i18n
-          >conditions d&apos;utilisation</a
-        ></span
-      >
-    </div>
+    <p *ngIf="successMessage">{{ successMessage }}</p>
 
-    <button
-      *ngIf="errorMessage || !successMessage"
-      type="submit"
-      class="btn btn-outline-primary text-right rounded-0"
-      i18n
-      [disabled]="registerForm.invalid"
+    <form
+        *ngIf="errorMessage || !successMessage"
+        #registerForm="ngForm"
+        (ngSubmit)="registerForm.valid && onRegister()"
     >
-      S'enregistrer
+        <ngb-alert
+            [dismissible]="false"
+            type="danger"
+            *ngIf="email.errors && email.dirty"
+            i18n="Unable to valid email@@emailNotValid"
+        >
+            Impossible de valider votre email.
+        </ngb-alert>
+        <div class="d-flex justify-content-center">
+            <div class="avatar-wrapper">
+                <div *ngIf="!userAvatar" class="profile-pic"></div>
+                <img
+                    *ngIf="userAvatar"
+                    class="profile-pic"
+                    src="{{ userAvatar }}"
+                />
+                <div class="upload-button" (click)="fileToUpload.click()">
+                    <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+                </div>
+                <input
+                    #fileToUpload
+                    type="file"
+                    accept="image/*"
+                    (change)="onUploadAvatar($event)"
+                    class="file-upload"
+                />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label for="username" i18n="Your pseudo@@yourUsernameLabel">Votre pseudonyme</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"
+                                ><i class="fa fa-user"></i
+                            ></span>
+                        </div>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            class="form-control rounded-0"
+                            i18n-placeholder="Enter your pseudo@@yourUsernameInputPlaceHolder"
+                            placeholder="Entrez votre pseudonyme"
+                            [(ngModel)]="user.username"
+                            #username="ngModel"
+                            autocomplete="username"
+                            required
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label for="email" i18n="Your email form label@@yourEmailLabel">Votre email</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"
+                                ><i class="fa fa-envelope"></i
+                            ></span>
+                        </div>
+                        <input
+                            type="email"
+                            class="form-control rounded-0"
+                            name="email"
+                            id="email"
+                            i18n-placeholder="Your email input placeholder label@@yourEmailInputPlaceholder"
+                            placeholder="Entrez votre email"
+                            [(ngModel)]="user.email"
+                            #email="ngModel"
+                            autocomplete="email"
+                            [ngModelOptions]="{ updateOn: 'blur' }"
+                            required
+                            pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label for="name" i18n="your first name@@yourFirstNameLabel">Votre prénom</label>
+                    <input
+                        type="text"
+                        class="form-control rounded-0"
+                        id="fname"
+                        name="fname"
+                        i18n-placeholder="your first name@@yourFirstNameLabel"
+                        placeholder="Entrez votre prénom"
+                        [(ngModel)]="user.name"
+                        #fname="ngModel"
+                        autocomplete="fname"
+                        required
+                    />
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label for="surname" i18n="your last name label@@yourLastNameLabel">Votre nom</label>
+                    <input
+                        type="text"
+                        class="form-control rounded-0"
+                        id="surname"
+                        name="surname"
+                        i18n-placeholder="Enter your last name@@yourLastNameInput"
+                        placeholder="Entrez votre nom"
+                        [(ngModel)]="user.surname"
+                        #surname="ngModel"
+                        autocomplete="lname"
+                        required
+                    />
+                </div>
+            </div>
+        </div>
+        <ngb-alert
+            [dismissible]="false"
+            type="danger"
+            *ngIf="
+                confirm_password.errors &&
+                confirm_password.dirty &&
+                password.dirty
+            "
+            i18n="Different password error@@ErrorDifferentPasswords"
+        >
+            Les mots de passe diffèrent.
+        </ngb-alert>
+        <div class="form-row">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label for="password" i18n="Your password label@@yourPasswordInputLabel">Votre mot de passe</label>
+                    <input
+                        type="password"
+                        class="form-control rounded-0"
+                        id="password"
+                        i18n-placeholder="Your password input@@yourPasswordInput"
+                        placeholder="Votre mot de passe"
+                        [(ngModel)]="user.password"
+                        name="password"
+                        #password="ngModel"
+                        autocomplete="new-password"
+                        required
+                        #password="ngModel"
+                    />
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label for="confirm-password" i18n
+                        >Confirmez votre mot de passe</label
+                    >
+                    <input
+                        type="password"
+                        id="confirm-password"
+                        name="confirm-password"
+                        class="form-control rounded-0"
+                        ngModel
+                        #confirm_password="ngModel"
+                        i18n-placeholder="Your confirm password input@@yourPasswordConfirmInput"
+                        placeholder="Confirmez le mot de passe"
+                        autocomplete="new-password"
+                        required
+                        [ngModelOptions]="{ updateOn: 'blur' }"
+                        pattern="^{{ password.value }}$"
+                    />
+                </div>
+            </div>
+            <span>
+                <ngb-alert
+                    [dismissible]="false"
+                    type="warning"
+                    *ngIf="cgu.errors"
+                    i18n="Accept UGC@@acceptUGC"
+                >
+                    Veuillez accepter les conditions d'utilisation.
+                </ngb-alert>
+                <input
+                    type="checkbox"
+                    id="cgu"
+                    name="cgu"
+                    #cgu="ngModel"
+                    ngModel
+                    required
+                    i18n="I Accept@@iAcceptIntro"
+                />
+                J'accepte les
+                <a
+                    target="_blank"
+                    href="{{ AppConfig['termsOfUse'][localeId] }}"
+                    i18n="Use condition@@conditionsOfUse"
+                    >conditions d&apos;utilisation</a
+                >
+            </span>
+        </div>
+        <div *ngIf="AppConfig.HCAPTCHA_SITE_KEY !== null" class="form-row">
+            <div class="col-sm-12 text-center">
+                <div id="h-captcha"></div>
+            </div>
+        </div>
+
+        <button
+            *ngIf="errorMessage || !successMessage"
+            type="submit"
+            class="btn btn-outline-primary text-right rounded-0"
+            i18n="register link@@registerLink"
+            [disabled]="registerForm?.invalid"
+        >
+            S'enregistrer
+        </button>
+    </form>
+    <button
+        *ngIf="successMessage"
+        class="btn btn-outline-primary rounded-0"
+        [disabled]="registerForm?.invalid"
+        expand="block"
+        (click)="activeModal.dismiss('Cross click')"
+        i18n="close auth modal@@closeModal"
+    >
+        Fermer
     </button>
-  </form>
-  <button
-    *ngIf="successMessage"
-    class="btn btn-outline-primary rounded-0"
-    [disabled]="registerForm.invalid"
-    expand="block"
-    (click)="activeModal.dismiss('Cross click')"
-    i18n
-  >
-    Fermer
-  </button>
 </div>

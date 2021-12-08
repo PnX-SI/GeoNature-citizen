@@ -1,5 +1,5 @@
 from geoalchemy2 import Geometry
-from gncitizen.utils.sqlalchemy import serializable, geoserializable
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 from server import db
 
@@ -18,6 +18,9 @@ class LAreas(db.Model):
     source = db.Column(db.Unicode)
     enable = db.Column(db.Boolean)
     geom = db.Column(Geometry("GEOMETRY", 4326))
+
+    def __str__(self):
+        return f"{self.area_name} - {self.area_code}"
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom", "id_area", recursif)
@@ -48,4 +51,3 @@ class LiMunicipalities(db.Model):
         db.Integer, db.ForeignKey("ref_geo.l_areas.id_area"), unique=True
     )
     insee_com = db.Column(db.Integer)
-

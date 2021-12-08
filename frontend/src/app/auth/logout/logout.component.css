@@ -30,7 +30,7 @@ span.input-group-text {
 .modal-body input {
     border: solid 1px transparent;
     border: solid 1px #bbb;
-    transition: all .2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 }
 
 .modal-body input::placeholder {
@@ -55,4 +55,9 @@ span.input-group-text {
     background: transparent;
     color: var(--secondary);
     border: solid 1px var(--secondary);
+}
+@media screen and (max-width: 775px) {
+    .modal-header h4 {
+        font-size: 18px;
+    }
 }

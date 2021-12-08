@@ -1,37 +1,43 @@
-import { Component, Input, ViewChild, ViewEncapsulation } from "@angular/core";
-
-import { IFlowComponent } from "../../flow/flow";
-import { ObsFormComponent } from "../../../form/form.component";
-import { ObservationFeature } from "../../../observation.model";
-
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { IFlowComponent } from '../../flow/flow';
+import { ObsFormComponent } from '../../../form/form.component';
+import { ObservationFeature } from '../../../observation.model';
 @Component({
-  templateUrl: "./committed.component.html",
-  styleUrls: ["./committed.component.css"],
-  encapsulation: ViewEncapsulation.None
+    templateUrl: './committed.component.html',
+    styleUrls: ['./committed.component.css'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class CommittedComponent implements IFlowComponent {
-  @Input() data: any;
-  @ViewChild(ObsFormComponent) form: ObsFormComponent;
+    @Input() data: any;
+    @ViewChild(ObsFormComponent, { static: true }) form: ObsFormComponent;
+    enableCommit: boolean = true;
 
-  onNewObservation(observation: ObservationFeature) {
-    if (observation) {
-      this.data.obs = observation;
+    constructor() {}
+    onNewObservation(observation: ObservationFeature) {
+        if (observation) {
+            this.data.obs = observation;
 
-      const event: CustomEvent = new CustomEvent("NewObservationEvent", {
-        bubbles: true,
-        cancelable: true,
-        detail: this.data.obs
-      });
-      document.dispatchEvent(event);
+            const event: CustomEvent = new CustomEvent('NewObservationEvent', {
+                bubbles: true,
+                cancelable: true,
+                detail: this.data.obs,
+            });
+            document.dispatchEvent(event);
 
-      console.debug("committed > next:", this.data);
-      this.data.next(this.data);
+            this.data.next(this.data);
+        }
     }
-  }
 
-  committed() {
-    this.form.onFormSubmit();
-    console.debug("committed action > data:", this.data);
-    console.debug("committed action > obs:", this.form.newObservation);
-  }
+    committed() {
+        this.enableCommit = false;
+        this.form.onFormSubmit();
+    }
+
+    onUdpdateObs() {
+        this.form.onFormUpdate();
+    }
+
+    closeModal() {
+        this.data.service.closeModal();
+    }
 }

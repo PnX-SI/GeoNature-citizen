@@ -1,14 +1,15 @@
+import logging
 import os
 import sys
 from pathlib import Path
-from urllib.parse import urlparse
 
 from flasgger import Swagger
+from flask_admin import Admin
+from flask_ckeditor import CKEditor
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_admin import Admin
 
-
+from gncitizen import __version__
 from gncitizen.utils.toml import load_toml
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
@@ -19,15 +20,17 @@ with open(str((ROOT_DIR / "VERSION"))) as v:
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/default_config.toml"
 GNC_EXTERNAL_MODULE = ROOT_DIR / "external_modules"
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
-MEDIA_DIR = ROOT_DIR / "media"
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_config_file_path(config_file=None):
-    """ Return the config file path by checking several sources
+    """Return the config file path by checking several sources
 
-        1 - Parameter passed
-        2 - GNCITIZEN_CONFIG_FILE env var
-        3 - Default config file value
+    1 - Parameter passed
+    2 - GNCITIZEN_CONFIG_FILE env var
+    3 - Default config file value
     """
     config_file = config_file or os.environ.get("GNCITIZEN_CONFIG_FILE")
     return Path(config_file or DEFAULT_CONFIG_FILE)
@@ -40,40 +43,81 @@ def load_config(config_file=None):
     return config_gnc
 
 
+def valid_api_url(url):
+    """Return a valid API URL ending with /"""
+    if url[-1:] == "/":
+        url = url
+    else:
+        url = url + "/"
+    return url
+
+
 app_conf = load_config()
+MEDIA_DIR = str(ROOT_DIR / app_conf["MEDIA_FOLDER"])
 SQLALCHEMY_DATABASE_URI = app_conf["SQLALCHEMY_DATABASE_URI"]
 db = SQLAlchemy()
 
 jwt = JWTManager()
 
+ckeditor = CKEditor()
+
+
 swagger_template = {
-    # "openapi": "3.0.0",
-    # "components": {
-    #     "securitySchemes": {
-    #         "bearerAuth": {
-    #             "type": "http",
-    #             "scheme": "bearer",
-    #             "bearerFormat": "JWT",
-    #         }
-    #     }
-    # },
+    "swagger": "2.0",
+    "info": {
+        "title": f"API Doc {app_conf['appName']}",
+        "description": f"Backend API for {app_conf['appName']}, source code available at https://github.com/PnX-SI/GeoNature-citizen",
+        "contact": {
+            "url": "https://github.com/PnX-SI/GeoNature-citizen",
+        },
+        "version": __version__,
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+            }
+        }
+    },
 }
 
-swagger = Swagger(template=swagger_template)
+swagger_config = {
+    "headers": [],
+    "specs": [
+        {
+            "endpoint": "apispec_1",
+            "route": "/apispec_1.json",
+            "rule_filter": lambda rule: True,  # all in
+            "model_filter": lambda tag: True,  # all in
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    # "static_folder": "static",  # must be set by user
+    "swagger_ui": True,
+    "specs_route": "/api/docs/",
+}
+
+swagger = Swagger(template=swagger_template, config=swagger_config)
+
+# admin_url = "/".join([urlparse(app_conf["URL_APPLICATION"]).path, "/api/admin"])
 
 admin = Admin(
-    name="GN-Citizen: Backoffice d'administration",
-    template_mode="bootstrap3",
-    url="/".join([urlparse(app_conf["API_ENDPOINT"]).path, "admin"]),
+    name=f"GN-Citizen: Backoffice d'administration (version: {__version__})",
+    template_mode="bootstrap4",
+    url="/api/admin",
 )
 
-taxhub_url = load_config()["API_TAXHUB"]
+
+taxhub_url = valid_api_url(app_conf.get("API_TAXHUB", ""))
+
 taxhub_lists_url = taxhub_url + "biblistes/"
 
 
 def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):
     """
-        Get all the module enabled from gn_commons.t_modules
+    Get all the module enabled from gn_commons.t_modules
     """
     # with app.app_context():
     #     data = db.session.query(TModules).filter(
@@ -91,12 +135,9 @@ def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):
             module_parent_dir = str(module_path.parent)
             module_name = "{}.config.conf_schema_toml".format(module_path.name)
             sys.path.insert(0, module_parent_dir)
-            module = __import__(module_name, globals=globals())
             module_name = "{}.backend.blueprint".format(module_path.name)
             module_blueprint = __import__(module_name, globals=globals())
             sys.path.pop(0)
 
             conf_module = load_toml(str(f / "config/conf_gn_module.toml"))
-            print(conf_module, conf_manifest, module_blueprint)
-
             yield conf_module, conf_manifest, module_blueprint

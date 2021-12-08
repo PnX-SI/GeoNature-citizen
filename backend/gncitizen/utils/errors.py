@@ -16,8 +16,8 @@ class GNCModuleInstallError(GeoNatureError):
 
 class ConfigError(GeoNatureError):
     """
-        Configuration error class
-        Quand un fichier de configuration n'est pas conforme aux attentes
+    Configuration error class
+    Quand un fichier de configuration n'est pas conforme aux attentes
     """
 
     def __init__(self, file, value):

@@ -12,58 +12,20 @@ Une fois l'environnement installé, installer la dernière version stable de ``n
 
 .. code:: sh
 
-    nvm install --lts
+    nvm install v10.16
 
 Pour utiliser cette version:
 
 .. code:: sh
 
-    nvm use --lts
+    nvm use v10.16
 
 Installer angular CLI (version LTS 6) et les dépendances requises:
 
 .. code:: sh
 
-    npm install -g @angular/cli@v6-lts
+    npm install -g @angular/cli@v8-lts
     npm install
-
-Dans son incarnation actuelle, quelques fichiers de dépendances doivent être patchés pour passer l'étape de compilation.
-
-.. code:: diff
-
-    --- frontend/node_modules/@types/leaflet.locatecontrol/index.d.ts.old	2019-03-07 08:47:03.475859400 +0100
-    +++ frontend/node_modules/@types/leaflet.locatecontrol/index.d.ts	2019-03-07 08:47:23.460562933 +0100
-    @@ -38,6 +38,7 @@
-               onLocationOutsideMapBounds?: any;
-               showPopup?: boolean;
-               strings?: any;
-    +          getLocationBounds?: Function;
-               locateOptions?: L.LocateOptions;
-           }
-       }
-
-.. code:: diff
-
-    --- frontend/node_modules/@types/leaflet/index.d.ts.old  2019-04-10 09:02:08.012010439 +0200
-    +++ frontend/node_modules/@types/leaflet/index.d.ts      2019-04-10 09:02:23.239901103 +0200
-    @@ -495,7 +495,7 @@
-         zoomReverse?: boolean;
-         detectRetina?: boolean;
-         crossOrigin?: boolean;
-    -    // [name: string]: any;
-    +    [name: string]: any;
-         // You are able add additional properties, but it makes this interface unchackable.
-         // See: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/15313
-         // Example:
-    @@ -1025,6 +1025,7 @@
-          tapTolerance?: number;
-          touchZoom?: Zoom;
-          bounceAtZoomLimits?: boolean;
-     +    gestureHandling?: boolean;
-      }
-
-      export type ControlPosition = 'topleft' | 'topright' | 'bottomleft' |
-     'bottomright';
 
 Lancer du frontend
 ##################
@@ -123,55 +85,28 @@ Le transfert d'état s'effectue avec accesseur et mutateur:
       */
     }
 
-Le ``build`` et le démarrage du service sur le port ``4000`` s'effectue via le oneliner :
-
-.. code-block:: sh
-
-    npm run build:ssr && npm run serve:ssr
 
 La redirection de port pourrait se faire au niveau du serveur web / reverse proxy, avec un filtre sur l'entête de requête ``User-Agent``
 
 Gestion de l'internationalisation (i18n)
 ########################################
 
-La fonctionnalité i18n a été intégrée selon `la recette originale <https://angular.io/guide/i18n>`_.
+La fonctionnalité i18n a été intégrée avec `@ngx-i18nsupport <https://github.com/martinroob/ngx-i18nsupport/wiki/Tutorial-for-using-xliffmerge-with-angular-cli>`_.
 
 L'interface est paramétrée par défaut en langue française.
 
+Mettre à jour les traductions
+*****************************
 
-Si l'on souhaitait la servir en langue anglaise:
-
-.. code-block:: sh
-
-    npm run ng serve -- --configuration=en
-
-La stratégie en cas de traduction manquante est de faire remonter une erreur.
-
-(Ré)génération des fichiers de traduction:
-******************************************
+La commande suivante met à jour les fichiers de traduction (ajout/suppression de traductions symbolisées par l'argument ``i18n`` dans les templates.
 
 .. code-block:: sh
 
-    npm run -- ng xi18n --output-path locale --out-file _messages.fr.xlf --i18n-locale fr
+    npm run extract-i18n
 
-.. code-block:: sh
+Les fichiers de traduction sont dans le répertoire ``frontend/src/i18n``.
 
-    npm run -- ng xi18n --output-path locale --out-file _messages.en.xlf --i18n-locale en
-
-
-Les fichiers de traduction se retrouvent dans le répertoire ``frontend/src/locale``.
-
-Les copier en ``messages.fr.xlf`` et ``messages.en.xlf`` après édition (mon approche est de les mettre à jour depuis un éditeur de différence).
-
-Génération du rendu SSR dans le context de l'i18n:
-**************************************************
-
-La commande suivante permet de générer un rendu SSR multilingue et le servir en langue française.
-
-
-.. code-block:: sh
-
-    npm run build:i18n-ssr && npm run serve:ssr
+Mettre à jour les nouvelles traductions (texte dans les balises ``<target></target>`` des fichiers  localisés ``messages.fr.xlf`` et ``messages.en.xlf``.
 
 
 Déploiement
@@ -202,7 +137,7 @@ Exemple de fichier de configuration serveur Apache2:
 ****************************************************
 ``/etc/apache2/sites-enabled/citizen.conf``
 
-.. code-block:: conf
+.. code-block:: apacheconf
 
     # Configuration GeoNature-citizen
     Alias /citizen /home/utilisateur/citizen/frontend/dist/browser
@@ -258,7 +193,7 @@ Utiliser PgAdmin pour la gestion de la BDD distante (production):
 
 ``~/.ssh/config``
 
-.. code-block:: conf
+.. code-block::
 
     Host nom_du_raccourci
     Hostname son_addresse_ip

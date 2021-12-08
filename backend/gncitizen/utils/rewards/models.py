@@ -64,7 +64,10 @@ attendance_model = OrderedDict(
 seniority_model = OrderedDict(
     reversed(
         sorted(
-            [(k, config_duration2timestamp(v)) for k, v in conf["seniority"].items()],
+            [
+                (k, config_duration2timestamp(v))
+                for k, v in conf["seniority"].items()
+            ],
             key=lambda t: t[1],
         )
     )
@@ -89,7 +92,10 @@ recognition_model = [
         "specialization": conf["recognition"][i]["specialization"],
         "attendance": OrderedDict(
             reversed(
-                sorted(conf["recognition"][i]["attendance"].items(), key=lambda t: t[1])
+                sorted(
+                    conf["recognition"][i]["attendance"].items(),
+                    key=lambda t: t[1],
+                )
             )
         ),
     }

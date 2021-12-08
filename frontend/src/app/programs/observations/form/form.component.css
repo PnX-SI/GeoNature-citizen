@@ -21,6 +21,16 @@ app-obs-form #formMap {
   width: 100%;
 }
 
+app-obs-form #formMap.div-form-map {
+  display: none;
+}
+
+@media screen and (max-width: 992px) {
+  app-obs-form #formMap.div-form-map {
+      display: block;
+  }
+}
+
 app-obs-form .zoom-alert {
   position: absolute;
   top: 0;
@@ -58,4 +68,30 @@ app-obs-form .dropdown-menu.show {
   bottom: 0;
   background: rgba(255, 255, 255, 0.8);
   content: attr(data-observation-zoom-statement-warning);
+}
+
+.img-ul-upload {
+  background-color: var(--primary) !important;
+  font-size: 1em !important;
+}
+
+.img-ul-button {
+  text-transform: none !important;
+}
+
+.img-ul-clear {
+  background-color: var(--secondary) !important;
+  font-size: 1em !important;
+}
+
+.object-fit-cover {
+object-fit: cover;
+width:100%;
+height: 100%;
+}
+
+.mono-taxa-img{
+width: 100%;
+height: 200px;
+max-height: 200px;
 }

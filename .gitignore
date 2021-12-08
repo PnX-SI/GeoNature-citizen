@@ -235,6 +235,7 @@ tags
 [._]*.un~
 
 config/default_config.toml
+config/settings.ini
 
 external_modules/gnc_*
 contrib/gnc_*
@@ -249,5 +250,20 @@ Pipfile
 Pipfile.lock
 
 media/
-frontend/src/custom/custom.css
 frontend/ssl
+
+# Custom files
+frontend/src/custom/**/*.css
+frontend/src/custom/**/*.html
+!frontend/src/custom/**/*.template
+
+data/tmp
+*.qgs
+
+# Docker
+docker-compose.override.yaml
+docker-compose.override.yml
+
+# Backoffice secure access:
+config/backoffice_access
+config/backoffice_htpasswd

@@ -1,15 +1,17 @@
-app-modalflow  {
+.map-modal-btn app-modalflow {
     position: absolute;
     bottom: 40px;
     right: 20px;
+    z-index: 999;
 }
 
-@media screen and (max-width: 450px){
-    app-modalflow  {
-        right: 0px;
-        left: 0px;
-    }
-    app-modalflow button:first-child{
+@media screen and (max-width: 450px) {
+    app-modalflow button:first-child {
         margin: 0px !important;
     }
+}
+.btn-secondary {
+    color: white !important;
+    margin-right: 20px;
+    margin-left: 0px;
 }
