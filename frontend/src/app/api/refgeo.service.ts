@@ -44,10 +44,10 @@ export class RefGeoService {
                         ? address.village
                         : address.town
                         ? address.town
-                        : address.municipality
-                        ? address.municipality
                         : address.city
                         ? address.city
+                        : address.municipality
+                        ? address.municipality
                         : 'Non trouvé';
                     return city;
                 })

@@ -17,8 +17,9 @@ def get_municipality_name(x: int, y: int):
   # the same attributes depending on the "city"
   available_city_keys = ['village',
                           'town',
-                          'municipality',
-                          'city']
+                          'city',
+                          'municipality'
+                          ]
   municipality_id = None
   i = 0
   while municipality_id is None and i < len(available_city_keys) - 1:
