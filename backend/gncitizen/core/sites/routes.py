@@ -442,7 +442,7 @@ def delete_site(site_id):
             .join(UserModel, SiteModel.id_role == UserModel.id_user, full=True)
             .first()
         )
-        if current_user.id_user == site.id_role:
+        if current_user.id_user == site.SiteModel.id_role:
             SiteModel.query.filter_by(id_site=site_id).delete()
             db.session.commit()
             return ("Site deleted successfully"), 200
