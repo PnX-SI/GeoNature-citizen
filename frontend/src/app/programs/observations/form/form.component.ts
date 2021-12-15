@@ -509,7 +509,11 @@ export class ObsFormComponent implements AfterViewInit {
             .toISOString()
             .match(/\d{4}-\d{2}-\d{2}/)[0];
         formData.append('date', normDate);
-        formData.append('municipality', this.municipality);
+        if (this.municipality !== undefined && this.municipality != null) {
+            // If municipality is not present, let the backend find
+            // the municipality. So only append municipality if defined
+            formData.append('municipality', this.municipality);
+        }
         for (let item of ['count', 'comment', 'id_program', 'email']) {
             formData.append(item, this.obsForm.get(item).value);
         }

@@ -48,7 +48,7 @@ export class RefGeoService {
                         ? address.city
                         : address.municipality
                         ? address.municipality
-                        : 'Non trouvé';
+                        : null;
                     return city;
                 })
             );
