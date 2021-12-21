@@ -10,6 +10,7 @@ JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
 # Application
 appName = 'GeoNature-citizen'                               # Application name in the home page
 DEFAULT_LANGUAGE = 'fr'
+FLASK_ADMIN_FLUID_LAYOUT = true
 
 # Debug
 DEBUG = false
