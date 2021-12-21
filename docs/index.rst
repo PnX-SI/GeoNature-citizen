@@ -14,6 +14,7 @@ Documentation de GeoNature-citizen
    :caption: Contenu:
 
    installation
+   docker
    configuration
    badges
    devs/index

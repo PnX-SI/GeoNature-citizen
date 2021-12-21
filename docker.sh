@@ -42,10 +42,7 @@ pg_host=citizen-db
 # Generate .env file for docker-compose to have the correct
 # infos about the database
 echo "Generating .env file"
-echo "DB_NAME=${pg_dbname}
-DB_USER=${user_pg}
-DB_PASSWORD=${user_pg_pass}
-NGINX_PORT=80" > .env
+echo "" > .env
 
 # Generate password
 . ./install/generate_password.sh
@@ -57,6 +54,6 @@ cp -r frontend/src/assets/* media/.
 # Down everything
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
 # Launch everything in detached mode
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d 
 
 # DEV : docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d

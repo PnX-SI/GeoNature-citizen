@@ -3,6 +3,7 @@ Utiliser Citizen avec Docker
 ****************************
 
 .. _IBM: https://www.youtube.com/watch?v=0qotVMX-J5s
+.. _Docker: https://docs.docker.com/
 
 Introduction aux conteneurs
 ===========================
@@ -10,7 +11,8 @@ Introduction aux conteneurs
 Docker
 ^^^^^^
 
-Docker est un gestionnaire de conteneurs.
+`Docker`_  est un gestionnaire de conteneurs.
+
 Pour faire très simple : un conteneur peut être vu comme une 
 mini machine virtuelle utilisant les librairies de l'OS sur lequel 
 il est lancé.
@@ -36,10 +38,10 @@ d'un réseau (network) pour faire communiquer les conteneurs entre eux.
 Nomenclature
 ^^^^^^^^^^^^
 
-Image : peut se rapprocher d'un fichier ISO
-Dockerfile : ensemble d'instructions permettant de construire une image
-Conteneur : emplacement dans lequel est monté l'ISO
-Service : ici peut se traduire directement par : un conteneur
+- Image : peut se rapprocher d'un fichier ISO
+- Dockerfile : ensemble d'instructions permettant de construire une image
+- Conteneur : emplacement dans lequel est monté l'ISO
+- Service : ici peut se traduire directement par : un conteneur
 
 
 Avantages
@@ -49,11 +51,12 @@ Avantages
 - Chaque service s'execute dans un environnement vierge (aucun conflit)
 - Le code est beaucoup plus portatif : seul docker est requis sur la machine
 - Donc installations beaucoup plus rapides
-- Le déploiement peut se faire automatiquement : à chaque merge sur une branche
-  particulière : construction des images; mise à disposition via une 
-  bibliothèque d'images; Téléchargement des images; Montage des images dans 
-  les conteneurs; les services sont opérationnels et accessibles par les 
-  utilisateurs.
+- Le déploiement peut se faire automatiquement : 
+  - à chaque merge sur une branche particulière : construction des images; 
+  - mise à disposition via une bibliothèque d'images; 
+  - Téléchargement des images; 
+  - Montage des images dans les conteneurs; 
+  - les services sont opérationnels et accessibles par les utilisateurs.
 - Beaucoup utilisé dans la communauté open-source.
 
 
@@ -78,6 +81,8 @@ Utiliser Docker dans Citizen en production
 
 Lancer les services
 ^^^^^^^^^^^^^^^^^^^
+
+Lancer ``./docker.sh``
 
 Lancer cette commande : ``docker-compose up``
 Cette commande va construire les images et les monter une par une
@@ -112,7 +117,7 @@ les services
 Utiliser Docker dans Citizen en developpement
 =============================================
 
-Lancer ``docker-compose -f docker-compose-dev.yml up --build``
+Lancer ``docker-compose -f docker-compose.dev.yml up --build``
 
 Cela utilisera le ficher de configuration des services
 et construira les images pour le developpement 
@@ -128,7 +133,7 @@ Ce qu'il reste à améliorer
 - Les docker-compose prod et dev pourraient être mieux écrits pour qu'il
   y en ai un qui "écrase" l'autre (override) et donc pourraient être 
   lancés comme ceci : 
-  ``docker-compose -f docker-compose.prod.yml -f docker-compose-dev.yml up``
+  ``docker-compose -f docker-compose.prod.yml -f docker-compose.dev.yml up``
 - Les fichers pourraient être mieux nommés
 - Les Dockerfile pourraient être améliorées nottamment le front en ajoutant
   un "Stage" pour copier le front buildé
