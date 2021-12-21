@@ -30,7 +30,9 @@ type Address = {
 })
 export class RefGeoService {
     private readonly URL =
-        AppConfig.API_CITY || 'https://nominatim.openstreetmap.org/reverse';
+        'API_CITY' in AppConfig
+            ? AppConfig['API_CITY']
+            : 'https://nominatim.openstreetmap.org/reverse';
 
     constructor(protected http: HttpClient) {}
 
