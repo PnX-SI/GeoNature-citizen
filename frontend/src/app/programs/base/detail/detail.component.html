@@ -121,11 +121,41 @@
             <div *ngIf="attributes.length > 0" class="row">
                 <h2 class="my-4">Description</h2>
             </div>
+            <!-- {{ attributes|json }} -->
             <div *ngFor="let a of attributes" class="row bg-light my-3">
                 <h5>
                     <i class="fa fa-calendar"></i>
                     {{ a.date | date: 'longDate' }} par {{ a.author }}
                 </h5>
+                <!-- <app-sitemodalflow
+                    #modalFlowRef
+                    [coords]="o.properties.coords"
+                    [updateData]="o.properties"
+                    [program_id]="o.properties.id_program"
+                >
+                    <i
+                        class="fa fa-edit text-primary"
+                        placement="bottom"
+                        ngbTooltip="Editer"
+                        *ngIf="
+                            o.properties.id_role ===
+                            userService.role_id
+                        "
+                        btn-open
+                    ></i>
+                </app-sitemodalflow> -->
+                &nbsp;
+                <!-- {{ a|json }} deleteSiteVisit(a.id)-->
+                <i
+                    class="fa fa-trash text-danger"
+                    placement="bottom"
+                    ngbTooltip="Supprimer"
+                    (click)="openDelVisitModal(a.id);"
+                    *ngIf="
+                    a.author === username
+                    "
+                    owner-actions
+                ></i>
                 <table class="table table-striped table-sm table-hover">
                     <tbody>
                         <ng-container *ngIf="a.data; else noData">
@@ -196,3 +226,28 @@
         </div>
     </div>
 </div>
+
+<ng-template #visitDeleteModal let-modal>
+    <div class="modal-delete-header">
+        <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
+    </div>
+    <div class="modal-delete-body">
+        Êtes-vous sûr de vouloir supprimer cette visite et toutes les informations
+        qui y sont rattachées ?
+        <br />
+        La suppression sera définitive
+    </div>
+    <div class="modal-delete-footer">
+        <button
+            type="button"
+            class="cancel-btn"
+            style="margin-right: 15px"
+            (click)="visitDeleteModalClose()"
+        >
+            ANNULER
+        </button>
+        <button type="button" class="green-btn" (click)="deleteSiteVisit(idVisitToDelete); visitDeleteModalClose();">
+            OUI
+        </button>
+    </div>
+</ng-template>

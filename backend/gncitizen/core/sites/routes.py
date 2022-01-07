@@ -452,6 +452,27 @@ def delete_site(site_id):
         return {"message": str(e)}, 500
 
 
+@sites_api.route("/visit/<int:visit_id>", methods=["DELETE"])
+@json_resp
+@jwt_required()
+def delete_visit(visit_id):
+    current_user = get_user_if_exists()
+    # try:
+    visit = (
+        db.session.query(VisitModel)
+        .filter(VisitModel.id_visit == visit_id)
+        .first()
+    )
+    if current_user.id_user == visit.id_role:
+        VisitModel.query.filter_by(id_visit=visit_id).delete()
+        db.session.commit()
+        return ("Site deleted successfully"), 200
+    else:
+        return ("delete unauthorized"), 403
+    # except Exception as e:
+    #     return {"message": str(e)}, 500
+
+
 @sites_api.route("/export/<int:user_id>", methods=["GET"])
 @jwt_required()
 def export_sites_xls(user_id):
