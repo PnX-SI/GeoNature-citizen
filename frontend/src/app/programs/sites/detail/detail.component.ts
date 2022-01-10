@@ -43,6 +43,11 @@ export class SiteDetailComponent
         });
         this.module = 'sites';
         this.username = localStorage.getItem('username');
+        this.flowService.modalCloseStatus.subscribe( value => {
+            if (value === 'visitPosted') {
+                this.updateData();
+            }
+        });
     }
 
     prepareSiteData() {
@@ -99,6 +104,13 @@ export class SiteDetailComponent
         return this.programService.getSiteDetails(this.site_id);
     }
 
+    updateData() {
+        this.getData().subscribe((sites) => {
+            this.site = sites['features'][0];
+            this.prepareVisits();
+        });
+    }
+
     ngAfterViewInit() {
         this.getData().subscribe((sites) => {
             this.site = sites['features'][0];
@@ -133,10 +145,7 @@ export class SiteDetailComponent
 
     deleteSiteVisit(idVisitToDelete) {
         this.userService.deleteSiteVisit(idVisitToDelete).subscribe(() => {
-            this.getData().subscribe((sites) => {
-                this.site = sites['features'][0];
-                this.prepareVisits();
-            });
+            this.updateData();
         });
     }
 }

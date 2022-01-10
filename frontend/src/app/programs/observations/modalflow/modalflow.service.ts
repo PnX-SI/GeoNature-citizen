@@ -89,7 +89,7 @@ export class ModalFlowService extends FlowService {
         return this.modalCloseStatus.asObservable();
     }
 
-    setModalCloseSatus(type: 'updateObs' | 'newObs' | null) {
+    setModalCloseSatus(type: 'updateObs' | 'newObs' | 'visitPosted' | null) {
         this.modalCloseStatus.next(type);
     }
 
