@@ -406,6 +406,25 @@ def post_visit(site_id):
         return {"error_message": str(e)}, 400
 
 
+@sites_api.route("/visits/<int:visit_id>", methods=["PATCH"])
+@json_resp
+@jwt_required()
+def update_visit(visit_id):
+    try:
+        current_user = get_user_if_exists()
+        update_data = dict(request.get_json())
+        visit = VisitModel.query.filter_by(id_visit=visit_id).first()
+        if current_user.id_user != visit.id_role:
+            return ("unauthorized"), 403
+        visit.date = update_data.get("date")
+        visit.json_data = update_data.get("data")
+        db.session.commit()
+        return ("Visit updated successfully"), 200
+    except Exception as e:
+        current_app.logger.critical("[update_visit] Error: %s", str(e))
+        return {"message": str(e)}, 400
+
+
 @sites_api.route(
     "/<int:site_id>/visits/<int:visit_id>/photos", methods=["POST"]
 )

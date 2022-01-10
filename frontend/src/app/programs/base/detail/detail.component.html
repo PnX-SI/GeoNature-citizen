@@ -122,38 +122,28 @@
                 <h2 class="my-4">Description</h2>
             </div>
             <!-- {{ attributes|json }} -->
+            <!-- <span *ngIf="site">{{ site.properties.visits|json }}</span> -->
             <div *ngFor="let a of attributes" class="row bg-light my-3">
                 <h5>
                     <i class="fa fa-calendar"></i>
                     {{ a.date | date: 'longDate' }} par {{ a.author }}
                 </h5>
-                <!-- <app-sitemodalflow
-                    #modalFlowRef
-                    [coords]="o.properties.coords"
-                    [updateData]="o.properties"
-                    [program_id]="o.properties.id_program"
-                >
-                    <i
-                        class="fa fa-edit text-primary"
-                        placement="bottom"
-                        ngbTooltip="Editer"
-                        *ngIf="
-                            o.properties.id_role ===
-                            userService.role_id
-                        "
-                        btn-open
-                    ></i>
-                </app-sitemodalflow> -->
+                <i
+                    class="fa fa-edit text-primary"
+                    placement="bottom"
+                    ngbTooltip="Editer"
+                    (click)="editSiteVisit(a);"
+                    *ngIf="a.author === username"
+                    btn-open
+                ></i>
                 &nbsp;
                 <!-- {{ a|json }} deleteSiteVisit(a.id)-->
                 <i
                     class="fa fa-trash text-danger"
                     placement="bottom"
                     ngbTooltip="Supprimer"
-                    (click)="openDelVisitModal(a.id);"
-                    *ngIf="
-                    a.author === username
-                    "
+                    (click)="openDelVisitModal(a.id)"
+                    *ngIf="a.author === username"
                     owner-actions
                 ></i>
                 <table class="table table-striped table-sm table-hover">

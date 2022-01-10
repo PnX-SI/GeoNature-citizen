@@ -23,6 +23,7 @@ import { AppConfig } from '../../../../conf/app.config';
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 import { ngbDateMaxIsToday } from '../../observations/form/formValidators';
 import { SiteService } from '../sites.service';
+import { cpuUsage } from 'process';
 
 declare let $: any;
 
@@ -35,6 +36,8 @@ declare let $: any;
 export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     private readonly URL = AppConfig.API_ENDPOINT;
     @Input() site_id: number;
+    @Input() visit_id: number;
+    @Input() visit_data: any;
     today = new Date();
     visitForm = new FormGroup({
         date: new FormControl(
@@ -78,7 +81,39 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         // const that = this;
         this.loadJsonSchema().subscribe((data: any) => {
             this.initForm(data);
+            if (this.visit_id) {
+                this.initJsonData(this.visit_data.json_data)
+                const visit_date = new Date(this.visit_data.date);
+                this.visitForm.controls.date.value = {
+                    year: visit_date.getFullYear(),
+                    month: visit_date.getMonth() + 1,
+                    day: visit_date.getDate()
+                };
+            }
         });
+    }
+    initJsonData(visit_json_data) {
+        // Visit edition json data initialisation
+        this.jsonData = {}
+        if (this.jsonSchema.steps) {
+            this.jsonSchema.steps.forEach((step, index)=> {
+                this.jsonData[index + 1] = {}
+                step.layout.forEach ((elt) => {
+                    if (elt.key && elt.key in visit_json_data) {
+                        this.jsonData[index + 1][elt.key] = visit_json_data[elt.key];
+                    } else if (elt.type === 'section') {
+                        elt.items.forEach((item) => {
+                            if (item.key in visit_json_data) {
+                                this.jsonData[index + 1][item.key] = visit_json_data[item.key]
+                            }
+                        });
+                    }
+                })
+            })
+        } else {
+            this.jsonData = visit_json_data // TODO is it correct ?
+        }
+        this.updateFormInput();
     }
     initForm(json_schema) {
         this.jsonSchema = json_schema;
@@ -130,7 +165,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
     invalidStep() {
         return this.currentStep === 1 && this.visitForm.get('date').invalid;
     }
-    yourOnChangesFn(e) {
+    onJsonFormChange(e) {
         this.jsonData[this.currentStep] = e;
     }
     getTotalJsonData() {
@@ -159,16 +194,18 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         this.postSiteVisit().subscribe(
             (data) => {
                 console.debug(data);
-                const visitId = data['features'][0]['id_visit'];
-                if (this.photos.length > 0) {
-                    this.postVisitPhotos(visitId).subscribe(
-                        (resp) => {
-                            console.debug(resp);
-                            this.siteService.newSiteCreated.emit(true);
-                        },
-                        (err) => console.error(err),
-                        () => console.log('photo upload done')
-                    );
+                if (!this.visit_id) {
+                    const visitId = data['features'][0]['id_visit'];
+                    if (this.photos.length > 0) {
+                        this.postVisitPhotos(visitId).subscribe(
+                            (resp) => {
+                                console.debug(resp);
+                                this.siteService.newSiteCreated.emit(true);
+                            },
+                            (err) => console.error(err),
+                            () => console.log('photo upload done')
+                        );
+                    }
                 }
             },
             (err) => console.error(err),
@@ -186,12 +223,21 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         const visitDate = NgbDate.from(this.visitForm.controls.date.value);
         this.visitForm.patchValue({
             data: this.getTotalJsonData(),
-            date: new Date(visitDate.year, visitDate.month, visitDate.day)
+            date: new Date(visitDate.year, visitDate.month - 1, visitDate.day)
                 .toISOString()
                 .match(/\d{4}-\d{2}-\d{2}/)[0],
         });
-        return this.http.post<any>(
-            `${this.URL}/sites/${this.site_id}/visits`,
+        let method = 'post';
+        let url = `${this.URL}/sites/${this.site_id}/visits`;
+        if (this.visit_id) {
+            this.visitForm.patchValue({
+                id_visit: this.visit_id
+            });
+            method = 'patch';
+            url = `${this.URL}/sites/visits/${this.visit_id}`
+        }
+        return this.http[method]<any>(
+            url,
             this.visitForm.value,
             httpOptions
         );

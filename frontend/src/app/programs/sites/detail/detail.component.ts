@@ -70,7 +70,12 @@ export class SiteDetailComponent
         if (this.site.properties.visits) {
             this.site.properties.visits.forEach((e) => {
                 const data = e.json_data;
-                const visitData = { date: e.date, author: e.author, id: e.id_visit };
+                const visitData = {
+                    date: e.date,
+                    author: e.author,
+                    id: e.id_visit,
+                    json_data: e.json_data
+                };
                 this.loadJsonSchema().subscribe((jsonschema: any) => {
                     const schema = jsonschema.schema.properties;
                     const custom_data = [];
@@ -108,6 +113,10 @@ export class SiteDetailComponent
 
     addSiteVisit() {
         this.flowService.addSiteVisit(this.site_id);
+    }
+
+    editSiteVisit(visit_data) {
+        this.flowService.editSiteVisit(this.site_id, visit_data.id, visit_data);
     }
 
     openDelVisitModal(idVisitToDelete) {
