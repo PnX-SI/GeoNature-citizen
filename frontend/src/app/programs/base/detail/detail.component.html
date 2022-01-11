@@ -127,25 +127,21 @@
                 <h5>
                     <i class="fa fa-calendar"></i>
                     {{ a.date | date: 'longDate' }} par {{ a.author }}
+                    <i
+                        class="fa fa-edit text-primary"
+                        ngbTooltip="Editer"
+                        (click)="editSiteVisit(a);"
+                        *ngIf="a.author === username"
+                    ></i>
+                    &nbsp;
+                    <!-- {{ a|json }} deleteSiteVisit(a.id)-->
+                    <i
+                        class="fa fa-trash text-danger"
+                        ngbTooltip="Supprimer"
+                        (click)="openDelVisitModal(a.id)"
+                        *ngIf="a.author === username"
+                    ></i>
                 </h5>
-                <i
-                    class="fa fa-edit text-primary"
-                    placement="bottom"
-                    ngbTooltip="Editer"
-                    (click)="editSiteVisit(a);"
-                    *ngIf="a.author === username"
-                    btn-open
-                ></i>
-                &nbsp;
-                <!-- {{ a|json }} deleteSiteVisit(a.id)-->
-                <i
-                    class="fa fa-trash text-danger"
-                    placement="bottom"
-                    ngbTooltip="Supprimer"
-                    (click)="openDelVisitModal(a.id)"
-                    *ngIf="a.author === username"
-                    owner-actions
-                ></i>
                 <table class="table table-striped table-sm table-hover">
                     <tbody>
                         <ng-container *ngIf="a.data; else noData">
