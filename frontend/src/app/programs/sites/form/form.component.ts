@@ -84,11 +84,11 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
             if (this.visit_id) {
                 this.initJsonData(this.visit_data.json_data)
                 const visit_date = new Date(this.visit_data.date);
-                this.visitForm.controls.date.value = {
+                this.visitForm.controls.date.setValue({
                     year: visit_date.getFullYear(),
                     month: visit_date.getMonth() + 1,
                     day: visit_date.getDate()
-                };
+                });
             }
         });
     }
@@ -194,18 +194,17 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         this.postSiteVisit().subscribe(
             (data) => {
                 console.debug(data);
-                if (!this.visit_id) {
-                    const visitId = data['features'][0]['id_visit'];
-                    if (this.photos.length > 0) {
-                        this.postVisitPhotos(visitId).subscribe(
-                            (resp) => {
-                                console.debug(resp);
-                                this.siteService.newSiteCreated.emit(true);
-                            },
-                            (err) => console.error(err),
-                            () => console.log('photo upload done')
-                        );
-                    }
+                const visitId = this.visit_id || data['features'][0]['id_visit'];
+                if (this.photos.length > 0) {
+                    this.postVisitPhotos(visitId).subscribe(
+                        (resp) => {
+                            console.debug(resp);
+                            this.siteService.newSiteCreated.emit(true);
+                            this.siteService.siteEdited.emit(true);
+                        },
+                        (err) => console.error(err),
+                        () => console.log('photo upload done')
+                    );
                 }
             },
             (err) => console.error(err),
@@ -218,7 +217,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         const httpOptions = {
             headers: new HttpHeaders({
                 Accept: 'application/json',
-            }),
+            })
         };
         const visitDate = NgbDate.from(this.visitForm.controls.date.value);
         this.visitForm.patchValue({

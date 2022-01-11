@@ -11,6 +11,7 @@ import {
 } from '../../base/detail/detail.component';
 import { UserService } from '../../../auth/user-dashboard/user.service.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SiteService } from '../sites.service';
 
 @Component({
     selector: 'app-site-detail',
@@ -34,7 +35,8 @@ export class SiteDetailComponent
         private programService: GncProgramsService,
         private userService: UserService,
         private modalService: NgbModal,
-        public flowService: SiteModalFlowService
+        public flowService: SiteModalFlowService,
+        public siteService: SiteService
     ) {
         super();
         this.route.params.subscribe((params) => {
@@ -48,14 +50,12 @@ export class SiteDetailComponent
                 this.updateData();
             }
         });
+        this.siteService.siteEdited.subscribe(value => {
+            this.updateData();
+        });
     }
 
     prepareSiteData() {
-        this.photos = this.site.properties.photos;
-        this.photos.forEach((e, i) => {
-            this.photos[i]['url'] =
-                AppConfig.API_ENDPOINT + this.photos[i]['url'];
-        });
         // setup map
         const map = L.map('map');
         L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -70,7 +70,13 @@ export class SiteDetailComponent
     }
 
     prepareVisits() {
-        // prepare data
+        // photos 
+        this.photos = this.site.properties.photos;
+        this.photos.forEach((e, i) => {
+            this.photos[i]['url'] =
+                AppConfig.API_ENDPOINT + this.photos[i]['url'];
+        });
+        // data
         this.attributes = []
         if (this.site.properties.visits) {
             this.site.properties.visits.forEach((e) => {
