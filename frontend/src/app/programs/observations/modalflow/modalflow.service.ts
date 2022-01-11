@@ -25,7 +25,7 @@ export const MODAL_DEFAULTS: NgbModalOptions = {
 })
 export class ModalFlowService extends FlowService {
     modalRef: NgbModalRef;
-    private modalCloseStatus: BehaviorSubject<string> = new BehaviorSubject(
+    public modalCloseStatus: BehaviorSubject<string> = new BehaviorSubject(
         null
     );
     display: boolean = false;
