@@ -1,5 +1,6 @@
 import io
 import uuid
+import json
 
 import xlwt
 from flask import Blueprint, current_app, make_response, request
@@ -113,6 +114,8 @@ def get_site_photos(site_id):
             "url": "/media/{}".format(p.MediaModel.filename),
             "date": p.VisitModel.as_dict()["date"],
             "author": p.VisitModel.obs_txt,
+            "visit_id": p.VisitModel.id_visit,
+            "id_media": p.MediaModel.id_media
         }
         for p in photos
     ]
@@ -416,6 +419,25 @@ def update_visit(visit_id):
         visit = VisitModel.query.filter_by(id_visit=visit_id).first()
         if current_user.id_user != visit.id_role:
             return ("unauthorized"), 403
+        
+        try:
+            # Delete selected existing media
+            id_media_to_delete = json.loads(update_data.get("delete_media"))
+            if len(id_media_to_delete):
+                db.session.query(MediaOnVisitModel).filter(
+                    MediaOnVisitModel.id_media.in_(
+                        tuple(id_media_to_delete)
+                    ),
+                    MediaOnVisitModel.id_data_source
+                    == visit_id,
+                ).delete(synchronize_session="fetch")
+                db.session.query(MediaModel).filter(
+                    MediaModel.id_media.in_(tuple(id_media_to_delete))
+                ).delete(synchronize_session="fetch")
+        except Exception as e:
+            current_app.logger.warning("[update_visit] delete media ", e)
+            raise GeonatureApiError(e)
+
         visit.date = update_data.get("date")
         visit.json_data = update_data.get("data")
         db.session.commit()

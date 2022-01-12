@@ -48,7 +48,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
             },
             [Validators.required, ngbDateMaxIsToday()]
         ),
-        data: new FormControl(''),
+        data: new FormControl('')
     });
     currentStep = 1;
     partialLayout: any[] = [];
@@ -228,10 +228,12 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         });
         let method = 'post';
         let url = `${this.URL}/sites/${this.site_id}/visits`;
+        const formData = this.visitForm.value
         if (this.visit_id) {
-            this.visitForm.patchValue({
-                id_visit: this.visit_id
-            });
+            const id_media_to_delete = this.visit_data.photos
+                .filter((p) => p.checked)
+                .map((p) => p.id_media);
+            formData['delete_media'] = JSON.stringify(id_media_to_delete);
             method = 'patch';
             url = `${this.URL}/sites/visits/${this.visit_id}`
         }

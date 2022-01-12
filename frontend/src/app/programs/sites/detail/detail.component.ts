@@ -134,6 +134,7 @@ export class SiteDetailComponent
     }
 
     editSiteVisit(visit_data) {
+        visit_data.photos = this.photos.filter((p) => p.visit_id === visit_data.id)
         this.flowService.editSiteVisit(this.site_id, visit_data.id, visit_data);
     }
 
