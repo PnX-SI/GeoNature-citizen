@@ -51,6 +51,8 @@ export class SitesMapComponent extends BaseMapComponent {
                 [src]="
                     data.photo
                         ? appConfig.API_ENDPOINT + data.photo.url
+                        : data.site_type.pictogram
+                        ? data.site_type.pictogram
                         : 'assets/no_photo_light.png'
                 "
             />
