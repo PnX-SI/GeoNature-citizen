@@ -1,16 +1,12 @@
 #!/bin/bash
+set -e
+
 cd $(dirname $(dirname "${BASH_SOURCE[0]:-$0}"))
 
 DIR=$(pwd)
 
-#création d'un fichier de configuration pour api/back
-if [ ! -f config/settings.ini ]; then
-  echo 'Fichier de configuration du projet non existant, copie du template...'
-  cp config/settings.ini.template config/settings.ini
-  echo "Fichier de config disponible : $DIR/config/settings.ini."
-  echo "Merci de renseigner le fichier et de relancer la commande install_app.sh."
-  exit
-fi
+# Vérification de la configuration et copie du settings.ini
+. ./install/check_settings.sh
 
 . config/settings.ini
 
@@ -19,7 +15,7 @@ sudo apt update && sudo apt -y install python2.7 git gcc curl gunicorn python-se
 sudo apt -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl libbz2-dev
 sudo apt -y install apache2 python-dev libpq-dev libgeos-dev supervisor unzip virtualenv libcurl4-openssl-dev libssl-dev
 sudo apt -y install build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev
-
+sudo apt -y install postgresql postgis
 # RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME |cut -d "=" -f2)
 sudo apt install python3 python3-dev python3-pip -y
 
@@ -28,6 +24,13 @@ sudo apt-get clean
 echo $(python3 --version)
 
 sudo service supervisor start && sudo supervisorctl stop all
+
+# Create the database
+. ./install/create_db.sh
+
+# Add a new user in database
+. ./install/create_db_user.sh
+
 #Maj  de pip
 pip3 install --upgrade pip
 
@@ -49,56 +52,11 @@ cd ${DIR}
 #adduser synthese www-data
 #fi
 
-echo "export PATH=\$PATH:~/.local/bin" >>~/.bashrc
-exec $SHELL
-
 python3 -m pip install poetry --user
 
-if [ ! -f config/default_config.toml ]; then
-  echo 'Fichier de configuration API non existant, copie du template...'
-  cp config/default_config.toml.template config/default_config.toml
-  sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$pg_host:$pg_port\/$pg_dbname\"/" config/default_config.toml
-  sed -i "s,URL_APPLICATION = .*$,URL_APPLICATION = \"$url_application\",g" config/default_config.toml
-  sed -i "s,API_ENDPOINT = .*$,API_ENDPOINT = \"$api_endpoint\",g" config/default_config.toml
-  sed -i "s,API_PORT = .*$,API_PORT = \"$api_port\",g" config/default_config.toml
-  sed -i "s,API_TAXHUB = .*$,API_TAXHUB = \"$api_taxhub\",g" config/default_config.toml
-fi
-
-#Création d'un fichier de configuration pour le front
-cd frontend
-if [ ! -f src/conf/app.config.ts ]; then
-  echo 'Fichier de configuration frontend non existant, copie du template...'
-  cp src/conf/app.config.ts.template src/conf/app.config.ts
-  sed -i "s|API_ENDPOINT:.*$|API_ENDPOINT:\"$api_endpoint\",|g" src/conf/app.config.ts
-  sed -i "s|API_TAXHUB:.*$|API_TAXHUB:\"$api_taxhub\",|g" src/conf/app.config.ts
-  sed -i "s|URL_APPLICATION:.*$|URL_APPLICATION:\"$url_application\",|g" src/conf/app.config.ts
-
-fi
-if [ ! -f src/conf/map.config.ts ]; then
-  echo 'Fichier map non existant, copie du template...'
-  cp src/conf/map.config.ts.template src/conf/map.config.ts
-fi
-
-#Copie des fichiers custom
-if [ ! -f src/custom/custom.css ]; then
-  echo 'Fichier custom.css non existant, copie du template...'
-  cp src/custom/custom.css.template src/custom/custom.css
-fi
-if [ ! -f src/custom/about/about.css ]; then
-  echo 'Fichiers about non existant, copie du template...'
-  cp src/custom/about/about.css.template src/custom/about/about.css
-  cp src/custom/about/about.html.template src/custom/about/about.html
-fi
-if [ ! -f src/custom/footer/footer.css ]; then
-  echo 'Fichiers footer non existant, copie du template...'
-  cp src/custom/footer/footer.css.template src/custom/footer/footer.css
-  cp src/custom/footer/footer.html.template src/custom/footer/footer.html
-fi
-if [ ! -f src/custom/home/home.css ]; then
-  echo 'Fichiers footer non existant, copie du template...'
-  cp src/custom/home/home.css.template src/custom/home/home.css
-  cp src/custom/home/home.html.template src/custom/home/home.html
-fi
+cd ${DIR}
+. ./install/copy_config.sh
+cd ${DIR}/frontend
 
 #Install and build
 NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
@@ -116,18 +74,10 @@ if [ $server_side = "true" ]; then
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
-  if [ ${backoffice_password:=MotDePasseAChanger} = MotDePasseAChanger ]; then
-    backoffice_password=$(
-      date +%s | sha256sum | base64 | head -c 30
-      echo
-    )
-  fi
-  echo "Backoffice password
-===================
-url: (${URL}/api/admin)
-username: ${backoffice_username:=citizen}
-password: ${backoffice_password}" >${DIR}/config/backoffice_access
-  htpasswd -b -c ${DIR}/config/backoffice_htpasswd ${backoffice_username} ${backoffice_password}
+  
+  cd ${DIR}
+  . ./install/generate_password.sh
+
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
   sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-available/gncitizen.conf
@@ -151,6 +101,9 @@ cd $DIR
 mkdir -p $DIR/media
 cp -r $DIR/frontend/src/assets/* $DIR/media
 
+# Creation des repertoires de log
+mkdir -p var/log
+
 touch init_done
 
 #Création de la conf supervisor
@@ -159,6 +112,7 @@ sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_api-service.co
 sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_api-service.conf
 
 # Prise en compte de la nouvelle config Apache
+sudo a2enmod proxy_http
 sudo a2ensite gncitizen.conf
 sudo apache2ctl restart
 
@@ -169,7 +123,7 @@ sudo supervisorctl reload
 # Installation de Taxhub si demandée
 if $install_taxhub; then
   echo "Installing taxhub"
-  ./install_taxhub.sh
+  . ./install/install_taxhub.sh
 fi
 
 echo "End of installation

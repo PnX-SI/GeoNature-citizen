@@ -13,8 +13,11 @@ config = load_config()
 app = get_app(config)
 port = app.config["API_PORT"] if app.config.get("API_PORT", False) else 5002
 
-if __name__ == "__main__":
+def main():
     print("""####################################################
     #     STARTING GeoNature-Citizen version {__version__}
     ####################################################""")
     app.run(host="0.0.0.0", port=port)
+
+if __name__ == "__main__":
+    main()

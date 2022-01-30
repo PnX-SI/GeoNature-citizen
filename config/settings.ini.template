@@ -12,7 +12,7 @@ api_port=5002
 api_taxhub=http://mydomain.net/taxhub/api/             # Url for the taxhub api
 
 # Choix installation de taxhub
-install_taxhub=true
+install_taxhub=false
 taxhub_version=1.7.3
 
 # Configuration front

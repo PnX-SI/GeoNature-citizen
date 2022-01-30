@@ -39,6 +39,7 @@ import { ObservationsService } from '../observations.service';
 import { MapService } from '../../base/map/map.service';
 
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
+import { RefGeoService } from '../../../api/refgeo.service';
 
 declare let $: any;
 
@@ -70,6 +71,11 @@ export const obsFormMarkerIcon = L.icon({
     iconAnchor: [16, 42],
 });
 
+type TempTaxa = {
+    cd_nom: number;
+    nom_francais: string;
+};
+
 @Component({
     selector: 'app-obs-form',
     templateUrl: './form.component.html',
@@ -84,6 +90,7 @@ export class ObsFormComponent implements AfterViewInit {
     today = new Date();
     program_id: number;
     coords: L.Point;
+    municipality: string;
     modalflow;
     taxonSelectInputThreshold = taxonSelectInputThreshold;
     taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
@@ -128,12 +135,14 @@ export class ObsFormComponent implements AfterViewInit {
         private programService: GncProgramsService,
         private toastr: ToastrService,
         private auth: AuthService,
-        private mapService: MapService
+        private mapService: MapService,
+        private _refGeoService: RefGeoService
     ) {}
 
     ngOnInit(): void {
         this.program_id = this.data.program_id;
         this.coords = this.data.coords;
+        this.updateMunicipality();
         this.intiForm();
         if (this.data.updateData) {
             this.patchForm(this.data.updateData);
@@ -312,6 +321,7 @@ export class ObsFormComponent implements AfterViewInit {
                             icon: obsFormMarkerIcon,
                         }).addTo(formMap);
                         this.coords = L.point(e.latlng.lng, e.latlng.lat);
+                        this.updateMunicipality();
                         this.obsForm.patchValue({ geometry: this.coords });
                     }
                 });
@@ -327,6 +337,16 @@ export class ObsFormComponent implements AfterViewInit {
             ...this.customForm.json_schema,
             data: this.jsonData,
         };
+    }
+
+    updateMunicipality() {
+        if (this.coords) {
+            this._refGeoService
+                .getMunicipality(this.coords.y, this.coords.x)
+                .toPromise()
+                .then((municipality) => (this.municipality = municipality))
+                .catch((err) => console.log(err));
+        }
     }
 
     intiForm() {
@@ -347,6 +367,7 @@ export class ObsFormComponent implements AfterViewInit {
                     this.data.coords ? this.coords : '',
                     [Validators.required, geometryValidator()],
                 ],
+                municipality: [''],
                 id_program: [this.program_id],
                 email: [{ value: '', disabled: true }],
                 agreeContactRGPD: [''],
@@ -466,7 +487,14 @@ export class ObsFormComponent implements AfterViewInit {
         if (isNaN(cd_nom)) {
             cd_nom = Number.parseInt(taxon.cd_nom);
         }
+        // Need to convert the defined interface to an array to have
+        // access to the filter function
+        const tempTaxa = this.taxa as Array<unknown> as Array<TempTaxa>;
+        const taxon_name: TempTaxa = tempTaxa.filter(
+            (t) => t.cd_nom == cd_nom
+        )[0];
         formData.append('cd_nom', cd_nom.toString());
+        formData.append('name', taxon_name.nom_francais);
         const obsDateControlValue = NgbDate.from(
             this.obsForm.controls.date.value
         );
@@ -481,6 +509,11 @@ export class ObsFormComponent implements AfterViewInit {
             .toISOString()
             .match(/\d{4}-\d{2}-\d{2}/)[0];
         formData.append('date', normDate);
+        if (this.municipality !== undefined && this.municipality != null) {
+            // If municipality is not present, let the backend find
+            // the municipality. So only append municipality if defined
+            formData.append('municipality', this.municipality);
+        }
         for (let item of ['count', 'comment', 'id_program', 'email']) {
             formData.append(item, this.obsForm.get(item).value);
         }

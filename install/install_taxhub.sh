@@ -74,9 +74,3 @@ sudo chown -R $(whoami) /tmp/usershub
 ./install_db.sh
 ./install_app.sh
 
-cd $DIR
-. config/settings.ini
-sudo -u postgres psql $pg_dbname -c 'create extension postgis;'
-
-echo "install municipalities"
-./data/ref_geo.sh
