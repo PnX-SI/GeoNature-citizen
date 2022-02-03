@@ -167,6 +167,9 @@ export class UserDashboardComponent implements OnInit {
                     // this.rowData(obs, coords);
                     // this.obsExport(obs);
                 });
+                if (this.observations.length === 0 && this.mysites.features.length > 0) {
+                    this.tab = 'sites'
+                }
             } else {
                 this.observations = data[0].features;
                 this.observations.forEach((obs) => {

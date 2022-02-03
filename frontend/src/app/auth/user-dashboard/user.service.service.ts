@@ -65,6 +65,12 @@ export class UserService {
         );
     }
 
+    deleteSiteVisit(idVisit: number) {
+        return this.http.delete<Object>(
+            `${AppConfig.API_ENDPOINT}/sites/visit/${idVisit}`
+        );
+    }
+
     ConvertToCSV(objArray, headerList) {
         let array =
             typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
