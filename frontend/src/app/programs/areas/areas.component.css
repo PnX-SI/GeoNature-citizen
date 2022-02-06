@@ -1,0 +1,35 @@
+.app-no-topbar .observations {
+    height: calc(100vh - 55px);
+    --list-obs-offset: 135px;
+    --router-outlet-offset: 0px;
+}
+
+@media (max-width: 992px) {
+    .app-no-topbar .observations {
+        height: auto;
+    }
+}
+
+#mapList {
+    height: 100%;
+}
+
+.observations {
+    margin: 0px;
+    min-height: inherit;
+    height: calc(100vh - 137px);
+    overflow: hidden;
+}
+
+.obs-section {
+    width: 100%;
+    min-height: 70vh;
+    position: relative;
+}
+
+#newObsDiv {
+    background: #eee;
+    padding: 5px 0px 5px 5px;
+    overflow: scroll;
+    height: calc(110vh - var(--list-obs-offset));
+}

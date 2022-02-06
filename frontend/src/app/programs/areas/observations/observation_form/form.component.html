@@ -1,0 +1,156 @@
+<div *ngIf="readyToDisplay">
+    <form id="observationForm" [formGroup]="observationForm">
+        <div *ngIf="speciesSite?.properties?.stages?.count" class="d-flex flex-column align-items-center mb-3">
+            <div *ngIf="observationForm.get('species_stage_id').errors?.notSelected" class="alert alert-danger">
+                Veuillez sélectionner un stade
+            </div>
+            <select
+                formControlName="species_stage_id"
+                class="form-control rounded-0 col-md-6"
+                [(ngModel)]="selectedStage"
+                (ngModelChange)="onSelectedStageChange()"
+            >
+                <option value="0">
+                    Veuillez sélectionner un stade
+                </option>
+                <option
+                    *ngFor="let s of stagesFeatures"
+                    [value]="s.properties.id_species_stage"
+                >
+                    {{
+                    s.properties.name
+                    }}
+                </option>
+            </select>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <label for="obs-date">Date de l'observation</label>
+                    <input
+                        formControlName="date"
+                        type="text"
+                        class="form-control rounded-0"
+                        placeholder="yyyy-mm-dd"
+                        ngbDatepicker
+                        id="obs-date"
+                        #d="ngbDatepicker"
+                        (click)="d.toggle()"
+                    />
+                    <div
+                        *ngIf="observationForm.get('date').invalid"
+                        class="alert alert-danger"
+                    >
+                        <div *ngIf="observationForm.get('date').errors.required">
+                            La date est obligatoire
+                        </div>
+                        <div
+                            *ngIf="
+                                observationForm.get('date').errors[
+                                    'Parsed a date in the future'
+                                ]
+                            "
+                        >
+                            La date doit être antérieure à la date du jour
+                        </div>
+                        <div *ngIf="observationForm.get('date').errors.ngbDate">
+                            Date invalide
+                        </div>
+                        <div *ngIf="observationForm.get('date').errors.stepThisYear">
+                            Ce stade a déjà été renseigné cette année
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div *ngFor="let step of steps" class="step-radio-container">
+                        <input
+                            formControlName="stages_step_id"
+                            name="stages_step_id"
+                            type="radio"
+                            [id]="'step-'+step.properties.id_stages_step"
+                            [value]="step.properties.id_stages_step"
+                            [(ngModel)]="selectedStep"
+                            (ngModelChange)="onSelectedStepChange()"
+                        >
+                        <label [for]="'step-'+step.properties.id_stages_step">
+                            {{ step.properties.name }}
+                            <i *ngIf="step.properties.tooltip && step.properties.tooltip.length" [ngbTooltip]="step.properties.tooltip" class="fa fa-question-circle ml-1" placement="top"></i>
+                        </label>
+                    </div>
+                    <div *ngIf="observationForm.get('stages_step_id').errors?.notSelected" class="alert alert-danger">
+                        Veuillez sélectionner une étape
+                    </div>
+                </div>
+                <div *ngIf="data.admin">
+                    <label>
+                        Etape de validation
+                    </label>
+                    <select
+                        class="form-control rounded-0"
+                        formControlName="state"
+                    >
+                        <option *ngFor="let state of validationStates" [ngValue]="state.key">
+                            {{ state.label }}
+                        </option>
+                    </select>
+                </div>
+
+
+                <json-schema-form
+                    *ngIf="formInputObject"
+                    [form]="formInputObject"
+                    [options]="formOptions"
+                    (onChanges)="yourOnChangesFn($event)"
+                    [framework]="GNCBootstrap4Framework"
+                >
+                </json-schema-form>
+            </div>
+            <div class="col-md-6">
+                <div class="photos-container">
+                    <ng-container  *ngFor="let step of steps;let stepIndex=index;" >
+                        <div *ngFor="let photo of step.properties.photos;let photoIndex=index;" class="photo-container">
+                            <div>
+                                <img [src]="apiEndpoint + photo.url" alt="step photo" width="100%" />
+                            </div>
+                            <div style="text-align:center;">
+                                {{ (stepIndex + 1) + '.' + (photoIndex + 1) }}
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div *ngIf="data.obsUpdateData && data.obsUpdateData.photos.length" class="mt-3 mb-3">
+                    <label i18n="Existing Photos@@existingPhotos">
+                        Photos existantes (cocher pour supprimer)
+                    </label><br />
+                    <div class="d-flex flex-wrap align-items-center ">
+                        <div *ngFor="let p of data.obsUpdateData.photos" class="mx-2 my-1">
+                            <input
+                                type="checkbox"
+                                name=""
+                                [(ngModel)]="p.checked"
+                                [ngModelOptions]="{ standalone: true }"
+                                class="mr-1"
+                            />
+                            <img
+                                src="{{ apiEndpoint }}{{ p.url }}"
+                                height="50"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <image-upload
+                    buttonCaption="Ajouter une photo"
+                    dropBoxMessage="Déposez vos photos ici !"
+                    clearButtonCaption="Supprimer"
+                    (uploadFinished)="addImage($event)"
+                    (removed)="deleteImage($event)"
+                ></image-upload>
+            </div>
+        </div>
+    </form>
+    <!-- <p>
+    <button class="btn btn-link" (click)="toogleAdvancedMode()">{{ advancedMode ? "Masquer" : "Afficher" }} par défaut les champs avancés</button>
+  </p> -->
+</div>

@@ -1,0 +1,39 @@
+<!-- Ajouter une observation -->
+<div class="modal-header">
+    <h4 class="modal-title">AJOUTER UNE ZONE</h4>
+    <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="closeModal()"
+    >
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body add-obs">
+    <app-area-form
+        [program_id]="data.program_id"
+        [coords]="data.coords"
+        [data]="data"
+    ></app-area-form>
+</div>
+
+<div class="modal-footer">
+    <button
+        type="submit"
+        [disabled]="!form.areaForm.valid"
+        class="btn btn-default btn-outline-primary rounded-0 m-1"
+        (click)="committed()"
+    >
+        Valider et ajouter un individu
+    </button>
+    <button
+        type="submit"
+        [disabled]="!form.areaForm.valid"
+        class="btn btn-default btn-outline-primary rounded-0 m-1"
+        (click)="committedThenClose()"
+    >
+        Valider la zone
+    </button>
+</div>

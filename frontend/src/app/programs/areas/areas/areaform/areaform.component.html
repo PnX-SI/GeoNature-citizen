@@ -1,0 +1,54 @@
+<form id="areaForm" [formGroup]="areaForm" (ngSubmit)="onFormSubmit()">
+
+    <div class="form-row">
+        <div class="form-group col-lg-6 col-md-12 half">
+            <h5>Informations</h5>
+            <label for="area-name">*Nom de la zone</label>
+            <input id="area-name" type="text" formControlName="name" class="form-control" placeholder="ex : mon jardin ; réserve naturelle de Passy" />
+
+            <json-schema-form
+                *ngIf="formInputObject"
+                [form]="formInputObject"
+                [options]="formOptions"
+                (onChanges)="yourOnChangesFn($event)"
+                [framework]="GNCBootstrap4Framework"
+            >
+            </json-schema-form>
+        </div>
+        <div class="form-group col-lg-6 col-md-12 half">
+            <h5>Cliquez sur la carte pour localiser votre zone</h5>
+            <div class="position-relative">
+                <div class="zoom-alert" *ngIf="hasZoomAlert">
+                    <div class="mb-2 text-center" i18n="Zooming instruction@@zoomingInstruction">
+                        Veuillez zoomer pour localiser votre zone.<br />
+                        <span
+                            >(zoom min:
+                            {{ MAP_CONFIG.ZOOM_LEVEL_RELEVE }})</span
+                        >
+                    </div>
+                    <button class="btn" (click)="hasZoomAlert = false">
+                        OK
+                    </button>
+                </div>
+                <div
+                    id="formMap"
+                    class="col-lg-12"
+                    [class.ng-invalid]="areaForm.get('geometry').invalid"
+                    [class.ng-valid]="areaForm.get('geometry').valid"
+                    data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre zone d'observation."
+                ></div>
+            </div>
+            <input
+                formControlName="geometry"
+                type="hidden"
+                id="geometry"
+                name="geometry"
+                #geometry
+                class="col-lg-12"
+            />
+        </div>
+    </div>
+    <!-- <div class="alert alert-primary rounded-0" role="alert">
+      <pre>{{ areaForm.value | json }}</pre>
+    </div> -->
+</form>

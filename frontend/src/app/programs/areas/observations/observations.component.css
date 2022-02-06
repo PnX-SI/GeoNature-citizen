@@ -1,0 +1,27 @@
+.export-container {
+    margin: 20px 0px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.export-container button {
+    font-size: 16px;
+    padding: 10px 30px;
+    margin: 10px 25px;
+    max-height: 115px;
+}
+
+.export-container button {
+    font-size: 16px;
+    padding: 10px 30px;
+    margin: 10px 25px;
+    max-height: 115px;
+}
+
+.export-container button.export {
+    background: var(--primary);
+}
+
+.export-container button i {
+    margin-right: 15px;
+}
