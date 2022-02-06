@@ -77,6 +77,7 @@ export const MAP_CONFIG = {
     CENTER: [46.52863469527167, 2.43896484375],
     ZOOM_LEVEL: 6,
     ZOOM_LEVEL_RELEVE: 15,
+    SPECIES_SITE_POINTER: 'assets/pointer-tree.svg',
     NEW_OBS_POINTER: 'assets/pointer-blue2.png',
     OBS_POINTER: 'assets/pointer-green.png',
     LOCATE_CONTROL_TITLE: {

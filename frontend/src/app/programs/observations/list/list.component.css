@@ -61,7 +61,7 @@
     height: 22px;
     margin: 0;
     background: no-repeat;
-    background-size: contain;
+    background-size: cover;
     background-position: center;
     float: left;
     margin-right: 8px;

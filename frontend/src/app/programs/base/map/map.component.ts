@@ -22,7 +22,7 @@ import { MapService } from './map.service';
 
 export const conf = {
     MAP_ID: 'obsMap',
-    GEOLOCATION_HIGH_ACCURACY: false,
+    GEOLOCATION_HIGH_ACCURACY: true,
     BASE_LAYERS: MAP_CONFIG['BASEMAPS'].reduce((acc, baseLayer: Object) => {
         const layerConf: any = {
             name: baseLayer['name'],
@@ -247,9 +247,7 @@ export abstract class BaseMapComponent implements OnChanges {
                         this.options.PROGRAM_AREA_STYLE(_feature),
                 }).addTo(this.observationMap);
                 programBounds = this.programArea.getBounds();
-                console.debug('programBounds', programBounds);
                 this.observationMap.fitBounds(programBounds);
-                // this.observationMap.setMaxBounds(programBounds);
             }
 
             this.newObsMarker = null;
@@ -302,7 +300,9 @@ export abstract class BaseMapComponent implements OnChanges {
                 const obsLayer = L.geoJSON(this.features);
                 console.debug('obsLayerBounds', obsLayer.getBounds());
                 this.observationMap.fitBounds(obsLayer.getBounds());
-                this.observationMap.setZoom(Math.min(this.observationMap.getZoom(), 17)); // limit zoom (eg single feature)
+                this.observationMap.setZoom(
+                    Math.min(this.observationMap.getZoom(), 17)
+                ); // limit zoom (eg single feature)
             }
         }
     }
@@ -361,7 +361,7 @@ export abstract class BaseMapComponent implements OnChanges {
 
     showPopup(feature: Feature): void {
         this.obsPopup = feature;
-        let marker = this.markers.find((marker) => {
+        const marker = this.markers.find((marker) => {
             return (
                 marker.feature.properties[this.feature_id_key] ==
                 feature.properties[this.feature_id_key]

@@ -78,6 +78,37 @@ import { GNCFrameworkComponent } from './programs/base/jsonform/framework/framew
 import { ImageUploadModule } from 'angular2-image-upload';
 import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.component';
 
+import { AreasComponent } from './programs/areas/areas.component';
+import { AreaDetailComponent } from './programs/areas/areas/detail/detail.component';
+import { SpeciesSitesComponent } from './programs/areas/species_sites/species_sites.component';
+import { SpeciesSitesObsComponent } from './programs/areas/observations/observations.component';
+import { ObserversListComponent } from './auth/user-dashboard/admin-observers/list/observers-list.component';
+import { AdminObserversComponent } from './auth/user-dashboard/admin-observers/admin-observers.component';
+import { SpeciesSiteDetailComponent } from './programs/areas/species_sites/detail/detail.component';
+import { SpeciesSiteObsDetailComponent } from './programs/areas/observations/detail/detail.component';
+import { AreaFormComponent } from './programs/areas/areas/areaform/areaform.component';
+import { SpeciesSiteFormComponent } from './programs/areas/species_sites/species_site_form/species_site_form.component';
+import { SpeciesSiteObservationFormComponent } from './programs/areas/observations/observation_form/form.component';
+import { PhotosModalComponent } from './programs/areas/observations/photos_modal/photos_modal.component';
+import { AreasListComponent } from './programs/areas/areas/list/list.component';
+import { SpeciesSitesListComponent } from './programs/areas/species_sites/list/list.component';
+import { SpeciesSitesObsListComponent } from './programs/areas/observations/list/list.component';
+import {
+    AreasMapComponent,
+    AreaMarkerPopupComponent,
+} from './programs/areas/areas/map/areamap.component';
+import {
+    SpeciesSitesMapComponent,
+    SpeciesSiteMarkerPopupComponent,
+} from './programs/areas/species_sites/map/species_sites_map.component';
+import { AreaStepComponent } from './programs/areas/modalflow/steps/area/area_step.component';
+import { SpeciesSiteStepComponent } from './programs/areas/modalflow/steps/species_site/species_site_step.component';
+import { SpeciesSiteObsStepComponent } from './programs/areas/modalflow/steps/observation/species_site_obs_step.component';
+import { AreaCongratsComponent } from './programs/areas/modalflow/steps/congrats/congrats.component';
+import { AreaModalFlowComponent } from './programs/areas/modalflow/modalflow.component';
+import { AreaModalFlowService } from './programs/areas/modalflow/modalflow.service';
+import { AreaService } from './programs/areas/areas.service';
+
 @NgModule({
     imports: [
         BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -106,12 +137,31 @@ import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.
         ObsFormComponent,
         ObsListComponent,
         SitesComponent,
+        AreasComponent,
+        SpeciesSitesComponent,
+        SpeciesSitesObsComponent,
+        ObserversListComponent,
+        AdminObserversComponent,
+        AreaFormComponent,
+        AreasListComponent,
+        SpeciesSitesListComponent,
+        SpeciesSitesObsListComponent,
+        AreasMapComponent,
+        AreaMarkerPopupComponent,
+        SpeciesSitesMapComponent,
+        SpeciesSiteMarkerPopupComponent,
+        AreaDetailComponent,
         SiteFormComponent,
         SiteVisitFormComponent,
+        SpeciesSiteDetailComponent,
+        SpeciesSiteFormComponent,
+        SpeciesSiteObservationFormComponent,
+        PhotosModalComponent,
         SitesListComponent,
         SitesMapComponent,
         SiteDetailComponent,
         ObsDetailComponent,
+        SpeciesSiteObsDetailComponent,
         HomeComponent,
         HomeCustomComponent,
         ProgramsComponent,
@@ -133,10 +183,15 @@ import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.
         CommittedComponent,
         VisitStepComponent,
         SiteStepComponent,
+        SpeciesSiteStepComponent,
+        SpeciesSiteObsStepComponent,
         CongratsComponent,
         SiteCongratsComponent,
+        AreaCongratsComponent,
         ModalFlowComponent,
         SiteModalFlowComponent,
+        AreaModalFlowComponent,
+        AreaStepComponent,
         GNCFrameworkComponent,
         RewardComponent,
         AdminComponent,
@@ -150,8 +205,10 @@ import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.
         ErrorHandler,
         // FlowService,
         ModalFlowService,
+        AreaModalFlowService,
         SiteModalFlowService,
         SiteService,
+        AreaService,
         ProgramsResolve,
         {
             provide: HTTP_INTERCEPTORS,
@@ -166,17 +223,24 @@ import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.
         LoginComponent,
         LogoutComponent,
         RegisterComponent,
+        PhotosModalComponent,
         OnboardComponent,
         CommittedComponent,
         VisitStepComponent,
         SiteStepComponent,
+        AreaStepComponent,
+        SpeciesSiteStepComponent,
+        SpeciesSiteObsStepComponent,
         CongratsComponent,
         SiteCongratsComponent,
+        AreaCongratsComponent,
         RewardComponent,
         GNCFrameworkComponent,
         FlowComponent,
         MarkerPopupComponent,
         SiteMarkerPopupComponent,
+        AreaMarkerPopupComponent,
+        SpeciesSiteMarkerPopupComponent,
     ],
     exports: [AdminComponent],
 })

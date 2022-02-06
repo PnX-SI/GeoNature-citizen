@@ -18,6 +18,7 @@
 }
 
 .navbar-hidden .navbar-login {
+    display: none;
     border: 1px solid var(--primary);
 }
 
@@ -172,7 +173,7 @@ div.btn-group a:first-child {
     height: 22px;
     margin: 0;
     background: no-repeat;
-    background-size: contain;
+    background-size: cover;
     background-position: center;
     float: left;
     margin-right: 8px;

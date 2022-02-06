@@ -14,7 +14,7 @@ import {
     selector: 'app-site-detail',
     templateUrl: '../../base/detail/detail.component.html',
     styleUrls: [
-        './../../observations/obs.component.css', // for form modal only
+        './../../observations/obs.component.css', // for site form modal only
         '../../base/detail/detail.component.css',
     ],
     encapsulation: ViewEncapsulation.None,

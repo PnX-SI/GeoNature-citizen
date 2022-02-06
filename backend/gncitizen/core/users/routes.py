@@ -7,6 +7,13 @@ from email.mime.text import MIMEText
 
 import flask
 import requests
+import uuid
+import base64
+import hashlib
+
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from flask import Blueprint, current_app, request
 from flask_jwt_extended import (
     create_access_token,
@@ -20,6 +27,7 @@ from sqlalchemy.exc import IntegrityError
 from utils_flask_sqla.response import json_resp
 
 from gncitizen.core.observations.models import ObservationModel
+from gncitizen.core.areas.models import AreasAccessModel
 from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import admin_required, get_user_if_exists
@@ -28,7 +36,7 @@ from gncitizen.utils.mail_check import (
     confirm_user_email,
     send_user_email,
 )
-from server import db
+from server import db, jwt
 
 from .models import RevokedTokenModel, UserModel
 
@@ -166,8 +174,25 @@ def registration():
             else:
                 raise GeonatureApiError(e)
 
-        access_token = create_access_token(identity=newuser.username)
-        refresh_token = create_refresh_token(identity=newuser.username)
+        mailchimp_api_key = current_app.config.get("MAILCHIMP_API_KEY", None)
+        if newuser.want_newsletter and mailchimp_api_key is not None:
+            try:
+                client = MailchimpMarketing.Client()
+                client.set_config({
+                    "api_key": mailchimp_api_key,
+                    "server": "us12"
+                })
+
+                response = client.lists.add_list_member(
+                    current_app.config.get("MAILCHIMP_LIST_ID", ""),
+                    {"email_address": newuser.email, "status": "subscribed"}
+                )
+                print(response)
+            except ApiClientError as error:
+                print("Error: {}".format(error.text))
+
+        access_token = create_access_token(identity=newuser.email)
+        refresh_token = create_refresh_token(identity=newuser.email)
 
         # save user avatar
         if "extention" in request_datas and "avatar" in request_datas:
@@ -197,16 +222,19 @@ def registration():
         except Exception as e:
             return {"message mail failed": str(e)}, 500
 
+        response = {
+            "message": message,
+            "username": newuser.username,
+            "active": newuser.active,
+            "userAvatar": newuser.avatar,
+        }
+
+        if newuser.active:
+            response["access_token"] = access_token
+            response["refresh_token"] = refresh_token
+
         # send confirm mail
-        return (
-            {
-                "message": message,
-                "username": newuser.username,
-                "access_token": access_token,
-                "refresh_token": refresh_token,
-            },
-            200,
-        )
+        return response, 200
     except Exception as e:
         current_app.logger.critical("grab all: %s", str(e))
         return {"message": str(e)}, 500
@@ -375,6 +403,38 @@ def get_allusers():
     allusers = UserModel.return_all()
     return allusers, 200
 
+@users_api.route("/user/<int:id>/info", methods=["GET", "PATCH"])
+@json_resp
+@jwt_required()
+def selected_user(id):
+    """get or patch user model (only if admin)
+    ---
+    tags:
+      - Authentication
+    produces:
+      - application/json
+    responses:
+      200:
+        description: selected user model
+    """
+    try:
+        current_user_email = get_jwt_identity()
+        current_user = UserModel.query.filter_by(email=current_user_email).one()
+        if current_user.admin:
+            user = UserModel.query.filter_by(id_user=id).one()
+            return get_or_patch_user(user)
+        else:
+            return (
+                {"message": "Forbidden"},
+                403,
+            )
+    except Exception as e:
+        # raise GeonatureApiError(e)
+        current_app.logger.error("AUTH ERROR:", str(e))
+        return (
+            {"message": str(e)},
+            400,
+        )
 
 @users_api.route("/user/info", methods=["GET", "PATCH"])
 @json_resp
@@ -393,6 +453,18 @@ def logged_user():
     """
     try:
         user = get_user_if_exists()
+        return get_or_patch_user(user)
+    except Exception as e:
+        # raise GeonatureApiError(e)
+        current_app.logger.error("AUTH ERROR:", str(e))
+        return (
+            {"message": str(e)},
+            400,
+        )
+
+
+def get_or_patch_user(user):
+    try:
         if flask.request.method == "GET":
             # base stats, to enhance as we go
             result = user.as_secured_dict(True)
@@ -403,6 +475,10 @@ def logged_user():
                 .filter(ObservationModel.id_role == user.id_user)
                 .one()[0]
             }
+            result['areas_access'] = []
+            areas_access = AreasAccessModel.query.filter(AreasAccessModel.id_user == user.id_user).all()
+            for area_access in areas_access:
+                result['areas_access'].append(area_access.id_area)
 
             return (
                 {"message": "Vos données personelles", "features": result},
@@ -415,6 +491,13 @@ def logged_user():
                 "[logged_user] Update current user personnal data"
             )
             request_data = dict(request.get_json())
+            if "areas_access" in request_data:
+                AreasAccessModel.query.filter(AreasAccessModel.id_user == user.id_user).delete()
+                for area_id in request_data["areas_access"]:
+                    new_area_access = AreasAccessModel(id_user=user.id_user, id_area=area_id)
+                    db.session.add(new_area_access)
+                db.session.commit()
+
             if "extention" in request_data and "avatar" in request_data:
                 extention = request_data["extention"]
                 imgdata = base64.b64decode(
@@ -424,18 +507,10 @@ def logged_user():
                 )
                 filename = "avatar_" + user.username + "." + extention
                 request_data["avatar"] = filename
-                if os.path.exists(
-                    os.path.join(
-                        str(MEDIA_DIR),
-                        str(user.as_secured_dict(True)["avatar"]),
-                    )
-                ):
-                    os.remove(
-                        os.path.join(
-                            str(MEDIA_DIR),
-                            str(user.as_secured_dict(True)["avatar"]),
-                        )
-                    )
+
+                avatar_path = os.path.join(str(MEDIA_DIR), str(user.as_secured_dict(True)["avatar"]))
+                if os.path.exists(avatar_path):
+                    os.remove(avatar_path)
                 try:
                     handler = open(
                         os.path.join(str(MEDIA_DIR), str(filename)), "wb+"
@@ -460,6 +535,30 @@ def logged_user():
                     request_data["newPassword"]
                 )
             user.admin = is_admin
+
+            mailchimp_api_key = current_app.config.get("MAILCHIMP_API_KEY", None)
+            if mailchimp_api_key is not None:
+                try:
+                    client = MailchimpMarketing.Client()
+                    client.set_config({
+                        "api_key": mailchimp_api_key,
+                        "server": "us12"
+                    })
+
+                    if user.want_newsletter:
+                        client.lists.add_list_member(
+                            current_app.config.get("MAILCHIMP_LIST_ID", ""),
+                            {"email_address": user.email, "status": "subscribed"}
+                        )
+                    else:
+                        client.lists.delete_list_member(
+                            current_app.config.get("MAILCHIMP_LIST_ID", ""),
+                            hashlib.md5(user.email.encode('utf-8')).hexdigest()
+                        )
+
+                except ApiClientError as error:
+                    print("Mailchimp Error: {}".format(error.text))
+
             user.update()
             return (
                 {

@@ -6,32 +6,14 @@
                 <div class="user-infos">
                     <span>
                         <button
-                            *ngIf="stats?.platform_attendance > 0"
-                            (click)="tab = 'observations'"
-                            [class]="
-                                'btn ' +
-                                (tab === 'observations'
-                                    ? 'btn-primary'
-                                    : 'btn-dark')
-                            "
-                        >
-                            Mes observations
-                            <strong class="badge badge-pill badge-info">{{
-                                stats?.platform_attendance
-                            }}</strong>
-                        </button>
-                        <button
-                            *ngIf="mysites?.features.length > 0"
-                            (click)="tab = 'sites'"
+                            *ngIf="(admin || isRelay)"
+                            (click)="tab = 'admin'"
                             [class]="
                                 'btn ml-1 ' +
-                                (tab === 'sites' ? 'btn-primary' : 'btn-dark')
+                                (tab === 'admin' ? 'btn-primary' : 'btn-dark')
                             "
                         >
-                            Mes sites
-                            <strong class="badge badge-pill badge-info">{{
-                                mysites?.features.length
-                            }}</strong>
+                            Administration
                         </button>
                     </span>
                     <div class="avatar-main-wrapper">
@@ -40,12 +22,12 @@
                             class="profile-pic"
                             (click)="onEditInfos(personalInfos)"
                         ></div>
-                        <img
+                        <div
                             *ngIf="userAvatar"
-                            class="profile-pic"
-                            src="{{ userAvatar }}"
+                            class="profile-pic-background"
                             (click)="onEditInfos(personalInfos)"
-                        />
+                            [ngStyle]="{'background-image': 'url(' + userAvatar + ')'}"
+                        ></div>
                     </div>
                     <p (click)="onEditInfos(personalInfos)">
                         {{ username }} <i class="fa fa-pencil"></i>
@@ -53,7 +35,7 @@
                 </div>
             </div>
             <div
-                *ngIf="badges && badges.length > 0"
+                *ngIf="badges && badges.length > 0 && AppConfig.FRONTEND.DISPLAY_BADGES"
                 id="badges"
                 class="container"
             >
@@ -109,14 +91,99 @@
                     </div>
                 </div>
             </div>
-            <user-sites [mysites]="mysites" *ngIf="mysites && tab === 'sites'">
-            </user-sites>
-            <user-observations
-                [myobs]="myobs"
-                *ngIf="observations && tab === 'observations'"
-                (deleteObs)="openDeleteModal(deleteModal, $event)"
-            >
-            </user-observations>
+            <div>
+                <user-sites [mysites]="mysites" *ngIf="mysites && tab === 'sites'">
+                </user-sites>
+
+                <div *ngIf="(admin || isRelay) && tab === 'admin'">
+                    <div class="row areas-tabs">
+                        <div
+                            (click)="selectAreasTab('observers')"
+                            [ngClass]="selectedAreasTab === 'observers' ? 'selected' : ''"
+                        >
+                            Mes observateurs
+                        </div>
+                        <div
+                            (click)="selectAreasTab('areas')"
+                            [ngClass]="selectedAreasTab === 'areas' ? 'selected' : ''"
+                        >
+                            Leurs zones
+                        </div>
+                        <div
+                            (click)="selectAreasTab('species_sites')"
+                            [ngClass]="selectedAreasTab === 'species_sites' ? 'selected' : ''"
+                        >
+                            Leurs individus
+                        </div>
+                        <div
+                            (click)="selectAreasTab('observations')"
+                            [ngClass]="selectedAreasTab === 'observations' ? 'selected' : ''"
+                        >
+                            Leurs observations
+                        </div>
+                    </div>
+                    <admin-observers
+                        *ngIf="selectedAreasTab === 'observers'"
+                        [observers]="adminObservers"
+                        [areas]="adminAreas"
+                        [userDashboard]="true"
+                        [admin]="admin"
+                        [relaysList]="relaysList"
+                    >
+                    </admin-observers>
+                    <app-areas
+                        *ngIf="selectedAreasTab === 'areas'"
+                        [areas]="adminAreas"
+                        [userDashboard]="true"
+                        [admin]="admin"
+                    >
+                    </app-areas>
+                    <app-species-sites
+                        *ngIf="selectedAreasTab === 'species_sites'"
+                        [speciesSites]="adminSpeciesSites"
+                        [inputAreas]="adminAreas"
+                        [userDashboard]="true"
+                        [updateMapOnNextLoad]="updateMapOnNextLoad"
+                        [admin]="admin"
+                        (areaFilterChange)="areaFilterChange($event)"
+                    >
+                    </app-species-sites>
+                    <app-species-sites-obs
+                        *ngIf="selectedAreasTab === 'observations'"
+                        [observations]="adminSpeciesSitesObs"
+                        [userDashboard]="true"
+                        [admin]="admin"
+                        (refreshListEvent)="refreshAdminObservationsList($event)"
+                    >
+                    </app-species-sites-obs>
+                </div>
+
+                <div *ngIf="myAreas && tab === 'areas'">
+                    <div class="row areas-tabs">
+                        <div (click)="selectedAreasTab='areas'"  [ngClass]="selectedAreasTab === 'areas' ? 'selected' : ''">
+                            Mes zones d'observation
+                        </div>
+                        <div (click)="selectedAreasTab='species_sites'"  [ngClass]="selectedAreasTab === 'species_sites' ? 'selected' : ''">
+                            Mes individus
+                        </div>
+                        <div (click)="selectedAreasTab='observations'"  [ngClass]="selectedAreasTab === 'observations' ? 'selected' : ''">
+                            Mes observations
+                        </div>
+                    </div>
+                    <app-areas *ngIf="selectedAreasTab === 'areas'" [areas]="myAreas" [userDashboard]="true">
+                    </app-areas>
+                    <app-species-sites *ngIf="selectedAreasTab === 'species_sites'" [speciesSites]="mySpeciesSites" [userDashboard]="true">
+                    </app-species-sites>
+                    <app-species-sites-obs *ngIf="selectedAreasTab === 'observations'" [observations]="mySpeciesSitesObs" [userDashboard]="true">
+                    </app-species-sites-obs>
+                </div>
+                <user-observations
+                    [myobs]="myobs"
+                    *ngIf="observations && tab === 'observations'"
+                    (deleteObs)="openDeleteModal(deleteModal, $event)"
+                >
+                </user-observations>
+            </div>
             <!-- <div id="myObs" class="container">
         <h3 class="title" i18n>Mes observations</h3>
         <ngx-datatable *ngIf="observations" class="material" [rows]="rows" [headerHeight]="40" [footerHeight]="40"
@@ -180,29 +247,61 @@
                     (click)="onExportPersonalData()"
                 >
                     <i class="fa fa-download"></i
-                    ><ng-container
+                    >
+                    <ng-container
                         i18n="Export personnal data btn@@exportPersonnalDataBtn"
-                        >Exporter mes données personnelles</ng-container
+                    >Exporter mes données personnelles
+                    </ng-container
                     >
                 </button>
                 <button
+                    *ngIf="myobs && myobs.count"
                     class="btn-big col-lg-3 col-md-5 col-sm-12 export"
                     (click)="onExportObservations()"
                 >
                     <i class="fa fa-download"></i
-                    ><ng-container
+                    >
+                    <ng-container
                         i18n="Export personnal observations btn@@exportPersonnalObsBtn"
-                        >Exporter mes observations</ng-container
+                    >Exporter mes observations
+                    </ng-container
                     >
                 </button>
                 <button
+                    *ngIf="mysites && mysites.count"
                     class="btn-big col-lg-3 col-md-5 col-sm-12 export"
                     (click)="onExportSites()"
                 >
                     <i class="fa fa-download"></i
-                    ><ng-container
+                    >
+                    <ng-container
                         i18n="Export personnal sites btn@@exportPersonnalSitesBtn"
-                        >Exporter mes sites</ng-container
+                    >Exporter mes sites
+                    </ng-container
+                    >
+                </button>
+                <button
+                    *ngIf="myAreas && myAreas.count"
+                    class="btn-big col-lg-3 col-md-5 col-sm-12 export"
+                    (click)="onExportAreas()"
+                >
+                    <i class="fa fa-download"></i
+                    >
+                    <ng-container>
+                        Exporter mes données d'observation
+                    </ng-container
+                    >
+                </button>
+                <button
+                    *ngIf="adminAreas && adminAreas.count"
+                    class="btn-big col-lg-3 col-md-5 col-sm-12 export"
+                    (click)="onExportAreas(true)"
+                >
+                    <i class="fa fa-download"></i
+                    >
+                    <ng-container>
+                        Exporter toutes les données d'observation
+                    </ng-container
                     >
                 </button>
                 <button
@@ -210,18 +309,13 @@
                     (click)="onDeletePersonalData()"
                 >
                     <i class="fa fa-trash"></i
-                    ><ng-container i18n="Delete Account@@deleteAccount"
-                        >Supprimer mon compte</ng-container
+                    >
+                    <ng-container i18n="Delete Account@@deleteAccount"
+                    >Supprimer mon compte
+                    </ng-container
                     >
                 </button>
             </div>
-            <section class="homeLink">
-                <a [routerLink]="['/']">
-                    <i class="fa fa-arrow-left"></i>
-                    <ng-container i18n="back@@back"></ng-container>Retour au
-                    site
-                </a>
-            </section>
         </div>
     </div>
 </div>
@@ -241,12 +335,6 @@
         </button>
     </div>
     <div class="modal-body">
-        <ngb-alert
-            *ngIf="errorMessage"
-            type="danger"
-            (close)="errorMessage = null"
-            >{{ errorMessage }}
-        </ngb-alert>
         <form
             [formGroup]="userForm"
             (ngSubmit)="userForm.valid && onUpdatePersonalData(userForm.value)"
@@ -254,11 +342,11 @@
             <div class="d-flex justify-content-center">
                 <div class="avatar-wrapper">
                     <div *ngIf="!userAvatar" class="profile-pic"></div>
-                    <img
+                    <div
                         *ngIf="userAvatar"
-                        class="profile-pic"
-                        src="{{ userAvatar }}"
-                    />
+                        class="profile-pic-background"
+                        [ngStyle]="{'background-image': 'url(' + userAvatar + ')'}"
+                    ></div>
                     <div class="upload-button" (click)="fileToUpload.click()">
                         <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
                     </div>
@@ -277,12 +365,12 @@
                         <label
                             for="username"
                             i18n="your username@@yourUsernameLabel"
-                            >Votre nom d'utilisateur *</label
+                        >Votre nom d'utilisateur *</label
                         >
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"
-                                    ><i class="fa fa-user"></i
+                                ><i class="fa fa-user"></i
                                 ></span>
                             </div>
                             <input
@@ -303,12 +391,12 @@
                         <label
                             for="email"
                             i18n="your email label@@yourEmailInputLabel"
-                            >Votre email *</label
+                        >Votre email *</label
                         >
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"
-                                    ><i class="fa fa-envelope"></i
+                                ><i class="fa fa-envelope"></i
                                 ></span>
                             </div>
                             <input
@@ -325,43 +413,224 @@
                     </div>
                 </div>
             </div>
+
+            <div class="form-row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="category" i18n="Your category@@yourCategoryLabel">Votre catégorie</label>
+                        <div class="input-group">
+                            <select
+                                id="category"
+                                name="category"
+                                class="form-control rounded-0"
+                                (change)="onChangeCategory()"
+                                formControlName="category"
+                            >
+                                <option *ngFor="let category of AppConfig.categoriesEnum | keyvalue" [value]="category.key">{{category.value}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 col-sm-12" *ngIf="selectedCategory !== 'individual'">
+                    <div class="form-group">
+                        <label for="organism" i18n="Your organism@@yourOrganismLabel">Votre organisme</label>
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                id="organism"
+                                name="organism"
+                                class="form-control rounded-0"
+                                i18n-placeholder="Enter your organism"
+                                placeholder="Entrez votre organisme"
+                                autocomplete="function"
+                                formControlName="organism"
+                                [required]="selectedCategory !== 'individual'"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12" [class.col-md-6]="selectedCategory !== 'individual'">
+                    <div class="form-group">
+                        <label for="function" i18n="Your function@@yourFunctionLabel">
+                            Profession actuelle ou passée (si en retraite)
+                        </label>
+                        <i ngbTooltip="Ces informations sont anonymisées et utilisées uniquement dans le cadre de recherches en sociologie sur les sciences participatives et dans le respect de la politique de confidentialité des données." class="fa fa-question-circle ml-1" placement="top"></i>
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                id="function"
+                                name="function"
+                                class="form-control rounded-0"
+                                i18n-placeholder="Enter your function"
+                                placeholder="Entrez votre profession"
+                                formControlName="function"
+                                autocomplete="function"
+                                [required]="selectedCategory !== 'individual'"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="form-row">
                 <div class="col-md-6 col-sm-12">
                     <div class="form-group">
-                        <label
-                            for="name"
-                            i18n="your first name@@yourFirstnameInputLabel"
-                            >Votre prénom *</label
-                        >
-                        <input
-                            type="text"
-                            class="form-control rounded-0"
-                            id="name"
-                            formControlName="name"
-                            i18n-placeholder="
-                                your first name
-                                placeholder@@yourFirstnameInputPlaceholder"
-                            placeholder="Entrez votre prénom"
-                        />
+                        <label for="country" i18n="Your country@@yourCountryLabel">Votre pays</label>
+                        <div class="input-group">
+                            <select
+                                id="country"
+                                name="country"
+                                class="form-control rounded-0"
+                                formControlName="country"
+                                required
+                            >
+                                <option value="FR">France</option>
+                                <option value="CH">Suisse</option>
+                                <option value="IT">Italie</option>
+                                <option value="ES">Espagne</option>
+                                <option value="AD">Andorre</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="form-group">
-                        <label
-                            for="surname"
-                            i18n="your surname label@@yourSurnameInputLabel"
-                            >Votre nom *</label
-                        >
-                        <input
+                        <label for="postal_code" i18n="Your postal code@@yourPostalCodeLabel">Votre code postal</label>
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                id="postal_code"
+                                name="postal_code"
+                                class="form-control rounded-0"
+                                i18n-placeholder="Enter your postal code"
+                                placeholder="Entrez votre code postal"
+                                formControlName="postal_code"
+                                autocomplete="postal_code"
+                                required
+                                pattern="(^((([0-8]\d)|(9[0-8]))\d{2,3})$)|(^(AD[1-7]00)$)|(^(CH-[1-8]\d{2,3})$)|(^(I-[1-8]\d{4})$)"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label for="birth_year" i18n="Your birth year@@yourBirthYearLabel">
+                            Année de naissance
+                        </label>
+                        <i ngbTooltip="Ces informations sont anonymisées et utilisées uniquement dans le cadre de recherches en sociologie sur les sciences participatives et dans le respect de la politique de confidentialité des données." class="fa fa-question-circle ml-1" placement="top"></i>
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                id="birth_year"
+                                name="birth_year"
+                                class="form-control rounded-0"
+                                i18n-placeholder="Enter your birth year"
+                                placeholder="Entrez votre année de naissance"
+                                formControlName="birth_year"
+                                autocomplete="birth_year"
+                                required
+                                pattern="(^(19\d{2}|20[0-2]\d)$)"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label for="gender_type" i18n="Your gender@@yourGenderLabel">
+                            Votre genre
+                        </label>
+                        <i ngbTooltip="Ces informations sont anonymisées et utilisées uniquement dans le cadre de recherches en sociologie sur les sciences participatives et dans le respect de la politique de confidentialité des données." class="fa fa-question-circle ml-1" placement="top"></i>
+                        <div class="input-group">
+                            <select
+                                id="gender_type"
+                                name="gender_type"
+                                class="form-control rounded-0"
+                                (change)="onChangeGenreType($event)"
+                            >
+                                <option [selected]="genderType === '0'" value="0">Homme</option>
+                                <option [selected]="genderType === '1'" value="1">Femme</option>
+                                <option [selected]="genderType === '2'" value="2">Je m'identifie comme...</option>
+                            </select>
+                            <input
+                                [hidden]="genderType !== '2'"
+                                [required]="genderType === '2'"
+                                type="text"
+                                id="gender"
+                                name="gender"
+                                class="form-control rounded-0"
+                                i18n-placeholder="Your gender"
+                                placeholder="Votre genre"
+                                formControlName="gender"
+                                autocomplete="gender"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="comments" i18n="comments@@comments">
+                            Commentaires libres
+                        </label>
+                        <div class="input-group">
+                        <textarea
                             type="text"
+                            id="comments"
+                            name="comments"
                             class="form-control rounded-0"
-                            id="surname"
-                            formControlName="surname"
-                            i18n-placeholder="
-                                your surname
-                                placeholder@@yourSurnameInputPlaceholder"
-                            placeholder="Entrez votre nom"
+                            i18n-placeholder="comment_placeholder"
+                            formControlName="comments"
+                            placeholder="Qu'est-ce qui vous amène à vous inscrire ?"
+                            autocomplete="comments"
+                        ></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row" *ngIf="selectedCategory === 'individual' || selectedCategory === 'school'">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="linked_relay_id" i18n="Linked relay@@linkedRelayLabel">
+                            Grâce à quel organisme avez-vous connu Phénoclim?
+                        </label>
+                        <i ngbTooltip="En choisissant un organisme, vous acceptez que le CREA Mont-Blanc partage vos observations et votre email avec l’organisme relai de Phénoclim sélectionné, dans le respect de la politique de confidentialité des données. Votre relai pourra vous faire part des actualités locales en lien avec le projet Phénoclim et vous contacter ponctuellement en début de saison d’observation." class="fa fa-question-circle ml-1" placement="top"></i>
+                        <div class="input-group">
+                            <select
+                                id="linked_relay_id"
+                                name="linked_relay_id"
+                                class="form-control rounded-0"
+                                formControlName="linked_relay_id"
+                            >
+                                <option value="0">Aucun</option>
+                                <option *ngFor="let relay of relaysList" [ngValue]="relay.id">{{relay.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input
+                            type="checkbox"
+                            id="want_newsletter"
+                            name="want_newsletter"
+                            formControlName="want_newsletter"
+                            i18n="I Accept@@iAcceptIntro"
                         />
+                        <label
+                            for="want_newsletter"
+                            class="checkbox-label"
+                            i18n="Want newsletter?@@want_newsletter"
+                        >
+                            J'accepte de recevoir les newsletters
+                        </label>
                     </div>
                 </div>
             </div>
@@ -383,7 +652,7 @@
                         <label
                             for="newPassword"
                             i18n="your password label@@yourPasswordLabel"
-                            >Votre nouveau mot de passe</label
+                        >Votre nouveau mot de passe</label
                         >
                         <input
                             type="password"
@@ -406,7 +675,7 @@
                             i18n="
                                 your password confirm
                                 label@@yourConfirmPasswordLabel"
-                            >Confirmez votre nouveau mot de passe</label
+                        >Confirmez votre nouveau mot de passe</label
                         >
                         <input
                             type="password"
@@ -494,8 +763,15 @@
     </div>
 </ng-template>
 
-<div *ngIf="!observations" id="spinner">
-    <div class="loader-1"></div>
-    <div class="loader-2"></div>
-    <div class="loader-3"></div>
+<div *ngIf="requestsInProgress > 0">
+    <div id="form-loading">
+        <div class="loading-text">
+            <h4>Chargement en cours...</h4>
+        </div>
+        <div id="spinner">
+            <div class="loader-1"></div>
+            <div class="loader-2"></div>
+            <div class="loader-3"></div>
+        </div>
+    </div>
 </div>
