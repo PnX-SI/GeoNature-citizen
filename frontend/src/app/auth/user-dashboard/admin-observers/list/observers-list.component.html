@@ -24,8 +24,8 @@
                 </span>
             </td>
             <td>
-                <span [ngbTooltip]="observer.properties.admin ? 'Admin' : observer.properties.is_relay ? 'Relai': 'Utilisateur'">
-                    {{ observer.properties.admin ? 'Admin' : observer.properties.is_relay ? 'Relai': 'Utilisateur' }}
+                <span [ngbTooltip]="observer.properties.admin ? 'Admin' : 'Utilisateur'">
+                    {{ observer.properties.admin ? 'Admin' : 'Utilisateur' }}
                 </span>
             </td>
             <td>
@@ -36,11 +36,6 @@
             <td>
                 <span [ngbTooltip]="observer.properties.organism">
                     {{ observer.properties.organism }}
-                </span>
-            </td>
-            <td>
-                <span [ngbTooltip]="observer.properties.linked_relay ? observer.properties.linked_relay.organism : ''">
-                    {{ observer.properties.linked_relay ? observer.properties.linked_relay.organism : '' }}
                 </span>
             </td>
             <td *ngIf="admin">
@@ -194,44 +189,6 @@
                                 <option *ngFor="let area of areasList" [value]="area.id_area">
                                     {{ area.name }}
                                 </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <input
-                            type="checkbox"
-                            id="is_relay"
-                            formControlName="is_relay"
-                            name="is_relay"
-                        />
-                        <label
-                            for="is_relay"
-                            class="checkbox-label"
-                        >
-                            Cet utilisateur est un relais
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <label for="linked_relay_id" i18n="Linked relay@@linkedRelayLabel">
-                            Grâce à quel organisme a-t-il connu Phénoclim?
-                        </label>
-                        <div class="input-group">
-                            <select
-                                id="linked_relay_id"
-                                name="linked_relay_id"
-                                class="form-control rounded-0"
-                                formControlName="linked_relay_id"
-                            >
-                                <option value="0">Aucun</option>
-                                <option *ngFor="let relay of relaysList" [ngValue]="relay.id">{{relay.name}}</option>
                             </select>
                         </div>
                     </div>

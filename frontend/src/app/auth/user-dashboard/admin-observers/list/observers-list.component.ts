@@ -19,7 +19,6 @@ export class ObserversListComponent implements OnChanges {
     @Input('userDashboard') userDashboard = false;
     @Input('program_id') program_id: number;
     @Input('admin') admin = false;
-    @Input('relaysList') relaysList = [];
     observers: Feature[] = [];
     taxa: any[] = [];
     appConfig = AppConfig;
@@ -47,11 +46,8 @@ export class ObserversListComponent implements OnChanges {
                     disabled: true,
                 },
             ],
-            is_relay: [this.personalInfo.features.is_relay],
-            organism: [this.personalInfo.features.organism],
             category: [this.personalInfo.features.category],
             areas_access: [this.personalInfo.features.areas_access],
-            linked_relay_id: [this.personalInfo.features.linked_relay_id],
             email: [
                 this.personalInfo.features.email,
                 [
@@ -67,9 +63,6 @@ export class ObserversListComponent implements OnChanges {
     onUpdateUserData(userForm) {
         userForm = _.omitBy(userForm, _.isNil);
         delete userForm.username;
-        if (userForm.linked_relay_id === '0') {
-            userForm.linked_relay_id = null;
-        }
         this.userService
             .updateUserData(this.editedUserId, userForm)
             .subscribe((user: any) => {

@@ -70,12 +70,6 @@ export const conf = {
             iconSize: [33, 42],
             iconAnchor: [16, 42],
         }),
-    RELAY_MARKER_ICON: () =>
-        L.icon({
-            iconUrl: 'assets/user_location_8e3414.svg',
-            iconSize: [33, 42],
-            iconAnchor: [16, 42],
-        }),
     OBSERVATION_LAYER: () =>
         L.markerClusterGroup({
             iconCreateFunction: (clusters) => {
@@ -144,7 +138,6 @@ export abstract class BaseMapComponent implements OnChanges {
     mapService: MapService;
     programService: GncProgramsService;
     markerToggle = true;
-    isDataviz = false;
     pathLines = [];
 
     abstract localeId: string;
@@ -318,13 +311,6 @@ export abstract class BaseMapComponent implements OnChanges {
                         feature: feature,
                         marker: layer,
                     });
-
-                    const color = this.isDataviz
-                        ? feature.properties.creator_is_relay
-                            ? '#8e3414'
-                            : '#d1954e'
-                        : 'blue';
-                    layer.setStyle({ color: color });
                 }
 
                 const popupContent = this.getPopupContent(feature);
@@ -344,64 +330,18 @@ export abstract class BaseMapComponent implements OnChanges {
                                     response
                                 );
                                 popup.setContent(this.getPopupContent(feature));
-
-                                const relay_observers = event.target.feature
-                                    .properties.relay_observers
-                                    ? event.target.feature.properties
-                                          .relay_observers.features
-                                    : [];
-
-                                relay_observers.forEach((observer) => {
-                                    this.features.features.forEach((area) => {
-                                        if (
-                                            area.properties.id_role ===
-                                            observer.properties.id_user
-                                        ) {
-                                            const geometry = Object.assign(
-                                                area.geometry
-                                            );
-                                            const pathLine = L.polyline(
-                                                [
-                                                    [
-                                                        event.latlng.lat,
-                                                        event.latlng.lng,
-                                                    ],
-                                                    [
-                                                        geometry
-                                                            .coordinates[0][0][1],
-                                                        geometry
-                                                            .coordinates[0][0][0],
-                                                    ],
-                                                ],
-                                                { color: '#8e3414' }
-                                            );
-                                            this.pathLines.push(pathLine);
-                                            this.observationMap.addLayer(
-                                                pathLine
-                                            );
-                                        }
-                                    });
-                                });
                             });
                     },
                 });
             },
             pointToLayer: (_feature, latlng): L.Marker => {
                 const marker: L.Marker<any> = L.marker(latlng, {
-                    icon: this.isDataviz
-                        ? _feature.properties.creator_is_relay
-                            ? conf.RELAY_MARKER_ICON()
-                            : conf.OBSERVER_MARKER_ICON()
-                        : conf.AREA_MARKER_ICON(),
+                    icon: conf.AREA_MARKER_ICON(),
                 });
                 this.markers.push({
                     feature: _feature,
                     marker: marker,
                 });
-
-                marker.setZIndexOffset(
-                    _feature.properties.creator_is_relay ? 1000 : -1000
-                );
 
                 return marker;
             },
@@ -475,8 +415,7 @@ export abstract class BaseMapComponent implements OnChanges {
                         this.programMaxBounds.contains([
                             e.latlng.lat,
                             e.latlng.lng,
-                        ]) &&
-                        !this.isDataviz
+                        ])
                     ) {
                         this.newObsMarker = L.circle(e.latlng, {
                             radius: 500,

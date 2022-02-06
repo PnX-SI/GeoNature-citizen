@@ -32,7 +32,6 @@ export class UserDashboardComponent implements OnInit {
     role_id: number;
     isLoggedIn = false;
     admin = false;
-    isRelay = false;
     stats: any;
     personalInfo: any = {};
     badges: any;
@@ -40,8 +39,6 @@ export class UserDashboardComponent implements OnInit {
     programs_badges: any = [];
     recognition_badges: any = [];
     AppConfig = AppConfig;
-    genderType = '0';
-    selectedCategory: string;
 
     observations: any;
     myobs: any;
@@ -69,7 +66,6 @@ export class UserDashboardComponent implements OnInit {
     tab = 'observations';
     selectedAreasTab = 'areas';
     previousObsPageData;
-    relaysList = [];
     selectedAreaId = 0;
 
     constructor(
@@ -106,13 +102,6 @@ export class UserDashboardComponent implements OnInit {
         );
     }
 
-    onChangeCategory(): void {
-        this.selectedCategory = this.userForm.value.category;
-        if (this.selectedCategory === 'individual') {
-            this.userForm.get('organism').setValue(null);
-        }
-    }
-
     verifyUser() {
         const token = this.auth.getAccessToken();
         if (!token || this.auth.tokenExpiration(token) < 1) {
@@ -134,7 +123,6 @@ export class UserDashboardComponent implements OnInit {
                         this.stats = user['features']['stats'];
                         this.role_id = user['features']['id_role'];
                         this.admin = user['features']['admin'];
-                        this.isRelay = user['features']['is_relay'];
                         this.userService.role_id = this.role_id;
                         this.userService.admin = this.admin;
                         if (user['features']['avatar'])
@@ -232,10 +220,6 @@ export class UserDashboardComponent implements OnInit {
         this.requestsInProgress++;
 
         this.getAdminData();
-
-        this.userService
-            .getRelays()
-            .subscribe((relayList) => (this.relaysList = relayList));
 
         const data = [];
         this.rows = [];
@@ -345,7 +329,7 @@ export class UserDashboardComponent implements OnInit {
     }
 
     getAdminData() {
-        if (!this.admin && !this.isRelay) {
+        if (!this.admin) {
             return;
         }
         const adminData = [];
@@ -535,10 +519,6 @@ export class UserDashboardComponent implements OnInit {
             userForm.extention = this.extentionFile;
         }
 
-        if (userForm.linked_relay_id == 0) {
-            userForm.linked_relay_id = null;
-        }
-
         userForm.want_newsletter = userForm.want_newsletter ? 1 : 0;
         userForm.want_observation_contact = userForm.want_observation_contact
             ? 1
@@ -603,9 +583,6 @@ export class UserDashboardComponent implements OnInit {
     }
 
     initForm() {
-        const dbGender = this.personalInfo.features.gender;
-        this.selectedCategory = this.personalInfo.features.category;
-        this.genderType = dbGender === 'm' ? '0' : dbGender === 'f' ? '1' : '2';
         this.userForm = this.formBuilder.group(
             {
                 username: [
@@ -623,23 +600,7 @@ export class UserDashboardComponent implements OnInit {
                         ),
                     ],
                 ],
-                category: [this.personalInfo.features.category],
-                organism: [this.personalInfo.features.organism],
-                function: [this.personalInfo.features.function],
-                country: [this.personalInfo.features.country],
-                postal_code: [this.personalInfo.features.postal_code],
-                birth_year: [this.personalInfo.features.birth_year],
-                gender: [dbGender],
                 comments: [this.personalInfo.features.comments],
-                linked_relay_id: [
-                    this.personalInfo.features.linked_relay_id
-                        ? this.personalInfo.features.linked_relay_id
-                        : 0,
-                ],
-                want_newsletter: [this.personalInfo.features.want_newsletter],
-                want_observation_contact: [
-                    this.personalInfo.features.want_observation_contact,
-                ],
                 newPassword: [null],
                 confirmPassword: [null],
             },
@@ -690,17 +651,6 @@ export class UserDashboardComponent implements OnInit {
             this.getData();
             this.idSiteToDelete = null;
         });
-    }
-
-    onChangeGenreType(event): void {
-        let value = '';
-        this.genderType = event.target.value;
-        if (this.genderType === '0') {
-            value = 'm';
-        } else if (this.genderType === '1') {
-            value = 'f';
-        }
-        this.userForm.get('gender').setValue(value);
     }
 
     selectAreasTab(tab) {

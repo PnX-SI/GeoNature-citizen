@@ -4,7 +4,6 @@ import { AppConfig } from '../../../conf/app.config';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { saveAs } from 'file-saver';
-import { Relay } from '../models';
 
 @Injectable({
     providedIn: 'root',
@@ -69,10 +68,6 @@ export class UserService {
                     return throwError(error);
                 })
             );
-    }
-
-    getRelays() {
-        return this.http.get<Array<Relay>>(`${AppConfig.API_ENDPOINT}/relays`);
     }
 
     getObservationsByUserId(userId: number) {

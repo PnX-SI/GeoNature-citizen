@@ -18,7 +18,6 @@
 }
 
 .navbar-hidden .navbar-login {
-    display: none;
     border: 1px solid var(--primary);
 }
 

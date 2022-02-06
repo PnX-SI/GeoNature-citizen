@@ -17,7 +17,6 @@ export class AdminObserversComponent {
     @Input('areas') areas: FeatureCollection;
     @Input('userDashboard') userDashboard = false;
     @Input('admin') admin = false;
-    @Input('relaysList') relaysList = [];
     @ViewChild(ObserversListComponent, { static: true })
     observersList: ObserversListComponent;
 }
