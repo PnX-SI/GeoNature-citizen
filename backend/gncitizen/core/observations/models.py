@@ -10,7 +10,6 @@ from gncitizen.core.commons.models import (
     ProgramsModel,
     TimestampMixinModel,
 )
-from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.users.models import ObserverMixinModel
 from server import db
 
@@ -30,21 +29,18 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         nullable=False,
     )
     cd_nom = db.Column(db.Integer, nullable=False)
+    # String(1000) taken from taxonomie.bib_noms:
+    name = db.Column(db.String(1000), nullable=False)
     date = db.Column(db.Date, nullable=False)
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
     # FIXME: remove nullable prop from ObservationModel.municipality once debugged
-    municipality = db.Column(
-        db.Integer, db.ForeignKey(LAreas.id_area), nullable=True
-    )
+    municipality = db.Column(db.String(100), nullable=True)
     geom = db.Column(Geometry("POINT", 4326))
     json_data = db.Column(JSONB, nullable=True)
 
     program_ref = db.relationship(
         "ProgramsModel", backref=db.backref("t_obstax", lazy="dynamic")
-    )
-    municipality_ref = db.relationship(
-        "LAreas", backref=db.backref("l_areas", lazy="dynamic")
     )
 
 

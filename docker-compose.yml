@@ -1,6 +1,44 @@
-version: '3.3'
+version: "3.4"
 
 services:
-  debian_base:
-    build: .
-    container_name: citizen_base
+  frontend:
+    container_name: citizen-front
+    depends_on:
+      - backend
+    networks:
+      - citizen-kane
+
+  backend:
+    container_name: citizen-back
+    depends_on:
+      - db
+    networks:
+      - citizen-kane
+
+  db:
+    container_name: citizen-db
+    image: postgis/postgis:14-master
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB=${DB_NAME-dbname}
+      - POSTGRES_USER=${DB_USER-dbuser}
+      - POSTGRES_PASSWORD=${DB_PASSWORD-dbpwd}
+    volumes:
+      - citizen_data:/var/lib/postgresql/data/pgdata
+    networks:
+      - citizen-kane
+
+  nginx:
+    container_name: citizen-nginx
+    depends_on:
+      - frontend
+    volumes:
+      - ./config/backoffice_htpasswd:/etc/nginx/conf/.htpasswd
+    networks:
+      - citizen-kane
+
+networks:
+  citizen-kane:
+    external: false
+volumes:
+  citizen_data:

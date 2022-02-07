@@ -85,7 +85,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         from gncitizen.core.areas.routes import areas_api
         from gncitizen.core.commons.routes import commons_api
         from gncitizen.core.observations.routes import obstax_api
-        from gncitizen.core.ref_geo.routes import geo_api
         from gncitizen.core.sites.routes import sites_api
         from gncitizen.core.taxonomy.routes import taxo_api
         from gncitizen.core.users.routes import users_api
@@ -93,7 +92,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         app.register_blueprint(users_api, url_prefix=url_prefix)
         app.register_blueprint(commons_api, url_prefix=url_prefix)
         app.register_blueprint(obstax_api, url_prefix=url_prefix)
-        app.register_blueprint(geo_api, url_prefix=url_prefix)
         app.register_blueprint(taxo_api, url_prefix=url_prefix)
         app.register_blueprint(sites_api, url_prefix=url_prefix + "/sites")
         app.register_blueprint(areas_api, url_prefix=url_prefix + "/areas")

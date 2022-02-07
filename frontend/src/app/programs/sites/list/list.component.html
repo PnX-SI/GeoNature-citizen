@@ -16,7 +16,7 @@
                     src="{{
                         o.properties.photo
                             ? apiEndpoint + o.properties.photo.url
-                            : 'assets/no_photo_light.png'
+                            : o.properties.site_type.pictogram? o.properties.site_type.pictogram:'assets/no_photo_light.png'
                     }}"
                 />
                 <div class="infos">
