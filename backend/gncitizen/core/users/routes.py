@@ -174,23 +174,6 @@ def registration():
             else:
                 raise GeonatureApiError(e)
 
-        mailchimp_api_key = current_app.config.get("MAILCHIMP_API_KEY", None)
-        if newuser.want_newsletter and mailchimp_api_key is not None:
-            try:
-                client = MailchimpMarketing.Client()
-                client.set_config({
-                    "api_key": mailchimp_api_key,
-                    "server": "us12"
-                })
-
-                response = client.lists.add_list_member(
-                    current_app.config.get("MAILCHIMP_LIST_ID", ""),
-                    {"email_address": newuser.email, "status": "subscribed"}
-                )
-                print(response)
-            except ApiClientError as error:
-                print("Error: {}".format(error.text))
-
         access_token = create_access_token(identity=newuser.email)
         refresh_token = create_refresh_token(identity=newuser.email)
 
@@ -535,29 +518,6 @@ def get_or_patch_user(user):
                     request_data["newPassword"]
                 )
             user.admin = is_admin
-
-            mailchimp_api_key = current_app.config.get("MAILCHIMP_API_KEY", None)
-            if mailchimp_api_key is not None:
-                try:
-                    client = MailchimpMarketing.Client()
-                    client.set_config({
-                        "api_key": mailchimp_api_key,
-                        "server": "us12"
-                    })
-
-                    if user.want_newsletter:
-                        client.lists.add_list_member(
-                            current_app.config.get("MAILCHIMP_LIST_ID", ""),
-                            {"email_address": user.email, "status": "subscribed"}
-                        )
-                    else:
-                        client.lists.delete_list_member(
-                            current_app.config.get("MAILCHIMP_LIST_ID", ""),
-                            hashlib.md5(user.email.encode('utf-8')).hexdigest()
-                        )
-
-                except ApiClientError as error:
-                    print("Mailchimp Error: {}".format(error.text))
 
             user.update()
             return (
