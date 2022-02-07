@@ -1,8 +1,10 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { AfterViewInit } from '@angular/core';
 import { FeatureCollection, Feature } from 'geojson';
 import { Program } from '../programs.models';
 import * as L from 'leaflet';
 import { AppConfig } from '../../../conf/app.config';
+import { LoginComponent } from '../../auth/login/login.component';
+import { AuthService } from '../../auth/auth.service';
 
 export abstract class ProgramBaseComponent implements AfterViewInit {
     AppConfig = AppConfig;
@@ -12,7 +14,10 @@ export abstract class ProgramBaseComponent implements AfterViewInit {
     programs: Program[];
     program: Program;
     programFeature: FeatureCollection;
+    protected modalService: any;
     abstract flowService: any;
+
+    protected constructor(private authService: AuthService) {}
 
     ngAfterViewInit(): void {
         try {
@@ -34,4 +39,31 @@ export abstract class ProgramBaseComponent implements AfterViewInit {
         this.coords = p;
         console.debug('map clicked', this.coords);
     }
+
+    verifyProgramPrivacyAndUser() {
+        if (!this.program || !this.program.is_private) {
+            return;
+        }
+
+        const token = this.authService.getAccessToken();
+        if (
+            (token && this.authService.tokenExpiration(token) > 1) ||
+            !this.modalService
+        ) {
+            return;
+        }
+
+        const loginModalRef = this.modalService.open(LoginComponent, {
+            size: 'lg',
+            centered: true,
+            backdrop: 'static',
+            keyboard: false,
+        });
+        loginModalRef.componentInstance.canBeClosed = false;
+        loginModalRef.result
+            .then(this.loadData.bind(this))
+            .catch(this.loadData.bind(this));
+    }
+
+    loadData() {}
 }

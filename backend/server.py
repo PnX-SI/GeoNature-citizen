@@ -82,6 +82,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     ckeditor.init_app(app)
 
     with app.app_context():
+        from gncitizen.core.areas.routes import areas_api
         from gncitizen.core.commons.routes import commons_api
         from gncitizen.core.observations.routes import obstax_api
         from gncitizen.core.sites.routes import sites_api
@@ -93,6 +94,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         app.register_blueprint(obstax_api, url_prefix=url_prefix)
         app.register_blueprint(taxo_api, url_prefix=url_prefix)
         app.register_blueprint(sites_api, url_prefix=url_prefix + "/sites")
+        app.register_blueprint(areas_api, url_prefix=url_prefix + "/areas")
 
         if app.config["REWARDS_ENABLED"]:
             from gncitizen.core.badges.routes import badges_api

@@ -9,7 +9,5 @@ import { AppConfig } from '../../../conf/app.config';
 export class FooterComponent implements OnInit {
     public appConfig = AppConfig;
 
-    constructor() {}
-
-    ngOnInit() {}
+    ngOnInit(): void {}
 }

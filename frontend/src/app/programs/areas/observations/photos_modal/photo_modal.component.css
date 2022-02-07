@@ -1,0 +1,25 @@
+.photos-container {
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.photos-container .img-holder {
+    flex-grow:1;
+    padding: .2rem;
+}
+
+.photos-container .img-holder img {
+    display: block;
+    min-width: 200px;
+    min-height: 200px;
+    object-fit: cover;
+    max-height: 130px;
+    cursor: pointer;
+}
+
+.photos-container .img-holder img.big-size {
+    max-width: 100%;
+    max-height: initial;
+}
+

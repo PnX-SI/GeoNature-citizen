@@ -1,0 +1,53 @@
+<!-- Ajouter une observation -->
+<div class="modal-header">
+    <h4 class="modal-title">AJOUTER UN INDIVIDU</h4>
+    <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="closeModal()"
+    >
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body add-obs">
+    <app-species-site-form
+        [species]="data.species"
+        [area_id]="data.area_id"
+        [coords]="data.coords"
+        [data]="data"
+    ></app-species-site-form>
+</div>
+
+<div class="modal-footer" *ngIf="!loading">
+    <button
+        type="submit"
+        [disabled]="!form.speciesSiteForm.valid || ! form.jsonFormIsValid"
+        class="btn btn-default btn-outline-primary rounded-0 m-1"
+        (click)="committed()"
+    >
+        Valider et ajouter un nouvel individu
+    </button>
+    <button
+        type="submit"
+        [disabled]="!form.speciesSiteForm.valid || ! form.jsonFormIsValid"
+        class="btn btn-default btn-outline-primary rounded-0 m-1"
+        (click)="committedThenClose()"
+    >
+        Valider l'individu
+    </button>
+</div>
+
+<div *ngIf="loading">
+    <div id="form-loading">
+        <div class="loading-text">
+            <h4>Chargement en cours...</h4>
+        </div>
+        <div id="spinner">
+            <div class="loader-1"></div>
+            <div class="loader-2"></div>
+            <div class="loader-3"></div>
+        </div>
+    </div>
+</div>

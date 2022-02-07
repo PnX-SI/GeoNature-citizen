@@ -5,6 +5,7 @@
 
 import datetime
 import os
+import base64
 
 from flask import current_app
 from werkzeug.datastructures import FileStorage
@@ -67,7 +68,14 @@ def save_upload_files(
     files = []
     try:
         i = 0
-        for file in request_file.getlist("file"):
+        timestamp = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+
+        if not isinstance(request_file, list):
+            request_file = request_file.getlist("file")
+
+        for file in request_file:
+            new_filename = None
+
             if isinstance(file, FileStorage):
                 i = i + 1
                 filename = file.filename
@@ -85,66 +93,100 @@ def save_upload_files(
                         )
                     )
                     ext = filename.rsplit(".", 1)[1].lower()
-                    timestamp = datetime.datetime.utcnow().strftime(
-                        "%Y%m%d_%H%M%S"
-                    )
-                    filename = "{}_{}_{}_{}.{}".format(
+
+                    new_filename = "{}_{}_{}_{}.{}".format(
                         prefix, str(cdnom), i, timestamp, ext
                     )
+
                     current_app.logger.debug(
                         "[save_upload_files] new filename : {}".format(
-                            filename
-                        )
+                            new_filename)
                     )
-                    file.save(os.path.join(str(MEDIA_DIR), filename))
-                    # Save media filename to Database
-                    try:
-                        newmedia = MediaModel(filename=filename)
-                        current_app.logger.debug(
-                            "[save_upload_files] newmedia {}".format(newmedia)
-                        )
-                        db.session.add(newmedia)
-                        db.session.commit()
-                        id_media = newmedia.id_media
-                        current_app.logger.debug(
-                            "[save_upload_files] id_media : ".format(
-                                str(id_media)
-                            )
-                        )
-                        # return id_media
-                    except Exception as e:
-                        current_app.logger.debug(
-                            "[save_upload_files] ERROR MEDIAMODEL: {}".format(
-                                e
-                            )
-                        )
-                        raise GeonatureApiError(e)
-                    # Save id_media in matching table
-                    try:
-                        newmatch = matching_model(
-                            id_media=id_media, id_data_source=id_data_source
-                        )
-                        db.session.add(newmatch)
-                        db.session.commit()
-                        id_match = newmatch.id_match
-                        current_app.logger.debug(
-                            "[save_upload_files] id_match {}".format(id_match)
-                        )
-                    except Exception as e:
-                        current_app.logger.debug(
-                            "[save_upload_files] ERROR MATCH MEDIA: {}".format(
-                                e
-                            )
-                        )
-                        raise GeonatureApiError(e)
+                    file.save(os.path.join(str(MEDIA_DIR), new_filename))
 
-                    # log
+            if isinstance(file, str) and file.startswith("data:image/"):
+                i = i + 1
+
+                if file.startswith("data:image/png;base64,"):
+                    extension = "png"
+                if file.startswith("data:image/jpeg;base64,"):
+                    extension = "jpeg"
+
+                new_filename = "{}_{}_{}_{}.{}".format(
+                    prefix, str(cdnom), i, timestamp, extension
+                )
+
+                current_app.logger.debug(
+                    "[save_upload_files] newfilename : {}".format(new_filename)
+                )
+
+                img_data = base64.b64decode(
+                    file.replace(
+                        "data:image/" + extension + ";base64,", ""
+                    )
+                )
+                try:
+                    handler = open(os.path.join(str(MEDIA_DIR), str(new_filename)), "wb+")
+                    handler.write(img_data)
+                    handler.close()
+                except Exception as e:
                     current_app.logger.debug(
-                        "[save_upload_files] Fichier {} enregistré".format(
-                            filename
+                        "[save_upload_files] ERROR DATA64 UPLOAD: {}".format(e)
+                    )
+                    return (
+                        {"message": e},
+                        500,
+                    )
+
+            if new_filename is not None:
+                # Save media filename to Database
+                try:
+                    newmedia = MediaModel(filename=new_filename)
+                    current_app.logger.debug(
+                        "[save_upload_files] newmedia {}".format(newmedia)
+                    )
+                    db.session.add(newmedia)
+                    db.session.commit()
+                    id_media = newmedia.id_media
+                    current_app.logger.debug(
+                        "[save_upload_files] id_media : ".format(
+                            str(id_media)
                         )
                     )
-                    files.append(filename)
+                    # return id_media
+                except Exception as e:
+                    current_app.logger.debug(
+                        "[save_upload_files] ERROR MEDIAMODEL: {}".format(
+                            e
+                        )
+                    )
+                    raise GeonatureApiError(e)
+                # Save id_media in matching table
+                try:
+                    newmatch = matching_model(
+                        id_media=id_media, id_data_source=id_data_source
+                    )
+                    db.session.add(newmatch)
+                    db.session.commit()
+                    id_match = newmatch.id_match
+                    current_app.logger.debug(
+                        "[save_upload_files] id_match {}".format(id_match)
+                    )
+                except Exception as e:
+                    current_app.logger.debug(
+                        "[save_upload_files] ERROR MATCH MEDIA: {}".format(
+                            e
+                        )
+                    )
+                    raise GeonatureApiError(e)
+
+                # log
+                current_app.logger.debug(
+                    "[save_upload_files] Fichier {} enregistré".format(
+                        new_filename
+                    )
+                )
+                files.append(new_filename)
 
     except Exception as e:
         current_app.logger.debug(

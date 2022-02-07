@@ -6,32 +6,14 @@
                 <div class="user-infos">
                     <span>
                         <button
-                            *ngIf="stats?.platform_attendance > 0"
-                            (click)="tab = 'observations'"
-                            [class]="
-                                'btn ' +
-                                (tab === 'observations'
-                                    ? 'btn-primary'
-                                    : 'btn-dark')
-                            "
-                        >
-                            Mes observations
-                            <strong class="badge badge-pill badge-info">{{
-                                stats?.platform_attendance
-                            }}</strong>
-                        </button>
-                        <button
-                            *ngIf="mysites?.features.length > 0"
-                            (click)="tab = 'sites'"
+                            *ngIf="admin"
+                            (click)="tab = 'admin'"
                             [class]="
                                 'btn ml-1 ' +
-                                (tab === 'sites' ? 'btn-primary' : 'btn-dark')
+                                (tab === 'admin' ? 'btn-primary' : 'btn-dark')
                             "
                         >
-                            Mes sites
-                            <strong class="badge badge-pill badge-info">{{
-                                mysites?.features.length
-                            }}</strong>
+                            Administration
                         </button>
                     </span>
                     <div class="avatar-main-wrapper">
@@ -53,7 +35,7 @@
                 </div>
             </div>
             <div
-                *ngIf="badges && badges.length > 0"
+                *ngIf="badges && badges.length > 0 && AppConfig.FRONTEND.DISPLAY_BADGES"
                 id="badges"
                 class="container"
             >
@@ -109,14 +91,98 @@
                     </div>
                 </div>
             </div>
-            <user-sites [mysites]="mysites" *ngIf="mysites && tab === 'sites'">
-            </user-sites>
-            <user-observations
-                [myobs]="myobs"
-                *ngIf="observations && tab === 'observations'"
-                (deleteObs)="openDeleteModal(deleteModal, $event)"
-            >
-            </user-observations>
+            <div>
+                <user-sites [mysites]="mysites" *ngIf="mysites && tab === 'sites'">
+                </user-sites>
+
+                <div *ngIf="admin && tab === 'admin'">
+                    <div class="row areas-tabs">
+                        <div
+                            (click)="selectAreasTab('observers')"
+                            [ngClass]="selectedAreasTab === 'observers' ? 'selected' : ''"
+                        >
+                            Mes observateurs
+                        </div>
+                        <div
+                            (click)="selectAreasTab('areas')"
+                            [ngClass]="selectedAreasTab === 'areas' ? 'selected' : ''"
+                        >
+                            Leurs zones
+                        </div>
+                        <div
+                            (click)="selectAreasTab('species_sites')"
+                            [ngClass]="selectedAreasTab === 'species_sites' ? 'selected' : ''"
+                        >
+                            Leurs individus
+                        </div>
+                        <div
+                            (click)="selectAreasTab('observations')"
+                            [ngClass]="selectedAreasTab === 'observations' ? 'selected' : ''"
+                        >
+                            Leurs observations
+                        </div>
+                    </div>
+                    <admin-observers
+                        *ngIf="selectedAreasTab === 'observers'"
+                        [observers]="adminObservers"
+                        [areas]="adminAreas"
+                        [userDashboard]="true"
+                        [admin]="admin"
+                    >
+                    </admin-observers>
+                    <app-areas
+                        *ngIf="selectedAreasTab === 'areas'"
+                        [areas]="adminAreas"
+                        [userDashboard]="true"
+                        [admin]="admin"
+                    >
+                    </app-areas>
+                    <app-species-sites
+                        *ngIf="selectedAreasTab === 'species_sites'"
+                        [speciesSites]="adminSpeciesSites"
+                        [inputAreas]="adminAreas"
+                        [userDashboard]="true"
+                        [updateMapOnNextLoad]="updateMapOnNextLoad"
+                        [admin]="admin"
+                        (areaFilterChange)="areaFilterChange($event)"
+                    >
+                    </app-species-sites>
+                    <app-species-sites-obs
+                        *ngIf="selectedAreasTab === 'observations'"
+                        [observations]="adminSpeciesSitesObs"
+                        [userDashboard]="true"
+                        [admin]="admin"
+                        (refreshListEvent)="refreshAdminObservationsList($event)"
+                    >
+                    </app-species-sites-obs>
+                </div>
+
+                <div *ngIf="myAreas && tab === 'areas'">
+                    <div class="row areas-tabs">
+                        <div (click)="selectedAreasTab='areas'"  [ngClass]="selectedAreasTab === 'areas' ? 'selected' : ''">
+                            Mes zones d'observation
+                        </div>
+                        <div (click)="selectedAreasTab='species_sites'"  [ngClass]="selectedAreasTab === 'species_sites' ? 'selected' : ''">
+                            Mes individus
+                        </div>
+                        <div (click)="selectedAreasTab='observations'"  [ngClass]="selectedAreasTab === 'observations' ? 'selected' : ''">
+                            Mes observations
+                        </div>
+                    </div>
+                    <app-areas *ngIf="selectedAreasTab === 'areas'" [areas]="myAreas" [userDashboard]="true">
+                    </app-areas>
+                    <app-species-sites *ngIf="selectedAreasTab === 'species_sites'" [speciesSites]="mySpeciesSites" [userDashboard]="true">
+                    </app-species-sites>
+                    <app-species-sites-obs *ngIf="selectedAreasTab === 'observations'" [observations]="mySpeciesSitesObs" [userDashboard]="true">
+                    </app-species-sites-obs>
+                </div>
+                <user-observations
+                    [myobs]="myobs"
+                    *ngIf="observations && tab === 'observations'"
+                    (deleteObs)="openDeleteModal(deleteModal, $event)"
+                >
+                </user-observations>
+            </div>
             <!-- <div id="myObs" class="container">
         <h3 class="title" i18n>Mes observations</h3>
         <ngx-datatable *ngIf="observations" class="material" [rows]="rows" [headerHeight]="40" [footerHeight]="40"
@@ -180,29 +246,61 @@
                     (click)="onExportPersonalData()"
                 >
                     <i class="fa fa-download"></i
-                    ><ng-container
+                    >
+                    <ng-container
                         i18n="Export personnal data btn@@exportPersonnalDataBtn"
-                        >Exporter mes données personnelles</ng-container
+                    >Exporter mes données personnelles
+                    </ng-container
                     >
                 </button>
                 <button
+                    *ngIf="myobs && myobs.count"
                     class="btn-big col-lg-3 col-md-5 col-sm-12 export"
                     (click)="onExportObservations()"
                 >
                     <i class="fa fa-download"></i
-                    ><ng-container
+                    >
+                    <ng-container
                         i18n="Export personnal observations btn@@exportPersonnalObsBtn"
-                        >Exporter mes observations</ng-container
+                    >Exporter mes observations
+                    </ng-container
                     >
                 </button>
                 <button
+                    *ngIf="mysites && mysites.count"
                     class="btn-big col-lg-3 col-md-5 col-sm-12 export"
                     (click)="onExportSites()"
                 >
                     <i class="fa fa-download"></i
-                    ><ng-container
+                    >
+                    <ng-container
                         i18n="Export personnal sites btn@@exportPersonnalSitesBtn"
-                        >Exporter mes sites</ng-container
+                    >Exporter mes sites
+                    </ng-container
+                    >
+                </button>
+                <button
+                    *ngIf="myAreas && myAreas.count"
+                    class="btn-big col-lg-3 col-md-5 col-sm-12 export"
+                    (click)="onExportAreas()"
+                >
+                    <i class="fa fa-download"></i
+                    >
+                    <ng-container>
+                        Exporter mes données d'observation
+                    </ng-container
+                    >
+                </button>
+                <button
+                    *ngIf="adminAreas && adminAreas.count"
+                    class="btn-big col-lg-3 col-md-5 col-sm-12 export"
+                    (click)="onExportAreas(true)"
+                >
+                    <i class="fa fa-download"></i
+                    >
+                    <ng-container>
+                        Exporter toutes les données d'observation
+                    </ng-container
                     >
                 </button>
                 <button
@@ -210,18 +308,13 @@
                     (click)="onDeletePersonalData()"
                 >
                     <i class="fa fa-trash"></i
-                    ><ng-container i18n="Delete Account@@deleteAccount"
-                        >Supprimer mon compte</ng-container
+                    >
+                    <ng-container i18n="Delete Account@@deleteAccount"
+                    >Supprimer mon compte
+                    </ng-container
                     >
                 </button>
             </div>
-            <section class="homeLink">
-                <a [routerLink]="['/']">
-                    <i class="fa fa-arrow-left"></i>
-                    <ng-container i18n="back@@back"></ng-container>Retour au
-                    site
-                </a>
-            </section>
         </div>
     </div>
 </div>
@@ -241,12 +334,6 @@
         </button>
     </div>
     <div class="modal-body">
-        <ngb-alert
-            *ngIf="errorMessage"
-            type="danger"
-            (close)="errorMessage = null"
-            >{{ errorMessage }}
-        </ngb-alert>
         <form
             [formGroup]="userForm"
             (ngSubmit)="userForm.valid && onUpdatePersonalData(userForm.value)"
@@ -254,11 +341,11 @@
             <div class="d-flex justify-content-center">
                 <div class="avatar-wrapper">
                     <div *ngIf="!userAvatar" class="profile-pic"></div>
-                    <img
+                    <div
                         *ngIf="userAvatar"
-                        class="profile-pic"
-                        src="{{ userAvatar }}"
-                    />
+                        class="profile-pic-background"
+                        [ngStyle]="{'background-image': 'url(' + userAvatar + ')'}"
+                    ></div>
                     <div class="upload-button" (click)="fileToUpload.click()">
                         <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
                     </div>
@@ -277,12 +364,12 @@
                         <label
                             for="username"
                             i18n="your username@@yourUsernameLabel"
-                            >Votre nom d'utilisateur *</label
+                        >Votre nom d'utilisateur *</label
                         >
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"
-                                    ><i class="fa fa-user"></i
+                                ><i class="fa fa-user"></i
                                 ></span>
                             </div>
                             <input
@@ -303,12 +390,12 @@
                         <label
                             for="email"
                             i18n="your email label@@yourEmailInputLabel"
-                            >Votre email *</label
+                        >Votre email *</label
                         >
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"
-                                    ><i class="fa fa-envelope"></i
+                                ><i class="fa fa-envelope"></i
                                 ></span>
                             </div>
                             <input
@@ -322,46 +409,6 @@
                                 placeholder="Entrez votre email"
                             />
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col-md-6 col-sm-12">
-                    <div class="form-group">
-                        <label
-                            for="name"
-                            i18n="your first name@@yourFirstnameInputLabel"
-                            >Votre prénom *</label
-                        >
-                        <input
-                            type="text"
-                            class="form-control rounded-0"
-                            id="name"
-                            formControlName="name"
-                            i18n-placeholder="
-                                your first name
-                                placeholder@@yourFirstnameInputPlaceholder"
-                            placeholder="Entrez votre prénom"
-                        />
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-12">
-                    <div class="form-group">
-                        <label
-                            for="surname"
-                            i18n="your surname label@@yourSurnameInputLabel"
-                            >Votre nom *</label
-                        >
-                        <input
-                            type="text"
-                            class="form-control rounded-0"
-                            id="surname"
-                            formControlName="surname"
-                            i18n-placeholder="
-                                your surname
-                                placeholder@@yourSurnameInputPlaceholder"
-                            placeholder="Entrez votre nom"
-                        />
                     </div>
                 </div>
             </div>
@@ -383,7 +430,7 @@
                         <label
                             for="newPassword"
                             i18n="your password label@@yourPasswordLabel"
-                            >Votre nouveau mot de passe</label
+                        >Votre nouveau mot de passe</label
                         >
                         <input
                             type="password"
@@ -406,7 +453,7 @@
                             i18n="
                                 your password confirm
                                 label@@yourConfirmPasswordLabel"
-                            >Confirmez votre nouveau mot de passe</label
+                        >Confirmez votre nouveau mot de passe</label
                         >
                         <input
                             type="password"
@@ -494,8 +541,15 @@
     </div>
 </ng-template>
 
-<div *ngIf="!observations" id="spinner">
-    <div class="loader-1"></div>
-    <div class="loader-2"></div>
-    <div class="loader-3"></div>
+<div *ngIf="requestsInProgress > 0">
+    <div id="form-loading">
+        <div class="loading-text">
+            <h4>Chargement en cours...</h4>
+        </div>
+        <div id="spinner">
+            <div class="loader-1"></div>
+            <div class="loader-2"></div>
+            <div class="loader-3"></div>
+        </div>
+    </div>
 </div>

@@ -1,0 +1,26 @@
+<div class="areas-container">
+    <div class="row">
+        <div class="col-12">
+            <app-species-sites-obs-list
+                [observations]="observations"
+                [program_id]="program_id"
+                [admin]="admin"
+                [userDashboard]="userDashboard"
+                (refreshListEvent)="refreshList($event)"
+            >
+            </app-species-sites-obs-list>
+        </div>
+        <div class="export-container col-12">
+            <button
+                *ngIf="observations && observations.count && !userDashboard"
+                class="btn-big col-lg-3 col-md-5 col-sm-12 export"
+                (click)="onExportAreas()"
+            >
+                <i class="fa fa-download"></i>
+                <ng-container>
+                    Exporter mes données d'observation
+                </ng-container>
+            </button>
+        </div>
+    </div>
+</div>

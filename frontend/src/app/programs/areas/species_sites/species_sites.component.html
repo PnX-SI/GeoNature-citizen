@@ -1,0 +1,42 @@
+<div class="areas-container">
+    <div class="row">
+        <section id="program" class="observations row obs-section">
+            <input id="slide-sidebar" type="checkbox" role="button"/>
+            <label class="toggle" for="slide-sidebar"
+            ><i class="fa fa-chevron-left"></i
+            ></label>
+            <div class="col-lg-4 col-md-12 side-bar" id="list">
+                <app-species-sites-list
+                    [speciesSites]="speciesSites"
+                    [program_id]="program_id"
+                    [displayForm]="flowService.display"
+                    [userDashboard]="userDashboard"
+                    [inputAreas]="inputAreas"
+                    [admin]="admin"
+                    (speciesSiteSelect)="speciesSitesMapRef.showPopup($event)"
+                    (areaFilterChange)="areaFilterChange.emit($event)"
+                >
+                    <app-areamodalflow
+                        #modalFlowRef
+                        [coords]="coords"
+                        [modalversion]="
+                        AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
+                    "
+                        [program_id]="program_id"
+                        obs-form
+                    ></app-areamodalflow>
+                </app-species-sites-list>
+            </div>
+
+            <div class="map col-lg-12 col-md-12" id="map">
+                <app-species-sites-map
+                    #speciesSitesMapRef
+                    [features]="speciesSites"
+                    [program]="programFeature"
+                    [updateOnNextLoad]="updateMapOnNextLoad"
+                    (onClick)="onMapClicked($event)"
+                ></app-species-sites-map>
+            </div>
+        </section>
+    </div>
+</div>

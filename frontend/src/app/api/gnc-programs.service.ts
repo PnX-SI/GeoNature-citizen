@@ -142,13 +142,114 @@ export class GncProgramsService implements OnInit {
             );
     }
 
+    getProgramAreas(id: number, filters = {}): Observable<FeatureCollection> {
+        const parameters = this.getParametersFromFilters(filters);
+        return this.http
+            .get<FeatureCollection>(
+                `${this.URL}/areas/programs/${id}${parameters}`
+            )
+            .pipe(
+                catchError(
+                    this.handleError<FeatureCollection>(
+                        `getProgramAreas id=${id}`
+                    )
+                )
+            );
+    }
+
+    getProgramSpeciesSites(id: number): Observable<FeatureCollection> {
+        return this.http
+            .get<FeatureCollection>(
+                `${this.URL}/areas/program/${id}/species_sites/`
+            )
+            .pipe(
+                catchError(
+                    this.handleError<FeatureCollection>(
+                        `getProgramSpeciesSites id=${id}`
+                    )
+                )
+            );
+    }
+
+    getProgramSpeciesSitesObservations(
+        id: number,
+        page = 0,
+        pageSize = 0
+    ): Observable<FeatureCollection> {
+        let parameters = '';
+        if (page > 0 && pageSize > 0) {
+            parameters += `?page=${page}&page-size=${pageSize}`;
+        }
+
+        return this.http
+            .get<FeatureCollection>(
+                `${this.URL}/areas/program/${id}/observations/${parameters}`
+            )
+            .pipe(
+                catchError(
+                    this.handleError<FeatureCollection>(
+                        `getProgramSpeciesSitesObservations id=${id}`
+                    )
+                )
+            );
+    }
+
+    getAreaObservers(id: number): Observable<Object> {
+        return this.http.get<Object>(`${this.URL}/areas/${id}/observers`);
+    }
+
+    getParametersFromFilters(filters) {
+        let parameters = '';
+        let paramIndex = 0;
+        for (const filterIndex in Object.keys(filters)) {
+            const filterName = Object.keys(filters)[filterIndex];
+            const filterValue = filters[filterName];
+            const preChar = paramIndex ? '&' : '?';
+            if (filterValue) {
+                paramIndex++;
+                parameters += `${preChar}${filterName}=${filterValue}`;
+            }
+        }
+        return parameters;
+    }
+
     getSiteDetails(id: number): Observable<FeatureCollection> {
         return this.http
             .get<FeatureCollection>(`${this.URL}/sites/${id}`)
             .pipe(
                 catchError(
                     this.handleError<FeatureCollection>(
-                        `getProgramObservations id=${id}`
+                        `getSiteDetails id=${id}`
+                    )
+                )
+            );
+    }
+
+    getAreaDetails(id: number): Observable<FeatureCollection> {
+        return this.http
+            .get<FeatureCollection>(`${this.URL}/areas/${id}`)
+            .pipe(
+                catchError(
+                    this.handleError<FeatureCollection>(
+                        `getAreaDetails id=${id}`
+                    )
+                )
+            );
+    }
+
+    getSpeciesSiteDetails(
+        id: number,
+        withObservations = true,
+        withStages = false
+    ): Observable<FeatureCollection> {
+        return this.http
+            .get<FeatureCollection>(
+                `${this.URL}/areas/species_sites/${id}?with_observations=${withObservations}&with_stages=${withStages}`
+            )
+            .pipe(
+                catchError(
+                    this.handleError<FeatureCollection>(
+                        `getSpeciesSiteDetails id=${id}`
                     )
                 )
             );
@@ -161,6 +262,18 @@ export class GncProgramsService implements OnInit {
                 catchError(
                     this.handleError<FeatureCollection>(
                         `getProgramObservations id=${id}`
+                    )
+                )
+            );
+    }
+
+    getSpeciesSiteObsDetails(id: number): Observable<FeatureCollection> {
+        return this.http
+            .get<FeatureCollection>(`${this.URL}/areas/observations/${id}`)
+            .pipe(
+                catchError(
+                    this.handleError<FeatureCollection>(
+                        `getAreaProgramObservations id=${id}`
                     )
                 )
             );

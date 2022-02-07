@@ -1,0 +1,206 @@
+<div id="list">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Pseudo</th>
+            <th scope="col">Email</th>
+            <th scope="col">Statut</th>
+            <th scope="col">Catégorie</th>
+            <th scope="col">Organisme</th>
+            <th scope="col">Relai</th>
+            <th scope="col" *ngIf="admin">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let observer of observers">
+            <td>
+                <span [ngbTooltip]="observer.properties.username">
+                    {{ observer.properties.username }}
+                </span>
+            </td>
+            <td>
+                <span [ngbTooltip]="observer.properties.email">
+                    {{ observer.properties.email }}
+                </span>
+            </td>
+            <td>
+                <span [ngbTooltip]="observer.properties.admin ? 'Admin' : 'Utilisateur'">
+                    {{ observer.properties.admin ? 'Admin' : 'Utilisateur' }}
+                </span>
+            </td>
+            <td>
+                <span [ngbTooltip]="observer.properties.category">
+                    {{ observer.properties.category }}
+                </span>
+            </td>
+            <td>
+                <span [ngbTooltip]="observer.properties.organism">
+                    {{ observer.properties.organism }}
+                </span>
+            </td>
+            <td *ngIf="admin">
+                <i
+                    class="fa fa-edit cursor-pointer"
+                    placement="left"
+                    ngbTooltip="Editer"
+                    (click)="onEditUserInfos(observer.properties.id_user, userEditionModal)"
+                    btn-open
+                ></i>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between p-2">
+        <ngb-pagination
+            [collectionSize]="collectionSize"
+            [(page)]="page"
+            [maxSize]="10"
+            [pageSize]="pageSize"
+            (pageChange)="refreshList()">
+        </ngb-pagination>
+
+        <select class="custom-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshList()">
+            <option [ngValue]="10">10 observateurs par page</option>
+            <option [ngValue]="25">25 observateurs par page</option>
+            <option [ngValue]="50">50 observateurs par page</option>
+        </select>
+    </div>
+</div>
+
+<ng-template #userEditionModal let-modal>
+    <div class="modal-header">
+        <h4>
+            Mettre à jour l'utilisateur
+        </h4>
+        <button
+            type="button"
+            class="close rounded-0"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross click')"
+        >
+            &times;
+        </button>
+    </div>
+    <div class="modal-body">
+        <form
+            [formGroup]="userForm"
+            (ngSubmit)="userForm.valid && onUpdateUserData(userForm.value)"
+        >
+            <div class="form-row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label
+                            for="username"
+                            i18n="your username@@yourUsernameLabel"
+                        >
+                            Nom d'utilisateur *
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"
+                                ><i class="fa fa-user"></i
+                                ></span>
+                            </div>
+                            <input
+                                type="text"
+                                id="username"
+                                formControlName="username"
+                                class="form-control rounded-0"
+                                i18n-placeholder="
+                                    your username
+                                    placeholder@@yourUsernameInputPlaceholder"
+                                placeholder="Entrez le nom d'utilisateur"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label
+                            for="email"
+                            i18n="your email label@@yourEmailInputLabel"
+                        >Email *</label
+                        >
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"
+                                ><i class="fa fa-envelope"></i
+                                ></span>
+                            </div>
+                            <input
+                                type="email"
+                                class="form-control rounded-0"
+                                formControlName="email"
+                                id="email"
+                                i18n-placeholder="
+                                    your email
+                                    placeholder@@yourEmailInputPlaceholder"
+                                placeholder="Entrez l'email"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label
+                            for="organism"
+                        >Organisme</label
+                        >
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                class="form-control rounded-0"
+                                formControlName="organism"
+                                id="organism"
+                                placeholder="Entrez l'organisme"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="category">Catégorie</label>
+                        <div class="input-group">
+                            <select
+                                id="category"
+                                name="category"
+                                class="form-control rounded-0"
+                                formControlName="category"
+                            >
+                                <option *ngFor="let category of appConfig.categoriesEnum | keyvalue" [value]="category.key">
+                                    {{category.value}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="category">Zones associées ?</label>
+                        <div class="input-group">
+                            <select formControlName="areas_access" style="width: 100%;height: 100px;" multiple>
+                                <option *ngFor="let area of areasList" [value]="area.id_area">
+                                    {{ area.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button
+                type="submit"
+                class="btn btn-default btn-big btn-outline-primary rounded-0"
+                [disabled]="userForm.invalid"
+            >
+                Mettre à jour
+            </button>
+        </form>
+    </div>
+</ng-template>
