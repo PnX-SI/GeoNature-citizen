@@ -35,7 +35,6 @@ def taxonomy_lists():
     if taxa_lists.status_code == 200:
         try:
             taxa_lists = taxa_lists.json()["data"]
-            logger.debug(tlists)
             for taxa_list in taxa_lists:
                 taxonomy_lists.append(
                     (taxa_list["id_liste"], taxa_list["nom_liste"])
