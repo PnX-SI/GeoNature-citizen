@@ -70,5 +70,10 @@ export const AppConfig = {
     program_list_observers_names: true,
     program_list_sort: "-timestamp_create",
     details_espece_url: "<url_inpn_or_atlas>/cd_nom/", // !! gardez bien le cd_nom/ dans l'url
-    registration_message : "Vous inscrire vous permet de gérer vos observations"
+    registration_message : "Vous inscrire vous permet de gérer vos observations",
+    imageUpload: {
+        maxHeight: 1440,
+        maxWidth: 1440,
+        quality: 0.9,
+    }
 }
