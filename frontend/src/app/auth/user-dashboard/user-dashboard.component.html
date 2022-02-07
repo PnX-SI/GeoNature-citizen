@@ -22,12 +22,12 @@
                             class="profile-pic"
                             (click)="onEditInfos(personalInfos)"
                         ></div>
-                        <div
+                        <img
                             *ngIf="userAvatar"
-                            class="profile-pic-background"
+                            class="profile-pic"
+                            src="{{ userAvatar }}"
                             (click)="onEditInfos(personalInfos)"
-                            [ngStyle]="{'background-image': 'url(' + userAvatar + ')'}"
-                        ></div>
+                        />
                     </div>
                     <p (click)="onEditInfos(personalInfos)">
                         {{ username }} <i class="fa fa-pencil"></i>

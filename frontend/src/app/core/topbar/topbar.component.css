@@ -172,7 +172,7 @@ div.btn-group a:first-child {
     height: 22px;
     margin: 0;
     background: no-repeat;
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     float: left;
     margin-right: 8px;
