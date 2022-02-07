@@ -49,6 +49,7 @@ class UserModel(TimestampMixinModel, db.Model):
     avatar = db.Column(db.String())
     active = db.Column(db.Boolean, default=False)
     admin = db.Column(db.Boolean, default=False)
+    want_newsletter = db.Column(db.Boolean, default=True)
 
     def save_to_db(self):
         db.session.add(self)
@@ -72,6 +73,7 @@ class UserModel(TimestampMixinModel, db.Model):
             "full_name": name + " " + surname,
             "admin": self.admin,
             "active": self.active,
+            "want_newsletter": self.want_newsletter,
             "timestamp_create": self.timestamp_create.isoformat(),
             "timestamp_update": self.timestamp_update.isoformat()
             if self.timestamp_update
