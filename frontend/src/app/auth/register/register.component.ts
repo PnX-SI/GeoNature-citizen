@@ -112,16 +112,49 @@ export class RegisterComponent {
     onUploadAvatar($event) {
         if ($event) {
             if ($event.target.files && $event.target.files[0]) {
-                const reader = new FileReader();
                 const file = $event.target.files[0];
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    this.userAvatar = reader.result;
-                    this.user.avatar = this.userAvatar;
-                    this.user.extention = $event.target.files[0].type
-                        .split('/')
-                        .pop();
+                const img = document.createElement('img');
+                img.onload = (event) => {
+                    let newImage = null;
+                    if (event.target) {
+                        newImage = event.target;
+                    } else if (!event['path'] || !event['path'].length) {
+                        newImage = event['path'][0];
+                    }
+                    if (!newImage) {
+                        console.error('No image found on this navigator');
+                        return;
+                    }
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    let resizeTimeNumber = 1;
+                    const maxHeightRatio =
+                        newImage.height / AppConfig.imageUpload.maxHeight;
+                    if (maxHeightRatio > 1) {
+                        resizeTimeNumber = maxHeightRatio;
+                    }
+                    const maxWidthRatio =
+                        newImage.width / AppConfig.imageUpload.maxWidth;
+                    if (maxWidthRatio > 1 && maxWidthRatio > maxHeightRatio) {
+                        resizeTimeNumber = maxWidthRatio;
+                    }
+
+                    canvas.width = newImage.width / resizeTimeNumber;
+                    canvas.height = newImage.height / resizeTimeNumber;
+
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    const resizedImage = canvas.toDataURL(
+                        'image/jpeg',
+                        AppConfig.imageUpload.quality
+                    );
+
+                    this.userAvatar = resizedImage;
+                    this.user.avatar = resizedImage;
+                    this.user.extention = 'jpeg';
                 };
+                img.src = window.URL.createObjectURL(file);
             }
         }
     }
