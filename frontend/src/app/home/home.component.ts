@@ -47,6 +47,14 @@ export class HomeComponent implements OnInit, AfterViewChecked {
             this.observationsService
                 .getStat()
                 .subscribe((stats) => (this.stats = stats));
+            if (this.programs.length === 1) {
+                const p = this.programs[0]
+                this.router.navigate([
+                    '/programs',
+                    p.id_program,
+                    p.module.name
+                ]);
+            }
         });
         this.route.fragment.subscribe((fragment) => {
             this.fragment = fragment;
