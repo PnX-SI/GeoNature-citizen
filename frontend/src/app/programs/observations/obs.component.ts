@@ -26,7 +26,7 @@ import { ObsMapComponent } from './map/map.component';
 import { ObsListComponent } from './list/list.component';
 import { ModalFlowComponent } from './modalflow/modalflow.component';
 import { ProgramBaseComponent } from '../base/program-base.component';
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 
 @Component({
     selector: 'app-observations',
@@ -92,7 +92,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                 this.programFeature = program;
             });
             this.titleService.setTitle(
-                this.AppConfig.appName + ' - ' + this.program.title
+                this.MainConfig.appName + ' - ' + this.program.title
             );
             this.metaTagService.updateTag({
                 name: 'description',
@@ -100,7 +100,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             });
             this.metaTagService.updateTag({
                 property: 'og:title',
-                content: AppConfig.appName + ' - ' + this.program.title,
+                content: MainConfig.appName + ' - ' + this.program.title,
             });
             this.metaTagService.updateTag({
                 property: 'og:description',
@@ -112,11 +112,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             });
             this.metaTagService.updateTag({
                 property: 'og:url',
-                content: AppConfig.URL_APPLICATION + this.router.url,
+                content: MainConfig.URL_APPLICATION + this.router.url,
             });
             this.metaTagService.updateTag({
                 property: 'twitter:title',
-                content: AppConfig.appName + ' - ' + this.program.title,
+                content: MainConfig.appName + ' - ' + this.program.title,
             });
             this.metaTagService.updateTag({
                 property: 'twitter:description',

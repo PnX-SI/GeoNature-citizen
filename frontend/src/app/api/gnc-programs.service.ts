@@ -10,7 +10,7 @@ import { catchError, map, mergeMap, pluck, tap } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
 
-import { AppConfig } from '../../conf/app.config';
+import { MainConfig } from '../../conf/main.config';
 import { Program } from '../programs/programs.models';
 import { TaxonomyList } from '../programs/observations/observation.model';
 
@@ -57,7 +57,7 @@ const sorted = (property: string) => {
     ) => instance || new GncProgramsService(http, state, domSanitizer),
 })
 export class GncProgramsService implements OnInit {
-    private readonly URL = AppConfig.API_ENDPOINT;
+    private readonly URL = MainConfig.API_ENDPOINT;
     programs: Program[];
     programs$ = new Subject<Program[]>();
 
@@ -91,7 +91,7 @@ export class GncProgramsService implements OnInit {
                     })
                 ),
                 map((programs) =>
-                    programs.sort(sorted(AppConfig['program_list_sort']))
+                    programs.sort(sorted(MainConfig['program_list_sort']))
                 ),
                 tap((programs) => {
                     this.state.set(PROGRAMS_KEY, programs as Program[]);

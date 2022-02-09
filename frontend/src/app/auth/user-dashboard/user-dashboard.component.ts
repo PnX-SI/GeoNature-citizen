@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { throwError, forkJoin } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 import { AuthService } from './../auth.service';
 import { UserService } from './user.service.service';
 import { SiteService } from '../../programs/sites/sites.service';
@@ -20,7 +20,7 @@ import { ModalFlowService } from '../../programs/observations/modalflow/modalflo
     styleUrls: ['./user-dashboard.component.css'],
 })
 export class UserDashboardComponent implements OnInit {
-    public appConfig = AppConfig;
+    public MainConfig = MainConfig;
     @ViewChild('siteDeleteModal', { static: true }) siteDeleteModal;
     modalRef: NgbModalRef;
     modalRefDel: NgbModalRef;
@@ -76,7 +76,7 @@ export class UserDashboardComponent implements OnInit {
                             this.userService.role_id = this.role_id;
                             if (user['features']['avatar'])
                                 this.userAvatar =
-                                    this.appConfig.API_ENDPOINT +
+                                    this.MainConfig.API_ENDPOINT +
                                     '/media/' +
                                     user['features']['avatar'];
                             // FIXME: source backend conf
@@ -122,14 +122,14 @@ export class UserDashboardComponent implements OnInit {
 
         data.push(userObservations);
         data.push(userSites);
-        if (AppConfig['REWARDS']) {
+        if (MainConfig['REWARDS']) {
             data.push(badgeCategories);
         }
         forkJoin(data).subscribe((data: any) => {
             if (data.length > 1) {
                 this.myobs = data[0];
                 this.mysites = data[1];
-                if (AppConfig['REWARDS']) {
+                if (MainConfig['REWARDS']) {
                     console.log('data3', data[2]);
                     this.badges = data[2];
                     localStorage.setItem('badges', JSON.stringify(this.badges));
@@ -189,13 +189,13 @@ export class UserDashboardComponent implements OnInit {
         this.rows.push({
             media_url:
                 obs.properties.images && !!obs.properties.images.length
-                    ? AppConfig.API_ENDPOINT +
+                    ? MainConfig.API_ENDPOINT +
                       '/media/' +
                       obs.properties.images[0]
                     : obs.properties.image
                     ? obs.properties.image
                     : obs.properties.medias && !!obs.properties.medias.length
-                    ? AppConfig.API_TAXHUB +
+                    ? MainConfig.API_TAXHUB +
                       '/tmedias/thumbnail/' +
                       obs.properties.medias[0].id_media +
                       '?h=80'
@@ -344,12 +344,12 @@ export class UserDashboardComponent implements OnInit {
 
                     let resizeTimeNumber = 1;
                     const maxHeightRatio =
-                        newImage.height / AppConfig.imageUpload.maxHeight;
+                        newImage.height / MainConfig.imageUpload.maxHeight;
                     if (maxHeightRatio > 1) {
                         resizeTimeNumber = maxHeightRatio;
                     }
                     const maxWidthRatio =
-                        newImage.width / AppConfig.imageUpload.maxWidth;
+                        newImage.width / MainConfig.imageUpload.maxWidth;
                     if (maxWidthRatio > 1 && maxWidthRatio > maxHeightRatio) {
                         resizeTimeNumber = maxWidthRatio;
                     }
@@ -361,7 +361,7 @@ export class UserDashboardComponent implements OnInit {
 
                     const resizedImage = canvas.toDataURL(
                         'image/jpeg',
-                        AppConfig.imageUpload.quality
+                        MainConfig.imageUpload.quality
                     );
 
                     this.userAvatar = resizedImage;

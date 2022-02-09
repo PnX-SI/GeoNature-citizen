@@ -3,7 +3,7 @@ import { GncProgramsService } from '../../../api/gnc-programs.service';
 import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import { SiteModalFlowService } from '../modalflow/modalflow.service';
-import { AppConfig } from '../../../../conf/app.config';
+import { MainConfig } from '../../../../conf/main.config';
 import { HttpClient } from '@angular/common/http';
 import {
     BaseDetailComponent,
@@ -70,11 +70,11 @@ export class SiteDetailComponent
     }
 
     prepareVisits() {
-        // photos 
+        // photos
         this.photos = this.site.properties.photos;
         this.photos.forEach((e, i) => {
             this.photos[i]['url'] =
-                AppConfig.API_ENDPOINT + this.photos[i]['url'];
+                MainConfig.API_ENDPOINT + this.photos[i]['url'];
         });
         // data
         this.attributes = []

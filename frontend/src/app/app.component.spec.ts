@@ -5,7 +5,7 @@ import {
     HttpTestingController,
 } from '@angular/common/http/testing';
 
-import { AppConfig } from '../conf/app.config';
+import { MainConfig } from '../conf/main.config';
 import { AppComponent } from './app.component';
 import { TopbarComponent } from './core/topbar/topbar.component';
 import { AuthService } from './auth/auth.service';
@@ -28,10 +28,10 @@ describe('AppComponent', () => {
         expect(app).toBeTruthy();
     });
 
-    it(`should have as title '${AppConfig.appName}'`, () => {
+    it(`should have as title '${MainConfig.appName}'`, () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.debugElement.componentInstance;
-        expect(app.title).toEqual(AppConfig.appName);
+        expect(app.title).toEqual(MainConfig.appName);
     });
 
     it('should render title in an anchor tag', () => {
@@ -39,7 +39,7 @@ describe('AppComponent', () => {
         fixture.detectChanges();
         const compiled = fixture.debugElement.nativeElement;
         expect(compiled.querySelector('header nav a').textContent).toContain(
-            AppConfig.appName
+            MainConfig.appName
         );
     });
 });

@@ -14,7 +14,7 @@ import { pluck, share } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
 
-import { AppConfig } from '../../../../conf/app.config';
+import { MainConfig } from '../../../../conf/main.config';
 import {
     TaxonomyList,
     TaxonomyListItem,
@@ -37,7 +37,7 @@ export class ObsListComponent implements OnChanges {
     observationList: Feature[] = [];
     program_id: number;
     taxa: any[];
-    public appConfig = AppConfig;
+    public MainConfig = MainConfig;
     selectedTaxon: TaxonomyListItem = null;
     selectedMunicipality: any = null;
     changes$ = new BehaviorSubject<SimpleChanges>(null);

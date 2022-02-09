@@ -19,7 +19,7 @@
 </div>
 
 <div
-    *ngIf="stats && AppConfig.FRONTEND.DISPLAY_STATS"
+    *ngIf="stats && MainConfig.FRONTEND.DISPLAY_STATS"
     class="row row-0 general-stat"
 >
     <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
@@ -57,8 +57,8 @@
                 <div
                     class="text-muted"
                     [innerHtml]="
-                        AppConfig.programs_label[localeId]
-                            ? AppConfig.programs_label[localeId]
+                        MainConfig.programs_label[localeId]
+                            ? MainConfig.programs_label[localeId]
                             : 'Programmes'
                     "
                 ></div>
@@ -105,12 +105,12 @@
                                     class="short_desc"
                                     [innerHTML]="p.html_short_desc"
                                 ></p>
-                                <!-- <a class="btn-big" [routerLink]="['/programs', p.id_program, 'observations']">{{ AppConfig.platform_participate[localeId] }}
+                                <!-- <a class="btn-big" [routerLink]="['/programs', p.id_program, 'observations']">{{ MainConfig.platform_participate[localeId] }}
                               </a> -->
                                 <div class="overlay-prog">
                                     <p class="overlay-text">
                                         {{
-                                            AppConfig.platform_participate[
+                                            MainConfig.platform_participate[
                                                 localeId
                                             ]
                                         }}
@@ -155,7 +155,7 @@
                                     'observations'
                                 ]"
                                 >{{
-                                    AppConfig.platform_participate[localeId]
+                                    MainConfig.platform_participate[localeId]
                                 }}</a
                             >
                         </div>

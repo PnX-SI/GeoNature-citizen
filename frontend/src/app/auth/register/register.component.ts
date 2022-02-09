@@ -7,7 +7,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { RegisterUser } from '../models';
 import { AuthService } from './../auth.service';
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 
 declare global {
     interface Window {
@@ -22,7 +22,7 @@ window.hcaptcha = window.hcaptcha || null;
     styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-    readonly AppConfig = AppConfig;
+    readonly MainConfig = MainConfig;
     user: RegisterUser = new RegisterUser();
     private _error = new Subject<string>();
     private _success = new Subject<string>();
@@ -130,12 +130,12 @@ export class RegisterComponent {
 
                     let resizeTimeNumber = 1;
                     const maxHeightRatio =
-                        newImage.height / AppConfig.imageUpload.maxHeight;
+                        newImage.height / MainConfig.imageUpload.maxHeight;
                     if (maxHeightRatio > 1) {
                         resizeTimeNumber = maxHeightRatio;
                     }
                     const maxWidthRatio =
-                        newImage.width / AppConfig.imageUpload.maxWidth;
+                        newImage.width / MainConfig.imageUpload.maxWidth;
                     if (maxWidthRatio > 1 && maxWidthRatio > maxHeightRatio) {
                         resizeTimeNumber = maxWidthRatio;
                     }
@@ -147,7 +147,7 @@ export class RegisterComponent {
 
                     const resizedImage = canvas.toDataURL(
                         'image/jpeg',
-                        AppConfig.imageUpload.quality
+                        MainConfig.imageUpload.quality
                     );
 
                     this.userAvatar = resizedImage;
@@ -160,7 +160,7 @@ export class RegisterComponent {
     }
 
     loadCaptchaScript() {
-        if (!AppConfig.HCAPTCHA_SITE_KEY) {
+        if (!MainConfig.HCAPTCHA_SITE_KEY) {
             return;
         }
         const node = document.createElement('script');
@@ -192,7 +192,7 @@ export class RegisterComponent {
             return;
         }
         window.hcaptcha.render('h-captcha', {
-            sitekey: AppConfig.HCAPTCHA_SITE_KEY,
+            sitekey: MainConfig.HCAPTCHA_SITE_KEY,
             callback: this.captchaCallback.bind(this),
         });
     }

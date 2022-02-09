@@ -18,7 +18,7 @@ import { Position, Point } from 'geojson';
 import * as L from 'leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 
-import { AppConfig } from '../../../../conf/app.config';
+import { MainConfig } from '../../../../conf/main.config';
 
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 import { ngbDateMaxIsToday } from '../../observations/form/formValidators';
@@ -34,7 +34,7 @@ declare let $: any;
   encapsulation: ViewEncapsulation.None,
 })
 export class SiteVisitFormComponent implements OnInit, AfterViewInit {
-  private readonly URL = AppConfig.API_ENDPOINT;
+  private readonly URL = MainConfig.API_ENDPOINT;
   @Input() site_id: number;
   @Input() visit_id: number;
   @Input() visit_data: any;

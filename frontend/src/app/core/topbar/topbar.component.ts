@@ -2,7 +2,7 @@ import { Component, OnInit, Input, LOCALE_ID, Inject } from '@angular/core';
 import { Observable, Subject, throwError } from 'rxjs';
 import { tap, map, catchError } from 'rxjs/operators';
 
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 import { AuthService } from './../../auth/auth.service';
 import { LoginComponent } from '../../auth/login/login.component';
 import { LogoutComponent } from '../../auth/logout/logout.component';
@@ -21,15 +21,15 @@ import { ModalsTopbarService } from './modalTopbar.service';
     styleUrls: ['./topbar.component.css'],
 })
 export class TopbarComponent implements OnInit {
-    title: string = AppConfig.appName;
+    title: string = MainConfig.appName;
     // isLoggedIn: boolean = false;
     username: string;
-    AppConfig = AppConfig;
+    MainConfig = MainConfig;
     isCollapsed = true;
     programs$ = new Subject<Program[]>();
     isAdmin = false;
-    canDisplayAbout: boolean = AppConfig.about;
-    canSignup: boolean = AppConfig.signup !== 'never';
+    canDisplayAbout: boolean = MainConfig.about;
+    canSignup: boolean = MainConfig.signup !== 'never';
     adminUrl: SafeUrl;
     userAvatar: string;
     logoImage: string;
@@ -47,7 +47,7 @@ export class TopbarComponent implements OnInit {
     ) {
         const tmp = localStorage.getItem('username');
         this.username = tmp ? tmp.replace(/\"/g, '') : 'Anonymous';
-        this.logoImage = AppConfig.API_ENDPOINT + '/media/logo.png';
+        this.logoImage = MainConfig.API_ENDPOINT + '/media/logo.png';
         this.route.data
             .pipe(
                 tap((data: { programs: Program[] }) => {
@@ -77,7 +77,7 @@ export class TopbarComponent implements OnInit {
                         localStorage.getItem('userAvatar') != 'null'
                     )
                         this.userAvatar =
-                            AppConfig.API_ENDPOINT +
+                            MainConfig.API_ENDPOINT +
                             '/media/' +
                             localStorage.getItem('userAvatar');
                 }
@@ -125,7 +125,7 @@ export class TopbarComponent implements OnInit {
                         this.isAdmin = user['features'].admin ? true : false;
                         if (this.isAdmin) {
                             const ADMIN_ENDPOINT = [
-                                AppConfig.API_ENDPOINT,
+                                MainConfig.API_ENDPOINT,
                                 // this.localeId,
                                 'admin',
                                 '',

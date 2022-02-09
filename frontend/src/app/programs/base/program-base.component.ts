@@ -2,10 +2,10 @@ import { Component, AfterViewInit } from '@angular/core';
 import { FeatureCollection, Feature } from 'geojson';
 import { Program } from '../programs.models';
 import * as L from 'leaflet';
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 
 export abstract class ProgramBaseComponent implements AfterViewInit {
-    AppConfig = AppConfig;
+    MainConfig = MainConfig;
     fragment: string;
     coords: L.Point;
     program_id: any;

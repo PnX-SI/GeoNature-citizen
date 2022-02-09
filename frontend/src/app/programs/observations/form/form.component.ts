@@ -1,6 +1,6 @@
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { geometryValidator, ngbDateMaxIsToday } from './formValidators';
-import { MAP_CONFIG } from './../../../../conf/map.config';
+import { MainConfig } from './../../../../conf/main.config';
 import * as L from 'leaflet';
 
 import {
@@ -13,7 +13,6 @@ import {
     Output,
     ViewEncapsulation,
 } from '@angular/core';
-import { AppConfig } from '../../../../conf/app.config';
 import { AuthService } from './../../../auth/auth.service';
 import {
     debounceTime,
@@ -54,19 +53,19 @@ const map_conf = {
         dashArray: '4',
     },
 };
-const taxonSelectInputThreshold = AppConfig.taxonSelectInputThreshold;
+const taxonSelectInputThreshold = MainConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold =
-    AppConfig.taxonAutocompleteInputThreshold;
-const taxonAutocompleteFields = AppConfig.taxonAutocompleteFields;
+    MainConfig.taxonAutocompleteInputThreshold;
+const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
 const taxonAutocompleteMaxResults = 10;
 const taxonDisplayImageWhenUnique =
-    'taxonDisplayImageWhenUnique' in AppConfig
-        ? AppConfig.taxonDisplayImageWhenUnique
+    'taxonDisplayImageWhenUnique' in MainConfig
+        ? MainConfig.taxonDisplayImageWhenUnique
         : true;
 
 // TODO: migrate to conf
 export const obsFormMarkerIcon = L.icon({
-    iconUrl: MAP_CONFIG['NEW_OBS_POINTER'],
+    iconUrl: MainConfig['NEW_OBS_POINTER'],
     iconSize: [33, 42],
     iconAnchor: [16, 42],
 });
@@ -83,7 +82,7 @@ type TempTaxa = {
     encapsulation: ViewEncapsulation.None,
 })
 export class ObsFormComponent implements AfterViewInit {
-    private readonly URL = AppConfig.API_ENDPOINT;
+    private readonly URL = MainConfig.API_ENDPOINT;
     @Input('data') data;
     @Output('newObservation')
     newObservation: EventEmitter<ObservationFeature> = new EventEmitter();
@@ -96,7 +95,7 @@ export class ObsFormComponent implements AfterViewInit {
     taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
     taxonDisplayImageWhenUnique = taxonDisplayImageWhenUnique;
     autocomplete = 'isOff';
-    MAP_CONFIG = MAP_CONFIG;
+    MainConfig = MainConfig;
     formMap: L.Map;
     program: FeatureCollection;
     taxonomyListID: number;
@@ -107,7 +106,6 @@ export class ObsFormComponent implements AfterViewInit {
     selectedTaxon: any;
     hasZoomAlert: boolean;
     zoomAlertTimeout: any;
-    AppConfig = AppConfig;
     obsForm: FormGroup;
     customForm: any = {};
     GNCBootstrap4Framework: any = {
@@ -224,10 +222,10 @@ export class ObsFormComponent implements AfterViewInit {
                         icon: 'fa fa-compass',
                         position: map_conf.GEOLOCATION_CONTROL_POSITION,
                         strings: {
-                            title: MAP_CONFIG.LOCATE_CONTROL_TITLE[
+                            title: MainConfig.LOCATE_CONTROL_TITLE[
                                 this.localeId
                             ]
-                                ? MAP_CONFIG.LOCATE_CONTROL_TITLE[this.localeId]
+                                ? MainConfig.LOCATE_CONTROL_TITLE[this.localeId]
                                 : 'Me géolocaliser',
                         },
                         getLocationBounds: (locationEvent) =>
@@ -292,7 +290,7 @@ export class ObsFormComponent implements AfterViewInit {
                 formMap.on('click', (e: LeafletMouseEvent) => {
                     let z = formMap.getZoom();
 
-                    if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+                    if (z < MainConfig.ZOOM_LEVEL_RELEVE) {
                         // this.hasZoomAlert = true;
                         L.DomUtil.addClass(
                             formMap.getContainer(),
@@ -408,7 +406,7 @@ export class ObsFormComponent implements AfterViewInit {
                         icon:
                             this.taxa[taxon]['medias'].length >= 1
                                 ? // ? this.taxa[taxon]["medias"][0]["url"]
-                                  AppConfig.API_TAXHUB +
+                                  MainConfig.API_TAXHUB +
                                   '/tmedias/thumbnail/' +
                                   this.taxa[taxon]['medias'][0]['id_media'] +
                                   '?h=20'

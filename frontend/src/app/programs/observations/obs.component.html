@@ -5,8 +5,8 @@
             <div class="carousel-inner">
                 <h2>
                     {{
-                        AppConfig.program_label[localeId]
-                            ? AppConfig.program_label[localeId]
+                        MainConfig.program_label[localeId]
+                            ? MainConfig.program_label[localeId]
                             : 'Programme'
                     }}
                     <span>{{ program.title }}</span>
@@ -93,7 +93,7 @@
                     [program_id]="program_id"
                     [form_message]="program?.form_message"
                     [modalversion]="
-                        AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
+                        MainConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
                     "
                     obs-form
                 >
@@ -162,7 +162,7 @@
                                 btn-open
                             >
                                 {{
-                                    AppConfig.program_add_an_observation[
+                                    MainConfig.program_add_an_observation[
                                         localeId
                                     ]
                                 }}
