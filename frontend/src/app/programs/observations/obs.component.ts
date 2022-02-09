@@ -15,7 +15,6 @@ import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { FeatureCollection, Feature } from 'geojson';
-import * as L from 'leaflet';
 
 import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
@@ -43,7 +42,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     @ViewChildren(ModalFlowComponent) modalFlow: QueryList<ModalFlowComponent>;
 
     selectedObs: Feature;
-    public isCollapsed: boolean = true;
+    public isCollapsed = true;
     isMobile: boolean;
 
     constructor(

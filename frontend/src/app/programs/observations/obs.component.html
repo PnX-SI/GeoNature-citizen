@@ -76,7 +76,6 @@
                 (obsSelect)="obsMapRef.showPopup($event)"
                 (deleteObs)="deleteObs.emit($event)"
             >
-                >
                 <button
                     type="button"
                     class="btn btn-success mr-4 float-right"
@@ -84,8 +83,9 @@
                     (click)="addObsClicked()"
                     *ngIf="!userDashboard"
                     ngbTooltip="Ajouter une observation"
+                    placement="left"
                 >
-                    Ajouter
+                Ajouter
                 </button>
                 <app-modalflow
                     #modalFlowRef
@@ -135,7 +135,7 @@
                                     class="btn btn-success mr-4"
                                     btn-open
                                 >
-                                    Ajouter
+                                Ajouter
                                 </button>
                             </app-modalflow>
                         </app-obs-list>
@@ -161,11 +161,7 @@
                                 class="btn-big text-center text-nowrap text-uppercase"
                                 btn-open
                             >
-                                {{
-                                    MainConfig.program_add_an_observation[
-                                        localeId
-                                    ]
-                                }}
+                            {{MainConfig.program_add_an_observation[localeId] ? MainConfig.program_add_an_observation[localeId] : 'Ajouter' }}
                             </button>
                         </app-modalflow>
                     </div>
