@@ -19,6 +19,7 @@ import { ProgramBaseComponent } from '../../base/program-base.component';
 import { AuthService } from '../../../auth/auth.service';
 import { Program } from '../../programs.models';
 import { UserService } from '../../../auth/user-dashboard/user.service.service';
+import { ModalsTopbarService } from '../../../core/topbar/modalTopbar.service';
 
 @Component({
     selector: 'app-species-sites-obs',
@@ -50,6 +51,7 @@ export class SpeciesSitesObsComponent
         public flowService: AreaModalFlowService,
         public areaService: AreaService,
         private userService: UserService,
+        protected modalService: ModalsTopbarService,
         authService: AuthService
     ) {
         super(authService);
