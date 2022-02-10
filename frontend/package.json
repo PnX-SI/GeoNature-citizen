@@ -1,6 +1,6 @@
 {
     "name": "frontend",
-    "version": "0.99.4-dev",
+    "version": "0.99.5-dev",
     "scripts": {
         "ng": "ng",
         "start": "ng serve --poll 2000 --host 0.0.0.0 --port 4000",
