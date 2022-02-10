@@ -52,26 +52,21 @@ echo "L'application sera disponible à l'url $my_url"
 nvm use
 npm install
 
-if [ $server_side = "true" ]; then
-  echo "Build server side project"
-  npm run build:i18n-ssr
-  #  Installation de la conf
-  sudo cp ../install/supervisor/gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
-  sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
-  sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
-  sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
+echo "Build frontend"
+npm run build:i18n-ssr
+#  Installation de la conf
+sudo cp ../install/supervisor/gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
+sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
+sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
+sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
 
-  cd ${DIR}
-  . ./install/generate_password.sh
+cd ${DIR}
+. ./install/generate_password.sh
 
-  sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
-  sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
-  sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-available/gncitizen.conf
+sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
+sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
+sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-available/gncitizen.conf
 
-else
-  echo "Build initial du projet"
-  npm run build
-fi
 # cd ..
 
 # Création du venv
