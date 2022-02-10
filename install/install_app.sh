@@ -21,10 +21,6 @@ sudo apt -y install gcc curl gunicorn python-setuptools lsb-release \
 
 sudo apt-get clean
 
-echo $(python3 --version)
-
-sudo service supervisor start && sudo supervisorctl stop all
-
 # Create the database
 . ./install/create_db.sh
 
@@ -43,15 +39,6 @@ cd ${DIR}/frontend
 nvm install
 echo $(npm -v)
 cd ${DIR}
-
-#Installation de taxhub
-#if [ ! -d /home/synthese ]; then
-#adduser --gecos "" --home /home/citizen citizen
-#sudo passwd -d citizen
-#adduser citizen sudo
-#adduser citizen root
-#adduser synthese www-data
-#fi
 
 cd ${DIR}
 . ./install/copy_config.sh
