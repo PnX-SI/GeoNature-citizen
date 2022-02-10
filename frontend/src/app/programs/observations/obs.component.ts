@@ -44,6 +44,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     selectedObs: Feature;
     public isCollapsed = true;
     isMobile: boolean;
+    hideProgramHeader = false;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -62,6 +63,9 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         });
         this.route.fragment.subscribe((fragment) => {
             this.fragment = fragment;
+        });
+        this.route.queryParams.subscribe((params) => {
+            this.hideProgramHeader = 'hideProgramHeader' in params;
         });
     }
 

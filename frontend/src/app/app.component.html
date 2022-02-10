@@ -2,18 +2,18 @@
     <header>
         <app-topbar
             class="fixed-top"
-            [displayTopbar]="MainConfig.FRONTEND.DISPLAY_TOPBAR"
+            [displayTopbar]="MainConfig.FRONTEND.DISPLAY_TOPBAR && !hideTopbar"
         ></app-topbar>
         <!-- <app-sidebar></app-sidebar> -->
     </header>
     <div
         [ngClass]="
-            MainConfig.FRONTEND.DISPLAY_TOPBAR
+            MainConfig.FRONTEND.DISPLAY_TOPBAR  && !hideTopbar
                 ? 'app-with-topbar'
                 : 'app-no-topbar'
         "
     >
         <div class="container-fluid"><router-outlet></router-outlet></div>
     </div>
-    <app-footer *ngIf="MainConfig.FRONTEND.DISPLAY_FOOTER"></app-footer>
+    <app-footer *ngIf="MainConfig.FRONTEND.DISPLAY_FOOTER && !hideFooter"></app-footer>
 </div>

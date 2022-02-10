@@ -41,6 +41,7 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
     @ViewChildren(SiteModalFlowComponent)
     modalFlow: QueryList<SiteModalFlowComponent>;
     isMobile: boolean;
+    hideProgramHeader = false;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -51,14 +52,17 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
         public siteService: SiteService
     ) {
         super();
-        this.route.params.subscribe(
-            (params) => (this.program_id = params['id'])
-        );
+        this.route.params.subscribe((params) => {
+            this.program_id = params['id'];
+        });
         this.route.fragment.subscribe((fragment) => {
             this.fragment = fragment;
         });
         this.siteService.newSiteCreated.subscribe((newSiteFeature) => {
             this.loadSites();
+        });
+        this.route.queryParams.subscribe((params) => {
+            this.hideProgramHeader = 'hideProgramHeader' in params;
         });
     }
 

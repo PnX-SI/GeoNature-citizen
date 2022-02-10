@@ -6,7 +6,7 @@ import {
     LOCALE_ID,
 } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
-
+import { ActivatedRoute } from '@angular/router';
 import { MainConfig } from '../conf/main.config';
 import { Router, NavigationStart } from '@angular/router';
 import { ModalsTopbarService } from './core/topbar/modalTopbar.service';
@@ -21,9 +21,12 @@ export class AppComponent implements OnInit {
     title = 'GeoNature-citizen';
     public MainConfig: any;
     public backgroundImage: any;
+    hideTopbar = false;
+    hideFooter = false;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
+        private route: ActivatedRoute,
         private router: Router,
         private metaTagService: Meta,
         private titleService: Title,
@@ -34,11 +37,16 @@ export class AppComponent implements OnInit {
                 this.modalService.close();
             }
         });
+        this.route.queryParams.subscribe((params) => {
+            this.hideTopbar = 'hideTopbar' in params;
+            this.hideFooter = 'hideFooter' in params;
+        });
     }
 
     ngOnInit() {
         this.MainConfig = MainConfig;
-        this.backgroundImage = MainConfig.API_ENDPOINT + '/media/background.jpg';
+        this.backgroundImage =
+            MainConfig.API_ENDPOINT + '/media/background.jpg';
         this.metaTagService.addTags([
             {
                 name: 'keywords',
