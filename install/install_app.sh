@@ -34,7 +34,8 @@ sudo service supervisor start && sudo supervisorctl stop all
 #Maj  de pip
 pip3 install --upgrade pip
 
-# NVM loading
+#Installation de nvm / npm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
@@ -52,14 +53,12 @@ cd ${DIR}
 #adduser synthese www-data
 #fi
 
-python3 -m pip install poetry --user
-
 cd ${DIR}
 . ./install/copy_config.sh
 cd ${DIR}/frontend
 
 #Install and build
-NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
+NG_CLI_ANALYTICS=off # Désactive le prompt pour angular metrics
 URL=$(echo $my_url | sed 's/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/')
 echo "L'application sera disponible à l'url $my_url"
 
@@ -74,7 +73,7 @@ if [ $server_side = "true" ]; then
   sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
   sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
-  
+
   cd ${DIR}
   . ./install/generate_password.sh
 
@@ -89,12 +88,13 @@ fi
 # cd ..
 
 # Création du venv
-# venv_path=$DIR/backend/${venv_dir:-"venv"}
-# if [ ! -f $venv_path/bin/activate ]; then
-#   python3 -m virtualenv $venv_path
-# fi
 cd $DIR/backend
-poetry install
+venv_path=$DIR/backend/${venv_dir:-".venv"}
+if [ ! -f $venv_path/bin/activate ]; then
+  python3 -m virtualenv $venv_path
+fi
+source .venv/bin/activate
+pip install -r requirements.txt
 cd $DIR
 
 # Copy main medias to media
