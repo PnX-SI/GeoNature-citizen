@@ -40,6 +40,12 @@ def load_config(config_file=None):
     """ Load the geonature-citizen configuration from a given file"""
     config_gnc = load_toml(get_config_file_path())
     config_gnc["FLASK_ADMIN_FLUID_LAYOUT"] = True
+    config_gnc["MAPBOX_MAP_ID"] = "light-v10"
+    config_gnc["DEFAULT_CENTER_LAT"] = 5
+    config_gnc["DEFAULT_CENTER_LONG"] = 45
+    # if not "MAPBOX_MAP_ID" in config_gnc:
+    # print("MAPBOXID")
+    # config_gnc["MAPBOX_MAP_ID"] = "light-v10"
     return config_gnc
 
 
