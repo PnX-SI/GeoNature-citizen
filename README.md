@@ -29,6 +29,8 @@ Documentation : https://geonature-citizen.readthedocs.io
 - http://abc-meylan.lpo-aura.org/obs/home
 - http://biodiv-valenceromansagglo.lpo-aura.org
 - https://biomap.champs-libres.be/fr/home
+- https://abt.lpo-aura.org/programmes-dinventaires-participatifs-de-la-plateforme/
+- https://enquetes.nature-occitanie.org/inventaires-participatifs/observez/
 
 ## Solutions logicielles
 
