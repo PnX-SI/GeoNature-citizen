@@ -28,6 +28,7 @@ Documentation : https://geonature-citizen.readthedocs.io
 - https://www.a-vos-mares.org/participez/
 - http://abc-meylan.lpo-aura.org/obs/home
 - http://biodiv-valenceromansagglo.lpo-aura.org
+- https://biomap.champs-libres.be/fr/home
 
 ## Solutions logicielles
 
