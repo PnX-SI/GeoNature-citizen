@@ -31,6 +31,8 @@ Documentation : https://geonature-citizen.readthedocs.io
 - https://biomap.champs-libres.be/fr/home
 - https://abt.lpo-aura.org/programmes-dinventaires-participatifs-de-la-plateforme/
 - https://enquetes.nature-occitanie.org/inventaires-participatifs/observez/
+- https://phenoclim.org/accueil/individus-phenoclim/
+- https://atlasdelabiodiversite.cote-emeraude.fr/fr/home
 
 ## Solutions logicielles
 
