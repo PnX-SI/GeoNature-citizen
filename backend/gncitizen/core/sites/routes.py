@@ -115,14 +115,17 @@ def get_site_photos(site_id):
             "date": p.VisitModel.as_dict()["date"],
             "author": p.VisitModel.obs_txt,
             "visit_id": p.VisitModel.id_visit,
-            "id_media": p.MediaModel.id_media
+            "id_media": p.MediaModel.id_media,
         }
         for p in photos
     ]
 
+
 def get_site_visits(site_id):
     visits = (
-        db.session.query(VisitModel,)
+        db.session.query(
+            VisitModel,
+        )
         .filter(VisitModel.id_site == site_id)
         .order_by(VisitModel.timestamp_update.desc())
         .all()
@@ -138,9 +141,10 @@ def get_site_visits(site_id):
         for v in visits
     ]
 
+
 def format_site(site, dashboard=False):
     feature = get_geojson_feature(site.geom)
-    site_dict = site.as_dict(True)
+    site_dict = site.as_dict(True, exclude=["program"])
     for k in site_dict:
         if k not in ("geom",):
             feature["properties"][k] = site_dict[k]
@@ -197,6 +201,7 @@ def get_sites():
     try:
         sites = SiteModel.query.all()
         return prepare_sites(sites)
+        # return sites
     except Exception as e:
         return {"error_message": str(e)}, 400
 
@@ -419,17 +424,14 @@ def update_visit(visit_id):
         visit = VisitModel.query.filter_by(id_visit=visit_id).first()
         if current_user.id_user != visit.id_role:
             return ("unauthorized"), 403
-        
+
         try:
             # Delete selected existing media
             id_media_to_delete = json.loads(update_data.get("delete_media"))
             if len(id_media_to_delete):
                 db.session.query(MediaOnVisitModel).filter(
-                    MediaOnVisitModel.id_media.in_(
-                        tuple(id_media_to_delete)
-                    ),
-                    MediaOnVisitModel.id_data_source
-                    == visit_id,
+                    MediaOnVisitModel.id_media.in_(tuple(id_media_to_delete)),
+                    MediaOnVisitModel.id_data_source == visit_id,
                 ).delete(synchronize_session="fetch")
                 db.session.query(MediaModel).filter(
                     MediaModel.id_media.in_(tuple(id_media_to_delete))
