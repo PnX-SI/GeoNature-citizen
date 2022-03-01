@@ -152,9 +152,9 @@
                             <a
                                 class="btn-big"
                                 [routerLink]="[
-                                    '/programs',
-                                    p.id_program,
-                                    'observations'
+                                  '/programs',
+                                  p.id_program,
+                                  p.module.name
                                 ]"
                                 >{{
                                     MainConfig.platform_participate[localeId]
