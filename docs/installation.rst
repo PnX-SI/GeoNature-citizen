@@ -168,13 +168,13 @@ Créer le fichier de configuration avec des valeurs par défaut :
 ::
 
   cd ~/gncitizen/config
-  cp default_config.toml.template default_config.toml
+  cp config.toml.template config.toml
 
 Vous devez maintenant l'éditer :
 
 ::
 
-  nano default_config.toml
+  nano config.toml
 
 Et changer les valeurs pour correspondre à la réalité de votre installation. Faites attention à bien respecter les guillemets.
 
