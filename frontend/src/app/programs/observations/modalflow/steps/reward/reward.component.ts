@@ -12,7 +12,7 @@ import {
     find,
 } from 'rxjs/operators';
 
-import { AppConfig } from '../../../../../../conf/app.config';
+import { MainConfig } from '../../../../../../conf/main.config';
 import { IFlowComponent } from '../../flow/flow';
 import { AuthService } from '../../../../../auth/auth.service';
 
@@ -65,14 +65,14 @@ export class BadgeFacade {
         };
         const access_token = localStorage.getItem('access_token');
 
-        if (access_token && AppConfig['REWARDS']) {
+        if (access_token && MainConfig['REWARDS']) {
             this.authService.ensureAuthorized().subscribe(
                 (user) => {
                     if (user['features']['id_role']) {
                         this.role_id = user['features']['id_role'];
                         this.http
                             .get<any[]>(
-                                `${AppConfig.API_ENDPOINT}/rewards/${this.role_id}`
+                                `${MainConfig.API_ENDPOINT}/rewards/${this.role_id}`
                             )
                             .subscribe(
                                 (rewards) => {
@@ -155,7 +155,7 @@ export class BadgeFacade {
     //                 <img
     //                     [ngbTooltip]="b.type + b.name"
     //                     *ngFor="let b of rewards"
-    //                     [src]="AppConfig.API_ENDPOINT + b.url"
+    //                     [src]="MainConfig.API_ENDPOINT + b.url"
     //                     [alt]="b.name"
     //                 />
     //             </p>
@@ -167,14 +167,14 @@ export class BadgeFacade {
     providers: [BadgeFacade],
 })
 export class RewardComponent implements IFlowComponent {
-    readonly AppConfig = AppConfig;
+    readonly MainConfig = MainConfig;
     private _timeout: any;
     private _init = 0;
     @Input() data: any;
     reward$: Observable<any[]>;
 
     constructor(public badges: BadgeFacade) {
-        if (!badges.username || !AppConfig['REWARDS']) {
+        if (!badges.username || !MainConfig['REWARDS']) {
             if (this._timeout) clearTimeout(this._timeout);
             this._timeout = setTimeout(() => this.close('REWARDS_DISABLED'), 0);
         } else {

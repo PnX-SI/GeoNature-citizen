@@ -15,7 +15,6 @@ def create_schemas(db):
     db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_core")
     db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_obstax")
     db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_sites")
-    db.session.execute("CREATE SCHEMA IF NOT EXISTS ref_geo")
     db.session.commit()
 
 

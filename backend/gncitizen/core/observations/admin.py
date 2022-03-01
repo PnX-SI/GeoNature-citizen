@@ -6,8 +6,7 @@ from gncitizen.utils.admin import (
 
 
 class ObservationView(CustomTileView):
-    tile_layer_url = "a.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    tile_layer_attribution = "some string or html goes here"
+    # column_exclude_list = ["geom"]
     form_overrides = {"json_schema": CustomJSONField}
     column_formatters = {
         "json_schema": json_formatter,
@@ -19,14 +18,12 @@ class ObservationView(CustomTileView):
         "id_program",
         "program_ref.title",
         "program_ref.unique_id_program",
-        "municipality_ref.area_name",
-        "municipality_ref.area_code",
+        "municipality",
     )
     column_searchable_list = (
         "email",
         "date",
         "program_ref.title",
         "program_ref.unique_id_program",
-        "municipality_ref.area_name",
-        "municipality_ref.area_code",
+        "municipality",
     )

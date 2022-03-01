@@ -11,7 +11,7 @@ import {
 
 import { FlowItem } from './flow/flow-item';
 import { ModalFlowService } from './modalflow.service';
-import { AppConfig } from '../../../../conf/app.config';
+import { MainConfig } from '../../../../conf/main.config';
 
 @Component({
     selector: 'app-modalflow',
@@ -27,7 +27,7 @@ export class ModalFlowComponent implements OnInit {
     @Input('updateData') updateData;
     @Input('modalversion') modalversion: boolean = true;
     @ViewChild('content', { static: true }) content: ElementRef;
-    AppConfig = AppConfig;
+    MainConfig = MainConfig;
     flowitems: FlowItem[];
     timeout: any;
 

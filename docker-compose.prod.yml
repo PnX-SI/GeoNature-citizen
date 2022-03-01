@@ -1,0 +1,27 @@
+version: "3.4"
+
+services:
+  frontend:
+    image: gnc-front
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+  backend:
+    image: gnc-back
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./VERSION:/VERSION
+      - ./config:/config
+      - ./external_modules:/external_modules
+      - ./media:/media
+
+  nginx:
+    image: gnc-proxy
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "${NGINX_PORT-80}:80"

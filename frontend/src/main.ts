@@ -2,9 +2,9 @@ import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
-import { AppConfig } from './conf/app.config';
+import { MainConfig } from './conf/main.config';
 
-if (AppConfig.FRONTEND.PROD_MOD) {
+if (MainConfig.FRONTEND.PROD_MOD) {
     enableProdMode();
 }
 

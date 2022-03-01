@@ -213,13 +213,13 @@
                 J'accepte les
                 <a
                     target="_blank"
-                    href="{{ AppConfig['termsOfUse'][localeId] }}"
+                    href="{{ MainConfig['termsOfUse'][localeId] }}"
                     i18n="Use condition@@conditionsOfUse"
                     >conditions d&apos;utilisation</a
                 >
             </span>
         </div>
-        <div *ngIf="AppConfig.HCAPTCHA_SITE_KEY !== null" class="form-row">
+        <div *ngIf="MainConfig.HCAPTCHA_SITE_KEY !== null" class="form-row">
             <div class="col-sm-12 text-center">
                 <div id="h-captcha"></div>
             </div>

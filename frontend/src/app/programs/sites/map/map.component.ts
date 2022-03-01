@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { AppConfig } from '../../../../conf/app.config';
+import { MainConfig } from '../../../../conf/main.config';
 
 import {
     Component,
@@ -50,7 +50,9 @@ export class SitesMapComponent extends BaseMapComponent {
             <img
                 [src]="
                     data.photo
-                        ? appConfig.API_ENDPOINT + data.photo.url
+                        ? MainConfig.API_ENDPOINT + data.photo.url
+                        : data.site_type.pictogram
+                        ? data.site_type.pictogram
                         : 'assets/no_photo_light.png'
                 "
             />
@@ -83,5 +85,5 @@ export class SitesMapComponent extends BaseMapComponent {
 })
 export class SiteMarkerPopupComponent {
     @Input() data;
-    public appConfig = AppConfig;
+    public MainConfig = MainConfig;
 }

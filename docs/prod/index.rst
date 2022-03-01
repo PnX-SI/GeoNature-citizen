@@ -226,7 +226,7 @@ Enregistrement d’un programme exemple
 ::
 
  cd ../config
- editer les paramètres dans default_config.toml
+ editer les paramètres dans config.toml
 
  -SQLALCHEMY_DATABASE_URI :"postgresql+psycopg2://dbuser(geonatadmin):password(***)@127.0.0.1:5432/dbname(geonature2db)"
  -URL_APPLICATION : 'https://ipserveur:4200/'

@@ -8,17 +8,15 @@ my_url=https://mydomain.net/
 
 url_application=http://mydomain.net/        # Url For the frontend
 api_endpoint=http://mydomain.net/api        # Url for the geonature api don't forget /api
-api_port=5002
-api_taxhub=http://mydomain.net/taxhub/api/             # Url for the taxhub api
+api_port=5002                               # GeoNature-citizen API port, recommended settings
+api_taxhub=http://mydomain.net/taxhub/api/  # Url for the taxhub api
 
-install_taxhub=1
+# Choix installation de taxhub
+install_taxhub=false
 taxhub_version=1.7.3
 
-# Configuration front
-server_side=true  # Server side rendering heavy recommanded
 
-# BackOffice admin passsword
-admin_password=MotDePasseAChanger
+
 
 ################################
 ### CONFIGURATION PostgreSQL ###
@@ -31,7 +29,7 @@ pg_host=localhost
 # Port sur lequel PostgreSQL ecoute
 pg_port=5432
 #Base de donnée Geonature
-pg_dbname=dbname
+pg_dbname=gncitizen
 # Nom de l'utilisateur propriétaire des bases UsersHub, GeoNature, TaxHub
 user_pg=dbuser
 # Pass de l'utilisateur propriétaire des bases UsersHub, GeoNature, TaxHub

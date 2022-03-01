@@ -30,7 +30,7 @@ export class SiteModalFlowService extends ModalFlowService {
             );
         }
         if (!init_data.updateData) {
-            items.push(new FlowItem(VisitStepComponent));
+            items.push(new FlowItem(VisitStepComponent), { ...init_data, service: this });
         } // else user only edits the site and do not attach visit
         // items.push(new FlowItem(RewardComponent, {service: this}));
         return items;
@@ -38,6 +38,15 @@ export class SiteModalFlowService extends ModalFlowService {
 
     addSiteVisit(site_id) {
         var init_data = { site_id: site_id };
+        this.openFormModal(init_data);
+    }
+
+    editSiteVisit (site_id, visit_id, visit_data) {
+        var init_data = {
+            site_id: site_id,
+            visit_id: visit_id,
+            visit_data: visit_data
+        };
         this.openFormModal(init_data);
     }
 

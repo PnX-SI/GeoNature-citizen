@@ -17,7 +17,7 @@ BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
 with open(str((ROOT_DIR / "VERSION"))) as v:
     GNCITIZEN_VERSION = v.read()
-DEFAULT_CONFIG_FILE = ROOT_DIR / "config/default_config.toml"
+DEFAULT_CONFIG_FILE = ROOT_DIR / "config/config.toml"
 GNC_EXTERNAL_MODULE = ROOT_DIR / "external_modules"
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
 
@@ -39,7 +39,13 @@ def get_config_file_path(config_file=None):
 def load_config(config_file=None):
     """ Load the geonature-citizen configuration from a given file"""
     config_gnc = load_toml(get_config_file_path())
-
+    config_gnc["FLASK_ADMIN_FLUID_LAYOUT"] = True
+    config_gnc["MAPBOX_MAP_ID"] = "light-v10"
+    config_gnc["DEFAULT_CENTER_LAT"] = 5
+    config_gnc["DEFAULT_CENTER_LONG"] = 45
+    # if not "MAPBOX_MAP_ID" in config_gnc:
+    # print("MAPBOXID")
+    # config_gnc["MAPBOX_MAP_ID"] = "light-v10"
     return config_gnc
 
 
@@ -113,6 +119,10 @@ admin = Admin(
 taxhub_url = valid_api_url(app_conf.get("API_TAXHUB", ""))
 
 taxhub_lists_url = taxhub_url + "biblistes/"
+
+API_CITY = app_conf.get(
+    "API_CITY", "https://nominatim.openstreetmap.org/reverse"
+)
 
 
 def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):

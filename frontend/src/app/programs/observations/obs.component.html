@@ -1,12 +1,12 @@
 <div class="row">
     <!-- LE PROGRAMME -->
-    <section id="slide" class="obs-section" *ngIf="program">
+    <section id="slide" class="obs-section" *ngIf="program && !hideProgramHeader">
         <div id="slider" class="carousel slide">
             <div class="carousel-inner">
                 <h2>
                     {{
-                        AppConfig.program_label[localeId]
-                            ? AppConfig.program_label[localeId]
+                        MainConfig.program_label[localeId]
+                            ? MainConfig.program_label[localeId]
                             : 'Programme'
                     }}
                     <span>{{ program.title }}</span>
@@ -76,7 +76,6 @@
                 (obsSelect)="obsMapRef.showPopup($event)"
                 (deleteObs)="deleteObs.emit($event)"
             >
-                >
                 <button
                     type="button"
                     class="btn btn-success mr-4 float-right"
@@ -84,8 +83,9 @@
                     (click)="addObsClicked()"
                     *ngIf="!userDashboard"
                     ngbTooltip="Ajouter une observation"
+                    placement="left"
                 >
-                    Ajouter
+                Ajouter
                 </button>
                 <app-modalflow
                     #modalFlowRef
@@ -93,7 +93,7 @@
                     [program_id]="program_id"
                     [form_message]="program?.form_message"
                     [modalversion]="
-                        AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
+                        MainConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
                     "
                     obs-form
                 >
@@ -135,7 +135,7 @@
                                     class="btn btn-success mr-4"
                                     btn-open
                                 >
-                                    Ajouter
+                                Ajouter
                                 </button>
                             </app-modalflow>
                         </app-obs-list>
@@ -161,11 +161,7 @@
                                 class="btn-big text-center text-nowrap text-uppercase"
                                 btn-open
                             >
-                                {{
-                                    AppConfig.program_add_an_observation[
-                                        localeId
-                                    ]
-                                }}
+                            {{MainConfig.program_add_an_observation[localeId] ? MainConfig.program_add_an_observation[localeId] : 'Ajouter' }}
                             </button>
                         </app-modalflow>
                     </div>

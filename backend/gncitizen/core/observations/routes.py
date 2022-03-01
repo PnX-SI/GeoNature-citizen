@@ -17,13 +17,11 @@ from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
-from gncitizen.core.ref_geo.models import LAreas
-from gncitizen.core.taxonomy.models import Taxref, TMedias
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin, taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.geo import (  # , get_area_informations
-    get_municipality_id_from_wkb,
+from gncitizen.utils.geo import (
+    get_municipality_id_from_wkb
 )
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
@@ -34,7 +32,6 @@ from .admin import ObservationView
 from .models import ObservationMediaModel, ObservationModel
 
 # from sqlalchemy import func
-
 
 
 # DOING: TaxRef REST as alternative
@@ -76,16 +73,9 @@ def generate_observation_geojson(id_observation):
         db.session.query(
             ObservationModel,
             UserModel.username,
-            LAreas.area_name,
-            LAreas.area_code,
         )
         .join(
             UserModel, ObservationModel.id_role == UserModel.id_user, full=True
-        )
-        .join(
-            LAreas,
-            LAreas.id_area == ObservationModel.municipality,
-            isouter=True,
         )
         .filter(ObservationModel.id_observation == id_observation)
     ).one()
@@ -106,9 +96,9 @@ def generate_observation_geojson(id_observation):
 
     result_dict = observation.ObservationModel.as_dict(True)
     result_dict["observer"] = {"username": observation.username}
+    name = observation.ObservationModel.municipality
     result_dict["municipality"] = {
-        "name": observation.area_name,
-        "code": observation.area_code,
+        "name": name
     }
 
     # Populate "geometry"
@@ -129,45 +119,24 @@ def generate_observation_geojson(id_observation):
         for p in photos
     ]
 
-    if current_app.config.get("API_TAXHUB") is None:
-        current_app.logger.debug("Selecting TaxHub Medias schema.")
-        # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref
-        # taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-        # for k in taxref:
-        #     feature["properties"][k] = taxref[k]
-        taxref = Taxref.query.filter(
-            Taxref.cd_nom == observation.ObservationModel.cd_nom
-        ).first()
-        if taxref:
-            feature["properties"]["taxref"] = taxref.as_dict(True)
-
-        medias = TMedias.query.filter(
-            TMedias.cd_ref == observation.ObservationModel.cd_nom
-        ).all()
-        if medias:
-            feature["properties"]["medias"] = [
-                media.as_dict(True) for media in medias
-            ]
-
-    else:
-        taxhub_list_id = (
-            ProgramsModel.query.filter_by(
-                id_program=observation.ObservationModel.id_program
-            )
-            .one()
-            .taxonomy_list
+    taxhub_list_id = (
+        ProgramsModel.query.filter_by(
+            id_program=observation.ObservationModel.id_program
         )
-        taxon_repository = mkTaxonRepository(taxhub_list_id)
-        try:
-            taxon = next(
-                taxon
-                for taxon in taxon_repository
-                if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
-            )
-            feature["properties"]["taxref"] = taxon["taxref"]
-            feature["properties"]["medias"] = taxon["medias"]
-        except StopIteration:
-            pass
+        .one()
+        .taxonomy_list
+    )
+    taxon_repository = mkTaxonRepository(taxhub_list_id)
+    try:
+        taxon = next(
+            taxon
+            for taxon in taxon_repository
+            if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+        )
+        feature["properties"]["taxref"] = taxon["taxref"]
+        feature["properties"]["medias"] = taxon["medias"]
+    except StopIteration:
+        pass
 
     features.append(feature)
     return features
@@ -314,7 +283,15 @@ def post_observation():
             if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
                 newobs.obs_txt = "Anonyme"
 
-        newobs.municipality = get_municipality_id_from_wkb(newobs.geom)
+        # If municipality is not provided: call API_CITY
+        if not newobs.municipality:
+            newobs.municipality = get_municipality_id_from_wkb(_coordinates)
+        
+        # If taxon name is not provided: call taxhub
+        if not newobs.name:
+            taxon = get_specie_from_cd_nom(newobs.cd_nom)
+            newobs.name = taxon.get('nom_vern', '')
+
         newobs.uuid_sinp = uuid.uuid4()
         db.session.add(newobs)
         db.session.commit()
@@ -496,17 +473,10 @@ def get_program_observations(
                 UserModel.username,
                 UserModel.avatar,
                 func.array_agg(MediaModel.filename).label("images"),
-                LAreas.area_name,
-                LAreas.area_code,
             )
             .filter(
                 ObservationModel.id_program == program_id,
                 ProgramsModel.is_active,
-            )
-            .join(
-                LAreas,
-                LAreas.id_area == ObservationModel.municipality,
-                isouter=True,
             )
             .join(
                 ProgramsModel,
@@ -533,8 +503,6 @@ def get_program_observations(
                 ObservationModel.id_observation,
                 UserModel.username,
                 UserModel.avatar,
-                LAreas.area_name,
-                LAreas.area_code,
             )
         )
 
@@ -554,9 +522,9 @@ def get_program_observations(
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
+            name = observation.ObservationModel.municipality
             feature["properties"]["municipality"] = {
-                "name": observation.area_name,
-                "code": observation.area_code,
+                "name": name
             }
 
             # Observer
@@ -584,22 +552,6 @@ def get_program_observations(
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
 
-            # TaxRef
-            # if current_app.config.get("API_TAXHUB") is None:
-            #     taxref = Taxref.query.filter(
-            #         Taxref.cd_nom == observation.ObservationModel.cd_nom
-            #     ).first()
-            #     if taxref:
-            #         feature["properties"]["taxref"] = taxref.as_dict(True)
-
-            #     medias = TMedias.query.filter(
-            #         TMedias.cd_ref == observation.ObservationModel.cd_nom
-            #     ).all()
-            #     if medias:
-            #         feature["properties"]["medias"] = [
-            #             media.as_dict(True) for media in medias
-            #         ]
-            # else:
             try:
                 taxon = next(
                     taxon
@@ -652,15 +604,8 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
                 ObservationModel,
                 UserModel.username,
                 MediaModel.filename.label("image"),
-                LAreas.area_name,
-                LAreas.area_code,
             )
             .filter(ProgramsModel.is_active)
-            .join(
-                LAreas,
-                LAreas.id_area == ObservationModel.municipality,
-                isouter=True,
-            )
             .join(
                 ProgramsModel,
                 ProgramsModel.id_program == ObservationModel.id_program,
@@ -713,9 +658,9 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
+            name = observation.ObservationModel.municipality
             feature["properties"]["municipality"] = {
-                "name": observation.area_name,
-                "code": observation.area_code,
+                "name": name
             }
 
             # Observer
@@ -742,33 +687,17 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
 
-            # TaxRef
-            if current_app.config.get("API_TAXHUB") is None:
-                taxref = Taxref.query.filter(
-                    Taxref.cd_nom == observation.ObservationModel.cd_nom
-                ).first()
-                if taxref:
-                    feature["properties"]["taxref"] = taxref.as_dict(True)
-
-                medias = TMedias.query.filter(
-                    TMedias.cd_ref == observation.ObservationModel.cd_nom
-                ).all()
-                if medias:
-                    feature["properties"]["medias"] = [
-                        media.as_dict(True) for media in medias
-                    ]
-            else:
-                try:
-                    taxon = next(
-                        taxon
-                        for taxon in taxon_repository
-                        if taxon
-                        and taxon["cd_nom"] == feature["properties"]["cd_nom"]
-                    )
-                    feature["properties"]["taxref"] = taxon["taxref"]
-                    feature["properties"]["medias"] = taxon["medias"]
-                except StopIteration:
-                    pass
+            try:
+                taxon = next(
+                    taxon
+                    for taxon in taxon_repository
+                    if taxon
+                    and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+                )
+                feature["properties"]["taxref"] = taxon["taxref"]
+                feature["properties"]["medias"] = taxon["medias"]
+            except StopIteration:
+                pass
             features.append(feature)
 
         return FeatureCollection(features)
@@ -821,16 +750,9 @@ def get_observations_by_user_id(user_id):
                     func.json_build_array(
                         MediaModel.filename, MediaModel.id_media
                     )
-                ).label("images"),
-                LAreas.area_name,
-                LAreas.area_code,
+                ).label("images")
             )
             .filter(ObservationModel.id_role == user_id)
-            .join(
-                LAreas,
-                LAreas.id_area == ObservationModel.municipality,
-                isouter=True,
-            )
             .join(
                 ProgramsModel,
                 ProgramsModel.id_program == ObservationModel.id_program,
@@ -857,8 +779,6 @@ def get_observations_by_user_id(user_id):
                 ObservationModel.id_observation,
                 ProgramsModel.id_program,
                 UserModel.username,
-                LAreas.area_name,
-                LAreas.area_code,
             )
         )
 
@@ -889,9 +809,9 @@ def get_observations_by_user_id(user_id):
 
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
+            name = observation.ObservationModel.municipality
             feature["properties"]["municipality"] = {
-                "name": observation.area_name,
-                "code": observation.area_code,
+                "name": name
             }
 
             # Observer
@@ -929,40 +849,21 @@ def get_observations_by_user_id(user_id):
                         program
                     ]
             # TaxRef
-            if current_app.config.get("API_TAXHUB") is None:
-                taxref = Taxref.query.filter(
-                    Taxref.cd_nom == observation.ObservationModel.cd_nom
-                ).first()
-                if taxref:
-                    feature["properties"]["taxref"] = taxref.as_dict(True)
+            try:
+                for taxon_rep in taxon_repository:
+                    for taxon in taxon_rep:
+                        if (
+                            taxon["taxref"]["cd_nom"]
+                            == observation.ObservationModel.cd_nom
+                        ):
+                            feature["properties"]["nom_francais"] = taxon[
+                                "nom_francais"
+                            ]
+                            feature["properties"]["taxref"] = taxon["taxref"]
+                            feature["properties"]["medias"] = taxon["medias"]
 
-                medias = TMedias.query.filter(
-                    TMedias.cd_ref == observation.ObservationModel.cd_nom
-                ).all()
-                if medias:
-                    feature["properties"]["medias"] = [
-                        media.as_dict(True) for media in medias
-                    ]
-            else:
-                try:
-                    for taxon_rep in taxon_repository:
-                        for taxon in taxon_rep:
-                            if (
-                                taxon["taxref"]["cd_nom"]
-                                == observation.ObservationModel.cd_nom
-                            ):
-                                feature["properties"]["nom_francais"] = taxon[
-                                    "nom_francais"
-                                ]
-                                feature["properties"]["taxref"] = taxon[
-                                    "taxref"
-                                ]
-                                feature["properties"]["medias"] = taxon[
-                                    "medias"
-                                ]
-
-                except StopIteration:
-                    pass
+            except StopIteration:
+                pass
             features.append(feature)
 
         return FeatureCollection(features), 200
@@ -982,16 +883,15 @@ def update_observation():
     try:
         update_data = request.form
         update_obs = {}
-        for prop in ["cd_nom", "count", "comment", "date"]:
+        for prop in ["cd_nom", "name", "count", "comment", "date", "municipality"]:
             update_obs[prop] = update_data[prop]
         try:
             _coordinates = json.loads(update_data["geometry"])
             _point = Point(_coordinates["x"], _coordinates["y"])
             _shape = asShape(_point)
             update_obs["geom"] = from_shape(Point(_shape), srid=4326)
-            update_obs["municipality"] = get_municipality_id_from_wkb(
-                update_obs["geom"]
-            )
+            if not update_obs["municipality"]:
+                update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
         except Exception as e:
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)

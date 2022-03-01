@@ -17,7 +17,7 @@ import {
 } from 'rxjs/operators';
 import { Observable, throwError, BehaviorSubject, from } from 'rxjs';
 
-import { AppConfig } from '../../conf/app.config';
+import { MainConfig } from '../../conf/main.config';
 import { AuthService } from './auth.service';
 import { TokenRefresh } from './models';
 import { ErrorHandler } from '../api/error_handler';
@@ -101,17 +101,17 @@ export class AuthInterceptor implements HttpInterceptor {
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
         if (
-            (request.url.match(AppConfig.API_ENDPOINT) &&
+            (request.url.match(MainConfig.API_ENDPOINT) &&
                 (request.url.includes('token_refresh') ||
                     request.url.includes('registration') ||
                     request.url.includes('resetpasswd') ||
                     request.url.includes('login'))) ||
-            !request.url.match(AppConfig.API_ENDPOINT)
+            !request.url.match(MainConfig.API_ENDPOINT)
         ) {
             return next.handle(request);
         }
         if (
-            request.url.match(AppConfig.API_ENDPOINT) &&
+            request.url.match(MainConfig.API_ENDPOINT) &&
             request.url.includes('confirmEmail')
         ) {
             return next.handle(request);

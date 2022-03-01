@@ -10,7 +10,7 @@ import { FeatureCollection, Feature } from 'geojson';
 import { SiteModalFlowService } from '../modalflow/modalflow.service';
 import { UserService } from '../../../auth/user-dashboard/user.service.service';
 import { SiteService } from '../sites.service';
-import { AppConfig } from '../../../../conf/app.config';
+import { MainConfig } from '../../../../conf/main.config';
 
 @Component({
     selector: 'app-sites-list',
@@ -27,7 +27,7 @@ export class SitesListComponent implements OnChanges {
     municipalities: string[] = [];
     sites: Feature[] = [];
     taxa: any[] = [];
-    apiEndpoint = AppConfig.API_ENDPOINT;
+    apiEndpoint = MainConfig.API_ENDPOINT;
 
     constructor(
         public flowService: SiteModalFlowService,

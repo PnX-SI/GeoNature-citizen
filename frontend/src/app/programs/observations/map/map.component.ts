@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { AppConfig } from '../../../../conf/app.config';
+import { MainConfig } from '../../../../conf/main.config';
 
 import {
     Component,
@@ -62,7 +62,7 @@ export class ObsMapComponent extends BaseMapComponent {
                     data.image
                         ? data.image
                         : data.medias && !!data.medias.length
-                        ? appConfig.API_TAXHUB +
+                        ? MainConfig.API_TAXHUB +
                           '/tmedias/thumbnail/' +
                           data.medias[0].id_media +
                           '?h=80'
@@ -73,7 +73,7 @@ export class ObsMapComponent extends BaseMapComponent {
                 <a
                     class="espece-link"
                     href="{{
-                        appConfig.details_espece_url + data.taxref?.cd_nom
+                        MainConfig.details_espece_url + data.taxref?.cd_nom
                     }}"
                     target="_blank"
                     >{{
@@ -84,7 +84,7 @@ export class ObsMapComponent extends BaseMapComponent {
                 >
                 <br />
                 <span>
-                    <span *ngIf="appConfig.program_list_observers_names">
+                    <span *ngIf="MainConfig.program_list_observers_names">
                         Observé par
                         {{
                             data.observer && data.observer.username
@@ -113,5 +113,5 @@ export class ObsMapComponent extends BaseMapComponent {
 })
 export class MarkerPopupComponent {
     @Input() data;
-    public appConfig = AppConfig;
+    public MainConfig = MainConfig;
 }

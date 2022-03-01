@@ -1,6 +1,6 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { IFlowComponent } from '../../flow/flow';
-import { AppConfig } from '../../../../../../conf/app.config';
+import { MainConfig } from '../../../../../../conf/main.config';
 
 @Component({
     templateUrl: './congrats.component.html',
@@ -12,7 +12,7 @@ export class CongratsComponent implements IFlowComponent {
     timeout: any;
     username: string;
     obs: any;
-    AppConfig = AppConfig;
+    MainConfig = MainConfig;
 
     constructor() {}
 

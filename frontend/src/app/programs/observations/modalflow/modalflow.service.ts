@@ -25,7 +25,7 @@ export const MODAL_DEFAULTS: NgbModalOptions = {
 })
 export class ModalFlowService extends FlowService {
     modalRef: NgbModalRef;
-    private modalCloseStatus: BehaviorSubject<string> = new BehaviorSubject(
+    public modalCloseStatus: BehaviorSubject<string> = new BehaviorSubject(
         null
     );
     display: boolean = false;
@@ -89,7 +89,7 @@ export class ModalFlowService extends FlowService {
         return this.modalCloseStatus.asObservable();
     }
 
-    setModalCloseSatus(type: 'updateObs' | 'newObs' | null) {
+    setModalCloseSatus(type: 'updateObs' | 'newObs' | 'visitPosted' | null) {
         this.modalCloseStatus.next(type);
     }
 

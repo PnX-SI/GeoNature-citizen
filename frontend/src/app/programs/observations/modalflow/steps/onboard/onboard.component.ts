@@ -12,7 +12,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IFlowComponent } from '../../flow/flow';
 import { RegisterComponent } from '../../../../../auth/register/register.component';
 import { LoginComponent } from '../../../../../auth/login/login.component';
-import { AppConfig } from '../../../../../../conf/app.config';
+import { MainConfig } from '../../../../../../conf/main.config';
 import { AuthService } from '../../../../../auth/auth.service';
 
 @Component({
@@ -24,7 +24,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     RegistrationModalRef: NgbModalRef;
     LoginModalRef: NgbModalRef;
     timeout: any;
-    AppConfig = AppConfig;
+    MainConfig = MainConfig;
     @Input('data') data: any;
     @ViewChild('RegisterComponent', { static: true })
     RegisterComponent: ElementRef;
@@ -41,7 +41,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
             if (value) {
                 this.timeout = setTimeout(() => this.data.next(), 0);
             }
-            if (AppConfig.signup === 'never') {
+            if (MainConfig.signup === 'never') {
                 this.data.next();
             }
         });

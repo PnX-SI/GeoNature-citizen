@@ -14,7 +14,7 @@ import { pluck, share } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
 
-import { AppConfig } from '../../../../conf/app.config';
+import { MainConfig } from '../../../../conf/main.config';
 import {
     TaxonomyList,
     TaxonomyListItem,
@@ -37,7 +37,7 @@ export class ObsListComponent implements OnChanges {
     observationList: Feature[] = [];
     program_id: number;
     taxa: any[];
-    public appConfig = AppConfig;
+    public MainConfig = MainConfig;
     selectedTaxon: TaxonomyListItem = null;
     selectedMunicipality: any = null;
     changes$ = new BehaviorSubject<SimpleChanges>(null);
@@ -61,14 +61,11 @@ export class ObsListComponent implements OnChanges {
             this.municipalities = this.observations.features
                 .map((features) => features.properties)
                 .map((property) => property.municipality)
-                .filter((municipality) => {
-                    return municipality.name && municipality.code;
+                .map((municipality) => {
+                    return municipality.name;
                 })
-                .filter((v, _i, a) => {
-                    let exists = a.find((exist) => {
-                        return exist.code == v.code;
-                    });
-                    return !exists || a.indexOf(exists) == a.indexOf(v);
+                .filter((item, pos, self) => {
+                    return self.indexOf(item) === pos;
                 });
         }
     }
@@ -87,10 +84,10 @@ export class ObsListComponent implements OnChanges {
             let results: boolean[] = [];
             if (this.selectedMunicipality) {
                 results.push(
-                    obs.properties.municipality.code ==
-                        this.selectedMunicipality.code
+                    obs.properties.municipality.name ==
+                        this.selectedMunicipality
                 );
-                filters.municipality = this.selectedMunicipality.code;
+                filters.municipality = this.selectedMunicipality;
             }
             if (this.selectedTaxon) {
                 results.push(

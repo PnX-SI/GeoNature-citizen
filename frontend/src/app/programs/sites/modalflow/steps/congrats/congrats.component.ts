@@ -1,7 +1,7 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 
 import { IFlowComponent } from '../../../../observations/modalflow/flow/flow';
-import { AppConfig } from '../../../../../../conf/app.config';
+import { MainConfig } from '../../../../../../conf/main.config';
 
 @Component({
     templateUrl: './congrats.component.html',
@@ -12,7 +12,7 @@ export class SiteCongratsComponent implements IFlowComponent {
     @Input() data: any;
     timeout: any;
     username: string;
-    AppConfig = AppConfig;
+    MainConfig = MainConfig;
 
     ngOnDestroy(): void {
         if (this.timeout) {

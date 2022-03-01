@@ -1,5 +1,4 @@
 import * as L from 'leaflet';
-import { AppConfig } from '../../../../conf/app.config';
 
 import {
     ComponentFactoryResolver,
@@ -13,7 +12,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import { Feature, FeatureCollection } from 'geojson';
-import { MAP_CONFIG } from '../../../../conf/map.config';
+import { MainConfig } from '../../../../conf/main.config';
 import { MarkerClusterGroup } from 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
@@ -23,7 +22,7 @@ import { MapService } from './map.service';
 export const conf = {
     MAP_ID: 'obsMap',
     GEOLOCATION_HIGH_ACCURACY: false,
-    BASE_LAYERS: MAP_CONFIG['BASEMAPS'].reduce((acc, baseLayer: Object) => {
+    BASE_LAYERS: MainConfig['BASEMAPS'].reduce((acc, baseLayer: Object) => {
         const layerConf: any = {
             name: baseLayer['name'],
             attribution: baseLayer['attribution'],
@@ -39,7 +38,7 @@ export const conf = {
         acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
         return acc;
     }, {}),
-    DEFAULT_BASE_MAP: () => conf.BASE_LAYERS[MAP_CONFIG['DEFAULT_PROVIDER']],
+    DEFAULT_BASE_MAP: () => conf.BASE_LAYERS[MainConfig['DEFAULT_PROVIDER']],
     ZOOM_CONTROL_POSITION: 'topright',
     BASE_LAYER_CONTROL_POSITION: 'topright',
     BASE_LAYER_CONTROL_INIT_COLLAPSED: true,
@@ -47,13 +46,13 @@ export const conf = {
     SCALE_CONTROL_POSITION: 'bottomleft',
     NEW_OBS_MARKER_ICON: () =>
         L.icon({
-            iconUrl: MAP_CONFIG['NEW_OBS_POINTER'],
+            iconUrl: MainConfig['NEW_OBS_POINTER'],
             iconSize: [33, 42],
             iconAnchor: [16, 42],
         }),
     OBS_MARKER_ICON: () =>
         L.icon({
-            iconUrl: MAP_CONFIG['OBS_POINTER'],
+            iconUrl: MainConfig['OBS_POINTER'],
             iconSize: [33, 42],
             iconAnchor: [16, 42],
         }),
@@ -181,8 +180,8 @@ export abstract class BaseMapComponent implements OnChanges {
                 icon: 'fa fa-compass',
                 position: this.options.GEOLOCATION_CONTROL_POSITION,
                 strings: {
-                    title: MAP_CONFIG.LOCATE_CONTROL_TITLE[this.localeId]
-                        ? MAP_CONFIG.LOCATE_CONTROL_TITLE[this.localeId]
+                    title: MainConfig.LOCATE_CONTROL_TITLE[this.localeId]
+                        ? MainConfig.LOCATE_CONTROL_TITLE[this.localeId]
                         : 'Me géolocaliser',
                 },
                 getLocationBounds: (locationEvent) =>
@@ -261,7 +260,7 @@ export abstract class BaseMapComponent implements OnChanges {
                     }
                     const z = this.observationMap.getZoom();
 
-                    if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+                    if (z < MainConfig.ZOOM_LEVEL_RELEVE) {
                         // this.hasZoomAlert = true;
                         L.DomUtil.addClass(
                             this.observationMap.getContainer(),
