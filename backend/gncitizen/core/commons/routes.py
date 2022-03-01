@@ -4,20 +4,13 @@
 import json
 
 from flask import Blueprint, current_app, request, send_from_directory
-from flask_admin.contrib.geoa import ModelView
-from flask_admin.form import SecureForm
-from flask_ckeditor import CKEditorField
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
-from shapely.geometry import MultiPolygon, asShape
 from sqlalchemy import and_, distinct
 from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
 
 from gncitizen.core.commons.admin import (
     CustomFormView,
-    CustomTileView,
     GeometryView,
     ProgramView,
     ProjectView,
@@ -33,7 +26,6 @@ from gncitizen.core.sites.models import (
 )
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin
-from gncitizen.utils.errors import GeonatureApiError
 from server import db
 
 from .models import (
@@ -383,13 +375,15 @@ def get_programs():
         description: A list of all programs
     """
     try:
-        # get whith_geom argument from url (?with_geom=true)
-        arg_with_geom = request.args.get("with_geom")
-        if arg_with_geom:
-            with_geom = json.loads(arg_with_geom.lower())
-        else:
-            with_geom = False
-        programs = ProgramsModel.query.filter_by(is_active=True).all()
+        with_geom = "with_geom" in request.args
+        programs = (
+            ProgramsModel.query.filter_by(is_active=True)
+            # .join(
+            #     ProjectModel,
+            #     ProgramsModel.id_project == ProjectModel.id_project,
+            # )
+            .all()
+        )
         count = len(programs)
         features = []
         for program in programs:
@@ -397,7 +391,22 @@ def get_programs():
                 feature = program.get_geofeature()
             else:
                 feature = {}
-            feature["properties"] = program.as_dict(True)
+            feature["properties"] = program.as_dict(
+                True,
+                exclude=["t_obstax", "geometry", "custom_form", "site_types"],
+                fields=[
+                    "id_program",
+                    "id_project",
+                    "title",
+                    "short_desc",
+                    "image",
+                    "logo",
+                    "id_module",
+                    "is_active",
+                    "timestamp_create",
+                    "timestamp_update",
+                ],
+            )
             features.append(feature)
         feature_collection = FeatureCollection(features)
         feature_collection["count"] = count
