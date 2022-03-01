@@ -55,7 +55,11 @@ class ProgramView(ModelView):
     form_args = {"taxonomy_list": {"choices": taxonomy_lists(), "coerce": int}}
     create_template = "edit.html"
     edit_template = "edit.html"
-    form_excluded_columns = ["timestamp_create", "timestamp_update"]
+    form_excluded_columns = [
+        "timestamp_create",
+        "timestamp_update",
+        "t_obstax",
+    ]
     column_exclude_list = [
         "long_desc",
         "form_message",
