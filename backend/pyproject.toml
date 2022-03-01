@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gncitizen-backend"
-version = "0.99.5-dev"
+version = "1.0.0"
 description = "Citizen nature inventories (Backend"
 authors = ["lpofredc",'QuentinJouet','jolleon','HamoudaHamine','Naomi-Fischer','camillemonchicourt','hypsug0','jbdesbas','samuelpriou','orovellotti','ktalbi']
 license = "AGPLv3"
