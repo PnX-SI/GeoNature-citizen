@@ -98,8 +98,8 @@
                                     }"
                                 ></div>
                                 <h5 class="card-title">
-                                    {{ p.title }}&nbsp;
-                                    <span class="badge badge-info"> </span>
+                                    {{ p.title }}<br>
+                                    <small class="text-muted">{{p.project.name}} </small>
                                 </h5>
                                 <p
                                     class="short_desc"
@@ -144,7 +144,9 @@
                     />
                     <div class="carousel-text-container">
                         <div class="carousel-text" tabindex="0">
-                            <h3>{{ p.title }}</h3>
+                            <h3>{{ p.title }}<br>
+                              <small class="text-muted">{{p.project.name}} </small>
+                            </h3>
                             <p [innerHTML]="p.html_short_desc"></p>
                             <!-- <div class="mobile-hidden" [innerHTML]="p.html_long_desc"></div> -->
                             <a
