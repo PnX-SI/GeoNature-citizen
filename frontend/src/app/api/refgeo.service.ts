@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
-import { AppConfig } from '../../conf/app.config';
+import { MainConfig } from '../../conf/main.config';
 
 // Adress is subject to change so unknown
 type Municipality = {
@@ -30,8 +30,8 @@ type Address = {
 })
 export class RefGeoService {
     private readonly URL =
-        'API_CITY' in AppConfig
-            ? AppConfig['API_CITY']
+        'API_CITY' in MainConfig
+            ? MainConfig['API_CITY']
             : 'https://nominatim.openstreetmap.org/reverse';
 
     constructor(protected http: HttpClient) {}

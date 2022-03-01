@@ -1,4 +1,4 @@
-.map-modal-btn app-modalflow {
+.map-modal-btn app-modalflow, app-sitemodalflow {
     position: absolute;
     bottom: 40px;
     right: 20px;
@@ -9,6 +9,9 @@
     app-modalflow button:first-child {
         margin: 0px !important;
     }
+    app-sitemodalflow button:first-child {
+      margin: 0px !important;
+  }
 }
 .btn-secondary {
     color: white !important;

@@ -2,7 +2,7 @@ import { Component, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { GncProgramsService } from '../../../api/gnc-programs.service';
 import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
-import { AppConfig } from '../../../../conf/app.config';
+import { MainConfig } from '../../../../conf/main.config';
 import { HttpClient } from '@angular/common/http';
 import {
     BaseDetailComponent,
@@ -43,7 +43,7 @@ export class ObsDetailComponent
             this.photos = this.obs.properties.photos;
             for (var i = 0; i < this.photos.length; i++) {
                 this.photos[i]['url'] =
-                    AppConfig.API_ENDPOINT + this.photos[i]['url'];
+                    MainConfig.API_ENDPOINT + this.photos[i]['url'];
             }
 
             // setup map

@@ -2,8 +2,8 @@
     <div class="row">
         <h1>
             {{
-                AppConfig.programs_label[localeId]
-                    ? AppConfig.programs_label[localeId]
+                MainConfig.programs_label[localeId]
+                    ? MainConfig.programs_label[localeId]
                     : 'PROGRAMMES'
             }}&nbsp;<span class="badge badge-pill badge-light">{{
                 (programs$ | async)?.length
@@ -55,21 +55,20 @@
                                         ></div>
 
                                         <h5 class="card-title">
-                                            {{ p.title }}&nbsp;
-                                            <span class="badge badge-info">
-                                            </span>
+                                          {{ p.title }}<br>
+                                          <small class="text-muted">{{p.project.name}} </small>
                                         </h5>
                                         <p
                                             class="short_desc"
                                             [innerHTML]="p.html_short_desc"
                                         ></p>
 
-                                        <!-- <a class="btn-big" [routerLink]="['/programs', p.id_program, 'observations']">{{ AppConfig.platform_participate[localeId] }}
+                                        <!-- <a class="btn-big" [routerLink]="['/programs', p.id_program, 'observations']">{{ MainConfig.platform_participate[localeId] }}
                                               </a> -->
                                         <div class="overlay-prog">
                                             <p class="overlay-text">
                                                 {{
-                                                    AppConfig
+                                                    MainConfig
                                                         .platform_participate[
                                                         localeId
                                                     ]

@@ -16,7 +16,7 @@
                 </option>
                 <option *ngFor="let s of surveySpecies" [ngValue]="s">
                     {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }}
-                    <span *ngIf="appConfig.taxonDisplaySciName"
+                    <span *ngIf="MainConfig.taxonDisplaySciName"
                         >(<i>{{ s.taxref?.nom_complet }}</i
                         >)</span
                     >
@@ -65,14 +65,14 @@
                     class="obs-img"
                     [src]="
                         o.properties.images && !!o.properties.images.length
-                            ? appConfig.API_ENDPOINT +
+                            ? MainConfig.API_ENDPOINT +
                               '/media/' +
                               o.properties.images[0]
                             : o.properties.image
                             ? o.properties.image
                             : o.properties.medias &&
                               !!o.properties.medias.length
-                            ? appConfig.API_TAXHUB +
+                            ? MainConfig.API_TAXHUB +
                               '/tmedias/thumbnail/' +
                               o.properties.medias[0].id_media +
                               '?h=80'
@@ -84,7 +84,7 @@
                         class="espece-link"
                         target="_blank"
                         href="{{
-                            appConfig.details_espece_url + o.properties.cd_nom
+                            MainConfig.details_espece_url + o.properties.cd_nom
                         }}"
                         >{{
                             !!o.properties.nom_francais
@@ -92,7 +92,7 @@
                                 : o.properties.taxref?.nom_vern
                         }}</a
                     >
-                    <div *ngIf="appConfig.program_list_observers_names">
+                    <div *ngIf="MainConfig.program_list_observers_names">
                         <i
                             *ngIf="!o.properties.observer.userAvatar"
                             width="22px"
@@ -103,13 +103,13 @@
                             class="avatar-wrapper"
                             [style.background-image]="
                                 'url(' +
-                                appConfig.API_ENDPOINT +
+                                MainConfig.API_ENDPOINT +
                                 '/media/' +
                                 o.properties.observer.userAvatar +
                                 ')'
                             "
                         >
-                            <!-- <img  class=" avatar-img rounded-circle" width="22px" [src]="appConfig.API_ENDPOINT + '/media/' + o.properties.observer.userAvatar" /> -->
+                            <!-- <img  class=" avatar-img rounded-circle" width="22px" [src]="MainConfig.API_ENDPOINT + '/media/' + o.properties.observer.userAvatar" /> -->
                         </div>
                         <span>{{
                             o.properties.observer?.username

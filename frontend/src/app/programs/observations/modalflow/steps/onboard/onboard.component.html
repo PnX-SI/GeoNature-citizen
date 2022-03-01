@@ -13,7 +13,7 @@
 <div class="modal-body">
     <div class="row">
         <div
-            *ngIf="AppConfig.registration_message"
+            *ngIf="MainConfig.registration_message"
             class="media col-lg-12 bg-light"
         >
             <span class="mr-3"
@@ -21,7 +21,7 @@
             </span>
             <div class="media-body">
                 <h5 class="mt-0">Pourquoi s'inscrire ?</h5>
-                <span [innerHtml]="AppConfig.registration_message"></span>
+                <span [innerHtml]="MainConfig.registration_message"></span>
             </div>
         </div>
     </div>
@@ -38,7 +38,7 @@
             class="sign col-lg-6 col-md-12"
             (click)="continue()"
             data-dismiss="modal"
-            [hidden]="AppConfig.signup === 'always'"
+            [hidden]="MainConfig.signup === 'always'"
         >
             <i class="fa fa-user"></i>
             <span i18n="continue unregistered@@continueUnregistered">Continuer <br />sans s'enregistrer</span>

@@ -55,7 +55,11 @@ class ProgramView(ModelView):
     form_args = {"taxonomy_list": {"choices": taxonomy_lists(), "coerce": int}}
     create_template = "edit.html"
     edit_template = "edit.html"
-    form_excluded_columns = ["timestamp_create", "timestamp_update"]
+    form_excluded_columns = [
+        "timestamp_create",
+        "timestamp_update",
+        "t_obstax",
+    ]
     column_exclude_list = [
         "long_desc",
         "form_message",
@@ -97,6 +101,7 @@ def get_geom_file_path(obj, file_data):
 class GeometryView(CustomTileView):
     # column_exclude_list = ["geom"]
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
+    column_exclude_list = ["geom", "geom_file"]
     form_overrides = dict(geom_file=FileUploadField)
     form_args = dict(
         geom_file=dict(

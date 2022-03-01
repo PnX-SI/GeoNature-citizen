@@ -12,7 +12,11 @@
 </div>
 
 <div class="modal-body add-obs">
-    <app-site-visit-form [site_id]="data.site_id"></app-site-visit-form>
+    <app-site-visit-form
+        [site_id]="data.site_id"
+        [visit_id]="data.visit_id"
+        [visit_data]="data.visit_data">
+    </app-site-visit-form>
 </div>
 
 <div class="modal-footer" *ngIf="form.readyToDisplay">

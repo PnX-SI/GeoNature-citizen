@@ -11,19 +11,15 @@ DIR=$(pwd)
 . config/settings.ini
 
 #Installation de python / gunicorn / supervisor + dépendances
-sudo apt update && sudo apt -y install python2.7 git gcc curl gunicorn python-setuptools lsb-release apt-transport-https wget
-sudo apt -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl libbz2-dev
-sudo apt -y install apache2 python-dev libpq-dev libgeos-dev supervisor unzip virtualenv libcurl4-openssl-dev libssl-dev
-sudo apt -y install build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev
-sudo apt -y install postgresql postgis
-# RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME |cut -d "=" -f2)
-sudo apt install python3 python3-dev python3-pip -y
+sudo apt update
+sudo apt -y install gcc curl gunicorn python-setuptools lsb-release \
+  apt-transport-https wget build-essential zlib1g-dev libncurses5-dev \
+  libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl \
+  libbz2-dev apache2 python-dev libpq-dev libgeos-dev supervisor unzip \
+  virtualenv libcurl4-openssl-dev libssl-dev libglib2.0-0 libsm6 libxext6 \
+  libxrender-dev postgresql postgis python3 python3-dev python3-venv python3-pip
 
 sudo apt-get clean
-
-echo $(python3 --version)
-
-sudo service supervisor start && sudo supervisorctl stop all
 
 # Create the database
 . ./install/create_db.sh
@@ -34,7 +30,8 @@ sudo service supervisor start && sudo supervisorctl stop all
 #Maj  de pip
 pip3 install --upgrade pip
 
-# NVM loading
+#Installation de nvm / npm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
@@ -43,58 +40,43 @@ nvm install
 echo $(npm -v)
 cd ${DIR}
 
-#Installation de taxhub
-#if [ ! -d /home/synthese ]; then
-#adduser --gecos "" --home /home/citizen citizen
-#sudo passwd -d citizen
-#adduser citizen sudo
-#adduser citizen root
-#adduser synthese www-data
-#fi
-
-python3 -m pip install poetry --user
-
 cd ${DIR}
 . ./install/copy_config.sh
 cd ${DIR}/frontend
 
 #Install and build
-NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
+NG_CLI_ANALYTICS=off # Désactive le prompt pour angular metrics
 URL=$(echo $my_url | sed 's/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/')
 echo "L'application sera disponible à l'url $my_url"
 
 nvm use
 npm install
 
-if [ $server_side = "true" ]; then
-  echo "Build server side project"
-  npm run build:i18n-ssr
-  #  Installation de la conf
-  sudo cp ../install/supervisor/gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
-  sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
-  sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
-  sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
-  
-  cd ${DIR}
-  . ./install/generate_password.sh
+echo "Build frontend"
+npm run build:i18n-ssr
+#  Installation de la conf
+sudo cp ../install/supervisor/gncitizen_frontssr-service.conf /etc/supervisor/conf.d/
+sudo sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
+sudo sed -i "s%SYSUSER%$(whoami)%" /etc/supervisor/conf.d/gncitizen_frontssr-service.conf
+sudo cp ../install/apache/gncitizen.conf /etc/apache2/sites-available/gncitizen.conf
 
-  sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
-  sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
-  sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-available/gncitizen.conf
+cd ${DIR}
+. ./install/generate_password.sh
 
-else
-  echo "Build initial du projet"
-  npm run build
-fi
+sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
+sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
+sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-available/gncitizen.conf
+
 # cd ..
 
 # Création du venv
-# venv_path=$DIR/backend/${venv_dir:-"venv"}
-# if [ ! -f $venv_path/bin/activate ]; then
-#   python3 -m virtualenv $venv_path
-# fi
 cd $DIR/backend
-poetry install
+venv_path=$DIR/backend/${venv_dir:-".venv"}
+if [ ! -f $venv_path/bin/activate ]; then
+  python3 -m virtualenv $venv_path
+fi
+source .venv/bin/activate
+pip install -r requirements.txt
 cd $DIR
 
 # Copy main medias to media

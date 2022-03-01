@@ -200,7 +200,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
         feature = Feature(
             id=self.id_program,
             geometry=geometry,
-            properties=self.as_dict(True),
+            properties=self.as_dict(True, exclude=["t_obstax"]),
         )
         return feature
 

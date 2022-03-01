@@ -27,7 +27,7 @@ Commencez par installer les paquets suivants :
 
   su # vous aurez besoin du mot de passe de l'utilisateur root
   apt update
-  apt install sudo git python3 python3-pip python3-venv curl unzip -y
+  apt install sudo curl unzip -y
 
 Créer un utilisateur pour l'installation
 ----------------------------------------
@@ -393,17 +393,12 @@ Vous pouvez aussi optionnellement modifier le fichier ``~/gncitizen/config/badge
 Lancement du service
 ------------------------------------------------------
 
-D'abord, créez un fichier de configuration supervisor (``sudo nano /etc/supervisor/conf.d/geonature-citizen-service.conf``) qui va contenir ceci :
+D'abord, créez un fichier de configuration supervisor (``sudo nano /etc/supervisor/conf.d/gncitizen_api.conf``) qui va contenir ceci :
 
-::
 
-  [program:citizen]
-  command=/home/geonatadmin/gncitizen/backend/start_gunicorn.sh
-  user=geonatadmin
-  autostart=true
-  autorestart=true
-  stdout_logfile=/var/log/supervisor/citizen.log
-  redirect_stderr=true
+.. literalinclude:: ../install/supervisor/gncitizen_api-service.conf
+  :language: ini
+
 
 Puis lancez le chargement du service :
 
@@ -422,7 +417,7 @@ Installer l'environnement javascript
 ::
 
   cd ~/gncitizen/frontend/
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
   source ~/.bashrc
   nvm install
   npm install
@@ -491,6 +486,7 @@ Configuration d'Apache
 
 Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage.
 Si vous souhaitez que l'application soit disponible depuis un chemin spécifique (ex: ``mondomaine.org/citizen``), pensez à décommenter la ligne ``Alias`` 
+
 
 
 ::

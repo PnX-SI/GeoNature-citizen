@@ -18,8 +18,7 @@ import { LeafletMouseEvent } from 'leaflet';
 import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
 import 'leaflet-gesture-handling';
 
-import { AppConfig } from '../../../../conf/app.config';
-import { MAP_CONFIG } from '../../../../conf/map.config';
+import { MainConfig } from '../../../../conf/main.config';
 import { MapService } from '../../base/map/map.service';
 
 // declare let $: any;
@@ -48,7 +47,7 @@ export const myMarkerTitle =
     encapsulation: ViewEncapsulation.None,
 })
 export class SiteFormComponent implements AfterViewInit {
-    private readonly URL = AppConfig.API_ENDPOINT;
+    private readonly URL = MainConfig.API_ENDPOINT;
     @Input('data') data;
     @Input('coords') coords: L.Point;
     @Input('program_id') program_id: number;
@@ -63,7 +62,7 @@ export class SiteFormComponent implements AfterViewInit {
         id_type: new FormControl('', Validators.required),
         id_site: new FormControl(),
     });
-    MAP_CONFIG = MAP_CONFIG;
+    MainConfig = MainConfig;
     hasZoomAlert: boolean;
     zoomAlertTimeout: any;
     mapVars: any = {};
@@ -98,7 +97,7 @@ export class SiteFormComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.http
-            .get(`${AppConfig.API_ENDPOINT}/programs/${this.program_id}`)
+            .get(`${MainConfig.API_ENDPOINT}/programs/${this.program_id}`)
             .subscribe((result) => {
                 this.program = result;
                 this.site_types = this.program.features[0].site_types;
@@ -178,7 +177,7 @@ export class SiteFormComponent implements AfterViewInit {
                 formMap.on('click', (e: LeafletMouseEvent) => {
                     let z = formMap.getZoom();
 
-                    if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+                    if (z < MainConfig.ZOOM_LEVEL_RELEVE) {
                         // this.hasZoomAlert = true;
                         console.debug('ZOOM ALERT', formMap);
                         L.DomUtil.addClass(

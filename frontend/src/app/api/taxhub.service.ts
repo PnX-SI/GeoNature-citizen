@@ -4,7 +4,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { map, catchError, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
-import { AppConfig } from '../../conf/app.config';
+import { MainConfig } from '../../conf/main.config';
 
 export interface Taxon {
     cd_nom: number;
@@ -38,7 +38,7 @@ export interface Taxon {
     providedIn: 'root',
 })
 export class TaxhubService {
-    private readonly URL = AppConfig.API_ENDPOINT;
+    private readonly URL = MainConfig.API_ENDPOINT;
     taxon: any;
 
     constructor(

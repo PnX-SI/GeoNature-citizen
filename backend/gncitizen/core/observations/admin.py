@@ -6,8 +6,7 @@ from gncitizen.utils.admin import (
 
 
 class ObservationView(CustomTileView):
-    tile_layer_url = "a.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    tile_layer_attribution = "some string or html goes here"
+    # column_exclude_list = ["geom"]
     form_overrides = {"json_schema": CustomJSONField}
     column_formatters = {
         "json_schema": json_formatter,

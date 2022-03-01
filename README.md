@@ -76,3 +76,7 @@ La première version de ce projet est le fruit d'une démarche mutualisée entre
 
 Il constitue l'une des briques du projet GeoNature, porté par les [Parcs nationaux de France](http://www.parcsnationaux.fr/fr) et bénéficie de l'appui technique du [Parc national des Ecrins](http://www.ecrins-parcnational.fr/).
 
+## Contributeurs
+
+
+[![Contributors](https://contrib.rocks/image?repo=PnX-SI/GeoNature-citizen)](https://github.com/PnX-SI/GeoNature-citizen/graphs/contributors)

@@ -8,7 +8,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class AdminComponent implements OnInit {
 
     ngOnInit() {
         const ADMIN_ENDPOINT = [
-            AppConfig.API_ENDPOINT,
+            MainConfig.API_ENDPOINT,
             // this.localeId,
             'admin',
             '',
