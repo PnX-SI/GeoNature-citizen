@@ -1,11 +1,11 @@
-if [ ! -f config/default_config.toml ]; then
+if [ ! -f config/config.toml ]; then
   echo 'Fichier de configuration API non existant, copie du template...'
-  cp config/default_config.toml.template config/default_config.toml
-  sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$pg_host:$pg_port\/$pg_dbname\"/" config/default_config.toml
-  sed -i "s,URL_APPLICATION = .*$,URL_APPLICATION = \"$url_application\",g" config/default_config.toml
-  sed -i "s,API_ENDPOINT = .*$,API_ENDPOINT = \"$api_endpoint\",g" config/default_config.toml
-  sed -i "s,API_PORT = .*$,API_PORT = \"$api_port\",g" config/default_config.toml
-  sed -i "s,API_TAXHUB = .*$,API_TAXHUB = \"$api_taxhub\",g" config/default_config.toml
+  cp config/config.toml.template config/config.toml
+  sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$user_pg:$user_pg_pass@$pg_host:$pg_port\/$pg_dbname\"/" config/config.toml
+  sed -i "s,URL_APPLICATION = .*$,URL_APPLICATION = \"$url_application\",g" config/config.toml
+  sed -i "s,API_ENDPOINT = .*$,API_ENDPOINT = \"$api_endpoint\",g" config/config.toml
+  sed -i "s,API_PORT = .*$,API_PORT = \"$api_port\",g" config/config.toml
+  sed -i "s,API_TAXHUB = .*$,API_TAXHUB = \"$api_taxhub\",g" config/config.toml
 fi
 
 #Création d'un fichier de configuration pour le front

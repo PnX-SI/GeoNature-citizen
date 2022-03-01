@@ -10,20 +10,20 @@ Côté backend
 ************
 
 Les fichiers de configuration sont dans le dossier ``config``.
-Le fichier à modifier est ``default_config.toml``.
-Le fichier utilisé par GeoNature-citizen est default_config.toml.
-Il peut-être créé en copiant le fichier ``default_config.toml.example`` \
-vers ``default_config.toml``:
+Le fichier à modifier est ``config.toml``.
+Le fichier utilisé par GeoNature-citizen est config.toml.
+Il peut-être créé en copiant le fichier ``config.toml.example`` \
+vers ``config.toml``:
 
 .. code-block:: bash
 
-    $ cp default_config.toml.example default_config.toml
+    $ cp config.toml.example config.toml
 
 Editez alors les différents paramètres de ce fichier.
 
-fichier ``default_config.toml``
+fichier ``config.toml``
 
-.. literalinclude:: ../config/default_config.toml.template
+.. literalinclude:: ../config/config.toml.template
   :language: toml
 
 Côté frontend

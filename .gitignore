@@ -235,6 +235,7 @@ tags
 [._]*.un~
 
 config/default_config.toml
+config/config.toml
 config/settings.ini
 
 external_modules/gnc_*
