@@ -67,7 +67,7 @@ export class GncProgramsService implements OnInit {
         protected domSanitizer: DomSanitizer
     ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.programs = this.state.get(PROGRAMS_KEY, null as Program[]);
         this.programs$.next(this.programs);
     }
@@ -81,12 +81,13 @@ export class GncProgramsService implements OnInit {
                 ),
                 map((programs: Program[]) =>
                     programs.map((program) => {
-                        program.html_short_desc = this.domSanitizer.bypassSecurityTrustHtml(
-                            program.short_desc
-                        );
-                        program.html_long_desc = this.domSanitizer.bypassSecurityTrustHtml(
-                            program.long_desc
-                        );
+                        program.html_short_desc =
+                            this.domSanitizer.bypassSecurityTrustHtml(
+                                program.short_desc
+                            );
+                        // program.html_long_desc = this.domSanitizer.bypassSecurityTrustHtml(
+                        //     program.long_desc
+                        // );
                         return program;
                     })
                 ),
@@ -166,17 +167,9 @@ export class GncProgramsService implements OnInit {
             );
     }
 
-    getProgramTaxonomyList(program_id: number): Observable<TaxonomyList> {
-        return this.getAllPrograms().pipe(
-            map((programs) => programs.find((p) => p.id_program == program_id)),
-            mergeMap((program) =>
-                this.http.get<TaxonomyList>(
-                    `${this.URL}/taxonomy/lists/${program['taxonomy_list']}/species`
-                )
-            ),
-            catchError(
-                this.handleError<TaxonomyList>(`getProgramTaxonomyList`, {})
-            )
+    getProgramTaxonomyList(taxonomy_list: number): Observable<TaxonomyList> {
+        return this.http.get<TaxonomyList>(
+            `${this.URL}/taxonomy/lists/${taxonomy_list}/species`
         );
     }
 

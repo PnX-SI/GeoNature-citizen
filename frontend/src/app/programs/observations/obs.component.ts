@@ -69,7 +69,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         });
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.breakpointObserver
             .observe(['(min-width: 700px)'])
             .subscribe((state: BreakpointState) => {
@@ -85,11 +85,14 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             this.program = this.programs.find(
                 (p) => p.id_program == this.program_id
             );
-            forkJoin(
+            this.taxonomyListID = this.program.taxonomy_list;
+            forkJoin([
                 this.programService.getProgramObservations(this.program_id),
-                this.programService.getProgramTaxonomyList(this.program_id),
-                this.programService.getProgram(this.program_id)
-            ).subscribe(([observations, taxa, program]) => {
+                this.programService.getProgramTaxonomyList(
+                    this.program.taxonomy_list
+                ),
+                this.programService.getProgram(this.program_id),
+            ]).subscribe(([observations, taxa, program]) => {
                 this.observations = observations;
                 this.surveySpecies = taxa;
                 this.programFeature = program;
@@ -133,7 +136,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     }
 
     @HostListener('document:NewObservationEvent', ['$event'])
-    newObservationEventHandler(e: CustomEvent) {
+    newObservationEventHandler(e: CustomEvent): void {
         e.stopPropagation();
 
         this.observations.features.unshift(e.detail);

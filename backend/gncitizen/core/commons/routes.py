@@ -403,6 +403,7 @@ def get_programs():
                     "logo",
                     "id_module",
                     "is_active",
+                    "taxonomy_list",
                     "timestamp_create",
                     "timestamp_update",
                 ],

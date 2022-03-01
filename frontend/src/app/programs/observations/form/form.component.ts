@@ -168,7 +168,7 @@ export class ObsFormComponent implements AfterViewInit {
                 this.taxonomyListID =
                     this.program.features[0].properties.taxonomy_list;
                 this.surveySpecies$ = this.programService
-                    .getProgramTaxonomyList(this.program_id)
+                    .getProgramTaxonomyList(this.taxonomyListID)
                     .pipe(
                         tap((species) => {
                             this.taxa = species;
