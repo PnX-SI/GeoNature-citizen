@@ -6,7 +6,7 @@ import {
 } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
-import { catchError, map, mergeMap, pluck, tap } from 'rxjs/operators';
+import { catchError, map, pluck, tap } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
 
@@ -65,7 +65,7 @@ export class GncProgramsService implements OnInit {
         protected http: HttpClient,
         private state: TransferState,
         protected domSanitizer: DomSanitizer
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.programs = this.state.get(PROGRAMS_KEY, null as Program[]);

@@ -60,17 +60,35 @@ export class SiteDetailComponent
         });
     }
 
+    flatObject(myObject: Record<string, unknown>): Record<string, unknown> {
+        const myObjectKeys = Object.keys(myObject);
+        let myFlatObject = { ...myObject };
+        myObjectKeys.forEach((key) => {
+            if (
+                myFlatObject[key].hasOwnProperty('key') &&
+                myFlatObject[key]['type'] === 'object'
+            ) {
+                console.log('isObj', key, myFlatObject[key]);
+                myFlatObject = {
+                    ...myFlatObject[key].properties,
+                    ...myFlatObject,
+                };
+                delete myFlatObject[key];
+            }
+        });
+
+        return myFlatObject;
+    }
+
     prepareSiteData(): void {
         // setup map
         const map = L.map('map');
         L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'OpenStreetMap',
         }).addTo(map);
-
         const coord = this.site.geometry.coordinates;
         const latLng = L.latLng(coord[1], coord[0]);
         map.setView(latLng, 13);
-
         L.marker(latLng, { icon: markerIcon }).addTo(map);
     }
 
@@ -90,44 +108,19 @@ export class SiteDetailComponent
                     date: e.date,
                     author: e.author,
                     id: e.id_visit,
-                    // json_data: e.json_data
+                    json_data: e.json_data
                 };
                 this.loadJsonSchema().subscribe((jsonschema: any) => {
                     const schema = jsonschema.schema.properties;
-                    console.log('schema', schema);
                     const custom_data = [];
-                    const schemaKeys = Object.keys(schema);
-                    let flattenSchema = schema;
-                    schemaKeys.forEach((key) => {
-                        console.log(
-                            `schema ${key} (${flattenSchema[key].type}): ${flattenSchema[key]}`
-                        );
-                        if (flattenSchema[key].type === 'object') {
-                            console.log(key, flattenSchema[key].properties);
-                            flattenSchema = {
-                                ...flattenSchema[key].properties,
-                                ...flattenSchema,
-                            };
-                            delete flattenSchema[key];
-                        }
-                    });
-                    console.log('flattenSchema', schema, flattenSchema);
-                    const dataKeys = Object.keys(data);
-                    let flattenData = data;
-                    dataKeys.forEach((key) => {
-                        if (typeof flattenData[key] === 'object') {
-                            flattenData = {
-                                ...flattenData,
-                                ...flattenData[key],
-                            };
-                            delete flattenData[key];
-                        }
-                    });
-                    console.log('flattenData', flattenData);
+                    const flattenSchema = this.flatObject(schema);
+                    const flattenData = this.flatObject(data);
                     for (const k in flattenData) {
                         const v = flattenData[k];
-                        console.log(flattenSchema[k].title, typeof v, v);
-                        if (flattenSchema[k] != 'undefined') {
+                        if (
+                            flattenSchema[k] != 'undefined' &&
+                            flattenSchema[k].hasOwnProperty('title')
+                        ) {
                             custom_data.push({
                                 name: flattenSchema[k].title,
                                 value:
@@ -180,6 +173,9 @@ export class SiteDetailComponent
         visit_data.photos = this.photos.filter(
             (p) => p.visit_id === visit_data.id
         );
+        console.log('site_id', this.site_id);
+        console.log('visit_data.id', visit_data.id);
+        console.log('visit_data', visit_data);
         this.flowService.editSiteVisit(this.site_id, visit_data.id, visit_data);
     }
 
