@@ -87,7 +87,7 @@
                         </a>
                     </li>
                 </ul>
-                <div class="btn-group navbar-login" *ngIf="canSignup">
+                <div class="btn-group navbar-login" *ngIf="canSignup && !hideAuth">
                     <div
                         *ngIf="
                             isLoggedIn() | async;

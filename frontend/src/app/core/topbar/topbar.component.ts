@@ -33,6 +33,7 @@ export class TopbarComponent implements OnInit {
     adminUrl: SafeUrl;
     userAvatar: string;
     logoImage: string;
+    hideAuth = false;
 
     @Input()
     displayTopbar: boolean;
@@ -65,6 +66,9 @@ export class TopbarComponent implements OnInit {
                 catchError((error) => throwError(error))
             )
             .subscribe();
+        this.route.queryParams.subscribe((params) => {
+            this.hideAuth = 'hideAuth' in params;
+        });
     }
 
     isLoggedIn(): Observable<boolean> {
