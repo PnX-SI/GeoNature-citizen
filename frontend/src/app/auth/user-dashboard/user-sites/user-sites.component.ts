@@ -38,6 +38,6 @@ export class UserSitesComponent extends SitesComponent implements OnInit {
             site.geometry.coordinates[0],
             site.geometry.coordinates[1]
         );
-        console.log(site, coords);
+        // console.log(site, coords);
     }
 }

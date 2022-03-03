@@ -343,7 +343,7 @@ export class ObsFormComponent implements AfterViewInit {
                 .getMunicipality(this.coords.y, this.coords.x)
                 .toPromise()
                 .then((municipality) => (this.municipality = municipality))
-                .catch((err) => console.log(err));
+                .catch((err) => console.error(err));
         }
     }
 

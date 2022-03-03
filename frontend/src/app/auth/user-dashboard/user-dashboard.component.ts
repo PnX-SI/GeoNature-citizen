@@ -130,10 +130,10 @@ export class UserDashboardComponent implements OnInit {
                 this.myobs = data[0];
                 this.mysites = data[1];
                 if (MainConfig['REWARDS']) {
-                    console.log('data3', data[2]);
+                    // console.debug('data3', data[2]);
                     this.badges = data[2];
                     localStorage.setItem('badges', JSON.stringify(this.badges));
-                    console.log('badges', this.badges);
+                    // console.debug('badges', this.badges);
                     if (this.badges.length > 0) {
                         this.badges.forEach((badge) => {
                             if (

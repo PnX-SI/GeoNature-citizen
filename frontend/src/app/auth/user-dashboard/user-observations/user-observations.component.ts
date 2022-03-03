@@ -61,6 +61,6 @@ export class UserObsComponent extends ObsComponent implements OnInit {
             obs.geometry.coordinates[0],
             obs.geometry.coordinates[1]
         );
-        console.log(obs, coords);
+        // console.log(obs, coords);
     }
 }

@@ -60,17 +60,23 @@ export class SiteDetailComponent
         });
     }
 
-    flatObject(myObject: Record<string, unknown>): Record<string, unknown> {
+    flatObject(myObject: object): object {
         const myObjectKeys = Object.keys(myObject);
         let myFlatObject = { ...myObject };
         myObjectKeys.forEach((key) => {
             if (
-                myFlatObject[key].hasOwnProperty('key') &&
+                Object.prototype.hasOwnProperty.call(
+                    myFlatObject[key],
+                    'type'
+                ) &&
+                Object.prototype.hasOwnProperty.call(
+                    myFlatObject[key],
+                    'properties'
+                ) &&
                 myFlatObject[key]['type'] === 'object'
             ) {
-                console.log('isObj', key, myFlatObject[key]);
                 myFlatObject = {
-                    ...myFlatObject[key].properties,
+                    ...myFlatObject[key]['properties'],
                     ...myFlatObject,
                 };
                 delete myFlatObject[key];
@@ -118,11 +124,14 @@ export class SiteDetailComponent
                     for (const k in flattenData) {
                         const v = flattenData[k];
                         if (
-                            flattenSchema[k] != 'undefined' &&
-                            flattenSchema[k].hasOwnProperty('title')
+                            typeof flattenSchema[k] != 'undefined' &&
+                            Object.prototype.hasOwnProperty.call(
+                                flattenSchema[k],
+                                'title'
+                            )
                         ) {
                             custom_data.push({
-                                name: flattenSchema[k].title,
+                                name: flattenSchema[k]['title'],
                                 value:
                                     typeof v === 'boolean'
                                         ? v
@@ -139,7 +148,6 @@ export class SiteDetailComponent
                 this.attributes.push(visitData);
             });
         }
-        console.log('this.attributes', this.attributes);
     }
 
     getData() {
@@ -173,9 +181,6 @@ export class SiteDetailComponent
         visit_data.photos = this.photos.filter(
             (p) => p.visit_id === visit_data.id
         );
-        console.log('site_id', this.site_id);
-        console.log('visit_data.id', visit_data.id);
-        console.log('visit_data', visit_data);
         this.flowService.editSiteVisit(this.site_id, visit_data.id, visit_data);
     }
 

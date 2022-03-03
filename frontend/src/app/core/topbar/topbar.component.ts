@@ -143,10 +143,10 @@ export class TopbarComponent implements OnInit {
                     this.auth
                         .logout()
                         .then((logout) => {
-                            console.log('Logout Status:', logout.status);
+                            // console.log('Logout Status:', logout.status);
                         })
                         .catch((err) => {
-                            console.error('Logout error:', err);
+                            // console.error('Logout error:', err);
                         });
                     return throwError(err);
                 }
