@@ -44,7 +44,7 @@ declare let $: any;
 
 const map_conf = {
     GEOLOCATION_CONTROL_POSITION: 'topright',
-    GEOLOCATION_HIGH_ACCURACY: false,
+    GEOLOCATION_HIGH_ACCURACY: true,
     PROGRAM_AREA_STYLE: {
         fillColor: 'transparent',
         weight: 2,
@@ -231,7 +231,7 @@ export class ObsFormComponent implements AfterViewInit {
                         getLocationBounds: (locationEvent) =>
                             locationEvent.bounds.extend(L.LatLngBounds),
                         onLocationError: (locationEvent) => {
-                            let msg =
+                            const msg =
                                 'Vous semblez être en dehors de la zone du programme.';
                             this.toastr.error(msg, '', {
                                 positionClass: 'toast-top-right',
@@ -245,10 +245,10 @@ export class ObsFormComponent implements AfterViewInit {
                     } as any)
                     .addTo(formMap);
 
-                let ZoomViewer = L.Control.extend({
+                const ZoomViewer = L.Control.extend({
                     onAdd: () => {
-                        let container = L.DomUtil.create('div');
-                        let gauge = L.DomUtil.create('div');
+                        const container = L.DomUtil.create('div');
+                        const gauge = L.DomUtil.create('div');
                         container.style.width = '200px';
                         container.style.background = 'rgba(255,255,255,0.5)';
                         container.style.textAlign = 'left';
@@ -262,7 +262,7 @@ export class ObsFormComponent implements AfterViewInit {
                         return container;
                     },
                 });
-                let zv = new ZoomViewer();
+                const zv = new ZoomViewer();
                 zv.addTo(formMap);
                 zv.setPosition('bottomleft');
 
@@ -288,7 +288,7 @@ export class ObsFormComponent implements AfterViewInit {
 
                 // Update marker on click event
                 formMap.on('click', (e: LeafletMouseEvent) => {
-                    let z = formMap.getZoom();
+                    const z = formMap.getZoom();
 
                     if (z < MainConfig.ZOOM_LEVEL_RELEVE) {
                         // this.hasZoomAlert = true;
@@ -394,8 +394,8 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     inputAutoCompleteSetup = () => {
-        for (let taxon in this.taxa) {
-            for (let field of taxonAutocompleteFields) {
+        for (const taxon in this.taxa) {
+            for (const field of taxonAutocompleteFields) {
                 if (this.taxa[taxon]['taxref'][field]) {
                     this.species.push({
                         name:
@@ -469,7 +469,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     creatFromDataToPost(): FormData {
         this.obsForm.controls['id_program'].patchValue(this.program_id);
-        let formData: FormData = new FormData();
+        const formData: FormData = new FormData();
 
         const files = this.photos;
         files.forEach((file) => {
@@ -512,7 +512,7 @@ export class ObsFormComponent implements AfterViewInit {
             // the municipality. So only append municipality if defined
             formData.append('municipality', this.municipality);
         }
-        for (let item of ['count', 'comment', 'id_program', 'email']) {
+        for (const item of ['count', 'comment', 'id_program', 'email']) {
             formData.append(item, this.obsForm.get(item).value);
         }
         return formData;
@@ -520,7 +520,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     postObservation() {
         let obs: ObservationFeature;
-        let formData = this.creatFromDataToPost();
+        const formData = this.creatFromDataToPost();
         if (this.customForm.json_schema) {
             formData.append('json_data', JSON.stringify(this.jsonData));
         }
@@ -539,7 +539,7 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     onFormUpdate(): void {
-        let formData = this.creatFromDataToPost();
+        const formData = this.creatFromDataToPost();
         formData.append(
             'id_observation',
             this.data.updateData.id_observation.toString()
@@ -572,8 +572,9 @@ export class ObsFormComponent implements AfterViewInit {
     addImage(event) {
         this.photos.push(event.file);
     }
+
     deleteImage(event) {
-        for (var i = 0; i < this.photos.length; i++) {
+        for (let i = 0; i < this.photos.length; i++) {
             if (this.photos[i] == event.file) {
                 this.photos.splice(i, 1);
             }

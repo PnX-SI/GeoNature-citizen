@@ -14,7 +14,7 @@
         *ngIf="errorMessage && !successMessage"
         type="danger"
         (close)="errorMessage = null"
-        >{{ errorMessage }}
+    >{{ errorMessage }}
     </ngb-alert>
     <p *ngIf="successMessage">{{ successMessage }}</p>
 
@@ -38,6 +38,7 @@
                     *ngIf="userAvatar"
                     class="profile-pic"
                     src="{{ userAvatar }}"
+                    alt="user avatar"
                 />
                 <div class="upload-button" (click)="fileToUpload.click()">
                     <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
@@ -59,7 +60,7 @@
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
-                                ><i class="fa fa-user"></i
+                            ><i class="fa fa-user"></i
                             ></span>
                         </div>
                         <input
@@ -83,7 +84,7 @@
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
-                                ><i class="fa fa-envelope"></i
+                            ><i class="fa fa-envelope"></i
                             ></span>
                         </div>
                         <input
@@ -98,7 +99,7 @@
                             autocomplete="email"
                             [ngModelOptions]="{ updateOn: 'blur' }"
                             required
-                            pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+                            pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"
                         />
                     </div>
                 </div>
@@ -167,14 +168,13 @@
                         #password="ngModel"
                         autocomplete="new-password"
                         required
-                        #password="ngModel"
                     />
                 </div>
             </div>
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
                     <label for="confirm-password" i18n
-                        >Confirmez votre mot de passe</label
+                    >Confirmez votre mot de passe</label
                     >
                     <input
                         type="password"
@@ -212,10 +212,11 @@
                 />
                 J'accepte les
                 <a
+                    class="tos-link"
                     target="_blank"
                     href="{{ MainConfig['termsOfUse'][localeId] }}"
                     i18n="Use condition@@conditionsOfUse"
-                    >conditions d&apos;utilisation</a
+                >conditions d&apos;utilisation</a
                 >
             </span>
         </div>
@@ -240,7 +241,7 @@
         class="btn btn-outline-primary rounded-0"
         [disabled]="registerForm?.invalid"
         expand="block"
-        (click)="activeModal.dismiss('Cross click')"
+        (click)="activeModal.close('registered')"
         i18n="close auth modal@@closeModal"
     >
         Fermer

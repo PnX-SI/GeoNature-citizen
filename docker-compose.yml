@@ -29,10 +29,12 @@ services:
       - citizen-kane
 
   nginx:
+    image: nginx:1
     container_name: citizen-nginx
     depends_on:
       - frontend
     volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./config/backoffice_htpasswd:/etc/nginx/conf/.htpasswd
     networks:
       - citizen-kane

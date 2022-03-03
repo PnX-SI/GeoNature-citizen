@@ -13,4 +13,5 @@ export class Program {
     module: any;
     taxonomy_list: number;
     on_sidebar: boolean;
+    is_private: boolean;
 }

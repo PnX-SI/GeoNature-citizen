@@ -1,4 +1,4 @@
-export const AppConfig = {
+export const MainConfig = {
     appName: 'GeoNature-citizen',
     API_ENDPOINT: 'http://localhost:5002/api',
     API_TAXHUB: 'http://localhost:5000/api',
@@ -77,4 +77,10 @@ export const AppConfig = {
     //     maxWidth: 1440,
     //     quality: 0.9,
     // },
+    //    validationStates: [
+    //    { key: 'valid', label: 'Valide', color: 'green' },
+    //    { key: 'to_verify', label: 'A vérifier', color: 'orange' },
+    //    { key: 'corrected', label: 'Corrigé', color: 'green' },
+    //    { key: 'error', label: 'En erreur', color: 'red' },
+    //]
 };

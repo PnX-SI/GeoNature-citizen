@@ -1,0 +1,19 @@
+#formMap {
+    min-height: 225px; /*50vh*/
+    width: 100%;
+}
+
+.json-schema-form input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.json-schema-form .form-group {
+    margin-top: 15px;
+}
+.json-schema-form .form-group label {
+    margin-bottom: .1rem;
+}
+
+.json-schema-form .schema-form-checkbox {
+    margin-top: -10px;
+}

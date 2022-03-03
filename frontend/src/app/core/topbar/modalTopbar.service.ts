@@ -12,8 +12,9 @@ export class ModalsTopbarService {
 
     open(content, option) {
         this.modalRef = this.modalService.open(content, option);
+        return this.modalRef;
     }
-    close() {
-        if (this.modalRef) this.modalRef.close();
+    close(result = null) {
+        if (this.modalRef) this.modalRef.close(result);
     }
 }

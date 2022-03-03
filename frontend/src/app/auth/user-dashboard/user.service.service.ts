@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MainConfig } from '../../../conf/main.config';
 import { catchError } from 'rxjs/operators';
@@ -9,15 +9,32 @@ import { saveAs } from 'file-saver';
     providedIn: 'root',
 })
 export class UserService {
+    @Output() userEdited = new EventEmitter();
     role_id: number;
+    admin = false;
+
     private headers: HttpHeaders = new HttpHeaders({
         'Content-Type': 'application/json',
     });
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {
+        this.getPersonalInfo()
+            .toPromise()
+            .then((user) => {
+                if (user && user['features'] && user['features']['id_role']) {
+                    this.role_id = user['features']['id_role'];
+                    this.admin = user['features']['admin'];
+                }
+            });
+    }
 
     getPersonalInfo() {
-        let url = `${MainConfig.API_ENDPOINT}/user/info`;
+        const url = `${MainConfig.API_ENDPOINT}/user/info`;
+        return this.http.get(url, { headers: this.headers });
+    }
+
+    getUserInfo(id) {
+        const url = `${MainConfig.API_ENDPOINT}/user/${id}/info`;
         return this.http.get(url, { headers: this.headers });
     }
 
@@ -28,6 +45,18 @@ export class UserService {
     }
 
     updatePersonalData(personalInfo) {
+        return this.http
+            .patch(`${MainConfig.API_ENDPOINT}/user/info`, personalInfo, {
+                headers: this.headers,
+            })
+            .pipe(
+                catchError((error) => {
+                    return throwError(error);
+                })
+            );
+    }
+
+    updateUserData(id, personalInfo) {
         console.log('up', personalInfo);
 
         return this.http
@@ -53,6 +82,52 @@ export class UserService {
         );
     }
 
+    getCurrentUserAreas() {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/areas/current_user`
+        );
+    }
+
+    getCurrentUserSpeciesSites() {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/areas/species_sites/current_user`
+        );
+    }
+
+    getCurrentUserSpeciesSitesObs() {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/areas/observations/current_user`
+        );
+    }
+
+    getAdminAreas() {
+        return this.http.get<Object>(`${MainConfig.API_ENDPOINT}/areas/admin`);
+    }
+
+    getAdminSpeciesSites(areaId = null) {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/areas/species_sites/admin?area=${areaId}`
+        );
+    }
+
+    getAdminSpeciesSitesObs(page = 0, pageSize = 0, id_program = 0) {
+        let parameters = '?';
+        if (page > 0 && pageSize > 0) {
+            parameters += `page=${page}&page-size=${pageSize}&`;
+        }
+        parameters += `id_program=${id_program}&`;
+
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/areas/observations/admin${parameters}`
+        );
+    }
+
+    getAdminObservers() {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/areas/observers/admin`
+        );
+    }
+
     deleteObsservation(idObs: any) {
         return this.http.delete<Object>(
             `${MainConfig.API_ENDPOINT}/observations/${idObs}`
@@ -72,19 +147,19 @@ export class UserService {
     }
 
     ConvertToCSV(objArray, headerList) {
-        let array =
+        const array =
             typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
         let str = '';
         let row = '';
-        for (let index in headerList) {
+        for (const index in headerList) {
             row += headerList[index] + ';';
         }
         row = row.slice(0, -1);
         str += row + '\r\n';
         for (let i = 0; i < array.length; i++) {
             let line = '';
-            for (let index in headerList) {
-                let head = headerList[index];
+            for (const index in headerList) {
+                const head = headerList[index];
                 line += ';' + (array[i][head] || '');
             }
             line = line.slice(1);
@@ -103,8 +178,8 @@ export class UserService {
         this.http
             .get(baseUrl + route, { headers, responseType: 'blob' as 'json' })
             .subscribe((response: any) => {
-                let dataType = response.type;
-                let binaryData = [];
+                const dataType = response.type;
+                const binaryData = [];
                 binaryData.push(response);
                 saveAs(new Blob(binaryData, { type: dataType }), filename);
             });
@@ -112,5 +187,18 @@ export class UserService {
 
     exportSites(userId: number) {
         this.downloadFile(`/sites/export/${userId}`, 'gnc_export_sites.xls');
+    }
+
+    exportAreas(userId?: number, allData = false) {
+        if (!userId) {
+            if (!this.role_id) {
+                return;
+            }
+            userId = this.role_id;
+        }
+        this.downloadFile(
+            `/areas/export/${userId}${allData ? '?all-data=true' : ''}`,
+            'gnc_export_areas.xls'
+        );
     }
 }

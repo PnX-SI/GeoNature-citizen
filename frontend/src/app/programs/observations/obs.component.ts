@@ -26,6 +26,7 @@ import { ObsListComponent } from './list/list.component';
 import { ModalFlowComponent } from './modalflow/modalflow.component';
 import { ProgramBaseComponent } from '../base/program-base.component';
 import { MainConfig } from '../../../conf/main.config';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
     selector: 'app-observations',
@@ -54,9 +55,10 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         public flowService: ModalFlowService,
         public breakpointObserver: BreakpointObserver,
         private titleService: Title,
-        private metaTagService: Meta
+        private metaTagService: Meta,
+        authService: AuthService
     ) {
-        super();
+        super(authService);
         this.route.params.subscribe((params) => {
             this.program_id = params['id'];
             this.flowService.closeModal(); // Avoid keeping another program's form open

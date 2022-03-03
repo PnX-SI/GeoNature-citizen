@@ -1,0 +1,210 @@
+#mapList {
+    padding: 0px !important;
+}
+
+#list {
+    background: #eee;
+    padding: 5px 0px 5px 5px;
+    overflow: scroll;
+    height: calc(100vh - 135px);
+}
+
+#list .espece {
+    background: #fff;
+    margin-bottom: 5px;
+    display: flex;
+    position: relative;
+    border: solid 2px #eee;
+    background-image: url('data:image/svg+xml;charset=utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><polygon points="100, 78 0, 100 100, 100" fill="%23f9f9f9" fill-opacity="0.9" /></svg>');
+    background-size: 100% 100%;
+}
+
+#list .espece:hover {
+    border: solid 2px;
+    border-color: var(--primary);
+    cursor: pointer;
+}
+
+#list .espece img {
+    object-fit: cover;
+    min-width: 80px !important;
+    max-width: 80px !important;
+    height: 80px;
+}
+
+.hide {
+    background-color: var(--primary);
+    height: auto;
+    padding: 0px 10px;
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+
+#list .espece .hide img {
+    min-width: 20px !important;
+    max-width: 20px !important;
+    height: auto !important;
+}
+
+#list .espece .infos {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 1em;
+    max-width: calc(33vw - 201px);
+    flex: 1;
+}
+
+#list .espece .infos.dashboard-list {
+    max-width: calc(33vw - 140px);
+}
+
+#list .espece .infos > p, #list .espece .infos .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#list .espece .infos .name {
+    flex: 1;
+}
+
+#list .espece .infos .stage-icon {
+    width: 30px;
+    height: 30px;
+    min-width: auto !important;
+    max-width: none !important;
+}
+
+#list .espece .infos h5 {
+    display: flex;
+    margin-bottom: 0;
+    font-size: 16px;
+}
+
+#list .espece .infos h5 i {
+    margin-right: 5px;
+}
+
+#list .espece div p,
+#list .espece div span {
+    font-style: italic;
+    color: var(--primary);
+    margin-bottom: 0;
+    line-height: 1.3;
+    font-size: 14px;
+}
+
+#list .espece .add-species-site-observation {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 1em;
+}
+#list .espece .add-species-site-observation > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    box-shadow: 1px 3px 15px -5px rgba(0, 0, 0, 0.50);
+    font-size: 24px;
+}
+#list .espece .add-species-site-observation > div:hover {
+    box-shadow: 1px 3px 15px -5px rgba(0, 0, 0, 1);
+    background-color: #eeeeee;
+}
+
+.toolbar {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.toolbar select,
+.toolbar input {
+    background: none;
+    border: solid 1px;
+    border-color: var(--primary);
+}
+
+.dropdown .dropdown-menu {
+    min-width: 100%;
+    border-radius: 0px;
+}
+
+.toolbar input {
+    flex-grow: 2;
+    padding-left: 10px;
+    padding-right: 30px;
+}
+
+.toolbar input:focus {
+    border: solid 2px !important;
+    border-color: var(--primary) !important;
+}
+
+.obs-found {
+    background-color: var(--secondary);
+    background-image: linear-gradient(
+        to bottom,
+        var(--secondary),
+        var(--secondary-gradient)
+    );
+}
+
+.obs-found p {
+    white-space: nowrap;
+    margin: 0;
+    font-style: italic;
+    color: #fff;
+    text-align: center;
+}
+
+.toolbar .dropdown button {
+    background: none;
+    width: 100%;
+}
+
+.toolbar .dropdown button:after {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    color: var(--primary);
+}
+
+.collapse:not(.show) {
+    display: block !important;
+    transform: translateX(-100%);
+}
+
+@media screen and (max-width: 992px) {
+    #list {
+        height: 40vh;
+        min-height: 300px;
+    }
+    #list .espece .infos {
+        max-width: calc(100vw - 211px);
+    }
+    #list .espece .infos.dashboard-list {
+        max-width: calc(100vw - 149px);
+    }
+
+    .toggle {
+        display: none;
+    }
+    .side-bar,
+    .map {
+        position: static !important;
+    }
+    .map {
+        height: auto;
+    }
+    /*  #map{
+        height: 50vh;
+    } */
+    .hide {
+        transform: translateX(-0%);
+    }
+}

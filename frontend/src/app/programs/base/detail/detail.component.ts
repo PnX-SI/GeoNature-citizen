@@ -1,5 +1,6 @@
 import * as L from 'leaflet';
 import { MainConfig } from '../../../../conf/main.config';
+import { UserService } from '../../../auth/user-dashboard/user.service.service';
 
 declare let $: any;
 
@@ -19,7 +20,12 @@ export abstract class BaseDetailComponent {
     obs: any;
     site_id: any;
     site: any;
-    username = null;
+    area_id: any;
+    area: any;
+    species_site_id: any;
+    speciesSite: any;
+    admin = false;
+    userService: UserService;
 
     showPhoto(photo) {
         console.log('opening photo:');

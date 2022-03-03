@@ -1,4 +1,9 @@
-import { Component, AfterViewInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import {
+    Component,
+    AfterViewInit,
+    ViewEncapsulation,
+    ViewChild,
+} from '@angular/core';
 import { GncProgramsService } from '../../../api/gnc-programs.service';
 import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
@@ -17,7 +22,7 @@ import { SiteService } from '../sites.service';
     selector: 'app-site-detail',
     templateUrl: '../../base/detail/detail.component.html',
     styleUrls: [
-        './../../observations/obs.component.css', // for form modal only
+        './../../observations/obs.component.css', // for site form modal only
         '../../base/detail/detail.component.css',
     ],
     encapsulation: ViewEncapsulation.None,
@@ -28,12 +33,13 @@ export class SiteDetailComponent
 {
     idVisitToDelete = null;
     modalDelVisitRef = null;
+    username: string;
     @ViewChild('visitDeleteModal', { static: true }) visitDeleteModal;
     constructor(
         private http: HttpClient,
         private route: ActivatedRoute,
         private programService: GncProgramsService,
-        private userService: UserService,
+        public userService: UserService,
         private modalService: NgbModal,
         public flowService: SiteModalFlowService,
         public siteService: SiteService

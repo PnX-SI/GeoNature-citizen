@@ -68,7 +68,7 @@
 
 .user-infos img,
 .user-infos svg {
-    width: 200px;
+    min-width: 100%;
     height: auto;
     margin: 0 auto;
     border-radius: 50%;
@@ -158,6 +158,24 @@ form > button {
     width: fit-content;
     display: block;
 }
+.form-group .input-group {
+    flex-wrap: nowrap;
+}
+
+#form-loading {
+    background-color: #ffffffcc;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999999999999999;
+}
+
+.checkbox-label {
+    margin-left: 5px;
+}
+
 
 app-modalflow {
     position: relative;
@@ -310,6 +328,13 @@ app-modalflow {
     background-size: cover;
 }
 
+.profile-pic-background {
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-size: cover;
+}
+
 .green-btn {
     background-color: var(--color-green);
     color: #fff;
@@ -322,4 +347,23 @@ app-modalflow {
 
 .observations {
     margin-top: -160px;
+}
+
+.areas-tabs {
+    background-color: white;
+}
+.areas-tabs > div {
+    flex: 1;
+    text-align: center;
+    padding: 15px 8px;
+    text-transform: uppercase;
+    color: #5FB3A7;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 3px solid #e2e2e2;
+    cursor: pointer;
+}
+.areas-tabs > div.selected {
+    border-bottom: 3px solid #5FB3A7;
+    color: #000000;
 }

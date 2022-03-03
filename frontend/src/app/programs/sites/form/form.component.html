@@ -76,6 +76,7 @@
     </form>
 
     <json-schema-form
+        *ngIf="formInputObject"
         [form]="formInputObject"
         [options]="formOptions"
         (onChanges)="onJsonFormChange($event)"

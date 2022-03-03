@@ -1,4 +1,4 @@
-import { Component, Inject, LOCALE_ID } from '@angular/core';
+import { Component, Inject, LOCALE_ID, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, throwError } from 'rxjs';
 import { debounceTime, catchError, map } from 'rxjs/operators';
@@ -29,8 +29,10 @@ export class RegisterComponent {
     staticAlertClosed = false;
     errorMessage: string;
     locale: string;
+    submitted: boolean;
     successMessage: string;
     userAvatar: string | ArrayBuffer;
+    @ViewChild('registerForm', { static: false }) registerForm;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -46,6 +48,11 @@ export class RegisterComponent {
     }
 
     onRegister(): void {
+        this.submitted = true;
+        if (!this.registerForm.valid) {
+            return;
+        }
+
         this.auth
             .register(this.user)
             .pipe(
@@ -58,7 +65,7 @@ export class RegisterComponent {
                         });
                         this._success.pipe(debounceTime(5000)).subscribe(() => {
                             this.successMessage = null;
-                            this.activeModal.close();
+                            this.activeModal.close('registered');
                         });
 
                         this.displaySuccessMessage(message);

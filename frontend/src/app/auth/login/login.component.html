@@ -1,6 +1,7 @@
 <div class="modal-header">
     <h4 class="modal-title" i18n="login@@login">Se connecter</h4>
     <button
+        *ngIf="canBeClosed"
         type="button"
         class="close rounded-0"
         aria-label="Close"
@@ -54,6 +55,11 @@
                 />
             </div>
         </div>
+
+        <span (click)="recoverPassword = false">
+            Retour à la connexion
+        </span>
+
         <button
             *ngIf="(errorMessage || !successMessage) && recoverPassword"
             class="btn btn-outline-primary rounded-0"
@@ -125,10 +131,13 @@
                 />
             </div>
         </div>
-        <div class="form-group d-flex flex-row justify-content-end">
-            <span id="recoverPassword" (click)="recoverPassword = true" i18n="Forgotten password link@@forgottenPasswordLink"
-                >Mot de passe oublié ?</span
-            >
+        <div class="form-group d-flex flex-row justify-content-between actions-links">
+            <span (click)="openRegistration()">
+                Pas encore inscrit ?
+            </span>
+            <span (click)="recoverPassword = true" i18n="Forgotten password link@@forgottenPasswordLink">
+                Mot de passe oublié ?
+            </span>
         </div>
 
         <button

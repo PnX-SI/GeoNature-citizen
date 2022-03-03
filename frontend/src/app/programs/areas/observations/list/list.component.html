@@ -1,0 +1,186 @@
+<div class="list-filters">
+    <div class="toolbar row">
+        <select
+            id="program"
+            name="program"
+            class="form-control rounded-0 col-sm-12"
+            [(ngModel)]="selectedProgram"
+            (ngModelChange)="onFilterChange()"
+            *ngIf="userDashboard"
+        >
+            <option [ngValue]="null">Tous programmes</option>
+            <option *ngFor="let program of programs" [ngValue]="program">
+                {{ program?.title || '?' }}
+            </option>
+        </select>
+    </div>
+</div>
+<div id="list">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Date obs</th>
+            <th scope="col">Date saisie</th>
+            <th scope="col">Zone</th>
+            <th scope="col">Observateur</th>
+            <th scope="col">Individu</th>
+            <th scope="col">Espèce</th>
+            <th scope="col">Stade</th>
+            <th scope="col">Etape</th>
+            <th scope="col">Impression</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let observation of observations">
+            <td>
+                <span [ngbTooltip]="observation.properties.date.substring(0, 10) | date: 'longDate'">
+                    {{
+                        observation.properties.date.substring(0, 10) | date: 'longDate'
+                    }}
+                </span>
+            </td>
+            <td>
+                <span [ngbTooltip]="observation.properties.timestamp_create.substring(0, 10) | date: 'longDate'">
+                    {{
+                        observation.properties.timestamp_create.substring(0, 10) | date: 'longDate'
+                    }}
+                </span>
+            </td>
+            <td>
+                <span class="notranslate" [ngbTooltip]="observation.properties.species_site.area.name">
+                    {{ observation.properties.species_site.area.name }}
+                </span>
+            </td>
+            <td>
+                <span [ngbTooltip]="observation.properties.obs_txt">
+                    {{ observation.properties.obs_txt }}
+                </span>
+            </td>
+            <td>
+                <span class="notranslate" [ngbTooltip]="observation.properties.species_site.name">
+                    {{ observation.properties.species_site.name }}
+                </span>
+            </td>
+            <td>
+                <span
+                    *ngIf="observation.properties.species_site.species"
+                    [ngbTooltip]="observation.properties.species_site.species.nom_vern + ', ' + observation.properties.species_site.species.nom_complet"
+                >
+                    {{ observation.properties.species_site.species.nom_vern }}
+                </span>
+            </td>
+            <td>
+                <span *ngIf="observation.properties.stages_step?.species_stage" [ngbTooltip]="observation.properties.stages_step.species_stage.name">
+                    {{ observation.properties.stages_step.species_stage.name }}
+                </span>
+            </td>
+            <td>
+                <span [ngbTooltip]="observation.properties.stages_step?.name">
+                    {{ observation.properties.stages_step?.name }}
+                </span>
+            </td>
+            <td>
+                <span [ngbTooltip]="observation.properties.json_data.remark">
+                    {{ observation.properties.json_data.remark }}
+                </span>
+            </td>
+            <td>
+                <div *ngIf="admin && observation.properties.state">
+                    <i
+                        class="fa fa-flag"
+                        placement="left"
+                        [ngbTooltip]="getStateInfo(observation.properties.state).label"
+                        [ngStyle]="{'color': getStateInfo(observation.properties.state).color}"
+                    ></i>
+                </div>
+                <div *ngIf="admin || userService.role_id === observation.properties.id_role">
+                    <app-areamodalflow
+                        [obsUpdateData]="observation.properties"
+                        [admin]="admin"
+                    >
+                        <i
+                            class="fa fa-edit cursor-pointer"
+                            placement="left"
+                            ngbTooltip="Editer"
+                            btn-open
+                        ></i>
+                    </app-areamodalflow>
+                </div>
+                <div>
+                    <i
+                        class="fa fa-trash text-danger cursor-pointer"
+                        placement="left"
+                        ngbTooltip="Supprimer"
+                        (click)="onDeleteObservationModalOpen(observation.properties.id_species_site_observation)"
+                        *ngIf="observation.properties.id_role === userService.role_id || admin"
+                        owner-actions
+                    ></i>
+                </div>
+                <div>
+                    <i
+                        [routerLink]="[
+                            '/programs',
+                            observation.properties.species_site.area.id_program,
+                            'areas-observations',
+                            observation.properties.id_species_site_observation
+                        ]"
+                        ngbTooltip="Voir les détails sur cette observation"
+                        class="fa fa-eye cursor-pointer"
+                        placement="left"
+                    ></i>
+                </div>
+                <div *ngIf="observation.properties.photos && observation.properties.photos.length">
+                    <i
+                        (click)="showPhotos(observation.properties.photos)"
+                        class="fa fa-camera cursor-pointer"
+                        placement="left"
+                        ngbTooltip="Voir les photos"
+                    ></i>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between p-2">
+        <ngb-pagination
+            [collectionSize]="collectionSize"
+            [(page)]="page"
+            [pageSize]="pageSize"
+            [maxSize]="10"
+            (pageChange)="refreshList()">
+        </ngb-pagination>
+
+        <select class="custom-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshList()">
+            <option [ngValue]="10">10 observations par page</option>
+            <option [ngValue]="25">25 observations par page</option>
+            <option [ngValue]="50">50 observations par page</option>
+        </select>
+    </div>
+</div>
+
+
+<ng-template #deleteObservationModal let-modal>
+    <div class="modal-delete-header">
+        <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
+    </div>
+    <div class="modal-delete-body">
+        Êtes-vous sûr de vouloir supprimer cette observation et toutes les informations qui y sont rattachées ?
+        <br/>
+        La suppression sera définitive
+    </div>
+    <div class="modal-delete-footer">
+        <button
+            type="button"
+            class="cancel-btn"
+            style="margin-right: 15px"
+            (click)="deletionModalRef.close()"
+        >
+            ANNULER
+        </button>
+        <button type="button" class="green-btn" (click)="onDeleteObservation()">
+            OUI
+        </button>
+    </div>
+</ng-template>

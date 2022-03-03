@@ -185,13 +185,22 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     is_active = db.Column(
         db.Boolean(), server_default=expression.true(), default=True
     )
+    is_private = db.Column(db.Boolean(), server_default=expression.false(), default=False)
     id_geom = db.Column(
         db.Integer, db.ForeignKey(GeometryModel.id_geom), nullable=False
     )
     id_form = db.Column(
         db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
     )
-    custom_form = relationship("CustomFormModel")
+    custom_form = relationship("CustomFormModel", uselist=False, foreign_keys=[id_form])
+    area_form_id = db.Column(
+        db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
+    )
+    area_custom_form = relationship("CustomFormModel", uselist=False, foreign_keys=[area_form_id])
+    species_site_form_id = db.Column(
+        db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
+    )
+    species_site_custom_form = relationship("CustomFormModel", uselist=False, foreign_keys=[species_site_form_id])
     geometry = relationship("GeometryModel")
     project = relationship("ProjectModel")
 
@@ -215,7 +224,7 @@ class MediaModel(TimestampMixinModel, db.Model):
     __tablename__ = "t_medias"
     __table_args__ = {"schema": "gnc_core"}
     id_media = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(50), nullable=False)
+    filename = db.Column(db.String(150), nullable=False)
 
     def __repr__(self):
         return self.filename

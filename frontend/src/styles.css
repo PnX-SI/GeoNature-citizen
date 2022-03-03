@@ -994,11 +994,10 @@ input:checked ~ .toggle i {
 
 .avatar-wrapper .profile-pic {
     height: 100%;
-    width: 100%;
     transition: all 0.3s ease;
 }
 
-.avatar-wrapper .profile-pic:after {
+.avatar-wrapper .profile-pic::after, .avatar-main-wrapper .profile-pic::after {
     font-family: FontAwesome;
     content: '\f007';
     top: 0;

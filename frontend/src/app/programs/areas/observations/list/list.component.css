@@ -1,0 +1,29 @@
+#list {
+    overflow: auto;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+td {
+    max-width: 120px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+td span {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+td:last-child {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+td:last-child > * {
+    margin: 0 2px;
+}

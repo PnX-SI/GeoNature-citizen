@@ -102,6 +102,13 @@ export const DefaulConfig = {
         fr: 'Me localiser',
         en: 'Show me where i am',
     },
+    SPECIES_SITE_POINTER: 'assets/pointer-tree.svg',
+    validationStates: [
+        { key: 'valid', label: 'Valide', color: 'green' },
+        { key: 'to_verify', label: 'A vérifier', color: 'orange' },
+        { key: 'corrected', label: 'Corrigé', color: 'green' },
+        { key: 'error', label: 'En erreur', color: 'red' },
+    ],
 };
 
 export const MainConfig = { ...DefaulConfig, ...AppConfig, ...MapConfig };

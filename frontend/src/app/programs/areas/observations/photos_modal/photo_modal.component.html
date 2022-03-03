@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h4 class="modal-title">PHOTOS</h4>
+    <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="closeModal()"
+    >
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body ">
+    <div>
+        <input id="big-size" type="checkbox" [(ngModel)]="bigSize" /><label for="big-size">&nbsp;Afficher les photos en grand</label>
+    </div>
+    <div class="photos-container">
+        <div *ngFor="let photo of photos;" class="img-holder">
+            <img [src]="apiEndpoint + photo.url" alt="step photo" [class]="bigSize ? 'big-size' : ''" (click)="openPhoto(apiEndpoint + photo.url)" />
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button
+        class="btn btn-default btn-outline-primary rounded-0 m-1"
+        (click)="closeModal()"
+    >
+        Fermer
+    </button>
+</div>

@@ -20,6 +20,7 @@ import { SitesMapComponent } from './map/map.component';
 import { SitesListComponent } from './list/list.component';
 import { SiteModalFlowComponent } from './modalflow/modalflow.component';
 import { ProgramBaseComponent } from '../base/program-base.component';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
     selector: 'app-sites',
@@ -49,12 +50,13 @@ export class SitesComponent extends ProgramBaseComponent implements OnInit {
         private programService: GncProgramsService,
         public flowService: SiteModalFlowService,
         public breakpointObserver: BreakpointObserver,
-        public siteService: SiteService
+        public siteService: SiteService,
+        authService: AuthService
     ) {
-        super();
-        this.route.params.subscribe((params) => {
-            this.program_id = params['id'];
-        });
+        super(authService);
+        this.route.params.subscribe(
+            (params) => (this.program_id = params['id'])
+        );
         this.route.fragment.subscribe((fragment) => {
             this.fragment = fragment;
         });
