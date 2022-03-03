@@ -1,4 +1,9 @@
-import { Component, AfterViewInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import {
+    Component,
+    AfterViewInit,
+    ViewEncapsulation,
+    ViewChild,
+} from '@angular/core';
 import { GncProgramsService } from '../../../api/gnc-programs.service';
 import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
@@ -45,17 +50,17 @@ export class SiteDetailComponent
         });
         this.module = 'sites';
         this.username = localStorage.getItem('username');
-        this.flowService.modalCloseStatus.subscribe( value => {
+        this.flowService.modalCloseStatus.subscribe((value) => {
             if (value === 'visitPosted') {
                 this.updateData();
             }
         });
-        this.siteService.siteEdited.subscribe(value => {
+        this.siteService.siteEdited.subscribe((value) => {
             this.updateData();
         });
     }
 
-    prepareSiteData() {
+    prepareSiteData(): void {
         // setup map
         const map = L.map('map');
         L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -69,7 +74,7 @@ export class SiteDetailComponent
         L.marker(latLng, { icon: markerIcon }).addTo(map);
     }
 
-    prepareVisits() {
+    prepareVisits(): void {
         // photos
         this.photos = this.site.properties.photos;
         this.photos.forEach((e, i) => {
@@ -77,7 +82,7 @@ export class SiteDetailComponent
                 MainConfig.API_ENDPOINT + this.photos[i]['url'];
         });
         // data
-        this.attributes = []
+        this.attributes = [];
         if (this.site.properties.visits) {
             this.site.properties.visits.forEach((e) => {
                 const data = e.json_data;
@@ -85,17 +90,54 @@ export class SiteDetailComponent
                     date: e.date,
                     author: e.author,
                     id: e.id_visit,
-                    json_data: e.json_data
+                    // json_data: e.json_data
                 };
                 this.loadJsonSchema().subscribe((jsonschema: any) => {
                     const schema = jsonschema.schema.properties;
+                    console.log('schema', schema);
                     const custom_data = [];
-                    for (const k in data) {
-                        const v = data[k];
-                        custom_data.push({
-                            name: schema[k].title,
-                            value: v.toString(),
-                        });
+                    const schemaKeys = Object.keys(schema);
+                    let flattenSchema = schema;
+                    schemaKeys.forEach((key) => {
+                        console.log(
+                            `schema ${key} (${flattenSchema[key].type}): ${flattenSchema[key]}`
+                        );
+                        if (flattenSchema[key].type === 'object') {
+                            console.log(key, flattenSchema[key].properties);
+                            flattenSchema = {
+                                ...flattenSchema[key].properties,
+                                ...flattenSchema,
+                            };
+                            delete flattenSchema[key];
+                        }
+                    });
+                    console.log('flattenSchema', schema, flattenSchema);
+                    const dataKeys = Object.keys(data);
+                    let flattenData = data;
+                    dataKeys.forEach((key) => {
+                        if (typeof flattenData[key] === 'object') {
+                            flattenData = {
+                                ...flattenData,
+                                ...flattenData[key],
+                            };
+                            delete flattenData[key];
+                        }
+                    });
+                    console.log('flattenData', flattenData);
+                    for (const k in flattenData) {
+                        const v = flattenData[k];
+                        console.log(flattenSchema[k].title, typeof v, v);
+                        if (flattenSchema[k] != 'undefined') {
+                            custom_data.push({
+                                name: flattenSchema[k].title,
+                                value:
+                                    typeof v === 'boolean'
+                                        ? v
+                                            ? 'Oui'
+                                            : 'Non'
+                                        : v.toString(),
+                            });
+                        }
                     }
                     if (custom_data.length > 0) {
                         visitData['data'] = custom_data;
@@ -104,20 +146,21 @@ export class SiteDetailComponent
                 this.attributes.push(visitData);
             });
         }
+        console.log('this.attributes', this.attributes);
     }
 
     getData() {
         return this.programService.getSiteDetails(this.site_id);
     }
 
-    updateData() {
+    updateData(): void {
         this.getData().subscribe((sites) => {
             this.site = sites['features'][0];
             this.prepareVisits();
         });
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
         this.getData().subscribe((sites) => {
             this.site = sites['features'][0];
             this.prepareSiteData();
@@ -134,7 +177,9 @@ export class SiteDetailComponent
     }
 
     editSiteVisit(visit_data) {
-        visit_data.photos = this.photos.filter((p) => p.visit_id === visit_data.id)
+        visit_data.photos = this.photos.filter(
+            (p) => p.visit_id === visit_data.id
+        );
         this.flowService.editSiteVisit(this.site_id, visit_data.id, visit_data);
     }
 
