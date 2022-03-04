@@ -77,8 +77,12 @@ if [ ! -f $venv_path/bin/activate ]; then
 fi
 source .venv/bin/activate
 pip install -r requirements.txt
-cd $DIR
 
+# init DB
+# !!! TODO test init db
+flask db upgrade
+
+cd $DIR
 # Copy main medias to media
 mkdir -p $DIR/media
 cp -r $DIR/frontend/src/assets/* $DIR/media

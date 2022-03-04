@@ -11,6 +11,7 @@ from gncitizen.utils.env import (
     db,
     jwt,
     list_and_import_gnc_modules,
+    migrate,
     swagger,
 )
 from gncitizen.utils.init_data import create_schemas, populate_modules
@@ -80,6 +81,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     swagger.init_app(app)
     admin.init_app(app)
     ckeditor.init_app(app)
+    migrate.init_app(app, db)
 
     with app.app_context():
         from gncitizen.core.commons.routes import commons_api
@@ -121,9 +123,9 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 module.backend.blueprint.blueprint.config = conf
                 app.config[manifest["module_name"]] = conf
 
-        create_schemas(db)
-        db.create_all()
-        populate_modules(db)
+        # create_schemas(db)
+        # db.create_all()
+        # populate_modules(db)
 
     # _app = app
 
