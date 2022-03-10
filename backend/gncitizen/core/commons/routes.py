@@ -402,6 +402,7 @@ def get_programs():
                     "long_desc",
                     "image",
                     "logo",
+                    "form_message",
                     "id_module",
                     "is_active",
                     "taxonomy_list",
