@@ -67,6 +67,16 @@ class ProgramView(ModelView):
         "image",
         "logo",
     ]
+    column_filters = (
+        "module.label",
+        "project.name",
+        "is_active",
+    )
+    column_searchable_list = (
+        "title",
+        "project.name",
+    )
+
     inline_models = [
         (
             CorProgramSiteTypeModel,
