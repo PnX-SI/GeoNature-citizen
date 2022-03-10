@@ -399,6 +399,7 @@ def get_programs():
                     "id_project",
                     "title",
                     "short_desc",
+                    "long_desc",
                     "image",
                     "logo",
                     "id_module",
