@@ -70,7 +70,8 @@ export class AuthInterceptor implements HttpInterceptor {
                     console.error(
                         `[AuthInterceptor.performTokenRefresh] error "${error}"`
                     );
-                    this.errorHandler.handleError(error);
+                    localStorage.clear();
+                    // this.errorHandler.handleError(error);
                     this.router.navigate(['/home']);
                     return from(this.auth.logout());
                 }),

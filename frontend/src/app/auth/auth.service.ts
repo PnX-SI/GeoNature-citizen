@@ -72,7 +72,7 @@ export class AuthService {
             .pipe(
                 catchError((error) => {
                     console.error(`[logout] error "${error}"`);
-                    localStorage.removeItem('access_token');
+                    localStorage.clear();
                     // localStorage.removeItem("refresh_token");
                     this.authenticated$.next(false);
                     // localStorage.removeItem("username");
