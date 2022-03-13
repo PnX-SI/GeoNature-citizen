@@ -9,6 +9,7 @@ from flasgger import Swagger
 from flask_admin import Admin
 from flask_ckeditor import CKEditor
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from gncitizen import __version__
@@ -65,12 +66,11 @@ def valid_api_url(url):
 app_conf = load_config()
 MEDIA_DIR = str(ROOT_DIR / app_conf["MEDIA_FOLDER"])
 SQLALCHEMY_DATABASE_URI = app_conf["SQLALCHEMY_DATABASE_URI"]
+
 db = SQLAlchemy()
-
 jwt = JWTManager()
-
 ckeditor = CKEditor()
-
+migrate = Migrate()
 
 swagger_template = {
     "swagger": "2.0",

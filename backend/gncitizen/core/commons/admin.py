@@ -102,6 +102,7 @@ class UserView(ModelView):
         "timestamp_update",
         "password",
     ]
+    can_create = False
 
 
 def get_geom_file_path(obj, file_data):
