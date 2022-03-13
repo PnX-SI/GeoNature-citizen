@@ -27,3 +27,4 @@ class ObservationView(CustomTileView):
         "program_ref.unique_id_program",
         "municipality",
     )
+    can_create = False
