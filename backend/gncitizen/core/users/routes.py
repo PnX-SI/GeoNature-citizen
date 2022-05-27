@@ -10,7 +10,7 @@ from flask_jwt_extended import (
 )
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-from gncitizen.utils.mail_check import confirm_user_email, confirm_token
+from gncitizen.utils.mail_check import confirm_user_email, confirm_token, send_user_email
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.sqlalchemy import json_resp
@@ -457,8 +457,9 @@ def delete_user():
 @json_resp
 def reset_user_password():
     request_datas = dict(request.get_json())
+
     email = request_datas["email"]
-    # username = request_datas["username"]
+    #username = request_datas["username"]
 
     try:
         user = UserModel.query.filter_by(email=email).one()
@@ -471,53 +472,28 @@ def reset_user_password():
     passwd = uuid.uuid4().hex[0:6]
     passwd_hash = UserModel.generate_hash(passwd)
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = current_app.config["RESET_PASSWD"]["SUBJECT"]
-    msg["From"] = current_app.config["RESET_PASSWD"]["FROM"]
-    msg["To"] = user.email
-
-    # Record the MIME types of both parts - text/plain and text/html.
-    part1 = MIMEText(
-        current_app.config["RESET_PASSWD"]["TEXT_TEMPLATE"].format(
-            passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
-        ),
-        "plain",
+    subject = current_app.config["RESET_PASSWD"]["SUBJECT"]
+    to = user.email
+    plain_message = current_app.config["RESET_PASSWD"]["TEXT_TEMPLATE"].format(
+        passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
     )
-    part2 = MIMEText(
-        current_app.config["RESET_PASSWD"]["HTML_TEMPLATE"].format(
-            passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
-        ),
-        "html",
+    html_message = current_app.config["RESET_PASSWD"]["HTML_TEMPLATE"].format(
+        passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
     )
-
-    # Attach parts into message container.
-    # According to RFC 2046, the last part of a multipart message, in this case
-    # the HTML message, is best and preferred.
-    msg.attach(part1)
-    msg.attach(part2)
 
     try:
-        with smtplib.SMTP_SSL(
-            current_app.config["MAIL"]["MAIL_HOST"],
-            int(current_app.config["MAIL"]["MAIL_PORT"]),
-        ) as server:
-            server.login(
-                str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
-                str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
-            )
-            server.sendmail(
-                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
-            )
-            server.quit()
+        send_user_email(
+            subject, to, plain_message=plain_message, html_message=html_message
+        )
         user.password = passwd_hash
         db.session.commit()
         return (
-            {"message": "Check your email, you credentials have been updated."},
+            {"message": "Vérifiez votre boite de courriel. Vos informations de connections ont été mises à jour."},
             200,
         )
     except Exception as e:
         current_app.logger.warning(
-            "reset_password: failled to send new credentials. %s", str(e)
+            "reset_password: failed to send new credentials. %s", str(e)
         )
         return (
             {
