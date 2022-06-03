@@ -48,10 +48,13 @@ def send_user_email(
         server.ehlo()
         if current_app.config["MAIL"]["MAIL_STARTTLS"]:
             server.starttls()
-        server.login(
-            str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
-            str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
-        )
+
+        if current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]:
+            server.login(
+                str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
+                str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
+            )
+
         server.sendmail(
             current_app.config["MAIL"]["MAIL_AUTH_LOGIN"],
             to,
@@ -104,10 +107,13 @@ def confirm_user_email(newuser):
         server.ehlo()
         if current_app.config["MAIL"]["MAIL_STARTTLS"]:
             server.starttls()
-        server.login(
-            str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
-            str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
-        )
+
+        if current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]:
+            server.login(
+                str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
+                str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
+            )
+
         server.sendmail(
             current_app.config["CONFIRM_EMAIL"]["FROM"], newuser.email, msg.as_string()
         )
