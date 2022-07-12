@@ -9,7 +9,7 @@ import requests
 from flask import Blueprint, current_app, request, flash
 from flask_admin.contrib.geoa import ModelView
 from flask_admin.form.upload import FileUploadField
-from flask_ckeditor import CKEditorField 
+from flask_ckeditor import CKEditorField
 
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
@@ -97,6 +97,12 @@ class ProgramView(ModelView):
     ]
 
 
+class SiteView(ModelView):
+    create_template = "edit.html"
+    edit_template = "edit.html"
+    form_excluded_columns = ["timestamp_create", "timestamp_update", "geom"]
+    column_exclude_list = ['geom']
+
 class CustomFormView(ModelView):
     column_formatters = {
         "json_schema": json_formatter,
@@ -122,7 +128,7 @@ class GeometryView(ModelView):
             description="""
                 Le fichier contenant la géométrie de la zone doit être au format geojson ou kml.<br>
                 Seules les types Polygon et MultiPolygon (ou MultiGeometry pour kml) sont acceptées.<br>
-                Les fichiers GeoJson fournis devront être en projection WGS84 (donc SRID 4326) 
+                Les fichiers GeoJson fournis devront être en projection WGS84 (donc SRID 4326)
                 et respecter le format "FeatureCollection" tel que présenté ici :
                 https://tools.ietf.org/html/rfc7946#section-1.5.
             """,
