@@ -480,10 +480,11 @@ def reset_user_password():
     html_message = current_app.config["RESET_PASSWD"]["HTML_TEMPLATE"].format(
         passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
     )
+    from_header = current_app.config["CONFIRM_EMAIL"]["FROM"]
 
     try:
         send_user_email(
-            subject, to, plain_message=plain_message, html_message=html_message
+            subject, to, plain_message=plain_message, html_message=html_message, from_header=from_header
         )
         user.password = passwd_hash
         db.session.commit()
