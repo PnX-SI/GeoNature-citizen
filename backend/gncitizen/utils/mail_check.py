@@ -7,11 +7,11 @@ from email.mime.text import MIMEText
 
 
 def send_user_email(
-    subject: str, to: str, plain_message: str = None, html_message: str = None
+    subject: str, to: str, plain_message: str = None, html_message: str = None, from_header: str = None
 ):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
-    msg["From"] = current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]
+    msg["From"] = from_header if from_header else current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]
     msg["To"] = to
     plain_msg = MIMEText(
         html_message,
