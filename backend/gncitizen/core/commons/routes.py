@@ -37,6 +37,7 @@ from gncitizen.core.commons.admin import (
     UserView,
     GeometryView,
     SiteView,
+    VisitView,
 )
 from gncitizen.core.sites.models import CorProgramSiteTypeModel, SiteTypeModel
 from gncitizen.core.sites.admin import SiteTypeView
@@ -51,7 +52,7 @@ admin.add_view(
 )
 admin.add_view(
     GeometryView(
-        GeometryModel, db.session, "2 - Zones geographiques", category="Enquêtes"
+        GeometryModel, db.session, "2 - Zones géographiques", category="Enquêtes"
     )
 )
 admin.add_view(
@@ -68,6 +69,10 @@ admin.add_view(
 admin.add_view(
     SiteView(SiteModel, db.session, "5 - Sites", category="Enquêtes")
 )
+admin.add_view(
+    VisitView(VisitModel, db.session, "6 - Rapport de visites", category="Enquêtes")
+)
+
 
 
 @commons_api.route("media/<item>")

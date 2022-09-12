@@ -113,6 +113,20 @@ class SiteView(ModelView):
     column_searchable_list = ["name", "obs_txt"]
     can_export = True
 
+
+class VisitView(ModelView):
+    create_template = "edit.html"
+    edit_template = "edit.html"
+    column_display_pk = True
+    column_descriptions = dict(
+        obs_txt='Nom d\'utilisateur de l\'encodeur'
+    )
+    form_excluded_columns = ["timestamp_create", "timestamp_update"]
+    column_formatters = dict(
+        timestamp_create=lambda v, c, m, p: m.timestamp_create.strftime('%d.%m.%Y - %H:%M')
+    )
+    can_export = True
+
 class CustomFormView(ModelView):
     column_formatters = {
         "json_schema": json_formatter,
