@@ -36,6 +36,7 @@ from gncitizen.core.commons.admin import (
     CustomFormView,
     UserView,
     GeometryView,
+    SiteView,
 )
 from gncitizen.core.sites.models import CorProgramSiteTypeModel, SiteTypeModel
 from gncitizen.core.sites.admin import SiteTypeView
@@ -63,6 +64,9 @@ admin.add_view(
 )
 admin.add_view(
     ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes")
+)
+admin.add_view(
+    SiteView(SiteModel, db.session, "5 - Sites", category="Enquêtes")
 )
 
 
