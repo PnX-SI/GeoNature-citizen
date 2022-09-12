@@ -100,8 +100,18 @@ class ProgramView(ModelView):
 class SiteView(ModelView):
     create_template = "edit.html"
     edit_template = "edit.html"
+    column_display_pk = True
+    column_descriptions = dict(
+        obs_txt='Nom d\'utilisateur de l\'encodeur'
+    )
     form_excluded_columns = ["timestamp_create", "timestamp_update", "geom"]
-    column_exclude_list = ['geom']
+    column_formatters = dict(
+        timestamp_create=lambda v, c, m, p: m.timestamp_create.strftime('%d.%m.%Y - %H:%M')
+    )
+    column_exclude_list = ["geom"]
+    column_default_sort = ("timestamp_create", True)
+    column_searchable_list = ["name", "obs_txt"]
+    can_export = True
 
 class CustomFormView(ModelView):
     column_formatters = {
