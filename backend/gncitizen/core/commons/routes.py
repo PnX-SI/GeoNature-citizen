@@ -7,6 +7,7 @@ from flask import Blueprint, request, current_app, send_from_directory
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_admin.form import SecureForm
 from flask_admin.contrib.geoa import ModelView
+from flask_admin import BaseView, expose
 from sqlalchemy.sql import func
 from sqlalchemy import distinct, and_
 from geoalchemy2.shape import from_shape
@@ -43,7 +44,7 @@ from gncitizen.core.sites.models import CorProgramSiteTypeModel, SiteTypeModel
 from gncitizen.core.sites.admin import SiteTypeView
 from gncitizen.utils.env import MEDIA_DIR
 
-commons_api = Blueprint("commons", __name__)
+commons_api = Blueprint("commons", __name__, template_folder='templates')
 
 
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
@@ -73,7 +74,25 @@ admin.add_view(
     VisitView(VisitModel, db.session, "6 - Rapport de visites", category="Enquêtes")
 )
 
+class AnalyticsView(BaseView):
+    @expose("/")
+    def index(self):
+        return self.render('upload_visit.html')
 
+
+@expose("/", methods=['POST'])
+def uploadFiles():
+      # get the uploaded file
+      uploaded_file = request.files['file']
+      if uploaded_file.filename != '':
+           file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+          # set the file path
+           uploaded_file.save(file_path)
+          # save the file
+      return redirect(url_for('index'))
+
+
+admin.add_view(AnalyticsView(name='Analytics', endpoint='analytics'))
 
 @commons_api.route("media/<item>")
 def get_media(item):
