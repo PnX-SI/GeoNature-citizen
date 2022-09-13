@@ -82,16 +82,17 @@ class UploadGeojsonView(BaseView):
             # check if the post request has the file part
             if 'file' not in request.files:
                 print('No file part')
-                return redirect(request.url)
+                return redirect(request.url) #TODO causes an error
             file = request.files['file']
-            #current_app.logger.critical(json.load(file))
+            feature_name = request.form['feature-name']
+            current_app.logger.critical(feature_name)
             # if user does not select file, browser also
             # submit an empty part without filename
             if file.filename == '':
                 print('No selected file')
                 return redirect(request.url)
             if file and allowed_file(file.filename):
-                import_geojson(json.load(file))
+                import_geojson(json.load(file), feature_name)
                 return {
                     'results': file.filename
                 }, 200

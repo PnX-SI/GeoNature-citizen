@@ -2,7 +2,48 @@
 {% block body %}
   <p>Charger des données</p>
   <form method="POST" action="" enctype="multipart/form-data">
-    <p><input type="file" name="file"></p>
-    <p><input type="submit" value="Submit"></p>
+    <div>
+      <input type="file" name="file">
+      <p><small>Charger un fichier geojson valide</small></p>
+    </div>
+    <div>
+      <label>Nom du champ "name"</label>
+      <select id="feature-name" name="feature-name">
+      </select>
+      <p><small>Charger le geojson pour choisir un champ</small></p>
+    </div>
+    <div><input type="submit" value="Importer"></div>
   </form>
+  <script>
+    const populateOptions = (select, options) => {
+      for (let o of options) {
+        let option = document.createElement('option');
+        option.value = o;
+        option.text = o;
+        select.appendChild(option);
+      }
+    };
+
+    let selectFeatureName = document.querySelectorAll('select#feature-name')[0];
+
+    let inputFile = document.querySelectorAll('input[name="file"]')[0];
+    inputFile.addEventListener('change',
+      (e) => {
+        let file = inputFile.files[0];
+        file.text().then(
+          t => {
+            if ('features' in JSON.parse(t)) {
+              if ('properties' in JSON.parse(t).features[0]) {
+                populateOptions(
+                  selectFeatureName,
+                  Object.keys(JSON.parse(t).features[0].properties)
+                );
+              }
+            }
+          }
+        )
+      }
+    );
+
+  </script>
 {% endblock %}
