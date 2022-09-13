@@ -18,6 +18,7 @@ from flask_ckeditor import CKEditorField
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.utils.env import admin
+from gncitizen.utils.import_geojson import test_store_in_db
 from server import db
 
 from .models import (
@@ -74,25 +75,41 @@ admin.add_view(
     VisitView(VisitModel, db.session, "6 - Rapport de visites", category="Enquêtes")
 )
 
-class AnalyticsView(BaseView):
-    @expose("/")
+class UploadGeojsonView(BaseView):
+    @expose("/", methods=['POST', 'GET'])
     def index(self):
-        return self.render('upload_visit.html')
+        current_app.logger.critical(str(request))
+        if request.method == 'POST':
+            # check if the post request has the file part
+            if 'file' not in request.files:
+                print('No file part')
+                return redirect(request.url)
+            file = request.files['file']
+            current_app.logger.critical(file)
+            # if user does not select file, browser also
+            # submit an empty part without filename
+            if file.filename == '':
+                print('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                print('ok')
+                # TODO do the stuffs
+                test_store_in_db('test')
+                return {
+                    'results': file.filename
+                }, 200
+                #return self.render('upload_geojson.html')
+
+        return self.render('upload_geojson.html')
+
+ALLOWED_EXTENSIONS = {'json', 'geojson'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@expose("/", methods=['POST'])
-def uploadFiles():
-      # get the uploaded file
-      uploaded_file = request.files['file']
-      if uploaded_file.filename != '':
-           file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
-          # set the file path
-           uploaded_file.save(file_path)
-          # save the file
-      return redirect(url_for('index'))
-
-
-admin.add_view(AnalyticsView(name='Analytics', endpoint='analytics'))
+admin.add_view(UploadGeojsonView(name='Upload', endpoint='upload'))
 
 @commons_api.route("media/<item>")
 def get_media(item):
