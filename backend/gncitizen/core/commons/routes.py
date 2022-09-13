@@ -18,7 +18,7 @@ from flask_ckeditor import CKEditorField
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.utils.env import admin
-from gncitizen.utils.import_geojson import test_store_in_db
+from gncitizen.utils.import_geojson import import_geojson
 from server import db
 
 from .models import (
@@ -78,23 +78,20 @@ admin.add_view(
 class UploadGeojsonView(BaseView):
     @expose("/", methods=['POST', 'GET'])
     def index(self):
-        current_app.logger.critical(str(request))
         if request.method == 'POST':
             # check if the post request has the file part
             if 'file' not in request.files:
                 print('No file part')
                 return redirect(request.url)
             file = request.files['file']
-            current_app.logger.critical(file)
+            #current_app.logger.critical(json.load(file))
             # if user does not select file, browser also
             # submit an empty part without filename
             if file.filename == '':
                 print('No selected file')
                 return redirect(request.url)
             if file and allowed_file(file.filename):
-                print('ok')
-                # TODO do the stuffs
-                test_store_in_db('test')
+                import_geojson(json.load(file))
                 return {
                     'results': file.filename
                 }, 200
