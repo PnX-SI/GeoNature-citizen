@@ -43,25 +43,29 @@ def convert_feature_to_json(feature, program_name):
 
 def import_geojson(data, feature_name, program, site_type):
     """ Import a geojson """
-    current_app.logger.critical(data)
+
     for i,f in enumerate(data['features']):
         current_app.logger.critical(f)
-        store_site_feature(i, f, feature_name, program, site_type)
-        store_visit_feature(i, f)
+        id_site = store_site_feature(f, feature_name, program, site_type)
+        store_visit_feature(f, id_site)
 
 
-def store_site_feature(i, f, feature_name, program, site_type):
+def store_site_feature(f, feature_name, program, site_type):
     """
     Store Site feature
 
-    :param i: index
-    :type i: integer
     :param f: geojson feature
+    :type f: feature object
     :param feature_name: name of the field that stores the name
     :type feature_name: string
+    :param program: id of the program to which data will be uploaded
+    :type program: integer
+    :param site_type: id of the site_type for the feature
+    :type site_type: integer
+    :return: id_site
+    :rtype: integer
     """
     new_site = SiteModel()
-    #new_site.id_site = 1000 + i #TODO better way of doing this! Compute the latest id, or better, get the id after the creation for the visits
     new_site.name = f["properties"].get(feature_name)
     new_site.uuid_sinp = uuid.uuid4()
     new_site.obs_txt = 'test import'
@@ -72,21 +76,25 @@ def store_site_feature(i, f, feature_name, program, site_type):
     db.session.add(new_site)
     db.session.commit()
 
+    return new_site.id_site
 
-def store_visit_feature(i, f):
+
+def store_visit_feature(f, id_site):
     """
     Store Visit feature
 
-    :param i: index
-    :type i: integer
     :param f: geojson feature
+    :type f: feature object
     :param feature_name: name of the field that stores the name
+    :param id_site: id of the site that was just uploaded
+    :type id_site: integer
     :type feature_name: string
+    :return: void
     """
     new_visit = VisitModel()
-    new_visit.id_site = 1000 + i
+    new_visit.id_site = id_site
     new_visit.obs_txt = 'test import'
-    new_visit.json_data = convert_feature_to_json(f, 'ARHEM_ARBRES')
+    new_visit.json_data = convert_feature_to_json(f, 'ARHEM_ARBRES') #TODO, check the results, quid ARHEM_ARBRES (hardcoded??)
 
     db.session.add(new_visit)
     db.session.commit()
