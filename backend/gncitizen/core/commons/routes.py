@@ -3,7 +3,7 @@
 
 import json
 import urllib.parse
-from flask import Blueprint, request, current_app, send_from_directory
+from flask import Blueprint, request, current_app, send_from_directory, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_admin.form import SecureForm
 from flask_admin.contrib.geoa import ModelView
@@ -30,7 +30,7 @@ from .models import (
 )
 from gncitizen.core.users.models import UserModel
 from gncitizen.core.observations.models import ObservationModel
-from gncitizen.core.sites.models import VisitModel, SiteModel
+from gncitizen.core.sites.models import VisitModel, SiteModel, SiteTypeModel, CorProgramSiteTypeModel
 
 from gncitizen.core.commons.admin import (
     ProjectView,
@@ -41,7 +41,6 @@ from gncitizen.core.commons.admin import (
     SiteView,
     VisitView,
 )
-from gncitizen.core.sites.models import CorProgramSiteTypeModel, SiteTypeModel
 from gncitizen.core.sites.admin import SiteTypeView
 from gncitizen.utils.env import MEDIA_DIR
 
@@ -84,7 +83,9 @@ class UploadGeojsonView(BaseView):
                 print('No file part')
                 return redirect(request.url) #TODO causes an error
             file = request.files['file']
-            feature_name = request.form['feature-name']
+            feature_name = request.form['feature_name']
+            program = request.form['program']
+            site_type = request.form['site_type']
             current_app.logger.critical(feature_name)
             # if user does not select file, browser also
             # submit an empty part without filename
@@ -92,19 +93,27 @@ class UploadGeojsonView(BaseView):
                 print('No selected file')
                 return redirect(request.url)
             if file and allowed_file(file.filename):
-                import_geojson(json.load(file), feature_name)
+                import_geojson(json.load(file), feature_name, program, site_type)
                 return {
                     'results': file.filename
                 }, 200
                 #return self.render('upload_geojson.html')
 
-        return self.render('upload_geojson.html')
+        programs = [
+            d.as_dict() for d in ProgramsModel.query.order_by(ProgramsModel.id_program.asc()).all()
+        ]
+
+        site_types = [
+            d.as_dict() for d in SiteTypeModel.query.order_by(SiteTypeModel.id_typesite.asc()).all()
+        ]
+
+        return self.render('upload_geojson.html', programs=programs, site_types=site_types)
 
 ALLOWED_EXTENSIONS = {'json', 'geojson'}
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 admin.add_view(UploadGeojsonView(name='Upload', endpoint='upload'))

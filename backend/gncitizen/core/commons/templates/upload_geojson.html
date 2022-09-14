@@ -7,8 +7,26 @@
       <p><small>Charger un fichier geojson valide</small></p>
     </div>
     <div>
+      <label>Programme dans lequel charger les données</label>
+      <select id="program" name="program">
+        {% for p in programs %}
+        <option value={{ p.id_program }}>{{ p.title }}</option>
+        {% endfor %}
+      </select>
+      <p><small></small></p>
+    </div>
+    <div>
+      <label>Type de sites</label>
+      <select id="site_type" name="site_type">
+        {% for st in site_types %}
+        <option value={{ st.id_typesite }}>{{ st.type }}</option>
+        {% endfor %}
+      </select>
+      <p><small></small></p>
+    </div>
+    <div>
       <label>Nom du champ "name"</label>
-      <select id="feature-name" name="feature-name">
+      <select id="feature_name" name="feature_name">
       </select>
       <p><small>Charger le geojson pour choisir un champ</small></p>
     </div>
@@ -24,7 +42,7 @@
       }
     };
 
-    let selectFeatureName = document.querySelectorAll('select#feature-name')[0];
+    let selectFeatureName = document.querySelectorAll('select#feature_name')[0];
 
     let inputFile = document.querySelectorAll('input[name="file"]')[0];
     inputFile.addEventListener('change',
@@ -44,6 +62,11 @@
         )
       }
     );
+
+    // let programSelect = document.querySelectorAll('select[name="program"]')[0];
+    // // document.addEventListener('DOMContentLoaded',
+    // //   populateOptions(programSelect, {{ programs|safe }});
+    // // );
 
   </script>
 {% endblock %}
