@@ -12,6 +12,11 @@
     </div>
     <h3>2. Choisissez ensuite les paramètres de l'import</h3>
     <div>
+      <label>Nom du champ de l'utilisateur</label>
+      <input id="username" name="username">
+      <p><small>Ex: import géoportail</small></p>
+    </div>
+    <div>
       <label>Programme dans lequel charger les données</label>
       <select id="program" name="program">
         {% for p in programs %}

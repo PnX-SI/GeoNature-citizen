@@ -41,20 +41,23 @@ def import_geojson(data, request_form):
         # current_app.logger.critical(f)
         id_site = store_site_feature(
             f,
+            request_form['username'],
             request_form['feature_name'],
             request_form['program'],
             request_form['site_type']
         )
 
-        store_visit_feature(f, id_site, mapping_dict)
+        store_visit_feature(f, request_form['username'], id_site, mapping_dict)
 
 
-def store_site_feature(f, feature_name, program, site_type):
+def store_site_feature(f, username, feature_name, program, site_type):
     """
     Store Site feature
 
     :param f: geojson feature
     :type f: feature object
+    :param username: name for the username
+    :type username: string
     :param feature_name: name of the field that stores the name
     :type feature_name: string
     :param program: id of the program to which data will be uploaded
@@ -67,7 +70,7 @@ def store_site_feature(f, feature_name, program, site_type):
     new_site = SiteModel()
     new_site.name = f["properties"].get(feature_name)
     new_site.uuid_sinp = uuid.uuid4()
-    new_site.obs_txt = 'test import'
+    new_site.obs_txt = username
     new_site.id_program = program
     new_site.id_type = site_type
     new_site.geom = convert_coordinates_to_geom(f)
@@ -78,12 +81,14 @@ def store_site_feature(f, feature_name, program, site_type):
     return new_site.id_site
 
 
-def store_visit_feature(f, id_site, mapping_dict):
+def store_visit_feature(f, username, id_site, mapping_dict):
     """
     Store Visit feature
 
     :param f: geojson feature
     :type f: feature object
+    :param username: name for the username
+    :type username: string
     :param feature_name: name of the field that stores the name
     :param id_site: id of the site that was just uploaded
     :type id_site: integer
@@ -92,7 +97,7 @@ def store_visit_feature(f, id_site, mapping_dict):
     """
     new_visit = VisitModel()
     new_visit.id_site = id_site
-    new_visit.obs_txt = 'test import'
+    new_visit.obs_txt = username
     new_visit.json_data = convert_feature_to_json(f, mapping_dict)
     db.session.add(new_visit)
     db.session.commit()
