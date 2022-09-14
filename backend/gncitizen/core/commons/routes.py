@@ -93,7 +93,7 @@ class UploadGeojsonView(BaseView):
                 print('No selected file')
                 return redirect(request.url)
             if file and allowed_file(file.filename):
-                import_geojson(json.load(file), feature_name, program, site_type)
+                import_geojson(json.load(file), request.form)
                 return {
                     'results': file.filename
                 }, 200

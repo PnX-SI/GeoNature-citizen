@@ -1,11 +1,16 @@
 {% extends 'admin/master.html' %}
 {% block body %}
-  <p>Charger des données</p>
+  <h2>Import de données géographiques dans des sites et des rapports de visites</h2>
   <form method="POST" action="" enctype="multipart/form-data">
+    <h3>1. Commencez par charger un fichier de données géographiques au format geojson</h3>
     <div>
       <input type="file" name="file">
-      <p><small>Charger un fichier geojson valide</small></p>
+      <p><small>Charger un fichier geojson valide, dans le système de coordonnées WGS84 (long, lat)</small></p>
     </div>
+    <div>
+      <p><span id="geojson_count"></span></p>
+    </div>
+    <h3>2. Choisissez ensuite les paramètres de l'import</h3>
     <div>
       <label>Programme dans lequel charger les données</label>
       <select id="program" name="program">
@@ -30,6 +35,18 @@
       </select>
       <p><small>Charger le geojson pour choisir un champ</small></p>
     </div>
+    <div>
+      <p>Correspondance des champs pour les "visits"</p>
+      <ul id="fieldMappingList">
+        <li>
+          <span>Nom du champ du geojson   </span> ->
+          <span>Nom du champ du formulaire</span>
+        </li>
+      </ul>
+      <a id="addFieldMappingButton">Ajouter une correspondance</a>
+    </div>
+
+    <h3>3. Lancer l'import</h3>
     <div><input type="submit" value="Importer"></div>
   </form>
 
@@ -51,23 +68,41 @@
         let file = inputFile.files[0];
         file.text().then(
           t => {
-            if ('features' in JSON.parse(t)) {
-              if ('properties' in JSON.parse(t).features[0]) {
+            let content = JSON.parse(t);
+            if ('features' in content) {
+              if ('properties' in content.features[0]) {
                 populateOptions(
                   selectFeatureName,
-                  Object.keys(JSON.parse(t).features[0].properties)
+                  Object.keys(content.features[0].properties)
                 );
               }
             }
+            let geojson_count = document.querySelectorAll('span#geojson_count')[0];
+            geojson_count.innerHTML = `-> <b>${content.features.length}</b> élément(s) à importer`;
           }
         )
       }
     );
 
-    // let programSelect = document.querySelectorAll('select[name="program"]')[0];
-    // // document.addEventListener('DOMContentLoaded',
-    // //   populateOptions(programSelect, {{ programs|safe }});
-    // // );
+    let fieldMappingList = document.querySelectorAll('ul#fieldMappingList')[0];
+
+    const addFieldMapping = () => {
+        let li = document.createElement('li');
+        let leftInput = document.createElement('input');
+        leftInput.setAttribute('type', 'text');
+        leftInput.setAttribute('name', `field_mapping_left_${fieldMappingList.children.length}`);
+        let rightInput = document.createElement('input');
+        rightInput.setAttribute('type', 'text');
+        rightInput.setAttribute('name', `field_mapping_right_${fieldMappingList.children.length}`);
+        li.append(leftInput, ' -> ', rightInput);
+        fieldMappingList.appendChild(li);
+    };
+
+    let addFieldMappingButton = document.querySelectorAll('a#addFieldMappingButton')[0];
+    addFieldMappingButton.addEventListener('click', (e) =>
+      addFieldMapping()
+    );
+
 
   </script>
 {% endblock %}
