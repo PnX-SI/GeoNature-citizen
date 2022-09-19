@@ -77,27 +77,6 @@ admin.add_view(
 class UploadGeojsonView(BaseView):
     @expose("/", methods=['POST', 'GET'])
     def index(self):
-        if request.method == 'POST':
-            # check if the post request has the file part
-            if 'file' not in request.files:
-                print('No file part')
-                return redirect(request.url) #TODO causes an error
-            file = request.files['file']
-            feature_name = request.form['feature_name']
-            program = request.form['program']
-            site_type = request.form['site_type']
-            current_app.logger.critical(feature_name)
-            # if user does not select file, browser also
-            # submit an empty part without filename
-            if file.filename == '':
-                print('No selected file')
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
-                import_geojson(json.load(file), request.form)
-                return {
-                    'results': file.filename
-                }, 200
-                #return self.render('upload_geojson.html')
 
         programs = [
             d.as_dict() for d in ProgramsModel.query.order_by(ProgramsModel.id_program.asc()).all()
@@ -106,6 +85,25 @@ class UploadGeojsonView(BaseView):
         site_types = [
             d.as_dict() for d in SiteTypeModel.query.order_by(SiteTypeModel.id_typesite.asc()).all()
         ]
+
+        if request.method == 'POST':
+            # check if the post request has the file part
+            if 'file' not in request.files:
+                print('No file part')
+                return self.render('upload_geojson.html', programs=programs, site_types=site_types)
+            file = request.files['file']
+            feature_name = request.form['feature_name'] if request.form.get('feature_name') else None
+            program = request.form['program'] if request.form.get('program') else None
+            site_type = request.form['site_type'] if request.form.get('site_type') else None
+            # if user does not select file, browser also
+            # submit an empty part without filename
+            if file.filename == '':
+                print('No selected file')
+                return self.render('upload_geojson.html', programs=programs, site_types=site_types)
+            if file and allowed_file(file.filename) and feature_name:
+                import_geojson(json.load(file), request.form)
+                return self.render('upload_geojson.html', success=True)
+
 
         return self.render('upload_geojson.html', programs=programs, site_types=site_types)
 
@@ -116,7 +114,7 @@ def allowed_file(filename):
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-admin.add_view(UploadGeojsonView(name='Upload', endpoint='upload'))
+admin.add_view(UploadGeojsonView(name='Téléversement', endpoint='upload'))
 
 @commons_api.route("media/<item>")
 def get_media(item):
