@@ -127,6 +127,24 @@ def get_site_visits(site_id):
         for v in visits
     ]
 
+def get_merged_site_visits(site_id):
+    """ create a simple dict of the last value of all visit keys """
+    visits = (
+        db.session.query(VisitModel,)
+        .filter(VisitModel.id_site == site_id)
+        .order_by(VisitModel.timestamp_update.asc())
+        .all()
+    )
+
+    merged_visits = {}
+    for v in visits:
+        for k,v in v.json_data.items():
+            if v:
+                merged_visits[k] = v
+
+    return merged_visits
+
+
 def format_site(site, dashboard=False):
     feature = get_geojson_feature(site.geom)
     site_dict = site.as_dict(True)
@@ -156,8 +174,10 @@ def prepare_sites(sites, dashboard=False):
         if len(photos) > 0:
             formatted["properties"]["photo"] = photos[0]
         visits = get_site_visits(site.id_site)
+        merged_visits = get_merged_site_visits(site.id_site)
         if len(visits) > 0:
             formatted["properties"]["visits"] = visits
+            formatted["properties"]["merged_visits"] = merged_visits
         features.append(formatted)
     data = FeatureCollection(features)
     data["count"] = count
