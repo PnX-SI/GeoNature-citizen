@@ -27,7 +27,9 @@ def convert_feature_to_json(feature, mapping_dict):
     mapping_dict_left = dict(filter(lambda item: item[0].startswith('field_mapping_left'), mapping_dict.items()))
 
     for i,v in enumerate(mapping_dict_left.items()):
-        res[mapping_dict.get(f'field_mapping_right_{i+1}')] = feature["properties"].get(mapping_dict.get(f'field_mapping_left_{i+1}'))
+        value = feature["properties"].get(mapping_dict.get(f'field_mapping_left_{i}'))
+        if value:
+            res[mapping_dict.get(f'field_mapping_right_{i}')] = value
 
     return res
 
