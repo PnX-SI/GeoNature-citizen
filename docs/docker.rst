@@ -85,10 +85,9 @@ Lancer les services
 Lancer ``./docker.sh``
 
 Lancer cette commande : ``docker-compose -f docker-compose.yml -f
-docker-compose.prod.yml up``
+docker-compose.prod.yml up``.
 Cette commande va construire les images et les monter une par une
 dans un conteneur qui leur est propre.
-Il est très important de spécifier les 2 fichiers yml en production
 
 Il est possible de détacher le programme (comme un ``&`` sur Linux) et 
 donc toute la sortie de la commande en lançant 
@@ -105,7 +104,7 @@ Contruire une ou plusieurs images
 l'image
 
 Lancer : ``docker-compose -f docker-compose.yml -f docker-compose.prod.yml build 
-frontend``. Cela va reconstruire le frontend
+frontend``. Cela va reconstruire le frontend.
 
 Pour construire puis lancer directement le service : ``docker-compose -f
 docker-compose.yml -f docker-compose.prod.yml up frontend --build``
@@ -114,7 +113,7 @@ docker-compose.yml -f docker-compose.prod.yml up frontend --build``
 
 Lancer : ``docker-compose -f docker-compose.yml -f docker-compose.prod.yml build`` 
 OU : ``docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
---build`` pour tout reconstruire et relancer tous les services
+--build`` pour tout reconstruire et relancer tous les services.
 
 
 Utiliser Docker dans Citizen en developpement
@@ -127,7 +126,7 @@ et construira les images pour le developpement
 (rechargement automatique du front, accès à tous les services et pas
 juste au proxy...).
 En effet, par défaut, docker-compose prend comme fichiers ``docker-compose.yml``
-ainsi que ``docker-compose.override.yml``
+ainsi que ``docker-compose.override.yml``.
 
 
 Ce qu'il reste à améliorer
