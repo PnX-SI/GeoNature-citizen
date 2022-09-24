@@ -5,4 +5,4 @@ WORKDIR /app
 RUN pip install --upgrade pip \
     && pip install poetry
     
-CMD poetry install; poetry run python3 wsgi.py
+CMD poetry install; poetry run ./entrypoint.sh python3 wsgi.py
