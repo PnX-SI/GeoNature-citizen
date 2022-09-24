@@ -4,14 +4,27 @@ services:
   frontend:
     container_name: citizen-front
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${FRONT_PORT-4000}/"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - citizen-kane
 
   backend:
     container_name: citizen-back
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${API_PORT-5002}/api/admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     networks:
       - citizen-kane
 
@@ -25,13 +38,20 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD-dbpwd}
     volumes:
       - citizen_data:/var/lib/postgresql/data/pgdata
+    healthcheck:      
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} -h 127.0.0.1"]     
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     networks:
       - citizen-kane
 
   nginx:
     container_name: citizen-nginx
     depends_on:
-      - frontend
+      frontend:
+        condition: service_healthy
     volumes:
       - ./config/backoffice_htpasswd:/etc/nginx/conf/.htpasswd
     networks:
