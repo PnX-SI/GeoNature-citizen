@@ -125,6 +125,8 @@ class VisitView(ModelView):
     column_formatters = dict(
         timestamp_create=lambda v, c, m, p: m.timestamp_create.strftime('%d.%m.%Y - %H:%M')
     )
+    column_default_sort = ("timestamp_create", True)
+    column_searchable_list = ["json_data", "obs_txt"]
     can_export = True
 
 class CustomFormView(ModelView):

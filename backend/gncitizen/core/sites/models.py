@@ -67,7 +67,7 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     geom = db.Column(Geometry("GEOMETRY", 4326))
 
     def __repr__(self):
-        return "<Site {0}>".format(self.id_site)
+        return "<Site {0} - {1}>".format(self.id_site, self.name)
 
 
 @serializable
