@@ -4,7 +4,7 @@ import uuid
 from server import db
 from flask import current_app
 from geoalchemy2.shape import from_shape
-from shapely.geometry import Point, LineString, Polygon, asShape
+from shapely.geometry import Point, LineString, Polygon, MultiPolygon, MultiLineString, asShape
 
 from gncitizen.core.sites.models import SiteModel, VisitModel
 
@@ -18,6 +18,10 @@ def convert_coordinates_to_geom(f):
         return from_shape(LineString(shape), srid=4326)
     elif f["geometry"]["type"] == "Polygon":
         return from_shape(Polygon(shape), srid=4326)
+    elif f["geometry"]["type"] == "MultiLineString":
+        return from_shape(MultiLineString(shape), srid=4326)
+    elif f["geometry"]["type"] == "MultiPolygon":
+        return from_shape(MultiPolygon(shape), srid=4326)
 
 def convert_feature_to_json(feature, mapping_dict):
     """ Returns a object of properties """

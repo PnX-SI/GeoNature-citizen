@@ -147,22 +147,23 @@ def get_merged_site_visits(site_id):
 
 def format_site(site, dashboard=False):
     feature = get_geojson_feature(site.geom)
-    site_dict = site.as_dict(True)
-    for k in site_dict:
-        if k not in ("geom",):
-            feature["properties"][k] = site_dict[k]
-    if dashboard:
-        # Site creator can delete it only if no visit have been added by others
-        feature["properties"]["creator_can_delete"] = (
-            site.id_role
-            and VisitModel.query.filter_by(id_site=site.id_site)
-            .filter(
-                or_(VisitModel.id_role != site.id_role, VisitModel.id_role.is_(None))
+    if feature:
+        site_dict = site.as_dict(True)
+        for k in site_dict:
+            if k not in ("geom",):
+                feature["properties"][k] = site_dict[k]
+        if dashboard:
+            # Site creator can delete it only if no visit have been added by others
+            feature["properties"]["creator_can_delete"] = (
+                site.id_role
+                and VisitModel.query.filter_by(id_site=site.id_site)
+                .filter(
+                    or_(VisitModel.id_role != site.id_role, VisitModel.id_role.is_(None))
+                )
+                .count()
+                == 0
             )
-            .count()
-            == 0
-        )
-    return feature
+        return feature
 
 
 def prepare_sites(sites, dashboard=False):
