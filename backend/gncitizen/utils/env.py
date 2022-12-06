@@ -3,17 +3,18 @@ import os
 import sys
 from pathlib import Path
 
-# from datetime import timedelta
-
 from flasgger import Swagger
 from flask_admin import Admin
 from flask_ckeditor import CKEditor
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from gncitizen.utils.toml import load_toml
 
 from gncitizen import __version__
-from gncitizen.utils.toml import load_toml
+
+# from datetime import timedelta
+
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / "backend"
@@ -40,7 +41,7 @@ def get_config_file_path(config_file=None):
 
 
 def load_config(config_file=None):
-    """ Load the geonature-citizen configuration from a given file"""
+    """Load the geonature-citizen configuration from a given file"""
     config_gnc = load_toml(get_config_file_path())
     config_gnc["FLASK_ADMIN_FLUID_LAYOUT"] = True
     config_gnc["MAPBOX_MAP_ID"] = "light-v10"
@@ -56,10 +57,7 @@ def load_config(config_file=None):
 
 def valid_api_url(url):
     """Return a valid API URL ending with /"""
-    if url[-1:] == "/":
-        url = url
-    else:
-        url = url + "/"
+    url = url if url[-1:] == "/" else url + "/"
     return url
 
 
