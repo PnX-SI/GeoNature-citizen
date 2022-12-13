@@ -35,6 +35,7 @@ Documentation : https://geonature-citizen.readthedocs.io
 - https://atlasdelabiodiversite.cote-emeraude.fr
 - https://enquetes.lashf.org
 - https://observatoire-biodiversite.parc-du-vercors.fr
+- https://enquetes-biodivrennes.fr
 
 ## Solutions logicielles
 
