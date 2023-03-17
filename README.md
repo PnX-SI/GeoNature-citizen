@@ -36,6 +36,7 @@ Documentation : https://geonature-citizen.readthedocs.io
 - https://enquetes.lashf.org
 - https://observatoire-biodiversite.parc-du-vercors.fr
 - https://enquetes-biodivrennes.fr
+- https://enquetes.clicnat.fr
 
 ## Solutions logicielles
 
