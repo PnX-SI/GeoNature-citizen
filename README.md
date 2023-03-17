@@ -37,6 +37,10 @@ Documentation : https://geonature-citizen.readthedocs.io
 - https://observatoire-biodiversite.parc-du-vercors.fr
 - https://enquetes-biodivrennes.fr
 - https://enquetes.clicnat.fr
+- https://obs-citoyenne.pyrenees-parcnational.fr
+- https://observation.lehavre.fr
+- https://enquetes.cbiodiv.org
+- https://jobservemonparc.fr
 
 ## Solutions logicielles
 
