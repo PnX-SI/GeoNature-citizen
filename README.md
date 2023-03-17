@@ -34,6 +34,7 @@ Documentation : https://geonature-citizen.readthedocs.io
 - https://phenoclim.org/accueil/individus-phenoclim/
 - https://atlasdelabiodiversite.cote-emeraude.fr/fr/home
 - https://enquetes.lashf.org/fr/home
+- https://enquetes.clicnat.fr/
 
 ## Solutions logicielles
 
