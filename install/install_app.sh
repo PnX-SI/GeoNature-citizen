@@ -73,7 +73,7 @@ sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-a
 cd $DIR/backend
 venv_path=$DIR/backend/${venv_dir:-".venv"}
 if [ ! -f $venv_path/bin/activate ]; then
-  python3 -m virtualenv $venv_path
+  python3 -m venv $venv_path
 fi
 source .venv/bin/activate
 pip install -r requirements.txt
