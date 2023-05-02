@@ -26,14 +26,21 @@ Documentation : https://geonature-citizen.readthedocs.io
 
 - https://obs.mercantour-parcnational.fr
 - https://www.a-vos-mares.org/participez/
-- http://abc-meylan.lpo-aura.org/obs/home
+- http://abc-meylan.lpo-aura.org
 - http://biodiv-valenceromansagglo.lpo-aura.org
-- https://biomap.champs-libres.be/fr/home
-- https://gncitizen.lpo-aura.org/fr/home
-- https://citizen.nature-occitanie.org/fr/home
-- https://phenoclim.org/accueil/individus-phenoclim/
-- https://atlasdelabiodiversite.cote-emeraude.fr/fr/home
-- https://enquetes.lashf.org/fr/home
+- https://biomap.champs-libres.be
+- https://gncitizen.lpo-aura.org
+- https://citizen.nature-occitanie.org
+- https://phenoclim.org/accueil/individus-phenoclim
+- https://atlasdelabiodiversite.cote-emeraude.fr
+- https://enquetes.lashf.org
+- https://observatoire-biodiversite.parc-du-vercors.fr
+- https://enquetes-biodivrennes.fr
+- https://enquetes.clicnat.fr
+- https://obs-citoyenne.pyrenees-parcnational.fr
+- https://observation.lehavre.fr
+- https://enquetes.cbiodiv.org
+- https://jobservemonparc.fr
 
 ## Solutions logicielles
 
