@@ -14,7 +14,6 @@ from gncitizen.utils.env import (
     migrate,
     swagger,
 )
-from gncitizen.utils.init_data import create_schemas, populate_modules
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -111,9 +110,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 except Exception as e:
                     current_app.logger.debug(e)
                     prefix = url_prefix
-                app.register_blueprint(
-                    module.backend.blueprint.blueprint, url_prefix=prefix
-                )
+                app.register_blueprint(module.backend.blueprint.blueprint, url_prefix=prefix)
                 try:
                     module.backend.models.create_schema(db)
                 except Exception as e:

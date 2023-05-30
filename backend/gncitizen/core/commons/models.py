@@ -8,11 +8,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 from geoalchemy2 import Geometry
-from geoalchemy2.functions import (
-    ST_GeomFromGeoJSON,
-    ST_GeomFromKML,
-    ST_SetSRID,
-)
+from geoalchemy2.functions import ST_GeomFromGeoJSON, ST_GeomFromKML, ST_SetSRID
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.declarative import declared_attr
@@ -106,9 +102,7 @@ class GeometryModel(TimestampMixinModel, db.Model):
                     if abs(x) > 180 or abs(y) > 180:
                         raise Exception("Mauvais système de projection")
                 # Convert Geo
-                self.geom = ST_SetSRID(
-                    ST_GeomFromGeoJSON(json.dumps(json_geom)), 4326
-                )
+                self.geom = ST_SetSRID(ST_GeomFromGeoJSON(json.dumps(json_geom)), 4326)
             elif ext == ".kml":
                 kml_root = ET.fromstring(geo_data)
                 kml_geom_elt = None
@@ -119,13 +113,11 @@ class GeometryModel(TimestampMixinModel, db.Model):
                         if "MultiGeometry" in child.tag:
                             # We want only Polygon nodes inside the geometry
                             for elt in kml_geom_elt.getchildren():
-                                if not "Polygon" in elt.tag:
+                                if "Polygon" not in elt.tag:
                                     raise Exception(gnc_invalid_err_message)
                 if kml_geom_elt is None:
                     raise Exception(gnc_invalid_err_message)
-                kml_geom = ET.tostring(
-                    kml_geom_elt, encoding="unicode", method="xml"
-                )
+                kml_geom = ET.tostring(kml_geom_elt, encoding="unicode", method="xml")
                 self.geom = ST_GeomFromKML(kml_geom)  # KML is always 4326 srid
 
     def __repr__(self):
@@ -165,9 +157,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     unique_id_program = db.Column(
         UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False
     )
-    id_project = db.Column(
-        db.Integer, db.ForeignKey(ProjectModel.id_project), nullable=False
-    )
+    id_project = db.Column(db.Integer, db.ForeignKey(ProjectModel.id_project), nullable=False)
     title = db.Column(db.String(50), nullable=False)
     short_desc = db.Column(db.String(200), nullable=False)
     long_desc = db.Column(db.Text(), nullable=False)
@@ -182,15 +172,9 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     )
     module = relationship("TModules")
     taxonomy_list = db.Column(db.Integer, nullable=True)
-    is_active = db.Column(
-        db.Boolean(), server_default=expression.true(), default=True
-    )
-    id_geom = db.Column(
-        db.Integer, db.ForeignKey(GeometryModel.id_geom), nullable=False
-    )
-    id_form = db.Column(
-        db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
-    )
+    is_active = db.Column(db.Boolean(), server_default=expression.true(), default=True)
+    id_geom = db.Column(db.Integer, db.ForeignKey(GeometryModel.id_geom), nullable=False)
+    id_form = db.Column(db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True)
     custom_form = relationship("CustomFormModel")
     geometry = relationship("GeometryModel")
     project = relationship("ProjectModel")

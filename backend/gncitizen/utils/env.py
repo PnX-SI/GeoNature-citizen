@@ -9,9 +9,9 @@ from flask_ckeditor import CKEditor
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from gncitizen.utils.toml import load_toml
 
 from gncitizen import __version__
+from gncitizen.utils.toml import load_toml
 
 # from datetime import timedelta
 
@@ -122,9 +122,7 @@ taxhub_url = valid_api_url(app_conf.get("API_TAXHUB", ""))
 
 taxhub_lists_url = taxhub_url + "biblistes/"
 
-API_CITY = app_conf.get(
-    "API_CITY", "https://nominatim.openstreetmap.org/reverse"
-)
+API_CITY = app_conf.get("API_CITY", "https://nominatim.openstreetmap.org/reverse")
 
 
 def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):

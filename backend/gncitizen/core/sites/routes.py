@@ -4,7 +4,7 @@ import uuid
 
 import xlwt
 from flask import Blueprint, current_app, make_response, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import Point, asShape
@@ -14,13 +14,11 @@ from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.users.models import UserModel
-from gncitizen.utils.env import admin
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
 from server import db
 
-from .admin import SiteTypeView
 from .models import MediaOnVisitModel, SiteModel, SiteTypeModel, VisitModel
 
 sites_api = Blueprint("sites", __name__)
@@ -104,9 +102,7 @@ def get_site_photos(site_id):
             MediaOnVisitModel,
             MediaOnVisitModel.id_media == MediaModel.id_media,
         )
-        .join(
-            VisitModel, VisitModel.id_visit == MediaOnVisitModel.id_data_source
-        )
+        .join(VisitModel, VisitModel.id_visit == MediaOnVisitModel.id_data_source)
         .all()
     )
     return [
@@ -449,9 +445,7 @@ def update_visit(visit_id):
         return {"message": str(e)}, 400
 
 
-@sites_api.route(
-    "/<int:site_id>/visits/<int:visit_id>/photos", methods=["POST"]
-)
+@sites_api.route("/<int:site_id>/visits/<int:visit_id>/photos", methods=["POST"])
 @json_resp
 @jwt_required(optional=True)
 def post_photo(site_id, visit_id):
@@ -489,8 +483,7 @@ def delete_site(site_id):
             SiteModel.query.filter_by(id_site=site_id).delete()
             db.session.commit()
             return ("Site deleted successfully"), 200
-        else:
-            return ("delete unauthorized"), 403
+        return ("delete unauthorized"), 403
     except Exception as e:
         return {"message": str(e)}, 500
 
@@ -501,17 +494,12 @@ def delete_site(site_id):
 def delete_visit(visit_id):
     current_user = get_user_if_exists()
     # try:
-    visit = (
-        db.session.query(VisitModel)
-        .filter(VisitModel.id_visit == visit_id)
-        .first()
-    )
+    visit = db.session.query(VisitModel).filter(VisitModel.id_visit == visit_id).first()
     if current_user.id_user == visit.id_role:
         VisitModel.query.filter_by(id_visit=visit_id).delete()
         db.session.commit()
         return ("Site deleted successfully"), 200
-    else:
-        return ("delete unauthorized"), 403
+    return ("delete unauthorized"), 403
     # except Exception as e:
     #     return {"message": str(e)}, 500
 
@@ -547,9 +535,7 @@ def export_sites_xls(user_id):
             ws.write(row, col, field["col_name"], title_style)
         row += 1
         for site in sites:
-            site.coordinates = get_geojson_feature(site.geom)["geometry"][
-                "coordinates"
-            ]
+            site.coordinates = get_geojson_feature(site.geom)["geometry"]["coordinates"]
             for col, field in enumerate(fields):
                 args = []
                 if field.get("style"):
@@ -568,9 +554,7 @@ def export_sites_xls(user_id):
                 "style": date_style,
             },
         )
-        json_keys = list(
-            set([key for v in visits for key in v.json_data.keys()])
-        )
+        json_keys = list(set([key for v in visits for key in v.json_data.keys()]))
         row, col = 0, 0
         for field in basic_fields:
             ws.write(row, col, field["col_name"], title_style)
@@ -595,9 +579,7 @@ def export_sites_xls(user_id):
         xls_file = io.BytesIO()
         wb.save(xls_file)
         output = make_response(xls_file.getvalue())
-        output.headers["Content-Disposition"] = (
-            "attachment; filename=" + "export_sites.xls"
-        )
+        output.headers["Content-Disposition"] = "attachment; filename=" + "export_sites.xls"
         output.headers["Content-type"] = "application/xls"
         return output
     except Exception as e:

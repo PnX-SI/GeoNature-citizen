@@ -9,11 +9,7 @@ from flask_ckeditor import CKEditorField
 from wtforms import SelectField
 
 from gncitizen.core.sites.models import CorProgramSiteTypeModel
-from gncitizen.utils.admin import (
-    CustomJSONField,
-    CustomTileView,
-    json_formatter,
-)
+from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatter
 from gncitizen.utils.env import MEDIA_DIR, taxhub_lists_url
 
 logger = current_app.logger
@@ -29,9 +25,7 @@ def taxonomy_lists():
             taxa_lists = taxa_lists.json()["data"]
             logger.debug(taxa_lists)
             for taxa_list in taxa_lists:
-                taxonomy_lists.append(
-                    (taxa_list["id_liste"], taxa_list["nom_liste"])
-                )
+                taxonomy_lists.append((taxa_list["id_liste"], taxa_list["nom_liste"]))
         except Exception as e:
             logger.critical(str(e))
     logger.debug(taxonomy_lists)

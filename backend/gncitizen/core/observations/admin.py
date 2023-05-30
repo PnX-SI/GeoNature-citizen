@@ -1,8 +1,4 @@
-from gncitizen.utils.admin import (
-    CustomJSONField,
-    CustomTileView,
-    json_formatter,
-)
+from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatter
 
 
 class ObservationView(CustomTileView):

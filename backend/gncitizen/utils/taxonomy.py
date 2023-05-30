@@ -6,19 +6,14 @@
 from functools import lru_cache
 from typing import Dict, List, Union
 
+import requests
 from flask import current_app
 
-if current_app.config.get("API_TAXHUB") is None:
-    from gncitizen.core.taxonomy.models import Taxref
-else:
-    import requests
-    from requests.models import Response
-
-    TAXHUB_API = (
-        current_app.config["API_TAXHUB"] + "/"
-        if current_app.config["API_TAXHUB"][-1] != "/"
-        else current_app.config["API_TAXHUB"]
-    )
+TAXHUB_API = (
+    current_app.config["API_TAXHUB"] + "/"
+    if current_app.config["API_TAXHUB"][-1] != "/"
+    else current_app.config["API_TAXHUB"]
+)
 
 logger = current_app.logger
 
@@ -45,7 +40,7 @@ def taxhub_rest_get_all_lists() -> Dict:
     res = requests.get("{}biblistes".format(TAXHUB_API))
     logger.debug(f"<taxhub_rest_get_all_lists> URL {res.url}")
     res.raise_for_status()
-    return res.json().get('data', [])
+    return res.json().get("data", [])
 
 
 def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
@@ -62,11 +57,7 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
         media_types = ("Photo_gncitizen", "Photo_principale", "Photo")
         i = 0
         while i < len(media_types):
-            filtered_medias = [
-                d
-                for d in data["medias"]
-                if d["nom_type_media"] == media_types[i]
-            ]
+            filtered_medias = [d for d in data["medias"] if d["nom_type_media"] == media_types[i]]
             if len(filtered_medias) >= 1:
                 break
             i += 1
@@ -99,7 +90,7 @@ def get_specie_from_cd_nom(cd_nom):
     """
 
     res = requests.get(f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}")
-    official_taxa = res.json().get('items', [{}])[0]
+    official_taxa = res.json().get("items", [{}])[0]
 
     common_names = official_taxa.get("nom_vern", "")
     common_name = common_names.split(",")[0]

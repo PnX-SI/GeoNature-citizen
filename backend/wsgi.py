@@ -2,10 +2,9 @@
     Give a unique entry point for gunicorn
 """
 
+from gncitizen import __version__
 from gncitizen.utils.env import load_config
 from server import get_app
-
-from gncitizen import __version__
 
 # get the app config file
 config = load_config()

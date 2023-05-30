@@ -1,21 +1,12 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
-import json
-
 from flask import Blueprint, current_app, request, send_from_directory
 from geojson import FeatureCollection
 from sqlalchemy import and_, distinct
 from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
 
-from gncitizen.core.commons.admin import (
-    CustomFormView,
-    GeometryView,
-    ProgramView,
-    ProjectView,
-    UserView,
-)
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.sites.admin import SiteTypeView
 from gncitizen.core.sites.models import (
@@ -28,9 +19,11 @@ from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin
 from server import db
 
+from .admin import CustomFormView, GeometryView, ProgramView, ProjectView, UserView
 from .models import (
     CustomFormModel,
     GeometryModel,
+    MediaModel,
     ProgramsModel,
     ProjectModel,
     TModules,
@@ -40,9 +33,7 @@ commons_api = Blueprint("commons", __name__)
 
 
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
-admin.add_view(
-    ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes")
-)
+admin.add_view(ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes"))
 admin.add_view(
     GeometryView(
         GeometryModel,
@@ -59,16 +50,8 @@ admin.add_view(
         category="Enquêtes",
     )
 )
-admin.add_view(
-    SiteTypeView(
-        SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes"
-    )
-)
-admin.add_view(
-    ProgramView(
-        ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"
-    )
-)
+admin.add_view(SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes"))
+admin.add_view(ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"))
 
 
 @commons_api.route("media/<item>")
@@ -129,15 +112,15 @@ def get_modules():
 @json_resp
 def get_stat():
     try:
-        stats = {}
-        stats["nb_obs"] = ObservationModel.query.count()
-        stats["nb_user"] = UserModel.query.count()
-        stats["nb_program"] = ProgramsModel.query.filter(
-            ProgramsModel.is_active == True
-        ).count()
-        stats["nb_espece"] = ObservationModel.query.distinct(
-            ObservationModel.cd_nom
-        ).count()
+        stats = {
+            "nb_obs": ObservationModel.query.count(),
+            "nb_user": UserModel.query.count(),
+            "nb_project": ProjectModel.query.count(),
+            "nb_program": ProgramsModel.query.filter(ProgramsModel.is_active.is_(True)).count(),
+            "nb_espece": ObservationModel.query.distinct(ObservationModel.cd_nom).count(),
+            "nb_medias": MediaModel.query.count(),
+        }
+
         return (stats, 200)
     except Exception as e:
         current_app.logger.critical("[get_observations] Error: %s", str(e))
@@ -237,9 +220,7 @@ def get_project_stats(pk):
             func.count(distinct(SiteModel.id_site)).label("sites"),
         )
         .select_from(ProjectModel)
-        .join(
-            ProgramsModel, ProgramsModel.id_project == ProjectModel.id_project
-        )
+        .join(ProgramsModel, ProgramsModel.id_project == ProjectModel.id_project)
         .outerjoin(
             ObservationModel,
             ObservationModel.id_program == ProgramsModel.id_program,
@@ -248,13 +229,12 @@ def get_project_stats(pk):
         .outerjoin(VisitModel, VisitModel.id_site == SiteModel.id_site)
         .filter(
             and_(
-                ProjectModel.id_project == pk, ProgramsModel.is_active == True
+                ProjectModel.id_project == pk,
+                ProgramsModel.is_active.is_(True),
             )
         )
     )
-    current_app.logger.debug(
-        f"Query {type(query.first())} {dir(query.first())}"
-    )
+    current_app.logger.debug(f"Query {type(query.first())} {dir(query.first())}")
     return query.first()._asdict()
 
 
@@ -276,9 +256,7 @@ def get_program(pk):
         description: A list of all programs
     """
     # try:
-    datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(
-        1
-    )
+    datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
     if datas.count() != 1:
         current_app.logger.warning("[get_program] Program not found")
         return {"message": "Program not found"}, 400
@@ -288,9 +266,7 @@ def get_program(pk):
             feature = data.get_geofeature()
             # Get sites types for sites programs. TODO condition
             if feature["properties"]["module"]["name"] == "sites":
-                site_types_qs = CorProgramSiteTypeModel.query.filter_by(
-                    id_program=pk
-                )
+                site_types_qs = CorProgramSiteTypeModel.query.filter_by(id_program=pk)
                 site_types = [
                     {
                         "value": st.site_type.id_typesite,
