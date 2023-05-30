@@ -20,9 +20,7 @@ from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin, taxhub_lists_url
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.geo import (
-    get_municipality_id_from_wkb
-)
+from gncitizen.utils.geo import get_municipality_id_from_wkb
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
@@ -97,9 +95,7 @@ def generate_observation_geojson(id_observation):
     result_dict = observation.ObservationModel.as_dict(True)
     result_dict["observer"] = {"username": observation.username}
     name = observation.ObservationModel.municipality
-    result_dict["municipality"] = {
-        "name": name
-    }
+    result_dict["municipality"] = {"name": name}
 
     # Populate "geometry"
     features = []
@@ -286,11 +282,11 @@ def post_observation():
         # If municipality is not provided: call API_CITY
         if not newobs.municipality:
             newobs.municipality = get_municipality_id_from_wkb(_coordinates)
-        
+
         # If taxon name is not provided: call taxhub
         if not newobs.name:
             taxon = get_specie_from_cd_nom(newobs.cd_nom)
-            newobs.name = taxon.get('nom_vern', '')
+            newobs.name = taxon.get("nom_vern", "")
 
         newobs.uuid_sinp = uuid.uuid4()
         db.session.add(newobs)
@@ -523,9 +519,7 @@ def get_program_observations(
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
             name = observation.ObservationModel.municipality
-            feature["properties"]["municipality"] = {
-                "name": name
-            }
+            feature["properties"]["municipality"] = {"name": name}
 
             # Observer
             feature["properties"]["observer"] = {
@@ -659,9 +653,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
             name = observation.ObservationModel.municipality
-            feature["properties"]["municipality"] = {
-                "name": name
-            }
+            feature["properties"]["municipality"] = {"name": name}
 
             # Observer
             feature["properties"]["observer"] = {
@@ -750,7 +742,7 @@ def get_observations_by_user_id(user_id):
                     func.json_build_array(
                         MediaModel.filename, MediaModel.id_media
                     )
-                ).label("images")
+                ).label("images"),
             )
             .filter(ObservationModel.id_role == user_id)
             .join(
@@ -810,9 +802,7 @@ def get_observations_by_user_id(user_id):
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
             name = observation.ObservationModel.municipality
-            feature["properties"]["municipality"] = {
-                "name": name
-            }
+            feature["properties"]["municipality"] = {"name": name}
 
             # Observer
             feature["properties"]["observer"] = {
@@ -883,7 +873,14 @@ def update_observation():
     try:
         update_data = request.form
         update_obs = {}
-        for prop in ["cd_nom", "name", "count", "comment", "date", "municipality"]:
+        for prop in [
+            "cd_nom",
+            "name",
+            "count",
+            "comment",
+            "date",
+            "municipality",
+        ]:
             update_obs[prop] = update_data[prop]
         try:
             _coordinates = json.loads(update_data["geometry"])
@@ -891,7 +888,9 @@ def update_observation():
             _shape = asShape(_point)
             update_obs["geom"] = from_shape(Point(_shape), srid=4326)
             if not update_obs["municipality"]:
-                update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
+                update_obs["municipality"] = get_municipality_id_from_wkb(
+                    _coordinates
+                )
         except Exception as e:
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)
@@ -965,8 +964,59 @@ def delete_observation(id_obs):
                 ObservationModel.id_role == current_user.id_user,
             ).delete()
             db.session.commit()
-            return ("observation deleted successfully"), 200
+            return {"message": "observation deleted successfully"}, 200
         else:
-            return ("delete unauthorized"), 403
+            return {"message": "delete unauthorized"}, 403
     except Exception as e:
         return {"message": str(e)}, 500
+
+
+@obstax_api.route("/observations/medias", methods=["GET"])
+@json_resp
+def get_obs_medias():
+    """Get media list
+
+    :return: _description_
+    :rtype: _type_
+    """
+
+    medias = (
+        MediaModel.query.join(ObservationMediaModel)
+        .join(ObservationModel)
+        .join(ProgramsModel)
+        .with_entities(
+            MediaModel.id_media,
+            MediaModel.filename,
+            ObservationModel.id_observation,
+            ObservationModel.cd_nom,
+            ObservationModel.name,
+            ObservationModel.obs_txt,
+            ObservationModel.id_role,
+            ProgramsModel.title,
+            ProgramsModel.id_program,
+        )
+    )
+
+    # Filter by Program
+    id_program = request.args.get("id_program")
+    if id_program:
+        medias = medias.filter(ProgramsModel.id_program == id_program)
+
+    # Filter by observers
+    id_role = request.args.get("id_role")
+    if id_role:
+        medias = medias.filter(ObservationModel.id_role == id_role)
+
+    # Filter by type site
+    cd_nom = request.args.get("cd_nom")
+    if cd_nom:
+        medias = medias.filter(ObservationModel.cd_nom == cd_nom)
+
+    # Filter by id_observation
+    id_observation = request.args.get("id_observation")
+    if id_observation:
+        medias = medias.filter(
+            ObservationModel.id_observation == id_observation
+        )
+
+    return [media._asdict() for media in medias.all()]
