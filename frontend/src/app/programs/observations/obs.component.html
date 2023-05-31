@@ -5,45 +5,25 @@
             <div class="carousel-inner">
                 <h2>
                     {{
-                        MainConfig.program_label[localeId]
-                            ? MainConfig.program_label[localeId]
-                            : 'Programme'
+                    MainConfig.program_label[localeId]
+                    ? MainConfig.program_label[localeId]
+                    : 'Programme'
                     }}
                     <span>{{ program.title }}</span>
                 </h2>
                 <div class="carousel-item active">
-                    <img
-                        class="d-block w-100 default-img"
-                        [src]="program.image || 'assets/default_program.jpg'"
-                        alt="program image (fixme context)"
-                        *ngIf="program"
-                    />
+                    <img class="d-block w-100 default-img" [src]="program.image || 'assets/default_program.jpg'"
+                        alt="program image (fixme context)" *ngIf="program" />
                     <div class="carousel-text-container">
                         <div class="carousel-text">
                             <h3 class="mobile" [innerHTML]="program.title"></h3>
-                            <h3
-                                class="desktop"
-                                [innerHTML]="program.title"
-                            ></h3>
+                            <h3 class="desktop" [innerHTML]="program.title"></h3>
                             <div>
-                                <h5
-                                    class="short-desc"
-                                    [innerHTML]="program.short_desc"
-                                ></h5>
-                                <div
-                                    class="long-desc"
-                                    [innerHTML]="program.html_long_desc"
-                                    id="collapse"
-                                    [ngbCollapse]="isCollapsed"
-                                ></div>
-                                <button
-                                    type="button"
-                                    class="mobile"
-                                    (click)="isCollapsed = !isCollapsed"
-                                    [attr.aria-expanded]="!isCollapsed"
-                                    aria-controls="collapse"
-                                    aria-expanded="false"
-                                >
+                                <h5 class="short-desc" [innerHTML]="program.short_desc"></h5>
+                                <div class="long-desc" [innerHTML]="program.html_long_desc" id="collapse"
+                                    [ngbCollapse]="isCollapsed"></div>
+                                <button type="button" class="mobile" (click)="isCollapsed = !isCollapsed"
+                                    [attr.aria-expanded]="!isCollapsed" aria-controls="collapse" aria-expanded="false">
                                     <span>...</span>
                                 </button>
                             </div>
@@ -57,57 +37,29 @@
 
 <div class="row">
     <!-- LES OBSERVATIONS -->
-    <section
-        *ngIf="!isMobile"
-        id="program"
-        class="observations row obs-section"
-    >
+    <section *ngIf="!isMobile" id="program" class="observations row obs-section">
         <input id="slide-sidebar" type="checkbox" role="button" />
-        <label class="toggle" for="slide-sidebar"
-            ><i class="fa fa-chevron-left"></i
-        ></label>
+        <label class="toggle" for="slide-sidebar"><i class="fa fa-chevron-left"></i></label>
         <div class="col-lg-12 col-md-12 side-bar" id="list">
-            <app-obs-list
-                #obsListRef
-                [observations]="observations"
-                [taxa]="surveySpecies"
-                [displayOwnerActions]="userDashboard"
-                [displayForm]="flowService.display"
-                (obsSelect)="obsMapRef.showPopup($event)"
-                (deleteObs)="deleteObs.emit($event)"
-            >
-                <button
-                    type="button"
-                    class="btn btn-success mr-4 float-right"
-                    add-obs
-                    (click)="addObsClicked()"
-                    *ngIf="!userDashboard"
-                    ngbTooltip="Ajouter une observation"
-                    placement="left"
-                >
-                Ajouter
+            <app-obs-list #obsListRef [observations]="observations" [taxa]="surveySpecies"
+                [displayOwnerActions]="userDashboard" [displayForm]="flowService.display"
+                (obsSelect)="obsMapRef.showPopup($event)" (deleteObs)="deleteObs.emit($event)">
+                <button type="button" class="btn btn-success mr-4 float-right" add-obs (click)="addObsClicked()"
+                    *ngIf="!userDashboard" ngbTooltip="Ajouter une observation" placement="left">
+                    Ajouter
                 </button>
-                <app-modalflow
-                    #modalFlowRef
-                    [coords]="coords"
-                    [program_id]="program_id"
-                    [form_message]="program?.form_message"
-                    [modalversion]="
+                <app-modalflow #modalFlowRef [coords]="coords" [program_id]="program_id"
+                    [form_message]="program?.form_message" [modalversion]="
                         MainConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
-                    "
-                    obs-form
-                >
+                    " obs-form>
                 </app-modalflow>
             </app-obs-list>
         </div>
 
         <div class="map col-lg-12 col-md-12" id="map">
-            <app-obs-map
-                #obsMapRef
-                [features]="observations"
-                [program]="programFeature"
-                (onClick)="onMapClicked($event)"
-            ></app-obs-map>
+            <app-media-galery [program_id]="program_id"></app-media-galery>
+            <app-obs-map #obsMapRef [features]="observations" [program]="programFeature"
+                (onClick)="onMapClicked($event)"></app-obs-map>
             <div class="btn-groups"></div>
         </div>
     </section>
@@ -117,25 +69,12 @@
             <ngb-tab title="Liste">
                 <ng-template ngbTabContent>
                     <div class="side-bar" id="list">
-                        <app-obs-list
-                            #obsListRef
-                            [observations]="observations"
-                            [taxa]="surveySpecies"
-                            (obsSelect)="obsMapRef.showPopup($event)"
-                        >
-                            <app-modalflow
-                                [coords]="coords"
-                                [program_id]="program_id"
-                                [form_message]="program?.form_message"
-                                class="float-right"
-                                add-obs
-                            >
-                                <button
-                                    type="button"
-                                    class="btn btn-success mr-4"
-                                    btn-open
-                                >
-                                Ajouter
+                        <app-obs-list #obsListRef [observations]="observations" [taxa]="surveySpecies"
+                            (obsSelect)="obsMapRef.showPopup($event)">
+                            <app-modalflow [coords]="coords" [program_id]="program_id"
+                                [form_message]="program?.form_message" class="float-right" add-obs>
+                                <button type="button" class="btn btn-success mr-4" btn-open>
+                                    Ajouter
                                 </button>
                             </app-modalflow>
                         </app-obs-list>
@@ -144,24 +83,15 @@
             </ngb-tab>
             <ngb-tab title="Carte">
                 <ng-template ngbTabContent id="tab-map" class="map">
-                    <app-obs-map
-                        #obsMapRef
-                        [features]="observations"
-                        [program]="programFeature"
-                        (onClick)="onMapClicked($event)"
-                    >
+                    <app-obs-map #obsMapRef [features]="observations" [program]="programFeature"
+                        (onClick)="onMapClicked($event)">
                     </app-obs-map>
                     <div class="btn-groups map-modal-btn">
-                        <app-modalflow
-                            [coords]="coords"
-                            [program_id]="program_id"
-                            [form_message]="program?.form_message"
-                        >
-                            <button
-                                class="btn-big text-center text-nowrap text-uppercase"
-                                btn-open
-                            >
-                            {{MainConfig.program_add_an_observation[localeId] ? MainConfig.program_add_an_observation[localeId] : 'Ajouter' }}
+                        <app-modalflow [coords]="coords" [program_id]="program_id"
+                            [form_message]="program?.form_message">
+                            <button class="btn-big text-center text-nowrap text-uppercase" btn-open>
+                                {{MainConfig.program_add_an_observation[localeId] ?
+                                MainConfig.program_add_an_observation[localeId] : 'Ajouter' }}
                             </button>
                         </app-modalflow>
                     </div>

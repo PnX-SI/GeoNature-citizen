@@ -44,26 +44,26 @@ export const conf = {
     BASE_LAYER_CONTROL_INIT_COLLAPSED: true,
     GEOLOCATION_CONTROL_POSITION: 'topright',
     SCALE_CONTROL_POSITION: 'bottomleft',
-    NEW_OBS_MARKER_ICON: () =>
+    NEW_OBS_MARKER_ICON: (): L.Icon<L.IconOptions> =>
         L.icon({
             iconUrl: MainConfig['NEW_OBS_POINTER'],
             iconSize: [33, 42],
             iconAnchor: [16, 42],
         }),
-    OBS_MARKER_ICON: () =>
+    OBS_MARKER_ICON: (): L.Icon<L.IconOptions> =>
         L.icon({
             iconUrl: MainConfig['OBS_POINTER'],
             iconSize: [33, 42],
             iconAnchor: [16, 42],
         }),
-    OBSERVATION_LAYER: () =>
+    OBSERVATION_LAYER: (): L.MarkerClusterGroup =>
         L.markerClusterGroup({
             iconCreateFunction: (clusters) => {
                 const childCount = clusters.getChildCount();
                 return conf.CLUSTER_MARKER_ICON(childCount);
             },
         }),
-    CLUSTER_MARKER_ICON: (childCount: number) => {
+    CLUSTER_MARKER_ICON: (childCount: number): L.DivIcon => {
         const quantifiedCssClass = (childCount: number) => {
             let c = ' marker-cluster-';
             if (childCount < 10) {
@@ -383,5 +383,5 @@ export abstract class BaseMapComponent implements OnChanges {
         this.observationMap.off();
         this.observationMap.remove();
     }
-    canStart(): void {}
+    canStart(): void { }
 }

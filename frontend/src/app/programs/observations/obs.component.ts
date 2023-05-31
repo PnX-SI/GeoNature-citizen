@@ -22,6 +22,7 @@ import { GncProgramsService } from '../../api/gnc-programs.service';
 import { ModalFlowService } from './modalflow/modalflow.service';
 import { TaxonomyList } from './observation.model';
 import { ObsMapComponent } from './map/map.component';
+import { MediaGaleryComponent } from '../media-galery/media-galery.component';
 import { ObsListComponent } from './list/list.component';
 import { ModalFlowComponent } from './modalflow/modalflow.component';
 import { ProgramBaseComponent } from '../base/program-base.component';
@@ -39,6 +40,8 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     surveySpecies: TaxonomyList;
     @ViewChild(ObsMapComponent, { static: true }) obsMap: ObsMapComponent;
     @ViewChild(ObsListComponent, { static: true }) obsList: ObsListComponent;
+    @ViewChild(MediaGaleryComponent, { static: true })
+    mediaGalery: MediaGaleryComponent;
     @ViewChildren(ModalFlowComponent) modalFlow: QueryList<ModalFlowComponent>;
 
     selectedObs: Feature;
