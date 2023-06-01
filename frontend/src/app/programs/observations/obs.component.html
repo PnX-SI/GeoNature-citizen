@@ -83,6 +83,7 @@
             </ngb-tab>
             <ngb-tab title="Carte">
                 <ng-template ngbTabContent id="tab-map" class="map">
+                    <app-media-galery [program_id]="program_id"></app-media-galery>
                     <app-obs-map #obsMapRef [features]="observations" [program]="programFeature"
                         (onClick)="onMapClicked($event)">
                     </app-obs-map>

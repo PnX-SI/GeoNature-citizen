@@ -1,4 +1,11 @@
-<div>
-    <p>media-galery works!</p>
-    <pre>{{ media }}</pre>
+<div class="mediaGalery overflow-auto">
+    <div class="row text-center text-lg-start">
+        <div *ngFor="let m of media" class="col-lg-3 col-md-4 col-6 p-1 img-container">
+            <img class="" [src]="'https://gncitizen.lpo-aura.org/api/media/' + m.filename" [alt]="m.title"
+                [ngbTooltip]="m.name" />
+            <div class="overlay p-1">
+                <span>{{ m.name }} par @{{m.obs_txt}}</span>
+            </div>
+        </div>
+    </div>
 </div>
