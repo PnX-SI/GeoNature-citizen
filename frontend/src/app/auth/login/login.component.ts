@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, throwError } from 'rxjs';
 import { debounceTime, map, catchError } from 'rxjs/operators';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 import { LoginUser } from './../models';
 import { AuthService } from './../auth.service';
 
@@ -14,7 +14,7 @@ import { AuthService } from './../auth.service';
     styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-    AppConfig = AppConfig;
+    MainConfig = MainConfig;
     private _error = new Subject<string>();
     private _success = new Subject<string>();
     errorMessage: string;
@@ -68,7 +68,7 @@ export class LoginComponent {
 
     onRecoverPassword(): void {
         this.http
-            .post(`${AppConfig.API_ENDPOINT}/user/resetpasswd`, this.recovery)
+            .post(`${MainConfig.API_ENDPOINT}/user/resetpasswd`, this.recovery)
             .subscribe(
                 (response) => {
                     const message = response['message'];

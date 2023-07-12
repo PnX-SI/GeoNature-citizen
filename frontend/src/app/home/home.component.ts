@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Title, Meta, SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { AppConfig } from '../../conf/app.config';
+import { MainConfig } from '../../conf/main.config';
 import { ProgramsResolve } from '../programs/programs-resolve.service';
 import { Program } from '../programs/programs.models';
 import { ObservationsService } from '../programs/observations/observations.service';
@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     fragment: string;
     platform_teaser: SafeHtml;
     platform_intro: SafeHtml;
-    AppConfig = AppConfig;
+    MainConfig = MainConfig;
     htmlContent: SafeHtml;
     stats: Object;
     backgroundImage: any;
@@ -47,23 +47,31 @@ export class HomeComponent implements OnInit, AfterViewChecked {
             this.observationsService
                 .getStat()
                 .subscribe((stats) => (this.stats = stats));
+            if (this.programs.length === 1) {
+                const p = this.programs[0]
+                this.router.navigate([
+                    '/programs',
+                    p.id_program,
+                    p.module.name
+                ]);
+            }
         });
         this.route.fragment.subscribe((fragment) => {
             this.fragment = fragment;
         });
 
-        this.backgroundImage = AppConfig.API_ENDPOINT + '/media/background.jpg';
+        this.backgroundImage = MainConfig.API_ENDPOINT + '/media/background.jpg';
         this.metaTagService.updateTag({
             name: 'description',
-            content: this.AppConfig.platform_teaser.fr,
+            content: this.MainConfig.platform_teaser.fr,
         });
         this.metaTagService.updateTag({
             property: 'og:title',
-            content: AppConfig.appName,
+            content: MainConfig.appName,
         });
         this.metaTagService.updateTag({
             property: 'og:description',
-            content: AppConfig.platform_teaser[this.localeId],
+            content: MainConfig.platform_teaser[this.localeId],
         });
         this.metaTagService.updateTag({
             property: 'og:image',
@@ -71,26 +79,26 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         });
         this.metaTagService.updateTag({
             property: 'og:url',
-            content: AppConfig.URL_APPLICATION + this.router.url,
+            content: MainConfig.URL_APPLICATION + this.router.url,
         });
         this.metaTagService.updateTag({
             property: 'twitter:title',
-            content: AppConfig.appName,
+            content: MainConfig.appName,
         });
         this.metaTagService.updateTag({
             property: 'twitter:description',
-            content: AppConfig.platform_teaser[this.localeId],
+            content: MainConfig.platform_teaser[this.localeId],
         });
         this.metaTagService.updateTag({
             property: 'twitter:image',
             content: this.backgroundImage,
         });
-        this.titleService.setTitle(this.AppConfig.appName);
+        this.titleService.setTitle(this.MainConfig.appName);
         this.platform_intro = this.domSanitizer.bypassSecurityTrustHtml(
-            AppConfig['platform_intro'][this.localeId]
+            MainConfig['platform_intro'][this.localeId]
         );
         this.platform_teaser = this.domSanitizer.bypassSecurityTrustHtml(
-            AppConfig['platform_teaser'][this.localeId]
+            MainConfig['platform_teaser'][this.localeId]
         );
     }
 

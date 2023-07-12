@@ -1,21 +1,18 @@
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { geometryValidator, ngbDateMaxIsToday } from './formValidators';
-import { MAP_CONFIG } from './../../../../conf/map.config';
+import { MainConfig } from './../../../../conf/main.config';
 import * as L from 'leaflet';
 
 import {
     AfterViewInit,
     Component,
-    ElementRef,
     EventEmitter,
     Inject,
     Input,
     LOCALE_ID,
     Output,
-    ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
-import { AppConfig } from '../../../../conf/app.config';
 import { AuthService } from './../../../auth/auth.service';
 import {
     debounceTime,
@@ -41,6 +38,7 @@ import { ObservationsService } from '../observations.service';
 import { MapService } from '../../base/map/map.service';
 
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
+import { RefGeoService } from '../../../api/refgeo.service';
 
 declare let $: any;
 
@@ -55,18 +53,27 @@ const map_conf = {
         dashArray: '4',
     },
 };
-const taxonSelectInputThreshold = AppConfig.taxonSelectInputThreshold;
+const taxonSelectInputThreshold = MainConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold =
-    AppConfig.taxonAutocompleteInputThreshold;
-const taxonAutocompleteFields = AppConfig.taxonAutocompleteFields;
+    MainConfig.taxonAutocompleteInputThreshold;
+const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
 const taxonAutocompleteMaxResults = 10;
+const taxonDisplayImageWhenUnique =
+    'taxonDisplayImageWhenUnique' in MainConfig
+        ? MainConfig.taxonDisplayImageWhenUnique
+        : true;
 
 // TODO: migrate to conf
 export const obsFormMarkerIcon = L.icon({
-    iconUrl: MAP_CONFIG['NEW_OBS_POINTER'],
+    iconUrl: MainConfig['NEW_OBS_POINTER'],
     iconSize: [33, 42],
     iconAnchor: [16, 42],
 });
+
+type TempTaxa = {
+    cd_nom: number;
+    nom_francais: string;
+};
 
 @Component({
     selector: 'app-obs-form',
@@ -75,18 +82,20 @@ export const obsFormMarkerIcon = L.icon({
     encapsulation: ViewEncapsulation.None,
 })
 export class ObsFormComponent implements AfterViewInit {
-    private readonly URL = AppConfig.API_ENDPOINT;
+    private readonly URL = MainConfig.API_ENDPOINT;
     @Input('data') data;
     @Output('newObservation')
     newObservation: EventEmitter<ObservationFeature> = new EventEmitter();
     today = new Date();
     program_id: number;
     coords: L.Point;
+    municipality: string;
     modalflow;
     taxonSelectInputThreshold = taxonSelectInputThreshold;
     taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
+    taxonDisplayImageWhenUnique = taxonDisplayImageWhenUnique;
     autocomplete = 'isOff';
-    MAP_CONFIG = MAP_CONFIG;
+    MainConfig = MainConfig;
     formMap: L.Map;
     program: FeatureCollection;
     taxonomyListID: number;
@@ -97,7 +106,6 @@ export class ObsFormComponent implements AfterViewInit {
     selectedTaxon: any;
     hasZoomAlert: boolean;
     zoomAlertTimeout: any;
-    AppConfig = AppConfig;
     obsForm: FormGroup;
     customForm: any = {};
     GNCBootstrap4Framework: any = {
@@ -125,12 +133,14 @@ export class ObsFormComponent implements AfterViewInit {
         private programService: GncProgramsService,
         private toastr: ToastrService,
         private auth: AuthService,
-        private mapService: MapService
+        private mapService: MapService,
+        private _refGeoService: RefGeoService
     ) {}
 
     ngOnInit(): void {
         this.program_id = this.data.program_id;
         this.coords = this.data.coords;
+        this.updateMunicipality();
         this.intiForm();
         if (this.data.updateData) {
             this.patchForm(this.data.updateData);
@@ -155,9 +165,10 @@ export class ObsFormComponent implements AfterViewInit {
             .getProgram(this.program_id)
             .subscribe((result: FeatureCollection) => {
                 this.program = result;
-                this.taxonomyListID = this.program.features[0].properties.taxonomy_list;
+                this.taxonomyListID =
+                    this.program.features[0].properties.taxonomy_list;
                 this.surveySpecies$ = this.programService
-                    .getProgramTaxonomyList(this.program_id)
+                    .getProgramTaxonomyList(this.taxonomyListID)
                     .pipe(
                         tap((species) => {
                             this.taxa = species;
@@ -211,10 +222,10 @@ export class ObsFormComponent implements AfterViewInit {
                         icon: 'fa fa-compass',
                         position: map_conf.GEOLOCATION_CONTROL_POSITION,
                         strings: {
-                            title: MAP_CONFIG.LOCATE_CONTROL_TITLE[
+                            title: MainConfig.LOCATE_CONTROL_TITLE[
                                 this.localeId
                             ]
-                                ? MAP_CONFIG.LOCATE_CONTROL_TITLE[this.localeId]
+                                ? MainConfig.LOCATE_CONTROL_TITLE[this.localeId]
                                 : 'Me géolocaliser',
                         },
                         getLocationBounds: (locationEvent) =>
@@ -279,7 +290,7 @@ export class ObsFormComponent implements AfterViewInit {
                 formMap.on('click', (e: LeafletMouseEvent) => {
                     let z = formMap.getZoom();
 
-                    if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+                    if (z < MainConfig.ZOOM_LEVEL_RELEVE) {
                         // this.hasZoomAlert = true;
                         L.DomUtil.addClass(
                             formMap.getContainer(),
@@ -308,6 +319,7 @@ export class ObsFormComponent implements AfterViewInit {
                             icon: obsFormMarkerIcon,
                         }).addTo(formMap);
                         this.coords = L.point(e.latlng.lng, e.latlng.lat);
+                        this.updateMunicipality();
                         this.obsForm.patchValue({ geometry: this.coords });
                     }
                 });
@@ -323,6 +335,16 @@ export class ObsFormComponent implements AfterViewInit {
             ...this.customForm.json_schema,
             data: this.jsonData,
         };
+    }
+
+    updateMunicipality() {
+        if (this.coords) {
+            this._refGeoService
+                .getMunicipality(this.coords.y, this.coords.x)
+                .toPromise()
+                .then((municipality) => (this.municipality = municipality))
+                .catch((err) => console.log(err));
+        }
     }
 
     intiForm() {
@@ -343,6 +365,7 @@ export class ObsFormComponent implements AfterViewInit {
                     this.data.coords ? this.coords : '',
                     [Validators.required, geometryValidator()],
                 ],
+                municipality: [''],
                 id_program: [this.program_id],
                 email: [{ value: '', disabled: true }],
                 agreeContactRGPD: [''],
@@ -383,7 +406,7 @@ export class ObsFormComponent implements AfterViewInit {
                         icon:
                             this.taxa[taxon]['medias'].length >= 1
                                 ? // ? this.taxa[taxon]["medias"][0]["url"]
-                                  AppConfig.API_TAXHUB +
+                                  MainConfig.API_TAXHUB +
                                   '/tmedias/thumbnail/' +
                                   this.taxa[taxon]['medias'][0]['id_media'] +
                                   '?h=20'
@@ -462,7 +485,14 @@ export class ObsFormComponent implements AfterViewInit {
         if (isNaN(cd_nom)) {
             cd_nom = Number.parseInt(taxon.cd_nom);
         }
+        // Need to convert the defined interface to an array to have
+        // access to the filter function
+        const tempTaxa = this.taxa as Array<unknown> as Array<TempTaxa>;
+        const taxon_name: TempTaxa = tempTaxa.filter(
+            (t) => t.cd_nom == cd_nom
+        )[0];
         formData.append('cd_nom', cd_nom.toString());
+        formData.append('name', taxon_name.nom_francais);
         const obsDateControlValue = NgbDate.from(
             this.obsForm.controls.date.value
         );
@@ -477,6 +507,11 @@ export class ObsFormComponent implements AfterViewInit {
             .toISOString()
             .match(/\d{4}-\d{2}-\d{2}/)[0];
         formData.append('date', normDate);
+        if (this.municipality !== undefined && this.municipality != null) {
+            // If municipality is not present, let the backend find
+            // the municipality. So only append municipality if defined
+            formData.append('municipality', this.municipality);
+        }
         for (let item of ['count', 'comment', 'id_program', 'email']) {
             formData.append(item, this.obsForm.get(item).value);
         }
@@ -493,9 +528,8 @@ export class ObsFormComponent implements AfterViewInit {
             (data: PostObservationResponse) => {
                 obs = data.features[0];
                 if (obs.properties.observer) {
-                    obs.properties.observer.userAvatar = localStorage.getItem(
-                        'userAvatar'
-                    );
+                    obs.properties.observer.userAvatar =
+                        localStorage.getItem('userAvatar');
                 }
                 this.newObservation.emit(obs);
                 this.data.service.setModalCloseSatus('newObs');

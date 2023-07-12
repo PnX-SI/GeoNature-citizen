@@ -8,7 +8,6 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { FlowItem } from '../../observations/modalflow/flow/flow-item';
 import { SiteModalFlowService } from './modalflow.service';
-import { FlowComponent } from '../../observations/modalflow/flow/flow.component';
 
 @Component({
     selector: 'app-sitemodalflow',

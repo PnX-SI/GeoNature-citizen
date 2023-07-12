@@ -6,8 +6,8 @@ import {
     LOCALE_ID,
 } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
-
-import { AppConfig } from '../conf/app.config';
+import { ActivatedRoute } from '@angular/router';
+import { MainConfig } from '../conf/main.config';
 import { Router, NavigationStart } from '@angular/router';
 import { ModalsTopbarService } from './core/topbar/modalTopbar.service';
 
@@ -19,11 +19,14 @@ import { ModalsTopbarService } from './core/topbar/modalTopbar.service';
 })
 export class AppComponent implements OnInit {
     title = 'GeoNature-citizen';
-    public appConfig: any;
+    public MainConfig: any;
     public backgroundImage: any;
+    hideTopbar = false;
+    hideFooter = false;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
+        private route: ActivatedRoute,
         private router: Router,
         private metaTagService: Meta,
         private titleService: Title,
@@ -34,18 +37,23 @@ export class AppComponent implements OnInit {
                 this.modalService.close();
             }
         });
+        this.route.queryParams.subscribe((params) => {
+            this.hideTopbar = 'hideTopbar' in params;
+            this.hideFooter = 'hideFooter' in params;
+        });
     }
 
     ngOnInit() {
-        this.appConfig = AppConfig;
-        this.backgroundImage = AppConfig.API_ENDPOINT + '/media/background.jpg';
+        this.MainConfig = MainConfig;
+        this.backgroundImage =
+            MainConfig.API_ENDPOINT + '/media/background.jpg';
         this.metaTagService.addTags([
             {
                 name: 'keywords',
                 content:
                     'GeoNature-citizen ' +
-                    (this.appConfig.META.keywords
-                        ? this.appConfig.META.keywords
+                    (this.MainConfig.META.keywords
+                        ? this.MainConfig.META.keywords
                         : ''),
             },
             { name: 'robots', content: 'index, follow' },
@@ -55,17 +63,17 @@ export class AppComponent implements OnInit {
                 content: 'width=device-width, initial-scale=1',
             },
             { charset: 'UTF-8' },
-            { property: 'og:title', content: AppConfig.appName },
+            { property: 'og:title', content: MainConfig.appName },
             {
                 property: 'og:description',
-                content: AppConfig.platform_teaser[this.localeId],
+                content: MainConfig.platform_teaser[this.localeId],
             },
             { property: 'og:image', content: this.backgroundImage },
-            { property: 'og:url', content: AppConfig.URL_APPLICATION },
-            { property: 'twitter:title', content: AppConfig.appName },
+            { property: 'og:url', content: MainConfig.URL_APPLICATION },
+            { property: 'twitter:title', content: MainConfig.appName },
             {
                 property: 'twitter:description',
-                content: AppConfig.platform_teaser[this.localeId],
+                content: MainConfig.platform_teaser[this.localeId],
             },
             { property: 'twitter:image', content: this.backgroundImage },
         ]);

@@ -1,16 +1,17 @@
-import { Component, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { Component, AfterViewInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { GncProgramsService } from '../../../api/gnc-programs.service';
 import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import { SiteModalFlowService } from '../modalflow/modalflow.service';
-import { AppConfig } from '../../../../conf/app.config';
+import { MainConfig } from '../../../../conf/main.config';
 import { HttpClient } from '@angular/common/http';
 import {
     BaseDetailComponent,
     markerIcon,
 } from '../../base/detail/detail.component';
-
-declare let $: any;
+import { UserService } from '../../../auth/user-dashboard/user.service.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SiteService } from '../sites.service';
 
 @Component({
     selector: 'app-site-detail',
@@ -25,11 +26,17 @@ export class SiteDetailComponent
     extends BaseDetailComponent
     implements AfterViewInit
 {
+    idVisitToDelete = null;
+    modalDelVisitRef = null;
+    @ViewChild('visitDeleteModal', { static: true }) visitDeleteModal;
     constructor(
         private http: HttpClient,
         private route: ActivatedRoute,
         private programService: GncProgramsService,
-        public flowService: SiteModalFlowService
+        private userService: UserService,
+        private modalService: NgbModal,
+        public flowService: SiteModalFlowService,
+        public siteService: SiteService
     ) {
         super();
         this.route.params.subscribe((params) => {
@@ -37,6 +44,15 @@ export class SiteDetailComponent
             this.program_id = params['program_id'];
         });
         this.module = 'sites';
+        this.username = localStorage.getItem('username');
+        this.flowService.modalCloseStatus.subscribe( value => {
+            if (value === 'visitPosted') {
+                this.updateData();
+            }
+        });
+        this.siteService.siteEdited.subscribe(value => {
+            this.updateData();
+        });
     }
 
     ngAfterViewInit() {
@@ -45,7 +61,7 @@ export class SiteDetailComponent
             this.photos = this.site.properties.photos;
             this.photos.forEach((e, i) => {
                 this.photos[i]['url'] =
-                    AppConfig.API_ENDPOINT + this.photos[i]['url'];
+                    MainConfig.API_ENDPOINT + this.photos[i]['url'];
             });
 
             // setup map
@@ -121,5 +137,28 @@ export class SiteDetailComponent
 
     addSiteVisit() {
         this.flowService.addSiteVisit(this.site_id);
+    }
+
+    editSiteVisit(visit_data) {
+        visit_data.photos = this.photos.filter((p) => p.visit_id === visit_data.id)
+        this.flowService.editSiteVisit(this.site_id, visit_data.id, visit_data);
+    }
+
+    openDelVisitModal(idVisitToDelete) {
+        this.idVisitToDelete = idVisitToDelete;
+        this.modalDelVisitRef = this.modalService.open(this.visitDeleteModal, {
+            windowClass: 'delete-modal',
+            centered: true,
+        });
+    }
+
+    visitDeleteModalClose() {
+        this.modalDelVisitRef.close();
+    }
+
+    deleteSiteVisit(idVisitToDelete) {
+        this.userService.deleteSiteVisit(idVisitToDelete).subscribe(() => {
+            this.updateData();
+        });
     }
 }

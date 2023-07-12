@@ -10,7 +10,7 @@ import { catchError, map, mergeMap, pluck, tap } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
 
-import { AppConfig } from '../../conf/app.config';
+import { MainConfig } from '../../conf/main.config';
 import { Program } from '../programs/programs.models';
 import { TaxonomyList } from '../programs/observations/observation.model';
 
@@ -57,7 +57,7 @@ const sorted = (property: string) => {
     ) => instance || new GncProgramsService(http, state, domSanitizer),
 })
 export class GncProgramsService implements OnInit {
-    private readonly URL = AppConfig.API_ENDPOINT;
+    private readonly URL = MainConfig.API_ENDPOINT;
     programs: Program[];
     programs$ = new Subject<Program[]>();
 
@@ -67,7 +67,7 @@ export class GncProgramsService implements OnInit {
         protected domSanitizer: DomSanitizer
     ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.programs = this.state.get(PROGRAMS_KEY, null as Program[]);
         this.programs$.next(this.programs);
     }
@@ -81,17 +81,18 @@ export class GncProgramsService implements OnInit {
                 ),
                 map((programs: Program[]) =>
                     programs.map((program) => {
-                        program.html_short_desc = this.domSanitizer.bypassSecurityTrustHtml(
-                            program.short_desc
-                        );
-                        program.html_long_desc = this.domSanitizer.bypassSecurityTrustHtml(
-                            program.long_desc
-                        );
+                        program.html_short_desc =
+                            this.domSanitizer.bypassSecurityTrustHtml(
+                                program.short_desc
+                            );
+                        // program.html_long_desc = this.domSanitizer.bypassSecurityTrustHtml(
+                        //     program.long_desc
+                        // );
                         return program;
                     })
                 ),
                 map((programs) =>
-                    programs.sort(sorted(AppConfig['program_list_sort']))
+                    programs.sort(sorted(MainConfig['program_list_sort']))
                 ),
                 tap((programs) => {
                     this.state.set(PROGRAMS_KEY, programs as Program[]);
@@ -166,17 +167,9 @@ export class GncProgramsService implements OnInit {
             );
     }
 
-    getProgramTaxonomyList(program_id: number): Observable<TaxonomyList> {
-        return this.getAllPrograms().pipe(
-            map((programs) => programs.find((p) => p.id_program == program_id)),
-            mergeMap((program) =>
-                this.http.get<TaxonomyList>(
-                    `${this.URL}/taxonomy/lists/${program['taxonomy_list']}/species`
-                )
-            ),
-            catchError(
-                this.handleError<TaxonomyList>(`getProgramTaxonomyList`, {})
-            )
+    getProgramTaxonomyList(taxonomy_list: number): Observable<TaxonomyList> {
+        return this.http.get<TaxonomyList>(
+            `${this.URL}/taxonomy/lists/${taxonomy_list}/species`
         );
     }
 

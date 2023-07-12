@@ -15,7 +15,6 @@ import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { FeatureCollection, Feature } from 'geojson';
-import * as L from 'leaflet';
 
 import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
@@ -26,7 +25,7 @@ import { ObsMapComponent } from './map/map.component';
 import { ObsListComponent } from './list/list.component';
 import { ModalFlowComponent } from './modalflow/modalflow.component';
 import { ProgramBaseComponent } from '../base/program-base.component';
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 
 @Component({
     selector: 'app-observations',
@@ -43,8 +42,9 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     @ViewChildren(ModalFlowComponent) modalFlow: QueryList<ModalFlowComponent>;
 
     selectedObs: Feature;
-    public isCollapsed: boolean = true;
+    public isCollapsed = true;
     isMobile: boolean;
+    hideProgramHeader = false;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -64,9 +64,12 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         this.route.fragment.subscribe((fragment) => {
             this.fragment = fragment;
         });
+        this.route.queryParams.subscribe((params) => {
+            this.hideProgramHeader = 'hideProgramHeader' in params;
+        });
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.breakpointObserver
             .observe(['(min-width: 700px)'])
             .subscribe((state: BreakpointState) => {
@@ -82,17 +85,20 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             this.program = this.programs.find(
                 (p) => p.id_program == this.program_id
             );
-            forkJoin(
+            this.taxonomyListID = this.program.taxonomy_list;
+            forkJoin([
                 this.programService.getProgramObservations(this.program_id),
-                this.programService.getProgramTaxonomyList(this.program_id),
-                this.programService.getProgram(this.program_id)
-            ).subscribe(([observations, taxa, program]) => {
+                this.programService.getProgramTaxonomyList(
+                    this.program.taxonomy_list
+                ),
+                this.programService.getProgram(this.program_id),
+            ]).subscribe(([observations, taxa, program]) => {
                 this.observations = observations;
                 this.surveySpecies = taxa;
                 this.programFeature = program;
             });
             this.titleService.setTitle(
-                this.AppConfig.appName + ' - ' + this.program.title
+                this.MainConfig.appName + ' - ' + this.program.title
             );
             this.metaTagService.updateTag({
                 name: 'description',
@@ -100,7 +106,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             });
             this.metaTagService.updateTag({
                 property: 'og:title',
-                content: AppConfig.appName + ' - ' + this.program.title,
+                content: MainConfig.appName + ' - ' + this.program.title,
             });
             this.metaTagService.updateTag({
                 property: 'og:description',
@@ -112,11 +118,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             });
             this.metaTagService.updateTag({
                 property: 'og:url',
-                content: AppConfig.URL_APPLICATION + this.router.url,
+                content: MainConfig.URL_APPLICATION + this.router.url,
             });
             this.metaTagService.updateTag({
                 property: 'twitter:title',
-                content: AppConfig.appName + ' - ' + this.program.title,
+                content: MainConfig.appName + ' - ' + this.program.title,
             });
             this.metaTagService.updateTag({
                 property: 'twitter:description',
@@ -130,7 +136,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     }
 
     @HostListener('document:NewObservationEvent', ['$event'])
-    newObservationEventHandler(e: CustomEvent) {
+    newObservationEventHandler(e: CustomEvent): void {
         e.stopPropagation();
 
         this.observations.features.unshift(e.detail);

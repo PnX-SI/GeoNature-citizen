@@ -1,14 +1,15 @@
-from flask import Flask, request, Blueprint, Response, jsonify, current_app
-from gncitizen.utils.sqlalchemy import json_resp
-from gncitizen.core.observations.models import ObservationModel
-from gncitizen.core.sites.models import SiteModel, VisitModel
-from gncitizen.core.commons.models import ProgramsModel
-from gncitizen.core.users.models import UserModel
-from gncitizen.core.taxonomy.models import Taxref
-from sqlalchemy.sql.expression import func
-from datetime import date, datetime, timedelta
 from calendar import monthrange
-from server import db
+from datetime import datetime, timedelta
+
+from flask import Blueprint, current_app, jsonify
+from sqlalchemy.sql.expression import func
+from utils_flask_sqla.response import json_resp
+
+from gncitizen.core.commons.models import ProgramsModel
+from gncitizen.core.observations.models import ObservationModel
+from gncitizen.core.users.models import UserModel
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom
+from gncitizen.core.sites.models import SiteModel, VisitModel
 
 badges_api = Blueprint("badges", __name__)
 
@@ -28,39 +29,48 @@ def get_rewards(id):
         .group_by(ObservationModel.id_program)
         .values(
             ObservationModel.id_program.label("id"),
-            func.count(ObservationModel.id_program).label("nb_obs"),
+            func.count(ObservationModel.id_program).label("nb_obs")
         )
     )
     for item in scores_query:
         program_scores.append({"id_program": item.id, "nb_obs": item.nb_obs})
         total_obs = total_obs + item.nb_obs
-    taxon_classe_query = (
-        db.session.query(
-            Taxref.classe.label("classe"), func.count(Taxref.famille).label("nb_obs")
-        )
-        .join(ObservationModel, Taxref.cd_nom == ObservationModel.cd_nom)
-        .filter(ObservationModel.id_role == id)
-        .group_by(Taxref.classe)
-    )
-    for item in taxon_classe_query:
-        taxon_scores.append({"classe": item.classe, "nb_obs": item.nb_obs})
 
-    taxon_famille_query = (
-        db.session.query(
-            Taxref.famille.label("famille"), func.count(Taxref.famille).label("nb_obs")
+    taxon_query = (
+        ObservationModel.query.filter(ObservationModel.id_role == id)
+        .group_by(ObservationModel.cd_nom)
+        .values(
+            ObservationModel.cd_nom,
+            func.count(ObservationModel.cd_nom).label("nb_obs")
         )
-        .join(ObservationModel, Taxref.cd_nom == ObservationModel.cd_nom)
-        .filter(ObservationModel.id_role == id)
-        .group_by(Taxref.famille)
     )
 
-    for item in taxon_famille_query:
-        taxon_scores.append({"famille": item.famille, "nb_obs": item.nb_obs})
+    classes = {}
+    families = {}
+    for query in taxon_query:
+        taxon = get_specie_from_cd_nom(cd_nom=query.cd_nom)
+        class_ = taxon.get('classe', '')
+        family = taxon.get('famille', '')
+        if classes.get(class_) is not None:
+            classes[class_] += query.nb_obs
+        else:
+            classes[class_] = query.nb_obs
+        if families.get(family) is not None:
+            families[family] += query.nb_obs
+        else:
+            families[family] = query.nb_obs
+
+    for class_, total in classes.items():
+        taxon_scores.append({"classe": class_, "nb_obs": total})
+    for family, total in families.items():
+        taxon_scores.append({"famille": family, "nb_obs": total})
 
     user = UserModel.query.filter(UserModel.id_user == id).one()
     result = user.as_secured_dict(True)
     user_date_create = result["timestamp_create"]
-    user_date_create = datetime.strptime(user_date_create, "%Y-%m-%dT%H:%M:%S.%f")
+    user_date_create = datetime.strptime(
+        user_date_create, "%Y-%m-%dT%H:%M:%S.%f"
+    )
 
     for reward in rewards:
 

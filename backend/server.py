@@ -1,20 +1,19 @@
-import sys
-import os
 import logging
+import os
+import sys
 
 from flask import Flask, current_app
 from flask_cors import CORS
 
 from gncitizen.utils.env import (
-    db,
-    list_and_import_gnc_modules,
-    jwt,
-    swagger,
     admin,
     ckeditor,
+    db,
+    jwt,
+    list_and_import_gnc_modules,
+    swagger,
 )
 from gncitizen.utils.init_data import create_schemas, populate_modules
-from gncitizen import __version__
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -50,8 +49,8 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     app = Flask(__name__)
     app.config.update(config)
     if app.config["DEBUG"]:
-        from flask.logging import default_handler
         import coloredlogs
+        from flask.logging import default_handler
 
         app.config["SQLALCHEMY_ECHO"] = True
         logger = logging.getLogger("werkzeug")
@@ -62,14 +61,6 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         )
         logger.removeHandler(default_handler)
 
-        # for l in logging.Logger.manager.loggerDict.values():
-        #     if hasattr(l, "handlers"):
-        #         l.handlers = [handler]
-
-    # else:
-    #     logging.basicConfig()
-    #     logger = logging.getLogger()
-    #     logger.setLevel(logging.INFO)
     logging.getLogger("sqlalchemy.engine").setLevel(
         getattr(sys.modules["logging"], app.config["SQLALCHEMY_DEBUG_LEVEL"])
     )
@@ -91,26 +82,22 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     ckeditor.init_app(app)
 
     with app.app_context():
-
-        create_schemas(db)
-        db.create_all()
-        populate_modules(db)
-
-        from gncitizen.core.users.routes import users_api
         from gncitizen.core.commons.routes import commons_api
         from gncitizen.core.observations.routes import obstax_api
-        from gncitizen.core.ref_geo.routes import geo_api
-        from gncitizen.core.badges.routes import badges_api
-        from gncitizen.core.taxonomy.routes import taxo_api
         from gncitizen.core.sites.routes import sites_api
+        from gncitizen.core.taxonomy.routes import taxo_api
+        from gncitizen.core.users.routes import users_api
 
         app.register_blueprint(users_api, url_prefix=url_prefix)
         app.register_blueprint(commons_api, url_prefix=url_prefix)
         app.register_blueprint(obstax_api, url_prefix=url_prefix)
-        app.register_blueprint(geo_api, url_prefix=url_prefix)
-        app.register_blueprint(badges_api, url_prefix=url_prefix)
         app.register_blueprint(taxo_api, url_prefix=url_prefix)
         app.register_blueprint(sites_api, url_prefix=url_prefix + "/sites")
+
+        if app.config["REWARDS_ENABLED"]:
+            from gncitizen.core.badges.routes import badges_api
+
+            app.register_blueprint(badges_api, url_prefix=url_prefix)
 
         CORS(app, supports_credentials=True)
 
@@ -134,8 +121,10 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 module.backend.blueprint.blueprint.config = conf
                 app.config[manifest["module_name"]] = conf
 
-        # _app = app
+        create_schemas(db)
+        db.create_all()
+        populate_modules(db)
 
-
+    # _app = app
 
     return app

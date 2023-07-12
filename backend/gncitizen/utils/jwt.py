@@ -5,10 +5,28 @@
 
 from functools import wraps
 
-from flask import jsonify
+from flask import current_app, jsonify
 from flask_jwt_extended import get_jwt_identity
+from sqlalchemy import func, or_
 
 from gncitizen.core.users.models import UserModel
+
+logger = current_app.logger
+
+
+def get_user_if_exists() -> UserModel:
+    """[summary]"""
+    current_user = get_jwt_identity()
+    return (
+        UserModel.query.filter(
+            or_(
+                UserModel.email == current_user,
+                UserModel.username == current_user,
+            )
+        ).one()
+        if current_user
+        else None
+    )
 
 
 def get_id_role_if_exists():
@@ -17,12 +35,8 @@ def get_id_role_if_exists():
     :return: user id
     :rtype: int
     """
-    if get_jwt_identity() is not None:
-        current_user = get_jwt_identity()
-        id_role = UserModel.query.filter_by(email=current_user).first().id_user
-    else:
-        id_role = None
-    return id_role
+    logger.debug(f"GET_USER_IF_EXISTS() {get_user_if_exists()}")
+    return get_user_if_exists().id_user if get_user_if_exists() else None
 
 
 def admin_required(func):
@@ -37,10 +51,9 @@ def admin_required(func):
 
     @wraps(func)
     def decorated_function(*args, **kwargs):
-        current_user = get_jwt_identity()
+        current_user = get_user_if_exists()
         try:
-            is_admin = UserModel.query.filter_by(email=current_user).first().admin
-            if not is_admin:
+            if not current_user.admin:
                 return {"message": "Special authorization required"}, 403
             return func(*args, **kwargs)
         except Exception as e:

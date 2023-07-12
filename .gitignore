@@ -235,6 +235,7 @@ tags
 [._]*.un~
 
 config/default_config.toml
+config/config.toml
 config/settings.ini
 
 external_modules/gnc_*
@@ -243,7 +244,8 @@ contrib/gnc_*
 *.pyc
 
 #FrontEnd config files
-frontend/src/conf/*.ts
+frontend/src/conf/app.config.ts
+frontend/src/conf/map.config.ts
 
 # pipenv: comment when migrating from traditional pip+v(irtual)env
 Pipfile

@@ -1,13 +1,14 @@
 import logging
-from typing import Union, List
-from .rule import Rule
+from typing import List, Union
+
 from .models import (
     attendance_model,
-    seniority_model,
     program_attendance_model,
     program_date_bounds_model,
     recognition_model,
+    seniority_model,
 )
+from .rule import Rule
 
 
 # ATTENDANCE
@@ -62,7 +63,9 @@ def program_attendance_action(data) -> str:
     ]
 
 
-program_attendance_rule = Rule(program_attendance_condition, program_attendance_action)
+program_attendance_rule = Rule(
+    program_attendance_condition, program_attendance_action
+)
 
 
 # PROGRAM_DATE_BOUNDS
@@ -99,7 +102,9 @@ def recognition_action(data) -> Union[List[str], str]:
         for category, threshold in recognition_model[i]["attendance"].items():
             if q and q[i] >= threshold:
                 r.append(
-                    "{}.{}".format(recognition_model[i]["specialization"], category)
+                    "{}.{}".format(
+                        recognition_model[i]["specialization"], category
+                    )
                 )
     return r if len(r) > 0 else "Recognition.None"
 

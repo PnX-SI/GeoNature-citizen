@@ -1,14 +1,41 @@
 <form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
+    <div
+        *ngIf="
+            taxaCount == 1 &&
+            taxa[0].medias &&
+            !!taxa[0].medias.length &&
+            taxonDisplayImageWhenUnique
+        "
+        class="mono-taxa-img"
+    >
+        <img
+            [src]="
+                taxa[0].medias && !!taxa[0].medias.length
+                    ? MainConfig.API_TAXHUB +
+                      '/tmedias/thumbnail/' +
+                      taxa[0].medias[0].id_media +
+                      '?w=800'
+                    : 'assets/default_image.png'
+            "
+            [alt]="
+                !!taxa[0].nom_francais
+                    ? taxa[0].nom_francais
+                    : taxa[0].taxref.nom_vern
+            "
+            class="object-fit-cover"
+        />
+    </div>
     <div class="form-row">
         <div class="form-group col-lg-8">
             <input formControlName="id_program" type="hidden" />
-            <h5 class="m-0">
+            <h5 *ngIf="taxaCount > 1" class="m-0">
                 <label for="cd_nom" class="m-0"
                     >{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
                     isOff {S&eacute;lectionnez une esp&egrave;ce}}</label
                 >
             </h5>
             <!-- TAXON SELECT -->
+
             <div
                 *ngIf="
                     taxaCount >= taxonSelectInputThreshold &&
@@ -26,7 +53,7 @@
                                 ? s.nom_francais
                                 : s.taxref.nom_vern
                         }}
-                        <span *ngIf="AppConfig.taxonDisplaySciName"
+                        <span *ngIf="MainConfig.taxonDisplaySciName"
                             >(<i>{{ s.taxref.nom_complet }}</i
                             >)</span
                         >
@@ -36,7 +63,7 @@
         </div>
         <!-- TAXON PICKER -->
         <div
-            *ngIf="taxaCount < taxonSelectInputThreshold"
+            *ngIf="taxaCount < taxonSelectInputThreshold && taxaCount > 1"
             class="form-group col-lg-12 d-inline-flex obs-images"
         >
             <div
@@ -52,10 +79,10 @@
                         <img
                             [src]="
                                 s.medias && !!s.medias.length
-                                    ? AppConfig.API_TAXHUB +
+                                    ? MainConfig.API_TAXHUB +
                                       '/tmedias/thumbnail/' +
                                       s.medias[0].id_media +
-                                      '?h=100&v=100'
+                                      '?h=100'
                                     : 'assets/default_image.png'
                             "
                             [alt]="
@@ -183,7 +210,7 @@
                         class="mr-1"
                     />
                     <img
-                        src="{{ AppConfig.API_ENDPOINT }}{{ p.url }}"
+                        src="{{ MainConfig.API_ENDPOINT }}{{ p.url }}"
                         height="50"
                     />
                 </span>
@@ -214,7 +241,7 @@
                         Veuillez zoomer pour localiser votre observation.<br />
                         <span
                             >(zoom min:
-                            {{ MAP_CONFIG.ZOOM_LEVEL_RELEVE }})</span
+                            {{ MainConfig.ZOOM_LEVEL_RELEVE }})</span
                         >
                     </div>
                     <button class="btn" (click)="hasZoomAlert = false">
@@ -249,7 +276,7 @@
 
             <div
                 class="col-lg-12"
-                *ngIf="AppConfig.email_contact && !(isLoggedIn() | async)"
+                *ngIf="MainConfig.email_contact && !(isLoggedIn() | async)"
             >
                 <input
                     type="checkbox"
@@ -258,12 +285,12 @@
                     (change)="onChangeContactCheckBoxRGPD()"
                 />
                 <small style="margin-left: 5px">{{
-                    AppConfig.program_allow_email_contact[localeId]
+                    MainConfig.program_allow_email_contact[localeId]
                 }}</small>
             </div>
             <div
                 class="form-group col-lg-12"
-                *ngIf="AppConfig.email_contact && !(isLoggedIn() | async)"
+                *ngIf="MainConfig.email_contact && !(isLoggedIn() | async)"
             >
                 <label
                     for="email"

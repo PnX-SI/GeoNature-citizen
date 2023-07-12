@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { saveAs } from 'file-saver';
@@ -17,13 +17,13 @@ export class UserService {
     constructor(private http: HttpClient) {}
 
     getPersonalInfo() {
-        let url = `${AppConfig.API_ENDPOINT}/user/info`;
+        let url = `${MainConfig.API_ENDPOINT}/user/info`;
         return this.http.get(url, { headers: this.headers });
     }
 
     getBadgeCategories(userId: number) {
         return this.http.get<Object>(
-            `${AppConfig.API_ENDPOINT}/rewards/${userId}`
+            `${MainConfig.API_ENDPOINT}/rewards/${userId}`
         );
     }
 
@@ -31,7 +31,7 @@ export class UserService {
         console.log('up', personalInfo);
 
         return this.http
-            .patch(`${AppConfig.API_ENDPOINT}/user/info`, personalInfo, {
+            .patch(`${MainConfig.API_ENDPOINT}/user/info`, personalInfo, {
                 headers: this.headers,
             })
             .pipe(
@@ -43,25 +43,31 @@ export class UserService {
 
     getObservationsByUserId(userId: number) {
         return this.http.get<Object>(
-            `${AppConfig.API_ENDPOINT}/observations/users/${userId}`
+            `${MainConfig.API_ENDPOINT}/observations/users/${userId}`
         );
     }
 
     getSitesByUserId(userId: number) {
         return this.http.get<Object>(
-            `${AppConfig.API_ENDPOINT}/sites/users/${userId}`
+            `${MainConfig.API_ENDPOINT}/sites/users/${userId}`
         );
     }
 
     deleteObsservation(idObs: any) {
         return this.http.delete<Object>(
-            `${AppConfig.API_ENDPOINT}/observations/${idObs}`
+            `${MainConfig.API_ENDPOINT}/observations/${idObs}`
         );
     }
 
     deleteSite(idSite: any) {
         return this.http.delete<Object>(
-            `${AppConfig.API_ENDPOINT}/sites/${idSite}`
+            `${MainConfig.API_ENDPOINT}/sites/${idSite}`
+        );
+    }
+
+    deleteSiteVisit(idVisit: number) {
+        return this.http.delete<Object>(
+            `${MainConfig.API_ENDPOINT}/sites/visit/${idVisit}`
         );
     }
 
@@ -88,7 +94,7 @@ export class UserService {
     }
 
     downloadFile(route: string, filename: string = null): void {
-        const baseUrl = AppConfig.API_ENDPOINT;
+        const baseUrl = MainConfig.API_ENDPOINT;
         const token = 'my JWT';
         const headers = new HttpHeaders().set(
             'authorization',

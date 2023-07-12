@@ -1,15 +1,16 @@
 import datetime
+
 from flask import current_app
+
 from .classifier import Classifier
+from .queries import get_stats
 from .rules import (
     attendance_rule,
-    seniority_rule,
     program_attendance_rule,
     program_date_bounds_rule,
     recognition_rule,
+    seniority_rule,
 )
-from .queries import get_stats
-
 
 default_ruleset = {
     attendance_rule,

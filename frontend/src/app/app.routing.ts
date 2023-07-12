@@ -13,7 +13,6 @@ import { SpeciesComponent } from './synthesis/species/species.component';
 import { AuthGuard } from './auth/auth.guard';
 import { SiteDetailComponent } from './programs/sites/detail/detail.component';
 import { ObsDetailComponent } from './programs/observations/detail/detail.component';
-import { SiteVisitFormComponent } from './programs/sites/form/form.component';
 import { AdminComponent } from './auth/admin/admin.component';
 import { ConfirmEmailComponent } from './auth/confirm-email/confirm-email.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -57,7 +56,6 @@ const appRoutes: Routes = [
     },
     {
         path: 'programs/:id/sites',
-        // component: SiteVisitFormComponent,
         component: SitesComponent,
         resolve: { programs: ProgramsResolve },
     },

@@ -42,7 +42,7 @@ depuis l'environnement virtuel python:
     source venv/bin/activate
     
     cd ../config
-    cp default_config.toml.example default_config.toml
+    cp config.toml.example config.toml
     
     python -m wsgi.py
     # debug mode

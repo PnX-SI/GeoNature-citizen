@@ -14,7 +14,7 @@
             class="default-img"
             [src]="
                 obs.images[0]
-                    ? AppConfig.API_ENDPOINT + '/media/' + obs.images[0]
+                    ? MainConfig.API_ENDPOINT + '/media/' + obs.images[0]
                     : data.default_image
                     ? data.default_image
                     : 'assets/default_program.jpg'

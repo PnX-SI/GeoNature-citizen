@@ -1,11 +1,11 @@
-import { Component, AfterViewInit } from '@angular/core';
-import { FeatureCollection, Feature } from 'geojson';
+import { AfterViewInit } from '@angular/core';
+import { FeatureCollection } from 'geojson';
 import { Program } from '../programs.models';
 import * as L from 'leaflet';
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 
 export abstract class ProgramBaseComponent implements AfterViewInit {
-    AppConfig = AppConfig;
+    MainConfig = MainConfig;
     fragment: string;
     coords: L.Point;
     line: L.Polyline;
@@ -13,6 +13,7 @@ export abstract class ProgramBaseComponent implements AfterViewInit {
     program_id: any;
     programs: Program[];
     program: Program;
+    taxonomyListID: number;
     programFeature: FeatureCollection;
     abstract flowService: any;
 

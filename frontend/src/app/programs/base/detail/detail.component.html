@@ -43,14 +43,14 @@
                 >
                     <small class="text-muted">
                         <span *ngIf="site?.properties.visits.length === 1">
-                            Visite du {{
-                                site?.properties.visits[0].date | date: 'longDate'
+                            Visite du
+                            {{
+                                site?.properties.visits[0].date
+                                    | date: 'longDate'
                             }}
                         </span>
                         <span *ngIf="site?.properties.visits.length > 1">
-                            {{
-                                site?.properties.visits.length
-                            }} visites
+                            {{ site?.properties.visits.length }} visites
                         </span>
                     </small>
                 </p>
@@ -121,10 +121,26 @@
             <div *ngIf="attributes.length > 0" class="row">
                 <h2 class="my-4">Description</h2>
             </div>
+            <!-- {{ attributes|json }} -->
+            <!-- <span *ngIf="site">{{ site.properties.visits|json }}</span> -->
             <div *ngFor="let a of attributes" class="row bg-light my-3">
                 <h5>
                     <i class="fa fa-calendar"></i>
                     {{ a.date | date: 'longDate' }} par {{ a.author }}
+                    <i
+                        class="fa fa-edit text-primary"
+                        ngbTooltip="Editer"
+                        (click)="editSiteVisit(a);"
+                        *ngIf="a.author === username"
+                    ></i>
+                    &nbsp;
+                    <!-- {{ a|json }} deleteSiteVisit(a.id)-->
+                    <i
+                        class="fa fa-trash text-danger"
+                        ngbTooltip="Supprimer"
+                        (click)="openDelVisitModal(a.id)"
+                        *ngIf="a.author === username"
+                    ></i>
                 </h5>
                 <table class="table table-striped table-sm table-hover">
                     <tbody>
@@ -196,3 +212,28 @@
         </div>
     </div>
 </div>
+
+<ng-template #visitDeleteModal let-modal>
+    <div class="modal-delete-header">
+        <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
+    </div>
+    <div class="modal-delete-body">
+        Êtes-vous sûr de vouloir supprimer cette visite et toutes les informations
+        qui y sont rattachées ?
+        <br />
+        La suppression sera définitive
+    </div>
+    <div class="modal-delete-footer">
+        <button
+            type="button"
+            class="cancel-btn"
+            style="margin-right: 15px"
+            (click)="visitDeleteModalClose()"
+        >
+            ANNULER
+        </button>
+        <button type="button" class="green-btn" (click)="deleteSiteVisit(idVisitToDelete); visitDeleteModalClose();">
+            OUI
+        </button>
+    </div>
+</ng-template>

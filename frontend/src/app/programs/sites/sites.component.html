@@ -1,12 +1,12 @@
 <div class="row">
     <!-- LE PROGRAMME -->
-    <section id="slide" class="obs-section" *ngIf="program">
+    <section id="slide" class="obs-section" *ngIf="program && !hideProgramHeader">
         <div id="slider" class="carousel slide">
             <div class="carousel-inner">
                 <h2>
                     {{
-                        AppConfig.program_label[localeId]
-                            ? AppConfig.program_label[localeId]
+                        MainConfig.program_label[localeId]
+                            ? MainConfig.program_label[localeId]
                             : 'Programme'
                     }}
                     <span>{{ program.title }}</span>
@@ -57,13 +57,18 @@
 
 <div class="row">
     <!-- LES SITES -->
-    <section id="program" class="observations row obs-section">
+    <section
+        *ngIf="!isMobile"
+        id="program"
+        class="observations row obs-section"
+    >
         <input id="slide-sidebar" type="checkbox" role="button" />
         <label class="toggle" for="slide-sidebar"
             ><i class="fa fa-chevron-left"></i
         ></label>
         <div class="col-lg-4 col-md-12 side-bar" id="list">
             <app-sites-list
+                #sitesListRef
                 [sites]="sites"
                 [program_id]="program_id"
                 [displayForm]="flowService.display"
@@ -79,6 +84,7 @@
                     [ngbTooltip]="tooltipAddButton"
                     placement="bottom"
                     [disabled]="!canAddSite"
+                    placement="left"
                 >
                     Ajouter
                 </button>
@@ -88,11 +94,12 @@
                     [line]="line"
                     [polygon]="polygon"
                     [modalversion]="
-                        AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
+                        MainConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
                     "
                     [program_id]="program_id"
                     obs-form
-                ></app-sitemodalflow>
+                >
+                </app-sitemodalflow>
             </app-sites-list>
         </div>
 
@@ -121,4 +128,85 @@
             Ajouter
         </button>
     </div>
+
+    <section *ngIf="isMobile" class="obs-tabs obs-section">
+        <ngb-tabset>
+            <ngb-tab title="Liste">
+                <ng-template ngbTabContent>
+                    <div class="side-bar" id="list">
+                        <app-sites-list
+                            #sitesListRef
+                            [sites]="sites"
+                            [program_id]="program_id"
+                            [displayForm]="flowService.display"
+                            [userDashboard]="userDashboard"
+                            (siteSelect)="sitesMapRef.showPopup($event)"
+                        >
+                        <button
+                        type="button"
+                        class="btn btn-success mr-4"
+                        btn-open
+                    >
+                        Ajouter
+                    </button>
+                            <app-sitemodalflow
+                                #modalFlowRef
+                                [coords]="coords"
+                                [modalversion]="
+                                    MainConfig.FRONTEND
+                                        .NEW_OBS_FORM_MODAL_VERSION
+                                "
+                                [program_id]="program_id"
+                                class="float-right"
+                                obs-form
+                            >
+                                <button
+                                    type="button"
+                                    class="btn btn-success mr-4"
+                                    btn-open
+                                >
+                                    Ajouter
+                                </button>
+                            </app-sitemodalflow>
+                        </app-sites-list>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Carte">
+                <ng-template ngbTabContent id="tab-map" class="map">
+                    <app-sites-map
+                        #sitesMapRef
+                        [features]="sites"
+                        [program]="programFeature"
+                        (onClick)="onMapClicked($event)"
+                    ></app-sites-map>
+                    <div class="btn-groups map-modal-btn">
+                        <app-sitemodalflow
+                            [coords]="coords"
+                            [program_id]="program_id"
+                            [modalversion]="
+                                MainConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
+                            "
+                        >
+                            <button
+                                type="button"
+                                class="btn-big text-center text-nowrap text-uppercase"
+                                btn-open
+                            >
+                                {{
+                                    MainConfig.program_add_an_observation[
+                                        localeId
+                                    ]
+                                        ? MainConfig.program_add_an_observation[
+                                              localeId
+                                          ]
+                                        : 'Ajouter'
+                                }}
+                            </button>
+                        </app-sitemodalflow>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </section>
 </div>

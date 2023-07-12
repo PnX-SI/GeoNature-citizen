@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { throwError, forkJoin } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { AppConfig } from '../../../conf/app.config';
+import { MainConfig } from '../../../conf/main.config';
 import { AuthService } from './../auth.service';
 import { UserService } from './user.service.service';
 import { SiteService } from '../../programs/sites/sites.service';
@@ -20,7 +20,7 @@ import { ModalFlowService } from '../../programs/observations/modalflow/modalflo
     styleUrls: ['./user-dashboard.component.css'],
 })
 export class UserDashboardComponent implements OnInit {
-    public appConfig = AppConfig;
+    public MainConfig = MainConfig;
     @ViewChild('siteDeleteModal', { static: true }) siteDeleteModal;
     modalRef: NgbModalRef;
     modalRefDel: NgbModalRef;
@@ -76,7 +76,7 @@ export class UserDashboardComponent implements OnInit {
                             this.userService.role_id = this.role_id;
                             if (user['features']['avatar'])
                                 this.userAvatar =
-                                    this.appConfig.API_ENDPOINT +
+                                    this.MainConfig.API_ENDPOINT +
                                     '/media/' +
                                     user['features']['avatar'];
                             // FIXME: source backend conf
@@ -122,7 +122,7 @@ export class UserDashboardComponent implements OnInit {
 
         data.push(userObservations);
         data.push(userSites);
-        if (AppConfig['REWARDS']) {
+        if (MainConfig['REWARDS']) {
             data.push(badgeCategories);
         }
         forkJoin(data).subscribe((data: any) => {
@@ -130,7 +130,7 @@ export class UserDashboardComponent implements OnInit {
                 this.myobs = data[0];
                 this.mysites = data[1];
                 this.tab = this.mysites.features.length > this.myobs.features.length ? 'sites' : 'observations';
-                if (AppConfig['REWARDS']) {
+                if (MainConfig['REWARDS']) {
                     console.log('data3', data[2]);
                     this.badges = data[2];
                     localStorage.setItem('badges', JSON.stringify(this.badges));
@@ -168,6 +168,9 @@ export class UserDashboardComponent implements OnInit {
                     // this.rowData(obs, coords);
                     // this.obsExport(obs);
                 });
+                if (this.observations.length === 0 && this.mysites.features.length > 0) {
+                    this.tab = 'sites'
+                }
             } else {
                 this.observations = data[0].features;
                 this.observations.forEach((obs) => {
@@ -187,16 +190,16 @@ export class UserDashboardComponent implements OnInit {
         this.rows.push({
             media_url:
                 obs.properties.images && !!obs.properties.images.length
-                    ? AppConfig.API_ENDPOINT +
+                    ? MainConfig.API_ENDPOINT +
                       '/media/' +
                       obs.properties.images[0]
                     : obs.properties.image
                     ? obs.properties.image
                     : obs.properties.medias && !!obs.properties.medias.length
-                    ? AppConfig.API_TAXHUB +
+                    ? MainConfig.API_TAXHUB +
                       '/tmedias/thumbnail/' +
                       obs.properties.medias[0].id_media +
-                      '?h=80&v=80'
+                      '?h=80'
                     : 'assets/default_image.png',
             taxref: obs.properties.taxref,
             date: obs.properties.date,
@@ -324,16 +327,49 @@ export class UserDashboardComponent implements OnInit {
     onUploadAvatar($event) {
         if ($event) {
             if ($event.target.files && $event.target.files[0]) {
-                const reader = new FileReader();
                 const file = $event.target.files[0];
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    this.userAvatar = reader.result;
-                    this.newAvatar = reader.result;
-                    this.extentionFile = $event.target.files[0].type
-                        .split('/')
-                        .pop();
+                const img = document.createElement('img');
+                img.onload = (event) => {
+                    let newImage = null;
+                    if (event.target) {
+                        newImage = event.target;
+                    } else if (!event['path'] || !event['path'].length) {
+                        newImage = event['path'][0];
+                    }
+                    if (!newImage) {
+                        console.error('No image found on this navigator');
+                        return;
+                    }
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    let resizeTimeNumber = 1;
+                    const maxHeightRatio =
+                        newImage.height / MainConfig.imageUpload.maxHeight;
+                    if (maxHeightRatio > 1) {
+                        resizeTimeNumber = maxHeightRatio;
+                    }
+                    const maxWidthRatio =
+                        newImage.width / MainConfig.imageUpload.maxWidth;
+                    if (maxWidthRatio > 1 && maxWidthRatio > maxHeightRatio) {
+                        resizeTimeNumber = maxWidthRatio;
+                    }
+
+                    canvas.width = newImage.width / resizeTimeNumber;
+                    canvas.height = newImage.height / resizeTimeNumber;
+
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    const resizedImage = canvas.toDataURL(
+                        'image/jpeg',
+                        MainConfig.imageUpload.quality
+                    );
+
+                    this.userAvatar = resizedImage;
+                    this.newAvatar = resizedImage;
+                    this.extentionFile = 'jpeg';
                 };
+                img.src = window.URL.createObjectURL(file);
             }
         }
     }
