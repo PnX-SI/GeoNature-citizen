@@ -4,6 +4,7 @@
 import json
 
 from flask import Blueprint, current_app, request, send_from_directory
+from flask_admin import BaseView, expose
 from geojson import FeatureCollection
 from sqlalchemy import and_, distinct
 from sqlalchemy.sql import func
