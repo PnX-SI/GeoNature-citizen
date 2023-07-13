@@ -5,7 +5,8 @@
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import relationship
-from utils_flask_sqla_geo.serializers import geoserializable, serializable
+#from utils_flask_sqla_geo.serializers import geoserializable, serializable
+from gncitizen.utils.sqlalchemy import serializable, geoserializable
 
 from gncitizen.core.commons.models import (
     CustomFormModel,

@@ -10,7 +10,8 @@ from geojson import FeatureCollection
 from shapely.geometry import Point, asShape, LineString, Polygon
 from sqlalchemy import or_
 from utils_flask_sqla.response import json_resp
-from utils_flask_sqla_geo.generic import get_geojson_feature
+#from utils_flask_sqla_geo.generic import get_geojson_feature
+from gncitizen.utils.sqlalchemy import get_geojson_feature
 
 from gncitizen.core.commons.models import MediaModel
 from gncitizen.core.users.models import UserModel
