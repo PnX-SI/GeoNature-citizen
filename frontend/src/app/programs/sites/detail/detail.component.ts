@@ -55,6 +55,54 @@ export class SiteDetailComponent
         });
     }
 
+    prepareVisits() {
+        // photos
+        this.photos = this.site.properties.photos;
+        this.photos.forEach((e, i) => {
+            this.photos[i]['url'] =
+                MainConfig.API_ENDPOINT + this.photos[i]['url'];
+        });
+        // data
+        this.attributes = []
+        if (this.site.properties.visits) {
+            this.site.properties.visits.forEach((e) => {
+                const data = e.json_data;
+                const visitData = {
+                    date: e.date,
+                    author: e.author,
+                    id: e.id_visit,
+                    json_data: e.json_data
+                };
+                this.loadJsonSchema().subscribe((jsonschema: any) => {
+                    const schema = jsonschema.schema.properties;
+                    const custom_data = [];
+                    for (const k in data) {
+                        const v = data[k];
+                        custom_data.push({
+                            name: schema[k].title,
+                            value: v.toString(),
+                        });
+                    }
+                    if (custom_data.length > 0) {
+                        visitData['data'] = custom_data;
+                    }
+                });
+                this.attributes.push(visitData);
+            });
+        }
+    }
+
+    getData() {
+        return this.programService.getSiteDetails(this.site_id);
+    }
+
+    updateData() {
+        this.getData().subscribe((sites) => {
+            this.site = sites['features'][0];
+            this.prepareVisits();
+        });
+    }
+
     ngAfterViewInit() {
         this.programService.getSiteDetails(this.site_id).subscribe((sites) => {
             this.site = sites['features'][0];

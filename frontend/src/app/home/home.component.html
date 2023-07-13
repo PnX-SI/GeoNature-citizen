@@ -10,27 +10,26 @@
 </div>
 
 <div
-    *ngIf="stats && AppConfig.FRONTEND.DISPLAY_STATS"
+    *ngIf="stats && MainConfig.FRONTEND.DISPLAY_STATS"
     class="row row-0 general-stat"
 >
-    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
-        <div class="panel panel-teal panel-widget border-right">
-            <div class="no-padding">
-                <em class="fa fa-xl fa-leaf color-primary"></em>
-                <div class="large">{{ stats.nb_sites }}</div>
-                <div class="text-muted" i18n="Sites@@sites">Sites</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
-        <div class="panel panel-blue panel-widget border-right">
-            <div class="no-padding">
-                <em class="fa fa-xl fa fa-search color-secondary"></em>
-                <div class="large">{{ stats.nb_visits }}</div>
-                <div class="text-muted" i18n="Visits@@visits">Visites</div>
-            </div>
-        </div>
-    </div>
+  <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+      <div class="panel panel-teal panel-widget border-right">
+          <div class="no-padding">
+              <em class="fa fa-xl fa-leaf color-primary"></em>
+              <div class="large">{{ stats.nb_sites }}</div>
+              <div class="text-muted" i18n="Sites@@sites">Sites</div>
+          </div>
+      </div>
+  </div>
+  <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+      <div class="panel panel-blue panel-widget border-right">
+          <div class="no-padding">
+              <em class="fa fa-xl fa fa-search color-secondary"></em>
+              <div class="large">{{ stats.nb_visits }}</div>
+              <div class="text-muted" i18n="Visits@@visits">Visites</div>
+          </div>
+      </div>
   </div>
   <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
     <div class="panel panel-orange panel-widget border-right">
@@ -125,7 +124,7 @@
                                     p.module.name
                                 ]"
                                 >{{
-                                    AppConfig.platform_participate[localeId]
+                                    MainConfig.platform_participate[localeId]
                                 }}</a
                             >
                         </div>
@@ -143,7 +142,6 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only" i18n="Carousel next@@ngbCarouselNext">Prochain</span>
       </a>
-    </div>
   </section>
 </div>
 <div row>

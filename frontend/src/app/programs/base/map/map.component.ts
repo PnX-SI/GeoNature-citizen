@@ -65,7 +65,7 @@ export const conf = {
         }),
     ORANGE_MARKER_ICON: () =>
         L.icon({
-            iconUrl: MAP_CONFIG['ORANGE_POINTER'],
+            iconUrl: MainConfig['ORANGE_POINTER'],
             iconSize: [33, 42],
             iconAnchor: [16, 42],
         }),
