@@ -154,7 +154,7 @@ class ProjectModel(TimestampMixinModel, db.Model):
     def __repr__(self):
         return self.name
 
-class GeometryTypeEnum(enum.Enum):
+class GeometryTypeEnum(str, enum.Enum):
     POINT = 'point'
     LINESTRING = 'ligne'
     POLYGON = 'polygone'
