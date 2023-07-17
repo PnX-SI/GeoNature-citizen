@@ -19,8 +19,7 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
-#from utils_flask_sqla_geo.serializers import geoserializable, serializable
-from gncitizen.utils.sqlalchemy import serializable, geoserializable
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 from gncitizen.utils.env import MEDIA_DIR, db
 

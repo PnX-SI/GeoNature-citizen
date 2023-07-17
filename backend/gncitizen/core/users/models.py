@@ -2,8 +2,7 @@
 
 from passlib.hash import pbkdf2_sha256 as sha256
 from sqlalchemy.ext.declarative import declared_attr
-from gncitizen.utils.sqlalchemy import serializable, geoserializable
-#from utils_flask_sqla_geo.serializers import geoserializable, serializable
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 from gncitizen.core.commons.models import (
     ProgramsModel,

@@ -14,8 +14,7 @@ from geojson import FeatureCollection
 from shapely.geometry import Point, asShape
 from sqlalchemy import desc, func
 from utils_flask_sqla.response import json_resp
-#from utils_flask_sqla_geo.generic import get_geojson_feature
-from gncitizen.utils.sqlalchemy import get_geojson_feature
+from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.users.models import UserModel
@@ -287,7 +286,7 @@ def post_observation():
         # If municipality is not provided: call API_CITY
         if not newobs.municipality:
             newobs.municipality = get_municipality_id_from_wkb(_coordinates)
-
+        
         # If taxon name is not provided: call taxhub
         if not newobs.name:
             taxon = get_specie_from_cd_nom(newobs.cd_nom)
