@@ -67,7 +67,7 @@ export class DashboardComponent implements AfterViewInit {
             for (let p of this.programs) {
                 console.log('p', p)
                 this.programService.getProgram(p.id_program).subscribe((program) => {
-                    if (p.geometry_type === 'POINT' && p.id_project === 1) {
+                    if (p.geometry_type === 'point' && p.id_project === 1) {
                         this.programPoint = program;
                         console.log('this.programPoint:', this.programPoint);
 
@@ -92,7 +92,7 @@ export class DashboardComponent implements AfterViewInit {
                         });
                     }
 
-                    if (p.geometry_type === 'LINESTRING' && p.id_project === 1) {
+                    if (p.geometry_type === 'linestring' && p.id_project === 1) {
                         this.programLine = program;
                         console.log('this.programLine:', this.programLine);
 
@@ -111,7 +111,7 @@ export class DashboardComponent implements AfterViewInit {
                         });
                     }
 
-                    if (p.geometry_type === 'POLYGON' && p.id_project === 1) {
+                    if (p.geometry_type === 'polygon' && p.id_project === 1) {
                         this.programPolygon = program;
                         console.log('this.programZones:', this.programPolygon);
 

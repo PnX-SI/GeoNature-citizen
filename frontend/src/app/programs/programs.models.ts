@@ -14,5 +14,5 @@ export class Program {
     module: any;
     taxonomy_list: number;
     on_sidebar: boolean;
-    geometry_type: 'POINT' | 'LINESTRING' | 'POLYGON';
+    geometry_type: 'point' | 'linestring' | 'polygon';
 }

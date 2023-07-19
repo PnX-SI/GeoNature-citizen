@@ -458,6 +458,7 @@ def get_programs():
                     "taxonomy_list",
                     "timestamp_create",
                     "timestamp_update",
+                    "geometry_type",
                 ],
             )
             features.append(feature)
