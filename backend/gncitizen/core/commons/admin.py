@@ -108,6 +108,7 @@ class VisitView(ModelView):
         obs_txt='Nom d\'utilisateur de l\'encodeur'
     )
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
+    column_list = ("id_visit", "site", "date", "json_data", "obs_txt", "email", "eval")
     column_formatters = dict(
         timestamp_create=lambda v, c, m, p: m.timestamp_create.strftime('%d.%m.%Y - %H:%M')
     )

@@ -137,6 +137,7 @@ def get_site_visits(site_id):
             "date": v.as_dict()["date"],
             "json_data": v.json_data,
             "author": v.obs_txt,
+            "author_eval": v.eval,
         }
         for v in visits
     ]
@@ -166,6 +167,7 @@ def format_site(site, dashboard=False):
         for k in site_dict:
             if k not in ("geom",):
                 feature["properties"][k] = site_dict[k]
+                feature["properties"]["eval"] = UserModel.query.get(site_dict["id_role"]).eval
         if dashboard:
             # Site creator can delete it only if no visit have been added by others
             feature["properties"]["creator_can_delete"] = (

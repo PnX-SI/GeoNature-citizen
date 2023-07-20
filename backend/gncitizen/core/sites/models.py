@@ -106,6 +106,10 @@ class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     date = db.Column(db.Date)
     json_data = db.Column(JSONB, nullable=True)
 
+    @property
+    def eval(self):
+        return UserModel.query.get(self.id_role).eval
+
     def __repr__(self):
         return "<Visit {0}>".format(self.id_visit)
 
