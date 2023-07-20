@@ -90,6 +90,7 @@ class SiteView(ModelView):
         obs_txt='Nom d\'utilisateur de l\'encodeur'
     )
     form_excluded_columns = ["timestamp_create", "timestamp_update", "geom"]
+    column_list = ("id_site", "program", "name", "obs_txt", "email", "eval", "site_type", "uuid_sinp")
     column_formatters = dict(
         timestamp_create=lambda v, c, m, p: m.timestamp_create.strftime('%d.%m.%Y - %H:%M')
     )
