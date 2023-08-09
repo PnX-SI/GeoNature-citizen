@@ -1,10 +1,74 @@
 <div class="mediaGalery overflow-auto">
     <div class="row text-center text-lg-start">
-        <div *ngFor="let m of media" class="col-lg-3 col-md-4 col-6 p-1 img-container">
-            <img class="" [src]="'https://gncitizen.lpo-aura.org/api/media/' + m.filename" [alt]="m.title"
-                [ngbTooltip]="m.name" />
-            <div class="overlay p-1">
-                <span>{{ m.name }} par @{{m.obs_txt}}</span>
+        <div
+            *ngFor="let m of media"
+            class="col-lg-3 col-md-4 col-6 p-1 img-container"
+        >
+            <img
+                class=""
+                [src]="'https://gncitizen.lpo-aura.org/api/media/' + m.filename"
+                [alt]="m.title"
+                [ngbTooltip]="m.name"
+            />
+            <div (click)="showPhoto(m)" class="overlay p-1">
+                <span
+                    >{{ m.name }} le {{ m.date | date: 'longDate' }} par @{{
+                        m.obs_txt
+                    }}</span
+                >
+            </div>
+        </div>
+    </div>
+</div>
+
+<div
+    *ngIf="clickedPhoto"
+    class="modal fade"
+    id="photoModal"
+    tabindex="-1"
+    role="dialog"
+>
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    {{ clickedPhoto.name }} le
+                    {{ clickedPhoto.date | date: 'longDate' }} par @{{
+                        clickedPhoto.obs_txt
+                    }}
+                </h5>
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                >
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img
+                    [src]="
+                        'https://gncitizen.lpo-aura.org/api/media/' +
+                        clickedPhoto.filename
+                    "
+                    style="width: 100%; height: 100%"
+                />
+                <p class="card-text">
+                    <small class="text-muted">{{
+                        clickedPhoto?.obs_txt
+                    }}</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                    i18n="close modal@@closeModal"
+                >
+                    Fermer
+                </button>
             </div>
         </div>
     </div>

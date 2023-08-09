@@ -48,6 +48,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     public isCollapsed = true;
     isMobile: boolean;
     hideProgramHeader = false;
+    mediaPanel: boolean = false;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
