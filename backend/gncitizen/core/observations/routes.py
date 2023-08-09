@@ -750,7 +750,11 @@ def get_observations_by_user_id(user_id):
                     func.json_build_array(
                         MediaModel.filename, MediaModel.id_media
                     )
+<<<<<<< Updated upstream
                 ).label("images")
+=======
+                ).label("images"),
+>>>>>>> Stashed changes
             )
             .filter(ObservationModel.id_role == user_id)
             .join(
@@ -891,7 +895,9 @@ def update_observation():
             _shape = asShape(_point)
             update_obs["geom"] = from_shape(Point(_shape), srid=4326)
             if not update_obs["municipality"]:
-                update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
+                update_obs["municipality"] = get_municipality_id_from_wkb(
+                    _coordinates
+                )
         except Exception as e:
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)
@@ -970,3 +976,58 @@ def delete_observation(id_obs):
             return ("delete unauthorized"), 403
     except Exception as e:
         return {"message": str(e)}, 500
+<<<<<<< Updated upstream
+=======
+
+
+@obstax_api.route("/observations/medias", methods=["GET"])
+@json_resp
+def get_obs_medias():
+    """Get media list
+
+    :return: _description_
+    :rtype: _type_
+    """
+
+    medias = (
+        MediaModel.query.join(ObservationMediaModel)
+        .join(ObservationModel)
+        .join(ProgramsModel)
+        .with_entities(
+            MediaModel.id_media,
+            MediaModel.filename,
+            ObservationModel.id_observation,
+            ObservationModel.cd_nom,
+            ObservationModel.name,
+            ObservationModel.obs_txt,
+            ObservationModel.id_role,
+            ObservationModel.date,
+            ProgramsModel.title,
+            ProgramsModel.id_program,
+        )
+    )
+
+    # Filter by Program
+    id_program = request.args.get("id_program")
+    if id_program:
+        medias = medias.filter(ProgramsModel.id_program == id_program)
+
+    # Filter by observers
+    id_role = request.args.get("id_role")
+    if id_role:
+        medias = medias.filter(ObservationModel.id_role == id_role)
+
+    # Filter by type site
+    cd_nom = request.args.get("cd_nom")
+    if cd_nom:
+        medias = medias.filter(ObservationModel.cd_nom == cd_nom)
+
+    # Filter by id_observation
+    id_observation = request.args.get("id_observation")
+    if id_observation:
+        medias = medias.filter(
+            ObservationModel.id_observation == id_observation
+        )
+
+    return [media._asdict() for media in medias.all()]
+>>>>>>> Stashed changes
