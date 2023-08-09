@@ -6,6 +6,7 @@ from gncitizen.utils.admin import (
 
 
 class ObservationView(CustomTileView):
+    can_export=True
     # column_exclude_list = ["geom"]
     form_overrides = {"json_schema": CustomJSONField}
     column_formatters = {
