@@ -33,6 +33,10 @@ MEDIA_FOLDER = 'media'
 REWARDS_ENABLED = false
 
 
+# Verify observations
+VERIFY_OBSERVATIONS_ENABLED = false
+
+
 [RESET_PASSWD]
     SUBJECT = "Link"
     FROM = 'contact@geonature-citizen.fr'
@@ -70,4 +74,3 @@ REWARDS_ENABLED = false
 
 
 # API flasgger main config
-

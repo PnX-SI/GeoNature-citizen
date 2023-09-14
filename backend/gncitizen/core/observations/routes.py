@@ -3,6 +3,7 @@
 
 
 import uuid
+from enum import Enum
 from typing import Dict, Tuple, Union
 
 # from datetime import datetime
@@ -29,7 +30,7 @@ from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
 from server import db
 
 from .admin import ObservationView
-from .models import ObservationMediaModel, ObservationModel
+from .models import ObservationMediaModel, ObservationModel, ObservationStatus
 
 # from sqlalchemy import func
 
@@ -56,6 +57,9 @@ obs_keys = (
     "timestamp_create",
     "json_data",
 )
+
+if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
+    obs_keys = obs_keys + ("status",)
 
 
 def generate_observation_geojson(id_observation):
@@ -291,6 +295,9 @@ def post_observation():
         if not newobs.name:
             taxon = get_specie_from_cd_nom(newobs.cd_nom)
             newobs.name = taxon.get('nom_vern', '')
+
+        if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
+            newobs.situation = ObservationStatus.pending
 
         newobs.uuid_sinp = uuid.uuid4()
         db.session.add(newobs)
@@ -840,7 +847,7 @@ def get_observations_by_user_id(user_id):
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys and k != "municipality":
-                    feature["properties"][k] = observation_dict[k]
+                    feature["properties"][k] = observation_dict[k].value if isinstance(observation_dict[k], Enum) else observation_dict[k]
             # Program
             program_dict = observation.ProgramsModel.as_dict(True)
             for program in program_dict:
