@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+from enum import Enum
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from utils_flask_sqla_geo.serializers import geoserializable, serializable
@@ -12,6 +13,12 @@ from gncitizen.core.commons.models import (
 )
 from gncitizen.core.users.models import ObserverMixinModel
 from server import db
+
+
+class ObservationStatus(Enum):
+    PENDING = "pending"  #
+    UNVERIFIABLE = "unverifiable"
+    APPROVED = "approved"
 
 
 @serializable
@@ -42,6 +49,8 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     program_ref = db.relationship(
         "ProgramsModel", backref=db.backref("t_obstax", lazy="dynamic")
     )
+
+    status = db.Column(db.Enum(ObservationStatus), default=ObservationStatus.PENDING)  # if feature flag true, default new else valid
 
 
 class ObservationMediaModel(TimestampMixinModel, db.Model):
