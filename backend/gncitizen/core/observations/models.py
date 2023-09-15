@@ -15,9 +15,11 @@ from gncitizen.core.users.models import ObserverMixinModel
 from server import db
 
 
-class ObservationStatus(Enum):
-    PENDING = "pending"  #
+class ValidationStatus(Enum):
+    PENDING = "pending"
     UNVERIFIABLE = "unverifiable"
+    OFFTOPIC = "off-topic"
+    MULTIPLE = "multiple"
     APPROVED = "approved"
 
 
@@ -50,7 +52,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         "ProgramsModel", backref=db.backref("t_obstax", lazy="dynamic")
     )
 
-    status = db.Column(db.Enum(ObservationStatus), default=ObservationStatus.PENDING)  # if feature flag true, default new else valid
+    validation_status = db.Column(db.Enum(ValidationStatus), default=ValidationStatus.PENDING)
 
 
 class ObservationMediaModel(TimestampMixinModel, db.Model):

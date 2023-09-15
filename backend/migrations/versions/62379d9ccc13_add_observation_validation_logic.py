@@ -17,8 +17,8 @@ depends_on = None
 
 
 def upgrade():
-    observation_status = postgresql.ENUM('PENDING', 'UNVERIFIABLE', 'APPROVED', name='observationstatus')
-    observation_status.create(op.get_bind())
+    validation_status = postgresql.ENUM('PENDING', 'UNVERIFIABLE', 'OFFTOPIC', 'MULTIPLE' 'APPROVED', name='validationstatus')
+    validation_status.create(op.get_bind())
 
     op.add_column(
         "t_users",
@@ -33,19 +33,16 @@ def upgrade():
     op.add_column(
         "t_obstax",
         sa.Column(
-            'status',
-            sa.Enum('PENDING', 'UNVERIFIABLE', 'APPROVED', name='observationstatus'),
+            'validation_status',
+            sa.Enum('PENDING', 'UNVERIFIABLE', 'OFFTOPIC', 'MULTIPLE' 'APPROVED', name='validationstatus'),
+            server_default="PENDING",
             nullable=False
         ),
         schema='gnc_obstax'
     )
 
 
-
 def downgrade():
-    observation_status = postgresql.ENUM('PENDING', 'UNVERIFIABLE', 'APPROVED', name='observationstatus')
-    observation_status.drop(op.get_bind())
-
     op.drop_column(
         "t_users",
         "verifier",
@@ -53,6 +50,9 @@ def downgrade():
     )
     op.drop_column(
         "t_obstax",
-        "status",
+        "validation_status",
         schema="gnc_obstax"
     )
+
+    validation_status = postgresql.ENUM('PENDING', 'UNVERIFIABLE', 'OFFTOPIC', 'MULTIPLE' 'APPROVED', name='validationstatus')
+    validation_status.drop(op.get_bind())

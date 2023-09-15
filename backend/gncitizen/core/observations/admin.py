@@ -5,7 +5,7 @@ from gncitizen.utils.admin import (
 )
 
 
-def status_formatter(view, context, model, name):
+def enum_formatter(view, context, model, name):
     enum_attr = getattr(model, name)
     return enum_attr.value
 
@@ -16,7 +16,7 @@ class ObservationView(CustomTileView):
     form_overrides = {"json_schema": CustomJSONField}
     column_formatters = {
         "json_schema": json_formatter,
-        "status": status_formatter,
+        "validation_status": enum_formatter,
     }
     column_filters = (
         "email",

@@ -30,7 +30,7 @@ from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
 from server import db
 
 from .admin import ObservationView
-from .models import ObservationMediaModel, ObservationModel, ObservationStatus
+from .models import ObservationMediaModel, ObservationModel, ValidationStatus
 
 # from sqlalchemy import func
 
@@ -59,7 +59,7 @@ obs_keys = (
 )
 
 if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
-    obs_keys = obs_keys + ("status",)
+    obs_keys = obs_keys + ("validation_status",)
 
 
 def generate_observation_geojson(id_observation):
@@ -297,7 +297,7 @@ def post_observation():
             newobs.name = taxon.get('nom_vern', '')
 
         if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
-            newobs.situation = ObservationStatus.pending
+            newobs.validation_status = ValidationStatus.PENDING
 
         newobs.uuid_sinp = uuid.uuid4()
         db.session.add(newobs)
@@ -557,7 +557,7 @@ def get_program_observations(
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys and k != "municipality":
-                    feature["properties"][k] = observation_dict[k]
+                    feature["properties"][k] = observation_dict[k].value if isinstance(observation_dict[k], Enum) else observation_dict[k]
 
             try:
                 taxon = next(
@@ -692,7 +692,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys and k != "municipality":
-                    feature["properties"][k] = observation_dict[k]
+                    feature["properties"][k] = observation_dict[k].value if isinstance(observation_dict[k], Enum) else observation_dict[k]
 
             try:
                 taxon = next(
