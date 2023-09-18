@@ -174,7 +174,7 @@ BEGIN
         FROM
             gnc_obstax.t_obstax
                 join gnc_core.t_users on t_obstax.id_role = t_users.id_user
-                JOIN utilisateurs.t_roles ON t_users.email = t_users.email
+                JOIN utilisateurs.t_roles ON t_roles.email = t_users.email
         where
             t_obstax.id_role = new.id_role;
 
