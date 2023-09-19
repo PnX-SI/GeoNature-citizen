@@ -17,13 +17,13 @@ depends_on = None
 
 
 def upgrade():
-    validation_status = postgresql.ENUM('PENDING', 'UNVERIFIABLE', 'OFFTOPIC', 'MULTIPLE' 'APPROVED', name='validationstatus')
+    validation_status = postgresql.ENUM('NOT_VALIDATED', 'INVALID', 'NON_VALIDATABLE', 'VALIDATED', name='validationstatus')
     validation_status.create(op.get_bind())
 
     op.add_column(
         "t_users",
         sa.Column(
-            "verifier",
+            "validator",
             sa.Boolean(),
             server_default=sa.text("false"),
             nullable=True,
@@ -34,8 +34,8 @@ def upgrade():
         "t_obstax",
         sa.Column(
             'validation_status',
-            sa.Enum('PENDING', 'UNVERIFIABLE', 'OFFTOPIC', 'MULTIPLE' 'APPROVED', name='validationstatus'),
-            server_default="PENDING",
+            sa.Enum('NOT_VALIDATED', 'INVALID', 'NON_VALIDATABLE', 'VALIDATED', name='validationstatus'),
+            server_default="NOT_VALIDATED",
             nullable=False
         ),
         schema='gnc_obstax'
@@ -45,7 +45,7 @@ def upgrade():
 def downgrade():
     op.drop_column(
         "t_users",
-        "verifier",
+        "validator",
         schema="gnc_core"
     )
     op.drop_column(
@@ -54,5 +54,5 @@ def downgrade():
         schema="gnc_obstax"
     )
 
-    validation_status = postgresql.ENUM('PENDING', 'UNVERIFIABLE', 'OFFTOPIC', 'MULTIPLE' 'APPROVED', name='validationstatus')
+    validation_status = postgresql.ENUM('NOT_VALIDATED', 'INVALID', 'NON_VALIDATABLE', 'VALIDATED', name='validationstatus')
     validation_status.drop(op.get_bind())

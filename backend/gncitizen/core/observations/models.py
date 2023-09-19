@@ -16,11 +16,10 @@ from server import db
 
 
 class ValidationStatus(Enum):
-    PENDING = "pending"
-    UNVERIFIABLE = "unverifiable"
-    OFFTOPIC = "off-topic"
-    MULTIPLE = "multiple"
-    APPROVED = "approved"
+    NOT_VALIDATED = "not validated"
+    INVALID = "invalid"
+    NON_VALIDATABLE = "non-validatable"
+    VALIDATED = "validated"
 
 
 @serializable
@@ -52,7 +51,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         "ProgramsModel", backref=db.backref("t_obstax", lazy="dynamic")
     )
 
-    validation_status = db.Column(db.Enum(ValidationStatus), default=ValidationStatus.PENDING)
+    validation_status = db.Column(db.Enum(ValidationStatus), default=ValidationStatus.NOT_VALIDATED)
 
 
 class ObservationMediaModel(TimestampMixinModel, db.Model):

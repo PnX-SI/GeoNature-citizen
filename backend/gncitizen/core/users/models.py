@@ -49,7 +49,7 @@ class UserModel(TimestampMixinModel, db.Model):
     avatar = db.Column(db.String())
     active = db.Column(db.Boolean, default=False)
     admin = db.Column(db.Boolean, default=False)
-    verifier = db.Column(db.Boolean, default=False)
+    validator = db.Column(db.Boolean, default=False)
 
     def save_to_db(self):
         db.session.add(self)

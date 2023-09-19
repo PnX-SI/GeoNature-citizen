@@ -297,7 +297,7 @@ def post_observation():
             newobs.name = taxon.get('nom_vern', '')
 
         if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
-            newobs.validation_status = ValidationStatus.PENDING
+            newobs.validation_status = ValidationStatus.NOT_VALIDATED
 
         newobs.uuid_sinp = uuid.uuid4()
         db.session.add(newobs)
