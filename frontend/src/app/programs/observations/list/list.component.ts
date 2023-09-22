@@ -37,9 +37,11 @@ export class ObsListComponent implements OnChanges {
     observationList: Feature[] = [];
     program_id: number;
     taxa: any[];
+    validationStatuses: Set<string>;
     public MainConfig = MainConfig;
     selectedTaxon: TaxonomyListItem = null;
     selectedMunicipality: any = null;
+    selectedValidationStatus: any = null;
     changes$ = new BehaviorSubject<SimpleChanges>(null);
     observations$ = new BehaviorSubject<Feature[]>(null);
     features$ = merge(
@@ -67,6 +69,14 @@ export class ObsListComponent implements OnChanges {
                 .filter((item, pos, self) => {
                     return self.indexOf(item) === pos;
                 });
+            this.validationStatuses = new Set(this.observations.features
+                .map((features) => features.properties)
+                .map((property) => property.validation_status)
+                .map((validation_status) => {
+                    console.log(validation_status)
+                    return validation_status;
+                })
+            )
         }
     }
 
@@ -75,9 +85,10 @@ export class ObsListComponent implements OnChanges {
     // }
 
     onFilterChange(): void {
-        let filters: { taxon: string; municipality: string } = {
+        let filters: { taxon: string; municipality: string; validationStatus: string } = {
             taxon: null,
             municipality: null,
+            validationStatus: null,
         };
         // WARNING: map.observations is connected to this.observationList
         this.observationList = this.observations['features'].filter((obs) => {
@@ -94,6 +105,12 @@ export class ObsListComponent implements OnChanges {
                     obs.properties.cd_nom == this.selectedTaxon.taxref['cd_nom']
                 );
                 filters.taxon = this.selectedTaxon.taxref['cd_nom'];
+            }
+            if (this.selectedValidationStatus) {
+                results.push(
+                    obs.properties.validation_status == this.selectedValidationStatus
+                );
+                filters.validationStatus = this.selectedValidationStatus;
             }
             return results.indexOf(false) < 0;
         });

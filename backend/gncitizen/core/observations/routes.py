@@ -112,7 +112,7 @@ def generate_observation_geojson(id_observation):
     # Populate "properties"
     for k in result_dict:
         if k in obs_keys:
-            feature["properties"][k] = result_dict[k]
+            feature["properties"][k] = result_dict[k].value if isinstance(result_dict[k], Enum) else result_dict[k]
 
     feature["properties"]["photos"] = [
         {
