@@ -15,11 +15,24 @@ from gncitizen.core.users.models import ObserverMixinModel
 from server import db
 
 
-class ValidationStatus(Enum):
-    NOT_VALIDATED = "not validated"
-    INVALID = "invalid"
-    NON_VALIDATABLE = "non-validatable"
-    VALIDATED = "validated"
+class AdminFormEnum(Enum):
+    @classmethod
+    def choices(cls):
+        return [(choice, choice.value) for choice in cls]
+
+    @classmethod
+    def coerce(cls, item):
+        return cls(item) if not isinstance(item, cls) else item
+
+    def __str__(self):
+        return str(self.value)
+
+
+class ValidationStatus(AdminFormEnum):
+    NOT_VALIDATED = "Non validé"
+    INVALID = "Invalide"
+    NON_VALIDATABLE = "Non validable"
+    VALIDATED = "Validé"
 
 
 @serializable

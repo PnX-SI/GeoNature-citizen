@@ -28,7 +28,7 @@
                 name="municipality"
                 type="text"
                 class="form-control rounded-0"
-                [ngClass]="{'col-lg-6': !validationStatuses || !validationStatuses.size}"
+                [ngClass]="{'col-lg-6': !validationStatuses || (validationStatuses | json) == '{}'}"
                 [(ngModel)]="selectedMunicipality"
                 (ngModelChange)="onFilterChange()"
             >
@@ -45,7 +45,7 @@
                 </option>
             </select>
             <select
-                *ngIf="validationStatuses && validationStatuses.size"
+                *ngIf="validationStatuses && (validationStatuses | json) != '{}'"
                 class="form-control rounded-0"
                 id="inputValidationStatus"
                 [(ngModel)]="selectedValidationStatus"
@@ -57,8 +57,8 @@
                 >
                     Tout statuts de validation
                 </option>
-                <option *ngFor="let v of validationStatuses" [ngValue]="v">
-                    {{ v }}
+                <option *ngFor="let status of validationStatuses | keyvalue" [ngValue]="status.key">
+                    {{ status.value }}
                 </option>
             </select>
         </div>
@@ -102,8 +102,8 @@
                         <a
                             class="espece-link"
                             [ngClass]="{
-                                'text-warning': o.properties.validation_status && o.properties.validation_status === 'not validated',
-                                'text-danger': o.properties.validation_status && ['invalid', 'non-validatable'].includes(o.properties.validation_status)
+                                'text-warning': o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED',
+                                'text-danger': o.properties.validation_status && ['INVALID', 'NON_VALIDATABLE'].includes(o.properties.validation_status)
                             }"
                             target="_blank"
                             href="{{
@@ -117,21 +117,21 @@
                         >
                         &nbsp;
                         <i
-                            *ngIf="o.properties.validation_status && o.properties.validation_status === 'not validated'"
+                            *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
                             class="fa fa-hourglass-half text-warning"
                             aria-hidden="true"
                             placement="bottom"
                             ngbTooltip="Non validée"
                         ></i>
                         <i
-                            *ngIf="o.properties.validation_status && o.properties.validation_status === 'invalid'"
+                            *ngIf="o.properties.validation_status && o.properties.validation_status === 'INVALID'"
                             class="fa fa-question-circle text-danger"
                             aria-hidden="true"
                             placement="bottom"
                             ngbTooltip="Invalide"
                         ></i>
                         <i
-                            *ngIf="o.properties.validation_status && o.properties.validation_status === 'non-validatable'"
+                            *ngIf="o.properties.validation_status && o.properties.validation_status === 'NON_VALIDATABLE'"
                             class="fa fa-times-circle text-danger"
                             aria-hidden="true"
                             placement="bottom"

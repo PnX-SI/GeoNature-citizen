@@ -47,6 +47,13 @@ export class UserService {
         );
     }
 
+    getValidationStatuses() {
+        console.log('validations');
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/validation_statuses`
+        );
+    }
+
     getSitesByUserId(userId: number) {
         return this.http.get<Object>(
             `${MainConfig.API_ENDPOINT}/sites/users/${userId}`

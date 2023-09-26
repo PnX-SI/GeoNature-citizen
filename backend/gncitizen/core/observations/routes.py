@@ -112,7 +112,7 @@ def generate_observation_geojson(id_observation):
     # Populate "properties"
     for k in result_dict:
         if k in obs_keys:
-            feature["properties"][k] = result_dict[k].value if isinstance(result_dict[k], Enum) else result_dict[k]
+            feature["properties"][k] = result_dict[k].name if isinstance(result_dict[k], Enum) else result_dict[k]
 
     feature["properties"]["photos"] = [
         {
@@ -557,7 +557,7 @@ def get_program_observations(
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys and k != "municipality":
-                    feature["properties"][k] = observation_dict[k].value if isinstance(observation_dict[k], Enum) else observation_dict[k]
+                    feature["properties"][k] = observation_dict[k].name if isinstance(observation_dict[k], Enum) else observation_dict[k]
 
             try:
                 taxon = next(
@@ -692,7 +692,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys and k != "municipality":
-                    feature["properties"][k] = observation_dict[k].value if isinstance(observation_dict[k], Enum) else observation_dict[k]
+                    feature["properties"][k] = observation_dict[k].name if isinstance(observation_dict[k], Enum) else observation_dict[k]
 
             try:
                 taxon = next(
@@ -725,6 +725,17 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             "[get_program_observations] Error: %s", str(e)
         )
         return {"message": str(e)}, 400
+
+
+@obstax_api.route("/validation_statuses")
+@json_resp
+def get_validation_statuses():
+    return (
+        {
+            status.name: status.value for status in ValidationStatus
+        },
+        200,
+    )
 
 
 @obstax_api.route("/dev_rewards/<int:id>")
@@ -847,7 +858,7 @@ def get_observations_by_user_id(user_id):
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys and k != "municipality":
-                    feature["properties"][k] = observation_dict[k].value if isinstance(observation_dict[k], Enum) else observation_dict[k]
+                    feature["properties"][k] = observation_dict[k].name if isinstance(observation_dict[k], Enum) else observation_dict[k]
             # Program
             program_dict = observation.ProgramsModel.as_dict(True)
             for program in program_dict:

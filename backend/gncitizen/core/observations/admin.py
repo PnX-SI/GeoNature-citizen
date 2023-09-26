@@ -1,8 +1,12 @@
+from wtforms import SelectField
+
 from gncitizen.utils.admin import (
     CustomJSONField,
     CustomTileView,
     json_formatter,
 )
+
+from .models import ValidationStatus
 
 
 def enum_formatter(view, context, model, name):
@@ -13,7 +17,11 @@ def enum_formatter(view, context, model, name):
 class ObservationView(CustomTileView):
     can_export=True
     # column_exclude_list = ["geom"]
-    form_overrides = {"json_schema": CustomJSONField}
+    form_overrides = {
+        "json_schema": CustomJSONField,
+        "validation_status": SelectField
+    }
+    form_args = {"validation_status": {"choices": ValidationStatus.choices(), "coerce": ValidationStatus.coerce}}
     column_formatters = {
         "json_schema": json_formatter,
         "validation_status": enum_formatter,

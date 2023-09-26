@@ -20,6 +20,7 @@ import {
     TaxonomyListItem,
     ObservationFeature,
 } from '../observation.model';
+import { UserService } from '../../../auth/user-dashboard/user.service.service';
 
 @Component({
     selector: 'app-obs-list',
@@ -37,7 +38,7 @@ export class ObsListComponent implements OnChanges {
     observationList: Feature[] = [];
     program_id: number;
     taxa: any[];
-    validationStatuses: Set<string>;
+    validationStatuses: any = {};
     public MainConfig = MainConfig;
     selectedTaxon: TaxonomyListItem = null;
     selectedMunicipality: any = null;
@@ -52,7 +53,11 @@ export class ObsListComponent implements OnChanges {
         )
     );
 
-    constructor(private cd: ChangeDetectorRef, public router: Router) {}
+    constructor(
+        private cd: ChangeDetectorRef,
+        public router: Router,
+        private userService: UserService,
+    ) {}
 
     ngOnChanges(changes: SimpleChanges) {
         this.changes$.next(changes);
@@ -69,14 +74,19 @@ export class ObsListComponent implements OnChanges {
                 .filter((item, pos, self) => {
                     return self.indexOf(item) === pos;
                 });
-            this.validationStatuses = new Set(this.observations.features
-                .map((features) => features.properties)
-                .map((property) => property.validation_status)
-                .map((validation_status) => {
-                    console.log(validation_status)
-                    return validation_status;
+            this.userService.getValidationStatuses().subscribe((allValidationStatuses) => {
+                Array.from(
+                    new Set(this.observations.features
+                        .map((features) => features.properties)
+                        .map((property) => {
+                            return property.validation_status;
+                        })
+                    )
+                ).map((status) => {
+                    this.validationStatuses[status] = allValidationStatuses[status]
                 })
-            )
+
+            });
         }
     }
 
