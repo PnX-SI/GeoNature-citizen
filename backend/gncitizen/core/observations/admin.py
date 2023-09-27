@@ -1,4 +1,5 @@
 from wtforms import SelectField
+from flask_admin.actions import action
 
 from gncitizen.utils.admin import (
     CustomJSONField,
@@ -6,7 +7,8 @@ from gncitizen.utils.admin import (
     json_formatter,
 )
 
-from .models import ValidationStatus
+from .models import ValidationStatus, ObservationModel
+from server import db
 
 
 def enum_formatter(view, context, model, name):
@@ -43,3 +45,11 @@ class ObservationView(CustomTileView):
         "municipality",
     )
     can_create = False
+
+
+    @action('validate', 'Validate observations', 'Are you sure you want to validate selected observation(s)?')
+    def action_validate(self, ids):
+        observations_to_validate = db.session.query(ObservationModel).filter(ObservationModel.id_observation.in_(ids))
+        for observation in observations_to_validate:
+            observation.validation_status = ValidationStatus.VALIDATED
+        db.session.commit()
