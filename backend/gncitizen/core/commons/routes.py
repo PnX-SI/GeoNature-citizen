@@ -54,9 +54,9 @@ admin.add_view(SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", cat
 admin.add_view(ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"))
 
 
-@commons_api.route("media/<item>")
-def get_media(item):
-    return send_from_directory(str(MEDIA_DIR), item)
+@commons_api.route("media/<id>")
+def get_media(id):
+    return send_from_directory(str(MEDIA_DIR), id)
 
 
 @commons_api.route("/modules/<int:pk>", methods=["GET"])

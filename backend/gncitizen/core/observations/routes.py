@@ -6,12 +6,13 @@ import uuid
 from typing import Dict, Tuple, Union
 
 # from datetime import datetime
-from flask import Blueprint, current_app, json, request
+from flask import Blueprint, current_app, json, request, url_for
 from flask_jwt_extended import jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import Point, asShape
 from sqlalchemy import desc, func
+from sqlalchemy.sql.expression import literal
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
 
@@ -601,7 +602,9 @@ def get_observations_by_user_id(user_id):
                 ProgramsModel,
                 UserModel.username,
                 func.json_agg(
-                    func.json_build_array(MediaModel.filename, MediaModel.id_media)
+                    func.json_build_array(
+                        MediaModel.filename, MediaModel.id_media
+                    )
                 ).label("images"),
             )
             .filter(ObservationModel.id_role == user_id)
@@ -729,7 +732,9 @@ def update_observation():
             _shape = asShape(_point)
             update_obs["geom"] = from_shape(Point(_shape), srid=4326)
             if not update_obs["municipality"]:
-                update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
+                update_obs["municipality"] = get_municipality_id_from_wkb(
+                    _coordinates
+                )
         except Exception as e:
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)
@@ -803,6 +808,7 @@ def delete_observation(id_obs):
         return {"message": str(e)}, 500
 
 
+
 @obstax_api.route("/observations/medias", methods=["GET"])
 @json_resp
 def get_obs_medias():
@@ -826,6 +832,7 @@ def get_obs_medias():
             ObservationModel.id_role,
             ProgramsModel.title,
             ProgramsModel.id_program,
+            literal(url_for("commons.get_media", id=MediaModel.id_media)).label('url')
         )
     )
 
