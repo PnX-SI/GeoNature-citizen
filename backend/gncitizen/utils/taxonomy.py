@@ -73,9 +73,7 @@ def mkTaxonRepository(taxhub_list_id: int) -> List[Taxon]:
     taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
     taxon_ids = [item["id_nom"] for item in taxa.get("items")]
     r = [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
-    logger.debug(r)
 
-    # r = r.sort(key=lambda item: item.get('nom_francais'))
     return sorted(r, key=lambda item: item["nom_francais"])
 
 

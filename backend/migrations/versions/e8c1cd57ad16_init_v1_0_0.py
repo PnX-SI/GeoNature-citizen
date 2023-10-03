@@ -51,9 +51,7 @@ def upgrade():
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column(
             "geom",
-            ga.types.Geometry(
-                srid=4326, from_text="ST_GeomFromEWKT", name="geometry"
-            ),
+            ga.types.Geometry(srid=4326, from_text="ST_GeomFromEWKT", name="geometry"),
             nullable=True,
         ),
         sa.Column("geom_file", sa.String(length=250), nullable=True),
@@ -89,9 +87,7 @@ def upgrade():
     op.create_table(
         "t_projects",
         sa.Column("id_project", sa.Integer(), nullable=False),
-        sa.Column(
-            "unique_id_project", postgresql.UUID(as_uuid=True), nullable=False
-        ),
+        sa.Column("unique_id_project", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("name", sa.String(length=50), nullable=False),
         sa.Column("short_desc", sa.String(length=200), nullable=True),
         sa.Column("long_desc", sa.Text(), nullable=True),
@@ -148,9 +144,7 @@ def upgrade():
     op.create_table(
         "t_programs",
         sa.Column("id_program", sa.Integer(), nullable=False),
-        sa.Column(
-            "unique_id_program", postgresql.UUID(as_uuid=True), nullable=False
-        ),
+        sa.Column("unique_id_program", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("id_project", sa.Integer(), nullable=False),
         sa.Column("title", sa.String(length=50), nullable=False),
         sa.Column("short_desc", sa.String(length=200), nullable=False),
@@ -257,9 +251,7 @@ def upgrade():
             ),
             nullable=True,
         ),
-        sa.Column(
-            "json_data", postgresql.JSONB(astext_type=sa.Text()), nullable=True
-        ),
+        sa.Column("json_data", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.Column("id_role", sa.Integer(), nullable=True),
         sa.Column("obs_txt", sa.String(length=150), nullable=True),
         sa.Column("email", sa.String(length=150), nullable=True),
@@ -270,9 +262,7 @@ def upgrade():
             ["gnc_core.t_programs.id_program"],
             ondelete="SET NULL",
         ),
-        sa.ForeignKeyConstraint(
-            ["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id_observation"),
         sa.UniqueConstraint("id_observation"),
         sa.UniqueConstraint("uuid_sinp"),
@@ -325,9 +315,7 @@ def upgrade():
             ["id_program"],
             ["gnc_core.t_programs.id_program"],
         ),
-        sa.ForeignKeyConstraint(
-            ["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(
             ["id_type"],
             ["gnc_sites.t_typesite.id_typesite"],
@@ -349,9 +337,7 @@ def upgrade():
             ["gnc_obstax.t_obstax.id_observation"],
             ondelete="CASCADE",
         ),
-        sa.ForeignKeyConstraint(
-            ["id_media"], ["gnc_core.t_medias.id_media"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["id_media"], ["gnc_core.t_medias.id_media"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id_match"),
         sa.UniqueConstraint("id_match"),
         schema="gnc_obstax",
@@ -368,9 +354,7 @@ def upgrade():
             ["gnc_obstax.t_obstax.id_observation"],
             ondelete="SET NULL",
         ),
-        sa.ForeignKeyConstraint(
-            ["id_site"], ["gnc_sites.t_sites.id_site"], ondelete="SET NULL"
-        ),
+        sa.ForeignKeyConstraint(["id_site"], ["gnc_sites.t_sites.id_site"], ondelete="SET NULL"),
         sa.PrimaryKeyConstraint("id_cor_site_obstax"),
         sa.UniqueConstraint("id_cor_site_obstax"),
         schema="gnc_sites",
@@ -380,20 +364,14 @@ def upgrade():
         sa.Column("id_visit", sa.Integer(), nullable=False),
         sa.Column("id_site", sa.Integer(), nullable=True),
         sa.Column("date", sa.Date(), nullable=True),
-        sa.Column(
-            "json_data", postgresql.JSONB(astext_type=sa.Text()), nullable=True
-        ),
+        sa.Column("json_data", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.Column("timestamp_create", sa.DateTime(), nullable=False),
         sa.Column("timestamp_update", sa.DateTime(), nullable=True),
         sa.Column("id_role", sa.Integer(), nullable=True),
         sa.Column("obs_txt", sa.String(length=150), nullable=True),
         sa.Column("email", sa.String(length=150), nullable=True),
-        sa.ForeignKeyConstraint(
-            ["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"
-        ),
-        sa.ForeignKeyConstraint(
-            ["id_site"], ["gnc_sites.t_sites.id_site"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(["id_site"], ["gnc_sites.t_sites.id_site"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id_visit"),
         sa.UniqueConstraint("id_visit"),
         schema="gnc_sites",
@@ -410,9 +388,7 @@ def upgrade():
             ["gnc_sites.t_visit.id_visit"],
             ondelete="CASCADE",
         ),
-        sa.ForeignKeyConstraint(
-            ["id_media"], ["gnc_core.t_medias.id_media"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["id_media"], ["gnc_core.t_medias.id_media"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id_match"),
         sa.UniqueConstraint("id_match"),
         schema="gnc_sites",
