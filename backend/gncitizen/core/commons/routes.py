@@ -1,22 +1,24 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
-from flask import Blueprint, current_app, request, send_from_directory
+from flask import Blueprint, current_app, jsonify, request, send_from_directory, url_for
 from geojson import FeatureCollection
-from sqlalchemy import and_, distinct
+from sqlalchemy import and_, case, distinct, literal
 from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
 
-from gncitizen.core.observations.models import ObservationModel
+from gncitizen.core.observations.models import ObservationMediaModel, ObservationModel
 from gncitizen.core.sites.admin import SiteTypeView
 from gncitizen.core.sites.models import (
     CorProgramSiteTypeModel,
+    MediaOnVisitModel,
     SiteModel,
     SiteTypeModel,
     VisitModel,
 )
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin
+from gncitizen.utils.helpers import set_media_links, to_int
 from server import db
 
 from .admin import CustomFormView, GeometryView, ProgramView, ProjectView, UserView
@@ -393,3 +395,85 @@ def get_programs():
     except Exception as e:
         current_app.logger.critical("[get_programs] error : %s", str(e))
         return {"message": str(e)}, 400
+
+
+@commons_api.route("/medias", methods=["GET"])
+@json_resp
+def get_medias():
+
+    # Filters
+    id_program = request.args.get("id_program")
+    id_role = request.args.get("id_role")
+    cd_nom = request.args.get("cd_nom")
+    id_observation = request.args.get("id_observation")
+    id_observer = request.args.get("id_observer")
+    id_visit = request.args.get("id_visit")
+    id_site = request.args.get("id_site")
+    no_pagination = request.args.get("no_pagination", None)
+    page_size = request.args.get("page_size")
+    page = request.args.get("page")
+
+    qs = (
+        MediaModel.query.outerjoin(ObservationMediaModel)
+        .outerjoin(ObservationModel)
+        .outerjoin(MediaOnVisitModel)
+        .outerjoin(VisitModel)
+        .outerjoin(SiteModel)
+        .outerjoin(
+            ProgramsModel,
+            func.coalesce(ObservationModel.id_program, SiteModel.id_program)
+            == ProgramsModel.id_program,
+        )
+        .with_entities(
+            MediaModel.id_media,
+            MediaModel.filename,
+            (
+                func.coalesce(ObservationModel.id_observation, MediaOnVisitModel.id_data_source)
+            ).label("id_data_source"),
+            ObservationModel.cd_nom,
+            func.coalesce(ObservationModel.name, SiteModel.name).label("name"),
+            func.coalesce(ObservationModel.obs_txt, VisitModel.obs_txt).label("observer"),
+            func.coalesce(ObservationModel.id_role, VisitModel.id_role).label("id_observer"),
+            func.coalesce(ObservationModel.date, VisitModel.date).label("date"),
+            SiteModel.id_site,
+            ProgramsModel.title.label("program"),
+            ProgramsModel.id_program.label("id_program"),
+            case(
+                (ObservationMediaModel.id_media != None, "observations"),
+                (MediaOnVisitModel.id_media != None, "sites"),
+            ).label("type_program"),
+        )
+    )
+
+    if id_program:
+        qs = qs.filter(ProgramsModel.id_program == id_program)
+
+    if id_role:
+        qs = qs.filter(ObservationModel.id_role == id_role)
+
+    if cd_nom:
+        qs = qs.filter(ObservationModel.cd_nom == cd_nom)
+
+    if id_observation:
+        qs = qs.filter(ObservationModel.id_observation == id_observation)
+
+    if id_observer:
+        qs = qs.filter(func.coalesce(ObservationModel.id_role, VisitModel.id_role) == id_observer)
+
+    if id_visit:
+        qs = qs.filter(VisitModel.id_visit == id_visit)
+
+    if id_site:
+        qs = qs.filter(SiteModel.id_site == id_site)
+    if no_pagination:
+        return [set_media_links(media) for media in qs.all()]
+
+    qs = qs.paginate(per_page=to_int(page_size) or 100, page=to_int(page) or 1)
+
+    return {
+        "page": qs.page,
+        "pages": qs.pages,
+        "total": qs.total,
+        "page_size": to_int(page_size),
+        "items": [set_media_links(media) for media in qs.items],
+    }

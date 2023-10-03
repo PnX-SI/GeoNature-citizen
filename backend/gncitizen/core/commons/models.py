@@ -13,7 +13,7 @@ from geoalchemy2.functions import ST_GeomFromGeoJSON, ST_GeomFromKML, ST_SetSRID
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
 from utils_flask_sqla_geo.serializers import geoserializable, serializable
@@ -205,7 +205,3 @@ class MediaModel(TimestampMixinModel, db.Model):
 
     def __repr__(self):
         return self.filename
-    
-    # @hybrid_method
-    # def url(self) -> str:
-    #     return url_for('commons.get_media', id=self.id_media)
