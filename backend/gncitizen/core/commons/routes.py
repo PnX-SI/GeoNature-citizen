@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
-from flask import Blueprint, current_app, jsonify, request, send_from_directory, url_for
+from flask import Blueprint, current_app, request, send_from_directory
 from geojson import FeatureCollection
-from sqlalchemy import and_, case, distinct, literal
+from sqlalchemy import and_, case, distinct
 from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
 
@@ -18,7 +18,7 @@ from gncitizen.core.sites.models import (
 )
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin
-from gncitizen.utils.helpers import set_media_links, to_int
+from gncitizen.utils.helpers import set_media_links
 from server import db
 
 from .admin import CustomFormView, GeometryView, ProgramView, ProjectView, UserView
@@ -409,9 +409,9 @@ def get_medias():
     id_observer = request.args.get("id_observer")
     id_visit = request.args.get("id_visit")
     id_site = request.args.get("id_site")
-    no_pagination = request.args.get("no_pagination", None)
-    page_size = request.args.get("page_size")
-    page = request.args.get("page")
+    no_pagination = request.args.get("no_pagination", default=False, type=bool)
+    page_size = request.args.get("page_size", default=100, type=int)
+    page = request.args.get("page", default=1, type=int)
 
     qs = (
         MediaModel.query.outerjoin(ObservationMediaModel)
@@ -468,12 +468,12 @@ def get_medias():
     if no_pagination:
         return [set_media_links(media) for media in qs.all()]
 
-    qs = qs.paginate(per_page=to_int(page_size) or 100, page=to_int(page) or 1)
+    qs = qs.paginate(per_page=page_size, page=page)
 
     return {
         "page": qs.page,
         "pages": qs.pages,
         "total": qs.total,
-        "page_size": to_int(page_size),
+        "page_size": page_size,
         "items": [set_media_links(media) for media in qs.items],
     }
