@@ -424,6 +424,10 @@ def get_medias():
             func.coalesce(ObservationModel.id_program, SiteModel.id_program)
             == ProgramsModel.id_program,
         )
+        .filter(
+            (func.coalesce(ObservationModel.id_observation, MediaOnVisitModel.id_data_source))
+            != None
+        )
         .with_entities(
             MediaModel.id_media,
             MediaModel.filename,
