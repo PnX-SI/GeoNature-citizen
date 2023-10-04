@@ -52,7 +52,6 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
     data = res.json()
     data.pop("listes", None)
     data.pop("attributs", None)
-    logger.debug(f"MEDIAS Length = {len(data['medias'])}")
     if len(data["medias"]) > 0:
         media_types = ("Photo_gncitizen", "Photo_principale", "Photo")
         i = 0
@@ -62,7 +61,6 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
                 break
             i += 1
         medias = filtered_medias[:1]
-        logger.debug(f"MEDIAS Filtered {medias}")
         data["medias"] = medias
 
     return data
