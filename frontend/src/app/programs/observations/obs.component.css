@@ -321,10 +321,33 @@ section .observations {
         max-height: calc(100vh - 260px);
         overflow: scroll;
     }
-}
 
-@media screen and (max-width: 576px) {
     section#slide {
         margin-top: 66px !important;
     }
+
+    #switchMapPhotoBtn {
+        top: 60px;
+    }
+}
+
+#switchMapPhotoBtn {
+    z-index: 1000;
+    position: absolute;
+    /* top: 15px;
+    left: 30px; */
+}
+
+#switchMapPhotoBtn>button {
+    display: block;
+    margin: 20px;
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    color: var(--primary);
+    font-size: 1.5rem;
+    background-color: white;
+    border: 1px solid whitesmoke;
+    /* top: 15px;
+    left: 30px; */
 }

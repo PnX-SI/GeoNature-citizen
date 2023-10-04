@@ -348,7 +348,7 @@
         
         
         <note priority="1" from="description">close modal</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/auth/register/register.component.html</context><context context-type="linenumber">245</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/auth/login/login.component.html</context><context context-type="linenumber">163</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/media-galery/media-galery.component.html</context><context context-type="linenumber">63</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/auth/register/register.component.html</context><context context-type="linenumber">245</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/auth/login/login.component.html</context><context context-type="linenumber">163</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/media-galery/media-galery.component.html</context><context context-type="linenumber">49</context></context-group></trans-unit>
       <trans-unit id="login" datatype="html">
         <source>Se connecter</source><target state="new">SignIn</target>
         
@@ -644,6 +644,13 @@
           <context context-type="sourcefile">app/programs/observations/modalflow/steps/reward/reward.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
+      </trans-unit><trans-unit id="NoMediasInfo" datatype="html">
+        <source>Aucune photo</source><target state="new">No photo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/media-galery/media-galery.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <note priority="1" from="description">No medias</note>
       </trans-unit>
       <trans-unit id="allSpeciesSelectOption" datatype="html">
         <source>Toutes espèces</source><target state="new">Toutes espèces</target>

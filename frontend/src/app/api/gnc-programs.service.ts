@@ -185,14 +185,8 @@ export class GncProgramsService implements OnInit {
             );
     }
 
-    getObsMedias(params): Observable<MediaList> {
-        return this.http.get<MediaList>(`${this.URL}/observations/medias`, {
-            params,
-        });
-    }
-
-    getSitesMedias(params): Observable<MediaList> {
-        return this.http.get<MediaList>(`${this.URL}/sites/medias`, {
+    getMedias(params): Observable<MediaList> {
+        return this.http.get<MediaList>(`${this.URL}/medias`, {
             params,
         });
     }
