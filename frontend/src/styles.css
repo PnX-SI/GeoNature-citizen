@@ -524,8 +524,6 @@ span.input-group-text {
 }
 
 .modal-footer button {
-    background-color: var(--secondary) !important;
-    color: #fff;
     border: solid 1px transparent;
     display: flex;
     margin: 0 auto;
@@ -533,11 +531,26 @@ span.input-group-text {
     padding: 6px 30px;
 }
 
+.modal-footer button.btn-default,
+.modal-footer button.btn-primary,
+.modal-footer button.btn-secondary {
+    background-color: var(--secondary) !important;
+    color: #fff;
+}
+
 .modal-footer button:hover,
 .modal-footer button:active {
     background: transparent;
-    color: var(--secondary);
     border: solid 1px;
+}
+
+.modal-footer button:hover.btn-default,
+.modal-footer button:active.btn-default,
+.modal-footer button:hover.btn-primary,
+.modal-footer button:active.btn-primary,
+.modal-footer button:hover.btn-secondary,
+.modal-footer button:active.btn-secondary {
+    color: var(--secondary);
     border-color: var(--secondary);
 }
 

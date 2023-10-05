@@ -73,6 +73,7 @@ class UserModel(TimestampMixinModel, db.Model):
             "full_name": name + " " + surname,
             "admin": self.admin,
             "active": self.active,
+            "validator": self.validator,
             "timestamp_create": self.timestamp_create.isoformat(),
             "timestamp_update": self.timestamp_update.isoformat()
             if self.timestamp_update

@@ -31,9 +31,11 @@ export class ObsListComponent implements OnChanges {
     @Input('observations') observations: FeatureCollection;
     @Input('taxa') surveySpecies: TaxonomyList;
     @Input('displayOwnerActions') displayOwnerActions: boolean = false;
+    @Input('displayValidatorActions') displayValidatorActions: boolean = false;
     @Input('displayForm') display_form: boolean;
     @Output('obsSelect') obsSelect: EventEmitter<Feature> = new EventEmitter();
     @Output() deleteObs = new EventEmitter();
+    @Output() validateObs = new EventEmitter();
     municipalities: any[];
     observationList: Feature[] = [];
     program_id: number;

@@ -9,6 +9,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { ProgramsComponent } from './programs/programs.component';
 import { ProgramsResolve } from './programs/programs-resolve.service';
 import { UserDashboardComponent } from './auth/user-dashboard/user-dashboard.component';
+import { ValidationBoardComponent } from './programs/observations/validation-board/validation-board.component';
 import { SpeciesComponent } from './synthesis/species/species.component';
 import { AuthGuard } from './auth/auth.guard';
 import { SiteDetailComponent } from './programs/sites/detail/detail.component';
@@ -47,6 +48,10 @@ const appRoutes: Routes = [
         path: 'programs/:id/observations',
         component: ObsComponent,
         resolve: { programs: ProgramsResolve },
+    },
+    {
+        path: 'observations/not_validated',
+        component: ValidationBoardComponent,
     },
     {
         path: 'confirmEmail/:token',

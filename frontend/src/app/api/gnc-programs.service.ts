@@ -81,7 +81,7 @@ export class GncProgramsService implements OnInit {
                 ),
                 map((programs: Program[]) =>
                     programs.map((program) => {
-                        console.log('PRG', program);
+                        // console.log('PRG', program);
                         program.html_short_desc =
                             this.domSanitizer.bypassSecurityTrustHtml(
                                 program.short_desc
@@ -90,7 +90,7 @@ export class GncProgramsService implements OnInit {
                             this.domSanitizer.bypassSecurityTrustHtml(
                                 program.long_desc
                         );
-                        console.log('PROGRAM', program);
+                        // console.log('PROGRAM', program);
                         return program;
                     })
                 ),
@@ -124,6 +124,19 @@ export class GncProgramsService implements OnInit {
     getProgramObservations(id: number): Observable<FeatureCollection> {
         return this.http
             .get<FeatureCollection>(`${this.URL}/programs/${id}/observations`)
+            .pipe(
+                catchError(
+                    this.handleError<FeatureCollection>(
+                        `getProgramObservations id=${id}`,
+                        { type: 'FeatureCollection', features: [] }
+                    )
+                )
+            );
+    }
+
+    getNotValidatedbservations(id: number): Observable<FeatureCollection> {
+        return this.http
+            .get<FeatureCollection>(`${this.URL}/observations/not_validated`)
             .pipe(
                 catchError(
                     this.handleError<FeatureCollection>(

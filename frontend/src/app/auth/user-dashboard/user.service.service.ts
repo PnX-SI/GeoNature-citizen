@@ -48,7 +48,6 @@ export class UserService {
     }
 
     getValidationStatuses() {
-        console.log('validations');
         return this.http.get<Object>(
             `${MainConfig.API_ENDPOINT}/validation_statuses`
         );

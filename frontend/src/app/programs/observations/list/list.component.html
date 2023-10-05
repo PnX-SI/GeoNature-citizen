@@ -65,7 +65,7 @@
         <div class="col-lg-12 mx-4 mt-2 mb-4">
             <strong i18n="My obs@@myObs"
                 ><span *ngIf="router.url.includes('mydashboard')">Mes </span
-                >Observations
+                >Observations<span *ngIf="router.url.includes('not_validated')"> à valider </span>
             </strong>
             <span class="badge badge-pill badge-info">{{
                 (features$ | async)?.length
@@ -87,7 +87,7 @@
                               '/media/' +
                               o.properties.images[0]
                             : o.properties.image
-                            ? o.properties.image
+                            ? MainConfig.API_ENDPOINT.replace('/api', '') + o.properties.image
                             : o.properties.medias &&
                               !!o.properties.medias.length
                             ? MainConfig.API_TAXHUB +
@@ -187,6 +187,16 @@
                                     deleteObs.emit(o.properties.id_observation)
                                 "
                                 owner-actions
+                            ></i>
+                        </span>
+                        <span *ngIf="o.properties.validation_status != 'VALIDATED' && displayValidatorActions">
+                            &nbsp;
+                            <i
+                                (click)="validateObs.emit(o.properties.id_observation)"
+                                class="fa fa-tag text-primary"
+                                placement="top"
+                                ngbTooltip="Valider"
+                                btn-open
                             ></i>
                         </span>
                     </div>

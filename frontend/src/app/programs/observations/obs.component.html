@@ -72,16 +72,18 @@
                 [observations]="observations"
                 [taxa]="surveySpecies"
                 [displayOwnerActions]="userDashboard"
+                [displayValidatorActions]="validationDashboard"
                 [displayForm]="flowService.display"
                 (obsSelect)="obsMapRef.showPopup($event)"
                 (deleteObs)="deleteObs.emit($event)"
+                (validateObs)="validateObs.emit($event)"
             >
                 <button
                     type="button"
                     class="btn btn-success mr-4 float-right"
                     add-obs
                     (click)="addObsClicked()"
-                    *ngIf="!userDashboard"
+                    *ngIf="!userDashboard && !validationDashboard"
                     ngbTooltip="Ajouter une observation"
                     placement="left"
                 >

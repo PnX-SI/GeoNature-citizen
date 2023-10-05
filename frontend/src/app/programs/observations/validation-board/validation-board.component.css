@@ -1,0 +1,9 @@
+.picsum-img-wrapper img {
+    width: 100%;
+    height: auto;
+}
+
+#validateMap {
+    min-height: 225px; /*50vh*/
+    width: 100%;
+}
