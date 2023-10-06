@@ -28,9 +28,10 @@ from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository, taxhub_rest_get_all_lists
 from server import db
+from gncitizen.utils.mail_check import send_user_email
 
 from .admin import ObservationView
-from .models import ObservationMediaModel, ObservationModel, ValidationStatus
+from .models import ObservationMediaModel, ObservationModel, ValidationStatus, INVALIDATION_STATUSES
 
 # from sqlalchemy import func
 
@@ -833,6 +834,15 @@ def get_validation_statuses():
     )
 
 
+@obstax_api.route("/invalidation_statuses")
+@json_resp
+def get_invalidation_statuses():
+    return (
+        INVALIDATION_STATUSES,
+        200,
+    )
+
+
 @obstax_api.route("/dev_rewards/<int:id>")
 @json_resp
 def get_rewards(id):
@@ -912,8 +922,6 @@ def get_observations_by_user_id(user_id):
 @obstax_api.route("/observations", methods=["GET"])
 @json_resp
 def get_observations():
-    import time
-    start = time.time()
     exclude_status_param = request.args.get("exclude_status", default="")
     # use_taxhub_param = request.args.get("use_taxhub", default=True, type=lambda value: value.lower() != "false")
 
@@ -985,37 +993,44 @@ def get_observations():
 @json_resp
 @jwt_required()
 def update_observation():
+    current_user = get_user_if_exists()
+    observation_to_update = ObservationModel.query.filter_by(
+        id_observation=request.form.get("id_observation")
+    )
+    if observation_to_update.one().id_role != current_user.id_user and not current_user.validator:
+        abort(403, "unauthorized")
+
     try:
         update_data = request.form
         update_obs = {}
-        for prop in ["cd_nom", "name", "count", "comment", "date", "municipality"]:
-            update_obs[prop] = update_data[prop]
-        try:
-            _coordinates = json.loads(update_data["geometry"])
-            _point = Point(_coordinates["x"], _coordinates["y"])
-            _shape = asShape(_point)
-            update_obs["geom"] = from_shape(Point(_shape), srid=4326)
-            if not update_obs["municipality"]:
-                update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
-        except Exception as e:
-            current_app.logger.warning("[post_observation] coords ", e)
-            raise GeonatureApiError(e)
+        for prop in ["cd_nom", "name", "count", "comment", "date", "municipality", "id_validator"]:
+            if prop in update_data:
+                update_obs[prop] = update_data[prop]
+        if "geometry" in update_data:
+            try:
+                _coordinates = json.loads(update_data["geometry"])
+                _point = Point(_coordinates["x"], _coordinates["y"])
+                _shape = asShape(_point)
+                update_obs["geom"] = from_shape(Point(_shape), srid=4326)
+                if not update_obs["municipality"]:
+                    update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
+            except Exception as e:
+                current_app.logger.warning("[post_observation] coords ", e)
+                raise GeonatureApiError(e)
+        if "json_data" in update_data:
+            try:
+                json_data = update_data.get("json_data")
+                if json_data is not None:
+                    update_obs["json_data"] = json.loads(json_data)
+            except Exception as e:
+                current_app.logger.warning("[update_observation] json_data ", e)
+                raise GeonatureApiError(e)
 
-        try:
-            json_data = update_data.get("json_data")
-            if json_data is not None:
-                update_obs["json_data"] = json.loads(json_data)
-        except Exception as e:
-            current_app.logger.warning("[update_observation] json_data ", e)
-            raise GeonatureApiError(e)
-
-        ObservationModel.query.filter_by(
-            id_observation=update_data.get("id_observation")
-        ).update(update_obs, synchronize_session="fetch")
+        observation_to_update.update(update_obs, synchronize_session="fetch")
 
         try:
             # Delete selected existing media
-            id_media_to_delete = json.loads(update_data.get("delete_media"))
+            id_media_to_delete = json.loads(update_data.get("delete_media", "[]"))
             if len(id_media_to_delete):
                 db.session.query(ObservationMediaModel).filter(
                     ObservationMediaModel.id_media.in_(
@@ -1049,7 +1064,39 @@ def update_observation():
             )
             # raise GeonatureApiError(e)
 
+        if obs_validation := "non_validatable_status" in update_data and "report_observer" in update_data and "id_validator" in update_data:
+            obs_to_update_obj = observation_to_update.one()
+            new_validation_status = ValidationStatus.VALIDATED
+            if non_validatable_status := update_data.get("non_validatable_status"):
+                status = [s for s in INVALIDATION_STATUSES if s["value"] == non_validatable_status][0]
+                new_validation_status = ValidationStatus[status["link"]]
+
+            obs_to_update_obj.validation_status = new_validation_status
+
         db.session.commit()
+
+        if obs_validation and update_data.get("report_observer").lower() == "true":
+            if non_validatable_status:
+                message = status["twice"] if status["twice"] and obs_to_update_obj.validation_status.name == status["link"] else status["mail"]
+            elif update_data.get("cd_nom") != observation_to_update.one().cd_nom:
+                message = f"Nous avons bien reçu votre photo, merci beaucoup pour votre participation. Il s'avère que l'espèce que vous avez observée est un[e] {update_data.get('name')}."
+            else:
+                message = f"L'espèce que vous avez observée est bien un[e] {update_data.get('name')}. Merci pour votre participation !"
+            try:
+                send_user_email(
+                    subject=current_app.config["VALIDATION_EMAIL"]["SUBJECT"],
+                    to=UserModel.query.get(id_role).email,
+                    html_message=current_app.config["VALIDATION_EMAIL"]["HTML_TEMPLATE"].format(
+                        message=message,
+                        obs_link=f"{current_app.config['URL_APPLICATION']}/programs/{obs_to_update_obj.id_program}/observations/{obs_to_update_obj.id_observation}",
+                    ),
+                )
+            except Exception as e:
+                current_app.logger.warning("send validation_email failed. %s", str(e))
+                return {
+                    "message": """ send validation_email failed: "{}".""".format(str(e))
+                }
+
 
         return ("observation updated successfully"), 200
     except Exception as e:

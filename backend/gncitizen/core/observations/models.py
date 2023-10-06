@@ -11,7 +11,7 @@ from gncitizen.core.commons.models import (
     ProgramsModel,
     TimestampMixinModel,
 )
-from gncitizen.core.users.models import ObserverMixinModel
+from gncitizen.core.users.models import ObserverMixinModel, ValidatorMixinModel, UserModel
 from server import db
 
 
@@ -33,6 +33,38 @@ class ValidationStatus(AdminFormEnum):
     INVALID = "Invalide"
     NON_VALIDATABLE = "Non validable"
     VALIDATED = "Validé"
+
+
+INVALIDATION_STATUSES = [
+    {
+        "value": "",
+        "text": "---",
+        "link": "NOT_VALIDATED",
+        "mail": "",
+        "twice": "",
+    },
+    {
+        "value": "unverifiable",
+        "text": "L'identification est difficile, besoin d'un autre avis",
+        "link": "INVALID",
+        "mail": "L'identification de l'espèce que vous avez observée est difficile d'après cette ou ces photos, nous continuons nos recherches...",
+        "twice": "Désolé, l'identification de l'individu que vous avez observée est trop difficile. Pouvez-vous essayer de le photographier, à nouveau, lui et/ou ses congénères ?",
+    },
+    {
+        "value": "off-topic",
+        "text": "L'espèce observée n'est pas dans la liste des espèces de l'enquête",
+        "link": "NON_VALIDATABLE",
+        "mail": "L'espèce que vous avez observée n'est pas dans la liste des espèces de l'enquête.",
+        "twice": "",
+    },
+    {
+        "value": "multiple",
+        "text": "Les photos correspondent à des espèces différentes, l'observateur doit créer une nouvelle observation",
+        "link": "NON_VALIDATABLE",
+        "mail": "Les photos que vous nous avez envoyées correspondent à des espèces différentes. Pourriez-vous les poster séparément ?",
+        "twice": "",
+    },
+]
 
 
 @serializable
@@ -65,6 +97,16 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     )
 
     validation_status = db.Column(db.Enum(ValidationStatus), default=ValidationStatus.NOT_VALIDATED)
+    id_validator = db.Column(
+        db.Integer,
+        db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
+        nullable=True,
+    )
+    validator_ref = db.relationship(
+        "UserModel",
+        backref=db.backref("t_obstax", lazy="dynamic"),
+        foreign_keys="ObservationModel.id_validator"
+    )
 
 
 class ObservationMediaModel(TimestampMixinModel, db.Model):

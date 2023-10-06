@@ -107,6 +107,9 @@ class UserModel(TimestampMixinModel, db.Model):
             "users": list(map(lambda x: to_json(x), UserModel.query.all()))
         }
 
+    def __repr__(self):
+        return f"{self.username} <{self.id_user}>"
+
     # @classmethod
     # def delete_all(cls):
     #     try:
@@ -184,3 +187,13 @@ class ObserverMixinModel(object):
     @declared_attr
     def email(cls):
         return db.Column(db.String(150))
+
+
+class ValidatorMixinModel(object):
+    @declared_attr
+    def id_validator(cls):
+        return db.Column(
+        db.Integer,
+        db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
+        nullable=True,
+    )

@@ -239,20 +239,19 @@
                     </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button
+                    type="submit"
+                    class="btn btn-big rounded-0"
+                    [ngClass]="obsValidatable ? 'btn-default btn-outline-primary' : 'btn-warning btn-outline-warning bg-warning'"
+                    i18n="Valid obs btn@@validObsBtn"
+                    >
+                    {{ obsValidatable ? (obsCorrection ? 'Corriger' : 'Valider') : 'Invalider' }} l'observation
+                </button>
+                <button class="btn btn-secondary btn-big rounded-0" (click)="closeModal()" i18n="Cancel@@cancel">
+                    Annuler
+                </button>
+            </div>
         </form>
-    </div>
-    <div class="modal-footer">
-        <button
-            type="button"
-            class="btn btn-big rounded-0"
-            [ngClass]="obsValidatable ? 'btn-default btn-outline-primary' : 'btn-warning btn-outline-warning bg-warning'"
-            (click)="onValidateObs()"
-            i18n="Valid obs btn@@validObsBtn"
-            >
-            {{ obsValidatable ? (obsCorrection ? 'Corriger' : 'Valider') : 'Invalider' }} l'observation
-        </button>
-        <button class="btn btn-secondary btn-big rounded-0" (click)="closeModal()" i18n="Cancel@@cancel">
-            Annuler
-        </button>
     </div>
 </ng-template>

@@ -64,6 +64,13 @@ VERIFY_OBSERVATIONS_ENABLED = false
      <p>Bien à vous.</p>
     '''
 
+[VALIDATION_EMAIL]
+    SUBJECT = "Mise à jour de votre observation {observation}"
+    HTML_TEMPLATE = '''<p> Bonjour,</p><br />
+     <p>{message}</p>
+     <p>Pour retrouver votre observation, <a href="{obs_link}">cliquez ici.</a></p><br />
+    '''
+
 [MAIL]
     MAIL_USE_SSL = false
     MAIL_STARTTLS = true

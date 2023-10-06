@@ -1,4 +1,4 @@
-import { Component, LOCALE_ID, Inject } from '@angular/core';
+import { Component, LOCALE_ID, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,10 +17,15 @@ import { ModalFlowService } from '../modalflow/modalflow.service';
 import { GncProgramsService } from '../../../api/gnc-programs.service';
 import { TaxonomyList } from '../observation.model';
 import { markerIcon } from '../../base/detail/detail.component';
+import { UserService } from '../../../auth/user-dashboard/user.service.service';
 
 const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
 const taxonSelectInputThreshold = MainConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold = MainConfig.taxonAutocompleteInputThreshold;
+type TempTaxa = {
+    cd_nom: number;
+    nom_francais: string;
+};
 
 @Component({
     selector: 'validation-board',
@@ -30,7 +35,7 @@ const taxonAutocompleteInputThreshold = MainConfig.taxonAutocompleteInputThresho
         './validation-board.component.css'
     ],
 })
-export class ValidationBoardComponent {
+export class ValidationBoardComponent implements OnInit {
     public MainConfig = MainConfig;
     modalRef: NgbModalRef;
     username = 'not defined';
@@ -53,13 +58,8 @@ export class ValidationBoardComponent {
     validationForm: FormGroup;
     obsCorrection = false;
     obsValidatable = true;
-    invalidationStatuses: any = [
-        {'value': '', 'text': '---', 'link': 'NOT_VALIDATED'},
-        {'value': 'unverifiable', 'text': "L'identification est difficile, besoin d'un autre avis", 'link': 'INVALID'},
-        {'value': 'off-topic', 'text': "L'espèce observée n'est pas dans la liste des espèces du programme", 'link': 'NON_VALIDATABLE'},
-        {'value': 'multiple', 'text': "Les photos correspondent à des espèces différentes, l'observateur doit créer une nouvelle observation", 'link': 'NON_VALIDATABLE'},
-    ];
-    selectedInvalidationStatus: any = this.invalidationStatuses[0].value;
+    invalidationStatuses: any;
+    selectedInvalidationStatus: any;
 
     constructor(
         private auth: AuthService,
@@ -70,8 +70,16 @@ export class ValidationBoardComponent {
         public activeModal: NgbActiveModal,
         @Inject(LOCALE_ID) readonly localeId: string,
         private programService: GncProgramsService,
-
+        private userService: UserService,
     ) {}
+
+    ngOnInit() {
+        this.userService.getInvalidationStatuses().subscribe((statuses) => {
+            this.invalidationStatuses = statuses
+            this.selectedInvalidationStatus = this.invalidationStatuses[0].value;
+
+        })
+    }
 
     ngAfterViewInit() {
         const access_token = localStorage.getItem('access_token');
@@ -127,7 +135,6 @@ export class ValidationBoardComponent {
 
     openValidateModal(validateModal: any, idObs: number) {
         this.obsToValidate = this.observations.features.find(obs => obs.properties.id_observation === idObs);
-        console.log('new modal to open', this.obsToValidate)
         this.modalRef = this.modalService.open(validateModal, {
             size: 'lg',
             centered: true,
@@ -173,15 +180,10 @@ export class ValidationBoardComponent {
                 this.surveySpecies$.subscribe();
             });
         this.selectedInvalidationStatus = this.invalidationStatuses.find(s => s.link === this.obsToValidate.properties.validation_status).value
-        console.log(this.selectedInvalidationStatus)
     }
 
     closeModal() {
         this.modalRef.close();
-    }
-
-    onValidateObs() {
-        this.onFormSubmit();
     }
 
     ngOnDestroy(): void {
@@ -241,6 +243,7 @@ export class ValidationBoardComponent {
             {
                 id_observation: [this.obsToValidate.properties.id_observation],
                 cd_nom: ['', Validators.required],
+                name: [''],
                 comment: [''],
                 report_observer: [true],
                 non_validatable_status: ['']
@@ -259,6 +262,7 @@ export class ValidationBoardComponent {
         let formData = this.creatFromDataToPost();
         this.observationsService.updateObservation(formData).subscribe(() => {
             this.closeModal()
+            this.getData()
         });
     }
 
@@ -269,12 +273,17 @@ export class ValidationBoardComponent {
         if (isNaN(cd_nom)) {
             cd_nom = Number.parseInt(taxon.cd_nom);
         }
+        const tempTaxa = this.taxa as Array<unknown> as Array<TempTaxa>;
+        const taxon_name: TempTaxa = tempTaxa.filter(
+            (t) => t.cd_nom == cd_nom
+        )[0];
         formData.append('cd_nom', cd_nom.toString());
+        formData.append('name', taxon_name.nom_francais);
         formData.append('comment', this.obsToValidate.properties.comment + this.obsToValidate.properties.comment ? ' ' : '' + this.validationForm.get('comment').value)
         formData.append('id_observation', this.validationForm.get('id_observation').value);
         formData.append('report_observer', this.validationForm.get('report_observer').value);
         formData.append('non_validatable_status', this.validationForm.get('non_validatable_status').value);
-        console.log(formData)
+        formData.append('id_validator', this.currentUser.features.id_role);
         return formData;
     }
 }
