@@ -6,25 +6,21 @@
 from functools import lru_cache
 from typing import Dict, List, Union
 
+import requests
 from flask import current_app
 
-if current_app.config.get("API_TAXHUB") is None:
-    from gncitizen.core.taxonomy.models import Taxref
-else:
-    import requests
-    from requests.models import Response
-
-    TAXHUB_API = (
-        current_app.config["API_TAXHUB"] + "/"
-        if current_app.config["API_TAXHUB"][-1] != "/"
-        else current_app.config["API_TAXHUB"]
-    )
+TAXHUB_API = (
+    current_app.config["API_TAXHUB"] + "/"
+    if current_app.config["API_TAXHUB"][-1] != "/"
+    else current_app.config["API_TAXHUB"]
+)
 
 logger = current_app.logger
 
 Taxon = Dict[str, Union[str, Dict[str, str], List[Dict]]]
 
 
+@lru_cache()
 def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
     payload = {
         "existing": "true",
@@ -41,13 +37,15 @@ def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
     return res.json()
 
 
+@lru_cache()
 def taxhub_rest_get_all_lists() -> Dict:
     res = requests.get("{}biblistes".format(TAXHUB_API))
     logger.debug(f"<taxhub_rest_get_all_lists> URL {res.url}")
     res.raise_for_status()
-    return res.json().get('data', [])
+    return res.json().get("data", [])
 
 
+@lru_cache()
 def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
     if not taxhub_id:
         raise ValueError("Null value for taxhub taxon id")
@@ -82,12 +80,12 @@ def mkTaxonRepository(taxhub_list_id: int) -> List[Taxon]:
     taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
     taxon_ids = [item["id_nom"] for item in taxa.get("items")]
     r = [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
-    logger.debug(r)
+    logger.debug(f"<mkTaxonRepository> {r}")
 
-    # r = r.sort(key=lambda item: item.get('nom_francais'))
-    return sorted(r, key=lambda item: item["nom_francais"])
+    return sorted(r, key=lambda item: item["nom_francais"] or "")
 
 
+@lru_cache()
 def get_specie_from_cd_nom(cd_nom):
     """get specie datas from taxref id (cd_nom)
 
@@ -99,7 +97,7 @@ def get_specie_from_cd_nom(cd_nom):
     """
 
     res = requests.get(f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}")
-    official_taxa = res.json().get('items', [{}])[0]
+    official_taxa = res.json().get("items", [{}])[0]
 
     common_names = official_taxa.get("nom_vern", "")
     common_name = common_names.split(",")[0]

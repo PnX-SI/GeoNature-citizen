@@ -28,19 +28,19 @@ def get_rewards(id):
         .group_by(ObservationModel.id_program)
         .values(
             ObservationModel.id_program.label("id"),
-            func.count(ObservationModel.id_program).label("nb_obs")
+            func.count(ObservationModel.id_program).label("nb_obs"),
         )
     )
     for item in scores_query:
         program_scores.append({"id_program": item.id, "nb_obs": item.nb_obs})
         total_obs = total_obs + item.nb_obs
-    
+
     taxon_query = (
         ObservationModel.query.filter(ObservationModel.id_role == id)
         .group_by(ObservationModel.cd_nom)
         .values(
             ObservationModel.cd_nom,
-            func.count(ObservationModel.cd_nom).label("nb_obs")
+            func.count(ObservationModel.cd_nom).label("nb_obs"),
         )
     )
 
@@ -48,8 +48,8 @@ def get_rewards(id):
     families = {}
     for query in taxon_query:
         taxon = get_specie_from_cd_nom(cd_nom=query.cd_nom)
-        class_ = taxon.get('classe', '')
-        family = taxon.get('famille', '')
+        class_ = taxon.get("classe", "")
+        family = taxon.get("famille", "")
         if classes.get(class_) is not None:
             classes[class_] += query.nb_obs
         else:
@@ -58,7 +58,7 @@ def get_rewards(id):
             families[family] += query.nb_obs
         else:
             families[family] = query.nb_obs
-    
+
     for class_, total in classes.items():
         taxon_scores.append({"classe": class_, "nb_obs": total})
     for family, total in families.items():
@@ -176,7 +176,7 @@ def get_stat():
         stats["nb_obs"] = ObservationModel.query.count()
         stats["nb_user"] = UserModel.query.count()
         stats["nb_program"] = ProgramsModel.query.filter(
-            ProgramsModel.is_active == True
+            ProgramsModel.is_active
         ).count()
         stats["nb_espece"] = ObservationModel.query.distinct(
             ObservationModel.cd_nom

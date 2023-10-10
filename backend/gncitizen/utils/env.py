@@ -9,9 +9,9 @@ from flask_ckeditor import CKEditor
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from gncitizen.utils.toml import load_toml
 
 from gncitizen import __version__
+from gncitizen.utils.toml import load_toml
 
 # from datetime import timedelta
 

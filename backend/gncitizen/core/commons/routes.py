@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
-import json
 
 from flask import Blueprint, current_app, request, send_from_directory
 from geojson import FeatureCollection
@@ -133,7 +132,7 @@ def get_stat():
         stats["nb_obs"] = ObservationModel.query.count()
         stats["nb_user"] = UserModel.query.count()
         stats["nb_program"] = ProgramsModel.query.filter(
-            ProgramsModel.is_active == True
+            ProgramsModel.is_active
         ).count()
         stats["nb_espece"] = ObservationModel.query.distinct(
             ObservationModel.cd_nom
@@ -246,11 +245,7 @@ def get_project_stats(pk):
         )
         .outerjoin(SiteModel, SiteModel.id_program == ProgramsModel.id_program)
         .outerjoin(VisitModel, VisitModel.id_site == SiteModel.id_site)
-        .filter(
-            and_(
-                ProjectModel.id_project == pk, ProgramsModel.is_active == True
-            )
-        )
+        .filter(and_(ProjectModel.id_project == pk, ProgramsModel.is_active))
     )
     current_app.logger.debug(
         f"Query {type(query.first())} {dir(query.first())}"

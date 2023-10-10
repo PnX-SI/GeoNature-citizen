@@ -1,10 +1,10 @@
 import io
-import uuid
 import json
+import uuid
 
 import xlwt
 from flask import Blueprint, current_app, make_response, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
 from shapely.geometry import Point, asShape
@@ -14,13 +14,11 @@ from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from gncitizen.core.commons.models import MediaModel
 from gncitizen.core.users.models import UserModel
-from gncitizen.utils.env import admin
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
 from server import db
 
-from .admin import SiteTypeView
 from .models import MediaOnVisitModel, SiteModel, SiteTypeModel, VisitModel
 
 sites_api = Blueprint("sites", __name__)

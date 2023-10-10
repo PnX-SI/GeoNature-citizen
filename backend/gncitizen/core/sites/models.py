@@ -15,7 +15,6 @@ from gncitizen.core.commons.models import (
 )
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import ObserverMixinModel
-from gncitizen.utils.env import ROOT_DIR
 from server import db
 
 

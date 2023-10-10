@@ -1,9 +1,6 @@
 import base64
 import os
-import smtplib
 import uuid
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 import flask
 import requests
@@ -85,7 +82,7 @@ def registration():
             and current_app.config["HCAPTCHA_SECRET_KEY"] is not None
         ):
             if (
-                not "captchaToken" in request_datas
+                "captchaToken" not in request_datas
                 or request_datas["captchaToken"] is None
             ):
                 return (
@@ -115,7 +112,7 @@ def registration():
             request_datas["password"]
         )
 
-        if current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"] == False:
+        if not current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"]:
             datas_to_save["active"] = True
 
         # Protection against admin creation from API
