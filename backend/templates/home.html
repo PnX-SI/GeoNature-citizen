@@ -1,0 +1,23 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <div class="container">
+    <h2>Refresh taxonomy lists</h2>
+    <div>
+      <button class="btn btn-success" onclick="refreshData()">Refresh</button>
+      <span id="status"></span>
+    </div>
+  </div>
+{% endblock %}
+
+{% block tail %}
+  <script>
+    const refreshData = async () => {
+      const div = document.getElementById('status')
+      div.innerHTML = 'In progress...'
+      const reponse = await fetch('/api/taxonomy/refresh')
+      div.innerHTML = 'Success'
+      // do something
+    }
+  </script>
+{% endblock %}

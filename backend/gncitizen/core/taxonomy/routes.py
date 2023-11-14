@@ -8,9 +8,18 @@ from gncitizen.utils.taxonomy import (
     get_specie_from_cd_nom,
     mkTaxonRepository,
     taxhub_rest_get_all_lists,
+    refresh_taxonlist,
+    taxhub_lists,
 )
 
 taxo_api = Blueprint("taxonomy", __name__)
+
+
+@taxo_api.route("/taxonomy/refresh", methods=["GET"])
+@json_resp
+def refresh():
+    lists = refresh_taxonlist()
+    return lists
 
 
 @taxo_api.route("/taxonomy/lists", methods=["GET"])
@@ -48,7 +57,7 @@ def get_lists():
 
 @taxo_api.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
 @json_resp
-@lru_cache()
+# @lru_cache()
 def get_list(id):
     """Renvoie une liste d'espèces spécifiée par son id
     GET
@@ -76,7 +85,7 @@ def get_list(id):
     """
 
     try:
-        r = mkTaxonRepository(id)
+        r = taxhub_lists[id]
         return r
     except Exception as e:
         return {"message": str(e)}, 400

@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 from flasgger import Swagger
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView, expose
 from flask_ckeditor import CKEditor
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
@@ -111,8 +111,16 @@ swagger = Swagger(template=swagger_template, config=swagger_config)
 
 # admin_url = "/".join([urlparse(app_conf["URL_APPLICATION"]).path, "/api/admin"])
 
+
+class HomeView(AdminIndexView):
+    @expose("/")
+    def index(self):
+        return self.render("home.html")
+
+
 admin = Admin(
     name=f"GN-Citizen: Backoffice d'administration (version: {__version__})",
+    index_view=HomeView(name="Home", url="/api/admin"),
     template_mode="bootstrap4",
     url="/api/admin",
 )
