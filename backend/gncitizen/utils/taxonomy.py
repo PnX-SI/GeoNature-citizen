@@ -7,16 +7,16 @@ from functools import lru_cache
 from typing import Dict, List, Union
 
 import requests
-from requests.adapters import HTTPAdapter, Retry
 from flask import current_app
+from requests.adapters import HTTPAdapter, Retry
 
 session = requests.Session()
 
-retries = Retry(total=5,
-                backoff_factor=0.1,
-                status_forcelist=[ 500, 502, 503, 504 ])
+retries = Retry(
+    total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504]
+)
 
-session.mount('https://', HTTPAdapter(max_retries=retries))
+session.mount("https://", HTTPAdapter(max_retries=retries))
 
 TAXHUB_API = (
     current_app.config["API_TAXHUB"] + "/"
@@ -31,7 +31,7 @@ Taxon = Dict[str, Union[str, Dict[str, str], List[Dict]]]
 
 @lru_cache()
 def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
-    url = f'{TAXHUB_API}biblistes/taxons/{taxhub_list_id}'
+    url = f"{TAXHUB_API}biblistes/taxons/{taxhub_list_id}"
     payload = {
         "existing": "true",
         "order": "asc",
@@ -66,7 +66,7 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
             break
         except requests.exceptions.ReadTimeout:
             continue
-    
+
     logger.debug(f"<taxhub_rest_get_taxon> URL {res.url}")
     res.raise_for_status()
     data = res.json()

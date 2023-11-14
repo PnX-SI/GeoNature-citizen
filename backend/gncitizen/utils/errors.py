@@ -38,8 +38,6 @@ class GeonatureApiError(Exception):
         Exception.__init__(self)
         self.message = message
         self.status_code = status_code
-        raised_error = self.__class__.__name__
-        log_message = "Raise: {}, {}".format(raised_error, message)
 
     def to_dict(self):
         return {
