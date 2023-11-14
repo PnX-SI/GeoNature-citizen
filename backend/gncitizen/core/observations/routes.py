@@ -22,10 +22,7 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.geo import get_municipality_id_from_wkb
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.taxonomy import (
-    get_specie_from_cd_nom,
-    taxhub_lists,
-)
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom, taxhub_lists
 from server import db
 
 from .admin import ObservationView

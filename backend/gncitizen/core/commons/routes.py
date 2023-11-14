@@ -3,11 +3,11 @@
 
 
 from flask import Blueprint, current_app, request, send_from_directory
+from flask_admin.contrib.fileadmin import FileAdmin
 from geojson import FeatureCollection
 from sqlalchemy import and_, distinct
 from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
-from flask_admin.contrib.fileadmin import FileAdmin
 
 from gncitizen.core.commons.admin import (
     CustomFormView,

@@ -1,15 +1,11 @@
-# import requests
-from functools import lru_cache
-
 from flask import Blueprint
 from utils_flask_sqla.response import json_resp
 
 from gncitizen.utils.taxonomy import (
     get_specie_from_cd_nom,
-    mkTaxonRepository,
-    taxhub_rest_get_all_lists,
     refresh_taxonlist,
     taxhub_lists,
+    taxhub_rest_get_all_lists,
 )
 
 taxo_api = Blueprint("taxonomy", __name__)
