@@ -49,7 +49,9 @@ class ObservationView(CustomTileView):
 
     @action('validate', 'Validate observations', 'Are you sure you want to validate selected observation(s)?')
     def action_validate(self, ids):
-        observations_to_validate = db.session.query(ObservationModel).filter(ObservationModel.id_observation.in_(ids))
-        for observation in observations_to_validate:
-            observation.validation_status = ValidationStatus.VALIDATED
+        updates = [{
+            "id_observation": pkey,
+            "validation_status": ValidationStatus.VALIDATED,
+        } for pkey in ids]
+        db.session.bulk_update_mappings(ObservationModel, updates)
         db.session.commit()
