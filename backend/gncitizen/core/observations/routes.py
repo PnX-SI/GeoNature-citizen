@@ -1095,7 +1095,7 @@ def update_observation():
                 current_app.logger.warning("send validation_email failed. %s", str(e))
                 return {
                     "message": """ send validation_email failed: "{}".""".format(str(e))
-                }
+                }, 400
 
 
         return ("observation updated successfully"), 200
