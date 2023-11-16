@@ -1085,7 +1085,7 @@ def update_observation():
             try:
                 send_user_email(
                     subject=current_app.config["VALIDATION_EMAIL"]["SUBJECT"],
-                    to=UserModel.query.get(id_role).email,
+                    to=UserModel.query.get(obs_to_update_obj.id_role).email,
                     html_message=current_app.config["VALIDATION_EMAIL"]["HTML_TEMPLATE"].format(
                         message=message,
                         obs_link=f"{current_app.config['URL_APPLICATION']}/programs/{obs_to_update_obj.id_program}/observations/{obs_to_update_obj.id_observation}",
