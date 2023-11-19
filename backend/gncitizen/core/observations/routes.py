@@ -22,7 +22,7 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.geo import get_municipality_id_from_wkb
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.taxonomy import get_specie_from_cd_nom, taxhub_lists
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom, taxhub_full_lists
 from server import db
 
 from .admin import ObservationView
@@ -121,7 +121,7 @@ def generate_observation_geojson(id_observation):
         .one()
         .taxonomy_list
     )
-    taxon_repository = taxhub_lists[taxhub_list_id]
+    taxon_repository = taxhub_full_lists[taxhub_list_id]
     try:
         taxon = next(
             taxon
@@ -512,7 +512,7 @@ def get_program_observations(
                 .one()
                 .taxonomy_list
             )
-            taxon_repository = taxhub_lists[taxhub_list_id]
+            taxon_repository = taxhub_full_lists[taxhub_list_id]
 
         features = []
         for observation in observations:
@@ -640,7 +640,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
                     .one()
                     .taxonomy_list
                 )
-                taxon_data = taxhub_lists[taxhub_list_id]
+                taxon_data = taxhub_full_lists[taxhub_list_id]
                 try:
                     for taxon in taxon_data:
                         if taxon not in taxon_repository:
@@ -792,7 +792,7 @@ def get_observations_by_user_id(user_id):
                             observation.ProgramsModel.taxonomy_list
                         )
                 for tax_list in taxhub_list_id:
-                    taxon_repository.append(taxhub_lists[tax_list])
+                    taxon_repository.append(taxhub_full_lists[tax_list])
 
             features = []
         except Exception as e:

@@ -2,10 +2,21 @@
 
 {% block body %}
   <div class="container">
-    <h2>Refresh taxonomy lists</h2>
-    <div>
-      <button class="btn btn-success" onclick="refreshData()">Refresh</button>
-      <span id="status"></span>
+    <h2>Refresh TaxHub lists</h2>
+    <p>
+      <i class="fa fa-info-circle"></i> Force taxhub lists refresh from <a href="{{ taxhub_url }}" target="_blank" title="TaxHub API URL">{{ taxhub_url }}</a>
+    </p>
+
+    <div class="row">
+      <div class="col col-3">
+        <button class="btn btn-success btn-block" onclick="refreshData()">Refresh</button>
+      </div>
+      <div class="col col-9">
+        <div class="d-flex align-items-center">
+          <strong id="status"></strong>
+          <div id="statusSpinner" class="spinner-border ml-auto text-primary" role="status" aria-hidden="true" style="visibility: hidden;"></div>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}
@@ -13,10 +24,15 @@
 {% block tail %}
   <script>
     const refreshData = async () => {
-      const div = document.getElementById('status')
-      div.innerHTML = 'In progress...'
+      const statusText = document.getElementById('status')
+      const statusSpinner = document.getElementById('statusSpinner')
+      statusSpinner.style.visibility = 'visible'
+      statusText.innerHTML = 'Loading...'
       const reponse = await fetch('/api/taxonomy/refresh')
-      div.innerHTML = 'Success'
+      statusText.innerHTML = 'Success !'
+      statusText.className = 'text-success'
+      statusSpinner.style.visibility = 'hidden'
+    
       // do something
     }
   </script>

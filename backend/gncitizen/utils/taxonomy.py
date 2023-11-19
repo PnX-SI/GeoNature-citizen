@@ -27,7 +27,8 @@ logger = current_app.logger
 
 Taxon = Dict[str, Union[str, Dict[str, str], List[Dict]]]
 
-taxhub_lists = {}
+taxhub_full_lists = {}
+taxonomy_lists = []
 
 
 def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
@@ -42,16 +43,27 @@ def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
         params=params,
         timeout=5,
     )
-    logger.debug(f"<taxhub_rest_get_taxon_list> URL {res.url}")
     res.raise_for_status()
     return res.json()
 
 
 def taxhub_rest_get_all_lists() -> Dict:
-    res = session.get("{}biblistes".format(TAXHUB_API))
-    logger.debug(f"<taxhub_rest_get_all_lists> URL {res.url}")
+    url = f"{TAXHUB_API}biblistes"
+    res = session.get(
+        url,
+        timeout=5,
+    )
     res.raise_for_status()
-    return res.json().get("data", [])
+    if res.status_code == 200:
+        try:
+            taxa_lists = res.json()["data"]
+            for taxa_list in taxa_lists:
+                taxonomy_lists.append(
+                    (taxa_list["id_liste"], taxa_list["nom_liste"])
+                )
+        except Exception as e:
+            logger.critical(str(e))
+        return res.json().get("data", [])
 
 
 def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
@@ -65,12 +77,10 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
         except requests.exceptions.ReadTimeout:
             continue
 
-    logger.debug(f"<taxhub_rest_get_taxon> URL {res.url}")
     res.raise_for_status()
     data = res.json()
     data.pop("listes", None)
     data.pop("attributs", None)
-    logger.debug(f"MEDIAS Length = {len(data['medias'])}")
     if len(data["medias"]) > 0:
         media_types = ("Photo_gncitizen", "Photo_principale", "Photo")
         i = 0
@@ -84,20 +94,19 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
                 break
             i += 1
         medias = filtered_medias[:1]
-        logger.debug(f"MEDIAS Filtered {medias}")
         data["medias"] = medias
 
     return data
 
 
-def mkTaxonRepository(taxhub_list_id: int) -> List[Taxon]:
+def make_taxon_repository(taxhub_list_id: int) -> List[Taxon]:
     taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
     taxon_ids = [item["id_nom"] for item in taxa.get("items")]
     r = [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
     return r
 
 
-def get_specie_from_cd_nom(cd_nom):
+def get_specie_from_cd_nom(cd_nom) -> Dict:
     """get specie datas from taxref id (cd_nom)
 
     :param cd_nom: taxref unique id (cd_nom)
@@ -130,17 +139,20 @@ def get_specie_from_cd_nom(cd_nom):
     return taxref
 
 
-def refresh_taxonlist():
+def refresh_taxonlist() -> Dict:
     """refresh taxon list"""
+    logger.info("Pre loading taxhub data (taxa lists and medias)")
     lists = taxhub_rest_get_all_lists()
     if lists:
+        count = 0
         for list in lists:
-            print(f"LIST {list}")
-            r = mkTaxonRepository(list["id_liste"])
-            taxhub_lists[list["id_liste"]] = r
-            print(r)
-    print(f"taxhub_lists {taxhub_lists}")
-    return taxhub_lists
+            count += 1
+            logger.info(f"loading list {count}/{len(lists)}")
+            r = make_taxon_repository(list["id_liste"])
+            taxhub_full_lists[list["id_liste"]] = r
+    else:
+        logger.warning("ERROR: No taxhub lists available")
+    return taxhub_full_lists
 
 
 refresh_taxonlist()

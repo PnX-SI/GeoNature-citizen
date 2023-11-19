@@ -4,7 +4,7 @@ from utils_flask_sqla.response import json_resp
 from gncitizen.utils.taxonomy import (
     get_specie_from_cd_nom,
     refresh_taxonlist,
-    taxhub_lists,
+    taxhub_full_lists,
     taxhub_rest_get_all_lists,
 )
 
@@ -81,7 +81,7 @@ def get_list(id):
     """
 
     try:
-        r = taxhub_lists[id]
+        r = taxhub_full_lists[id]
         return r
     except Exception as e:
         return {"message": str(e)}, 400

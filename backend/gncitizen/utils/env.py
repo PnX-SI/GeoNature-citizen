@@ -15,7 +15,6 @@ from gncitizen.utils.toml import load_toml
 
 # from datetime import timedelta
 
-
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
@@ -40,6 +39,12 @@ def get_config_file_path(config_file=None):
     return Path(config_file or DEFAULT_CONFIG_FILE)
 
 
+def valid_api_url(url):
+    """Return a valid API URL ending with /"""
+    url = url if url[-1:] == "/" else url + "/"
+    return url
+
+
 def load_config(config_file=None):
     """Load the geonature-citizen configuration from a given file"""
     config_gnc = load_toml(get_config_file_path())
@@ -55,15 +60,12 @@ def load_config(config_file=None):
     return config_gnc
 
 
-def valid_api_url(url):
-    """Return a valid API URL ending with /"""
-    url = url if url[-1:] == "/" else url + "/"
-    return url
-
-
 app_conf = load_config()
 MEDIA_DIR = str(ROOT_DIR / app_conf["MEDIA_FOLDER"])
 SQLALCHEMY_DATABASE_URI = app_conf["SQLALCHEMY_DATABASE_URI"]
+
+
+taxhub_url = valid_api_url(app_conf.get("API_TAXHUB", ""))
 
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -115,20 +117,16 @@ swagger = Swagger(template=swagger_template, config=swagger_config)
 class HomeView(AdminIndexView):
     @expose("/")
     def index(self):
-        return self.render("home.html")
+        return self.render("home.html", taxhub_url=taxhub_url)
 
 
 admin = Admin(
-    name=f"GN-Citizen: Backoffice d'administration (version: {__version__})",
+    name=f"GnCitizen: Backoffice (version: {__version__})",
     index_view=HomeView(name="Home", url="/api/admin"),
     template_mode="bootstrap4",
     url="/api/admin",
 )
 
-
-taxhub_url = valid_api_url(app_conf.get("API_TAXHUB", ""))
-
-taxhub_lists_url = taxhub_url + "biblistes/"
 
 API_CITY = app_conf.get(
     "API_CITY", "https://nominatim.openstreetmap.org/reverse"
