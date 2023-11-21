@@ -1070,6 +1070,8 @@ def update_observation():
             # raise GeonatureApiError(e)
 
         if obs_validation := "non_validatable_status" in update_data and "report_observer" in update_data and "id_validator" in update_data:
+            if not current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
+                abort(400, "Validation module is not enabled")
             if current_user.id_user == observation_to_update.one().id_role:
                 abort(403, "You cannot validate your own observations")
             obs_to_update_obj = observation_to_update.one()

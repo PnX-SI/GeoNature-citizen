@@ -52,6 +52,7 @@ const appRoutes: Routes = [
     {
         path: 'observations/not_validated',
         component: ValidationBoardComponent,
+        canActivate: [AuthGuard],
     },
     {
         path: 'confirmEmail/:token',
