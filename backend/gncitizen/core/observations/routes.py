@@ -921,6 +921,7 @@ def get_observations_by_user_id(user_id):
 
 @obstax_api.route("/observations", methods=["GET"])
 @json_resp
+@jwt_required()
 def get_observations():
     exclude_status_param = request.args.get("exclude_status", default="")
     # use_taxhub_param = request.args.get("use_taxhub", default=True, type=lambda value: value.lower() != "false")
@@ -928,6 +929,10 @@ def get_observations():
     filters = [ProgramsModel.is_active]
     if exclude_status_param:
         try:
+            current_user = get_user_if_exists()
+            filters.append(
+                ObservationModel.id_role != current_user.id_user
+            )
             filters.append(
                 ObservationModel.validation_status != ValidationStatus[exclude_status_param]
             )
@@ -1065,6 +1070,8 @@ def update_observation():
             # raise GeonatureApiError(e)
 
         if obs_validation := "non_validatable_status" in update_data and "report_observer" in update_data and "id_validator" in update_data:
+            if current_user.id_user == observation_to_update.one().id_role:
+                abort(403, "You cannot validate your own observations")
             obs_to_update_obj = observation_to_update.one()
             new_validation_status = ValidationStatus.VALIDATED
             if non_validatable_status := update_data.get("non_validatable_status"):
