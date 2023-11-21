@@ -54,9 +54,6 @@ def load_config(config_file=None):
     config_gnc["DEFAULT_CENTER_LONG"] = 45
     # config_gnc["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(seconds=20)
     # config_gnc["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(seconds=40)
-    # if not "MAPBOX_MAP_ID" in config_gnc:
-    # print("MAPBOXID")
-    # config_gnc["MAPBOX_MAP_ID"] = "light-v10"
     return config_gnc
 
 
