@@ -27,4 +27,10 @@ export class ObservationsService {
         let url = `${MainConfig.API_ENDPOINT}/observations?exclude_status=VALIDATED`;
         return this.http.get(url);
     }
+
+    getObservation(observationId: number) {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/observations/${observationId}`
+        );
+    }
 }

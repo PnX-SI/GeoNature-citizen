@@ -29,9 +29,9 @@ import { UserService } from '../../../auth/user-dashboard/user.service.service';
 })
 export class ObsListComponent implements OnChanges {
     @Input('observations') observations: FeatureCollection;
+    @Input('userObservations') userObservations: FeatureCollection;
     @Input('taxa') surveySpecies: TaxonomyList;
     @Input('displayOwnerActions') displayOwnerActions: boolean = false;
-    @Input('displayValidatorActions') displayValidatorActions: boolean = false;
     @Input('displayForm') display_form: boolean;
     @Output('obsSelect') obsSelect: EventEmitter<Feature> = new EventEmitter();
     @Output() deleteObs = new EventEmitter();
@@ -65,6 +65,14 @@ export class ObsListComponent implements OnChanges {
         this.changes$.next(changes);
 
         if (this.observations) {
+
+            if (this.userObservations) {
+                this.observations.features.forEach(observation => {
+                    if (this.userObservations.features.map(o => o.properties.id_observation).includes(observation.properties.id_observation)) {
+                        observation.properties.readOnly = true
+                    }
+                });
+            }
             this.observationList = this.observations['features'];
             this.observations$.next(this.observations['features']);
             this.municipalities = this.observations.features
@@ -147,5 +155,9 @@ export class ObsListComponent implements OnChanges {
 
     trackByObs(index: number, obs: ObservationFeature): number {
         return obs.properties.id_observation;
+    }
+
+    onValidateClick(observation) {
+        this.validateObs.emit(observation.properties.id_observation)
     }
 }

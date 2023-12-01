@@ -12,7 +12,8 @@ import {
 import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
-import { forkJoin } from 'rxjs';
+import { forkJoin, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { FeatureCollection, Feature } from 'geojson';
 
@@ -25,6 +26,10 @@ import { ObsMapComponent } from './map/map.component';
 import { ObsListComponent } from './list/list.component';
 import { ModalFlowComponent } from './modalflow/modalflow.component';
 import { ProgramBaseComponent } from '../base/program-base.component';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from '../../auth/auth.service';
+import { UserService } from '../../auth/user-dashboard/user.service.service';
+import { ObservationsService } from './observations.service';
 import { MainConfig } from '../../../conf/main.config';
 
 @Component({
@@ -45,6 +50,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     public isCollapsed = true;
     isMobile: boolean;
     hideProgramHeader = false;
+    obsToValidate: Feature;
+    modalRef: NgbModalRef;
+    role_id: number;
+    isValidator: boolean = false;
+    userObservations: FeatureCollection;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -54,7 +64,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         public flowService: ModalFlowService,
         public breakpointObserver: BreakpointObserver,
         private titleService: Title,
-        private metaTagService: Meta
+        private metaTagService: Meta,
+        public auth: AuthService,
+        public userService: UserService,
+        private modalService: NgbModal,
+        private observationsService: ObservationsService,
     ) {
         super();
         this.route.params.subscribe((params) => {
@@ -133,6 +147,32 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                 content: this.program.image,
             });
         });
+
+        const access_token = localStorage.getItem('access_token');
+        if (access_token) {
+            this.auth
+                .ensureAuthorized()
+                .pipe(
+                    tap((user) => {
+                        if (
+                            user &&
+                            user['features'] &&
+                            user['features']['id_role']
+                        ) {
+                            this.role_id = user['features']['id_role'];
+                        }
+                    }),
+                    catchError((err) => throwError(err))
+                )
+                .subscribe((user) => {
+                    this.isValidator = user["features"]["validator"]
+                    this.userService.getObservationsByUserId(
+                        this.role_id
+                    ).subscribe((userObservations: FeatureCollection) => {
+                        this.userObservations = userObservations
+                    });
+                });
+        }
     }
 
     @HostListener('document:NewObservationEvent', ['$event'])
@@ -158,5 +198,37 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
 
     addObsClicked() {
         this.modalFlow.first.clicked();
+    }
+
+    openValidateModal(validateModal: any, idObs: number) {
+        this.obsToValidate = this.observations.features.find(obs => obs.properties.id_observation === idObs);
+        if (this.canValidateObservation()) {
+            this.modalRef = this.modalService.open(validateModal, {
+                size: 'lg',
+                windowClass: 'obs-modal',
+                centered: true,
+            });
+        }
+    }
+
+    canValidateObservation(): boolean {
+        return this.isValidator && this.obsToValidate.properties.validation_status != "VALIDATED" && !this.userObservations.features.map(o => o.properties.id_observation).includes(this.obsToValidate.properties.id_observation)
+    }
+
+    closeModal(observationId: number = null) {
+        if (observationId) {
+            this.route.data.subscribe(() => {
+                this.observationsService
+                .getObservation(observationId)
+                .subscribe((updatedObservation: FeatureCollection) => {
+                    this.observations.features[this.observations.features.findIndex(obs => obs.properties.id_observation === observationId)] = updatedObservation.features[0]
+                });
+            });
+        }
+        this.modalRef.close();
+    }
+
+    ngOnDestroy(): void {
+        if (this.modalRef) this.modalRef.close();
     }
 }

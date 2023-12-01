@@ -116,27 +116,32 @@
                             }}</a
                         >
                         &nbsp;
-                        <i
-                            *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
-                            class="fa fa-hourglass-half text-warning"
-                            aria-hidden="true"
-                            placement="bottom"
-                            ngbTooltip="Non validée"
-                        ></i>
-                        <i
-                            *ngIf="o.properties.validation_status && o.properties.validation_status === 'INVALID'"
-                            class="fa fa-question-circle text-danger"
-                            aria-hidden="true"
-                            placement="bottom"
-                            ngbTooltip="Invalide"
-                        ></i>
-                        <i
-                            *ngIf="o.properties.validation_status && o.properties.validation_status === 'NON_VALIDATABLE'"
-                            class="fa fa-times-circle text-danger"
-                            aria-hidden="true"
-                            placement="bottom"
-                            ngbTooltip="Non validable"
-                        ></i>
+                        <span
+                            (click)="onValidateClick(o)"
+                            [ngStyle]="{ 'cursor': o.properties.readOnly ? 'not-allowed' :  'pointer'}"
+                        >
+                            <i
+                                *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
+                                class="fa fa-hourglass-half text-warning"
+                                aria-hidden="true"
+                                placement="bottom"
+                                ngbTooltip="Non validée{{o.properties.readOnly ? ' - Validation par un tiers requise' : ''}}"
+                            ></i>
+                            <i
+                                *ngIf="o.properties.validation_status && o.properties.validation_status === 'INVALID'"
+                                class="fa fa-question-circle text-danger"
+                                aria-hidden="true"
+                                placement="bottom"
+                                ngbTooltip="Invalide{{o.properties.readOnly ? ' - Validation par un tiers requise' : ''}}"
+                            ></i>
+                            <i
+                                *ngIf="o.properties.validation_status && o.properties.validation_status === 'NON_VALIDATABLE'"
+                                class="fa fa-times-circle text-danger"
+                                aria-hidden="true"
+                                placement="bottom"
+                                ngbTooltip="Non validable{{o.properties.readOnly ? ' - Validation par un tiers requise' : ''}}"
+                            ></i>
+                        </span>
 
                     </div>
                     <div *ngIf="MainConfig.program_list_observers_names">
@@ -187,16 +192,6 @@
                                     deleteObs.emit(o.properties.id_observation)
                                 "
                                 owner-actions
-                            ></i>
-                        </span>
-                        <span *ngIf="o.properties.validation_status != 'VALIDATED' && displayValidatorActions">
-                            &nbsp;
-                            <i
-                                (click)="validateObs.emit(o.properties.id_observation)"
-                                class="fa fa-tag text-primary"
-                                placement="top"
-                                ngbTooltip="Valider"
-                                btn-open
                             ></i>
                         </span>
                     </div>

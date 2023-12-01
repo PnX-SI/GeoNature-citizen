@@ -39,6 +39,7 @@ import { SiteDetailComponent } from './programs/sites/detail/detail.component';
 import { ObsDetailComponent } from './programs/observations/detail/detail.component';
 import { UserDashboardComponent } from './auth/user-dashboard/user-dashboard.component';
 import { ValidationBoardComponent } from './programs/observations/validation-board/validation-board.component';
+import { ValidationComponent } from './programs/observations/validation/validation.component';
 import { UserObsComponent } from './auth/user-dashboard/user-observations/user-observations.component';
 import { ObsToValidateComponent } from './programs/observations/validation-board/observations-to-validate/observations-to-validate.component';
 import { SpeciesComponent } from './synthesis/species/species.component';
@@ -125,6 +126,7 @@ import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.
         LogoutComponent,
         UserDashboardComponent,
         ValidationBoardComponent,
+        ValidationComponent,
         UserObsComponent,
         ObsToValidateComponent,
         SpeciesComponent,

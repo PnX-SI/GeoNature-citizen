@@ -225,8 +225,7 @@ def format_observations_dashboards(observations):
         except StopIteration:
             pass
         features.append(feature)
-
-    return FeatureCollection(features), 200
+    return features
 
 
 @obstax_api.route("/observations/<int:pk>", methods=["GET"])
@@ -258,8 +257,47 @@ def get_observation(pk):
         description: A list of all observations
     """
     try:
-        features = generate_observation_geojson(pk)
-        return {"features": features}, 200
+        observations = (
+            db.session.query(
+                ObservationModel,
+                ProgramsModel,
+                UserModel.username,
+                func.json_agg(
+                    func.json_build_array(
+                        MediaModel.filename, MediaModel.id_media
+                    )
+                ).label("images")
+            )
+            .filter(ObservationModel.id_observation == pk)
+            .join(
+                ProgramsModel,
+                ProgramsModel.id_program == ObservationModel.id_program,
+                isouter=True,
+                full=True,
+            )
+            .join(
+                ObservationMediaModel,
+                ObservationMediaModel.id_data_source
+                == ObservationModel.id_observation,
+                isouter=True,
+            )
+            .join(
+                MediaModel,
+                ObservationMediaModel.id_media == MediaModel.id_media,
+                isouter=True,
+            )
+            .join(
+                UserModel,
+                ObservationModel.id_role == UserModel.id_user,
+                full=True,
+            )
+            .group_by(
+                ObservationModel.id_observation,
+                ProgramsModel.id_program,
+                UserModel.username,
+            )
+        )
+        return {"features": format_observations_dashboards(observations.all())}, 200
     except Exception as e:
         return {"message": str(e)}, 400
 
@@ -909,7 +947,7 @@ def get_observations_by_user_id(user_id):
             desc(ObservationModel.timestamp_create)
         )
         # current_app.logger.debug(str(observations))
-        return format_observations_dashboards(observations.all())
+        return FeatureCollection(format_observations_dashboards(observations.all())), 200
 
     except Exception as e:
         raise e
@@ -984,7 +1022,7 @@ def get_observations():
             desc(ObservationModel.timestamp_create)
         )
         # current_app.logger.debug(str(observations))
-        return format_observations_dashboards(observations.all())
+        return FeatureCollection(format_observations_dashboards(observations.all())), 200
 
     except Exception as e:
         raise e
@@ -1068,15 +1106,16 @@ def update_observation():
                 "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
             )
             # raise GeonatureApiError(e)
-
-        if obs_validation := "non_validatable_status" in update_data and "report_observer" in update_data and "id_validator" in update_data:
+        obs_validation = "non_validatable_status" in update_data and "report_observer" in update_data and "id_validator" in update_data
+        non_validatable_status = update_data.get("non_validatable_status")
+        if obs_validation:
             if not current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
                 abort(400, "Validation module is not enabled")
             if current_user.id_user == observation_to_update.one().id_role:
                 abort(403, "You cannot validate your own observations")
             obs_to_update_obj = observation_to_update.one()
             new_validation_status = ValidationStatus.VALIDATED
-            if non_validatable_status := update_data.get("non_validatable_status"):
+            if non_validatable_status:
                 status = [s for s in INVALIDATION_STATUSES if s["value"] == non_validatable_status][0]
                 new_validation_status = ValidationStatus[status["link"]]
 

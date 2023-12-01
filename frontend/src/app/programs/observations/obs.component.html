@@ -70,13 +70,13 @@
             <app-obs-list
                 #obsListRef
                 [observations]="observations"
+                [userObservations]="userObservations"
                 [taxa]="surveySpecies"
                 [displayOwnerActions]="userDashboard"
-                [displayValidatorActions]="validationDashboard"
                 [displayForm]="flowService.display"
                 (obsSelect)="obsMapRef.showPopup($event)"
                 (deleteObs)="deleteObs.emit($event)"
-                (validateObs)="validateObs.emit($event)"
+                (validateObs)="openValidateModal(validateModal, $event)"
             >
                 <button
                     type="button"
@@ -112,6 +112,30 @@
             ></app-obs-map>
             <div class="btn-groups"></div>
         </div>
+        <ng-template
+            #validateModal
+            let-modal
+        >
+            <div class="modal-header">
+                <h4 *ngIf="true" class="modal-title" i18n="Update obs@@updateObs">
+                    VALIDER L'OBSERVATION
+                </h4>
+                <button
+                    type="button"
+                    class="close"
+                    aria-label="Close"
+                    (click)="closeModal()"
+                >
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body add-obs pb-0">
+                <validation-modal
+                    [obsToValidate]="obsToValidate"
+                    (onCloseModal)="closeModal($event)"
+                ></validation-modal>
+            </div>
+        </ng-template>
     </section>
 
     <section *ngIf="isMobile" class="obs-tabs obs-section">
