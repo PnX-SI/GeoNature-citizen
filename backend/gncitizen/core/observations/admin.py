@@ -2,6 +2,7 @@ from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatte
 
 
 class ObservationView(CustomTileView):
+    can_export=True
     # column_exclude_list = ["geom"]
     form_overrides = {"json_schema": CustomJSONField}
     column_formatters = {
