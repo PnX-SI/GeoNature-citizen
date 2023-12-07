@@ -1,6 +1,4 @@
 """Some useful helpers"""
-from typing import Optional
-
 from flask import url_for
 from sqlalchemy.engine.row import Row
 
@@ -15,7 +13,7 @@ def set_media_links(item: Row) -> dict:
         dict: media item as dict with urls
     """
     m = item._asdict()
-    m["media_url"] = url_for("commons.get_media", id=item.id_media)
+    m["media_url"] = url_for("commons.get_media", filename=item.filename)
     data_url = None
     id_data_source = item.id_data_source if item.type_program == "observations" else item.id_site
     if item.type_program:

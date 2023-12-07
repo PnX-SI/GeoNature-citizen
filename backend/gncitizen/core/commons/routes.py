@@ -4,12 +4,15 @@
 from flask import Blueprint, current_app, request, send_from_directory
 from flask_admin.contrib.fileadmin import FileAdmin
 from geojson import FeatureCollection
-from gncitizen.core.observations.models import (ObservationMediaModel,
-                                                ObservationModel)
+from gncitizen.core.observations.models import ObservationMediaModel, ObservationModel
 from gncitizen.core.sites.admin import SiteTypeView
-from gncitizen.core.sites.models import (CorProgramSiteTypeModel,
-                                         MediaOnVisitModel, SiteModel,
-                                         SiteTypeModel, VisitModel)
+from gncitizen.core.sites.models import (
+    CorProgramSiteTypeModel,
+    MediaOnVisitModel,
+    SiteModel,
+    SiteTypeModel,
+    VisitModel,
+)
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin
 from gncitizen.utils.helpers import set_media_links
@@ -18,10 +21,15 @@ from sqlalchemy import and_, case, distinct
 from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
 
-from .admin import (CustomFormView, GeometryView, ProgramView, ProjectView,
-                    UserView)
-from .models import (CustomFormModel, GeometryModel, MediaModel, ProgramsModel,
-                     ProjectModel, TModules)
+from .admin import CustomFormView, GeometryView, ProgramView, ProjectView, UserView
+from .models import (
+    CustomFormModel,
+    GeometryModel,
+    MediaModel,
+    ProgramsModel,
+    ProjectModel,
+    TModules,
+)
 
 commons_api = Blueprint("commons", __name__)
 
@@ -48,9 +56,9 @@ admin.add_view(SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", cat
 admin.add_view(ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"))
 
 
-@commons_api.route("media/<id>")
-def get_media(id):
-    return send_from_directory(str(MEDIA_DIR), id)
+@commons_api.route("media/<filename>")
+def get_media(filename):
+    return send_from_directory(str(MEDIA_DIR), filename)
 
 
 @commons_api.route("/modules/<int:pk>", methods=["GET"])
@@ -109,12 +117,8 @@ def get_stat():
         stats = {}
         stats["nb_obs"] = ObservationModel.query.count()
         stats["nb_user"] = UserModel.query.count()
-        stats["nb_program"] = ProgramsModel.query.filter(
-            ProgramsModel.is_active
-        ).count()
-        stats["nb_espece"] = ObservationModel.query.distinct(
-            ObservationModel.cd_nom
-        ).count()
+        stats["nb_program"] = ProgramsModel.query.filter(ProgramsModel.is_active).count()
+        stats["nb_espece"] = ObservationModel.query.distinct(ObservationModel.cd_nom).count()
         return (stats, 200)
     except Exception as e:
         current_app.logger.critical("[get_observations] Error: %s", str(e))
@@ -387,7 +391,6 @@ def get_programs():
 @commons_api.route("/medias", methods=["GET"])
 @json_resp
 def get_medias():
-
     # Filters
     id_program = request.args.get("id_program")
     id_role = request.args.get("id_role")
