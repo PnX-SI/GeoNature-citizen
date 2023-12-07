@@ -151,12 +151,15 @@ BEGIN
              LEFT JOIN utilisateurs.t_roles ON t_users.email = t_roles.email
     WHERE t_obstax.id_observation = new.id_observation;
 
-    SELECT t_roles.id_role
-    INTO the_id_digitizer
-    FROM gnc_obstax.t_obstax
-             JOIN gnc_core.t_users ON t_obstax.id_role = t_users.id_user
-             JOIN utilisateurs.t_roles ON t_users.email = t_users.email
-    WHERE t_obstax.id_role = new.id_role;
+    SELECT
+        t_roles.id_role
+        INTO the_id_digitizer
+        FROM
+            gnc_obstax.t_obstax
+                join gnc_core.t_users on t_obstax.id_role = t_users.id_user
+                JOIN utilisateurs.t_roles ON t_roles.email = t_users.email
+        where
+            t_obstax.id_role = new.id_role;
 
     SELECT * FROM ref_geo.fct_get_altitude_intersection(new.geom) INTO the_alt_min, the_alt_max;
 
