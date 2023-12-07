@@ -104,6 +104,6 @@ def confirm_token(token):
             token,
             salt=current_app.config["CONFIRM_MAIL_SALT"],
         )
-    except Exception as error:
-        raise Exception(f"error token: {error}")
+    except Exception as e:
+        current_app.logger.warning("confirm_token failled. %s", str(e))
     return email

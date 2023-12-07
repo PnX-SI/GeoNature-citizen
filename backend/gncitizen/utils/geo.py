@@ -3,7 +3,6 @@
 
 import requests
 from flask import current_app
-
 from gncitizen.utils.env import API_CITY
 
 # Get municipality id

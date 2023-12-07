@@ -7,12 +7,11 @@ import datetime
 import os
 
 from flask import current_app
-from werkzeug.datastructures import FileStorage
-
 from gncitizen.core.commons.models import MediaModel
 from gncitizen.utils.env import ALLOWED_EXTENSIONS, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from server import db
+from werkzeug.datastructures import FileStorage
 
 
 def allowed_file(filename):
@@ -96,7 +95,7 @@ def save_upload_files(
                         db.session.commit()
                         id_media = newmedia.id_media
                         current_app.logger.debug(
-                            "[save_upload_files] id_media : {}".format(str(id_media))
+                            f"[save_upload_files] id_media : {str(id_media)}]"
                         )
                         # return id_media
                     except Exception as e:

@@ -10,6 +10,9 @@ from datetime import datetime
 from flask import url_for
 from geoalchemy2 import Geometry
 from geoalchemy2.functions import ST_GeomFromGeoJSON, ST_GeomFromKML, ST_SetSRID
+from geoalchemy2.shape import to_shape
+from geojson import Feature
+from gncitizen.utils.env import MEDIA_DIR, db
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.declarative import declared_attr
@@ -17,8 +20,6 @@ from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
 from utils_flask_sqla_geo.serializers import geoserializable, serializable
-
-from gncitizen.utils.env import MEDIA_DIR, db
 
 
 class TimestampMixinModel(object):
@@ -124,10 +125,6 @@ class GeometryModel(TimestampMixinModel, db.Model):
 
     def __repr__(self):
         return self.name
-
-
-from geoalchemy2.shape import to_shape
-from geojson import Feature
 
 
 @serializable

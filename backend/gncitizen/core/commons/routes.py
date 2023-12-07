@@ -2,38 +2,30 @@
 # -*- coding:utf-8 -*-
 
 from flask import Blueprint, current_app, request, send_from_directory
+from flask_admin.contrib.fileadmin import FileAdmin
 from geojson import FeatureCollection
-from sqlalchemy import and_, case, distinct
-from sqlalchemy.sql import func
-from utils_flask_sqla.response import json_resp
-
-from gncitizen.core.observations.models import ObservationMediaModel, ObservationModel
+from gncitizen.core.observations.models import (ObservationMediaModel,
+                                                ObservationModel)
 from gncitizen.core.sites.admin import SiteTypeView
-from gncitizen.core.sites.models import (
-    CorProgramSiteTypeModel,
-    MediaOnVisitModel,
-    SiteModel,
-    SiteTypeModel,
-    VisitModel,
-)
+from gncitizen.core.sites.models import (CorProgramSiteTypeModel,
+                                         MediaOnVisitModel, SiteModel,
+                                         SiteTypeModel, VisitModel)
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin
 from gncitizen.utils.helpers import set_media_links
 from server import db
+from sqlalchemy import and_, case, distinct
+from sqlalchemy.sql import func
+from utils_flask_sqla.response import json_resp
 
-from .admin import CustomFormView, GeometryView, ProgramView, ProjectView, UserView
-from .models import (
-    CustomFormModel,
-    GeometryModel,
-    MediaModel,
-    ProgramsModel,
-    ProjectModel,
-    TModules,
-)
+from .admin import (CustomFormView, GeometryView, ProgramView, ProjectView,
+                    UserView)
+from .models import (CustomFormModel, GeometryModel, MediaModel, ProgramsModel,
+                     ProjectModel, TModules)
 
 commons_api = Blueprint("commons", __name__)
 
-
+admin.add_view(FileAdmin(MEDIA_DIR, "/api/media/", name="Medias"))
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
 admin.add_view(ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes"))
 admin.add_view(
@@ -114,15 +106,15 @@ def get_modules():
 @json_resp
 def get_stat():
     try:
-        stats = {
-            "nb_obs": ObservationModel.query.count(),
-            "nb_user": UserModel.query.count(),
-            "nb_project": ProjectModel.query.count(),
-            "nb_program": ProgramsModel.query.filter(ProgramsModel.is_active.is_(True)).count(),
-            "nb_espece": ObservationModel.query.distinct(ObservationModel.cd_nom).count(),
-            "nb_medias": MediaModel.query.count(),
-        }
-
+        stats = {}
+        stats["nb_obs"] = ObservationModel.query.count()
+        stats["nb_user"] = UserModel.query.count()
+        stats["nb_program"] = ProgramsModel.query.filter(
+            ProgramsModel.is_active
+        ).count()
+        stats["nb_espece"] = ObservationModel.query.distinct(
+            ObservationModel.cd_nom
+        ).count()
         return (stats, 200)
     except Exception as e:
         current_app.logger.critical("[get_observations] Error: %s", str(e))
@@ -229,12 +221,7 @@ def get_project_stats(pk):
         )
         .outerjoin(SiteModel, SiteModel.id_program == ProgramsModel.id_program)
         .outerjoin(VisitModel, VisitModel.id_site == SiteModel.id_site)
-        .filter(
-            and_(
-                ProjectModel.id_project == pk,
-                ProgramsModel.is_active.is_(True),
-            )
-        )
+        .filter(and_(ProjectModel.id_project == pk, ProgramsModel.is_active))
     )
     current_app.logger.debug(f"Query {type(query.first())} {dir(query.first())}")
     return query.first()._asdict()

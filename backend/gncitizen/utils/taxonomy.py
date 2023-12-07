@@ -3,11 +3,17 @@
 
 """A module to manage taxonomy"""
 
-from functools import lru_cache
 from typing import Dict, List, Union
 
 import requests
 from flask import current_app
+from requests.adapters import HTTPAdapter, Retry
+
+session = requests.Session()
+
+retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
+
+session.mount("https://", HTTPAdapter(max_retries=retries))
 
 TAXHUB_API = (
     current_app.config["API_TAXHUB"] + "/"
@@ -19,35 +25,54 @@ logger = current_app.logger
 
 Taxon = Dict[str, Union[str, Dict[str, str], List[Dict]]]
 
+taxhub_full_lists = {}
+taxonomy_lists = []
+
 
 def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
-    payload = {
+    url = f"{TAXHUB_API}biblistes/taxons/{taxhub_list_id}"
+    params = {
         "existing": "true",
         "order": "asc",
         "orderby": "taxref.nom_complet",
     }
-    res = requests.get(
-        "{}biblistes/taxons/{}".format(TAXHUB_API, taxhub_list_id),
-        params=payload,
-        timeout=1,
+    res = session.get(
+        url,
+        params=params,
+        timeout=5,
     )
-    logger.debug(f"<taxhub_rest_get_taxon_list> URL {res.url}")
     res.raise_for_status()
     return res.json()
 
 
 def taxhub_rest_get_all_lists() -> Dict:
-    res = requests.get("{}biblistes".format(TAXHUB_API))
-    logger.debug(f"<taxhub_rest_get_all_lists> URL {res.url}")
+    url = f"{TAXHUB_API}biblistes"
+    res = session.get(
+        url,
+        timeout=5,
+    )
     res.raise_for_status()
-    return res.json().get("data", [])
+    if res.status_code == 200:
+        try:
+            taxa_lists = res.json()["data"]
+            for taxa_list in taxa_lists:
+                taxonomy_lists.append((taxa_list["id_liste"], taxa_list["nom_liste"]))
+        except Exception as e:
+            logger.critical(str(e))
+        return res.json().get("data", [])
 
 
 def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
     if not taxhub_id:
         raise ValueError("Null value for taxhub taxon id")
-    res = requests.get("{}bibnoms/{}".format(TAXHUB_API, taxhub_id), timeout=1)
-    logger.debug(f"<taxhub_rest_get_taxon> URL {res.url}")
+    url = f"{TAXHUB_API}bibnoms/{taxhub_id}"
+    for _ in range(5):
+        try:
+            res = session.get(url, timeout=5)
+            break
+        except requests.exceptions.ReadTimeout:
+            continue
+
     res.raise_for_status()
     data = res.json()
     data.pop("listes", None)
@@ -66,16 +91,14 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
     return data
 
 
-@lru_cache()
-def mkTaxonRepository(taxhub_list_id: int) -> List[Taxon]:
+def make_taxon_repository(taxhub_list_id: int) -> List[Taxon]:
     taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
     taxon_ids = [item["id_nom"] for item in taxa.get("items")]
     r = [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
+    return r
 
-    return sorted(r, key=lambda item: item["nom_francais"])
 
-
-def get_specie_from_cd_nom(cd_nom):
+def get_specie_from_cd_nom(cd_nom) -> Dict:
     """get specie datas from taxref id (cd_nom)
 
     :param cd_nom: taxref unique id (cd_nom)
@@ -84,18 +107,44 @@ def get_specie_from_cd_nom(cd_nom):
     :return: french and scientific official name (from ``cd_ref`` = ``cd_nom``) as dict
     :rtype: dict
     """
-
-    res = requests.get(f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}")
+    url = f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}"
+    params = {
+        "is_ref": True,
+        "cd_nom": cd_nom,
+    }
+    res = session.get(url, params=params)
     official_taxa = res.json().get("items", [{}])[0]
 
     common_names = official_taxa.get("nom_vern", "")
     common_name = common_names.split(",")[0]
     common_name_eng = official_taxa.get("nom_vern_eng", "")
     sci_name = official_taxa.get("lb_nom", "")
-    taxref = {}
-    taxref["common_name"] = common_name
-    taxref["common_name_eng"] = common_name_eng
-    taxref["sci_name"] = sci_name
+
+    taxref = {
+        "common_name": common_name,
+        "common_name_eng": common_name_eng,
+        "sci_name": sci_name,
+    }
+
     for k in official_taxa:
         taxref[k] = official_taxa.get(k, "")
     return taxref
+
+
+def refresh_taxonlist() -> Dict:
+    """refresh taxon list"""
+    logger.info("Pre loading taxhub data (taxa lists and medias)")
+    lists = taxhub_rest_get_all_lists()
+    if lists:
+        count = 0
+        for list in lists:
+            count += 1
+            logger.info(f"loading list {count}/{len(lists)}")
+            r = make_taxon_repository(list["id_liste"])
+            taxhub_full_lists[list["id_liste"]] = r
+    else:
+        logger.warning("ERROR: No taxhub lists available")
+    return taxhub_full_lists
+
+
+refresh_taxonlist()

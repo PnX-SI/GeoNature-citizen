@@ -12,16 +12,15 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
 )
-from sqlalchemy import func, or_
-from sqlalchemy.exc import IntegrityError
-from utils_flask_sqla.response import json_resp
-
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import admin_required, get_user_if_exists
 from gncitizen.utils.mail_check import confirm_token, confirm_user_email, send_user_email
 from server import db
+from sqlalchemy import func, or_
+from sqlalchemy.exc import IntegrityError
+from utils_flask_sqla.response import json_resp
 
 from .models import RevokedTokenModel, UserModel
 
@@ -461,11 +460,11 @@ def delete_user():
             current_app.logger.debug("[delete_user] user {} succesfully deleted".format(username))
         except Exception as e:
             db.session.rollback()
-            raise GeonatureApiError(e)
+            raise GeonatureApiError(e) from e
             return {"message": str(e)}, 400
 
         return (
-            {"message": """Account "{}" have been successfully deleted""".format(username)},
+            {"message": f"Account '{username}' have been successfully deleted"},
             200,
         )
 
@@ -480,7 +479,7 @@ def reset_user_password():
         user = UserModel.query.filter_by(email=email).one()
     except Exception:
         return (
-            {"message": """L'email "{}" n'est pas enregistré.""".format(email)},
+            {"message": f"L'email '{email}' n'est pas enregistré."},
             400,
         )
 

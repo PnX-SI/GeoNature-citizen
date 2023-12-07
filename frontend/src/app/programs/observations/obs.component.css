@@ -340,7 +340,7 @@ section .observations {
 
 #switchMapPhotoBtn>button {
     display: block;
-    margin: 20px;
+    margin: 20px 20px 20px 40px;
     height: 60px;
     width: 60px;
     border-radius: 50%;

@@ -6,16 +6,10 @@ import uuid
 from typing import Dict, Tuple, Union
 
 # from datetime import datetime
-from flask import Blueprint, current_app, json, request, url_for
+from flask import Blueprint, current_app, json, request
 from flask_jwt_extended import jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
-from shapely.geometry import Point, asShape
-from sqlalchemy import desc, func
-from sqlalchemy.sql.expression import literal
-from utils_flask_sqla.response import json_resp
-from utils_flask_sqla_geo.generic import get_geojson_feature
-
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import admin
@@ -23,8 +17,12 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.geo import get_municipality_id_from_wkb
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom, taxhub_full_lists
 from server import db
+from shapely.geometry import Point, asShape
+from sqlalchemy import desc, func
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from .admin import ObservationView
 from .models import ObservationMediaModel, ObservationModel
@@ -115,7 +113,7 @@ def generate_observation_geojson(id_observation):
         .one()
         .taxonomy_list
     )
-    taxon_repository = mkTaxonRepository(taxhub_list_id)
+    taxon_repository = taxhub_full_lists[taxhub_list_id]
     try:
         taxon = next(
             taxon
@@ -389,7 +387,7 @@ def get_program_observations(
             taxhub_list_id = (
                 ProgramsModel.query.filter_by(id_program=program_id).one().taxonomy_list
             )
-            taxon_repository = mkTaxonRepository(taxhub_list_id)
+            taxon_repository = taxhub_full_lists[taxhub_list_id]
 
         features = []
         for observation in observations:
@@ -509,7 +507,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
                     .one()
                     .taxonomy_list
                 )
-                taxon_data = mkTaxonRepository(taxhub_list_id)
+                taxon_data = taxhub_full_lists[taxhub_list_id]
                 try:
                     for taxon in taxon_data:
                         if taxon not in taxon_repository:
@@ -646,7 +644,7 @@ def get_observations_by_user_id(user_id):
                     if observation.ProgramsModel.taxonomy_list not in taxhub_list_id:
                         taxhub_list_id.append(observation.ProgramsModel.taxonomy_list)
                 for tax_list in taxhub_list_id:
-                    taxon_repository.append(mkTaxonRepository(tax_list))
+                    taxon_repository.append(taxhub_full_lists[tax_list])
 
             features = []
         except Exception as e:

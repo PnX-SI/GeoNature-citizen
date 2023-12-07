@@ -1,14 +1,20 @@
-# import requests
 from flask import Blueprint
-from utils_flask_sqla.response import json_resp
-
 from gncitizen.utils.taxonomy import (
     get_specie_from_cd_nom,
-    mkTaxonRepository,
+    refresh_taxonlist,
+    taxhub_full_lists,
     taxhub_rest_get_all_lists,
 )
+from utils_flask_sqla.response import json_resp
 
 taxo_api = Blueprint("taxonomy", __name__)
+
+
+@taxo_api.route("/taxonomy/refresh", methods=["GET"])
+@json_resp
+def refresh():
+    lists = refresh_taxonlist()
+    return lists
 
 
 @taxo_api.route("/taxonomy/lists", methods=["GET"])
@@ -46,6 +52,7 @@ def get_lists():
 
 @taxo_api.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
 @json_resp
+# @lru_cache()
 def get_list(id):
     """Renvoie une liste d'espèces spécifiée par son id
     GET
@@ -73,7 +80,7 @@ def get_list(id):
     """
 
     try:
-        r = mkTaxonRepository(id)
+        r = taxhub_full_lists[id]
         return r
     except Exception as e:
         return {"message": str(e)}, 400

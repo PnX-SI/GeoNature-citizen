@@ -2,11 +2,10 @@ from calendar import monthrange
 from datetime import datetime, timedelta
 
 from flask import Blueprint, current_app, jsonify
-from sqlalchemy.sql.expression import func
-
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
+from sqlalchemy.sql.expression import func
 
 badges_api = Blueprint("badges", __name__)
 
