@@ -73,9 +73,7 @@ def postrequest(url, params=None, file=None):
     files = None
     if file is not None:
         files = {"file": open(file, "rb")}
-        del h[
-            "Content-Type"
-        ]  # let requests set proper Content-Type with boundaries
+        del h["Content-Type"]  # let requests set proper Content-Type with boundaries
     response = requests.post(myUrl, headers=h, data=params, files=files)
     return response
 

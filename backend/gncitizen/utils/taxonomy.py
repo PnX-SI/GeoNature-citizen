@@ -11,9 +11,7 @@ from requests.adapters import HTTPAdapter, Retry
 
 session = requests.Session()
 
-retries = Retry(
-    total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504]
-)
+retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
 
 session.mount("https://", HTTPAdapter(max_retries=retries))
 
@@ -58,9 +56,7 @@ def taxhub_rest_get_all_lists() -> Dict:
         try:
             taxa_lists = res.json()["data"]
             for taxa_list in taxa_lists:
-                taxonomy_lists.append(
-                    (taxa_list["id_liste"], taxa_list["nom_liste"])
-                )
+                taxonomy_lists.append((taxa_list["id_liste"], taxa_list["nom_liste"]))
         except Exception as e:
             logger.critical(str(e))
         return res.json().get("data", [])
@@ -85,11 +81,7 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
         media_types = ("Photo_gncitizen", "Photo_principale", "Photo")
         i = 0
         while i < len(media_types):
-            filtered_medias = [
-                d
-                for d in data["medias"]
-                if d["nom_type_media"] == media_types[i]
-            ]
+            filtered_medias = [d for d in data["medias"] if d["nom_type_media"] == media_types[i]]
             if len(filtered_medias) >= 1:
                 break
             i += 1

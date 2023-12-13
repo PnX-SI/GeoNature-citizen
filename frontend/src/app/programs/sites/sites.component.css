@@ -15,7 +15,7 @@
     width: 100%;
     min-height: 70vh;
     position: relative;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 .section:before {
@@ -34,4 +34,3 @@
     overflow: scroll;
     height: calc(110vh - var(--list-obs-offset));
 }
-

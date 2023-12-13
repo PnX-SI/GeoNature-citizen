@@ -26,6 +26,7 @@ import {
     ObsMapComponent,
     MarkerPopupComponent,
 } from './programs/observations/map/map.component';
+import { MediaGaleryComponent } from './programs/media-galery/media-galery.component';
 import { ObsComponent } from './programs/observations/obs.component';
 import { SitesListComponent } from './programs/sites/list/list.component';
 import {
@@ -101,6 +102,7 @@ import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.
         AppComponent,
         ObsComponent,
         ObsMapComponent,
+        MediaGaleryComponent,
         MarkerPopupComponent,
         SiteMarkerPopupComponent,
         ObsFormComponent,
