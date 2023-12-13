@@ -13,6 +13,8 @@ from geoalchemy2.functions import (
     ST_GeomFromKML,
     ST_SetSRID,
 )
+from geoalchemy2.shape import to_shape
+from geojson import Feature
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.declarative import declared_attr
@@ -119,7 +121,7 @@ class GeometryModel(TimestampMixinModel, db.Model):
                         if "MultiGeometry" in child.tag:
                             # We want only Polygon nodes inside the geometry
                             for elt in kml_geom_elt.getchildren():
-                                if not "Polygon" in elt.tag:
+                                if "Polygon" not in elt.tag:
                                     raise Exception(gnc_invalid_err_message)
                 if kml_geom_elt is None:
                     raise Exception(gnc_invalid_err_message)
@@ -130,10 +132,6 @@ class GeometryModel(TimestampMixinModel, db.Model):
 
     def __repr__(self):
         return self.name
-
-
-from geoalchemy2.shape import to_shape
-from geojson import Feature
 
 
 @serializable

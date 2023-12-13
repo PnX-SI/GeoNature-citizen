@@ -107,9 +107,7 @@ def save_upload_files(
                         db.session.commit()
                         id_media = newmedia.id_media
                         current_app.logger.debug(
-                            "[save_upload_files] id_media : ".format(
-                                str(id_media)
-                            )
+                            f"[save_upload_files] id_media : {str(id_media)}]"
                         )
                         # return id_media
                     except Exception as e:
