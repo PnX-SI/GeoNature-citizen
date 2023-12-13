@@ -42,9 +42,7 @@ class SitesTestCase(unittest.TestCase):
         response = postrequest("sites/", json.dumps(body))
         self.assertEqual(response.status_code, 400)
         data = response.json()
-        self.assertIn(
-            "invalid input value for enum sitetype", data["error_message"]
-        )
+        self.assertIn("invalid input value for enum sitetype", data["error_message"])
 
         # Success for mare
         body["site_type"] = "mare"
@@ -109,9 +107,7 @@ class VisitsTestCase(unittest.TestCase):
 
         # post a photo
         response = postrequest(
-            "sites/{}/visits/{}/photos".format(
-                self.site_id, self.visit["id_visit"]
-            ),
+            "sites/{}/visits/{}/photos".format(self.site_id, self.visit["id_visit"]),
             None,
             file="../frontend/src/assets/Azure-Commun-019.JPG",
         )

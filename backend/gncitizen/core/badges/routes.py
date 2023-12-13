@@ -2,20 +2,16 @@ from calendar import monthrange
 from datetime import datetime, timedelta
 
 from flask import Blueprint, current_app, jsonify
-from sqlalchemy.sql.expression import func
-from utils_flask_sqla.response import json_resp
-
-from gncitizen.core.commons.models import ProgramsModel
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
+from sqlalchemy.sql.expression import func
 
 badges_api = Blueprint("badges", __name__)
 
 
 @badges_api.route("/rewards/<int:id>", methods=["GET"])
 def get_rewards(id):
-
     total_obs = 0
     program_scores = []
     taxon_scores = []
@@ -67,12 +63,9 @@ def get_rewards(id):
     user = UserModel.query.filter(UserModel.id_user == id).one()
     result = user.as_secured_dict(True)
     user_date_create = result["timestamp_create"]
-    user_date_create = datetime.strptime(
-        user_date_create, "%Y-%m-%dT%H:%M:%S.%f"
-    )
+    user_date_create = datetime.strptime(user_date_create, "%Y-%m-%dT%H:%M:%S.%f")
 
     for reward in rewards:
-
         if reward["type"] == "all_attendance":
             id = 1
             for badge in reward["badges"]:
@@ -166,22 +159,3 @@ def monthdelta(d1, d2):
         else:
             break
     return delta
-
-
-@badges_api.route("/stats", methods=["GET"])
-@json_resp
-def get_stat():
-    try:
-        stats = {}
-        stats["nb_obs"] = ObservationModel.query.count()
-        stats["nb_user"] = UserModel.query.count()
-        stats["nb_program"] = ProgramsModel.query.filter(
-            ProgramsModel.is_active
-        ).count()
-        stats["nb_espece"] = ObservationModel.query.distinct(
-            ObservationModel.cd_nom
-        ).count()
-        return (stats, 200)
-    except Exception as e:
-        current_app.logger.critical("[get_observations] Error: %s", str(e))
-        return {"message": str(e)}, 400

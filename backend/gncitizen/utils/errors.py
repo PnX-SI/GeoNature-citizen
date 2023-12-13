@@ -48,9 +48,7 @@ class GeonatureApiError(Exception):
 
     def __str__(self):
         message = "Error {}, Message: {}, raised error: {}"
-        return message.format(
-            self.status_code, self.message, self.__class__.__name__
-        )
+        return message.format(self.status_code, self.message, self.__class__.__name__)
 
 
 class InsufficientRightsError(GeonatureApiError):

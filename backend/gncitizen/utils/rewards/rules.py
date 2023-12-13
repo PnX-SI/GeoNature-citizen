@@ -16,7 +16,7 @@ def attendance_condition(context) -> bool:
     return "attendance" in context.keys()
 
 
-def attendance_action(data) -> str:
+def attendance_action(data) -> List[str]:
     return [
         "Attendance.{}".format(category)
         for category, threshold in attendance_model.items()
@@ -32,7 +32,7 @@ def seniority_condition(context) -> bool:
     return "seniority" in context.keys()
 
 
-def seniority_action(data) -> str:
+def seniority_action(data) -> List[str]:
     return [
         "Seniority.{}".format(category)
         for category, threshold in seniority_model.items()
@@ -54,7 +54,7 @@ def program_attendance_condition(context) -> bool:
     return "program_attendance" in context.keys()
 
 
-def program_attendance_action(data) -> str:
+def program_attendance_action(data) -> List[str]:
     return [
         "Program_Attendance.{}.{}".format(i, category)
         for category, threshold in program_attendance_model.items()
@@ -63,9 +63,7 @@ def program_attendance_action(data) -> str:
     ]
 
 
-program_attendance_rule = Rule(
-    program_attendance_condition, program_attendance_action
-)
+program_attendance_rule = Rule(program_attendance_condition, program_attendance_action)
 
 
 # PROGRAM_DATE_BOUNDS
@@ -85,9 +83,7 @@ def program_date_bounds_action(data) -> str:
     )
 
 
-program_date_bounds_rule = Rule(
-    program_date_bounds_condition, program_date_bounds_action
-)
+program_date_bounds_rule = Rule(program_date_bounds_condition, program_date_bounds_action)
 
 
 def recognition_condition(context) -> bool:
@@ -101,11 +97,7 @@ def recognition_action(data) -> Union[List[str], str]:
     for i, item in enumerate(recognition_model):
         for category, threshold in recognition_model[i]["attendance"].items():
             if q and q[i] >= threshold:
-                r.append(
-                    "{}.{}".format(
-                        recognition_model[i]["specialization"], category
-                    )
-                )
+                r.append("{}.{}".format(recognition_model[i]["specialization"], category))
     return r if len(r) > 0 else "Recognition.None"
 
 

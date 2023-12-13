@@ -13,6 +13,7 @@ import { FeatureCollection, Feature } from 'geojson';
 import { MainConfig } from '../../conf/main.config';
 import { Program } from '../programs/programs.models';
 import { TaxonomyList } from '../programs/observations/observation.model';
+import { MediaItem, MediaList } from '../programs/media-galery/media-galery.model';
 
 const PROGRAMS_KEY = makeStateKey('programs');
 
@@ -81,7 +82,6 @@ export class GncProgramsService implements OnInit {
                 ),
                 map((programs: Program[]) =>
                     programs.map((program) => {
-                        console.log('PRG', program);
                         program.html_short_desc =
                             this.domSanitizer.bypassSecurityTrustHtml(
                                 program.short_desc
@@ -89,8 +89,7 @@ export class GncProgramsService implements OnInit {
                         program.html_long_desc =
                             this.domSanitizer.bypassSecurityTrustHtml(
                                 program.long_desc
-                        );
-                        console.log('PROGRAM', program);
+                            );
                         return program;
                     })
                 ),
@@ -184,6 +183,12 @@ export class GncProgramsService implements OnInit {
                     this.handleError<object>(`getCustomForm id=${id_form}`)
                 )
             );
+    }
+
+    getMedias(params): Observable<MediaList> {
+        return this.http.get<MediaList>(`${this.URL}/medias`, {
+            params,
+        });
     }
 
     private handleError<T>(operation = 'operation', result?: T) {

@@ -7,12 +7,11 @@ import datetime
 import os
 
 from flask import current_app
-from werkzeug.datastructures import FileStorage
-
 from gncitizen.core.commons.models import MediaModel
 from gncitizen.utils.env import ALLOWED_EXTENSIONS, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from server import db
+from werkzeug.datastructures import FileStorage
 
 
 def allowed_file(filename):
@@ -25,10 +24,7 @@ def allowed_file(filename):
 
     :rtype: bool
     """
-    if (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-    ):
+    if "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS:
         return True
 
 
@@ -80,21 +76,13 @@ def save_upload_files(
                 if allowed_file(filename):
                     # save file
                     current_app.logger.debug(
-                        '[save_upload_files] Preparing file "{}" saving'.format(
-                            filename
-                        )
+                        '[save_upload_files] Preparing file "{}" saving'.format(filename)
                     )
                     ext = filename.rsplit(".", 1)[1].lower()
-                    timestamp = datetime.datetime.utcnow().strftime(
-                        "%Y%m%d_%H%M%S"
-                    )
-                    filename = "{}_{}_{}_{}.{}".format(
-                        prefix, str(cdnom), i, timestamp, ext
-                    )
+                    timestamp = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+                    filename = "{}_{}_{}_{}.{}".format(prefix, str(cdnom), i, timestamp, ext)
                     current_app.logger.debug(
-                        "[save_upload_files] new filename : {}".format(
-                            filename
-                        )
+                        "[save_upload_files] new filename : {}".format(filename)
                     )
                     file.save(os.path.join(str(MEDIA_DIR), filename))
                     # Save media filename to Database
@@ -112,16 +100,12 @@ def save_upload_files(
                         # return id_media
                     except Exception as e:
                         current_app.logger.debug(
-                            "[save_upload_files] ERROR MEDIAMODEL: {}".format(
-                                e
-                            )
+                            "[save_upload_files] ERROR MEDIAMODEL: {}".format(e)
                         )
                         raise GeonatureApiError(e)
                     # Save id_media in matching table
                     try:
-                        newmatch = matching_model(
-                            id_media=id_media, id_data_source=id_data_source
-                        )
+                        newmatch = matching_model(id_media=id_media, id_data_source=id_data_source)
                         db.session.add(newmatch)
                         db.session.commit()
                         id_match = newmatch.id_match
@@ -130,24 +114,18 @@ def save_upload_files(
                         )
                     except Exception as e:
                         current_app.logger.debug(
-                            "[save_upload_files] ERROR MATCH MEDIA: {}".format(
-                                e
-                            )
+                            "[save_upload_files] ERROR MATCH MEDIA: {}".format(e)
                         )
                         raise GeonatureApiError(e)
 
                     # log
                     current_app.logger.debug(
-                        "[save_upload_files] Fichier {} enregistré".format(
-                            filename
-                        )
+                        "[save_upload_files] Fichier {} enregistré".format(filename)
                     )
                     files.append(filename)
 
     except Exception as e:
-        current_app.logger.debug(
-            "[save_upload_files] ERROR save_upload_file : {}".format(e)
-        )
+        current_app.logger.debug("[save_upload_files] ERROR save_upload_file : {}".format(e))
         raise GeonatureApiError(e)
 
     return files

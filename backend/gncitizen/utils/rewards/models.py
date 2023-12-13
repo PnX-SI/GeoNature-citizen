@@ -57,17 +57,12 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
             return None
 
 
-attendance_model = OrderedDict(
-    reversed(sorted(conf["attendance"].items(), key=lambda t: t[1]))
-)
+attendance_model = OrderedDict(reversed(sorted(conf["attendance"].items(), key=lambda t: t[1])))
 
 seniority_model = OrderedDict(
     reversed(
         sorted(
-            [
-                (k, config_duration2timestamp(v))
-                for k, v in conf["seniority"].items()
-            ],
+            [(k, config_duration2timestamp(v)) for k, v in conf["seniority"].items()],
             key=lambda t: t[1],
         )
     )

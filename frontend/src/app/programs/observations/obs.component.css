@@ -2,12 +2,12 @@
     width: 100%;
     min-height: 70vh;
     position: relative;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
-.obs-section#slide {
+/* .obs-section#slide {
     margin-bottom: 20px;
-}
+} */
 
 .section:before {
     content: ' ';
@@ -135,7 +135,7 @@
     transition: all 0.5s ease-in-out;
 }
 
-#slider .carousel-text > p {
+#slider .carousel-text>p {
     font-style: italic;
     font-size: 14px;
     max-height: 20%;
@@ -304,22 +304,50 @@ section .observations {
         min-width: inherit !important;
     }
 }
+
 @media screen and (max-width: 760px) {
+
     .obs-tabs .tab-pane.active #mapList #list,
     .obs-tabs .tab-pane.active #map {
         max-height: calc(100vh - 295px);
         overflow: scroll;
     }
 }
+
 @media screen and (max-width: 576px) {
+
     .obs-tabs .tab-pane.active #mapList #list,
     .obs-tabs .tab-pane.active #map {
         max-height: calc(100vh - 260px);
         overflow: scroll;
     }
-}
-@media screen and (max-width: 576px) {
+
     section#slide {
         margin-top: 66px !important;
     }
+
+    #switchMapPhotoBtn {
+        top: 60px;
+    }
+}
+
+#switchMapPhotoBtn {
+    z-index: 1000;
+    position: absolute;
+    /* top: 15px;
+    left: 30px; */
+}
+
+#switchMapPhotoBtn>button {
+    display: block;
+    margin: 20px 20px 20px 40px;
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    color: var(--primary);
+    font-size: 1.5rem;
+    background-color: white;
+    border: 1px solid whitesmoke;
+    /* top: 15px;
+    left: 30px; */
 }

@@ -34,9 +34,7 @@ class SiteTypeModel(TimestampMixinModel, db.Model):
     id_typesite = db.Column(db.Integer, primary_key=True, unique=True)
     category = db.Column(db.String(200))
     type = db.Column(db.String(200))
-    id_form = db.Column(
-        db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
-    )
+    id_form = db.Column(db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True)
     custom_form = relationship("CustomFormModel")
     pictogram = db.Column(db.Text)
 
@@ -53,14 +51,10 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     __table_args__ = {"schema": "gnc_sites"}
     id_site = db.Column(db.Integer, primary_key=True, unique=True)
     uuid_sinp = db.Column(UUID(as_uuid=True), nullable=False, unique=True)
-    id_program = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
-    )
+    id_program = db.Column(db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False)
     program = relationship("ProgramsModel")
     name = db.Column(db.String(250))
-    id_type = db.Column(
-        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False
-    )
+    id_type = db.Column(db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False)
     site_type = relationship("SiteTypeModel")
     geom = db.Column(Geometry("POINT", 4326))
 
@@ -72,12 +66,8 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
 class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     __tablename__ = "cor_program_typesites"
     __table_args__ = {"schema": "gnc_sites"}
-    id_cor_program_typesite = db.Column(
-        db.Integer, primary_key=True, unique=True
-    )
-    id_program = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE")
-    )
+    id_cor_program_typesite = db.Column(db.Integer, primary_key=True, unique=True)
+    id_program = db.Column(db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE"))
     program = relationship("ProgramsModel", backref="site_types")
     id_typesite = db.Column(
         db.Integer,
@@ -93,9 +83,7 @@ class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     __tablename__ = "t_visit"
     __table_args__ = {"schema": "gnc_sites"}
     id_visit = db.Column(db.Integer, primary_key=True, unique=True)
-    id_site = db.Column(
-        db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE")
-    )
+    id_site = db.Column(db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE"))
     site = relationship("SiteModel")
     date = db.Column(db.Date)
     json_data = db.Column(JSONB, nullable=True)
