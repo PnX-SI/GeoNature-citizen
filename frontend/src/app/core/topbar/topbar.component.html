@@ -86,6 +86,17 @@
                             >Admin
                         </a>
                     </li>
+                    <li *ngIf="isValidator">
+                        <a
+                            routerLink="/observations/not_validated"
+                            routerLinkActive="active"
+                            class="btn my-2 my-sm-0 rounded-0"
+                            i18n="validation@@validation"
+                            title="Validation"
+                            (click)="isCollapsed = !isCollapsed"
+                            >Validation</a
+                        >
+                    </li>
                 </ul>
                 <div class="btn-group navbar-login" *ngIf="canSignup && !hideAuth">
                     <div

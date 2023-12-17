@@ -363,6 +363,8 @@ def logged_user():
                 .filter(ObservationModel.id_role == user.id_user)
                 .one()[0]
             }
+            if not current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
+                result["validator"] = False
 
             return (
                 {"message": "Vos données personelles", "features": result},

@@ -45,6 +45,7 @@ class UserModel(TimestampMixinModel, db.Model):
     avatar = db.Column(db.String())
     active = db.Column(db.Boolean, default=False)
     admin = db.Column(db.Boolean, default=False)
+    validator = db.Column(db.Boolean, default=False)
 
     def save_to_db(self):
         db.session.add(self)
@@ -68,6 +69,7 @@ class UserModel(TimestampMixinModel, db.Model):
             "full_name": name + " " + surname,
             "admin": self.admin,
             "active": self.active,
+            "validator": self.validator,
             "timestamp_create": self.timestamp_create.isoformat(),
             "timestamp_update": self.timestamp_update.isoformat()
             if self.timestamp_update
@@ -98,6 +100,9 @@ class UserModel(TimestampMixinModel, db.Model):
             }
 
         return {"users": list(map(lambda x: to_json(x), UserModel.query.all()))}
+
+    def __repr__(self):
+        return f"{self.username} <{self.id_user}>"
 
     # @classmethod
     # def delete_all(cls):
@@ -170,3 +175,13 @@ class ObserverMixinModel(object):
     @declared_attr
     def email(cls):
         return db.Column(db.String(150))
+
+
+class ValidatorMixinModel(object):
+    @declared_attr
+    def id_validator(cls):
+        return db.Column(
+        db.Integer,
+        db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
+        nullable=True,
+    )

@@ -47,6 +47,18 @@ export class UserService {
         );
     }
 
+    getValidationStatuses() {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/validation_statuses`
+        );
+    }
+
+    getInvalidationStatuses() {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/invalidation_statuses`
+        );
+    }
+
     getSitesByUserId(userId: number) {
         return this.http.get<Object>(
             `${MainConfig.API_ENDPOINT}/sites/users/${userId}`

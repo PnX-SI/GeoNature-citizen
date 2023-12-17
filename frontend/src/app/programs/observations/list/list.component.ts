@@ -20,6 +20,7 @@ import {
     TaxonomyListItem,
     ObservationFeature,
 } from '../observation.model';
+import { UserService } from '../../../auth/user-dashboard/user.service.service';
 
 @Component({
     selector: 'app-obs-list',
@@ -28,18 +29,22 @@ import {
 })
 export class ObsListComponent implements OnChanges {
     @Input('observations') observations: FeatureCollection;
+    @Input('userObservations') userObservations: FeatureCollection;
     @Input('taxa') surveySpecies: TaxonomyList;
     @Input('displayOwnerActions') displayOwnerActions: boolean = false;
     @Input('displayForm') display_form: boolean;
     @Output('obsSelect') obsSelect: EventEmitter<Feature> = new EventEmitter();
     @Output() deleteObs = new EventEmitter();
+    @Output() validateObs = new EventEmitter();
     municipalities: any[];
     observationList: Feature[] = [];
     program_id: number;
     taxa: any[];
+    validationStatuses: any = {};
     public MainConfig = MainConfig;
     selectedTaxon: TaxonomyListItem = null;
     selectedMunicipality: any = null;
+    selectedValidationStatus: any = null;
     changes$ = new BehaviorSubject<SimpleChanges>(null);
     observations$ = new BehaviorSubject<Feature[]>(null);
     features$ = merge(
@@ -50,12 +55,24 @@ export class ObsListComponent implements OnChanges {
         )
     );
 
-    constructor(private cd: ChangeDetectorRef, public router: Router) {}
+    constructor(
+        private cd: ChangeDetectorRef,
+        public router: Router,
+        private userService: UserService,
+    ) {}
 
     ngOnChanges(changes: SimpleChanges) {
         this.changes$.next(changes);
 
         if (this.observations) {
+
+            if (this.userObservations) {
+                this.observations.features.forEach(observation => {
+                    if (this.userObservations.features.map(o => o.properties.id_observation).includes(observation.properties.id_observation)) {
+                        observation.properties.readOnly = true
+                    }
+                });
+            }
             this.observationList = this.observations['features'];
             this.observations$.next(this.observations['features']);
             this.municipalities = this.observations.features
@@ -67,6 +84,19 @@ export class ObsListComponent implements OnChanges {
                 .filter((item, pos, self) => {
                     return self.indexOf(item) === pos;
                 });
+            this.userService.getValidationStatuses().subscribe((allValidationStatuses) => {
+                Array.from(
+                    new Set(this.observations.features
+                        .map((features) => features.properties)
+                        .map((property) => {
+                            return property.validation_status;
+                        })
+                    )
+                ).map((status) => {
+                    this.validationStatuses[status] = allValidationStatuses[status]
+                })
+
+            });
         }
     }
 
@@ -75,9 +105,10 @@ export class ObsListComponent implements OnChanges {
     // }
 
     onFilterChange(): void {
-        let filters: { taxon: string; municipality: string } = {
+        let filters: { taxon: string; municipality: string; validationStatus: string } = {
             taxon: null,
             municipality: null,
+            validationStatus: null,
         };
         // WARNING: map.observations is connected to this.observationList
         this.observationList = this.observations['features'].filter((obs) => {
@@ -94,6 +125,12 @@ export class ObsListComponent implements OnChanges {
                     obs.properties.cd_nom == this.selectedTaxon.taxref['cd_nom']
                 );
                 filters.taxon = this.selectedTaxon.taxref['cd_nom'];
+            }
+            if (this.selectedValidationStatus) {
+                results.push(
+                    obs.properties.validation_status == this.selectedValidationStatus
+                );
+                filters.validationStatus = this.selectedValidationStatus;
             }
             return results.indexOf(false) < 0;
         });
@@ -118,5 +155,9 @@ export class ObsListComponent implements OnChanges {
 
     trackByObs(index: number, obs: ObservationFeature): number {
         return obs.properties.id_observation;
+    }
+
+    onValidateClick(observation) {
+        this.validateObs.emit(observation.properties.id_observation)
     }
 }

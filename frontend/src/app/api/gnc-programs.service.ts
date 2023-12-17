@@ -133,6 +133,19 @@ export class GncProgramsService implements OnInit {
             );
     }
 
+    getNotValidatedbservations(id: number): Observable<FeatureCollection> {
+        return this.http
+            .get<FeatureCollection>(`${this.URL}/observations/not_validated`)
+            .pipe(
+                catchError(
+                    this.handleError<FeatureCollection>(
+                        `getProgramObservations id=${id}`,
+                        { type: 'FeatureCollection', features: [] }
+                    )
+                )
+            );
+    }
+
     getProgramSites(id: number): Observable<FeatureCollection> {
         return this.http
             .get<FeatureCollection>(`${this.URL}/sites/programs/${id}`)
