@@ -249,6 +249,7 @@ def login():
                     "userAvatar": current_user.as_secured_dict(True).get("avatar"),
                     "access_token": access_token,
                     "refresh_token": refresh_token,
+                    "isValidator": current_user.validator,
                 },
                 200,
             )

@@ -14,7 +14,7 @@ export class UserService {
         'Content-Type': 'application/json',
     });
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     getPersonalInfo() {
         let url = `${MainConfig.API_ENDPOINT}/user/info`;
@@ -42,8 +42,9 @@ export class UserService {
     }
 
     getObservationsByUserId(userId: number) {
+        let params = { user: userId.toString() };
         return this.http.get<Object>(
-            `${MainConfig.API_ENDPOINT}/observations/users/${userId}`
+            `${MainConfig.API_ENDPOINT}/observations`, { params }
         );
     }
 

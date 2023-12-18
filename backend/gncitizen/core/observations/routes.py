@@ -146,7 +146,7 @@ def format_observations_dashboards(observations):
                 if observation.ProgramsModel.taxonomy_list not in taxhub_list_id:
                     taxhub_list_id.append(observation.ProgramsModel.taxonomy_list)
             for tax_list in taxhub_list_id:
-                taxon_repository.append(mkTaxonRepository(tax_list))
+                taxon_repository.append(taxhub_full_lists[tax_list])
 
         features = []
     except Exception as e:
@@ -274,6 +274,85 @@ def get_observation(pk):
         )
         return {"features": format_observations_dashboards(observations.all())}, 200
     except Exception as e:
+        return {"message": str(e)}, 400
+
+
+@obstax_api.route("/observations", methods=["GET"])
+@json_resp
+@jwt_required(optional=True)
+def get_observations():
+    validation_process = request.args.get("exclude_status", default=False, type=bool)
+    exclude_status_param = request.args.get("exclude_status", default=None, type=str)
+    user = request.args.get("user", default=None, type=int)
+    program = request.args.get("program", default=None, type=int)
+
+    # use_taxhub_param = request.args.get("use_taxhub", default=True, type=lambda value: value.lower() != "false")
+    current_user = get_user_if_exists()
+
+    filters = [ProgramsModel.is_active]
+
+    if validation_process and current_user:
+        filters.append(ObservationModel.id_role != current_user.id_user)
+    if exclude_status_param:
+        try:
+            filters.append(
+                ObservationModel.validation_status != ValidationStatus[exclude_status_param]
+            )
+        except KeyError:
+            pass
+    if user:
+        filters.append(ObservationModel.id_role == user)
+    if program:
+        filters.append(ObservationModel.id_program == program)
+
+    current_app.logger.debug(f"FILTERS {filters}")
+
+    try:
+        observations = (
+            db.session.query(
+                ObservationModel,
+                ProgramsModel,
+                UserModel.username,
+                func.json_agg(
+                    func.json_build_array(MediaModel.filename, MediaModel.id_media)
+                ).label("images"),
+            )
+            .filter(*filters)
+            .join(
+                ProgramsModel,
+                ProgramsModel.id_program == ObservationModel.id_program,
+                isouter=True,
+            )
+            .join(
+                ObservationMediaModel,
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
+                isouter=True,
+            )
+            .join(
+                MediaModel,
+                ObservationMediaModel.id_media == MediaModel.id_media,
+                isouter=True,
+            )
+            .join(
+                UserModel,
+                ObservationModel.id_role == UserModel.id_user,
+                # full=True,
+                isouter=True,
+            )
+            .group_by(
+                ObservationModel.id_observation,
+                ProgramsModel.id_program,
+                UserModel.username,
+            )
+        )
+
+        observations = observations.order_by(desc(ObservationModel.timestamp_create))
+        # current_app.logger.debug(str(observations))
+        return FeatureCollection(format_observations_dashboards(observations.all())), 200
+
+    except Exception as e:
+        raise e
+        current_app.logger.critical("[get_program_observations] Error: %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -871,11 +950,15 @@ def get_observations_by_user_id(user_id):
 @json_resp
 @jwt_required()
 def update_observation():
+    """Update an observation"""
     current_user = get_user_if_exists()
     observation_to_update = ObservationModel.query.filter_by(
         id_observation=request.form.get("id_observation")
     )
+
+    # Only observation observer and validator can update observation
     if observation_to_update.one().id_role != current_user.id_user and not current_user.validator:
+        
         abort(403, "unauthorized")
 
     try:

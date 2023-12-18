@@ -99,6 +99,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             });
 
         this.route.data.subscribe((data: { programs: Program[] }) => {
+            console.log('DATA', data)
             this.programs = data.programs;
             this.program = this.programs.find(
                 (p) => p.id_program == this.program_id
@@ -216,7 +217,8 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     }
 
     canValidateObservation(): boolean {
-        return this.isValidator && this.obsToValidate.properties.validation_status != "VALIDATED" && !this.userObservations.features.map(o => o.properties.id_observation).includes(this.obsToValidate.properties.id_observation)
+        // return this.isValidator && this.obsToValidate.properties.validation_status != "VALIDATED" && !this.userObservations.features.map(o => o.properties.id_observation).includes(this.obsToValidate.properties.id_observation)
+        return this.isValidator && this.obsToValidate.properties.validation_status != "VALIDATED"
     }
 
     closeModal(observationId: number = null) {
