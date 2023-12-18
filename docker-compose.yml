@@ -7,7 +7,7 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${FRONT_PORT-4000}/"]
+      test: ["CMD", "curl", "-f", "http://localhost:4000/"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -20,7 +20,7 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${API_PORT-5002}/api/admin"]
+      test: ["CMD", "curl", "-f", "http://localhost:5002/api/admin"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -33,13 +33,13 @@ services:
     image: postgis/postgis:14-master
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_DB=${DB_NAME-dbname}
-      - POSTGRES_USER=${DB_USER-dbuser}
-      - POSTGRES_PASSWORD=${DB_PASSWORD-dbpwd}
+      - POSTGRES_DB=${DB_NAME:-dbname}
+      - POSTGRES_USER=${DB_USER:-dbuser}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-dbpwd}
     volumes:
       - citizen_data:/var/lib/postgresql/data/pgdata
     healthcheck:      
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} -h 127.0.0.1"]     
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dbuser} -d ${DB_NAME:-dbname} -h 127.0.0.1"]     
       interval: 5s
       timeout: 5s
       retries: 3
