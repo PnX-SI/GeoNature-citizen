@@ -27,8 +27,12 @@ from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from .admin import ObservationView
-from .models import (INVALIDATION_STATUSES, ObservationMediaModel,
-                     ObservationModel, ValidationStatus)
+from .models import (
+    INVALIDATION_STATUSES,
+    ObservationMediaModel,
+    ObservationModel,
+    ValidationStatus,
+)
 
 # from sqlalchemy import func
 
@@ -952,45 +956,40 @@ def get_observations_by_user_id(user_id):
 @json_resp
 @jwt_required()
 def update_observation():
-    """Update an observation"""
     current_user = get_user_if_exists()
     observation_to_update = ObservationModel.query.filter_by(
         id_observation=request.form.get("id_observation")
     )
-
-    # Only observation observer and validator can update observation
-    if (
-        observation_to_update.one().id_role != current_user.id_user and not current_user.validator
-    ) or not current_user.admin:
+    if observation_to_update.one().id_role != current_user.id_user and not current_user.validator:
         abort(403, "unauthorized")
 
     try:
         update_data = request.form
         update_obs = {}
-        for prop in ["cd_nom", "name", "count", "comment", "date", "municipality"]:
-            update_obs[prop] = update_data[prop]
-        try:
-            _coordinates = json.loads(update_data["geometry"])
-            _point = Point(_coordinates["x"], _coordinates["y"])
-            _shape = asShape(_point)
-            update_obs["geom"] = from_shape(Point(_shape), srid=4326)
-            if not update_obs["municipality"]:
-                update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
-        except Exception as e:
-            current_app.logger.warning("[post_observation] coords ", e)
-            raise GeonatureApiError(e)
+        for prop in ["cd_nom", "name", "count", "comment", "date", "municipality", "id_validator"]:
+            if prop in update_data:
+                update_obs[prop] = update_data[prop]
+        if "geometry" in update_data:
+            try:
+                _coordinates = json.loads(update_data["geometry"])
+                _point = Point(_coordinates["x"], _coordinates["y"])
+                _shape = asShape(_point)
+                update_obs["geom"] = from_shape(Point(_shape), srid=4326)
+                if not update_obs["municipality"]:
+                    update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
+            except Exception as e:
+                current_app.logger.warning("[post_observation] coords ", e)
+                raise GeonatureApiError(e)
+        if "json_data" in update_data:
+            try:
+                json_data = update_data.get("json_data")
+                if json_data is not None:
+                    update_obs["json_data"] = json.loads(json_data)
+            except Exception as e:
+                current_app.logger.warning("[update_observation] json_data ", e)
+                raise GeonatureApiError(e)
 
-        try:
-            json_data = update_data.get("json_data")
-            if json_data is not None:
-                update_obs["json_data"] = json.loads(json_data)
-        except Exception as e:
-            current_app.logger.warning("[update_observation] json_data ", e)
-            raise GeonatureApiError(e)
-
-        ObservationModel.query.filter_by(id_observation=update_data.get("id_observation")).update(
-            update_obs, synchronize_session="fetch"
-        )
+        observation_to_update.update(update_obs, synchronize_session="fetch")
 
         try:
             # Delete selected existing media
