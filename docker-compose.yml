@@ -2,7 +2,6 @@ version: "3.4"
 
 services:
   frontend:
-    container_name: citizen-front
     depends_on:
       backend:
         condition: service_healthy
@@ -12,10 +11,9 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - citizen-kane
+      - kane
 
   backend:
-    container_name: citizen-back
     depends_on:
       db:
         condition: service_healthy
@@ -26,10 +24,9 @@ services:
       retries: 5
       start_period: 20s
     networks:
-      - citizen-kane
+      - kane
 
   db:
-    container_name: citizen-db
     image: postgis/postgis:14-master
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
@@ -37,7 +34,7 @@ services:
       - POSTGRES_USER=${DB_USER:-dbuser}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-dbpwd}
     volumes:
-      - citizen_data:/var/lib/postgresql/data/pgdata
+      - data:/var/lib/postgresql/data/pgdata
     healthcheck:      
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dbuser} -d ${DB_NAME:-dbname} -h 127.0.0.1"]     
       interval: 5s
@@ -45,20 +42,19 @@ services:
       retries: 3
       start_period: 20s
     networks:
-      - citizen-kane
+      - kane
 
   nginx:
-    container_name: citizen-nginx
     depends_on:
       frontend:
         condition: service_healthy
     volumes:
       - ./config/backoffice_htpasswd:/etc/nginx/conf/.htpasswd
     networks:
-      - citizen-kane
+      - kane
 
 networks:
-  citizen-kane:
+  kane:
     external: false
 volumes:
-  citizen_data:
+  data:
