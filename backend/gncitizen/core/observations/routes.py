@@ -27,8 +27,12 @@ from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from .admin import ObservationView
-from .models import (INVALIDATION_STATUSES, ObservationMediaModel,
-                     ObservationModel, ValidationStatus)
+from .models import (
+    INVALIDATION_STATUSES,
+    ObservationMediaModel,
+    ObservationModel,
+    ValidationStatus,
+)
 
 # from sqlalchemy import func
 
@@ -957,8 +961,9 @@ def update_observation():
     )
 
     # Only observation observer and validator can update observation
-    if observation_to_update.one().id_role != current_user.id_user and not current_user.validator:
-        
+    if (
+        observation_to_update.one().id_role != current_user.id_user and not current_user.validator
+    ) or not current_user.admin:
         abort(403, "unauthorized")
 
     try:
