@@ -56,7 +56,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+.env.*
 
 # next.js build output
 .next
@@ -190,7 +190,6 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv
