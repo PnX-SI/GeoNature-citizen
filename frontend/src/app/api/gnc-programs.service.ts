@@ -199,6 +199,7 @@ export class GncProgramsService implements OnInit {
     }
 
     getMedias(params): Observable<MediaList> {
+        Object.keys(params).forEach(key => params[key] === undefined ? delete params[key] : {});
         return this.http.get<MediaList>(`${this.URL}/medias`, {
             params,
         });

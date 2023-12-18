@@ -24,7 +24,7 @@ export class ObservationsService {
     }
 
     getNotValidatedObservations() {
-        let params = { validation_process: true, exclude_status: 'VALIDATED' }
+        let params = { validation_process: 'true', exclude_status: 'VALIDATED' }
         let url = `${MainConfig.API_ENDPOINT}/observations`;
         return this.http.get(url, { params });
     }
