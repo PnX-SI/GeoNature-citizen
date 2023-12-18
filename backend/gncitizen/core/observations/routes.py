@@ -27,12 +27,8 @@ from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from .admin import ObservationView
-from .models import (
-    INVALIDATION_STATUSES,
-    ObservationMediaModel,
-    ObservationModel,
-    ValidationStatus,
-)
+from .models import (INVALIDATION_STATUSES, ObservationMediaModel,
+                     ObservationModel, ValidationStatus)
 
 # from sqlalchemy import func
 
@@ -156,6 +152,10 @@ def format_observations_dashboards(observations):
     except Exception as e:
         return {"message": str(e)}, 500
 
+    query_programs = db.session.query(ProgramsModel.id_program, ProgramsModel.title)
+    programs = {program.id_program: program.title for program in query_programs}
+    print(f"PROGRAMSTEST {programs}")
+
     for observation in observations:
         feature = get_geojson_feature(observation.ObservationModel.geom)
         name = observation.ObservationModel.municipality
@@ -191,10 +191,8 @@ def format_observations_dashboards(observations):
                     else observation_dict[k]
                 )
         # Program
-        program_dict = observation.ProgramsModel.as_dict(True)
-        for program in program_dict:
-            if program == "title":
-                feature["properties"]["program_title"] = program_dict[program]
+        # program_dict = observation.ProgramsModel.as_dict(True)
+        feature["properties"]["program_title"] = programs[observation.ProgramsModel.id_program]
         # TaxRef
         try:
             for taxon_rep in taxon_repository:
@@ -340,8 +338,8 @@ def get_observations():
             .join(
                 UserModel,
                 ObservationModel.id_role == UserModel.id_user,
-                # full=True,
-                isouter=True,
+                full=True,
+                # isouter=True,
             )
             .group_by(
                 ObservationModel.id_observation,
