@@ -266,3 +266,6 @@ data/tmp
 # Backoffice secure access:
 config/backoffice_access
 config/backoffice_htpasswd
+
+# local makefiles
+local.mk
