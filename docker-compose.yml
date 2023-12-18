@@ -39,7 +39,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dbuser} -d ${DB_NAME:-dbname} -h 127.0.0.1"]     
       interval: 5s
       timeout: 5s
-      retries: 3
+      retries: 5
       start_period: 20s
     networks:
       - kane
