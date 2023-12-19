@@ -2,6 +2,7 @@
     <div class="row">
         <div class="col-lg-12">
             <observations-to-validate
+                *ngIf="observations"
                 [observations]="observations"
                 (deleteObs)="openDeleteModal(deleteModal, $event)"
                 (validateObs)="openValidateModal(validateModal, $event)"
