@@ -55,7 +55,6 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     role_id: number;
     isValidator: boolean = false;
     username: string = null;
-    userObservations: FeatureCollection;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -165,31 +164,6 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                 });
         }
         this.username = localStorage.getItem('username');
-
-        if (access_token) {
-            this.auth
-                .ensureAuthorized()
-                .pipe(
-                    tap((user) => {
-                        if (
-                            user &&
-                            user['features'] &&
-                            user['features']['id_role']
-                        ) {
-                            this.role_id = user['features']['id_role'];
-                        }
-                    }),
-                    catchError((err) => throwError(err))
-                )
-                .subscribe((user) => {
-                    this.isValidator = user["features"]["validator"]
-                    this.userService.getObservationsByUserId(
-                        this.role_id
-                    ).subscribe((userObservations: FeatureCollection) => {
-                        this.userObservations = userObservations
-                    });
-                });
-        }
     }
 
     @HostListener('document:NewObservationEvent', ['$event'])

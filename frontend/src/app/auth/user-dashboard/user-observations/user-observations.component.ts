@@ -31,7 +31,6 @@ export class UserObsComponent extends ObsComponent implements OnInit {
     userDashboard = true;
 
     ngOnInit() {
-        this.userObservations = this.myObs
         this.breakpointObserver
             .observe(['(min-width: 700px)'])
             .subscribe((state: BreakpointState) => {
