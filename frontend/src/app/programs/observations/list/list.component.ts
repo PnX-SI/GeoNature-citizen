@@ -45,6 +45,7 @@ export class ObsListComponent implements OnChanges {
     selectedTaxon: TaxonomyListItem = null;
     selectedMunicipality: any = null;
     selectedValidationStatus: any = null;
+    username: string = null;
     changes$ = new BehaviorSubject<SimpleChanges>(null);
     observations$ = new BehaviorSubject<Feature[]>(null);
     features$ = merge(
@@ -98,6 +99,8 @@ export class ObsListComponent implements OnChanges {
 
             });
         }
+
+        this.username = localStorage.getItem('username');
     }
 
     // @HostListener("document:NewObservationEvent", ["$event"])

@@ -118,28 +118,28 @@
                         &nbsp;
                         <span
                             (click)="onValidateClick(o)"
-                            [ngStyle]="{ 'cursor': o.properties.readOnly ? 'not-allowed' :  'pointer'}"
+                            [ngStyle]="{ 'cursor': o.properties.observer.username == username ? 'not-allowed' :  'pointer'}"
                         >
                             <i
                                 *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
                                 class="fa fa-hourglass-half text-warning"
                                 aria-hidden="true"
                                 placement="bottom"
-                                ngbTooltip="Non validée{{o.properties.readOnly ? ' - Validation par un tiers requise' : ''}}"
+                                ngbTooltip="Non validée{{o.properties.observer.username == username ? ' - Validation par un tiers requise' : ''}}"
                             ></i>
                             <i
                                 *ngIf="o.properties.validation_status && o.properties.validation_status === 'INVALID'"
                                 class="fa fa-question-circle text-danger"
                                 aria-hidden="true"
                                 placement="bottom"
-                                ngbTooltip="Invalide{{o.properties.readOnly ? ' - Validation par un tiers requise' : ''}}"
+                                ngbTooltip="Invalide{{o.properties.observer.username == username ? ' - Validation par un tiers requise' : ''}}"
                             ></i>
                             <i
                                 *ngIf="o.properties.validation_status && o.properties.validation_status === 'NON_VALIDATABLE'"
                                 class="fa fa-times-circle text-danger"
                                 aria-hidden="true"
                                 placement="bottom"
-                                ngbTooltip="Non validable{{o.properties.readOnly ? ' - Validation par un tiers requise' : ''}}"
+                                ngbTooltip="Non validable{{o.properties.observer.username == username ? ' - Validation par un tiers requise' : ''}}"
                             ></i>
                         </span>
 

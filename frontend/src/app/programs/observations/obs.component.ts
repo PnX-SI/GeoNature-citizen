@@ -54,6 +54,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     modalRef: NgbModalRef;
     role_id: number;
     isValidator: boolean = false;
+    username: string = null;
     userObservations: FeatureCollection;
 
     constructor(
@@ -152,6 +153,22 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         if (access_token) {
             this.auth
                 .ensureAuthorized()
+                .subscribe((user) => {
+                    if (
+                        user &&
+                        user['features'] &&
+                        user['features']['id_role']
+                    ) {
+                        this.isValidator = user["features"]["validator"]
+
+                    }
+                });
+        }
+        this.username = localStorage.getItem('username');
+
+        if (access_token) {
+            this.auth
+                .ensureAuthorized()
                 .pipe(
                     tap((user) => {
                         if (
@@ -212,7 +229,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     }
 
     canValidateObservation(): boolean {
-        return this.isValidator && this.obsToValidate.properties.validation_status != "VALIDATED" && !this.userObservations.features.map(o => o.properties.id_observation).includes(this.obsToValidate.properties.id_observation)
+        return this.isValidator && this.obsToValidate.properties.validation_status != "VALIDATED" && this.obsToValidate.properties.observer.username !== this.username
     }
 
     closeModal(observationId: number = null) {
