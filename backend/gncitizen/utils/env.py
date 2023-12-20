@@ -45,7 +45,7 @@ def valid_api_url(url):
     return url
 
 
-def load_config(config_file=None):
+def load_config():
     """Load the geonature-citizen configuration from a given file"""
     config_gnc = load_toml(get_config_file_path())
     config_gnc["FLASK_ADMIN_FLUID_LAYOUT"] = True
