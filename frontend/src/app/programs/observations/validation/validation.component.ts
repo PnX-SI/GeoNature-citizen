@@ -1,10 +1,10 @@
 import { Component, LOCALE_ID, Inject, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { throwError, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import * as L from 'leaflet';
 import * as _ from 'lodash';
-import { FeatureCollection, Feature } from 'geojson';
+import { FeatureCollection } from 'geojson';
 import {
     debounceTime,
     distinctUntilChanged,
@@ -24,6 +24,8 @@ import { UserService } from '../../../auth/user-dashboard/user.service.service';
 const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
 const taxonSelectInputThreshold = MainConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold = MainConfig.taxonAutocompleteInputThreshold;
+const taxonDisplayImageWhenUnique = MainConfig.taxonDisplayImageWhenUnique;
+
 type TempTaxa = {
     cd_nom: number;
     nom_francais: string;
@@ -49,6 +51,7 @@ export class ValidationComponent implements OnInit {
     surveySpecies$: Observable<TaxonomyList>;
     taxonSelectInputThreshold = taxonSelectInputThreshold;
     taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
+    taxonDisplayImageWhenUnique = taxonDisplayImageWhenUnique;
     taxa: TaxonomyList;
     taxaCount: number;
     species: Object[] = [];
@@ -67,7 +70,7 @@ export class ValidationComponent implements OnInit {
         @Inject(LOCALE_ID) readonly localeId: string,
         private programService: GncProgramsService,
         private userService: UserService,
-    ) {}
+    ) { }
 
     ngOnInit() {
         this.userService.getInvalidationStatuses().subscribe((statuses) => {
@@ -77,7 +80,7 @@ export class ValidationComponent implements OnInit {
         const map = L.map('validateMap', {
             gestureHandling: true,
         } as any);
-        setTimeout(() => {map.invalidateSize()}, 0);  // Leaflet map is bigger than its modal container, the observation is then decentered. Invalidate its size allow it to consider its width.
+        setTimeout(() => { map.invalidateSize() }, 0);  // Leaflet map is bigger than its modal container, the observation is then decentered. Invalidate its size allow it to consider its width.
         L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'OpenStreetMap',
         }).addTo(map);
@@ -143,10 +146,10 @@ export class ValidationComponent implements OnInit {
                         icon:
                             this.taxa[taxon]['medias'].length >= 1
                                 ?
-                                  MainConfig.API_TAXHUB +
-                                  '/tmedias/thumbnail/' +
-                                  this.taxa[taxon]['medias'][0]['id_media'] +
-                                  '?h=20'
+                                MainConfig.API_TAXHUB +
+                                '/tmedias/thumbnail/' +
+                                this.taxa[taxon]['medias'][0]['id_media'] +
+                                '?h=20'
                                 : 'assets/default_image.png',
                     });
                 }
@@ -163,17 +166,17 @@ export class ValidationComponent implements OnInit {
                 term === '' // term.length < n
                     ? []
                     : this.species
-                          .filter(
-                              (v) =>
-                                  v['name']
-                                      .toLowerCase()
-                                      .indexOf(term.toLowerCase()) > -1
-                          )
-                          .slice(0, taxonAutocompleteMaxResults)
+                        .filter(
+                            (v) =>
+                                v['name']
+                                    .toLowerCase()
+                                    .indexOf(term.toLowerCase()) > -1
+                        )
+                        .slice(0, taxonAutocompleteMaxResults)
             )
         );
 
-    inputAutoCompleteFormatter = (taxon: { name: string}) => {
+    inputAutoCompleteFormatter = (taxon: { name: string }) => {
         this.onTaxonSelected(taxon, false)
         return taxon.name
     };

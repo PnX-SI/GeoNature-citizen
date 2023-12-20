@@ -177,16 +177,10 @@
       </trans-unit>
       <trans-unit id="register" datatype="html">
         <source>Créez votre compte</source><target state="new">Register</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/auth/register/register.component.html</context>
-          <context context-type="linenumber">2</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
-          <context context-type="linenumber">143</context>
-        </context-group>
+        
+        
         <note priority="1" from="description">Create account</note>
-      </trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/auth/register/register.component.html</context><context context-type="linenumber">2</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/core/topbar/topbar.component.html</context><context context-type="linenumber">154</context></context-group></trans-unit>
       <trans-unit id="emailNotValid" datatype="html">
         <source>
             Impossible de valider votre email.
@@ -355,7 +349,7 @@
         
         
         <note priority="1" from="description">login</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/auth/login/login.component.html</context><context context-type="linenumber">2</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/auth/login/login.component.html</context><context context-type="linenumber">152</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/core/topbar/topbar.component.html</context><context context-type="linenumber">136</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/auth/login/login.component.html</context><context context-type="linenumber">2</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/auth/login/login.component.html</context><context context-type="linenumber">152</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/core/topbar/topbar.component.html</context><context context-type="linenumber">147</context></context-group></trans-unit>
       <trans-unit id="yourEmail" datatype="html">
         <source>Votre Email</source><target state="new">Votre Email</target>
         <context-group purpose="location">
@@ -445,7 +439,7 @@
         <source>Date de l'observation</source><target state="new">Date de l'observation</target>
         
         <note priority="1" from="description">observation date</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">136</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">136</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">140</context></context-group></trans-unit>
       <trans-unit id="expectedDateFormat" datatype="html">
         <source>jj/mm/aaaa</source><target state="new">jj/mm/aaaa</target>
         
@@ -467,13 +461,13 @@
         <source>Commentaire</source><target state="new">Commentaire</target>
         
         <note priority="1" from="description">Comment Input Label</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">187</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">187</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">161</context></context-group></trans-unit>
       <trans-unit id="commentInputPlaceholder" datatype="html">
         <source>Votre commentaire</source><target state="new">Votre commentaire</target>
         
         <note priority="1" from="description">
                         Comment Input Placeholder</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">192</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">192</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">168</context></context-group></trans-unit>
       <trans-unit id="existingPhotos" datatype="html">
         <source>Photos existantes (cocher pour supprimer)</source><target state="new">Photos existantes (cocher pour supprimer)</target>
         
@@ -511,7 +505,7 @@
         
         <note priority="1" from="description">
                         Zooming instruction</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">259</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context><context context-type="linenumber">28</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">259</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context><context context-type="linenumber">28</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">154</context></context-group></trans-unit>
       <trans-unit id="clickOnMapInstruction" datatype="html">
         <source>Cliquez sur la carte pour renseigner le lieu précis de
                     votre observation</source><target state="new">Cliquez sur la carte pour renseigner le lieu précis de
@@ -548,24 +542,18 @@
     </source><target state="new">
         MODIFIER L'OBSERVATION
     </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
-          <context context-type="linenumber">6</context>
-        </context-group>
+        
         <note priority="1" from="description">Update obs</note>
-      </trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context><context context-type="linenumber">6</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/obs.component.html</context><context context-type="linenumber">73</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/obs.component.html</context><context context-type="linenumber">73</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/obs.component.html</context><context context-type="linenumber">73</context></context-group></trans-unit>
       <trans-unit id="validObsBtn" datatype="html">
         <source>
         Valider l'observation
     </source><target state="new">
         Valider l'observation
     </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
-          <context context-type="linenumber">46</context>
-        </context-group>
+        
         <note priority="1" from="description">Valid obs btn</note>
-      </trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context><context context-type="linenumber">46</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">210</context></context-group></trans-unit>
       <trans-unit id="updateObsBtn" datatype="html">
         <source>
         Modifier l'observation
@@ -584,12 +572,9 @@
     </source><target state="new">
         Annuler
     </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context>
-          <context context-type="linenumber">59</context>
-        </context-group>
+        
         <note priority="1" from="description">Cancel</note>
-      </trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/modalflow/steps/committed/committed.component.html</context><context context-type="linenumber">59</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">213</context></context-group></trans-unit>
       <trans-unit id="congrats" datatype="html">
         <source>Félicitations !</source><target state="new">Félicitations !</target>
         <context-group purpose="location">
@@ -663,14 +648,25 @@
         <note priority="1" from="description">
                         All municipalities select
                         option</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/list/list.component.html</context><context context-type="linenumber">39</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/list/list.component.html</context><context context-type="linenumber">40</context></context-group></trans-unit><trans-unit id="allValidationStatusSelectOption" datatype="html">
+        <source>
+                    all validation statuses
+                </source><target state="new">
+                    all validation statuses
+                </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+        <note priority="1" from="description">All validation status select option</note>
+      </trans-unit>
       <trans-unit id="myObs" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>Mes <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Observations
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>Mes <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Observations<x id="START_TAG_SPAN_1" ctype="x-span" equiv-text="&lt;span>"/> à valider <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>
             </source><target state="new"><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>Mes <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>Observations
             </target>
         
         <note priority="1" from="description">My obs</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/list/list.component.html</context><context context-type="linenumber">49</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/list/list.component.html</context><context context-type="linenumber">67</context></context-group></trans-unit>
       <trans-unit id="zoomingWarning" datatype="html">
         <source>Veuillez zoomer pour localiser votre observation.</source><target state="new">Veuillez zoomer pour localiser votre observation.</target>
         
@@ -713,21 +709,12 @@
       <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">127</context></context-group></trans-unit>
       <trans-unit id="logout" datatype="html">
         <source>Se déconnecter</source><target state="new">Sign out</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/auth/logout/logout.component.html</context>
-          <context context-type="linenumber">3</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/auth/logout/logout.component.html</context>
-          <context context-type="linenumber">16</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
-          <context context-type="linenumber">126</context>
-        </context-group>
+        
+        
+        
         <note priority="1" from="description">logout</note>
         <note priority="1" from="meaning">logout</note>
-      </trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/auth/logout/logout.component.html</context><context context-type="linenumber">3</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/auth/logout/logout.component.html</context><context context-type="linenumber">16</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/core/topbar/topbar.component.html</context><context context-type="linenumber">137</context></context-group></trans-unit>
       <trans-unit id="home" datatype="html">
         <source>Accueil</source><target state="new">Home</target>
         <context-group purpose="location">
@@ -753,15 +740,19 @@
           <context context-type="linenumber">86</context>
         </context-group>
         <note priority="1" from="description">admin</note>
-      </trans-unit>
-      <trans-unit id="myDasboardLink" datatype="html">
-        <source>Mon tableau de bord</source><target state="new">Mon tableau de bord</target>
+      </trans-unit><trans-unit id="validation" datatype="html">
+        <source>Validation</source><target state="new">Validation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/core/topbar/topbar.component.html</context>
-          <context context-type="linenumber">102</context>
+          <context context-type="linenumber">97</context>
         </context-group>
-        <note priority="1" from="description">my Dasboard Link</note>
+        <note priority="1" from="description">validation</note>
       </trans-unit>
+      <trans-unit id="myDasboardLink" datatype="html">
+        <source>My dashboard</source><target state="new">My dashboard</target>
+        
+        <note priority="1" from="description">my Dasboard Link</note>
+      <context-group purpose="location"><context context-type="sourcefile">app/core/topbar/topbar.component.html</context><context context-type="linenumber">113</context></context-group></trans-unit>
       <trans-unit id="myBadges" datatype="html">
         <source>Mes badges</source><target state="new">Mes badges</target>
         <context-group purpose="location">
