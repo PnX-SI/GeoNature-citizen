@@ -3,6 +3,7 @@
 
 """A module to manage taxonomy"""
 
+from threading import Thread
 from typing import Dict, List, Union
 
 import requests
@@ -147,4 +148,5 @@ def refresh_taxonlist() -> Dict:
     return taxhub_full_lists
 
 
-refresh_taxonlist()
+daemon = Thread(target=refresh_taxonlist, daemon=True, name="Monitor")
+daemon.start()
