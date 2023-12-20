@@ -410,7 +410,7 @@ def logged_user():
                 }:
                     setattr(user, data, request_data[data])
             if "newPassword" in request_data:
-                user.password = UserModel.generate_hash(request_data["newPassword"])
+                user.password = request_data["newPassword"]
             user.admin = is_admin
             user.update()
             return (
@@ -484,7 +484,6 @@ def reset_user_password():
         )
 
     passwd = uuid.uuid4().hex[0:6]
-    passwd_hash = UserModel.generate_hash(passwd)
 
     subject = current_app.config["RESET_PASSWD"]["SUBJECT"]
     to = user.email
@@ -498,7 +497,7 @@ def reset_user_password():
     
     try:
         send_user_email(subject, from_addr, to, plain_message=plain_message, html_message=html_message)
-        user.password = passwd_hash
+        user.password = passwd
         db.session.commit()
         return (
             {"message": "Check your email, you credentials have been updated."},

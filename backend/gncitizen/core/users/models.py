@@ -7,6 +7,7 @@ from utils_flask_sqla_geo.serializers import serializable
 from gncitizen.core.commons.models import ProgramsModel, TimestampMixinModel, TModules
 from server import db
 
+from sqlalchemy import event
 
 class RevokedTokenModel(db.Model):
     __tablename__ = "t_revoked_tokens"
@@ -29,6 +30,7 @@ class RevokedTokenModel(db.Model):
 class UserModel(TimestampMixinModel, db.Model):
     """
     Table des utilisateurs
+    Note: Le mot de passe est haché à chaque mise à jour de la valeur par l'évènement hash_user_password déclaré ci-après
     """
 
     __tablename__ = "t_users"
@@ -108,6 +110,13 @@ class UserModel(TimestampMixinModel, db.Model):
     #     except:
     #         return {'message': 'Something went wrong'}
 
+
+@event.listens_for(UserModel.password, 'set', retval=True)
+def hash_user_password(target, value, oldvalue, initiator):
+    """Evenement qui hash le mot de passe systèmatiquement"""
+    if value != oldvalue:
+        return UserModel.generate_hash(value)
+    return value
 
 class GroupsModel(db.Model):
     """Table des groupes d'utilisateurs"""
