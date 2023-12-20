@@ -39,15 +39,4 @@ export class ObsToValidateComponent extends ObsComponent implements OnInit {
     @Output() validateObs = new EventEmitter();
     validationDashboard = true;
 
-    ngOnInit() {
-        this.breakpointObserver
-            .observe(['(min-width: 700px)'])
-            .subscribe((state: BreakpointState) => {
-                if (state.matches) {
-                    this.isMobile = false;
-                } else {
-                    this.isMobile = true;
-                }
-            });
-    }
 }

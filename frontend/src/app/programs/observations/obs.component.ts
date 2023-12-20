@@ -97,61 +97,62 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                     this.isMobile = true;
                 }
             });
-
-        this.route.data.subscribe((data: { programs: Program[] }) => {
-            console.log('DATA', data)
-            this.programs = data.programs;
-            this.program = this.programs.find(
-                (p) => p.id_program == this.program_id
-            );
-            this.taxonomyListID = this.program.taxonomy_list;
-            forkJoin([
-                this.programService.getProgramObservations(this.program_id),
-                this.programService.getProgramTaxonomyList(
-                    this.program.taxonomy_list
-                ),
-                this.programService.getProgram(this.program_id),
-            ]).subscribe(([observations, taxa, program]) => {
-                this.observations = observations;
-                this.surveySpecies = taxa;
-                this.programFeature = program;
+        if (this.program_id) {
+            this.route.data.subscribe((data: { programs: Program[] }) => {
+                console.log('DATA', data)
+                this.programs = data.programs;
+                this.program = this.programs.find(
+                    (p) => p.id_program == this.program_id
+                );
+                this.taxonomyListID = this.program.taxonomy_list;
+                forkJoin([
+                    this.programService.getProgramObservations(this.program_id),
+                    this.programService.getProgramTaxonomyList(
+                        this.program.taxonomy_list
+                    ),
+                    this.programService.getProgram(this.program_id),
+                ]).subscribe(([observations, taxa, program]) => {
+                    this.observations = observations;
+                    this.surveySpecies = taxa;
+                    this.programFeature = program;
+                });
+                this.titleService.setTitle(
+                    this.MainConfig.appName + ' - ' + this.program.title
+                );
+                this.metaTagService.updateTag({
+                    name: 'description',
+                    content: this.program.short_desc,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:title',
+                    content: MainConfig.appName + ' - ' + this.program.title,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:description',
+                    content: this.program.short_desc,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:image',
+                    content: this.program.image,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:url',
+                    content: MainConfig.URL_APPLICATION + this.router.url,
+                });
+                this.metaTagService.updateTag({
+                    property: 'twitter:title',
+                    content: MainConfig.appName + ' - ' + this.program.title,
+                });
+                this.metaTagService.updateTag({
+                    property: 'twitter:description',
+                    content: this.program.short_desc,
+                });
+                this.metaTagService.updateTag({
+                    property: 'twitter:image',
+                    content: this.program.image,
+                });
             });
-            this.titleService.setTitle(
-                this.MainConfig.appName + ' - ' + this.program.title
-            );
-            this.metaTagService.updateTag({
-                name: 'description',
-                content: this.program.short_desc,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:title',
-                content: MainConfig.appName + ' - ' + this.program.title,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:description',
-                content: this.program.short_desc,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:image',
-                content: this.program.image,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:url',
-                content: MainConfig.URL_APPLICATION + this.router.url,
-            });
-            this.metaTagService.updateTag({
-                property: 'twitter:title',
-                content: MainConfig.appName + ' - ' + this.program.title,
-            });
-            this.metaTagService.updateTag({
-                property: 'twitter:description',
-                content: this.program.short_desc,
-            });
-            this.metaTagService.updateTag({
-                property: 'twitter:image',
-                content: this.program.image,
-            });
-        });
+        }
 
         const access_token = localStorage.getItem('access_token');
         if (access_token) {
@@ -182,15 +183,6 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         };
     }
 
-    // @HostListener("document:ObservationFilterEvent", ["$event"])
-    // observationFilterEventHandler(e: CustomEvent) {
-    // e.stopPropagation();
-    // console.log("FOURTR", this.obsList)
-    // this.obsList.observations = {
-    // type: "FeatureCollection",
-    // features: this.observations.features
-    // };
-    // }
 
     addObsClicked() {
         this.modalFlow.first.clicked();
