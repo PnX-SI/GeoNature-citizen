@@ -6,7 +6,7 @@ import { MainConfig } from '../../../conf/main.config';
     providedIn: 'root',
 })
 export class ObservationsService {
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     updateObservation(formData) {
         let url = `${MainConfig.API_ENDPOINT}/observations`;
@@ -24,8 +24,9 @@ export class ObservationsService {
     }
 
     getNotValidatedObservations() {
-        let url = `${MainConfig.API_ENDPOINT}/observations?exclude_status=VALIDATED`;
-        return this.http.get(url);
+        let params = { validation_process: 'true', exclude_status: 'VALIDATED' }
+        let url = `${MainConfig.API_ENDPOINT}/observations`;
+        return this.http.get(url, { params });
     }
 
     getObservation(observationId: number) {

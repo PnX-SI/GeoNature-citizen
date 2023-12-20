@@ -17,9 +17,9 @@ port = app.config["API_PORT"] if app.config.get("API_PORT", False) else 5002
 def main():
     print(
         f"""
-    ####################################################
-    STARTING GeoNature-Citizen version {__version__}
-    ####################################################
+####################################################
+STARTING GeoNature-Citizen version {__version__}
+####################################################
     """
     )
     app.run(host="0.0.0.0", port=port)

@@ -1,0 +1,55 @@
+<div class="mediaGalery overflow-auto">
+    <div *ngIf="hasMedia; else noMedia" class="row text-center text-lg-start">
+        <div *ngFor="let m of media" class="col-lg-3 col-md-4 col-6 p-1 img-container">
+            <img class="" [src]="API_ENDPOINT+ '/media/' + m.filename" [alt]="m.title" [ngbTooltip]="m.name" />
+            <div (click)="showPhoto(m)" class="overlay p-1">
+                <span><a [href]="m.data_url">{{ m.name }} le {{ m.date | date: 'longDate' }}</a> par @{{
+                    m.observer
+                    }}
+                </span>
+            </div>
+        </div>
+
+    </div>
+    <ng-template #noMedia>
+        <div class="row">
+            <div class="col col-12 text-center text-lg-start" style="position: absolute;top:100px">
+                <ng-container i18n="No medias@@NoMediasInfo">Aucune photo</ng-container>
+            </div>
+        </div>
+    </ng-template>
+</div>
+
+<div *ngIf="clickedPhoto" class="modal fade" id="photoModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    {{ clickedPhoto.name }} le
+                    {{ clickedPhoto.date | date: 'longDate' }} par @{{
+                    clickedPhoto.observer
+                    }}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img [src]="
+                    API_ENDPOINT+'/media/' +
+                        clickedPhoto.filename
+                    " style="width: 100%; height: 100%" />
+                <p class="card-text">
+                    <small class="text-muted">{{
+                        clickedPhoto?.obs_txt
+                        }}</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" i18n="close modal@@closeModal">
+                    Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

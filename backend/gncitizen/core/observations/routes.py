@@ -7,31 +7,32 @@ from enum import Enum
 from typing import Dict, Tuple, Union
 
 # from datetime import datetime
-import requests
-from flask import Blueprint, current_app, json, request, send_from_directory, abort
+from flask import Blueprint, abort, current_app, json, request
 from flask_jwt_extended import jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
+from gncitizen.core.commons.models import MediaModel, ProgramsModel
+from gncitizen.core.users.models import UserModel
+from gncitizen.utils.env import admin
+from gncitizen.utils.errors import GeonatureApiError
+from gncitizen.utils.geo import get_municipality_id_from_wkb
+from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
+from gncitizen.utils.mail_check import send_user_email
+from gncitizen.utils.media import save_upload_files
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom, taxhub_full_lists
+from server import db
 from shapely.geometry import Point, asShape
 from sqlalchemy import desc, func
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.generic import get_geojson_feature
 
-from gncitizen.core.commons.models import MediaModel, ProgramsModel
-from gncitizen.core.users.models import UserModel
-from gncitizen.utils.env import MEDIA_DIR, admin, taxhub_lists_url
-from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.geo import (
-    get_municipality_id_from_wkb
-)
-from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
-from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository, taxhub_rest_get_all_lists
-from server import db
-from gncitizen.utils.mail_check import send_user_email
-
 from .admin import ObservationView
-from .models import ObservationMediaModel, ObservationModel, ValidationStatus, INVALIDATION_STATUSES
+from .models import (
+    INVALIDATION_STATUSES,
+    ObservationMediaModel,
+    ObservationModel,
+    ValidationStatus,
+)
 
 # from sqlalchemy import func
 
@@ -79,9 +80,7 @@ def generate_observation_geojson(id_observation):
             ObservationModel,
             UserModel.username,
         )
-        .join(
-            UserModel, ObservationModel.id_role == UserModel.id_user, full=True
-        )
+        .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         .filter(ObservationModel.id_observation == id_observation)
     ).one()
 
@@ -90,21 +89,16 @@ def generate_observation_geojson(id_observation):
         .filter(ObservationModel.id_observation == id_observation)
         .join(
             ObservationMediaModel,
-            ObservationMediaModel.id_data_source
-            == ObservationModel.id_observation,
+            ObservationMediaModel.id_data_source == ObservationModel.id_observation,
         )
-        .join(
-            MediaModel, ObservationMediaModel.id_media == MediaModel.id_media
-        )
+        .join(MediaModel, ObservationMediaModel.id_media == MediaModel.id_media)
         .all()
     )
 
     result_dict = observation.ObservationModel.as_dict(True)
     result_dict["observer"] = {"username": observation.username}
     name = observation.ObservationModel.municipality
-    result_dict["municipality"] = {
-        "name": name
-    }
+    result_dict["municipality"] = {"name": name}
 
     # Populate "geometry"
     features = []
@@ -113,7 +107,9 @@ def generate_observation_geojson(id_observation):
     # Populate "properties"
     for k in result_dict:
         if k in obs_keys:
-            feature["properties"][k] = result_dict[k].name if isinstance(result_dict[k], Enum) else result_dict[k]
+            feature["properties"][k] = (
+                result_dict[k].name if isinstance(result_dict[k], Enum) else result_dict[k]
+            )
 
     feature["properties"]["photos"] = [
         {
@@ -125,13 +121,11 @@ def generate_observation_geojson(id_observation):
     ]
 
     taxhub_list_id = (
-        ProgramsModel.query.filter_by(
-            id_program=observation.ObservationModel.id_program
-        )
+        ProgramsModel.query.filter_by(id_program=observation.ObservationModel.id_program)
         .one()
         .taxonomy_list
     )
-    taxon_repository = mkTaxonRepository(taxhub_list_id)
+    taxon_repository = taxhub_full_lists[taxhub_list_id]
     try:
         taxon = next(
             taxon
@@ -153,31 +147,26 @@ def format_observations_dashboards(observations):
             taxon_repository = []
             taxhub_list_id = []
             for observation in observations:
-                if (
-                    observation.ProgramsModel.taxonomy_list
-                    not in taxhub_list_id
-                ):
-                    taxhub_list_id.append(
-                        observation.ProgramsModel.taxonomy_list
-                    )
+                if observation.ProgramsModel.taxonomy_list not in taxhub_list_id:
+                    taxhub_list_id.append(observation.ProgramsModel.taxonomy_list)
             for tax_list in taxhub_list_id:
-                taxon_repository.append(mkTaxonRepository(tax_list))
+                taxon_repository.append(taxhub_full_lists[tax_list])
 
         features = []
     except Exception as e:
         return {"message": str(e)}, 500
 
+    query_programs = db.session.query(ProgramsModel.id_program, ProgramsModel.title)
+    programs = {program.id_program: program.title for program in query_programs}
+    print(f"PROGRAMSTEST {programs}")
+
     for observation in observations:
         feature = get_geojson_feature(observation.ObservationModel.geom)
         name = observation.ObservationModel.municipality
-        feature["properties"]["municipality"] = {
-            "name": name
-        }
+        feature["properties"]["municipality"] = {"name": name}
 
         # Observer
-        feature["properties"]["observer"] = {
-            "username": observation.username
-        }
+        feature["properties"]["observer"] = {"username": observation.username}
         # Observer submitted media
         feature["properties"]["image"] = (
             "/".join(
@@ -200,25 +189,20 @@ def format_observations_dashboards(observations):
         observation_dict = observation.ObservationModel.as_dict(True)
         for k in observation_dict:
             if k in obs_keys and k != "municipality":
-                feature["properties"][k] = observation_dict[k].name if isinstance(observation_dict[k], Enum) else observation_dict[k]
+                feature["properties"][k] = (
+                    observation_dict[k].name
+                    if isinstance(observation_dict[k], Enum)
+                    else observation_dict[k]
+                )
         # Program
-        program_dict = observation.ProgramsModel.as_dict(True)
-        for program in program_dict:
-            if program == "title":
-                feature["properties"]["program_title"] = program_dict[
-                    program
-                ]
+        # program_dict = observation.ProgramsModel.as_dict(True)
+        feature["properties"]["program_title"] = programs[observation.ProgramsModel.id_program]
         # TaxRef
         try:
             for taxon_rep in taxon_repository:
                 for taxon in taxon_rep:
-                    if (
-                        taxon["taxref"]["cd_nom"]
-                        == observation.ObservationModel.cd_nom
-                    ):
-                        feature["properties"]["nom_francais"] = taxon[
-                            "nom_francais"
-                        ]
+                    if taxon["taxref"]["cd_nom"] == observation.ObservationModel.cd_nom:
+                        feature["properties"]["nom_francais"] = taxon["nom_francais"]
                         feature["properties"]["taxref"] = taxon["taxref"]
                         feature["properties"]["medias"] = taxon["medias"]
 
@@ -263,10 +247,8 @@ def get_observation(pk):
                 ProgramsModel,
                 UserModel.username,
                 func.json_agg(
-                    func.json_build_array(
-                        MediaModel.filename, MediaModel.id_media
-                    )
-                ).label("images")
+                    func.json_build_array(MediaModel.filename, MediaModel.id_media)
+                ).label("images"),
             )
             .filter(ObservationModel.id_observation == pk)
             .join(
@@ -277,8 +259,7 @@ def get_observation(pk):
             )
             .join(
                 ObservationMediaModel,
-                ObservationMediaModel.id_data_source
-                == ObservationModel.id_observation,
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
                 isouter=True,
             )
             .join(
@@ -299,6 +280,85 @@ def get_observation(pk):
         )
         return {"features": format_observations_dashboards(observations.all())}, 200
     except Exception as e:
+        return {"message": str(e)}, 400
+
+
+@obstax_api.route("/observations", methods=["GET"])
+@json_resp
+@jwt_required(optional=True)
+def get_observations():
+    validation_process = request.args.get("exclude_status", default=False, type=bool)
+    exclude_status_param = request.args.get("exclude_status", default=None, type=str)
+    user = request.args.get("user", default=None, type=int)
+    program = request.args.get("program", default=None, type=int)
+
+    # use_taxhub_param = request.args.get("use_taxhub", default=True, type=lambda value: value.lower() != "false")
+    current_user = get_user_if_exists()
+
+    filters = [ProgramsModel.is_active]
+
+    if validation_process and current_user:
+        filters.append(ObservationModel.id_role != current_user.id_user)
+    if exclude_status_param:
+        try:
+            filters.append(
+                ObservationModel.validation_status != ValidationStatus[exclude_status_param]
+            )
+        except KeyError:
+            pass
+    if user:
+        filters.append(ObservationModel.id_role == user)
+    if program:
+        filters.append(ObservationModel.id_program == program)
+
+    current_app.logger.debug(f"FILTERS {filters}")
+
+    try:
+        observations = (
+            db.session.query(
+                ObservationModel,
+                ProgramsModel,
+                UserModel.username,
+                func.json_agg(
+                    func.json_build_array(MediaModel.filename, MediaModel.id_media)
+                ).label("images"),
+            )
+            .filter(*filters)
+            .join(
+                ProgramsModel,
+                ProgramsModel.id_program == ObservationModel.id_program,
+                isouter=True,
+            )
+            .join(
+                ObservationMediaModel,
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
+                isouter=True,
+            )
+            .join(
+                MediaModel,
+                ObservationMediaModel.id_media == MediaModel.id_media,
+                isouter=True,
+            )
+            .join(
+                UserModel,
+                ObservationModel.id_role == UserModel.id_user,
+                full=True,
+                # isouter=True,
+            )
+            .group_by(
+                ObservationModel.id_observation,
+                ProgramsModel.id_program,
+                UserModel.username,
+            )
+        )
+
+        observations = observations.order_by(desc(ObservationModel.timestamp_create))
+        # current_app.logger.debug(str(observations))
+        return FeatureCollection(format_observations_dashboards(observations.all())), 200
+
+    except Exception as e:
+        raise e
+        current_app.logger.critical("[get_program_observations] Error: %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -366,9 +426,7 @@ def post_observation():
     """
     try:
         request_datas = request.form
-        current_app.logger.debug(
-            "[post_observation] request data:", request_datas
-        )
+        current_app.logger.debug("[post_observation] request data:", request_datas)
         datas2db = {}
         for field in request_datas:
             if hasattr(ObservationModel, field):
@@ -411,11 +469,14 @@ def post_observation():
         # If municipality is not provided: call API_CITY
         if not newobs.municipality:
             newobs.municipality = get_municipality_id_from_wkb(_coordinates)
-        
+
         # If taxon name is not provided: call taxhub
         if not newobs.name:
             taxon = get_specie_from_cd_nom(newobs.cd_nom)
-            newobs.name = taxon.get('nom_vern', '')
+            newobs.name = taxon.get("nom_vern", "")
+
+        if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
+            newobs.validation_status = ValidationStatus.NOT_VALIDATED
 
         if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
             newobs.validation_status = ValidationStatus.NOT_VALIDATED
@@ -436,15 +497,11 @@ def post_observation():
                 newobs.id_observation,
                 ObservationMediaModel,
             )
-            current_app.logger.debug(
-                "[post_observation] ObsTax UPLOAD FILE {}".format(file)
-            )
+            current_app.logger.debug("[post_observation] ObsTax UPLOAD FILE {}".format(file))
             features[0]["properties"]["images"] = file
 
         except Exception as e:
-            current_app.logger.warning(
-                "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
-            )
+            current_app.logger.warning("[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
             # raise GeonatureApiError(e)
 
         return (
@@ -455,112 +512,6 @@ def post_observation():
     except Exception as e:
         current_app.logger.critical("[post_observation] Error: %s", str(e))
         return {"message": str(e)}, 400
-
-
-# @obstax_api.route("/observations", methods=["GET"])
-# @json_resp
-# def get_observations():
-#     """Get all observations
-#         ---
-#         tags:
-#           - observations
-#         definitions:
-#           cd_nom:
-#             type: integer
-#             description: cd_nom taxref
-#           geometry:
-#             type: dict
-#             description: Géométrie de la donnée
-#           name:
-#             type: string
-#           geom:
-#             type: geometry
-#         responses:
-#           200:
-#             description: A list of all observations
-#         """
-#     try:
-#         observations = ObservationModel.query.order_by(
-#             desc(ObservationModel.timestamp_create)
-#         ).all()
-#         features = []
-#         for observation in observations:
-#             feature = get_geojson_feature(observation.geom)
-#             observation_dict = observation.as_dict(True)
-#             for k in observation_dict:
-#                 if k in obs_keys:
-#                     feature["properties"][k] = observation_dict[k]
-
-#             taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-#             for k in taxref:
-#                 feature["properties"][k] = taxref[k]
-#             features.append(feature)
-#         return FeatureCollection(features)
-#     except Exception as e:
-#         current_app.logger.critical("[get_observations] Error: %s", str(e))
-#         return {"message": str(e)}, 400
-
-
-# @obstax_api.route("/observations/lists/<int:id>", methods=["GET"])
-# @json_resp
-# def get_observations_from_list(id):  # noqa: A002
-#     """Get all observations from a taxonomy list
-#     GET
-#         ---
-#         tags:
-#           - observations
-#         parameters:
-#           - name: id
-#             in: path
-#             type: integer
-#             required: true
-#             example: 1
-#         definitions:
-#           cd_nom:
-#             type: integer
-#             description: cd_nom taxref
-#           geometry:
-#             type: dict
-#             description: Géométrie de la donnée
-#           name:
-#             type: string
-#           geom:
-#             type: geometry
-#         responses:
-#           200:
-#             description: A list of all species lists
-#         """
-#     # taxhub_url = load_config()['TAXHUB_API_URL']
-#     taxhub_lists_taxa_url = taxhub_lists_url + "taxons/" + str(id)
-#     rtaxa = requests.get(taxhub_lists_taxa_url)
-#     if rtaxa.status_code == 200:
-#         try:
-#             taxa = rtaxa.json()["items"]
-#             current_app.logger.debug(taxa)
-#             features = []
-#             for t in taxa:
-#                 current_app.logger.debug("R", t["cd_nom"])
-#                 datas = (
-#                     ObservationModel.query.filter_by(cd_nom=t["cd_nom"])
-#                     .order_by(desc(ObservationModel.timestamp_create))
-#                     .all()
-#                 )
-#                 for d in datas:
-#                     feature = get_geojson_feature(d.geom)
-#                     observation_dict = d.as_dict(True)
-#                     for k in observation_dict:
-#                         if k in obs_keys:
-#                             feature["properties"][k] = observation_dict[k]
-#                     taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-#                     for k in taxref:
-#                         feature["properties"][k] = taxref[k]
-#                     features.append(feature)
-#             return FeatureCollection(features)
-#         except Exception as e:
-#             current_app.logger.critical(
-#                 "[get_observations_from_list] Error: %s", str(e)
-#             )
-#             return {"message": str(e)}, 400
 
 
 @obstax_api.route("/programs/<int:program_id>/observations", methods=["GET"])
@@ -613,8 +564,7 @@ def get_program_observations(
             )
             .join(
                 ObservationMediaModel,
-                ObservationMediaModel.id_data_source
-                == ObservationModel.id_observation,
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
                 isouter=True,
             )
             .join(
@@ -634,26 +584,20 @@ def get_program_observations(
             )
         )
 
-        observations = observations.order_by(
-            desc(ObservationModel.timestamp_create)
-        )
+        observations = observations.order_by(desc(ObservationModel.timestamp_create))
         # current_app.logger.debug(str(observations))
         observations = observations.all()
         if current_app.config.get("API_TAXHUB") is not None:
             taxhub_list_id = (
-                ProgramsModel.query.filter_by(id_program=program_id)
-                .one()
-                .taxonomy_list
+                ProgramsModel.query.filter_by(id_program=program_id).one().taxonomy_list
             )
-            taxon_repository = mkTaxonRepository(taxhub_list_id)
+            taxon_repository = taxhub_full_lists[taxhub_list_id]
 
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
             name = observation.ObservationModel.municipality
-            feature["properties"]["municipality"] = {
-                "name": name
-            }
+            feature["properties"]["municipality"] = {"name": name}
 
             # Observer
             feature["properties"]["observer"] = {
@@ -678,14 +622,17 @@ def get_program_observations(
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys and k != "municipality":
-                    feature["properties"][k] = observation_dict[k].name if isinstance(observation_dict[k], Enum) else observation_dict[k]
+                    feature["properties"][k] = (
+                        observation_dict[k].name
+                        if isinstance(observation_dict[k], Enum)
+                        else observation_dict[k]
+                    )
 
             try:
                 taxon = next(
                     taxon
                     for taxon in taxon_repository
-                    if taxon
-                    and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+                    if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
                 )
                 feature["properties"]["nom_francais"] = taxon["nom_francais"]
                 feature["properties"]["taxref"] = taxon["taxref"]
@@ -708,9 +655,7 @@ def get_program_observations(
         # trace = traceback.format_exc()
         # return("<pre>" + trace + "</pre>"), 500
         raise e
-        current_app.logger.critical(
-            "[get_program_observations] Error: %s", str(e)
-        )
+        current_app.logger.critical("[get_program_observations] Error: %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -741,8 +686,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             )
             .join(
                 ObservationMediaModel,
-                ObservationMediaModel.id_data_source
-                == ObservationModel.id_observation,
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
                 isouter=True,
             )
             .join(
@@ -762,24 +706,23 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             )
         )
 
-        observations = observations.order_by(
-            desc(ObservationModel.timestamp_create)
-        )
+        observations = observations.order_by(desc(ObservationModel.timestamp_create))
+        # current_app.logger.debug(str(observations))
         observations = observations.all()
 
         # loop to retrieve taxonomic data from all programs
         taxon_repository = []
         if current_app.config.get("API_TAXHUB") is not None:  # and use_taxhub_param:
-            programs = db.session.query(ProgramsModel).filter(ProgramsModel.id_program.in_(
-                {observation.ObservationModel.id_program for observation in observations}
-            ))
+            programs = db.session.query(ProgramsModel).filter(
+                ProgramsModel.id_program.in_(
+                    {observation.ObservationModel.id_program for observation in observations}
+                )
+            )
 
             processed_taxhub_ids = []
             for program in programs:
                 taxhub_list_id = (
-                    ProgramsModel.query.filter_by(
-                        id_program=program.id_program
-                    )
+                    ProgramsModel.query.filter_by(id_program=program.id_program)
                     .one()
                     .taxonomy_list
                 )
@@ -788,7 +731,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
                     continue
                 processed_taxhub_ids.append(taxhub_list_id)
 
-                taxon_data = mkTaxonRepository(taxhub_list_id)
+                taxon_data = taxhub_full_lists[taxhub_list_id]
                 try:
                     for taxon in taxon_data:
                         if taxon not in taxon_repository:
@@ -800,14 +743,10 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
             name = observation.ObservationModel.municipality
-            feature["properties"]["municipality"] = {
-                "name": name
-            }
+            feature["properties"]["municipality"] = {"name": name}
 
             # Observer
-            feature["properties"]["observer"] = {
-                "username": observation.username
-            }
+            feature["properties"]["observer"] = {"username": observation.username}
 
             # Observer submitted media
             feature["properties"]["image"] = (
@@ -826,14 +765,17 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys and k != "municipality":
-                    feature["properties"][k] = observation_dict[k].name if isinstance(observation_dict[k], Enum) else observation_dict[k]
+                    feature["properties"][k] = (
+                        observation_dict[k].name
+                        if isinstance(observation_dict[k], Enum)
+                        else observation_dict[k]
+                    )
 
             try:
                 taxon = next(
                     taxon
                     for taxon in taxon_repository
-                    if taxon
-                    and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+                    if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
                 )
                 feature["properties"]["taxref"] = taxon["taxref"]
                 feature["properties"]["medias"] = taxon["medias"]
@@ -855,9 +797,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         # trace = traceback.format_exc()
         # return("<pre>" + trace + "</pre>"), 500
         raise e
-        current_app.logger.critical(
-            "[get_program_observations] Error: %s", str(e)
-        )
+        current_app.logger.critical("[get_program_observations] Error: %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -865,9 +805,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
 @json_resp
 def get_validation_statuses():
     return (
-        {
-            status.name: status.value for status in ValidationStatus
-        },
+        {status.name: status.value for status in ValidationStatus},
         200,
     )
 
@@ -908,10 +846,8 @@ def get_observations_by_user_id(user_id):
                 ProgramsModel,
                 UserModel.username,
                 func.json_agg(
-                    func.json_build_array(
-                        MediaModel.filename, MediaModel.id_media
-                    )
-                ).label("images")
+                    func.json_build_array(MediaModel.filename, MediaModel.id_media)
+                ).label("images"),
             )
             .filter(ObservationModel.id_role == user_id)
             .join(
@@ -922,8 +858,7 @@ def get_observations_by_user_id(user_id):
             )
             .join(
                 ObservationMediaModel,
-                ObservationMediaModel.id_data_source
-                == ObservationModel.id_observation,
+                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
                 isouter=True,
             )
             .join(
@@ -943,92 +878,77 @@ def get_observations_by_user_id(user_id):
             )
         )
 
-        observations = observations.order_by(
-            desc(ObservationModel.timestamp_create)
-        )
+        observations = observations.order_by(desc(ObservationModel.timestamp_create))
         # current_app.logger.debug(str(observations))
-        return FeatureCollection(format_observations_dashboards(observations.all())), 200
+        observations = observations.all()
 
-    except Exception as e:
-        raise e
-        current_app.logger.critical(
-            "[get_program_observations] Error: %s", str(e)
-        )
-        return {"message": str(e)}, 400
-
-
-@obstax_api.route("/observations", methods=["GET"])
-@json_resp
-@jwt_required()
-def get_observations():
-    exclude_status_param = request.args.get("exclude_status", default="")
-    # use_taxhub_param = request.args.get("use_taxhub", default=True, type=lambda value: value.lower() != "false")
-
-    filters = [ProgramsModel.is_active]
-    if exclude_status_param:
         try:
-            current_user = get_user_if_exists()
-            filters.append(
-                ObservationModel.id_role != current_user.id_user
-            )
-            filters.append(
-                ObservationModel.validation_status != ValidationStatus[exclude_status_param]
-            )
-        except KeyError:
-            pass
+            if current_app.config.get("API_TAXHUB") is not None:
+                taxon_repository = []
+                taxhub_list_id = []
+                for observation in observations:
+                    if observation.ProgramsModel.taxonomy_list not in taxhub_list_id:
+                        taxhub_list_id.append(observation.ProgramsModel.taxonomy_list)
+                for tax_list in taxhub_list_id:
+                    taxon_repository.append(taxhub_full_lists[tax_list])
 
-    try:
-        observations = (
-            db.session.query(
-                ObservationModel,
-                ProgramsModel,
-                UserModel.username,
-                func.json_agg(
-                    func.json_build_array(
-                        MediaModel.filename, MediaModel.id_media
-                    )
-                ).label("images")
-            )
-            .filter(*filters)
-            .join(
-                ProgramsModel,
-                ProgramsModel.id_program == ObservationModel.id_program,
-                isouter=True,
-            )
-            .join(
-                ObservationMediaModel,
-                ObservationMediaModel.id_data_source
-                == ObservationModel.id_observation,
-                isouter=True,
-            )
-            .join(
-                MediaModel,
-                ObservationMediaModel.id_media == MediaModel.id_media,
-                isouter=True,
-            )
-            .join(
-                UserModel,
-                ObservationModel.id_role == UserModel.id_user,
-                full=True,
-            )
-            .group_by(
-                ObservationModel.id_observation,
-                ProgramsModel.id_program,
-                UserModel.username,
-            )
-        )
+            features = []
+        except Exception as e:
+            return {"message": str(e)}, 500
 
-        observations = observations.order_by(
-            desc(ObservationModel.timestamp_create)
-        )
-        # current_app.logger.debug(str(observations))
-        return FeatureCollection(format_observations_dashboards(observations.all())), 200
+        for observation in observations:
+            feature = get_geojson_feature(observation.ObservationModel.geom)
+            name = observation.ObservationModel.municipality
+            feature["properties"]["municipality"] = {"name": name}
+
+            # Observer
+            feature["properties"]["observer"] = {"username": observation.username}
+            # Observer submitted media
+            feature["properties"]["image"] = (
+                "/".join(
+                    [
+                        "/api",
+                        current_app.config["MEDIA_FOLDER"],
+                        observation.images[0][0],
+                    ]
+                )
+                if observation.images and observation.images != [[None, None]]
+                else None
+            )
+            # Photos
+            feature["properties"]["photos"] = [
+                {"url": "/media/{}".format(filename), "id_media": id_media}
+                for filename, id_media in observation.images
+                if id_media is not None
+            ]
+            # Municipality
+            observation_dict = observation.ObservationModel.as_dict(True)
+            for k in observation_dict:
+                if k in obs_keys and k != "municipality":
+                    feature["properties"][k] = observation_dict[k]
+            # Program
+            program_dict = observation.ProgramsModel.as_dict(True)
+            for program in program_dict:
+                if program == "title":
+                    feature["properties"]["program_title"] = program_dict[program]
+            # TaxRef
+            try:
+                for taxon_rep in taxon_repository:
+                    for taxon in taxon_rep:
+                        if taxon["taxref"]["cd_nom"] == observation.ObservationModel.cd_nom:
+                            feature["properties"]["nom_francais"] = taxon["nom_francais"]
+                            feature["properties"]["taxref"] = taxon["taxref"]
+                            feature["properties"]["medias"] = taxon["medias"]
+
+            except StopIteration:
+                pass
+            features.append(feature)
+
+        return FeatureCollection(features), 200
 
     except Exception as e:
         raise e
-        current_app.logger.critical(
-            "[get_program_observations] Error: %s", str(e)
-        )
+        current_app.logger.critical("[get_program_observations] Error: %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -1076,11 +996,8 @@ def update_observation():
             id_media_to_delete = json.loads(update_data.get("delete_media", "[]"))
             if len(id_media_to_delete):
                 db.session.query(ObservationMediaModel).filter(
-                    ObservationMediaModel.id_media.in_(
-                        tuple(id_media_to_delete)
-                    ),
-                    ObservationMediaModel.id_data_source
-                    == update_data.get("id_observation"),
+                    ObservationMediaModel.id_media.in_(tuple(id_media_to_delete)),
+                    ObservationMediaModel.id_data_source == update_data.get("id_observation"),
                 ).delete(synchronize_session="fetch")
                 db.session.query(MediaModel).filter(
                     MediaModel.id_media.in_(tuple(id_media_to_delete))
@@ -1097,16 +1014,16 @@ def update_observation():
                 update_data.get("id_observation"),
                 ObservationMediaModel,
             )
-            current_app.logger.debug(
-                "[post_observation] ObsTax UPLOAD FILE {}".format(file)
-            )
+            current_app.logger.debug("[post_observation] ObsTax UPLOAD FILE {}".format(file))
 
         except Exception as e:
-            current_app.logger.warning(
-                "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
-            )
+            current_app.logger.warning("[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
             # raise GeonatureApiError(e)
-        obs_validation = "non_validatable_status" in update_data and "report_observer" in update_data and "id_validator" in update_data
+        obs_validation = (
+            "non_validatable_status" in update_data
+            and "report_observer" in update_data
+            and "id_validator" in update_data
+        )
         non_validatable_status = update_data.get("non_validatable_status")
         if obs_validation:
             if not current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
@@ -1116,7 +1033,9 @@ def update_observation():
             obs_to_update_obj = observation_to_update.one()
             new_validation_status = ValidationStatus.VALIDATED
             if non_validatable_status:
-                status = [s for s in INVALIDATION_STATUSES if s["value"] == non_validatable_status][0]
+                status = [
+                    s for s in INVALIDATION_STATUSES if s["value"] == non_validatable_status
+                ][0]
                 new_validation_status = ValidationStatus[status["link"]]
 
             obs_to_update_obj.validation_status = new_validation_status
@@ -1125,7 +1044,12 @@ def update_observation():
 
         if obs_validation and update_data.get("report_observer").lower() == "true":
             if non_validatable_status:
-                message = status["twice"] if status["twice"] and obs_to_update_obj.validation_status.name == status["link"] else status["mail"]
+                message = (
+                    status["twice"]
+                    if status["twice"]
+                    and obs_to_update_obj.validation_status.name == status["link"]
+                    else status["mail"]
+                )
             elif update_data.get("cd_nom") != observation_to_update.one().cd_nom:
                 message = f"Nous avons bien reçu votre photo, merci beaucoup pour votre participation. Il s'avère que l'espèce que vous avez observée est un[e] {update_data.get('name')}."
             else:
@@ -1141,10 +1065,7 @@ def update_observation():
                 )
             except Exception as e:
                 current_app.logger.warning("send validation_email failed. %s", str(e))
-                return {
-                    "message": """ send validation_email failed: "{}".""".format(str(e))
-                }, 400
-
+                return {"message": """ send validation_email failed: "{}".""".format(str(e))}, 400
 
         return ("observation updated successfully"), 200
     except Exception as e:
@@ -1165,8 +1086,8 @@ def delete_observation(id_obs):
                 ObservationModel.id_role == current_user.id_user,
             ).delete()
             db.session.commit()
-            return ("observation deleted successfully"), 200
+            return {"message": "observation deleted successfully"}, 200
         else:
-            return ("delete unauthorized"), 403
+            return {"message": "delete unauthorized"}, 403
     except Exception as e:
         return {"message": str(e)}, 500

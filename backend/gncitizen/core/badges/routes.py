@@ -2,20 +2,16 @@ from calendar import monthrange
 from datetime import datetime, timedelta
 
 from flask import Blueprint, current_app, jsonify
-from sqlalchemy.sql.expression import func
-from utils_flask_sqla.response import json_resp
-
-from gncitizen.core.commons.models import ProgramsModel
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
+from sqlalchemy.sql.expression import func
 
 badges_api = Blueprint("badges", __name__)
 
 
 @badges_api.route("/rewards/<int:id>", methods=["GET"])
 def get_rewards(id):
-
     total_obs = 0
     program_scores = []
     taxon_scores = []
@@ -28,19 +24,19 @@ def get_rewards(id):
         .group_by(ObservationModel.id_program)
         .values(
             ObservationModel.id_program.label("id"),
-            func.count(ObservationModel.id_program).label("nb_obs")
+            func.count(ObservationModel.id_program).label("nb_obs"),
         )
     )
     for item in scores_query:
         program_scores.append({"id_program": item.id, "nb_obs": item.nb_obs})
         total_obs = total_obs + item.nb_obs
-    
+
     taxon_query = (
         ObservationModel.query.filter(ObservationModel.id_role == id)
         .group_by(ObservationModel.cd_nom)
         .values(
             ObservationModel.cd_nom,
-            func.count(ObservationModel.cd_nom).label("nb_obs")
+            func.count(ObservationModel.cd_nom).label("nb_obs"),
         )
     )
 
@@ -48,8 +44,8 @@ def get_rewards(id):
     families = {}
     for query in taxon_query:
         taxon = get_specie_from_cd_nom(cd_nom=query.cd_nom)
-        class_ = taxon.get('classe', '')
-        family = taxon.get('famille', '')
+        class_ = taxon.get("classe", "")
+        family = taxon.get("famille", "")
         if classes.get(class_) is not None:
             classes[class_] += query.nb_obs
         else:
@@ -58,7 +54,7 @@ def get_rewards(id):
             families[family] += query.nb_obs
         else:
             families[family] = query.nb_obs
-    
+
     for class_, total in classes.items():
         taxon_scores.append({"classe": class_, "nb_obs": total})
     for family, total in families.items():
@@ -67,12 +63,9 @@ def get_rewards(id):
     user = UserModel.query.filter(UserModel.id_user == id).one()
     result = user.as_secured_dict(True)
     user_date_create = result["timestamp_create"]
-    user_date_create = datetime.strptime(
-        user_date_create, "%Y-%m-%dT%H:%M:%S.%f"
-    )
+    user_date_create = datetime.strptime(user_date_create, "%Y-%m-%dT%H:%M:%S.%f")
 
     for reward in rewards:
-
         if reward["type"] == "all_attendance":
             id = 1
             for badge in reward["badges"]:
@@ -166,22 +159,3 @@ def monthdelta(d1, d2):
         else:
             break
     return delta
-
-
-@badges_api.route("/stats", methods=["GET"])
-@json_resp
-def get_stat():
-    try:
-        stats = {}
-        stats["nb_obs"] = ObservationModel.query.count()
-        stats["nb_user"] = UserModel.query.count()
-        stats["nb_program"] = ProgramsModel.query.filter(
-            ProgramsModel.is_active == True
-        ).count()
-        stats["nb_espece"] = ObservationModel.query.distinct(
-            ObservationModel.cd_nom
-        ).count()
-        return (stats, 200)
-    except Exception as e:
-        current_app.logger.critical("[get_observations] Error: %s", str(e))
-        return {"message": str(e)}, 400

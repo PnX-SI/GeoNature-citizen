@@ -1,9 +1,6 @@
 import base64
 import os
-import smtplib
 import uuid
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 import flask
 import requests
@@ -15,20 +12,15 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
 )
-from sqlalchemy import func, or_
-from sqlalchemy.exc import IntegrityError
-from utils_flask_sqla.response import json_resp
-
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import admin_required, get_user_if_exists
-from gncitizen.utils.mail_check import (
-    confirm_token,
-    confirm_user_email,
-    send_user_email,
-)
+from gncitizen.utils.mail_check import confirm_token, confirm_user_email, send_user_email
 from server import db
+from sqlalchemy import func, or_
+from sqlalchemy.exc import IntegrityError
+from utils_flask_sqla.response import json_resp
 
 from .models import RevokedTokenModel, UserModel
 
@@ -84,10 +76,7 @@ def registration():
             "HCAPTCHA_SECRET_KEY" in current_app.config
             and current_app.config["HCAPTCHA_SECRET_KEY"] is not None
         ):
-            if (
-                not "captchaToken" in request_datas
-                or request_datas["captchaToken"] is None
-            ):
+            if "captchaToken" not in request_datas or request_datas["captchaToken"] is None:
                 return (
                     {"message": "Veuillez confirmer que vous êtes un humain."},
                     400,
@@ -97,9 +86,7 @@ def registration():
                 "response": request_datas["captchaToken"],
                 "secret": current_app.config["HCAPTCHA_SECRET_KEY"],
             }
-            response = requests.post(
-                "https://hcaptcha.com/siteverify", data=params
-            )
+            response = requests.post("https://hcaptcha.com/siteverify", data=params)
             captchaResponse = response.json()
 
             if not captchaResponse["success"]:
@@ -111,11 +98,9 @@ def registration():
                 datas_to_save[data] = request_datas[data]
 
         # Hashed password
-        datas_to_save["password"] = UserModel.generate_hash(
-            request_datas["password"]
-        )
+        datas_to_save["password"] = UserModel.generate_hash(request_datas["password"])
 
-        if current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"] == False:
+        if not current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"]:
             datas_to_save["active"] = True
 
         # Protection against admin creation from API
@@ -123,9 +108,7 @@ def registration():
         if "extention" in request_datas and "avatar" in request_datas:
             extention = request_datas["extention"]
             imgdata = base64.b64decode(
-                request_datas["avatar"].replace(
-                    "data:image/" + extention + ";base64,", ""
-                )
+                request_datas["avatar"].replace("data:image/" + extention + ";base64,", "")
             )
             filename = "avatar_" + request_datas["username"] + "." + extention
             datas_to_save["avatar"] = filename
@@ -146,19 +129,11 @@ def registration():
 
             if UserModel.find_by_username(newuser.username):
                 return (
-                    {
-                        "message": """L'utilisateur "{}" existe déjà.""".format(
-                            newuser.username
-                        )
-                    },
+                    {"message": """L'utilisateur "{}" existe déjà.""".format(newuser.username)},
                     400,
                 )
 
-            elif (
-                db.session.query(UserModel)
-                .filter(UserModel.email == newuser.email)
-                .one()
-            ):
+            elif db.session.query(UserModel).filter(UserModel.email == newuser.email).one():
                 return (
                     {"message": "Un email correspondant est déjà enregistré."},
                     400,
@@ -176,14 +151,9 @@ def registration():
             handler.close()
 
         try:
-            if (
-                current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"]
-                is False
-            ):
+            if current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"] is False:
                 message = (
-                    """Félicitations, l'utilisateur "{}" a été créé.""".format(
-                        newuser.username
-                    ),
+                    """Félicitations, l'utilisateur "{}" a été créé.""".format(newuser.username),
                 )
                 confirm_user_email(newuser, with_confirm_link=False)
             else:
@@ -273,25 +243,18 @@ def login():
             refresh_token = create_refresh_token(identity=identifier)
             return (
                 {
-                    "message": """Connecté en tant que "{}".""".format(
-                        identifier
-                    ),
+                    "message": """Connecté en tant que "{}".""".format(identifier),
                     "email": current_user.email,
-                    "username": current_user.as_secured_dict(True).get(
-                        "username"
-                    ),
-                    "userAvatar": current_user.as_secured_dict(True).get(
-                        "avatar"
-                    ),
+                    "username": current_user.as_secured_dict(True).get("username"),
+                    "userAvatar": current_user.as_secured_dict(True).get("avatar"),
                     "access_token": access_token,
                     "refresh_token": refresh_token,
+                    "isValidator": current_user.validator,
                 },
                 200,
             )
         else:
-            return {
-                "message": """Mauvaises informations d'identification"""
-            }, 400
+            return {"message": """Mauvaises informations d'identification"""}, 400
     except Exception as e:
         return {"message": str(e)}, 400
 
@@ -397,9 +360,7 @@ def logged_user():
             # base stats, to enhance as we go
             result = user.as_secured_dict(True)
             result["stats"] = {
-                "platform_attendance": db.session.query(
-                    func.count(ObservationModel.id_role)
-                )
+                "platform_attendance": db.session.query(func.count(ObservationModel.id_role))
                 .filter(ObservationModel.id_role == user.id_user)
                 .one()[0]
             }
@@ -413,16 +374,12 @@ def logged_user():
 
         if flask.request.method == "PATCH":
             is_admin = user.admin or False
-            current_app.logger.debug(
-                "[logged_user] Update current user personnal data"
-            )
+            current_app.logger.debug("[logged_user] Update current user personnal data")
             request_data = dict(request.get_json())
             if "extention" in request_data and "avatar" in request_data:
                 extention = request_data["extention"]
                 imgdata = base64.b64decode(
-                    request_data["avatar"].replace(
-                        "data:image/" + extention + ";base64,", ""
-                    )
+                    request_data["avatar"].replace("data:image/" + extention + ";base64,", "")
                 )
                 filename = "avatar_" + user.username + "." + extention
                 request_data["avatar"] = filename
@@ -439,9 +396,7 @@ def logged_user():
                         )
                     )
                 try:
-                    handler = open(
-                        os.path.join(str(MEDIA_DIR), str(filename)), "wb+"
-                    )
+                    handler = open(os.path.join(str(MEDIA_DIR), str(filename)), "wb+")
                     handler.write(imgdata)
                     handler.close()
                 except Exception as e:
@@ -458,9 +413,7 @@ def logged_user():
                 }:
                     setattr(user, data, request_data[data])
             if "newPassword" in request_data:
-                user.password = UserModel.generate_hash(
-                    request_data["newPassword"]
-                )
+                user.password = UserModel.generate_hash(request_data["newPassword"])
             user.admin = is_admin
             user.update()
             return (
@@ -503,28 +456,18 @@ def delete_user():
     current_user = get_user_if_exists()
     if current_user:
         username = current_user.username
-        current_app.logger.debug(
-            "[delete_user] current user is {}".format(username)
-        )
+        current_app.logger.debug("[delete_user] current user is {}".format(username))
         try:
-            db.session.query(UserModel).filter(
-                UserModel.id_user == current_user.id_user
-            ).delete()
+            db.session.query(UserModel).filter(UserModel.id_user == current_user.id_user).delete()
             db.session.commit()
-            current_app.logger.debug(
-                "[delete_user] user {} succesfully deleted".format(username)
-            )
+            current_app.logger.debug("[delete_user] user {} succesfully deleted".format(username))
         except Exception as e:
             db.session.rollback()
-            raise GeonatureApiError(e)
+            raise GeonatureApiError(e) from e
             return {"message": str(e)}, 400
 
         return (
-            {
-                "message": """Account "{}" have been successfully deleted""".format(
-                    username
-                )
-            },
+            {"message": f"Account '{username}' have been successfully deleted"},
             200,
         )
 
@@ -539,11 +482,7 @@ def reset_user_password():
         user = UserModel.query.filter_by(email=email).one()
     except Exception:
         return (
-            {
-                "message": """L'email "{}" n'est pas enregistré.""".format(
-                    email
-                )
-            },
+            {"message": f"L'email '{email}' n'est pas enregistré."},
             400,
         )
 
@@ -560,27 +499,17 @@ def reset_user_password():
     )
 
     try:
-        send_user_email(
-            subject, to, plain_message=plain_message, html_message=html_message
-        )
+        send_user_email(subject, to, plain_message=plain_message, html_message=html_message)
         user.password = passwd_hash
         db.session.commit()
         return (
-            {
-                "message": "Check your email, you credentials have been updated."
-            },
+            {"message": "Check your email, you credentials have been updated."},
             200,
         )
     except Exception as e:
-        current_app.logger.warning(
-            "reset_password: failled to send new credentials. %s", str(e)
-        )
+        current_app.logger.warning("reset_password: failled to send new credentials. %s", str(e))
         return (
-            {
-                "message": """Echec d'envoi des informations de connexion: "{}".""".format(
-                    str(e)
-                )
-            },
+            {"message": """Echec d'envoi des informations de connexion: "{}".""".format(str(e))},
             500,
         )
 

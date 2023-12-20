@@ -1,36 +1,31 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
-import json
-
 from flask import Blueprint, current_app, request, send_from_directory
+from flask_admin.contrib.fileadmin import FileAdmin
 from geojson import FeatureCollection
-from sqlalchemy import and_, distinct
-from sqlalchemy.sql import func
-from utils_flask_sqla.response import json_resp
-
-from gncitizen.core.commons.admin import (
-    CustomFormView,
-    GeometryView,
-    ProgramView,
-    ProjectView,
-    UserView,
-)
-from gncitizen.core.observations.models import ObservationModel
+from gncitizen.core.observations.models import ObservationMediaModel, ObservationModel
 from gncitizen.core.sites.admin import SiteTypeView
 from gncitizen.core.sites.models import (
     CorProgramSiteTypeModel,
+    MediaOnVisitModel,
     SiteModel,
     SiteTypeModel,
     VisitModel,
 )
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin
+from gncitizen.utils.helpers import set_media_links
 from server import db
+from sqlalchemy import and_, case, distinct
+from sqlalchemy.sql import func
+from utils_flask_sqla.response import json_resp
 
+from .admin import CustomFormView, GeometryView, ProgramView, ProjectView, UserView
 from .models import (
     CustomFormModel,
     GeometryModel,
+    MediaModel,
     ProgramsModel,
     ProjectModel,
     TModules,
@@ -38,11 +33,9 @@ from .models import (
 
 commons_api = Blueprint("commons", __name__)
 
-
+admin.add_view(FileAdmin(MEDIA_DIR, "/api/media/", name="Medias"))
 admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
-admin.add_view(
-    ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes")
-)
+admin.add_view(ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes"))
 admin.add_view(
     GeometryView(
         GeometryModel,
@@ -59,21 +52,13 @@ admin.add_view(
         category="Enquêtes",
     )
 )
-admin.add_view(
-    SiteTypeView(
-        SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes"
-    )
-)
-admin.add_view(
-    ProgramView(
-        ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"
-    )
-)
+admin.add_view(SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes"))
+admin.add_view(ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"))
 
 
-@commons_api.route("media/<item>")
-def get_media(item):
-    return send_from_directory(str(MEDIA_DIR), item)
+@commons_api.route("media/<filename>")
+def get_media(filename):
+    return send_from_directory(str(MEDIA_DIR), filename)
 
 
 @commons_api.route("/modules/<int:pk>", methods=["GET"])
@@ -132,12 +117,8 @@ def get_stat():
         stats = {}
         stats["nb_obs"] = ObservationModel.query.count()
         stats["nb_user"] = UserModel.query.count()
-        stats["nb_program"] = ProgramsModel.query.filter(
-            ProgramsModel.is_active == True
-        ).count()
-        stats["nb_espece"] = ObservationModel.query.distinct(
-            ObservationModel.cd_nom
-        ).count()
+        stats["nb_program"] = ProgramsModel.query.filter(ProgramsModel.is_active).count()
+        stats["nb_espece"] = ObservationModel.query.distinct(ObservationModel.cd_nom).count()
         return (stats, 200)
     except Exception as e:
         current_app.logger.critical("[get_observations] Error: %s", str(e))
@@ -237,24 +218,16 @@ def get_project_stats(pk):
             func.count(distinct(SiteModel.id_site)).label("sites"),
         )
         .select_from(ProjectModel)
-        .join(
-            ProgramsModel, ProgramsModel.id_project == ProjectModel.id_project
-        )
+        .join(ProgramsModel, ProgramsModel.id_project == ProjectModel.id_project)
         .outerjoin(
             ObservationModel,
             ObservationModel.id_program == ProgramsModel.id_program,
         )
         .outerjoin(SiteModel, SiteModel.id_program == ProgramsModel.id_program)
         .outerjoin(VisitModel, VisitModel.id_site == SiteModel.id_site)
-        .filter(
-            and_(
-                ProjectModel.id_project == pk, ProgramsModel.is_active == True
-            )
-        )
+        .filter(and_(ProjectModel.id_project == pk, ProgramsModel.is_active))
     )
-    current_app.logger.debug(
-        f"Query {type(query.first())} {dir(query.first())}"
-    )
+    current_app.logger.debug(f"Query {type(query.first())} {dir(query.first())}")
     return query.first()._asdict()
 
 
@@ -276,9 +249,7 @@ def get_program(pk):
         description: A list of all programs
     """
     # try:
-    datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(
-        1
-    )
+    datas = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
     if datas.count() != 1:
         current_app.logger.warning("[get_program] Program not found")
         return {"message": "Program not found"}, 400
@@ -288,9 +259,7 @@ def get_program(pk):
             feature = data.get_geofeature()
             # Get sites types for sites programs. TODO condition
             if feature["properties"]["module"]["name"] == "sites":
-                site_types_qs = CorProgramSiteTypeModel.query.filter_by(
-                    id_program=pk
-                )
+                site_types_qs = CorProgramSiteTypeModel.query.filter_by(id_program=pk)
                 site_types = [
                     {
                         "value": st.site_type.id_typesite,
@@ -417,3 +386,88 @@ def get_programs():
     except Exception as e:
         current_app.logger.critical("[get_programs] error : %s", str(e))
         return {"message": str(e)}, 400
+
+
+@commons_api.route("/medias", methods=["GET"])
+@json_resp
+def get_medias():
+    # Filters
+    id_program = request.args.get("id_program")
+    id_role = request.args.get("id_role")
+    cd_nom = request.args.get("cd_nom")
+    id_observation = request.args.get("id_observation")
+    id_observer = request.args.get("id_observer")
+    id_visit = request.args.get("id_visit")
+    id_site = request.args.get("id_site")
+    no_pagination = request.args.get("no_pagination", default=False, type=bool)
+    page_size = request.args.get("page_size", default=100, type=int)
+    page = request.args.get("page", default=1, type=int)
+
+    qs = (
+        MediaModel.query.outerjoin(ObservationMediaModel)
+        .outerjoin(ObservationModel)
+        .outerjoin(MediaOnVisitModel)
+        .outerjoin(VisitModel)
+        .outerjoin(SiteModel)
+        .outerjoin(
+            ProgramsModel,
+            func.coalesce(ObservationModel.id_program, SiteModel.id_program)
+            == ProgramsModel.id_program,
+        )
+        .filter(
+            (func.coalesce(ObservationModel.id_observation, MediaOnVisitModel.id_data_source))
+            != None
+        )
+        .with_entities(
+            MediaModel.id_media,
+            MediaModel.filename,
+            (
+                func.coalesce(ObservationModel.id_observation, MediaOnVisitModel.id_data_source)
+            ).label("id_data_source"),
+            ObservationModel.cd_nom,
+            func.coalesce(ObservationModel.name, SiteModel.name).label("name"),
+            func.coalesce(ObservationModel.obs_txt, VisitModel.obs_txt).label("observer"),
+            func.coalesce(ObservationModel.id_role, VisitModel.id_role).label("id_observer"),
+            func.coalesce(ObservationModel.date, VisitModel.date).label("date"),
+            SiteModel.id_site,
+            ProgramsModel.title.label("program"),
+            ProgramsModel.id_program.label("id_program"),
+            case(
+                (ObservationMediaModel.id_media != None, "observations"),
+                (MediaOnVisitModel.id_media != None, "sites"),
+            ).label("type_program"),
+        )
+    )
+
+    if id_program:
+        qs = qs.filter(ProgramsModel.id_program == id_program)
+
+    if id_role:
+        qs = qs.filter(ObservationModel.id_role == id_role)
+
+    if cd_nom:
+        qs = qs.filter(ObservationModel.cd_nom == cd_nom)
+
+    if id_observation:
+        qs = qs.filter(ObservationModel.id_observation == id_observation)
+
+    if id_observer:
+        qs = qs.filter(func.coalesce(ObservationModel.id_role, VisitModel.id_role) == id_observer)
+
+    if id_visit:
+        qs = qs.filter(VisitModel.id_visit == id_visit)
+
+    if id_site:
+        qs = qs.filter(SiteModel.id_site == id_site)
+    if no_pagination:
+        return [set_media_links(media) for media in qs.all()]
+
+    qs = qs.paginate(per_page=page_size, page=page)
+
+    return {
+        "page": qs.page,
+        "pages": qs.pages,
+        "total": qs.total,
+        "page_size": page_size,
+        "items": [set_media_links(media) for media in qs.items],
+    }

@@ -23,6 +23,7 @@ import { GncProgramsService } from '../../api/gnc-programs.service';
 import { ModalFlowService } from './modalflow/modalflow.service';
 import { TaxonomyList } from './observation.model';
 import { ObsMapComponent } from './map/map.component';
+import { MediaGaleryComponent } from '../media-galery/media-galery.component';
 import { ObsListComponent } from './list/list.component';
 import { ModalFlowComponent } from './modalflow/modalflow.component';
 import { ProgramBaseComponent } from '../base/program-base.component';
@@ -44,12 +45,15 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     surveySpecies: TaxonomyList;
     @ViewChild(ObsMapComponent, { static: true }) obsMap: ObsMapComponent;
     @ViewChild(ObsListComponent, { static: true }) obsList: ObsListComponent;
+    @ViewChild(MediaGaleryComponent, { static: true })
+    mediaGalery: MediaGaleryComponent;
     @ViewChildren(ModalFlowComponent) modalFlow: QueryList<ModalFlowComponent>;
 
     selectedObs: Feature;
     public isCollapsed = true;
     isMobile: boolean;
     hideProgramHeader = false;
+    mediaPanel: boolean = false;
     obsToValidate: Feature;
     modalRef: NgbModalRef;
     role_id: number;
@@ -93,60 +97,62 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                     this.isMobile = true;
                 }
             });
-
-        this.route.data.subscribe((data: { programs: Program[] }) => {
-            this.programs = data.programs;
-            this.program = this.programs.find(
-                (p) => p.id_program == this.program_id
-            );
-            this.taxonomyListID = this.program.taxonomy_list;
-            forkJoin([
-                this.programService.getProgramObservations(this.program_id),
-                this.programService.getProgramTaxonomyList(
-                    this.program.taxonomy_list
-                ),
-                this.programService.getProgram(this.program_id),
-            ]).subscribe(([observations, taxa, program]) => {
-                this.observations = observations;
-                this.surveySpecies = taxa;
-                this.programFeature = program;
+        if (this.program_id) {
+            this.route.data.subscribe((data: { programs: Program[] }) => {
+                console.log('DATA', data)
+                this.programs = data.programs;
+                this.program = this.programs.find(
+                    (p) => p.id_program == this.program_id
+                );
+                this.taxonomyListID = this.program.taxonomy_list;
+                forkJoin([
+                    this.programService.getProgramObservations(this.program_id),
+                    this.programService.getProgramTaxonomyList(
+                        this.program.taxonomy_list
+                    ),
+                    this.programService.getProgram(this.program_id),
+                ]).subscribe(([observations, taxa, program]) => {
+                    this.observations = observations;
+                    this.surveySpecies = taxa;
+                    this.programFeature = program;
+                });
+                this.titleService.setTitle(
+                    this.MainConfig.appName + ' - ' + this.program.title
+                );
+                this.metaTagService.updateTag({
+                    name: 'description',
+                    content: this.program.short_desc,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:title',
+                    content: MainConfig.appName + ' - ' + this.program.title,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:description',
+                    content: this.program.short_desc,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:image',
+                    content: this.program.image,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:url',
+                    content: MainConfig.URL_APPLICATION + this.router.url,
+                });
+                this.metaTagService.updateTag({
+                    property: 'twitter:title',
+                    content: MainConfig.appName + ' - ' + this.program.title,
+                });
+                this.metaTagService.updateTag({
+                    property: 'twitter:description',
+                    content: this.program.short_desc,
+                });
+                this.metaTagService.updateTag({
+                    property: 'twitter:image',
+                    content: this.program.image,
+                });
             });
-            this.titleService.setTitle(
-                this.MainConfig.appName + ' - ' + this.program.title
-            );
-            this.metaTagService.updateTag({
-                name: 'description',
-                content: this.program.short_desc,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:title',
-                content: MainConfig.appName + ' - ' + this.program.title,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:description',
-                content: this.program.short_desc,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:image',
-                content: this.program.image,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:url',
-                content: MainConfig.URL_APPLICATION + this.router.url,
-            });
-            this.metaTagService.updateTag({
-                property: 'twitter:title',
-                content: MainConfig.appName + ' - ' + this.program.title,
-            });
-            this.metaTagService.updateTag({
-                property: 'twitter:description',
-                content: this.program.short_desc,
-            });
-            this.metaTagService.updateTag({
-                property: 'twitter:image',
-                content: this.program.image,
-            });
-        });
+        }
 
         const access_token = localStorage.getItem('access_token');
         if (access_token) {
@@ -177,15 +183,6 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         };
     }
 
-    // @HostListener("document:ObservationFilterEvent", ["$event"])
-    // observationFilterEventHandler(e: CustomEvent) {
-    // e.stopPropagation();
-    // console.log("FOURTR", this.obsList)
-    // this.obsList.observations = {
-    // type: "FeatureCollection",
-    // features: this.observations.features
-    // };
-    // }
 
     addObsClicked() {
         this.modalFlow.first.clicked();
@@ -210,10 +207,10 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         if (observationId) {
             this.route.data.subscribe(() => {
                 this.observationsService
-                .getObservation(observationId)
-                .subscribe((updatedObservation: FeatureCollection) => {
-                    this.observations.features[this.observations.features.findIndex(obs => obs.properties.id_observation === observationId)] = updatedObservation.features[0]
-                });
+                    .getObservation(observationId)
+                    .subscribe((updatedObservation: FeatureCollection) => {
+                        this.observations.features[this.observations.features.findIndex(obs => obs.properties.id_observation === observationId)] = updatedObservation.features[0]
+                    });
             });
         }
         this.modalRef.close();

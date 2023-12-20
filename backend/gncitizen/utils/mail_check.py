@@ -6,9 +6,7 @@ from flask import current_app
 from itsdangerous import URLSafeTimedSerializer
 
 
-def send_user_email(
-    subject: str, to: str, plain_message: str = None, html_message: str = None
-):
+def send_user_email(subject: str, to: str, plain_message: str = None, html_message: str = None):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]
@@ -65,7 +63,6 @@ def send_user_email(
 
 
 def confirm_user_email(newuser, with_confirm_link=True):
-
     token = generate_confirmation_token(newuser.email)
     subject = current_app.config["CONFIRM_EMAIL"]["SUBJECT"]
     to = newuser.email
@@ -82,9 +79,7 @@ def confirm_user_email(newuser, with_confirm_link=True):
     # Record the MIME  text/html.
     template = current_app.config["CONFIRM_EMAIL"]["HTML_TEMPLATE"]
     if not with_confirm_link:
-        template = current_app.config["CONFIRM_EMAIL"][
-            "NO_VALIDATION_HTML_TEMPLATE"
-        ]
+        template = current_app.config["CONFIRM_EMAIL"]["NO_VALIDATION_HTML_TEMPLATE"]
     try:
         send_user_email(
             subject,
@@ -94,16 +89,12 @@ def confirm_user_email(newuser, with_confirm_link=True):
 
     except Exception as e:
         current_app.logger.warning("send confirm_email failled. %s", str(e))
-        return {
-            "message": """ send confirm_email failled: "{}".""".format(str(e))
-        }
+        return {"message": """ send confirm_email failled: "{}".""".format(str(e))}
 
 
 def generate_confirmation_token(email):
     serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
-    return serializer.dumps(
-        email, salt=current_app.config["CONFIRM_MAIL_SALT"]
-    )
+    return serializer.dumps(email, salt=current_app.config["CONFIRM_MAIL_SALT"])
 
 
 def confirm_token(token):
@@ -113,6 +104,6 @@ def confirm_token(token):
             token,
             salt=current_app.config["CONFIRM_MAIL_SALT"],
         )
-    except:
-        raise Exception("error token")
+    except Exception as e:
+        current_app.logger.warning("confirm_token failled. %s", str(e))
     return email

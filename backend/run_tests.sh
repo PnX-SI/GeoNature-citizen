@@ -4,7 +4,7 @@
 # running tests. C.f. 'common.py' for SQL query to run.
 
 if [ -z $1 ]; then
-    python -m unittest -v tests/test_*
+    poetry run python -m unittest -v tests/test_*
 else
-    python -m unittest -v $1
+    poetry run python -m unittest -v $1
 fi

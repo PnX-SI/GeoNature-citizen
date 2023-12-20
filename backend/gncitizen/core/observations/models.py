@@ -2,17 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from enum import Enum
+
 from geoalchemy2 import Geometry
+from gncitizen.core.commons.models import MediaModel, ProgramsModel, TimestampMixinModel
+from gncitizen.core.users.models import ObserverMixinModel, UserModel, ValidatorMixinModel
+from server import db
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from utils_flask_sqla_geo.serializers import geoserializable, serializable
-
-from gncitizen.core.commons.models import (
-    MediaModel,
-    ProgramsModel,
-    TimestampMixinModel,
-)
-from gncitizen.core.users.models import ObserverMixinModel, ValidatorMixinModel, UserModel
-from server import db
 
 
 class AdminFormEnum(Enum):
@@ -92,11 +88,11 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     geom = db.Column(Geometry("POINT", 4326))
     json_data = db.Column(JSONB, nullable=True)
 
-    program_ref = db.relationship(
-        "ProgramsModel", backref=db.backref("t_obstax", lazy="dynamic")
-    )
+    program_ref = db.relationship("ProgramsModel", backref=db.backref("t_obstax", lazy="dynamic"))
 
-    validation_status = db.Column(db.Enum(ValidationStatus), default=ValidationStatus.NOT_VALIDATED)
+    validation_status = db.Column(
+        db.Enum(ValidationStatus), default=ValidationStatus.NOT_VALIDATED
+    )
     id_validator = db.Column(
         db.Integer,
         db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
@@ -105,7 +101,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     validator_ref = db.relationship(
         "UserModel",
         backref=db.backref("t_obstax", lazy="dynamic"),
-        foreign_keys="ObservationModel.id_validator"
+        foreign_keys="ObservationModel.id_validator",
     )
 
 

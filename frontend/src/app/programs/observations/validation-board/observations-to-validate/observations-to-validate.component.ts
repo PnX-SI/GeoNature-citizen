@@ -32,22 +32,11 @@ import { ObsMapComponent } from '../../map/map.component';
     ],
     encapsulation: ViewEncapsulation.None,
 })
-export class ObsToValidateComponent extends ObsComponent implements OnInit{
+export class ObsToValidateComponent extends ObsComponent implements OnInit {
     @ViewChild(ObsMapComponent, { static: true }) obsMap: ObsMapComponent;
     @Input('observations') observations;
     @Output() deleteObs = new EventEmitter();
     @Output() validateObs = new EventEmitter();
     validationDashboard = true;
 
-    ngOnInit() {
-        this.breakpointObserver
-            .observe(['(min-width: 700px)'])
-            .subscribe((state: BreakpointState) => {
-                if (state.matches) {
-                    this.isMobile = false;
-                } else {
-                    this.isMobile = true;
-                }
-            });
-    }
 }
