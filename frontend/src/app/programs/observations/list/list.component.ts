@@ -29,7 +29,6 @@ import { UserService } from '../../../auth/user-dashboard/user.service.service';
 })
 export class ObsListComponent implements OnChanges {
     @Input('observations') observations: FeatureCollection;
-    @Input('userObservations') userObservations: FeatureCollection;
     @Input('taxa') surveySpecies: TaxonomyList;
     @Input('displayOwnerActions') displayOwnerActions: boolean = false;
     @Input('displayForm') display_form: boolean;
@@ -45,6 +44,7 @@ export class ObsListComponent implements OnChanges {
     selectedTaxon: TaxonomyListItem = null;
     selectedMunicipality: any = null;
     selectedValidationStatus: any = null;
+    username: string = null;
     changes$ = new BehaviorSubject<SimpleChanges>(null);
     observations$ = new BehaviorSubject<Feature[]>(null);
     features$ = merge(
@@ -65,14 +65,6 @@ export class ObsListComponent implements OnChanges {
         this.changes$.next(changes);
 
         if (this.observations) {
-
-            if (this.userObservations) {
-                this.observations.features.forEach(observation => {
-                    if (this.userObservations.features.map(o => o.properties.id_observation).includes(observation.properties.id_observation)) {
-                        observation.properties.readOnly = true
-                    }
-                });
-            }
             this.observationList = this.observations['features'];
             this.observations$.next(this.observations['features']);
             this.municipalities = this.observations.features
@@ -98,6 +90,8 @@ export class ObsListComponent implements OnChanges {
 
             });
         }
+
+        this.username = localStorage.getItem('username');
     }
 
     // @HostListener("document:NewObservationEvent", ["$event"])

@@ -39,31 +39,15 @@ export class ObsToValidateComponent extends ObsComponent implements OnInit {
     @Output() validateObs = new EventEmitter();
     validationDashboard = true;
 
-    // ngOnInit() {
-    //     const access_token = localStorage.getItem('access_token');
-    //     if (access_token) {
-    //         this.auth
-    //             .ensureAuthorized()
-    //             .pipe(
-    //                 tap((user) => {
-    //                     if (
-    //                         user &&
-    //                         user['features'] &&
-    //                         user['features']['id_role']
-    //                     ) {
-    //                         this.role_id = user['features']['id_role'];
-    //                     }
-    //                 }),
-    //                 catchError((err) => throwError(err))
-    //             )
-    //             .subscribe((user) => {
-    //                 this.isValidator = user["features"]["validator"]
-    //                 this.userService.getObservationsByUserId(
-    //                     this.role_id
-    //                 ).subscribe((userObservations: FeatureCollection) => {
-    //                     this.userObservations = userObservations
-    //                 });
-    //             });
-    //     }
-    // }
+    ngOnInit() {
+        this.breakpointObserver
+            .observe(['(min-width: 700px)'])
+            .subscribe((state: BreakpointState) => {
+                if (state.matches) {
+                    this.isMobile = false;
+                } else {
+                    this.isMobile = true;
+                }
+            });
+    }
 }

@@ -41,7 +41,6 @@ const taxonAutocompleteMaxResults = 10;
 })
 export class ValidationComponent implements OnInit {
     public MainConfig = MainConfig;
-    username = 'not defined';
     id_role: number;
     @Input('obsToValidate') obsToValidate: any;
     @Output('onCloseModal') onCloseModal: EventEmitter<any> = new EventEmitter();
