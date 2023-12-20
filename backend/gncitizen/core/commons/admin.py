@@ -72,13 +72,10 @@ class CustomFormView(ModelView):
 
 
 class UserView(ModelView):
-    column_exclude_list = ["password"]
     form_excluded_columns = [
         "timestamp_create",
         "timestamp_update",
-        "password",
     ]
-    can_create = False
 
 
 def get_geom_file_path(obj, file_data):
