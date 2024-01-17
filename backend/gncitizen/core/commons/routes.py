@@ -429,12 +429,14 @@ def get_medias():
             func.coalesce(ObservationModel.obs_txt, VisitModel.obs_txt).label("observer"),
             func.coalesce(ObservationModel.id_role, VisitModel.id_role).label("id_observer"),
             func.coalesce(ObservationModel.date, VisitModel.date).label("date"),
+            # TODO: Attribution auto des municipalités aux sites # [fixme]
+            ObservationModel.municipality,
             SiteModel.id_site,
             ProgramsModel.title.label("program"),
             ProgramsModel.id_program.label("id_program"),
             case(
-                (ObservationMediaModel.id_media != None, "observations"),
-                (MediaOnVisitModel.id_media != None, "sites"),
+                (ObservationMediaModel.id_media is not None, "observations"),
+                (MediaOnVisitModel.id_media is not None, "sites"),
             ).label("type_program"),
         )
     )
