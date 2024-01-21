@@ -141,6 +141,13 @@
                                 placement="bottom"
                                 ngbTooltip="Non validable{{o.properties.observer.username == username ? ' - Validation par un tiers requise' : ''}}"
                             ></i>
+                            <i
+                                *ngIf="o.properties.validation_status && o.properties.validation_status === 'VALIDATED'"
+                                class="fa fa-certificate text-success"
+                                aria-hidden="true"
+                                placement="bottom"
+                                ngbTooltip="Approuvé"
+                        ></i>
                         </span>
 
                     </div>
