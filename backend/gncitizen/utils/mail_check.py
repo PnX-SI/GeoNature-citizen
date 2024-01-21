@@ -6,10 +6,10 @@ from flask import current_app
 from itsdangerous import URLSafeTimedSerializer
 
 
-def send_user_email(subject: str, to: str, plain_message: str = None, html_message: str = None):
+def send_user_email(subject: str, from_addr: str, to: str, plain_message: str = None, html_message: str = None):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
-    msg["From"] = current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]
+    msg["From"] = from_addr
     msg["To"] = to
     plain_msg = MIMEText(
         html_message,
@@ -46,12 +46,13 @@ def send_user_email(subject: str, to: str, plain_message: str = None, html_messa
         server.ehlo()
         if current_app.config["MAIL"]["MAIL_STARTTLS"]:
             server.starttls()
-        server.login(
-            str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
-            str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
-        )
+        if current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]:
+            server.login(
+                str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
+                str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
+            )
         server.sendmail(
-            current_app.config["MAIL"]["MAIL_AUTH_LOGIN"],
+            from_addr,
             to,
             msg.as_string(),
         )
@@ -80,9 +81,11 @@ def confirm_user_email(newuser, with_confirm_link=True):
     template = current_app.config["CONFIRM_EMAIL"]["HTML_TEMPLATE"]
     if not with_confirm_link:
         template = current_app.config["CONFIRM_EMAIL"]["NO_VALIDATION_HTML_TEMPLATE"]
+    from_addr = current_app.config["CONFIRM_EMAIL"]["FROM"]
     try:
         send_user_email(
             subject,
+            from_addr,
             to,
             html_message=template.format(activate_url=activate_url),
         )
