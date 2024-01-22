@@ -15,6 +15,7 @@ from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import admin
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.geo import get_municipality_id_from_wkb
+from gncitizen.utils.helpers import get_filter_by_args
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom, taxhub_full_lists
@@ -463,8 +464,13 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
           200:
             description: A list of all species lists
     """
+    args = request.args.to_dict()
+    paginate = "per_page" in args
+    per_page = int(args.pop("per_page", 1000))
+    page = int(args.pop("page", 1))
+    print(args)
     try:
-        observations = (
+        query = (
             db.session.query(
                 ObservationModel,
                 UserModel.username,
@@ -493,10 +499,18 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             )
         )
 
-        observations = observations.order_by(desc(ObservationModel.timestamp_create))
         # current_app.logger.debug(str(observations))
-        observations = observations.all()
 
+        query = query.order_by(desc(ObservationModel.timestamp_create))
+        filters = get_filter_by_args(ObservationModel, args)
+        query = query.filter(*filters)
+        print(query)
+
+        if paginate:
+            query = query.paginate(page=page, per_page=per_page)
+            observations = query.items
+        else:
+            observations = query.all()
         # loop to retrieve taxonomic data from all programs
         if current_app.config.get("API_TAXHUB") is not None:
             programs = ProgramsModel.query.all()
@@ -555,8 +569,14 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
                 pass
             features.append(feature)
 
-        return FeatureCollection(features)
+        feature_collection = FeatureCollection(features)
 
+        if paginate:
+            feature_collection["per_page"] = query.per_page
+            feature_collection["page"] = query.page
+            feature_collection["total"] = query.total
+            feature_collection["pages"] = query.pages
+        return feature_collection
     except Exception as e:
         # if current_app.config["DEBUG"]:
         # import traceback
@@ -594,7 +614,7 @@ def get_rewards(id):
 @json_resp
 def get_observations_by_user_id(user_id):
     try:
-        observations = (
+        query = (
             db.session.query(
                 ObservationModel,
                 ProgramsModel,
@@ -632,9 +652,9 @@ def get_observations_by_user_id(user_id):
             )
         )
 
-        observations = observations.order_by(desc(ObservationModel.timestamp_create))
+        query = query.order_by(desc(ObservationModel.timestamp_create))
         # current_app.logger.debug(str(observations))
-        observations = observations.all()
+        observations = query.all()
 
         try:
             if current_app.config.get("API_TAXHUB") is not None:
