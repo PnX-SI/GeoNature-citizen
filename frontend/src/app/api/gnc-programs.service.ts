@@ -121,8 +121,9 @@ export class GncProgramsService implements OnInit {
     }
 
     getProgramObservations(id: number): Observable<FeatureCollection> {
+        const params = { 'id_program': `${id}` }
         return this.http
-            .get<FeatureCollection>(`${this.URL}/programs/${id}/observations`)
+            .get<FeatureCollection>(`${this.URL}/observations`, { params })
             .pipe(
                 catchError(
                     this.handleError<FeatureCollection>(
