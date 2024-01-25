@@ -60,15 +60,7 @@ def get_one_observation(pk):
     observation = (
         db.session.query(
             ObservationModel,
-        )
-        # .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
-        # .join(ProgramsModel, ProgramsModel.id_program == ObservationModel.id_program)
-        .filter(ObservationModel.id_observation == pk)
-        # .join(
-        #     ObservationMediaModel,
-        #     ObservationMediaModel.id_data_source == ObservationModel.id_observation,
-        # )
-        # .join(MediaModel, ObservationMediaModel.id_media == MediaModel.id_media)
+        ).filter(ObservationModel.id_observation == pk)
     ).one()
 
     return observation
@@ -103,8 +95,8 @@ def get_observation(pk):
         description: A list of all observations
     """
     try:
-        features = get_one_observation(pk).get_feature()
-        return {"features": features}, 200
+        feature = get_one_observation(pk).get_feature()
+        return feature, 200
     except Exception as e:
         return {"message": str(e)}, 400
 
