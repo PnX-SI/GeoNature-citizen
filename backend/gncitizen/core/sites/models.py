@@ -3,10 +3,6 @@
 # import enum
 
 from geoalchemy2 import Geometry
-from sqlalchemy.dialects.postgresql import JSONB, UUID
-from sqlalchemy.orm import relationship
-from utils_flask_sqla_geo.serializers import geoserializable, serializable
-
 from gncitizen.core.commons.models import (
     CustomFormModel,
     MediaModel,
@@ -16,6 +12,9 @@ from gncitizen.core.commons.models import (
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import ObserverMixinModel
 from server import db
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.orm import relationship
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 
 def create_schema(db):
@@ -50,13 +49,23 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     __tablename__ = "t_sites"
     __table_args__ = {"schema": "gnc_sites"}
     id_site = db.Column(db.Integer, primary_key=True, unique=True)
-    uuid_sinp = db.Column(UUID(as_uuid=True), nullable=False, unique=True)
-    id_program = db.Column(db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False)
+    uuid_sinp = db.Column(UUID(as_uuid=True), nullable=False, unique=True, index=True)
+    id_program = db.Column(
+        db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False, index=True
+    )
     program = relationship("ProgramsModel")
     name = db.Column(db.String(250))
-    id_type = db.Column(db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False)
+    id_type = db.Column(
+        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False, index=True
+    )
     site_type = relationship("SiteTypeModel")
-    geom = db.Column(Geometry("POINT", 4326))
+    geom = db.Column(
+        Geometry(
+            geometry_type="POINT",
+            srid=4326,
+            spatial_index=True,
+        )
+    )
 
     def __repr__(self):
         return "<Site {0}>".format(self.id_site)
@@ -67,11 +76,12 @@ class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     __tablename__ = "cor_program_typesites"
     __table_args__ = {"schema": "gnc_sites"}
     id_cor_program_typesite = db.Column(db.Integer, primary_key=True, unique=True)
-    id_program = db.Column(db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE"))
+    id_program = db.Column(
+        db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE"), index=True
+    )
     program = relationship("ProgramsModel", backref="site_types")
     id_typesite = db.Column(
-        db.Integer,
-        db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE"),
+        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE"), index=True
     )
     site_type = relationship("SiteTypeModel")
 
@@ -83,7 +93,9 @@ class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     __tablename__ = "t_visit"
     __table_args__ = {"schema": "gnc_sites"}
     id_visit = db.Column(db.Integer, primary_key=True, unique=True)
-    id_site = db.Column(db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE"))
+    id_site = db.Column(
+        db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE"), index=True
+    )
     site = relationship("SiteModel")
     date = db.Column(db.Date)
     json_data = db.Column(JSONB, nullable=True)
@@ -102,11 +114,13 @@ class MediaOnVisitModel(TimestampMixinModel, db.Model):
         db.Integer,
         db.ForeignKey(VisitModel.id_visit, ondelete="CASCADE"),
         nullable=False,
+        index=True,
     )
     id_media = db.Column(
         db.Integer,
         db.ForeignKey(MediaModel.id_media, ondelete="CASCADE"),
         nullable=False,
+        index=True,
     )
 
 
@@ -120,9 +134,11 @@ class ObservationsOnSiteModel(TimestampMixinModel, db.Model):
         db.Integer,
         db.ForeignKey(SiteModel.id_site, ondelete="SET NULL"),
         nullable=False,
+        index=True,
     )
     id_obstax = db.Column(
         db.Integer,
         db.ForeignKey(ObservationModel.id_observation, ondelete="SET NULL"),
         nullable=False,
+        index=True,
     )

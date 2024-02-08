@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
+from gncitizen.core.commons.models import ProgramsModel, TimestampMixinModel, TModules
 from passlib.hash import pbkdf2_sha256 as sha256
+from server import db
 from sqlalchemy.ext.declarative import declared_attr
 from utils_flask_sqla_geo.serializers import serializable
-
-from gncitizen.core.commons.models import ProgramsModel, TimestampMixinModel, TModules
-from server import db
 
 
 class RevokedTokenModel(db.Model):
@@ -69,9 +68,9 @@ class UserModel(TimestampMixinModel, db.Model):
             "admin": self.admin,
             "active": self.active,
             "timestamp_create": self.timestamp_create.isoformat(),
-            "timestamp_update": self.timestamp_update.isoformat()
-            if self.timestamp_update
-            else None,
+            "timestamp_update": (
+                self.timestamp_update.isoformat() if self.timestamp_update else None
+            ),
         }
 
     @staticmethod
