@@ -120,9 +120,10 @@ export class GncProgramsService implements OnInit {
             );
     }
 
-    getProgramObservations(id: number): Observable<FeatureCollection> {
+    getProgramObservations(id: number, per_page: number = 1000): Observable<FeatureCollection> {
+        const params = { 'id_program': `${id}`, 'per_page': `${per_page}` }
         return this.http
-            .get<FeatureCollection>(`${this.URL}/programs/${id}/observations`)
+            .get<FeatureCollection>(`${this.URL}/observations`, { params })
             .pipe(
                 catchError(
                     this.handleError<FeatureCollection>(

@@ -41,7 +41,7 @@ import { ObsDetailComponent } from './programs/observations/detail/detail.compon
 import { UserDashboardComponent } from './auth/user-dashboard/user-dashboard.component';
 import { UserObsComponent } from './auth/user-dashboard/user-observations/user-observations.component';
 import { SpeciesComponent } from './synthesis/species/species.component';
-import { GncService } from './api/gnc.service';
+import { UtilsService } from './api/utils.service';
 import { GncProgramsService } from './api/gnc-programs.service';
 import { ErrorHandler } from './api/error_handler';
 import { AboutComponent } from './about/about.component';
@@ -147,7 +147,7 @@ import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.
     ],
     providers: [
         AuthService,
-        GncService,
+        UtilsService,
         GncProgramsService,
         ErrorHandler,
         // FlowService,

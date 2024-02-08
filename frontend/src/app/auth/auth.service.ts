@@ -27,7 +27,7 @@ export class AuthService {
     );
     timeoutID: any = null;
 
-    constructor(private http: HttpClient, private router: Router) {}
+    constructor(private http: HttpClient, private router: Router) { }
 
     login(user: LoginUser): Observable<LoginPayload> {
         let url = `${MainConfig.API_ENDPOINT}/login`;
@@ -62,6 +62,7 @@ export class AuthService {
         this.authenticated$.next(true);
         localStorage.setItem('username', user.username);
         localStorage.setItem('userAvatar', user.userAvatar);
+        localStorage.setItem('userInfo', JSON.stringify(user))
     }
 
     logout(): Promise<any> {
@@ -122,6 +123,10 @@ export class AuthService {
 
     private hasAccessToken(): boolean {
         return !!localStorage.getItem('access_token');
+    }
+
+    getUserInfo(): object {
+        return JSON.parse(localStorage.getItem('userInfo'))
     }
 
     decodeToken(token: string): JWT {
