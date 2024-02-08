@@ -117,63 +117,6 @@
                 (deleteObs)="openDeleteModal(deleteModal, $event)"
             >
             </user-observations>
-            <!-- <div id="myObs" class="container">
-        <h3 class="title" i18n>Mes observations</h3>
-        <ngx-datatable *ngIf="observations" class="material" [rows]="rows" [headerHeight]="40" [footerHeight]="40"
-          [limit]="7" [rowHeight]="'auto'" [reorderable]="reorderable" [scrollbarH]="true"  [selectionType]="'single'">
-          <ngx-datatable-column name="Photo" prop="media_url">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              <img class="main-photo img-fluid" src="{{row.media_url}}" alt="">
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column name="Espèce" prop="taxref" width="200">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              {{row.taxref.nom_vern || row.taxref.nom_complet}}
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column name="Date" prop="date">
-          </ngx-datatable-column>
-          <ngx-datatable-column name="Lieu" prop="municipality" width="160">
-          </ngx-datatable-column>
-          <ngx-datatable-column name="Programme" prop="program" width="200">
-          </ngx-datatable-column>
-          <ngx-datatable-column>
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              <app-modalflow [coords]="row.coords" [updateData]="row" [program_id]="row.program_id">
-                <button class="btn btn-secondary" placement="top" ngbTooltip="Editer" btn-open>
-                  <i class="fa fa-edit"></i>
-                </button>
-              </app-modalflow>
-              <button class="btn btn-danger" placement="top" ngbTooltip="Supprimer"  (click)="openDeleteModal(deleteModal,row.id_observation )" ><i class="fa fa-trash"></i></button>
-            </ng-template>
-          </ngx-datatable-column>
-        </ngx-datatable>
-      </div>
-      <div *ngIf="badges && badges.length > 0 " id="badges" class="container">
-        <h3 class="title" i18n>Mes badges</h3>
-        <div *ngIf="main_badges && main_badges.length > 0 " class="inner-row">
-          <h5 i18n>Récompenses géneral</h5>
-          <div class="row">
-            <img *ngFor="let m_badge of main_badges" [src]="MainConfig.API_ENDPOINT + m_badge.url"
-              [alt]="m_badge.type + m_badge.name" [ngbTooltip]="m_badge.reward_label +' '+ m_badge.name" />
-          </div>
-        </div>
-        <div *ngIf="programs_badges && programs_badges.length > 0 " class="inner-row">
-          <h5>Récompenses par programmes</h5>
-          <div class="row">
-            <img *ngFor="let p_badge of programs_badges" [src]="MainConfig.API_ENDPOINT + p_badge.url"
-              [alt]="p_badge.type + p_badge.name" [ngbTooltip]="p_badge.reward_label +' '+ p_badge.name" />
-          </div>
-        </div>
-        <div *ngIf="recognition_badges && recognition_badges.length > 0 " class=" inner-row">
-          <h5>Récompenses d'identification d'espèces</h5>
-          <div class="row">
-            <img *ngFor="let r_badge of recognition_badges" [src]="MainConfig.API_ENDPOINT + r_badge.url"
-              [alt]="r_badge.type + r_badge.name" [ngbTooltip]="r_badge.reward_label +' '+ r_badge.name" />
-          </div>
-        </div>
-      </div> -->
-
             <div class="personal-data row">
                 <button
                     class="btn-big col-lg-3 col-md-5 col-sm-12 export"
