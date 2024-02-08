@@ -393,10 +393,9 @@ def get_programs():
 def get_medias():
     # Filters
     id_program = request.args.get("id_program")
-    id_role = request.args.get("id_role")
     cd_nom = request.args.get("cd_nom")
     id_observation = request.args.get("id_observation")
-    id_observer = request.args.get("id_observer")
+    id_role = request.args.get("id_role")
     id_visit = request.args.get("id_visit")
     id_site = request.args.get("id_site")
     no_pagination = request.args.get("no_pagination", default=False, type=bool)
@@ -427,7 +426,7 @@ def get_medias():
             ObservationModel.cd_nom,
             func.coalesce(ObservationModel.name, SiteModel.name).label("name"),
             func.coalesce(ObservationModel.obs_txt, VisitModel.obs_txt).label("observer"),
-            func.coalesce(ObservationModel.id_role, VisitModel.id_role).label("id_observer"),
+            func.coalesce(ObservationModel.id_role, VisitModel.id_role).label("id_role"),
             func.coalesce(ObservationModel.date, VisitModel.date).label("date"),
             # TODO: Attribution auto des municipalités aux sites # [fixme]
             ObservationModel.municipality,
@@ -444,17 +443,14 @@ def get_medias():
     if id_program:
         qs = qs.filter(ProgramsModel.id_program == id_program)
 
-    if id_role:
-        qs = qs.filter(ObservationModel.id_role == id_role)
-
     if cd_nom:
         qs = qs.filter(ObservationModel.cd_nom == cd_nom)
 
     if id_observation:
         qs = qs.filter(ObservationModel.id_observation == id_observation)
 
-    if id_observer:
-        qs = qs.filter(func.coalesce(ObservationModel.id_role, VisitModel.id_role) == id_observer)
+    if id_role:
+        qs = qs.filter(func.coalesce(ObservationModel.id_role, VisitModel.id_role) == id_role)
 
     if id_visit:
         qs = qs.filter(VisitModel.id_visit == id_visit)

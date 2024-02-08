@@ -3,6 +3,8 @@ import { GncProgramsService } from '../../api/gnc-programs.service';
 import { MediaList } from './media-galery.model';
 import { Input } from '@angular/core';
 import { MainConfig } from '../../../conf/main.config';
+import { objectCleaner } from '../../api/utils.service';
+import { AuthService } from '../../../app/auth/auth.service';
 
 declare let $: any;
 
@@ -17,23 +19,26 @@ export class MediaGaleryComponent implements OnInit {
     hasMedia: boolean;
     clickedPhoto: any;
     @Input('program_id') program_id: number;
+    @Input('userDashboard') userDashboard: boolean;
 
-    constructor(private programService: GncProgramsService) {}
+    constructor(private programService: GncProgramsService, private auth: AuthService,) { }
 
     ngOnInit(): void {
+        console.log('this.userDashboard', this.userDashboard)
+        const initParams = { id_program: this.program_id, no_pagination: true }
+        if (this.userDashboard) {
+            initParams['id_role'] = this.auth.getUserInfo() ? this.auth.getUserInfo()['id_role'] : null
+        }
+        let params = objectCleaner(initParams)
         this.programService
-            .getMedias({ id_program: this.program_id, no_pagination: true })
+            .getMedias(params)
             .subscribe((media) => {
-                console.debug('MEDIA', typeof media);
-                console.log('this.media', typeof this.media);
                 this.media = media;
                 this.hasMedia = this.media.length > 0;
             });
     }
 
     showPhoto(photo) {
-        // console.log('opening photo:');
-        // console.log(photo);
         this.clickedPhoto = photo;
         $('#photoModal').modal('show');
     }
