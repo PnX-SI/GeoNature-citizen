@@ -62,9 +62,10 @@
                     <i [class]="mediaPanel ? 'fa fa-map' :'fa fa-camera'"></i>
                 </button>
             </div>
-            <app-media-galery *ngIf="mediaPanel" [program_id]="program_id"></app-media-galery>
-            <app-obs-map #obsMapRef *ngIf="!mediaPanel" [features]="observations" [program]="programFeature"
-                (onClick)="onMapClicked($event)"></app-obs-map>
+            <app-media-galery [ngStyle]="!mediaPanel?{'display': 'none'} : {}" [program_id]="program_id"
+                [userDashboard]="userDashboard"></app-media-galery>
+            <app-obs-map #obsMapRef [ngStyle]="mediaPanel?{'display': 'none'} : {}" [features]="observations"
+                [program]="programFeature" (onClick)="onMapClicked($event)"></app-obs-map>
         </div>
     </section>
 
@@ -92,7 +93,8 @@
                             <i [class]="mediaPanel ? 'fa fa-map' :'fa fa-camera'"></i>
                         </button>
                     </div>
-                    <app-media-galery *ngIf="mediaPanel" [program_id]="program_id"></app-media-galery>
+                    <app-media-galery *ngIf="mediaPanel" [program_id]="program_id"
+                        [userDashboard]="userDashboard"></app-media-galery>
                     <app-obs-map #obsMapRef *ngIf="!mediaPanel" [features]="observations" [program]="programFeature"
                         (onClick)="onMapClicked($event)">
                     </app-obs-map>

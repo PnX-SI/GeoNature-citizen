@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GncService } from './gnc.service';
+import { UtilsService } from './utils.service';
 
-describe('GncService', () => {
+describe('UtilsService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     it('should be created', () => {
-        const service: GncService = TestBed.get(GncService);
+        const service: UtilsService = TestBed.get(UtilsService);
         expect(service).toBeTruthy();
     });
 });

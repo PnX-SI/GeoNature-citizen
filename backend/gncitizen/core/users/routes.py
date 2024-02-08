@@ -243,6 +243,7 @@ def login():
             refresh_token = create_refresh_token(identity=identifier)
             return (
                 {
+                    "id_role": current_user.id_user,
                     "message": """Connecté en tant que "{}".""".format(identifier),
                     "email": current_user.email,
                     "username": current_user.as_secured_dict(True).get("username"),
@@ -495,9 +496,11 @@ def reset_user_password():
         passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
     )
     from_addr = current_app.config["RESET_PASSWD"]["FROM"]
-    
+
     try:
-        send_user_email(subject, from_addr, to, plain_message=plain_message, html_message=html_message)
+        send_user_email(
+            subject, from_addr, to, plain_message=plain_message, html_message=html_message
+        )
         user.password = passwd_hash
         db.session.commit()
         return (
