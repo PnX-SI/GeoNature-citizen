@@ -5,6 +5,7 @@ from logging.config import fileConfig
 
 from alembic import context
 from flask import current_app
+from geoalchemy2 import alembic_helpers
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -48,7 +49,11 @@ def run_migrations_offline():
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        version_table_schema="gnc_core",
+        version_table="alembic_version_gncitizen",
+        include_schemas=True,
+        include_object=alembic_helpers.include_object,
+        process_revision_directives=alembic_helpers.writer,
+        render_item=alembic_helpers.render_item,
     )
 
     with context.begin_transaction():
@@ -79,12 +84,13 @@ def run_migrations_online():
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
-            process_revision_directives=process_revision_directives,
-            version_table_schema="gnc_core",
+            process_revision_directives=alembic_helpers.writer,
+            version_table="alembic_version_gncitizen",
+            include_schemas=True,
+            include_object=alembic_helpers.include_object,
+            render_item=alembic_helpers.render_item,
             **current_app.extensions["migrate"].configure_args,
         )
-
-        connection.execute("CREATE SCHEMA IF NOT EXISTS gnc_core")
 
         with context.begin_transaction():
             context.run_migrations()

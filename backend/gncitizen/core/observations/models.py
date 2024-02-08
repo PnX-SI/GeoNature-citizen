@@ -41,6 +41,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         db.Integer,
         db.ForeignKey(ProgramsModel.id_program, ondelete="SET NULL"),
         nullable=False,
+        index=True,
     )
     cd_nom = db.Column(db.Integer, nullable=False)
     # String(1000) taken from taxonomie.bib_noms:
@@ -50,7 +51,13 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     comment = db.Column(db.String(300))
     # FIXME: remove nullable prop from ObservationModel.municipality once debugged
     municipality = db.Column(db.String(100), nullable=True)
-    geom = db.Column(Geometry("POINT", 4326))
+    geom = db.Column(
+        Geometry(
+            geometry_type="POINT",
+            srid=4326,
+            spatial_index=True,
+        )
+    )
     json_data = db.Column(JSONB, nullable=True)
 
     program_ref = db.relationship("ProgramsModel", backref="t_obstax", lazy="joined")
@@ -120,10 +127,12 @@ class ObservationMediaModel(TimestampMixinModel, db.Model):
         db.Integer,
         db.ForeignKey(ObservationModel.id_observation, ondelete="CASCADE"),
         nullable=False,
+        index=True,
     )
     id_media = db.Column(
         db.Integer,
         db.ForeignKey(MediaModel.id_media, ondelete="CASCADE"),
         nullable=False,
+        index=True,
     )
     media = db.relationship("MediaModel", backref="obs_media_match", lazy="joined")
