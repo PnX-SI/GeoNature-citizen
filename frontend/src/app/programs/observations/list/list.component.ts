@@ -59,7 +59,7 @@ export class ObsListComponent implements OnChanges {
         private cd: ChangeDetectorRef,
         public router: Router,
         private userService: UserService,
-    ) {}
+    ) { }
 
     ngOnChanges(changes: SimpleChanges) {
         this.changes$.next(changes);
@@ -70,9 +70,9 @@ export class ObsListComponent implements OnChanges {
             this.municipalities = this.observations.features
                 .map((features) => features.properties)
                 .map((property) => property.municipality)
-                .map((municipality) => {
-                    return municipality.name;
-                })
+                // .map((municipality) => {
+                //     return municipality;
+                // })
                 .filter((item, pos, self) => {
                     return self.indexOf(item) === pos;
                 });
@@ -109,8 +109,8 @@ export class ObsListComponent implements OnChanges {
             let results: boolean[] = [];
             if (this.selectedMunicipality) {
                 results.push(
-                    obs.properties.municipality.name ==
-                        this.selectedMunicipality
+                    obs.properties.municipality ==
+                    this.selectedMunicipality
                 );
                 filters.municipality = this.selectedMunicipality;
             }

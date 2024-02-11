@@ -1,12 +1,22 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import Optional
 
 from flask import current_app
 from itsdangerous import URLSafeTimedSerializer
 
+default_mail_from_addr = current_app.config["MAIL"]["MAIL_FROM_ADDR"]
 
-def send_user_email(subject: str, from_addr: str, to: str, plain_message: str = None, html_message: str = None):
+
+def send_user_email(
+    subject: str,
+    to: str,
+    from_addr: str = default_mail_from_addr,
+    plain_message: Optional[str] = None,
+    html_message: Optional[str] = None,
+):
+    """User mail sending"""
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = from_addr

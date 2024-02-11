@@ -155,24 +155,11 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         """get obs data as geojson feature"""
 
         result_dict = self.as_dict(True)
-        result_dict["observer"] = (
-            {
-                "username": self.observer.username,
-                "id": self.observer.id_user,
-                "avatar": self.observer.avatar,
-            }
-            if self.observer
-            else None
-        )
+        result_dict["observer"] = self.observer.as_simple_dict() if self.observer else None
         result_dict["validator"] = (
-            {
-                "username": self.validator_ref.username,
-                "id": self.validator_ref.id_user,
-            }
-            if self.validator_ref
-            else None
+            self.validator_ref.as_simple_dict() if self.validator_ref else None
         )
-        result_dict["municipality"] = {"name": self.municipality}
+
         result_dict["validation"] = str(self.validation_status)
 
         # Populate "geometry"

@@ -78,6 +78,7 @@ VERIFY_OBSERVATIONS_ENABLED = false
     MAIL_PORT = 493   # mandatory SSL port
     MAIL_AUTH_LOGIN = 'smtpd/relay host username'
     MAIL_AUTH_PASSWD = 'smtpd/relay host password'
+    MAIL_FROM_ADDR = 'fcloitre@dbwildlife.info'
 
 
 # API flasgger main config

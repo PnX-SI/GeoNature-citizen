@@ -202,9 +202,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     canValidateObservation(): boolean {
         console.log(`<canValidateObservation> this.isValidator`, this.isValidator)
         console.log(`<canValidateObservation> this.obsToValidate.properties`, this.obsToValidate.properties)
-        return (this.isValidator)
+        return (this.MainConfig.VERIFY_OBSERVATIONS_ENABLED && this.isValidator)
             && (this.obsToValidate.properties.validation_status != "VALIDATED")
-            && (this.obsToValidate.properties.observer && this.obsToValidate.properties.observer.username !== this.username)
+            && (!this.obsToValidate.properties.observer || (
+                this.obsToValidate.properties.observer && this.obsToValidate.properties.observer.username !== this.username)
+            )
     }
 
     closeModal(observationId: number = null) {

@@ -502,7 +502,7 @@ def reset_user_password():
 
     try:
         send_user_email(
-            subject, from_addr, to, plain_message=plain_message, html_message=html_message
+            subject, to, from_addr, plain_message=plain_message, html_message=html_message
         )
         user.password = passwd_hash
         db.session.commit()

@@ -42,7 +42,7 @@ export class UserService {
     }
 
     getObservationsByUserId(userId: number) {
-        let params = { user: userId.toString() };
+        let params = { id_role: userId.toString() };
         return this.http.get<Object>(
             `${MainConfig.API_ENDPOINT}/observations`, { params }
         );

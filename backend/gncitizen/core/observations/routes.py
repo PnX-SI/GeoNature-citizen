@@ -76,76 +76,6 @@ def get_one_observation(pk):
     return observation
 
 
-def format_observations_dashboards(observations):
-    try:
-        if current_app.config.get("API_TAXHUB") is not None:
-            taxon_repository = []
-            taxhub_list_id = []
-            for observation in observations:
-                if observation.ProgramsModel.taxonomy_list not in taxhub_list_id:
-                    taxhub_list_id.append(observation.ProgramsModel.taxonomy_list)
-            for tax_list in taxhub_list_id:
-                taxon_repository.append(taxhub_full_lists[tax_list])
-
-        features = []
-    except Exception as e:
-        return {"message": str(e)}, 500
-
-    query_programs = db.session.query(ProgramsModel.id_program, ProgramsModel.title)
-    programs = {program.id_program: program.title for program in query_programs}
-
-    for observation in observations:
-        feature = get_geojson_feature(observation.ObservationModel.geom)
-        name = observation.ObservationModel.municipality
-        feature["properties"]["municipality"] = {"name": name}
-
-        # Observer
-        feature["properties"]["observer"] = {"username": observation.username}
-        # Observer submitted media
-        feature["properties"]["image"] = (
-            "/".join(
-                [
-                    "/api",
-                    current_app.config["MEDIA_FOLDER"],
-                    observation.images[0][0],
-                ]
-            )
-            if observation.images and observation.images != [[None, None]]
-            else None
-        )
-        # Photos
-        feature["properties"]["photos"] = [
-            {"url": "/media/{}".format(filename), "id_media": id_media}
-            for filename, id_media in observation.images
-            if id_media is not None
-        ]
-        # Municipality
-        observation_dict = observation.ObservationModel.as_dict(True)
-        for k in observation_dict:
-            if k in obs_keys and k != "municipality":
-                feature["properties"][k] = (
-                    observation_dict[k].name
-                    if isinstance(observation_dict[k], Enum)
-                    else observation_dict[k]
-                )
-        # Program
-        # program_dict = observation.ProgramsModel.as_dict(True)
-        feature["properties"]["program_title"] = programs[observation.ProgramsModel.id_program]
-        # TaxRef
-        try:
-            for taxon_rep in taxon_repository:
-                for taxon in taxon_rep:
-                    if taxon["taxref"]["cd_nom"] == observation.ObservationModel.cd_nom:
-                        feature["properties"]["nom_francais"] = taxon["nom_francais"]
-                        feature["properties"]["taxref"] = taxon["taxref"]
-                        feature["properties"]["medias"] = taxon["medias"]
-
-        except StopIteration:
-            pass
-        features.append(feature)
-    return features
-
-
 @obstax_api.route("/observations/<int:pk>", methods=["GET"])
 @json_resp
 def get_observation(pk):
@@ -179,85 +109,6 @@ def get_observation(pk):
         return feature, 200
     except Exception as e:
         return {"message": str(e)}, 400
-
-
-# @obstax_api.route("/observations", methods=["GET"])
-# @json_resp
-# @jwt_required(optional=True)
-# def get_observations():
-#     validation_process = request.args.get("exclude_status", default=False, type=bool)
-#     exclude_status_param = request.args.get("exclude_status", default=None, type=str)
-#     user = request.args.get("user", default=None, type=int)
-#     program = request.args.get("program", default=None, type=int)
-
-#     # use_taxhub_param = request.args.get("use_taxhub", default=True, type=lambda value: value.lower() != "false")
-#     current_user = get_user_if_exists()
-
-#     filters = [ProgramsModel.is_active]
-
-#     if validation_process and current_user:
-#         filters.append(ObservationModel.id_role != current_user.id_user)
-#     if exclude_status_param:
-#         try:
-#             filters.append(
-#                 ObservationModel.validation_status != ValidationStatus[exclude_status_param]
-#             )
-#         except KeyError:
-#             pass
-#     if user:
-#         filters.append(ObservationModel.id_role == user)
-#     if program:
-#         filters.append(ObservationModel.id_program == program)
-
-#     current_app.logger.debug(f"FILTERS {filters}")
-
-#     try:
-#         observations = (
-#             db.session.query(
-#                 ObservationModel,
-#                 ProgramsModel,
-#                 UserModel.username,
-#                 func.json_agg(
-#                     func.json_build_array(MediaModel.filename, MediaModel.id_media)
-#                 ).label("images"),
-#             )
-#             .filter(*filters)
-#             .join(
-#                 ProgramsModel,
-#                 ProgramsModel.id_program == ObservationModel.id_program,
-#                 isouter=True,
-#             )
-#             .join(
-#                 ObservationMediaModel,
-#                 ObservationMediaModel.id_data_source == ObservationModel.id_observation,
-#                 isouter=True,
-#             )
-#             .join(
-#                 MediaModel,
-#                 ObservationMediaModel.id_media == MediaModel.id_media,
-#                 isouter=True,
-#             )
-#             .join(
-#                 UserModel,
-#                 ObservationModel.id_role == UserModel.id_user,
-#                 full=True,
-#                 # isouter=True,
-#             )
-#             .group_by(
-#                 ObservationModel.id_observation,
-#                 ProgramsModel.id_program,
-#                 UserModel.username,
-#             )
-#         )
-
-#         observations = observations.order_by(desc(ObservationModel.timestamp_create))
-#         # current_app.logger.debug(str(observations))
-#         return FeatureCollection(format_observations_dashboards(observations.all())), 200
-
-#     except Exception as e:
-#         raise e
-#         current_app.logger.critical("[get_program_observations] Error: %s", str(e))
-#         return {"message": str(e)}, 400
 
 
 @obstax_api.route("/observations", methods=["POST"])
@@ -373,11 +224,7 @@ def post_observation():
             taxon = get_specie_from_cd_nom(newobs.cd_nom)
             newobs.name = taxon.get("nom_vern", "")
 
-        if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
-            newobs.validation_status = ValidationStatus.NOT_VALIDATED
-
-        if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
-            newobs.validation_status = ValidationStatus.NOT_VALIDATED
+        newobs.validation_status = ValidationStatus.NOT_VALIDATED
 
         newobs.uuid_sinp = uuid.uuid4()
         db.session.add(newobs)
@@ -467,19 +314,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             feature_collection["pages"] = query.pages
         return feature_collection
     except Exception as e:
-        # if current_app.config["DEBUG"]:
-        # import traceback
-        # import sys
-
-        # import pdb
-        # pdb.set_trace()
-        # etype, value, tb = sys.exc_info()
-        # trace = str(traceback.print_exception(etype, value, tb))
-        # trace = traceback.format_exc()
-        # return("<pre>" + trace + "</pre>"), 500
         raise e
-        current_app.logger.critical("[get_program_observations] Error: %s", str(e))
-        return {"message": str(e)}, 400
 
 
 @obstax_api.route("/validation_statuses")
@@ -619,18 +454,21 @@ def update_observation():
                 message = f"Nous avons bien reçu votre photo, merci beaucoup pour votre participation. Il s'avère que l'espèce que vous avez observée est un[e] {update_data.get('name')}."
             else:
                 message = f"L'espèce que vous avez observée est bien un[e] {update_data.get('name')}. Merci pour votre participation !"
-            try:
-                send_user_email(
-                    subject=current_app.config["VALIDATION_EMAIL"]["SUBJECT"],
-                    to=UserModel.query.get(obs_to_update_obj.id_role).email,
-                    html_message=current_app.config["VALIDATION_EMAIL"]["HTML_TEMPLATE"].format(
-                        message=message,
-                        obs_link=f"{current_app.config['URL_APPLICATION']}/programs/{obs_to_update_obj.id_program}/observations/{obs_to_update_obj.id_observation}",
-                    ),
-                )
-            except Exception as e:
-                current_app.logger.warning("send validation_email failed. %s", str(e))
-                return {"message": """ send validation_email failed: "{}".""".format(str(e))}, 400
+            if obs_to_update_obj.id_role is not None:
+                try:
+                    send_user_email(
+                        subject=current_app.config["VALIDATION_EMAIL"]["SUBJECT"],
+                        to=UserModel.query.get(obs_to_update_obj.id_role).email,
+                        html_message=current_app.config["VALIDATION_EMAIL"][
+                            "HTML_TEMPLATE"
+                        ].format(
+                            message=message,
+                            obs_link=f"{current_app.config['URL_APPLICATION']}/programs/{obs_to_update_obj.id_program}/observations/{obs_to_update_obj.id_observation}",
+                        ),
+                    )
+                except Exception as e:
+                    current_app.logger.warning("send validation_email failed. %s", str(e))
+                    return {"message": f"""send validation_email failed: "{str(e)}" """}, 400
 
         return ("observation updated successfully"), 200
     except Exception as e:

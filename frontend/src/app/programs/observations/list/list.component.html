@@ -66,8 +66,8 @@
                 <div class="infos">
                     <div>
                         <a class="espece-link" [ngClass]="{
-                                'text-warning': o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED',
-                                'text-danger': o.properties.validation_status && ['INVALID', 'NON_VALIDATABLE'].includes(o.properties.validation_status)
+                                'text-warning': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED',
+                                'text-danger': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && ['INVALID', 'NON_VALIDATABLE'].includes(o.properties.validation_status)
                             }" target="_blank" href="{{
                                 MainConfig.details_espece_url + o.properties.cd_nom
                             }}">{{
@@ -76,7 +76,7 @@
                             : o.properties.taxref?.nom_vern
                             }}</a>
                         &nbsp;
-                        <span (click)="onValidateClick(o)"
+                        <span *ngIf="MainConfig.VERIFY_OBSERVATIONS_ENABLED" (click)="onValidateClick(o)"
                             [ngStyle]="{ 'cursor': o.properties.observer?.username == username ? 'not-allowed' :  'pointer'}">
                             <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
                                 class="fa fa-hourglass-half text-warning" aria-hidden="true" placement="bottom"
@@ -123,8 +123,8 @@
                     </div>
                     <p>
                         le <span>{{ o.properties.date }}</span>
-                        <span *ngIf="o.properties.municipality?.name">
-                            à {{ o.properties.municipality?.name }}</span>
+                        <span *ngIf="o.properties.municipality">
+                            à {{ o.properties.municipality }}</span>
                     </p>
                 </div>
                 <div class="hide detail-link" [routerLink]="[

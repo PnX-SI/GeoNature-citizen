@@ -75,6 +75,13 @@ class UserModel(TimestampMixinModel, db.Model):
             ),
         }
 
+    def as_simple_dict(self):
+        return {
+            "id_role": self.id_user,
+            "username": self.username,
+            "avatar": self.avatar,
+        }
+
     @staticmethod
     def generate_hash(password):
         return sha256.hash(password)
@@ -188,7 +195,7 @@ class ValidatorMixinModel(object):
     @declared_attr
     def id_validator(cls):
         return db.Column(
-        db.Integer,
-        db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
-        nullable=True,
-    )
+            db.Integer,
+            db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
+            nullable=True,
+        )
