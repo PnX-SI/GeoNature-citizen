@@ -181,83 +181,83 @@ def get_observation(pk):
         return {"message": str(e)}, 400
 
 
-@obstax_api.route("/observations", methods=["GET"])
-@json_resp
-@jwt_required(optional=True)
-def get_observations():
-    validation_process = request.args.get("exclude_status", default=False, type=bool)
-    exclude_status_param = request.args.get("exclude_status", default=None, type=str)
-    user = request.args.get("user", default=None, type=int)
-    program = request.args.get("program", default=None, type=int)
+# @obstax_api.route("/observations", methods=["GET"])
+# @json_resp
+# @jwt_required(optional=True)
+# def get_observations():
+#     validation_process = request.args.get("exclude_status", default=False, type=bool)
+#     exclude_status_param = request.args.get("exclude_status", default=None, type=str)
+#     user = request.args.get("user", default=None, type=int)
+#     program = request.args.get("program", default=None, type=int)
 
-    # use_taxhub_param = request.args.get("use_taxhub", default=True, type=lambda value: value.lower() != "false")
-    current_user = get_user_if_exists()
+#     # use_taxhub_param = request.args.get("use_taxhub", default=True, type=lambda value: value.lower() != "false")
+#     current_user = get_user_if_exists()
 
-    filters = [ProgramsModel.is_active]
+#     filters = [ProgramsModel.is_active]
 
-    if validation_process and current_user:
-        filters.append(ObservationModel.id_role != current_user.id_user)
-    if exclude_status_param:
-        try:
-            filters.append(
-                ObservationModel.validation_status != ValidationStatus[exclude_status_param]
-            )
-        except KeyError:
-            pass
-    if user:
-        filters.append(ObservationModel.id_role == user)
-    if program:
-        filters.append(ObservationModel.id_program == program)
+#     if validation_process and current_user:
+#         filters.append(ObservationModel.id_role != current_user.id_user)
+#     if exclude_status_param:
+#         try:
+#             filters.append(
+#                 ObservationModel.validation_status != ValidationStatus[exclude_status_param]
+#             )
+#         except KeyError:
+#             pass
+#     if user:
+#         filters.append(ObservationModel.id_role == user)
+#     if program:
+#         filters.append(ObservationModel.id_program == program)
 
-    current_app.logger.debug(f"FILTERS {filters}")
+#     current_app.logger.debug(f"FILTERS {filters}")
 
-    try:
-        observations = (
-            db.session.query(
-                ObservationModel,
-                ProgramsModel,
-                UserModel.username,
-                func.json_agg(
-                    func.json_build_array(MediaModel.filename, MediaModel.id_media)
-                ).label("images"),
-            )
-            .filter(*filters)
-            .join(
-                ProgramsModel,
-                ProgramsModel.id_program == ObservationModel.id_program,
-                isouter=True,
-            )
-            .join(
-                ObservationMediaModel,
-                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
-                isouter=True,
-            )
-            .join(
-                MediaModel,
-                ObservationMediaModel.id_media == MediaModel.id_media,
-                isouter=True,
-            )
-            .join(
-                UserModel,
-                ObservationModel.id_role == UserModel.id_user,
-                full=True,
-                # isouter=True,
-            )
-            .group_by(
-                ObservationModel.id_observation,
-                ProgramsModel.id_program,
-                UserModel.username,
-            )
-        )
+#     try:
+#         observations = (
+#             db.session.query(
+#                 ObservationModel,
+#                 ProgramsModel,
+#                 UserModel.username,
+#                 func.json_agg(
+#                     func.json_build_array(MediaModel.filename, MediaModel.id_media)
+#                 ).label("images"),
+#             )
+#             .filter(*filters)
+#             .join(
+#                 ProgramsModel,
+#                 ProgramsModel.id_program == ObservationModel.id_program,
+#                 isouter=True,
+#             )
+#             .join(
+#                 ObservationMediaModel,
+#                 ObservationMediaModel.id_data_source == ObservationModel.id_observation,
+#                 isouter=True,
+#             )
+#             .join(
+#                 MediaModel,
+#                 ObservationMediaModel.id_media == MediaModel.id_media,
+#                 isouter=True,
+#             )
+#             .join(
+#                 UserModel,
+#                 ObservationModel.id_role == UserModel.id_user,
+#                 full=True,
+#                 # isouter=True,
+#             )
+#             .group_by(
+#                 ObservationModel.id_observation,
+#                 ProgramsModel.id_program,
+#                 UserModel.username,
+#             )
+#         )
 
-        observations = observations.order_by(desc(ObservationModel.timestamp_create))
-        # current_app.logger.debug(str(observations))
-        return FeatureCollection(format_observations_dashboards(observations.all())), 200
+#         observations = observations.order_by(desc(ObservationModel.timestamp_create))
+#         # current_app.logger.debug(str(observations))
+#         return FeatureCollection(format_observations_dashboards(observations.all())), 200
 
-    except Exception as e:
-        raise e
-        current_app.logger.critical("[get_program_observations] Error: %s", str(e))
-        return {"message": str(e)}, 400
+#     except Exception as e:
+#         raise e
+#         current_app.logger.critical("[get_program_observations] Error: %s", str(e))
+#         return {"message": str(e)}, 400
 
 
 @obstax_api.route("/observations", methods=["POST"])
@@ -354,7 +354,7 @@ def post_observation():
             current_app.logger.warning("[post_observation] json_data ", e)
             raise GeonatureApiError(e)
 
-        id_role = get_id_role_if_exists()
+        id_role = get_user_if_exists()
         if id_role:
             newobs.id_role = id_role
             role = UserModel.query.get(id_role)
@@ -414,6 +414,7 @@ def post_observation():
 
 @obstax_api.route("/observations", methods=["GET"])
 @json_resp
+@jwt_required(optional=True)
 def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
     """Get all observations from all programs
     GET
@@ -425,9 +426,16 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             description: A list of all species lists
     """
     args = request.args.to_dict()
+    validation_process = args.pop("validation_process", False)
     paginate = "per_page" in args
     per_page = int(args.pop("per_page", 1000))
     page = int(args.pop("page", 1))
+
+    id_role = get_id_role_if_exists()
+
+    if validation_process and id_role:
+        args["id_role__notequal"] = id_role
+
     filters = get_filter_by_args(ObservationModel, args)
     try:
         query = (

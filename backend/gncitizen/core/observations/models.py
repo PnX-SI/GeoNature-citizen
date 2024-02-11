@@ -3,6 +3,7 @@
 
 from enum import Enum
 
+from flask import current_app
 from geoalchemy2 import Geometry
 from gncitizen.core.commons.models import MediaModel, ProgramsModel, TimestampMixinModel
 from gncitizen.core.users.models import ObserverMixinModel, UserModel, ValidatorMixinModel
@@ -14,7 +15,8 @@ from utils_flask_sqla_geo.serializers import geoserializable, serializable
 from ...utils.taxonomy import taxhub_full_lists
 
 """Used attributes in observation features"""
-obs_keys = (
+
+OBS_KEYS = (
     "cd_nom",
     "id_observation",
     "observer",
@@ -27,6 +29,12 @@ obs_keys = (
     "timestamp_create",
     "json_data",
 )
+
+TAXREF_KEYS = ["nom_vern", "cd_nom", "cd_ref", "lb_nom"]
+MEDIA_KEYS = ["id_media", "nom_type_media"]
+
+if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
+    OBS_KEYS = OBS_KEYS + ("validation_status",)
 
 
 class AdminFormEnum(Enum):
@@ -43,10 +51,10 @@ class AdminFormEnum(Enum):
 
 
 class ValidationStatus(AdminFormEnum):
-    NOT_VALIDATED = "Non validé"
-    INVALID = "Invalide"
-    NON_VALIDATABLE = "Non validable"
-    VALIDATED = "Validé"
+    NOT_VALIDATED: str = "Non validé"
+    INVALID: str = "Invalide"
+    NON_VALIDATABLE: str = "Non validable"
+    VALIDATED: str = "Validé"
 
 
 INVALIDATION_STATUSES = [
@@ -145,23 +153,37 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
 
     def get_feature(self):
         """get obs data as geojson feature"""
-        taxref_keys = ["nom_vern", "cd_nom", "cd_ref", "lb_nom"]
-        media_keys = ["id_media", "nom_type_media"]
 
         result_dict = self.as_dict(True)
-        result_dict["observer"] = {
-            "username": self.observer.username if self.observer else None,
-            "id": self.id_role,
-        }
+        result_dict["observer"] = (
+            {
+                "username": self.observer.username,
+                "id": self.observer.id_user,
+                "avatar": self.observer.avatar,
+            }
+            if self.observer
+            else None
+        )
+        result_dict["validator"] = (
+            {
+                "username": self.validator_ref.username,
+                "id": self.validator_ref.id_user,
+            }
+            if self.validator_ref
+            else None
+        )
         result_dict["municipality"] = {"name": self.municipality}
+        result_dict["validation"] = str(self.validation_status)
 
         # Populate "geometry"
         feature = get_geojson_feature(self.geom)
 
         # Populate "properties"
         for k in result_dict:
-            if k in obs_keys:
-                feature["properties"][k] = result_dict[k]
+            if k in OBS_KEYS:
+                feature["properties"][k] = (
+                    result_dict[k].name if isinstance(result_dict[k], Enum) else result_dict[k]
+                )
         feature["properties"]["photos"] = [
             {
                 "url": f"/media/{p.media.filename}",
@@ -178,9 +200,9 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
                 for taxon in taxon_repository
                 if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
             )
-            feature["properties"]["taxref"] = {key: taxon["taxref"][key] for key in taxref_keys}
+            feature["properties"]["taxref"] = {key: taxon["taxref"][key] for key in TAXREF_KEYS}
             feature["properties"]["medias"] = [
-                {key: media[key] for key in media_keys} for media in taxon["medias"]
+                {key: media[key] for key in MEDIA_KEYS} for media in taxon["medias"]
             ]
         except StopIteration:
             pass
