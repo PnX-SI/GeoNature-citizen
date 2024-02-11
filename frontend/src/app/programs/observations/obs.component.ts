@@ -12,7 +12,8 @@ import {
 import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
-import { forkJoin } from 'rxjs';
+import { forkJoin, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { FeatureCollection, Feature } from 'geojson';
 
@@ -26,6 +27,10 @@ import { MediaGaleryComponent } from '../media-galery/media-galery.component';
 import { ObsListComponent } from './list/list.component';
 import { ModalFlowComponent } from './modalflow/modalflow.component';
 import { ProgramBaseComponent } from '../base/program-base.component';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from '../../auth/auth.service';
+import { UserService } from '../../auth/user-dashboard/user.service.service';
+import { ObservationsService } from './observations.service';
 import { MainConfig } from '../../../conf/main.config';
 
 @Component({
@@ -49,6 +54,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     isMobile: boolean;
     hideProgramHeader = false;
     mediaPanel: boolean = false;
+    obsToValidate: Feature;
+    modalRef: NgbModalRef;
+    role_id: number;
+    isValidator: boolean = false;
+    username: string = null;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -58,7 +68,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         public flowService: ModalFlowService,
         public breakpointObserver: BreakpointObserver,
         private titleService: Title,
-        private metaTagService: Meta
+        private metaTagService: Meta,
+        public auth: AuthService,
+        public userService: UserService,
+        private modalService: NgbModal,
+        private observationsService: ObservationsService,
     ) {
         super();
         this.route.params.subscribe((params) => {
@@ -83,60 +97,79 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                     this.isMobile = true;
                 }
             });
+        if (this.program_id) {
+            this.route.data.subscribe((data: { programs: Program[] }) => {
+                console.log('DATA', data)
+                this.programs = data.programs;
+                this.program = this.programs.find(
+                    (p) => p.id_program == this.program_id
+                );
+                this.taxonomyListID = this.program.taxonomy_list;
+                forkJoin([
+                    this.programService.getProgramObservations(this.program_id),
+                    this.programService.getProgramTaxonomyList(
+                        this.program.taxonomy_list
+                    ),
+                    this.programService.getProgram(this.program_id),
+                ]).subscribe(([observations, taxa, program]) => {
+                    this.observations = observations;
+                    this.surveySpecies = taxa;
+                    this.programFeature = program;
+                });
+                this.titleService.setTitle(
+                    this.MainConfig.appName + ' - ' + this.program.title
+                );
+                this.metaTagService.updateTag({
+                    name: 'description',
+                    content: this.program.short_desc,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:title',
+                    content: MainConfig.appName + ' - ' + this.program.title,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:description',
+                    content: this.program.short_desc,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:image',
+                    content: this.program.image,
+                });
+                this.metaTagService.updateTag({
+                    property: 'og:url',
+                    content: MainConfig.URL_APPLICATION + this.router.url,
+                });
+                this.metaTagService.updateTag({
+                    property: 'twitter:title',
+                    content: MainConfig.appName + ' - ' + this.program.title,
+                });
+                this.metaTagService.updateTag({
+                    property: 'twitter:description',
+                    content: this.program.short_desc,
+                });
+                this.metaTagService.updateTag({
+                    property: 'twitter:image',
+                    content: this.program.image,
+                });
+            });
+        }
 
-        this.route.data.subscribe((data: { programs: Program[] }) => {
-            this.programs = data.programs;
-            this.program = this.programs.find(
-                (p) => p.id_program == this.program_id
-            );
-            this.taxonomyListID = this.program.taxonomy_list;
-            forkJoin([
-                this.programService.getProgramObservations(this.program_id),
-                this.programService.getProgramTaxonomyList(
-                    this.program.taxonomy_list
-                ),
-                this.programService.getProgram(this.program_id),
-            ]).subscribe(([observations, taxa, program]) => {
-                this.observations = observations;
-                this.surveySpecies = taxa;
-                this.programFeature = program;
-            });
-            this.titleService.setTitle(
-                this.MainConfig.appName + ' - ' + this.program.title
-            );
-            this.metaTagService.updateTag({
-                name: 'description',
-                content: this.program.short_desc,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:title',
-                content: MainConfig.appName + ' - ' + this.program.title,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:description',
-                content: this.program.short_desc,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:image',
-                content: this.program.image,
-            });
-            this.metaTagService.updateTag({
-                property: 'og:url',
-                content: MainConfig.URL_APPLICATION + this.router.url,
-            });
-            this.metaTagService.updateTag({
-                property: 'twitter:title',
-                content: MainConfig.appName + ' - ' + this.program.title,
-            });
-            this.metaTagService.updateTag({
-                property: 'twitter:description',
-                content: this.program.short_desc,
-            });
-            this.metaTagService.updateTag({
-                property: 'twitter:image',
-                content: this.program.image,
-            });
-        });
+        const access_token = localStorage.getItem('access_token');
+        if (access_token) {
+            this.auth
+                .ensureAuthorized()
+                .subscribe((user) => {
+                    if (
+                        user &&
+                        user['features'] &&
+                        user['features']['id_role']
+                    ) {
+                        this.isValidator = user["features"]["validator"]
+
+                    }
+                });
+        }
+        this.username = localStorage.getItem('username');
     }
 
     @HostListener('document:NewObservationEvent', ['$event'])
@@ -150,17 +183,46 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         };
     }
 
-    // @HostListener("document:ObservationFilterEvent", ["$event"])
-    // observationFilterEventHandler(e: CustomEvent) {
-    // e.stopPropagation();
-    // console.log("FOURTR", this.obsList)
-    // this.obsList.observations = {
-    // type: "FeatureCollection",
-    // features: this.observations.features
-    // };
-    // }
 
     addObsClicked() {
         this.modalFlow.first.clicked();
+    }
+
+    openValidateModal(validateModal: any, idObs: number) {
+        this.obsToValidate = this.observations.features.find(obs => obs.properties.id_observation === idObs);
+        if (this.canValidateObservation()) {
+            this.modalRef = this.modalService.open(validateModal, {
+                size: 'lg',
+                windowClass: 'obs-modal',
+                centered: true,
+            });
+        }
+    }
+
+    canValidateObservation(): boolean {
+        console.log(`<canValidateObservation> this.isValidator`, this.isValidator)
+        console.log(`<canValidateObservation> this.obsToValidate.properties`, this.obsToValidate.properties)
+        return (this.MainConfig.VERIFY_OBSERVATIONS_ENABLED && this.isValidator)
+            && (this.obsToValidate.properties.validation_status != "VALIDATED")
+            && (!this.obsToValidate.properties.observer || (
+                this.obsToValidate.properties.observer && this.obsToValidate.properties.observer.username !== this.username)
+            )
+    }
+
+    closeModal(observationId: number = null) {
+        if (observationId) {
+            this.route.data.subscribe(() => {
+                this.observationsService
+                    .getObservation(observationId)
+                    .subscribe((updatedObservation: FeatureCollection) => {
+                        this.observations.features[this.observations.features.findIndex(obs => obs.properties.id_observation === observationId)] = updatedObservation.features[0]
+                    });
+            });
+        }
+        this.modalRef.close();
+    }
+
+    ngOnDestroy(): void {
+        if (this.modalRef) this.modalRef.close();
     }
 }

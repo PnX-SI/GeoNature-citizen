@@ -250,6 +250,7 @@ def login():
                     "userAvatar": current_user.as_secured_dict(True).get("avatar"),
                     "access_token": access_token,
                     "refresh_token": refresh_token,
+                    "isValidator": current_user.validator,
                 },
                 200,
             )
@@ -364,6 +365,8 @@ def logged_user():
                 .filter(ObservationModel.id_role == user.id_user)
                 .one()[0]
             }
+            if not current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
+                result["validator"] = False
 
             return (
                 {"message": "Vos données personelles", "features": result},
@@ -499,7 +502,7 @@ def reset_user_password():
 
     try:
         send_user_email(
-            subject, from_addr, to, plain_message=plain_message, html_message=html_message
+            subject, to, from_addr, plain_message=plain_message, html_message=html_message
         )
         user.password = passwd_hash
         db.session.commit()

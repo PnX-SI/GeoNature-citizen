@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+from enum import Enum
+
 from flask import current_app
 from geoalchemy2 import Geometry
 from gncitizen.core.commons.models import MediaModel, ProgramsModel, TimestampMixinModel
-from gncitizen.core.users.models import ObserverMixinModel
+from gncitizen.core.users.models import ObserverMixinModel, UserModel, ValidatorMixinModel
 from server import db
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from utils_flask_sqla_geo.generic import get_geojson_feature
@@ -13,7 +15,8 @@ from utils_flask_sqla_geo.serializers import geoserializable, serializable
 from ...utils.taxonomy import taxhub_full_lists
 
 """Used attributes in observation features"""
-obs_keys = (
+
+OBS_KEYS = (
     "cd_nom",
     "id_observation",
     "observer",
@@ -27,6 +30,64 @@ obs_keys = (
     "json_data",
 )
 
+TAXREF_KEYS = ["nom_vern", "cd_nom", "cd_ref", "lb_nom"]
+MEDIA_KEYS = ["id_media", "nom_type_media"]
+
+if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
+    OBS_KEYS = OBS_KEYS + ("validation_status",)
+
+
+class AdminFormEnum(Enum):
+    @classmethod
+    def choices(cls):
+        return [(choice, choice.value) for choice in cls]
+
+    @classmethod
+    def coerce(cls, item):
+        return cls(item) if not isinstance(item, cls) else item
+
+    def __str__(self):
+        return str(self.value)
+
+
+class ValidationStatus(AdminFormEnum):
+    NOT_VALIDATED: str = "Non validé"
+    INVALID: str = "Invalide"
+    NON_VALIDATABLE: str = "Non validable"
+    VALIDATED: str = "Validé"
+
+
+INVALIDATION_STATUSES = [
+    {
+        "value": "",
+        "text": "---",
+        "link": "NOT_VALIDATED",
+        "mail": "",
+        "twice": "",
+    },
+    {
+        "value": "unverifiable",
+        "text": "L'identification est difficile, besoin d'un autre avis",
+        "link": "INVALID",
+        "mail": "L'identification de l'espèce que vous avez observée est difficile d'après cette ou ces photos, nous continuons nos recherches...",
+        "twice": "Désolé, l'identification de l'individu que vous avez observée est trop difficile. Pouvez-vous essayer de le photographier, à nouveau, lui et/ou ses congénères ?",
+    },
+    {
+        "value": "off-topic",
+        "text": "L'espèce observée n'est pas dans la liste des espèces de l'enquête",
+        "link": "NON_VALIDATABLE",
+        "mail": "L'espèce que vous avez observée n'est pas dans la liste des espèces de l'enquête.",
+        "twice": "",
+    },
+    {
+        "value": "multiple",
+        "text": "Les photos correspondent à des espèces différentes, l'observateur doit créer une nouvelle observation",
+        "link": "NON_VALIDATABLE",
+        "mail": "Les photos que vous nous avez envoyées correspondent à des espèces différentes. Pourriez-vous les poster séparément ?",
+        "twice": "",
+    },
+]
+
 
 @serializable
 @geoserializable
@@ -35,6 +96,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
 
     __tablename__ = "t_obstax"
     __table_args__ = {"schema": "gnc_obstax"}
+
     id_observation = db.Column(db.Integer, primary_key=True, unique=True)
     uuid_sinp = db.Column(UUID(as_uuid=True), nullable=False, unique=True)
     id_program = db.Column(
@@ -49,7 +111,6 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     date = db.Column(db.Date, nullable=False)
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
-    # FIXME: remove nullable prop from ObservationModel.municipality once debugged
     municipality = db.Column(db.String(100), nullable=True)
     geom = db.Column(
         Geometry(
@@ -59,29 +120,57 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         )
     )
     json_data = db.Column(JSONB, nullable=True)
+    validation_status = db.Column(
+        db.Enum(ValidationStatus), default=ValidationStatus.NOT_VALIDATED
+    )
+    id_validator = db.Column(
+        db.Integer,
+        db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
+        nullable=True,
+    )
 
     program_ref = db.relationship("ProgramsModel", backref="t_obstax", lazy="joined")
     medias = db.relationship("ObservationMediaModel", backref="t_obstax", lazy="joined")
-    observer = db.relationship("UserModel", backref="t_obstax", lazy="joined")
+    observer = db.relationship(
+        "UserModel",
+        backref="observer_obs",
+        lazy="joined",
+        foreign_keys="ObservationModel.id_role",
+    )
+    validator_ref = db.relationship(
+        "UserModel",
+        backref=db.backref("validator_obs", lazy="dynamic"),
+        foreign_keys="ObservationModel.id_validator",
+    )
+
+    # def taxref(self):
+    #     """Taxref taxon info"""
+    #     taxon_repository = taxhub_full_lists[self.program_ref.taxonomy_list]
+    #     taxref = next(
+    #         taxon for taxon in taxon_repository if taxon and taxon["cd_nom"] == self.cd_nom
+    #     )
+    #     return taxref
 
     def get_feature(self):
-        taxref_keys = ["nom_vern", "cd_nom", "cd_ref", "lb_nom"]
-        media_keys = ["id_media", "nom_type_media"]
+        """get obs data as geojson feature"""
 
         result_dict = self.as_dict(True)
-        result_dict["observer"] = {
-            "username": self.observer.username if self.observer else None,
-            "id": self.id_role,
-        }
-        result_dict["municipality"] = {"name": self.municipality}
+        result_dict["observer"] = self.observer.as_simple_dict() if self.observer else None
+        result_dict["validator"] = (
+            self.validator_ref.as_simple_dict() if self.validator_ref else None
+        )
+
+        result_dict["validation"] = str(self.validation_status)
 
         # Populate "geometry"
         feature = get_geojson_feature(self.geom)
 
         # Populate "properties"
         for k in result_dict:
-            if k in obs_keys:
-                feature["properties"][k] = result_dict[k]
+            if k in OBS_KEYS:
+                feature["properties"][k] = (
+                    result_dict[k].name if isinstance(result_dict[k], Enum) else result_dict[k]
+                )
         feature["properties"]["photos"] = [
             {
                 "url": f"/media/{p.media.filename}",
@@ -98,22 +187,14 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
                 for taxon in taxon_repository
                 if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
             )
-            feature["properties"]["taxref"] = {key: taxon["taxref"][key] for key in taxref_keys}
+            feature["properties"]["taxref"] = {key: taxon["taxref"][key] for key in TAXREF_KEYS}
             feature["properties"]["medias"] = [
-                {key: media[key] for key in media_keys} for media in taxon["medias"]
+                {key: media[key] for key in MEDIA_KEYS} for media in taxon["medias"]
             ]
         except StopIteration:
             pass
 
         return feature
-
-    # def taxref(self):
-    #     """Taxref taxon info"""
-    #     taxon_repository = taxhub_full_lists[self.program_ref.taxonomy_list]
-    #     taxref = next(
-    #         taxon for taxon in taxon_repository if taxon and taxon["cd_nom"] == self.cd_nom
-    #     )
-    #     return taxref
 
 
 @serializable
@@ -135,4 +216,5 @@ class ObservationMediaModel(TimestampMixinModel, db.Model):
         nullable=False,
         index=True,
     )
+
     media = db.relationship("MediaModel", backref="obs_media_match", lazy="joined")

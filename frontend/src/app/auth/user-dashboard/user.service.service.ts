@@ -42,9 +42,21 @@ export class UserService {
     }
 
     getObservationsByUserId(userId: number) {
-        const params = { id_role: `${userId}` }
+        let params = { id_role: userId.toString() };
         return this.http.get<Object>(
             `${MainConfig.API_ENDPOINT}/observations`, { params }
+        );
+    }
+
+    getValidationStatuses() {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/validation_statuses`
+        );
+    }
+
+    getInvalidationStatuses() {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/invalidation_statuses`
         );
     }
 

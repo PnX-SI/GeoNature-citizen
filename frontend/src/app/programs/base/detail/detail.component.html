@@ -67,7 +67,7 @@
                         obs?.properties.date.substring(0, 10)
                         | date: 'longDate'
                         }}<br>
-                        {{ obs?.properties.municipality.name ? 'Commune&nbsp;: '+obs?.properties.municipality.name :
+                        {{ obs?.properties.municipality ? 'Commune&nbsp;: '+obs?.properties.municipality :
                         null }}<br>
                         Nombre&nbsp;: {{ obs?.properties.count}}
                     </p>

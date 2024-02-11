@@ -33,6 +33,10 @@ MEDIA_FOLDER = 'media'
 REWARDS_ENABLED = false
 
 
+# Verify observations
+VERIFY_OBSERVATIONS_ENABLED = false
+
+
 [RESET_PASSWD]
     SUBJECT = "Link"
     FROM = 'contact@geonature-citizen.fr'
@@ -60,6 +64,13 @@ REWARDS_ENABLED = false
      <p>Bien à vous.</p>
     '''
 
+[VALIDATION_EMAIL]
+    SUBJECT = "Mise à jour de votre observation {observation}"
+    HTML_TEMPLATE = '''<p> Bonjour,</p><br />
+     <p>{message}</p>
+     <p>Pour retrouver votre observation, <a href="{obs_link}">cliquez ici.</a></p><br />
+    '''
+
 [MAIL]
     MAIL_USE_SSL = false
     MAIL_STARTTLS = true
@@ -67,7 +78,7 @@ REWARDS_ENABLED = false
     MAIL_PORT = 493   # mandatory SSL port
     MAIL_AUTH_LOGIN = 'smtpd/relay host username'
     MAIL_AUTH_PASSWD = 'smtpd/relay host password'
+    MAIL_FROM_ADDR = 'fcloitre@dbwildlife.info'
 
 
 # API flasgger main config
-

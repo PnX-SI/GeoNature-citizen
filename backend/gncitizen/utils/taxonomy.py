@@ -135,14 +135,14 @@ def get_specie_from_cd_nom(cd_nom) -> Dict:
 def refresh_taxonlist() -> Dict:
     """refresh taxon list"""
     logger.info("Pre loading taxhub data (taxa lists and medias)")
-    lists = taxhub_rest_get_all_lists()
-    if lists:
+    taxhub_lists = taxhub_rest_get_all_lists()
+    if taxhub_lists:
         count = 0
-        for list in lists:
+        for taxhub_list in taxhub_lists:
             count += 1
-            logger.info(f"loading list {count}/{len(lists)}")
-            r = make_taxon_repository(list["id_liste"])
-            taxhub_full_lists[list["id_liste"]] = r
+            logger.info(f"loading list {count}/{len(taxhub_list)}")
+            r = make_taxon_repository(taxhub_list["id_liste"])
+            taxhub_full_lists[taxhub_list["id_liste"]] = r
     else:
         logger.warning("ERROR: No taxhub lists available")
     return taxhub_full_lists

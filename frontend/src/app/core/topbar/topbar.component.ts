@@ -28,6 +28,7 @@ export class TopbarComponent implements OnInit {
     isCollapsed = true;
     programs$ = new Subject<Program[]>();
     isAdmin = false;
+    isValidator = false;
     canDisplayAbout: boolean = MainConfig.about;
     canSignup: boolean = MainConfig.signup !== 'never';
     adminUrl: SafeUrl;
@@ -127,6 +128,7 @@ export class TopbarComponent implements OnInit {
                     if (user && user['features'] && user['features'].id_role) {
                         this.username = user['features'].username;
                         this.isAdmin = user['features'].admin ? true : false;
+                        this.isValidator = user['features'].validator;
                         if (this.isAdmin) {
                             const ADMIN_ENDPOINT = [
                                 MainConfig.API_ENDPOINT,

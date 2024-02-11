@@ -1,4 +1,4 @@
-"""empty message
+"""init v1.0.0
 
 Revision ID: e8c1cd57ad16
 Revises: 

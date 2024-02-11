@@ -2,74 +2,59 @@
     <ng-content select="[obs-form]" *ngIf="display_form"></ng-content>
     <span [class.d-none]="display_form">
         <div class="toolbar">
-            <select
-                class="form-control rounded-0"
-                id="inputSpecies"
-                [(ngModel)]="selectedTaxon"
-                (ngModelChange)="onFilterChange()"
-            >
-                <option
-                    [ngValue]="null"
-                    i18n="All species select option@@allSpeciesSelectOption"
-                >
+            <select class="form-control rounded-0" id="inputSpecies" [(ngModel)]="selectedTaxon"
+                (ngModelChange)="onFilterChange()">
+                <option [ngValue]="null" i18n="All species select option@@allSpeciesSelectOption">
                     Toutes espèces
                 </option>
                 <option *ngFor="let s of surveySpecies" [ngValue]="s">
                     {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }}
-                    <span *ngIf="MainConfig.taxonDisplaySciName"
-                        >(<i>{{ s.taxref?.nom_complet }}</i
-                        >)</span
-                    >
+                    <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref?.nom_complet }}</i>)</span>
                 </option>
             </select>
 
-            <select
-                id="municipality"
-                name="municipality"
-                type="text"
-                class="form-control rounded-0 col-lg-6"
-                [(ngModel)]="selectedMunicipality"
-                (ngModelChange)="onFilterChange()"
-            >
-                <option
-                    [ngValue]="null"
-                    i18n="
+            <select id="municipality" name="municipality" type="text" class="form-control rounded-0"
+                [ngClass]="{'col-lg-6': !validationStatuses || (validationStatuses | json) == '{}'}"
+                [(ngModel)]="selectedMunicipality" (ngModelChange)="onFilterChange()">
+                <option [ngValue]="null" i18n="
                         All municipalities select
-                        option@@allMunicipalitiesSelectOption"
-                >
+                        option@@allMunicipalitiesSelectOption">
                     Toutes communes
                 </option>
                 <option *ngFor="let t of municipalities" [ngValue]="t">
                     {{ t }}
                 </option>
             </select>
+            <select *ngIf="validationStatuses && (validationStatuses | json) != '{}'" class="form-control rounded-0"
+                id="inputValidationStatus" [(ngModel)]="selectedValidationStatus" (ngModelChange)="onFilterChange()">
+                <option [ngValue]="null" i18n="All validation status select option@@allValidationStatusSelectOption">
+                    Tout statuts de validation
+                </option>
+                <option *ngFor="let status of validationStatuses | keyvalue" [ngValue]="status.key">
+                    {{ status.value }}
+                </option>
+            </select>
         </div>
         <div class="col-lg-12 mx-4 mt-2 mb-4">
-            <strong i18n="My obs@@myObs"
-                ><span *ngIf="router.url.includes('mydashboard')">Mes </span
-                >Observations
+            <strong i18n="My obs@@myObs"><span *ngIf="router.url.includes('mydashboard')">Mes </span>Observations<span
+                    *ngIf="router.url.includes('not_validated')"> à valider </span>
             </strong>
             <span class="badge badge-pill badge-info">{{
                 (features$ | async)?.length
-            }}</span>
+                }}</span>
             <ng-content select="[add-obs]"></ng-content>
         </div>
         <div id="list">
-            <div
-                *ngFor="let o of features$ | async; trackBy: trackByObs"
-                (click)="onObsClick(o)"
-                class="espece obs-{{ o.properties.id_observation }}"
-            >
+            <div *ngFor="let o of features$ | async; trackBy: trackByObs" (click)="onObsClick(o)"
+                class="espece obs-{{ o.properties.id_observation }}">
                 <!-- FIXME: hardcoded api media endpoint -->
-                <img
-                    class="obs-img"
-                    [src]="
+                <img class="obs-img" [src]="
                         o.properties.images && !!o.properties.images.length
                             ? MainConfig.API_ENDPOINT +
                               '/media/' +
                               o.properties.images[0]
                             : o.properties.image
-                            ? o.properties.image
+                            ? MainConfig.API_ENDPOINT.replace('/api', '') + o.properties.image
                             : o.properties.medias &&
                               !!o.properties.medias.length
                             ? MainConfig.API_TAXHUB +
@@ -77,91 +62,78 @@
                               o.properties.medias[0].id_media +
                               '?h=80'
                             : 'assets/default_image.png'
-                    "
-                />
+                    " />
                 <div class="infos">
-                    <a
-                        class="espece-link"
-                        target="_blank"
-                        href="{{
-                            MainConfig.details_espece_url + o.properties.cd_nom
-                        }}"
-                        >{{
+                    <div>
+                        <a class="espece-link" [ngClass]="{
+                                'text-warning': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED',
+                                'text-danger': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && ['INVALID', 'NON_VALIDATABLE'].includes(o.properties.validation_status)
+                            }" target="_blank" href="{{
+                                MainConfig.details_espece_url + o.properties.cd_nom
+                            }}">{{
                             !!o.properties.nom_francais
-                                ? o.properties.nom_francais
-                                : o.properties.taxref?.nom_vern
-                        }}</a
-                    >
+                            ? o.properties.nom_francais
+                            : o.properties.taxref?.nom_vern
+                            }}</a>
+                        &nbsp;
+                        <span *ngIf="MainConfig.VERIFY_OBSERVATIONS_ENABLED" (click)="onValidateClick(o)"
+                            [ngStyle]="{ 'cursor': o.properties.observer?.username == username ? 'not-allowed' :  'pointer'}">
+                            <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
+                                class="fa fa-hourglass-half text-warning" aria-hidden="true" placement="bottom"
+                                ngbTooltip="Non validée{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
+                            <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'INVALID'"
+                                class="fa fa-question-circle text-danger" aria-hidden="true" placement="bottom"
+                                ngbTooltip="Invalide{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
+                            <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NON_VALIDATABLE'"
+                                class="fa fa-times-circle text-danger" aria-hidden="true" placement="bottom"
+                                ngbTooltip="Non validable{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
+                            <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'VALIDATED'"
+                                class="fa fa-certificate text-success" aria-hidden="true" placement="bottom"
+                                ngbTooltip="Approuvé"></i>
+                        </span>
+
+                    </div>
                     <div *ngIf="MainConfig.program_list_observers_names">
-                        <i
-                            *ngIf="!o.properties.observer.userAvatar"
-                            width="22px"
-                            class="fa fa-fw fa-user-circle"
-                        ></i>
-                        <div
-                            *ngIf="o.properties.observer.userAvatar"
-                            class="avatar-wrapper"
-                            [style.background-image]="
+                        <i *ngIf="!o.properties.observer?.avatar" width="22px" class="fa fa-fw fa-user-circle"></i>
+                        <div *ngIf="o.properties.observer?.avatar" class="avatar-wrapper" [style.background-image]="
                                 'url(' +
                                 MainConfig.API_ENDPOINT +
                                 '/media/' +
-                                o.properties.observer.userAvatar +
+                                o.properties.observer.avatar +
                                 ')'
-                            "
-                        >
+                            ">
                             <!-- <img  class=" avatar-img rounded-circle" width="22px" [src]="MainConfig.API_ENDPOINT + '/media/' + o.properties.observer.userAvatar" /> -->
                         </div>
                         <span>{{
                             o.properties.observer?.username
-                                ? o.properties.observer.username
-                                : 'Anonyme'
-                        }}</span>
+                            ? o.properties.observer.username
+                            : 'Anonyme'
+                            }}</span>
                         <span *ngIf="displayOwnerActions">
                             &nbsp;
-                            <app-modalflow
-                                [coords]="o.properties.coords"
-                                [updateData]="o.properties"
-                                [program_id]="o.properties.id_program"
-                                *ngIf="'TODO dashboard condition'"
-                            >
-                                <i
-                                    class="fa fa-edit text-primary"
-                                    placement="top"
-                                    ngbTooltip="Editer"
-                                    btn-open
-                                ></i>
+                            <app-modalflow [coords]="o.properties.coords" [updateData]="o.properties"
+                                [program_id]="o.properties.id_program" *ngIf="'TODO dashboard condition'">
+                                <i class="fa fa-edit text-primary" placement="top" ngbTooltip="Editer" btn-open></i>
                             </app-modalflow>
                             &nbsp;
-                            <i
-                                class="fa fa-trash text-danger"
-                                placement="top"
-                                ngbTooltip="Supprimer"
-                                (click)="
+                            <i class="fa fa-trash text-danger" placement="top" ngbTooltip="Supprimer" (click)="
                                     deleteObs.emit(o.properties.id_observation)
-                                "
-                                owner-actions
-                            ></i>
+                                " owner-actions></i>
                         </span>
                     </div>
                     <p>
                         le <span>{{ o.properties.date }}</span>
-                        <span *ngIf="o.properties.municipality?.name">
-                            à {{ o.properties.municipality?.name }}</span
-                        >
+                        <span *ngIf="o.properties.municipality">
+                            à {{ o.properties.municipality }}</span>
                     </p>
                 </div>
-                <div
-                    class="hide detail-link"
-                    [routerLink]="[
+                <div class="hide detail-link" [routerLink]="[
                         '/programs',
                         o.properties.id_program,
                         'observations',
                         o.properties.id_observation
-                    ]"
-                    queryParamsHandling="preserve"
-                    style="cursor: pointer"
-                    title="Voir les détails de cette observation"
-                >
+                    ]" queryParamsHandling="preserve" style="cursor: pointer"
+                    title="Voir les détails de cette observation">
                     <img src="assets/binoculars.png" />
                 </div>
             </div>
