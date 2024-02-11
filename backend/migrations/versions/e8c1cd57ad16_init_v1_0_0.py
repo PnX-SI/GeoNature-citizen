@@ -5,6 +5,7 @@ Revises:
 Create Date: 2022-03-03 21:41:36.783319
 
 """
+
 from datetime import datetime
 
 import geoalchemy2 as ga
@@ -17,10 +18,12 @@ down_revision = None
 branch_labels = None
 depends_on = None
 
+SCHEMAS = ["gnc_core", "gnc_obstax", "gnc_sites"]
+
 
 def upgrade():
-    op.execute("create schema if not exists gnc_obstax")
-    op.execute("create schema if not exists gnc_sites")
+    for schema in SCHEMAS:
+        op.execute(f"create schema if not exists {schema}")
     op.create_table(
         "bib_groups",
         sa.Column("id_group", sa.Integer(), nullable=False),

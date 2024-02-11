@@ -10,7 +10,7 @@ import {
     NgbModal,
 } from '@ng-bootstrap/ng-bootstrap';
 
-import { GncService } from '../api/gnc.service';
+import { UtilsService } from '../api/utils.service';
 import { GncProgramsService } from '../api/gnc-programs.service';
 
 import { ProgramsComponent } from './programs.component';
@@ -22,7 +22,7 @@ describe('ProgramsComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule, RouterTestingModule],
-            providers: [GncService, GncProgramsService, NgbModal],
+            providers: [UtilsService, GncProgramsService, NgbModal],
             declarations: [ProgramsComponent],
         }).compileComponents();
     }));

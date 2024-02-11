@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
+from gncitizen.core.commons.models import ProgramsModel, TimestampMixinModel, TModules
 from passlib.hash import pbkdf2_sha256 as sha256
+from server import db
 from sqlalchemy.ext.declarative import declared_attr
 from utils_flask_sqla_geo.serializers import serializable
-
-from gncitizen.core.commons.models import ProgramsModel, TimestampMixinModel, TModules
-from server import db
 
 
 class RevokedTokenModel(db.Model):
@@ -71,9 +70,9 @@ class UserModel(TimestampMixinModel, db.Model):
             "active": self.active,
             "validator": self.validator,
             "timestamp_create": self.timestamp_create.isoformat(),
-            "timestamp_update": self.timestamp_update.isoformat()
-            if self.timestamp_update
-            else None,
+            "timestamp_update": (
+                self.timestamp_update.isoformat() if self.timestamp_update else None
+            ),
         }
 
     @staticmethod
@@ -119,6 +118,7 @@ class GroupsModel(db.Model):
 
     __tablename__ = "bib_groups"
     __table_args__ = {"schema": "gnc_core"}
+
     id_group = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(150), nullable=True)
     group = db.Column(db.String(150), nullable=False)
@@ -130,6 +130,7 @@ class UserRightsModel(TimestampMixinModel, db.Model):
 
     __tablename__ = "t_users_rights"
     __table_args__ = {"schema": "gnc_core"}
+
     id_user_right = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
     id_module = db.Column(db.Integer, db.ForeignKey(TModules.id_module), nullable=True)
@@ -150,6 +151,7 @@ class UserGroupsModel(TimestampMixinModel, db.Model):
 
     __tablename__ = "cor_users_groups"
     __table_args__ = {"schema": "gnc_core"}
+
     id_user_right = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
     id_group = db.Column(
@@ -160,8 +162,11 @@ class UserGroupsModel(TimestampMixinModel, db.Model):
 
 
 class ObserverMixinModel(object):
+    """Observer mixin model"""
+
     @declared_attr
-    def id_role(cls):
+    def id_role(self):
+        """id observer fk"""
         return db.Column(
             db.Integer,
             db.ForeignKey(UserModel.id_user, ondelete="CASCADE"),
@@ -169,11 +174,13 @@ class ObserverMixinModel(object):
         )
 
     @declared_attr
-    def obs_txt(cls):
+    def obs_txt(self):
+        """observer name"""
         return db.Column(db.String(150))
 
     @declared_attr
-    def email(cls):
+    def email(self):
+        """observer email"""
         return db.Column(db.String(150))
 
 

@@ -74,10 +74,25 @@ class CustomFormView(ModelView):
 
 class UserView(ModelView):
     column_exclude_list = ["password"]
+    column_filters = (
+        "username",
+        "name",
+        "surname",
+        "email",
+        "active",
+        "admin",
+    )
+    column_searchable_list = (
+        "username",
+        "name",
+        "surname",
+        "email",
+    )
     form_excluded_columns = [
         "timestamp_create",
         "timestamp_update",
         "password",
+        "t_obstax",
     ]
     can_create = False
 

@@ -1,11 +1,11 @@
 export interface MediaItem {
     id_media: number;
     filename: string;
-    id_data_source: number ;
+    id_data_source: number;
     cd_nom: number | null;
     name: string | null;
     observer: string | null;
-    id_observer: number | null;
+    id_role: number | null;
     date: string;
     id_site: number | null;
     program: string;
@@ -15,4 +15,4 @@ export interface MediaItem {
     data_url: string;
 }
 
-export interface MediaList extends Array<MediaItem>{}
+export interface MediaList extends Array<MediaItem> { }

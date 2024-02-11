@@ -80,7 +80,13 @@ class GeometryModel(TimestampMixinModel, db.Model):
     id_geom = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text(), nullable=True)
-    geom = db.Column(Geometry("GEOMETRY", 4326))
+    geom = db.Column(
+        Geometry(
+            geometry_type="GEOMETRY",
+            srid=4326,
+            spatial_index=True,
+        )
+    )
     geom_file = db.Column(db.String(250), nullable=True)
 
     def get_geom_file_path(self):
@@ -135,7 +141,7 @@ class ProjectModel(TimestampMixinModel, db.Model):
     __table_args__ = {"schema": "gnc_core"}
     id_project = db.Column(db.Integer, primary_key=True)
     unique_id_project = db.Column(
-        UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False
+        UUID(as_uuid=True), default=uuid.uuid4, unique=True, nullable=False, index=True
     )
     name = db.Column(db.String(50), nullable=False)
     short_desc = db.Column(db.String(200), nullable=True)
