@@ -21,7 +21,7 @@ from sqlalchemy import and_, case, distinct
 from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
 
-from .admin import CustomFormView, GeometryView, ProgramView, ProjectView, UserView
+from .admin import CustomFormView, GeometryView, ProgramView, ProjectView
 from .models import (
     CustomFormModel,
     GeometryModel,
@@ -34,7 +34,6 @@ from .models import (
 commons_api = Blueprint("commons", __name__)
 
 admin.add_view(FileAdmin(MEDIA_DIR, "/api/media/", name="Medias"))
-admin.add_view(UserView(UserModel, db.session, "Utilisateurs"))
 admin.add_view(ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes"))
 admin.add_view(
     GeometryView(
