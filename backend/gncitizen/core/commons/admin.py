@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
-import requests
 from flask import current_app, flash
 from flask_admin.contrib.sqla.view import ModelView
 from flask_admin.form.upload import FileUploadField
@@ -10,7 +9,7 @@ from gncitizen.core.sites.models import CorProgramSiteTypeModel
 from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatter
 from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.taxonomy import taxonomy_lists
-from wtforms import SelectField
+from wtforms import SelectField, fields
 
 logger = current_app.logger
 
@@ -72,37 +71,11 @@ class CustomFormView(ModelView):
     }
 
 
-class UserView(ModelView):
-    column_exclude_list = ["password"]
-    column_filters = (
-        "username",
-        "name",
-        "surname",
-        "email",
-        "active",
-        "admin",
-    )
-    column_searchable_list = (
-        "username",
-        "name",
-        "surname",
-        "email",
-    )
-    form_excluded_columns = [
-        "timestamp_create",
-        "timestamp_update",
-        "password",
-        "t_obstax",
-    ]
-    can_create = False
-
-
 def get_geom_file_path(obj, file_data):
     return "geometries/{}".format(file_data.filename)
 
 
 class GeometryView(CustomTileView):
-    # column_exclude_list = ["geom"]
     form_excluded_columns = ["timestamp_create", "timestamp_update"]
     column_exclude_list = ["geom", "geom_file"]
     form_overrides = dict(geom_file=FileUploadField)
