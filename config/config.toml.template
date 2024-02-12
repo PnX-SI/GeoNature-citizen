@@ -82,3 +82,7 @@ VERIFY_OBSERVATIONS_ENABLED = false
 
 
 # API flasgger main config
+
+# Flaskadmin map default center
+DEFAULT_CENTER_LAT = 45
+DEFAULT_CENTER_LONG = 5

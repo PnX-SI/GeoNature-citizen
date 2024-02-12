@@ -45,13 +45,13 @@ def valid_api_url(url):
     return url
 
 
-def load_config(config_file=None):
+def load_config():
     """Load the geonature-citizen configuration from a given file"""
     config_gnc = load_toml(get_config_file_path())
     config_gnc["FLASK_ADMIN_FLUID_LAYOUT"] = True
     config_gnc["MAPBOX_MAP_ID"] = "light-v10"
-    config_gnc["DEFAULT_CENTER_LAT"] = 5
-    config_gnc["DEFAULT_CENTER_LONG"] = 45
+    config_gnc["DEFAULT_CENTER_LAT"] = config_gnc.get("DEFAULT_CENTER_LAT", 45)
+    config_gnc["DEFAULT_CENTER_LONG"] = config_gnc.get("DEFAULT_CENTER_LONG", 5)
     # config_gnc["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(seconds=20)
     # config_gnc["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(seconds=40)
     return config_gnc
