@@ -4,7 +4,7 @@ import {
     TransferState,
     makeStateKey,
 } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, map, pluck, tap } from 'rxjs/operators';
 
@@ -13,7 +13,10 @@ import { FeatureCollection, Feature } from 'geojson';
 import { MainConfig } from '../../conf/main.config';
 import { Program } from '../programs/programs.models';
 import { TaxonomyList } from '../programs/observations/observation.model';
-import { MediaItem, MediaList } from '../programs/media-galery/media-galery.model';
+import {
+    MediaList,
+    MediaPaginatedList,
+} from '../programs/media-galery/media-galery.model';
 
 const PROGRAMS_KEY = makeStateKey('programs');
 
@@ -199,11 +202,15 @@ export class GncProgramsService implements OnInit {
             );
     }
 
-    getMedias(params): Observable<MediaList> {
-        Object.keys(params).forEach(key => params[key] === undefined ? delete params[key] : {});
-        return this.http.get<MediaList>(`${this.URL}/medias`, {
-            params,
-        });
+    getMedias(params: HttpParams): Observable<MediaPaginatedList | MediaList> {
+        Object.keys(params).forEach((key) =>
+            params[key] === undefined ? delete params[key] : {}
+        );
+        return this.http.get<MediaPaginatedList | MediaList>(
+            `${this.URL}/medias`,
+            {
+                params,
+            });
     }
 
     private handleError<T>(operation = 'operation', result?: T) {
