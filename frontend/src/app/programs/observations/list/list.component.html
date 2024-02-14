@@ -41,7 +41,7 @@
             </strong>
             <span class="badge badge-pill badge-info">{{
                 (features$ | async)?.length
-                }}/{{observations?.total}}</span>
+                }}{{(observations.pages>1) ? '/' +observations?.total :''}}</span>
             <ng-content select="[add-obs]"></ng-content>
         </div>
         <div id="list">
