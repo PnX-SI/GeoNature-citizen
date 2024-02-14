@@ -1,5 +1,6 @@
 import { Feature, FeatureCollection } from 'geojson';
 
+
 export interface PostObservationResponse extends FeatureCollection {
     message: string;
     features: ObservationFeature[];
@@ -19,6 +20,8 @@ export interface ObservationFeature extends Feature {
         observer?: any;
         sci_name: string;
         timestamp_create: Date;
+        validation_status?: string;
+        taxref: any;
     };
 }
 
@@ -30,4 +33,12 @@ export interface TaxonomyListItem {
 
 export interface TaxonomyList {
     [index: number]: TaxonomyListItem;
+}
+
+export interface ObservationFeatureCollection extends FeatureCollection {
+    page?: number;
+    pages?: number;
+    per_page?: number;
+    total?: number;
+    features: Array<ObservationFeature>;
 }

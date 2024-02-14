@@ -12,16 +12,14 @@ import {
 import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
-import { forkJoin, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
-import { FeatureCollection, Feature } from 'geojson';
 
 import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
 import { GncProgramsService } from '../../api/gnc-programs.service';
 import { ModalFlowService } from './modalflow/modalflow.service';
-import { TaxonomyList } from './observation.model';
+import { ObservationFeature, TaxonomyList } from './observation.model';
 import { ObsMapComponent } from './map/map.component';
 import { MediaGaleryComponent } from '../media-galery/media-galery.component';
 import { ObsListComponent } from './list/list.component';
@@ -31,6 +29,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../auth/user-dashboard/user.service.service';
 import { ObservationsService } from './observations.service';
+import { ObservationFeatureCollection } from './observation.model';
 import { MainConfig } from '../../../conf/main.config';
 
 @Component({
@@ -41,7 +40,7 @@ import { MainConfig } from '../../../conf/main.config';
     providers: [ProgramsResolve],
 })
 export class ObsComponent extends ProgramBaseComponent implements OnInit {
-    observations: FeatureCollection;
+    observations: ObservationFeatureCollection;
     surveySpecies: TaxonomyList;
     @ViewChild(ObsMapComponent, { static: true }) obsMap: ObsMapComponent;
     @ViewChild(ObsListComponent, { static: true }) obsList: ObsListComponent;
@@ -49,15 +48,15 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     mediaGalery: MediaGaleryComponent;
     @ViewChildren(ModalFlowComponent) modalFlow: QueryList<ModalFlowComponent>;
 
-    selectedObs: Feature;
+    selectedObs: ObservationFeature;
     public isCollapsed = true;
     isMobile: boolean;
     hideProgramHeader = false;
-    mediaPanel: boolean = false;
-    obsToValidate: Feature;
+    mediaPanel = false;
+    obsToValidate: ObservationFeature;
     modalRef: NgbModalRef;
     role_id: number;
-    isValidator: boolean = false;
+    isValidator = false;
     username: string = null;
 
     constructor(
@@ -214,7 +213,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             this.route.data.subscribe(() => {
                 this.observationsService
                     .getObservation(observationId)
-                    .subscribe((updatedObservation: FeatureCollection) => {
+                    .subscribe((updatedObservation: ObservationFeatureCollection) => {
                         this.observations.features[this.observations.features.findIndex(obs => obs.properties.id_observation === observationId)] = updatedObservation.features[0]
                     });
             });
