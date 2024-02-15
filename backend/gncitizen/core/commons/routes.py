@@ -459,7 +459,9 @@ def get_medias():
     if no_pagination:
         return [set_media_links(media) for media in qs.all()]
 
-    qs = qs.order_by(desc(MediaModel.timestamp_create)).paginate(per_page=page_size, page=page)
+    qs = qs.order_by(desc(func.coalesce(ObservationModel.date, VisitModel.date))).paginate(
+        per_page=page_size, page=page
+    )
 
     return {
         "page": qs.page,
