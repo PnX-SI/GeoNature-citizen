@@ -62,7 +62,7 @@ MEDIA_DIR = str(ROOT_DIR / app_conf["MEDIA_FOLDER"])
 SQLALCHEMY_DATABASE_URI = app_conf["SQLALCHEMY_DATABASE_URI"]
 
 
-taxhub_url = valid_api_url(app_conf.get("API_TAXHUB", ""))
+API_TAXHUB = valid_api_url(app_conf.get("API_TAXHUB", ""))
 
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -114,7 +114,7 @@ swagger = Swagger(template=swagger_template, config=swagger_config)
 class HomeView(AdminIndexView):
     @expose("/")
     def index(self):
-        return self.render("home.html", taxhub_url=taxhub_url)
+        return self.render("home.html", api_taxhub=API_TAXHUB)
 
 
 admin = Admin(
