@@ -1,11 +1,6 @@
 import { Feature, FeatureCollection } from 'geojson';
 
 
-export interface PostObservationResponse extends FeatureCollection {
-    message: string;
-    features: ObservationFeature[];
-}
-
 export interface ObservationFeature extends Feature {
     properties: {
         cd_nom: number;
@@ -41,4 +36,8 @@ export interface ObservationFeatureCollection extends FeatureCollection {
     per_page?: number;
     total?: number;
     features: Array<ObservationFeature>;
+}
+
+export interface PostObservationResponse extends ObservationFeatureCollection {
+    message: string;
 }

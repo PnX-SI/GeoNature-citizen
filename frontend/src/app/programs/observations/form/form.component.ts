@@ -135,7 +135,7 @@ export class ObsFormComponent implements AfterViewInit {
         private auth: AuthService,
         private mapService: MapService,
         private _refGeoService: RefGeoService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.program_id = this.data.program_id;
@@ -406,10 +406,10 @@ export class ObsFormComponent implements AfterViewInit {
                         icon:
                             this.taxa[taxon]['medias'].length >= 1
                                 ? // ? this.taxa[taxon]["medias"][0]["url"]
-                                  MainConfig.API_TAXHUB +
-                                  '/tmedias/thumbnail/' +
-                                  this.taxa[taxon]['medias'][0]['id_media'] +
-                                  '?h=20'
+                                MainConfig.API_TAXHUB +
+                                '/tmedias/thumbnail/' +
+                                this.taxa[taxon]['medias'][0]['id_media'] +
+                                '?h=20'
                                 : 'assets/default_image.png',
                     });
                 }
@@ -426,14 +426,14 @@ export class ObsFormComponent implements AfterViewInit {
                 term === '' // term.length < n
                     ? []
                     : this.species
-                          .filter(
-                              (v) =>
-                                  v['name']
-                                      .toLowerCase()
-                                      .indexOf(term.toLowerCase()) > -1
-                              // v => new RegExp(term, "gi").test(v["name"])
-                          )
-                          .slice(0, taxonAutocompleteMaxResults)
+                        .filter(
+                            (v) =>
+                                v['name']
+                                    .toLowerCase()
+                                    .indexOf(term.toLowerCase()) > -1
+                            // v => new RegExp(term, "gi").test(v["name"])
+                        )
+                        .slice(0, taxonAutocompleteMaxResults)
             )
         );
 
@@ -520,7 +520,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     postObservation() {
         let obs: ObservationFeature;
-        let formData = this.creatFromDataToPost();
+        const formData = this.creatFromDataToPost();
         if (this.customForm.json_schema) {
             formData.append('json_data', JSON.stringify(this.jsonData));
         }
