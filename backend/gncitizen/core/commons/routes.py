@@ -17,7 +17,7 @@ from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin
 from gncitizen.utils.helpers import set_media_links
 from server import db
-from sqlalchemy import and_, case, distinct
+from sqlalchemy import and_, case, desc, distinct
 from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
 
@@ -459,7 +459,7 @@ def get_medias():
     if no_pagination:
         return [set_media_links(media) for media in qs.all()]
 
-    qs = qs.paginate(per_page=page_size, page=page)
+    qs = qs.order_by(desc(MediaModel.timestamp_create)).paginate(per_page=page_size, page=page)
 
     return {
         "page": qs.page,
