@@ -100,7 +100,11 @@ export class ObsListComponent implements OnChanges {
     // }
 
     onFilterChange(): void {
-        let filters: { taxon: string; municipality: string; validationStatus: string } = {
+        const filters: {
+            taxon: number;
+            municipality: string;
+            validationStatus: string;
+        } = {
             taxon: null,
             municipality: null,
             validationStatus: null,

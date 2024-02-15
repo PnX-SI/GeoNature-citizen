@@ -101,6 +101,7 @@ export class ObsFormComponent implements AfterViewInit {
     taxonomyListID: number;
     taxa: TaxonomyList;
     surveySpecies$: Observable<TaxonomyList>;
+    surveySpecies: TaxonomyList;
     species: Object[] = [];
     taxaCount: number;
     selectedTaxon: any;
@@ -184,7 +185,19 @@ export class ObsFormComponent implements AfterViewInit {
                         }),
                         share()
                     );
-                this.surveySpecies$.subscribe();
+                this.surveySpecies$.subscribe((res: TaxonomyList) => {
+                    res.sort((a, b): number => {
+                        const tax_a = a.nom_francais
+                            ? a.nom_francais
+                            : a.taxref.nom_vern;
+                        const tax_b = b.nom_francais
+                            ? b.nom_francais
+                            : b.taxref.nom_vern;
+                        return tax_a.localeCompare(tax_b)
+                    });
+                    this.surveySpecies = res;
+                });
+
 
                 if (this.program.features[0].properties.id_form) {
                     // Load custom form if one is attached to program

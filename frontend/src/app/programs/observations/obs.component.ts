@@ -113,6 +113,15 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                 ]).subscribe(([observations, taxa, program]) => {
                     this.observations = observations;
                     this.surveySpecies = taxa;
+                    this.surveySpecies.sort((a, b) => {
+                        const tax_a = a.nom_francais
+                            ? a.nom_francais
+                            : a.taxref.nom_vern;
+                        const tax_b = b.nom_francais
+                            ? b.nom_francais
+                            : b.taxref.nom_vern;
+                        return tax_a.localeCompare(tax_b);
+                    });
                     this.programFeature = program;
                 });
                 this.titleService.setTitle(
