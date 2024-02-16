@@ -101,6 +101,7 @@ export class ObsFormComponent implements AfterViewInit {
     taxonomyListID: number;
     taxa: TaxonomyList;
     surveySpecies$: Observable<TaxonomyList>;
+    surveySpecies: TaxonomyList;
     species: Object[] = [];
     taxaCount: number;
     selectedTaxon: any;
@@ -135,7 +136,7 @@ export class ObsFormComponent implements AfterViewInit {
         private auth: AuthService,
         private mapService: MapService,
         private _refGeoService: RefGeoService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.program_id = this.data.program_id;
@@ -184,7 +185,19 @@ export class ObsFormComponent implements AfterViewInit {
                         }),
                         share()
                     );
-                this.surveySpecies$.subscribe();
+                this.surveySpecies$.subscribe((res: TaxonomyList) => {
+                    res.sort((a, b): number => {
+                        const tax_a = a.nom_francais
+                            ? a.nom_francais
+                            : a.taxref.nom_vern;
+                        const tax_b = b.nom_francais
+                            ? b.nom_francais
+                            : b.taxref.nom_vern;
+                        return tax_a.localeCompare(tax_b)
+                    });
+                    this.surveySpecies = res;
+                });
+
 
                 if (this.program.features[0].properties.id_form) {
                     // Load custom form if one is attached to program
@@ -406,10 +419,10 @@ export class ObsFormComponent implements AfterViewInit {
                         icon:
                             this.taxa[taxon]['medias'].length >= 1
                                 ? // ? this.taxa[taxon]["medias"][0]["url"]
-                                  MainConfig.API_TAXHUB +
-                                  '/tmedias/thumbnail/' +
-                                  this.taxa[taxon]['medias'][0]['id_media'] +
-                                  '?h=20'
+                                MainConfig.API_TAXHUB +
+                                '/tmedias/thumbnail/' +
+                                this.taxa[taxon]['medias'][0]['id_media'] +
+                                '?h=20'
                                 : 'assets/default_image.png',
                     });
                 }
@@ -426,14 +439,14 @@ export class ObsFormComponent implements AfterViewInit {
                 term === '' // term.length < n
                     ? []
                     : this.species
-                          .filter(
-                              (v) =>
-                                  v['name']
-                                      .toLowerCase()
-                                      .indexOf(term.toLowerCase()) > -1
-                              // v => new RegExp(term, "gi").test(v["name"])
-                          )
-                          .slice(0, taxonAutocompleteMaxResults)
+                        .filter(
+                            (v) =>
+                                v['name']
+                                    .toLowerCase()
+                                    .indexOf(term.toLowerCase()) > -1
+                            // v => new RegExp(term, "gi").test(v["name"])
+                        )
+                        .slice(0, taxonAutocompleteMaxResults)
             )
         );
 
@@ -520,7 +533,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     postObservation() {
         let obs: ObservationFeature;
-        let formData = this.creatFromDataToPost();
+        const formData = this.creatFromDataToPost();
         if (this.customForm.json_schema) {
             formData.append('json_data', JSON.stringify(this.jsonData));
         }

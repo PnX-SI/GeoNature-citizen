@@ -16,3 +16,11 @@ export interface MediaItem {
 }
 
 export interface MediaList extends Array<MediaItem> { }
+
+export interface MediaPaginatedList {
+    items: MediaList;
+    page: number;
+    page_size: number;
+    pages: number;
+    total: number;
+}

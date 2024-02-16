@@ -12,13 +12,14 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, merge } from 'rxjs';
 import { pluck, share } from 'rxjs/operators';
 
-import { FeatureCollection, Feature } from 'geojson';
+import { Feature } from 'geojson';
 
 import { MainConfig } from '../../../../conf/main.config';
 import {
     TaxonomyList,
     TaxonomyListItem,
     ObservationFeature,
+    ObservationFeatureCollection,
 } from '../observation.model';
 import { UserService } from '../../../auth/user-dashboard/user.service.service';
 
@@ -28,9 +29,9 @@ import { UserService } from '../../../auth/user-dashboard/user.service.service';
     styleUrls: ['./list.component.css'],
 })
 export class ObsListComponent implements OnChanges {
-    @Input('observations') observations: FeatureCollection;
+    @Input('observations') observations: ObservationFeatureCollection;
     @Input('taxa') surveySpecies: TaxonomyList;
-    @Input('displayOwnerActions') displayOwnerActions: boolean = false;
+    @Input('displayOwnerActions') displayOwnerActions = false;
     @Input('displayForm') display_form: boolean;
     @Output('obsSelect') obsSelect: EventEmitter<Feature> = new EventEmitter();
     @Output() deleteObs = new EventEmitter();
@@ -38,7 +39,7 @@ export class ObsListComponent implements OnChanges {
     municipalities: any[];
     observationList: Feature[] = [];
     program_id: number;
-    taxa: any[];
+    taxa: unknown[];
     validationStatuses: any = {};
     public MainConfig = MainConfig;
     selectedTaxon: TaxonomyListItem = null;
@@ -99,7 +100,11 @@ export class ObsListComponent implements OnChanges {
     // }
 
     onFilterChange(): void {
-        let filters: { taxon: string; municipality: string; validationStatus: string } = {
+        const filters: {
+            taxon: number;
+            municipality: string;
+            validationStatus: string;
+        } = {
             taxon: null,
             municipality: null,
             validationStatus: null,

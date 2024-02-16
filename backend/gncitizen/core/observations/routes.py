@@ -184,6 +184,7 @@ def post_observation():
 
         try:
             newobs = ObservationModel(**datas2db)
+            current_app.logger.debug("[post_observation] nowobs ", newobs)
         except Exception as e:
             current_app.logger.warning("[post_observation] data2db ", e)
             raise GeonatureApiError(e)
@@ -193,6 +194,7 @@ def post_observation():
             _point = Point(_coordinates["x"], _coordinates["y"])
             _shape = asShape(_point)
             newobs.geom = from_shape(Point(_shape), srid=4326)
+            current_app.logger.debug("[post_observation] newobs geom ", newobs.geom)
         except Exception as e:
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e)
@@ -205,10 +207,9 @@ def post_observation():
             current_app.logger.warning("[post_observation] json_data ", e)
             raise GeonatureApiError(e)
 
-        id_role = get_user_if_exists()
-        if id_role:
-            newobs.id_role = id_role
-            role = UserModel.query.get(id_role)
+        role = get_user_if_exists()
+        if role:
+            newobs.id_role = role.id_user
             newobs.obs_txt = role.username
             newobs.email = role.email
         else:
@@ -243,14 +244,20 @@ def post_observation():
                 ObservationMediaModel,
             )
             current_app.logger.debug("[post_observation] ObsTax UPLOAD FILE {}".format(file))
-            features[0]["properties"]["images"] = file
+            features["properties"]["images"] = file
 
         except Exception as e:
             current_app.logger.warning("[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
             # raise GeonatureApiError(e)
 
         return (
-            {"message": "Nouvelle observation créée.", "features": features},
+            {
+                "message": "Nouvelle observation créée.",
+                "features": [
+                    features,
+                ],
+                "type": "FeatureCollection",
+            },
             200,
         )
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GncProgramsService } from '../../api/gnc-programs.service';
-import { MediaList } from './media-galery.model';
+import { MediaPaginatedList, MediaList } from './media-galery.model';
 import { Input } from '@angular/core';
 import { MainConfig } from '../../../conf/main.config';
 import { objectCleaner } from '../../api/utils.service';
@@ -25,15 +25,15 @@ export class MediaGaleryComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('this.userDashboard', this.userDashboard)
-        const initParams = { id_program: this.program_id, no_pagination: true }
+        const initParams = { id_program: this.program_id }
         if (this.userDashboard) {
             initParams['id_role'] = this.auth.getUserInfo() ? this.auth.getUserInfo()['id_role'] : null
         }
-        let params = objectCleaner(initParams)
+        const params = objectCleaner(initParams)
         this.programService
             .getMedias(params)
-            .subscribe((media) => {
-                this.media = media;
+            .subscribe((data: MediaPaginatedList) => {
+                this.media = data.items;
                 this.hasMedia = this.media.length > 0;
             });
     }
