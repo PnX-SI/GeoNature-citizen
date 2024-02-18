@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
+from flask import current_app
 from gncitizen.core.commons.models import ProgramsModel, TimestampMixinModel, TModules
 from passlib.hash import pbkdf2_sha256 as sha256
 from server import db
 from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
 from utils_flask_sqla_geo.serializers import serializable
+
+logger = current_app.logger
 
 
 class RevokedTokenModel(db.Model):
@@ -123,9 +126,11 @@ class UserModel(TimestampMixinModel, db.Model):
 
 
 @event.listens_for(UserModel.password, "set", retval=True)
-def hash_user_password(target, value, oldvalue, initiator):
+def hash_user_password(_target, value, oldvalue, _initiator):
     """Evenement qui hash le mot de passe systèmatiquement"""
-    if value != oldvalue:
+    logger.debug(f"<hash_user_password> OLD PWD {oldvalue} / NEW PWD {value != ''}")
+    if value != "" and not sha256.identify(value):
+        logger.debug("<hash_user_password> Update new password")
         return UserModel.generate_hash(value)
     return value
 
@@ -199,13 +204,3 @@ class ObserverMixinModel(object):
     def email(self):
         """observer email"""
         return db.Column(db.String(150))
-
-
-class ValidatorMixinModel(object):
-    @declared_attr
-    def id_validator(cls):
-        return db.Column(
-            db.Integer,
-            db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
-            nullable=True,
-        )

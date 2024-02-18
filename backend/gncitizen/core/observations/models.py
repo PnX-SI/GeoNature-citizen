@@ -6,7 +6,7 @@ from enum import Enum
 from flask import current_app
 from geoalchemy2 import Geometry
 from gncitizen.core.commons.models import MediaModel, ProgramsModel, TimestampMixinModel
-from gncitizen.core.users.models import ObserverMixinModel, UserModel, ValidatorMixinModel
+from gncitizen.core.users.models import ObserverMixinModel, UserModel
 from server import db
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from utils_flask_sqla_geo.generic import get_geojson_feature
