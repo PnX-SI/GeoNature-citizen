@@ -24,6 +24,7 @@ class UserView(ModelView):
         "email",
         "active",
         "admin",
+        "validator",
     )
     column_searchable_list = (
         "username",
