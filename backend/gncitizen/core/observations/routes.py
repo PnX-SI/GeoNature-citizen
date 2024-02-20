@@ -364,9 +364,10 @@ def get_rewards(id):
 @jwt_required()
 def update_observation():
     current_user = get_user_if_exists()
-    observation_to_update = db.get_or_404(ObservationModel, request.form.get("id_observation"))
-
-    if observation_to_update.id_role != current_user.id_user and not current_user.validator:
+    observation_to_update = ObservationModel.query.filter_by(
+        id_observation=request.form.get("id_observation")
+    )
+    if observation_to_update.one().id_role != current_user.id_user and not current_user.validator:
         abort(403, "unauthorized")
 
     try:
