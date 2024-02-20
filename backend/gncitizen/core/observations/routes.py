@@ -364,10 +364,9 @@ def get_rewards(id):
 @jwt_required()
 def update_observation():
     current_user = get_user_if_exists()
-    observation_to_update = ObservationModel.query.filter_by(
-        id_observation=request.form.get("id_observation")
-    )
-    if observation_to_update.one().id_role != current_user.id_user and not current_user.validator:
+    observation_to_update = db.get_or_404(ObservationModel, request.form.get("id_observation"))
+
+    if observation_to_update.id_role != current_user.id_user and not current_user.validator:
         abort(403, "unauthorized")
 
     try:
@@ -463,14 +462,16 @@ def update_observation():
                 message = f"L'espèce que vous avez observée est bien un[e] {update_data.get('name')}. Merci pour votre participation !"
             if obs_to_update_obj.id_role is not None:
                 try:
+                    observer = obs_to_update_obj.observer
                     send_user_email(
                         subject=current_app.config["VALIDATION_EMAIL"]["SUBJECT"],
-                        to=UserModel.query.get(obs_to_update_obj.id_role).email,
+                        to=observer.email,
                         html_message=current_app.config["VALIDATION_EMAIL"][
                             "HTML_TEMPLATE"
                         ].format(
                             message=message,
                             obs_link=f"{current_app.config['URL_APPLICATION']}/programs/{obs_to_update_obj.id_program}/observations/{obs_to_update_obj.id_observation}",
+                            username=observer.username,
                         ),
                     )
                 except Exception as e:
