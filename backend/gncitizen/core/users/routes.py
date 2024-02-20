@@ -490,22 +490,26 @@ def reset_user_password():
             400,
         )
 
-    passwd = uuid.uuid4().hex[0:6]
+    passwd = uuid.uuid4().hex[0:10]
 
-    subject = current_app.config["RESET_PASSWD"]["SUBJECT"]
+    subject = f"[{current_app.config['appName']}] {current_app.config['RESET_PASSWD']['SUBJECT']}"
     to = user.email
-    plain_message = current_app.config["RESET_PASSWD"]["TEXT_TEMPLATE"].format(
-        passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
-    )
+    # plain_message = current_app.config["RESET_PASSWD"]["TEXT_TEMPLATE"].format(
+    #     passwd=passwd,
+    #     app_url=current_app.config["URL_APPLICATION"],
+    #     username=user.username,
+    #     app_name=current_app.config["appName"],
+    # )
     html_message = current_app.config["RESET_PASSWD"]["HTML_TEMPLATE"].format(
-        passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
+        passwd=passwd,
+        app_url=current_app.config["URL_APPLICATION"],
+        username=user.username,
+        app_name=current_app.config["appName"],
     )
     from_addr = current_app.config["RESET_PASSWD"]["FROM"]
 
     try:
-        send_user_email(
-            subject, from_addr, to, plain_message=plain_message, html_message=html_message
-        )
+        send_user_email(subject, to, from_addr, html_message=html_message)
         user.password = passwd
         db.session.commit()
         return (

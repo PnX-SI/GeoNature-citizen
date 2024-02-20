@@ -50,19 +50,34 @@ VERIFY_OBSERVATIONS_ENABLED = false
     <a href="{app_url}">Connexion</a>'
     '''
 
+[RESET_PASSWD]
+    SUBJECT = "Réinitialisation de votre mot de passe"
+    FROM = 'contact@geonature-citizen.fr'
+    HTML_TEMPLATE = """
+        <p>Bonjour,</p>
+        <p>Vous recevez cet email car vous avez demandé la réinitialisation du mot de passe de votre compte sur {app_url}.</p>
+        <p>Votre nouveau mot de passe : <code>{passwd}</code></p>
+        <p>Votre nom d'utilisateur, au cas où vous l'auriez oublié, est le suivant : <code>{username}</code></p>
+        <p>Merci d'avoir utilisé notre site !<p>
+        <p>L'équipe <a href="{app_url}">{app_name}</a></p>
+        """
+
 [CONFIRM_EMAIL]
     USE_CONFIRM_EMAIL = true
     SUBJECT = "Activez votre compte"
     FROM = 'contact@geonature-citizen.fr'
-    HTML_TEMPLATE = '''<p> Bonjour,</p><br /><p>Nous vous confirmons que votre compte a bien été créé.</p>
-     <p> Afin d'activer votre compte veuillez <a href="{activate_url}">cliquer ici.</a>
+    HTML_TEMPLATE = """<p> Bonjour,</p>
+    <p>Nous vous confirmons que votre compte a bien été créé.</p>
+    <p> Afin d'activer votre compte veuillez <a href="{activate_url}">cliquer ici.</a>
+    <p>Nous vous souhaitons la bienvenue sur notre site.</p><br />
+    <p>Bien à vous.</p>
+    <p>L'équipe <a href="{app_url}">{app_name}</a></p>
+    """
+    NO_VALIDATION_HTML_TEMPLATE = """<p> Bonjour,</p><br /><p>Nous vous confirmons que votre compte a bien été créé.</p>
      <p>Nous vous souhaitons la bienvenue sur notre site.</p><br />
      <p>Bien à vous.</p>
-    '''
-    NO_VALIDATION_HTML_TEMPLATE = '''<p> Bonjour,</p><br /><p>Nous vous confirmons que votre compte a bien été créé.</p>
-     <p>Nous vous souhaitons la bienvenue sur notre site.</p><br />
-     <p>Bien à vous.</p>
-    '''
+     <p>L'équipe <a href="{app_url}">{app_name}</a></p>
+    """
 
 [VALIDATION_EMAIL]
     SUBJECT = "Mise à jour de votre observation {observation}"
