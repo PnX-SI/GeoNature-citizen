@@ -6,7 +6,7 @@ from typing import Optional
 from flask import current_app
 from itsdangerous import URLSafeTimedSerializer
 
-default_mail_from_addr = current_app.config["MAIL"]["MAIL_FROM_ADDR"]
+default_mail_from_addr = current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]
 
 
 def send_user_email(
@@ -17,7 +17,7 @@ def send_user_email(
     html_message: Optional[str] = None,
 ):
     """User mail sending"""
-    msg = MIMEMultipart("alternative")
+    msg = MIMEMultipart()
     msg["Subject"] = subject
     msg["From"] = from_addr
     msg["To"] = to
