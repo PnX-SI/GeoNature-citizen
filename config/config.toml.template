@@ -73,7 +73,8 @@ VERIFY_OBSERVATIONS_ENABLED = false
         <p>Bonjour,</p>
         <p>{message}</p>
         <p>Pour retrouver votre observation, <a href="{obs_link}">cliquez ici.</a></p>
-    '''
+    """
+    
 
 [MAIL]
     MAIL_USE_SSL = false
