@@ -32,6 +32,7 @@
                     taxaCount < taxonAutocompleteInputThreshold
                 " class="d-inline-flex toolbar">
                 <select formControlName="cd_nom" class="form-control rounded-0">
+                    <option value="" [disabled]="true">Choisissez une espèce</option>
                     <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
                         {{
                         !!s.nom_francais
