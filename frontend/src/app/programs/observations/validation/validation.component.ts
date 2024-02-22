@@ -1,17 +1,19 @@
-import { Component, LOCALE_ID, Inject, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+    Component,
+    LOCALE_ID,
+    Inject,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Observable } from 'rxjs';
 import * as L from 'leaflet';
 import * as _ from 'lodash';
 import { FeatureCollection } from 'geojson';
-import {
-    debounceTime,
-    distinctUntilChanged,
-    map,
-    tap,
-} from 'rxjs/operators';
-
+import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 
 import { MainConfig } from '../../../../conf/main.config';
 import { AuthService } from '../../../auth/auth.service';
@@ -23,7 +25,8 @@ import { UserService } from '../../../auth/user-dashboard/user.service.service';
 
 const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
 const taxonSelectInputThreshold = MainConfig.taxonSelectInputThreshold;
-const taxonAutocompleteInputThreshold = MainConfig.taxonAutocompleteInputThreshold;
+const taxonAutocompleteInputThreshold =
+    MainConfig.taxonAutocompleteInputThreshold;
 const taxonDisplayImageWhenUnique = MainConfig.taxonDisplayImageWhenUnique;
 
 type TempTaxa = {
@@ -32,23 +35,24 @@ type TempTaxa = {
 };
 const taxonAutocompleteMaxResults = 10;
 
-
 @Component({
     selector: 'validation-modal',
     templateUrl: './validation.component.html',
     styleUrls: [
         '../../../auth/user-dashboard/user-dashboard.component.css',
-        '../validation-board/validation-board.component.css'
+        '../validation-board/validation-board.component.css',
     ],
 })
 export class ValidationComponent implements OnInit {
     public MainConfig = MainConfig;
     id_role: number;
     @Input('obsToValidate') obsToValidate: any;
-    @Output('onCloseModal') onCloseModal: EventEmitter<any> = new EventEmitter();
+    @Output('onCloseModal') onCloseModal: EventEmitter<any> =
+        new EventEmitter();
     program: FeatureCollection;
     taxonomyListID: number;
     surveySpecies$: Observable<TaxonomyList>;
+    surveySpecies: TaxonomyList;
     taxonSelectInputThreshold = taxonSelectInputThreshold;
     taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
     taxonDisplayImageWhenUnique = taxonDisplayImageWhenUnique;
@@ -69,25 +73,33 @@ export class ValidationComponent implements OnInit {
         private formBuilder: FormBuilder,
         @Inject(LOCALE_ID) readonly localeId: string,
         private programService: GncProgramsService,
-        private userService: UserService,
-    ) { }
+        private userService: UserService
+    ) {}
 
     ngOnInit() {
         this.userService.getInvalidationStatuses().subscribe((statuses) => {
-            this.invalidationStatuses = statuses
-            this.selectedInvalidationStatus = this.invalidationStatuses.find(s => s.link === this.obsToValidate.properties.validation_status).value
-        })
+            this.invalidationStatuses = statuses;
+            this.selectedInvalidationStatus = this.invalidationStatuses.find(
+                (s) =>
+                    s.link === this.obsToValidate.properties.validation_status
+            ).value;
+        });
         const map = L.map('validateMap', {
             gestureHandling: true,
         } as any);
-        setTimeout(() => { map.invalidateSize() }, 0);  // Leaflet map is bigger than its modal container, the observation is then decentered. Invalidate its size allow it to consider its width.
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 0); // Leaflet map is bigger than its modal container, the observation is then decentered. Invalidate its size allow it to consider its width.
         L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'OpenStreetMap',
         }).addTo(map);
 
-        const latLng = L.latLng(this.obsToValidate.geometry.coordinates[1], this.obsToValidate.geometry.coordinates[0]);
+        const latLng = L.latLng(
+            this.obsToValidate.geometry.coordinates[1],
+            this.obsToValidate.geometry.coordinates[0]
+        );
         L.marker(latLng, { icon: markerIcon }).addTo(map);
-        map.setView(latLng, 13)
+        map.setView(latLng, 13);
 
         this.initForm();
 
@@ -114,22 +126,27 @@ export class ValidationComponent implements OnInit {
                             this.selectPropositionTaxon();
                         })
                     );
-                this.surveySpecies$.subscribe();
+                this.surveySpecies$.subscribe((res: TaxonomyList) => {
+                    res.sort((a, b): number => {
+                        const tax_a = a.nom_francais
+                            ? a.nom_francais
+                            : a.taxref.nom_vern;
+                        const tax_b = b.nom_francais
+                            ? b.nom_francais
+                            : b.taxref.nom_vern;
+                        return tax_a.localeCompare(tax_b);
+                    });
+                    this.surveySpecies = res;
+                });
             });
 
         const access_token = localStorage.getItem('access_token');
         if (access_token) {
-            this.auth
-                .ensureAuthorized()
-                .subscribe((user) => {
-                    if (
-                        user &&
-                        user['features'] &&
-                        user['features']['id_role']
-                    ) {
-                        this.id_role = user['features']['id_role'];
-                    }
-                });
+            this.auth.ensureAuthorized().subscribe((user) => {
+                if (user && user['features'] && user['features']['id_role']) {
+                    this.id_role = user['features']['id_role'];
+                }
+            });
         }
     }
 
@@ -145,11 +162,10 @@ export class ValidationComponent implements OnInit {
                         cd_nom: this.taxa[taxon]['taxref']['cd_nom'],
                         icon:
                             this.taxa[taxon]['medias'].length >= 1
-                                ?
-                                MainConfig.API_TAXHUB +
-                                '/tmedias/thumbnail/' +
-                                this.taxa[taxon]['medias'][0]['id_media'] +
-                                '?h=20'
+                                ? MainConfig.API_TAXHUB +
+                                  '/tmedias/thumbnail/' +
+                                  this.taxa[taxon]['medias'][0]['id_media'] +
+                                  '?h=20'
                                 : 'assets/default_image.png',
                     });
                 }
@@ -166,24 +182,28 @@ export class ValidationComponent implements OnInit {
                 term === '' // term.length < n
                     ? []
                     : this.species
-                        .filter(
-                            (v) =>
-                                v['name']
-                                    .toLowerCase()
-                                    .indexOf(term.toLowerCase()) > -1
-                        )
-                        .slice(0, taxonAutocompleteMaxResults)
+                          .filter(
+                              (v) =>
+                                  v['name']
+                                      .toLowerCase()
+                                      .indexOf(term.toLowerCase()) > -1
+                          )
+                          .slice(0, taxonAutocompleteMaxResults)
             )
         );
 
     inputAutoCompleteFormatter = (taxon: { name: string }) => {
-        this.onTaxonSelected(taxon, false)
-        return taxon.name
+        this.onTaxonSelected(taxon, false);
+        return taxon.name;
     };
 
     selectPropositionTaxon(): void {
         if (this.taxa) {
-            this.onTaxonSelected(Object.values(this.taxa).find(t => t.cd_nom === this.obsToValidate.properties.cd_nom))
+            this.onTaxonSelected(
+                Object.values(this.taxa).find(
+                    (t) => t.cd_nom === this.obsToValidate.properties.cd_nom
+                )
+            );
         }
     }
 
@@ -195,9 +215,11 @@ export class ValidationComponent implements OnInit {
                 name: taxon.taxref.nom_complet,
             });
         }
-        this.obsCorrection = this.selectedTaxon.cd_nom !== this.obsToValidate.properties.cd_nom;
+        this.obsCorrection =
+            this.selectedTaxon.cd_nom !== this.obsToValidate.properties.cd_nom;
         if (this.obsCorrection) {
-            this.selectedInvalidationStatus = this.invalidationStatuses[0].value;
+            this.selectedInvalidationStatus =
+                this.invalidationStatuses[0].value;
         }
     }
 
@@ -207,17 +229,16 @@ export class ValidationComponent implements OnInit {
     }
 
     initForm() {
-        this.validationForm = this.formBuilder.group(
-            {
-                id_observation: [this.obsToValidate.properties.id_observation],
-                cd_nom: ['', Validators.required],
-                name: [''],
-                id_role: [this.id_role],
-                comment: [''],
-                report_observer: [true],
-                non_validatable_status: ['']
-            }
-        );
+        console.log('obsToValidate', this.obsToValidate);
+        this.validationForm = this.formBuilder.group({
+            id_observation: [this.obsToValidate.properties.id_observation],
+            cd_nom: ['', Validators.required],
+            name: [''],
+            id_role: [this.id_role],
+            comment: [''],
+            report_observer: [true],
+            non_validatable_status: [''],
+        });
     }
 
     onSelectInvalidObs(invalidationStatus): void {
@@ -230,7 +251,9 @@ export class ValidationComponent implements OnInit {
     onFormSubmit(): void {
         let formData = this.creatFromDataToPost();
         this.observationsService.updateObservation(formData).subscribe(() => {
-            this.onCloseModal.emit(this.obsToValidate.properties.id_observation);
+            this.onCloseModal.emit(
+                this.obsToValidate.properties.id_observation
+            );
         });
     }
 
@@ -251,10 +274,25 @@ export class ValidationComponent implements OnInit {
         )[0];
         formData.append('cd_nom', cd_nom.toString());
         formData.append('name', taxon_name.nom_francais);
-        formData.append('comment', this.obsToValidate.properties.comment + this.obsToValidate.properties.comment ? ' ' : '' + this.validationForm.get('comment').value)
-        formData.append('id_observation', this.validationForm.get('id_observation').value);
-        formData.append('report_observer', this.validationForm.get('report_observer').value);
-        formData.append('non_validatable_status', this.validationForm.get('non_validatable_status').value);
+        formData.append(
+            'comment',
+            this.obsToValidate.properties.comment +
+                this.obsToValidate.properties.comment
+                ? ' '
+                : '' + this.validationForm.get('comment').value
+        );
+        formData.append(
+            'id_observation',
+            this.validationForm.get('id_observation').value
+        );
+        formData.append(
+            'report_observer',
+            this.validationForm.get('report_observer').value
+        );
+        formData.append(
+            'non_validatable_status',
+            this.validationForm.get('non_validatable_status').value
+        );
         formData.append('id_validator', this.id_role.toString());
         return formData;
     }
