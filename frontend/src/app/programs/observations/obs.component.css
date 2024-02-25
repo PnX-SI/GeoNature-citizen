@@ -135,7 +135,7 @@
     transition: all 0.5s ease-in-out;
 }
 
-#slider .carousel-text>p {
+#slider .carousel-text > p {
     font-style: italic;
     font-size: 14px;
     max-height: 20%;
@@ -306,7 +306,6 @@ section .observations {
 }
 
 @media screen and (max-width: 760px) {
-
     .obs-tabs .tab-pane.active #mapList #list,
     .obs-tabs .tab-pane.active #map {
         max-height: calc(100vh - 295px);
@@ -315,7 +314,6 @@ section .observations {
 }
 
 @media screen and (max-width: 576px) {
-
     .obs-tabs .tab-pane.active #mapList #list,
     .obs-tabs .tab-pane.active #map {
         max-height: calc(100vh - 260px);
@@ -338,16 +336,16 @@ section .observations {
     left: 30px; */
 }
 
-#switchMapPhotoBtn>button {
+#switchMapPhotoBtn > button {
     display: block;
-    margin: 20px 20px 20px 40px;
-    height: 60px;
-    width: 60px;
+    margin: 10px 10px 10px 30px;
+    height: 30px;
+    width: 30px;
     border-radius: 50%;
     color: var(--primary);
-    font-size: 1.5rem;
+    font-size: 1rem;
     background-color: white;
-    border: 1px solid whitesmoke;
+    border: 2px solid rgba(0, 0, 0, 0.2);
     /* top: 15px;
     left: 30px; */
 }

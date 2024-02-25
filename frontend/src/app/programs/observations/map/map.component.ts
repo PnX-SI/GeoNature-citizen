@@ -71,17 +71,53 @@ export class ObsMapComponent extends BaseMapComponent {
             />
             <p>
                 <a
+                    *ngIf="
+                        MainConfig.details_espece_url;
+                        else no_detail_espece_url
+                    "
                     class="espece-link"
-                    href="{{
-                        MainConfig.details_espece_url + data.taxref?.cd_nom
-                    }}"
+                    [ngClass]="{
+                        'text-warning':
+                            MainConfig.VERIFY_OBSERVATIONS_ENABLED &&
+                            data.validation_status &&
+                            data.validation_status === 'NOT_VALIDATED',
+                        'text-danger':
+                            MainConfig.VERIFY_OBSERVATIONS_ENABLED &&
+                            data.validation_status &&
+                            ['INVALID', 'NON_VALIDATABLE'].includes(
+                                data.validation_status
+                            )
+                    }"
                     target="_blank"
+                    href="{{ MainConfig.details_espece_url + data.cd_nom }}"
                     >{{
                         !!data.nom_francais
                             ? data.nom_francais
                             : data.taxref?.nom_vern
                     }}</a
                 >
+                <ng-template #no_detail_espece_url
+                    ><span
+                        [ngClass]="{
+                            'text-warning':
+                                MainConfig.VERIFY_OBSERVATIONS_ENABLED &&
+                                data.validation_status &&
+                                data.validation_status === 'NOT_VALIDATED',
+                            'text-danger':
+                                MainConfig.VERIFY_OBSERVATIONS_ENABLED &&
+                                data.validation_status &&
+                                ['INVALID', 'NON_VALIDATABLE'].includes(
+                                    data.validation_status
+                                )
+                        }"
+                        >{{
+                            !!data.nom_francais
+                                ? data.nom_francais
+                                : data.taxref?.nom_vern
+                        }}</span
+                    >
+                </ng-template>
+
                 <br />
                 <span>
                     <span *ngIf="MainConfig.program_list_observers_names">

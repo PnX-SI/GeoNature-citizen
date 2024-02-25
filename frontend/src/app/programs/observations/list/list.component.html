@@ -65,7 +65,8 @@
                     " />
                 <div class="infos">
                     <div>
-                        <a class="espece-link" [ngClass]="{
+                        <a *ngIf="MainConfig.details_espece_url; else no_detail_espece_url" class="espece-link"
+                            [ngClass]="{
                                 'text-warning': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED',
                                 'text-danger': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && ['INVALID', 'NON_VALIDATABLE'].includes(o.properties.validation_status)
                             }" target="_blank" href="{{
@@ -75,6 +76,15 @@
                             ? o.properties.nom_francais
                             : o.properties.taxref?.nom_vern
                             }}</a>
+                        <ng-template #no_detail_espece_url><span [ngClass]="{
+                                'text-warning': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED',
+                                'text-danger': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && ['INVALID', 'NON_VALIDATABLE'].includes(o.properties.validation_status)
+                            }">{{
+                                !!o.properties.nom_francais
+                                ? o.properties.nom_francais
+                                : o.properties.taxref?.nom_vern
+                                }}</span>
+                        </ng-template>
                         &nbsp;
                         <span *ngIf="MainConfig.VERIFY_OBSERVATIONS_ENABLED" (click)="onValidateClick(o)"
                             [ngStyle]="{ 'cursor': o.properties.observer?.username == username ? 'not-allowed' :  'pointer'}">
