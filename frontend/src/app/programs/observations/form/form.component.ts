@@ -34,7 +34,6 @@ import {
 import 'leaflet-gesture-handling';
 import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
 import 'leaflet-search';
-import 'leaflet-search/dist/leaflet-search.min.css';
 import { ToastrService } from 'ngx-toastr';
 import { ObservationsService } from '../observations.service';
 import { MapService } from '../../base/map/map.service';
