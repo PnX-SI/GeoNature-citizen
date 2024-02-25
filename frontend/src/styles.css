@@ -944,6 +944,22 @@ input:checked ~ .toggle i {
     margin: 0 auto;
 }
 
+.leaflet-touch .leaflet-control-layers {
+    border-radius: 50%;
+}
+
+.leaflet-touch .leaflet-control-layers-expanded {
+    border-radius: 5px;
+}
+
+.leaflet-container .leaflet-control-search {
+    border-radius: 25px;
+}
+
+.leaflet-control-search .search-button {
+    border-radius: 25px;
+}
+
 @media screen and (max-width: 991px) {
     .observations {
         height: inherit;
