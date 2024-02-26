@@ -125,6 +125,7 @@ export class ObsFormComponent implements AfterViewInit {
     photos: any[] = [];
     existing_photos: any[] = [];
     mapVars: any = {};
+    isInvalidDirty = false;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -136,7 +137,7 @@ export class ObsFormComponent implements AfterViewInit {
         private auth: AuthService,
         private mapService: MapService,
         private _refGeoService: RefGeoService
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.program_id = this.data.program_id;
@@ -168,36 +169,6 @@ export class ObsFormComponent implements AfterViewInit {
                 this.program = result;
                 this.taxonomyListID =
                     this.program.features[0].properties.taxonomy_list;
-                this.surveySpecies$ = this.programService
-                    .getProgramTaxonomyList(this.taxonomyListID)
-                    .pipe(
-                        tap((species) => {
-                            this.taxa = species;
-                            this.taxaCount = Object.keys(this.taxa).length;
-                            if (
-                                this.taxaCount >=
-                                this.taxonAutocompleteInputThreshold
-                            ) {
-                                this.inputAutoCompleteSetup();
-                            } else if (this.taxaCount == 1) {
-                                this.onTaxonSelected(this.taxa[0]);
-                            }
-                        }),
-                        share()
-                    );
-                this.surveySpecies$.subscribe((res: TaxonomyList) => {
-                    res.sort((a, b): number => {
-                        const tax_a = a.nom_francais
-                            ? a.nom_francais
-                            : a.taxref.nom_vern;
-                        const tax_b = b.nom_francais
-                            ? b.nom_francais
-                            : b.taxref.nom_vern;
-                        return tax_a.localeCompare(tax_b)
-                    });
-                    this.surveySpecies = res;
-                });
-
 
                 if (this.program.features[0].properties.id_form) {
                     // Load custom form if one is attached to program
@@ -385,15 +356,30 @@ export class ObsFormComponent implements AfterViewInit {
             }
             //{ updateOn: "submit" }
         );
+        this.targetChanges();
+    }
+
+    // TODO:  change this to reset objForm or remove this and check if form is invalid
+    targetChanges() {
+        // Subscribe to specific control changes
+        this.obsForm.get('cd_nom').valueChanges.subscribe((cd_nom) => {
+            // Handle changes to the 'firstName' control
+            console.log('First cd_nom changed:', cd_nom);
+
+            // Apply changes based on 'firstName' value (example)
+            if (cd_nom === '') {
+                this.selectedTaxon = '';
+                // Apply specific changes
+            }
+        });
     }
 
     patchForm(updateData) {
-        // console.log("updateData", updateData)
         const taxon = updateData.taxon || {
             media: updateData.taxref.media_url,
             taxref: updateData.taxref,
         };
-        this.onTaxonSelected(taxon);
+        this.onInitTaxon(taxon);
         updateData.photos.forEach((p) => {
             p.checked = false;
         });
@@ -406,57 +392,12 @@ export class ObsFormComponent implements AfterViewInit {
         });
     }
 
-    inputAutoCompleteSetup = () => {
-        for (let taxon in this.taxa) {
-            for (let field of taxonAutocompleteFields) {
-                if (this.taxa[taxon]['taxref'][field]) {
-                    this.species.push({
-                        name:
-                            field === 'cd_nom'
-                                ? `${this.taxa[taxon]['taxref']['cd_nom']} - ${this.taxa[taxon]['taxref']['nom_complet']}`
-                                : this.taxa[taxon]['taxref'][field],
-                        cd_nom: this.taxa[taxon]['taxref']['cd_nom'],
-                        icon:
-                            this.taxa[taxon]['medias'].length >= 1
-                                ? // ? this.taxa[taxon]["medias"][0]["url"]
-                                MainConfig.API_TAXHUB +
-                                '/tmedias/thumbnail/' +
-                                this.taxa[taxon]['medias'][0]['id_media'] +
-                                '?h=20'
-                                : 'assets/default_image.png',
-                    });
-                }
-            }
-        }
-        this.autocomplete = 'isOn';
-    };
-
-    inputAutoCompleteSearch = (text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(200),
-            distinctUntilChanged(),
-            map((term) =>
-                term === '' // term.length < n
-                    ? []
-                    : this.species
-                        .filter(
-                            (v) =>
-                                v['name']
-                                    .toLowerCase()
-                                    .indexOf(term.toLowerCase()) > -1
-                            // v => new RegExp(term, "gi").test(v["name"])
-                        )
-                        .slice(0, taxonAutocompleteMaxResults)
-            )
-        );
-
-    inputAutoCompleteFormatter = (x: { name: string }) => x.name;
     disabledDates = (date: NgbDate, current: { month: number }) => {
         const date_impl = new Date(date.year, date.month - 1, date.day);
         return date_impl > this.today;
     };
 
-    onTaxonSelected(taxon: any): void {
+    onInitTaxon(taxon: any): void {
         this.selectedTaxon = taxon;
         this.obsForm.controls['cd_nom'].patchValue({
             cd_nom: taxon.taxref['cd_nom'],
@@ -500,12 +441,8 @@ export class ObsFormComponent implements AfterViewInit {
         }
         // Need to convert the defined interface to an array to have
         // access to the filter function
-        const tempTaxa = this.taxa as Array<unknown> as Array<TempTaxa>;
-        const taxon_name: TempTaxa = tempTaxa.filter(
-            (t) => t.cd_nom == cd_nom
-        )[0];
         formData.append('cd_nom', cd_nom.toString());
-        formData.append('name', taxon_name.nom_francais);
+        formData.append('name', taxon.name);
         const obsDateControlValue = NgbDate.from(
             this.obsForm.controls.date.value
         );
@@ -615,5 +552,45 @@ export class ObsFormComponent implements AfterViewInit {
         let resp = this.obsForm.valid;
         if (this.customForm.json_schema) resp = resp && this.jsonValid;
         return resp;
+    }
+
+    onSelectedTaxon(taxon) {
+        this.programService
+            .getTaxonInfoByList(this.taxonomyListID, taxon.item['cd_nom'])
+            .subscribe((taxonFullInfo) => {
+                this.selectedTaxon = taxonFullInfo[0];
+                this.obsForm.controls['cd_nom'].patchValue({
+                    cd_nom: this.selectedTaxon['cd_nom'],
+                    name:
+                        this.selectedTaxon['taxref']['nom_vern'] == ''
+                            ? this.selectedTaxon['nom_francais'] == ''
+                                ? this.selectedTaxon['taxref']['nom_complet']
+                                : this.selectedTaxon['nom_francais']
+                            : this.selectedTaxon['taxref']['nom_vern'],
+                    icon:
+                        this.selectedTaxon['medias'].length >= 1
+                            ? // ? this.taxa[taxon]["medias"][0]["url"]
+                              MainConfig.API_TAXHUB +
+                              '/tmedias/thumbnail/' +
+                              this.selectedTaxon['medias']['id_media'] +
+                              '?h=20'
+                            : 'assets/default_image.png',
+                });
+            });
+    }
+
+    onEmptyInput(isEmpty: boolean) {
+        if (isEmpty) {
+            this.obsForm.controls.cd_nom.setErrors({ required: true });
+            this.checkInputValidity();
+        } else {
+            this.obsForm.controls.cd_nom.setErrors(null);
+        }
+    }
+
+    checkInputValidity() {
+        this.isInvalidDirty =
+            this.obsForm.controls['cd_nom'].invalid &&
+            this.obsForm.controls['cd_nom'].dirty;
     }
 }

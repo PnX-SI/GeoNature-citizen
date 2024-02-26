@@ -20,68 +20,18 @@
     </div>
     <div class="form-row">
         <div class="form-group col-lg-8">
-            <input formControlName="id_program" type="hidden" />
-            <h5 *ngIf="taxaCount > 1" class="m-0">
-                <label for="cd_nom" class="m-0">{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
-                    isOff {S&eacute;lectionnez une esp&egrave;ce}}</label>
-            </h5>
-            <!-- TAXON SELECT -->
-
-            <div *ngIf="
-                    taxaCount >= taxonSelectInputThreshold &&
-                    taxaCount < taxonAutocompleteInputThreshold
-                " class="d-inline-flex toolbar">
-                <select formControlName="cd_nom" class="form-control rounded-0">
-                    <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
-                        {{
-                        !!s.nom_francais
-                        ? s.nom_francais
-                        : s.taxref.nom_vern
-                        }}
-                        <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref.nom_complet }}</i>)</span>
-                    </option>
-                </select>
-            </div>
-        </div>
-        <!-- TAXON PICKER -->
-        <div *ngIf="taxaCount < taxonSelectInputThreshold && taxaCount > 1"
-            class="form-group col-lg-12 d-inline-flex obs-images">
-            <div class="scroll-img" [class.ng-valid]="selectedTaxon" [class.ng-invalid]="!selectedTaxon">
-                <div *ngFor="let s of surveySpecies">
-                    <div class="obs-img default-img" [class.selected]="isSelectedTaxon(s)">
-                        <img [src]="
-                                s.medias && !!s.medias.length
-                                    ? MainConfig.API_TAXHUB +
-                                      '/tmedias/thumbnail/' +
-                                      s.medias[0].id_media +
-                                      '?h=150'
-                                    : 'assets/default_image.png'
-                            " [alt]="
-                                !!s.nom_francais
-                                    ? s.nom_francais
-                                    : s.taxref.nom_vern
-                            " (click)="onTaxonSelected(s)" />
-                        <span>{{
-                            !!s.nom_francais
-                            ? s.nom_francais
-                            : s.taxref.nom_vern
-                            }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- TAXON AUTOCOMPLETE -->
-        <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg-8">
-            <ng-template #rt let-r="result" let-t="term">
-                <img [src]="r.icon" class="mr-1" style="height: 1em" />
-                <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
-            </ng-template>
-            <input id="cd_nom" type="text" class="form-control rounded-0" formControlName="cd_nom"
-                placeholder="Nom latin ou vernaculaire ou cd_ref" [editable]="false"
-                [ngbTypeahead]="inputAutoCompleteSearch" [resultTemplate]="rt"
-                [inputFormatter]="inputAutoCompleteFormatter" />
-        </div>
-        <!-- END TAXON SELECTION -->
+            <pnx-taxonomy 
+            label="Rechercher une espèce"
+            placeholder="Rechercher par nom ou cd_nom" 
+            isRequired="true"
+            [parentFormControl]="obsForm.controls.cd_nom"
+            [idList]="taxonomyListID" 
+            [charNumber]="3" 
+            [listLength]="20"
+            (onChange)="onSelectedTaxon($event)"
+            (emptyInput)="onEmptyInput($event)">
+          </pnx-taxonomy>
+         </div>
         <div class="form-group col-lg-12 col-md-12">
             <h5 i18n="Additional information@@additionalInfos">
                 Informations complémentaires

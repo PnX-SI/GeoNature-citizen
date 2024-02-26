@@ -1,6 +1,8 @@
-from flask import Blueprint
+# import requests
+from flask import Blueprint, current_app, request
 from gncitizen.utils.taxonomy import (
     get_specie_from_cd_nom,
+    make_taxon_repository_only_one_taxa,
     refresh_taxonlist,
     taxhub_full_lists,
     taxhub_rest_get_all_lists,
@@ -80,7 +82,14 @@ def get_list(id):
     """
 
     try:
-        r = taxhub_full_lists[id]
+        #TODO: to improve to make this works with every component call this route (change the taxhub_full_lists)
+        if request.args.get("cd_nom"):
+          cd_nom = request.args["cd_nom"]
+          params = {'cd_nom':cd_nom}
+          r = make_taxon_repository_only_one_taxa(id,params)
+        else:
+          r = taxhub_full_lists[id]
+          # r = mkTaxonRepository(id)
         return r
     except Exception as e:
         return {"message": str(e)}, 400

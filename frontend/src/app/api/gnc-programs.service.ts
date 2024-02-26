@@ -204,6 +204,12 @@ export class GncProgramsService implements OnInit {
         );
     }
 
+    getTaxonInfoByList(taxonomy_list: number, cd_nom:number): Observable<TaxonomyList> {
+        return this.http.get<TaxonomyList>(
+            `${this.URL}/taxonomy/lists/${taxonomy_list}/species?cd_nom=${cd_nom}`
+        );
+    }
+
     getCustomForm(id_form): Observable<object> {
         return this.http
             .get<object>(`${this.URL}/customform/${id_form}`)
