@@ -494,13 +494,29 @@ def reset_user_password():
 
     subject = current_app.config["RESET_PASSWD"]["SUBJECT"]
     to = user.email
-    plain_message = current_app.config["RESET_PASSWD"]["TEXT_TEMPLATE"].format(
-        passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
-    )
-    html_message = current_app.config["RESET_PASSWD"]["HTML_TEMPLATE"].format(
-        passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
-    )
+
+    plain_message = None
+    if "TEXT_TEMPLATE" in current_app.config["RESET_PASSWD"]:
+        plain_message = current_app.config["RESET_PASSWD"]["TEXT_TEMPLATE"].format(
+            passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
+        )
+    html_message = None
+    if "HTML_TEMPLATE" in current_app.config["RESET_PASSWD"]:
+        html_message = current_app.config["RESET_PASSWD"]["HTML_TEMPLATE"].format(
+            passwd=passwd, app_url=current_app.config["URL_APPLICATION"]
+        )
     from_addr = current_app.config["RESET_PASSWD"]["FROM"]
+
+    # Set a default value
+    if not (plain_message or html_message):
+        html_message = '''
+            Bonjour,<br/>
+            <br/>
+            Voici votre nouveau mot de passe:<br/>
+            {passwd}<br/>
+            <br/>
+            <a href="{app_url}">Connexion</a>
+        '''
 
     try:
         send_user_email(

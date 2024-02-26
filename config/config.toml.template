@@ -44,10 +44,12 @@ VERIFY_OBSERVATIONS_ENABLED = false
     Bonjour,\r\nVoici votre nouveau mot de passe :\r\n{passwd}\r\n"{app_url}
     '''
     HTML_TEMPLATE = '''
-    Bonjour,<br /><br />Voici votre nouveau mot de passe :<br />
-    {passwd}
-    <br /><br />"
-    <a href="{app_url}">Connexion</a>'
+    Bonjour,<br/>
+    <br/>
+    Voici votre nouveau mot de passe:<br/>
+    {passwd}<br/>
+    <br/>
+    <a href="{app_url}">Connexion</a>
     '''
 
 [CONFIRM_EMAIL]
