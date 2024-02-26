@@ -30,13 +30,15 @@ taxhub_full_lists = {}
 taxonomy_lists = []
 
 
-def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
+def taxhub_rest_get_taxon_list(taxhub_list_id: int, params_to_update: Dict = {}) -> Dict:
     url = f"{TAXHUB_API}biblistes/taxons/{taxhub_list_id}"
     params = {
         "existing": "true",
         "order": "asc",
         "orderby": "taxref.nom_complet",
     }
+    if params_to_update:
+        params.update(params_to_update)
     res = session.get(
         url,
         params=params,
@@ -98,6 +100,12 @@ def make_taxon_repository(taxhub_list_id: int) -> List[Taxon]:
     r = [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
     return r
 
+
+def make_taxon_repository_only_one_taxa(taxhub_list_id: int, params_to_update:Dict = {}) -> List[Taxon]:
+    taxa = taxhub_rest_get_taxon_list(taxhub_list_id, params_to_update)
+    taxon_ids = [item["id_nom"] for item in taxa.get("items")]
+    r = [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
+    return r
 
 def get_specie_from_cd_nom(cd_nom) -> Dict:
     """get specie datas from taxref id (cd_nom)
