@@ -49,14 +49,11 @@
                 class="espece obs-{{ o.properties.id_observation }}">
                 <!-- FIXME: hardcoded api media endpoint -->
                 <img class="obs-img" [src]="
-                        o.properties.images && !!o.properties.images.length
+                        o.properties.photos && !!o.properties.photos.length
                             ? MainConfig.API_ENDPOINT +
-                              '/media/' +
-                              o.properties.images[0]
-                            : o.properties.image
-                            ? MainConfig.API_ENDPOINT.replace('/api', '') + o.properties.image
-                            : o.properties.medias &&
-                              !!o.properties.medias.length
+
+                              o.properties.photos[0].url
+                            : o.properties.medias && !!o.properties.medias.length
                             ? MainConfig.API_TAXHUB +
                               '/tmedias/thumbnail/' +
                               o.properties.medias[0].id_media +
@@ -85,21 +82,23 @@
                                 : o.properties.taxref?.nom_vern
                                 }}</span>
                         </ng-template>
-                        &nbsp;
+                        <span *ngIf="o.properties.photos && !!o.properties.photos.length">&nbsp;<i class="fa fa-camera"
+                                aria-hidden="true" placement="bottom" ngbTooltip="Observation avec photo"></i>
+                        </span>&nbsp;
                         <span *ngIf="MainConfig.VERIFY_OBSERVATIONS_ENABLED" (click)="onValidateClick(o)"
                             [ngStyle]="{ 'cursor': o.properties.observer?.username == username ? 'not-allowed' :  'pointer'}">
                             <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
                                 class="fa fa-hourglass-half text-warning" aria-hidden="true" placement="bottom"
-                                ngbTooltip="Non validée{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
+                                ngbTooltip="Observation non validée{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
                             <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'INVALID'"
                                 class="fa fa-question-circle text-danger" aria-hidden="true" placement="bottom"
-                                ngbTooltip="Invalide{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
+                                ngbTooltip="Observation invalide{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
                             <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NON_VALIDATABLE'"
                                 class="fa fa-times-circle text-danger" aria-hidden="true" placement="bottom"
-                                ngbTooltip="Non validable{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
+                                ngbTooltip="Observation non validable{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
                             <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'VALIDATED'"
                                 class="fa fa-certificate text-success" aria-hidden="true" placement="bottom"
-                                ngbTooltip="Approuvé"></i>
+                                ngbTooltip="Observation approuvée"></i>
                         </span>
 
                     </div>
