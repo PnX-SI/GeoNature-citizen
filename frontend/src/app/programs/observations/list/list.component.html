@@ -48,10 +48,10 @@
             <div *ngFor="let o of features$ | async; trackBy: trackByObs" (click)="onObsClick(o)"
                 class="espece obs-{{ o.properties.id_observation }}">
                 <!-- FIXME: hardcoded api media endpoint -->
-                <img class="obs-img" [src]="
+                <div class="obs-img-container">
+                    <img class="obs-img" [src]="
                         o.properties.photos && !!o.properties.photos.length
                             ? MainConfig.API_ENDPOINT +
-
                               o.properties.photos[0].url
                             : o.properties.medias && !!o.properties.medias.length
                             ? MainConfig.API_TAXHUB +
@@ -60,6 +60,10 @@
                               '?h=80'
                             : 'assets/default_image.png'
                     " />
+                    <span *ngIf="o.properties.photos && !!o.properties.photos.length" class="overlay-text"><i
+                            class="fa fa-camera" aria-hidden="true" placement="right"
+                            ngbTooltip="Observation avec photo"></i></span>
+                </div>
                 <div class="infos">
                     <div>
                         <a *ngIf="MainConfig.details_espece_url; else no_detail_espece_url" class="espece-link"
@@ -82,9 +86,8 @@
                                 : o.properties.taxref?.nom_vern
                                 }}</span>
                         </ng-template>
-                        <span *ngIf="o.properties.photos && !!o.properties.photos.length">&nbsp;<i class="fa fa-camera"
-                                aria-hidden="true" placement="bottom" ngbTooltip="Observation avec photo"></i>
-                        </span>&nbsp;
+
+                        &nbsp;
                         <span *ngIf="MainConfig.VERIFY_OBSERVATIONS_ENABLED" (click)="onValidateClick(o)"
                             [ngStyle]="{ 'cursor': o.properties.observer?.username == username ? 'not-allowed' :  'pointer'}">
                             <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
@@ -141,8 +144,8 @@
                         o.properties.id_program,
                         'observations',
                         o.properties.id_observation
-                    ]" queryParamsHandling="preserve" style="cursor: pointer"
-                    title="Voir les détails de cette observation">
+                    ]" queryParamsHandling="preserve" style="cursor: pointer" placement="left"
+                    ngbTooltip="Voir les détails de cette observation">
                     <img src="assets/binoculars.png" />
                 </div>
             </div>
