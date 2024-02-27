@@ -1,7 +1,8 @@
 <div class="mediaGalery overflow-auto">
     <div *ngIf="hasMedia; else noMedia" class="row text-center text-lg-start">
         <div *ngFor="let m of media" class="col-lg-3 col-md-4 col-6 p-1 img-container">
-            <img class="" [src]="API_ENDPOINT+ '/media/' + m.filename" [alt]="m.title" [ngbTooltip]="m.name" />
+            <img loading="lazy" class="" [src]="API_ENDPOINT+ '/media/' + m.filename" [alt]="m.title"
+                [ngbTooltip]="m.name" />
             <div (click)="showPhoto(m)" class="overlay p-1">
                 <span><a [href]="m.data_url">{{ m.name }} le {{ m.date | date: 'longDate' }}</a> par @{{
                     m.observer

@@ -12,8 +12,9 @@
                     <span>{{ program.title }}</span>
                 </h2>
                 <div class="carousel-item active">
-                    <img class="d-block w-100 default-img" [src]="program.image || 'assets/default_program.jpg'"
-                        alt="program image (fixme context)" *ngIf="program" />
+                    <img loading="lazy" class="d-block w-100 default-img"
+                        [src]="program.image || 'assets/default_program.jpg'" alt="program image (fixme context)"
+                        *ngIf="program" />
                     <div class="carousel-text-container">
                         <div class="carousel-text">
                             <h3 class="mobile" [innerHTML]="program.title"></h3>

@@ -2,7 +2,7 @@
     <ngb-carousel>
         <ng-template ngbSlide *ngFor="let p of obsToValidate.properties.photos">
             <div class="picsum-img-wrapper">
-                <img src="{{ MainConfig.API_ENDPOINT }}{{ p.url }}" />
+                <img loading="lazy" src="{{ MainConfig.API_ENDPOINT }}{{ p.url }}" />
             </div>
         </ng-template>
     </ngb-carousel>
@@ -13,7 +13,7 @@
             !!taxa[0].medias.length &&
             taxonDisplayImageWhenUnique
         " class="mono-taxa-img">
-        <img [src]="
+        <img loading="lazy" [src]="
                 taxa[0].medias && !!taxa[0].medias.length
                     ? MainConfig.API_TAXHUB +
                         '/tmedias/thumbnail/' +
@@ -61,7 +61,7 @@
         <div class="scroll-img" [class.ng-valid]="selectedTaxon" [class.ng-invalid]="!selectedTaxon">
             <div *ngFor="let s of surveySpecies">
                 <div class="obs-img default-img" [class.selected]="isSelectedTaxon(s)">
-                    <img [src]="
+                    <img loading="lazy" [src]="
                             s.medias && !!s.medias.length
                                 ? MainConfig.API_TAXHUB +
                                     '/tmedias/thumbnail/' +
@@ -85,7 +85,7 @@
     <!-- TAXON AUTOCOMPLETE -->
     <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg-12">
         <ng-template #rt let-r="result" let-t="term">
-            <img [src]="r.icon" class="mr-1" style="height: 1em" />
+            <img loading="lazy" [src]="r.icon" class="mr-1" style="height: 1em" />
             <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
         </ng-template>
         <input id="cd_nom" type="text" class="form-control rounded-0" formControlName="cd_nom"

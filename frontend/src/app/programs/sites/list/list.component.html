@@ -7,56 +7,33 @@
             <ng-content select="[add-obs]"></ng-content>
         </div>
         <div id="list">
-            <div
-                *ngFor="let o of sites"
-                (click)="onSiteClick(o)"
-                class="espece"
-            >
-                <img
-                    src="{{
+            <div *ngFor="let o of sites" (click)="onSiteClick(o)" class="espece">
+                <img loading="lazy" src="{{
                         o.properties.photo
                             ? apiEndpoint + o.properties.photo.url
                             : o.properties.site_type.pictogram? o.properties.site_type.pictogram:'assets/no_photo_light.png'
-                    }}"
-                />
+                    }}" />
                 <div class="infos">
                     <h5>
                         {{ o.properties.name }}
                         <span *ngIf="userDashboard" class="pull-right">
                             &nbsp;
-                            <app-sitemodalflow
-                                #modalFlowRef
-                                [coords]="o.properties.coords"
-                                [updateData]="o.properties"
-                                [program_id]="o.properties.id_program"
-                            >
-                                <i
-                                    class="fa fa-edit text-primary"
-                                    placement="bottom"
-                                    ngbTooltip="Editer"
-                                    *ngIf="
+                            <app-sitemodalflow #modalFlowRef [coords]="o.properties.coords" [updateData]="o.properties"
+                                [program_id]="o.properties.id_program">
+                                <i class="fa fa-edit text-primary" placement="bottom" ngbTooltip="Editer" *ngIf="
                                         o.properties.id_role ===
                                         userService.role_id
-                                    "
-                                    btn-open
-                                ></i>
+                                    " btn-open></i>
                             </app-sitemodalflow>
                             &nbsp;
-                            <i
-                                class="fa fa-trash text-danger"
-                                placement="bottom"
-                                ngbTooltip="Supprimer"
-                                (click)="
+                            <i class="fa fa-trash text-danger" placement="bottom" ngbTooltip="Supprimer" (click)="
                                     siteService.deleteSite.emit(
                                         o.properties.id_site
                                     )
-                                "
-                                *ngIf="
+                                " *ngIf="
                                     o.properties.creator_can_delete &&
                                     o.properties.id_role === userService.role_id
-                                "
-                                owner-actions
-                            ></i>
+                                " owner-actions></i>
                         </span>
                     </h5>
                     <p>
@@ -68,22 +45,16 @@
                         le
                         <span>{{
                             o.properties.timestamp_create.substring(0, 10)
-                                | date: 'longDate'
-                        }}</span>
+                            | date: 'longDate'
+                            }}</span>
                     </p>
                 </div>
-                <div
-                    class="hide"
-                    [routerLink]="[
+                <div class="hide" [routerLink]="[
                         '/programs',
                         o.properties.id_program,
                         'sites',
                         o.properties.id_site
-                    ]"
-                    queryParamsHandling="preserve"
-                    style="cursor: pointer"
-                    title="Voir les détails sur ce site"
-                >
+                    ]" queryParamsHandling="preserve" style="cursor: pointer" title="Voir les détails sur ce site">
                     <img src="assets/binoculars.png" />
                 </div>
             </div>

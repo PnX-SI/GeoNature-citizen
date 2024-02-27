@@ -1,7 +1,7 @@
 <nav class="navbar navbar-light navbar-expand-md fixed-top"
     [ngClass]="displayTopbar ? 'navbar-visible' : 'navbar-hidden'">
     <a class="navbar-brand" routerLink="home" routerLinkActive="active" aria-label="GéoNature Citizen Home">
-        <img src="{{ logoImage }}" width="auto" height="80" class="d-inline-block align-top logo"
+        <img src="{{ logoImage }}" loading="lazy" width="auto" height="80" class="d-inline-block align-top logo"
             [ngClass]="displayTopbar ? '' : 'hidden'" alt="GeoNature Citizen logo: flamengo origami" />
     </a>
     <button class="navbar-toggler collapsed" type="button" (click)="isCollapsed = !isCollapsed">

@@ -49,7 +49,7 @@
                 class="espece obs-{{ o.properties.id_observation }}">
                 <!-- FIXME: hardcoded api media endpoint -->
                 <div class="obs-img-container">
-                    <img class="obs-img" [src]="
+                    <img loading="lazy" class="obs-img" [src]="
                         o.properties.photos && !!o.properties.photos.length
                             ? MainConfig.API_ENDPOINT +
                               o.properties.photos[0].url
