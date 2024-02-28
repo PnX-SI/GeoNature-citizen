@@ -221,7 +221,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         );
     }
 
-    closeModal(observationId: number = null) {
+    closeModal(observationId: number = null): void {
         if (observationId) {
             this.route.data.subscribe(() => {
                 this.observationsService
