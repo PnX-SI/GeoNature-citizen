@@ -400,7 +400,6 @@ def get_medias():
         key: args[key] for key in args.keys() if key.startswith("validation_status") if key in args
     }
     obs_args = {**obs_args, **validation_args}
-    obs_args = {**obs_args}
     visit_args = {key: args[key] for key in ["id_site", "id_visit"] if key in args}
     site_args = {key: args[key] for key in [] if key in args}
     id_role = request.args.get("id_role")
