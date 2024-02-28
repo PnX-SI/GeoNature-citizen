@@ -68,7 +68,7 @@
             <app-media-galery *ngIf="mediaPanel" [ngStyle]="!mediaPanel?{'display': 'none'} : {}"
                 [program_id]="program_id" [userDashboard]="userDashboard"
                 [validationProcess]="validationDashboard"></app-media-galery>
-            <app-obs-map #obsMapRef *ngIf="!mediaPanel" [ngStyle]="mediaPanel?{'display': 'none'} : {}"
+            <app-obs-map #obsMapRef [hidden]="mediaPanel" [ngStyle]="mediaPanel?{'display': 'none'} : {}"
                 [features]="observations" [program]="programFeature" (onClick)="onMapClicked($event)"></app-obs-map>
         </div>
         <ng-template #validateModal let-modal>
