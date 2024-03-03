@@ -458,7 +458,7 @@ def update_observation():
                     else status["mail"]
                 )
             elif update_data.get("cd_nom") != observation_to_update.one().cd_nom:
-                message = f"Nous avons bien reçu observation, merci beaucoup pour votre participation. Il s'avère que l'espèce que vous avez observée est un[e] {update_data.get('name')}."
+                message = f"Nous avons bien reçu votre observation, merci beaucoup pour votre participation. Il s'avère que l'espèce que vous avez observée est un[e] {update_data.get('name')}."
             else:
                 message = f"L'espèce que vous avez observée est bien un[e] {update_data.get('name')}. Merci pour votre participation !"
             if obs_to_update_obj.id_role is not None:

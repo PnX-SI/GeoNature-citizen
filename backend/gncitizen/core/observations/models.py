@@ -69,7 +69,7 @@ INVALIDATION_STATUSES = [
         "value": "unverifiable",
         "text": "L'identification est difficile, besoin d'un autre avis",
         "link": "INVALID",
-        "mail": "L'identification de l'espèce que vous avez observée est difficile les éléments fournis, nous continuons nos recherches...",
+        "mail": "L'identification de l'espèce que vous avez observée est difficile d'après les éléments fournis, nous continuons nos recherches...",
         "twice": "Désolé, l'identification de l'individu que vous avez observée est trop difficile. Pouvez-vous essayer de le photographier, lui et/ou ses congénères ?",
     },
     {
