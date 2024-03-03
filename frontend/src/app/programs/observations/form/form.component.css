@@ -17,7 +17,7 @@ app-obs-form .inputfile {
 }
 
 app-obs-form #formMap {
-    min-height: 225px; /*50vh*/
+    min-height: 50vh; /*50vh*/
     width: 100%;
 }
 
