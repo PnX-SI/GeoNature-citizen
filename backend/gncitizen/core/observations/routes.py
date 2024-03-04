@@ -3,7 +3,6 @@
 
 
 import uuid
-from enum import Enum
 from typing import Dict, Tuple, Union
 
 # from datetime import datetime
@@ -11,8 +10,11 @@ from flask import Blueprint, abort, current_app, json, request
 from flask_jwt_extended import jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
+from shapely.geometry import Point, asShape
+from sqlalchemy import desc
+from utils_flask_sqla.response import json_resp
+
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
-from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import admin
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.geo import get_municipality_id_from_wkb
@@ -20,12 +22,8 @@ from gncitizen.utils.helpers import get_filter_by_args
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.mail_check import send_user_email
 from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.taxonomy import get_specie_from_cd_nom, taxhub_full_lists
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
-from shapely.geometry import Point, asShape
-from sqlalchemy import desc, func
-from utils_flask_sqla.response import json_resp
-from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from .admin import ObservationView
 from .models import (
@@ -197,7 +195,7 @@ def post_observation():
             current_app.logger.debug("[post_observation] newobs geom ", newobs.geom)
         except Exception as e:
             current_app.logger.warning("[post_observation] coords ", e)
-            raise GeonatureApiError(e)
+            raise GeonatureApiError(e) from e
 
         try:
             json_data = request_datas.get("json_data")
@@ -205,13 +203,16 @@ def post_observation():
                 newobs.json_data = json.loads(json_data)
         except Exception as e:
             current_app.logger.warning("[post_observation] json_data ", e)
-            raise GeonatureApiError(e)
+            raise GeonatureApiError(e) from e
 
         role = get_user_if_exists()
+        program = ProgramsModel.query.get(newobs.id_program)
         if role:
             newobs.id_role = role.id_user
             newobs.obs_txt = role.username
             newobs.email = role.email
+        elif program.registration_required:
+            return {"message": "registration required"}, 403
         else:
             if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
                 newobs.obs_txt = "Anonyme"

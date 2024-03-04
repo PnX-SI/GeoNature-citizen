@@ -4,12 +4,8 @@
         <div id="slider" class="carousel slide">
             <div class="carousel-inner">
                 <h2>
-                    {{
-                    MainConfig.program_label[localeId]
-                    ? MainConfig.program_label[localeId]
-                    : 'Programme'
-                    }}
-                    <span>{{ program.title }}</span>
+                    {{ MainConfig.program_label[localeId] ? MainConfig.program_label[localeId] : 'Programme' }} <span>{{
+                        program.title }}</span>
                 </h2>
                 <div class="carousel-item active">
                     <img loading="lazy" class="d-block w-100 default-img"
@@ -49,9 +45,9 @@
                     Ajouter
                 </button>
                 <app-sitemodalflow #modalFlowRef [coords]="coords" [modalversion]="
-                        MainConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
-                    " [program_id]="program_id" obs-form>
-                </app-sitemodalflow>
+                        AppConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
+                    " [program_id]="program_id" [registration_required]="program?.registration_required"
+                    obs-form></app-sitemodalflow>
             </app-sites-list>
         </div>
 
@@ -105,15 +101,8 @@
                                 MainConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
                             ">
                             <button type="button" class="btn-big text-center text-nowrap text-uppercase" btn-open>
-                                {{
-                                MainConfig.program_add_an_observation[
-                                localeId
-                                ]
-                                ? MainConfig.program_add_an_observation[
-                                localeId
-                                ]
-                                : 'Ajouter'
-                                }}
+                                {{ MainConfig.program_add_an_observation[ localeId ] ?
+                                MainConfig.program_add_an_observation[ localeId ] : 'Ajouter' }}
                             </button>
                         </app-sitemodalflow>
                     </div>

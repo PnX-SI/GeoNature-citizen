@@ -177,6 +177,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     )
     module = relationship("TModules")
     taxonomy_list = db.Column(db.Integer, nullable=True)
+    registration_required = db.Column(db.Boolean(), default=False)
     is_active = db.Column(db.Boolean(), server_default=expression.true(), default=True)
     id_geom = db.Column(db.Integer, db.ForeignKey(GeometryModel.id_geom), nullable=False)
     id_form = db.Column(db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True)

@@ -7,17 +7,16 @@ from flask import Blueprint, current_app, make_response, request
 from flask_jwt_extended import jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
-from shapely.geometry import Point, asShape
-from sqlalchemy import or_
-from utils_flask_sqla.response import json_resp
-from utils_flask_sqla_geo.generic import get_geojson_feature
-
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
 from server import db
+from shapely.geometry import Point, asShape
+from sqlalchemy import or_
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from .models import MediaOnVisitModel, SiteModel, SiteTypeModel, VisitModel
 
@@ -320,12 +319,16 @@ def post_site():
             current_app.logger.debug(e)
             raise GeonatureApiError(e)
 
+        program = ProgramsModel.query.get(newsite.id_program)
+
         id_role = get_id_role_if_exists()
         if id_role is not None:
             newsite.id_role = id_role
             role = UserModel.query.get(id_role)
             newsite.obs_txt = role.username
             newsite.email = role.email
+        elif program.registration_required:
+            return {"message": "registration required"}, 403
         else:
             if newsite.obs_txt is None or len(newsite.obs_txt) == 0:
                 newsite.obs_txt = "Anonyme"
