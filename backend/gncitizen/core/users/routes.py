@@ -12,15 +12,16 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
 )
+from sqlalchemy import func, or_
+from sqlalchemy.exc import IntegrityError
+from utils_flask_sqla.response import json_resp
+
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.utils.env import MEDIA_DIR, admin
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import admin_required, get_user_if_exists
 from gncitizen.utils.mail_check import confirm_token, confirm_user_email, send_user_email
 from server import db
-from sqlalchemy import func, or_
-from sqlalchemy.exc import IntegrityError
-from utils_flask_sqla.response import json_resp
 
 from .admin import UserView
 from .models import RevokedTokenModel, UserModel

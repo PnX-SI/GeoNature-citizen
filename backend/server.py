@@ -4,7 +4,6 @@ import sys
 
 from flask import Flask, current_app
 from flask_cors import CORS
-
 from gncitizen.utils.env import (
     admin,
     ckeditor,
@@ -75,12 +74,12 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     # Bind app to DB
     db.init_app(app)
+    migrate.init_app(app, db)
     # JWT Auth
     jwt.init_app(app)
     swagger.init_app(app)
     admin.init_app(app)
     ckeditor.init_app(app)
-    migrate.init_app(app, db)
 
     with app.app_context():
         from gncitizen.core.commons.routes import commons_api

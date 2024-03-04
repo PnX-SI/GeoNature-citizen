@@ -1,7 +1,8 @@
 from flask_admin.actions import action
+from wtforms import SelectField
+
 from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatter
 from server import db
-from wtforms import SelectField
 
 from .models import ObservationModel, ValidationStatus
 
