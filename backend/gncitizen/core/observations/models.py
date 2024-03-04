@@ -6,7 +6,7 @@ from enum import Enum
 from flask import current_app
 from geoalchemy2 import Geometry
 from gncitizen.core.commons.models import MediaModel, ProgramsModel, TimestampMixinModel
-from gncitizen.core.users.models import ObserverMixinModel, UserModel, ValidatorMixinModel
+from gncitizen.core.users.models import ObserverMixinModel, UserModel
 from server import db
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from utils_flask_sqla_geo.generic import get_geojson_feature
@@ -69,8 +69,8 @@ INVALIDATION_STATUSES = [
         "value": "unverifiable",
         "text": "L'identification est difficile, besoin d'un autre avis",
         "link": "INVALID",
-        "mail": "L'identification de l'espèce que vous avez observée est difficile d'après cette ou ces photos, nous continuons nos recherches...",
-        "twice": "Désolé, l'identification de l'individu que vous avez observée est trop difficile. Pouvez-vous essayer de le photographier, à nouveau, lui et/ou ses congénères ?",
+        "mail": "L'identification de l'espèce que vous avez observée est difficile d'après les éléments fournis, nous continuons nos recherches...",
+        "twice": "Désolé, l'identification de l'individu que vous avez observée est trop difficile. Pouvez-vous essayer de le photographier, lui et/ou ses congénères ?",
     },
     {
         "value": "off-topic",

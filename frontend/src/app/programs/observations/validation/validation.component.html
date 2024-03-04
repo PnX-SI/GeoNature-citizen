@@ -1,140 +1,99 @@
 <form id="validationForm" [formGroup]="validationForm" (ngSubmit)="onFormSubmit()">
     <ngb-carousel>
-        <ng-template 
-            ngbSlide 
-            *ngFor="let p of obsToValidate.properties.photos"
-        >
+        <ng-template ngbSlide *ngFor="let p of obsToValidate.properties.photos">
             <div class="picsum-img-wrapper">
-                <img src="{{ MainConfig.API_ENDPOINT }}{{ p.url }}"/>
+                <img loading="lazy" src="{{ MainConfig.API_ENDPOINT }}{{ p.url }}" />
             </div>
         </ng-template>
     </ngb-carousel>
     <input formControlName="id_observation" type="hidden" />
-    <div
-        *ngIf="
+    <div *ngIf="
             taxaCount == 1 &&
             taxa[0].medias &&
             !!taxa[0].medias.length &&
             taxonDisplayImageWhenUnique
-        "
-        class="mono-taxa-img"
-    >
-        <img
-            [src]="
+        " class="mono-taxa-img">
+        <img loading="lazy" [src]="
                 taxa[0].medias && !!taxa[0].medias.length
                     ? MainConfig.API_TAXHUB +
                         '/tmedias/thumbnail/' +
                         taxa[0].medias[0].id_media +
                         '?w=800'
                     : 'assets/default_image.png'
-            "
-            [alt]="
+            " [alt]="
                 !!taxa[0].nom_francais
                     ? taxa[0].nom_francais
                     : taxa[0].taxref.nom_vern
-            "
-            class="object-fit-cover"
-        />
+            " class="object-fit-cover" />
     </div>
-    <div class="form-group col-lg-8">
+    <div class="form-group col-lg-12">
         <h5>
-            Identification proposée : {{ obsToValidate.properties.nom_francais}}
+            Identification proposée : {{ obsToValidate.properties.nom_francais ||
+            obsToValidate.properties.taxref.nom_vern}} <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{
+                    obsToValidate.properties.taxref.lb_nom }}</i>)</span>
         </h5>
         <p *ngIf="taxaCount > 1" class="m-0">
-            <label for="cd_nom" class="m-0"
-                >{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
-                isOff {Validez ou corrigez l&apos;esp&egrave;ce}}</label
-            >
+            <label for="cd_nom" class="m-0">{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
+                isOff {Validez ou corrigez l&apos;esp&egrave;ce}}</label>
         </p>
         <!-- TAXON SELECT -->
 
-        <div
-            *ngIf="
+        <div *ngIf="
                 taxaCount >= taxonSelectInputThreshold &&
                 taxaCount < taxonAutocompleteInputThreshold
-            "
-            class="d-inline-flex toolbar"
-        >
-            <select formControlName="cd_nom" class="form-control rounded-0">
-                <option
-                    *ngFor="let s of surveySpecies$ | async"
-                    [value]="s.taxref.cd_nom"
-                >
+            " class="d-inline-flex toolbar">
+            <select formControlName="cd_nom" class="form-control rounded-0" [value]="obsToValidate.properties.cd_nom">
+                <option value="" [disabled]="true">Choisissez une espèce</option>
+                <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
                     {{
-                        !!s.nom_francais
-                            ? s.nom_francais
-                            : s.taxref.nom_vern
+                    !!s.nom_francais
+                    ? s.nom_francais
+                    : s.taxref.nom_vern
                     }}
-                    <span *ngIf="MainConfig.taxonDisplaySciName"
-                        >(<i>{{ s.taxref.nom_complet }}</i
-                        >)</span
-                    >
+                    <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref.nom_complet }}</i>)</span>
                 </option>
             </select>
         </div>
     </div>
     <!-- TAXON PICKER -->
-    <div
-        *ngIf="taxaCount < taxonSelectInputThreshold && taxaCount > 1"
-        class="form-group col-lg-12 d-inline-flex obs-images"
-    >
-        <div
-            class="scroll-img"
-            [class.ng-valid]="selectedTaxon"
-            [class.ng-invalid]="!selectedTaxon"
-        >
-            <div *ngFor="let s of surveySpecies$ | async">
-                <div
-                    class="obs-img default-img"
-                    [class.selected]="isSelectedTaxon(s)"
-                >
-                    <img
-                        [src]="
+    <div *ngIf="taxaCount < taxonSelectInputThreshold && taxaCount > 1"
+        class="form-group col-lg-12 d-inline-flex obs-images">
+        <div class="scroll-img" [class.ng-valid]="selectedTaxon" [class.ng-invalid]="!selectedTaxon">
+            <div *ngFor="let s of surveySpecies">
+                <div class="obs-img default-img" [class.selected]="isSelectedTaxon(s)">
+                    <img loading="lazy" [src]="
                             s.medias && !!s.medias.length
                                 ? MainConfig.API_TAXHUB +
                                     '/tmedias/thumbnail/' +
                                     s.medias[0].id_media +
                                     '?h=150'
                                 : 'assets/default_image.png'
-                        "
-                        [alt]="
+                        " [alt]="
                             !!s.nom_francais
                                 ? s.nom_francais
                                 : s.taxref.nom_vern
-                        "
-                        (click)="onTaxonSelected(s)"
-                    />
+                        " (click)="onTaxonSelected(s)" />
                     <span>{{
                         !!s.nom_francais
-                            ? s.nom_francais
-                            : s.taxref.nom_vern
-                    }}</span>
+                        ? s.nom_francais
+                        : s.taxref.nom_vern
+                        }}</span>
                 </div>
             </div>
         </div>
     </div>
     <!-- TAXON AUTOCOMPLETE -->
-    <div
-        *ngIf="taxaCount >= taxonAutocompleteInputThreshold"
-        class="form-group col-lg-8"
-    >
+    <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg-12">
         <ng-template #rt let-r="result" let-t="term">
-            <img [src]="r.icon" class="mr-1" style="height: 1em" />
+            <img loading="lazy" [src]="r.icon" class="mr-1" style="height: 1em" />
             <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
         </ng-template>
-        <input
-            id="cd_nom"
-            type="text"
-            class="form-control rounded-0"
-            formControlName="cd_nom"
-            placeholder="Nom latin ou vernaculaire ou cd_ref"
-            [editable]="false"
-            [ngbTypeahead]="inputAutoCompleteSearch"
-            [resultTemplate]="rt"
-            [inputFormatter]="inputAutoCompleteFormatter"
-        />
+        <input id="cd_nom" type="text" class="form-control rounded-0" formControlName="cd_nom"
+            placeholder="Nom latin ou vernaculaire ou cd_ref" [editable]="false"
+            [ngbTypeahead]="inputAutoCompleteSearch" [resultTemplate]="rt"
+            [inputFormatter]="inputAutoCompleteFormatter" />
     </div>
-        <!-- END TAXON SELECTION -->
+    <!-- END TAXON SELECTION -->
     <div class="form-group col-lg-12 col-md-12">
         <p>
             <span i18n="observation date@@bservationDate">
@@ -146,46 +105,26 @@
         </p>
     </div>
     <div class="form-group col-lg-12 col-md-12">
-        <div
-            id="validateMap"
-            [class.div-form-map]="true"
-            i18n-data-observation-zoom-statement-warning="
+        <div id="validateMap" [class.div-form-map]="true" i18n-data-observation-zoom-statement-warning="
             Zooming instruction@@zoomingInstruction"
-            data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
-        ></div>
+            data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."></div>
     </div>
     <div class="form-group col-lg-12 col-md-12">
-        <label
-            for="comment"
-            i18n="Comment Input Label@@commentInputLabel"
-            >Commentaire</label
-        >
-        <textarea disabled class="form-control rounded-0" rows="2"
-        >{{obsToValidate.properties.comment}}</textarea>
-        <textarea
-            i18n-placeholder="
-                Comment Input Placeholder@@commentInputPlaceholder"
-            placeholder="Ajoutez des indications si besoin"
-            class="form-control rounded-0"
-            rows="2"
-            id="comment"
-            formControlName="comment"
-        ></textarea>
+        <label for="comment" i18n="Comment Input Label@@commentInputLabel">Commentaire</label>
+        <textarea disabled class="form-control rounded-0" rows="2">{{obsToValidate.properties.comment}}</textarea>
+        <textarea i18n-placeholder="
+                Comment Input Placeholder@@commentInputPlaceholder" placeholder="Ajoutez des indications si besoin"
+            class="form-control rounded-0" rows="2" id="comment" formControlName="comment"></textarea>
     </div>
     <div class="form-group col-lg-12 col-md-12">
         <div class="form-check">
-            <input
-                type="checkbox"
-                class="form-check-input"
-                id="reportObserver"
-                formControlName="report_observer"
-                checked
-                (change)="true"
-            />
+            <input type="checkbox" class="form-check-input" id="reportObserver" formControlName="report_observer"
+                checked (change)="true" />
             <label class="form-check-label" style="margin-left: 5px; margin-bottom: 0;" for="reportObserver">
                 Avertir l'observateur
             </label>
-            <small class="form-text text-muted">L'observateur recevra un mail contenant des informations de validation, correction ou d'invalidité de son observation.</small>
+            <small class="form-text text-muted">L'observateur recevra un mail contenant des informations de validation,
+                correction ou d'invalidité de son observation.</small>
         </div>
     </div>
     <div class="form-group col-lg-12 col-md-12">
@@ -194,23 +133,24 @@
         </label>
         <div class="form-row">
             <div class="col">
-                <select formControlName="non_validatable_status" class="custom-select" [(ngModel)]="selectedInvalidationStatus" (ngModelChange)="onSelectInvalidObs($event)">
-                    <option *ngFor="let status of invalidationStatuses" [ngValue]="status.value">{{ status.text }}</option>
+                <select formControlName="non_validatable_status" class="custom-select"
+                    [(ngModel)]="selectedInvalidationStatus" (ngModelChange)="onSelectInvalidObs($event)">
+                    <option *ngFor="let status of invalidationStatuses" [ngValue]="status.value">{{ status.text }}
+                    </option>
                 </select>
-                <small class="form-text text-muted">Demander à l'observateur de modifier son observation ou a un autre validateur de la vérifier.</small>
+                <small class="form-text text-muted">Demander à l'observateur de modifier son observation ou a un autre
+                    validateur de la vérifier.</small>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button
-            type="submit"
-            class="btn btn-big rounded-0"
+        <button type="submit" class="btn btn-big rounded-0"
             [ngClass]="obsValidatable ? 'btn-default btn-outline-primary' : 'btn-warning btn-outline-warning bg-warning'"
-            i18n="Valid obs btn@@validObsBtn"
-            >
+            i18n="Valid obs btn@@validObsBtn">
             {{ obsValidatable ? (obsCorrection ? 'Corriger' : 'Valider') : 'Invalider' }} l'observation
         </button>
-        <button type="button" class="btn btn-secondary btn-big rounded-0" (click)="cancelValidation()" i18n="Cancel@@cancel">
+        <button type="button" class="btn btn-secondary btn-big rounded-0" (click)="cancelValidation()"
+            i18n="Cancel@@cancel">
             Annuler
         </button>
     </div>

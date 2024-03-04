@@ -33,18 +33,40 @@ import {
 } from '../observation.model';
 import 'leaflet-gesture-handling';
 import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
+import 'leaflet-search';
 import { ToastrService } from 'ngx-toastr';
 import { ObservationsService } from '../observations.service';
 import { MapService } from '../../base/map/map.service';
 
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 import { RefGeoService } from '../../../api/refgeo.service';
+import { ControlPosition } from 'leaflet';
 
-declare let $: any;
+// declare let $: any;
 
 const map_conf = {
     GEOLOCATION_CONTROL_POSITION: 'topright',
     GEOLOCATION_HIGH_ACCURACY: false,
+    BASE_LAYERS: MainConfig['BASEMAPS'].reduce((acc, baseLayer: Object) => {
+        const layerConf: any = {
+            name: baseLayer['name'],
+            attribution: baseLayer['attribution'],
+            detectRetina: baseLayer['detectRetina'],
+            maxZoom: baseLayer['maxZoom'],
+            bounds: baseLayer['bounds'],
+            apiKey: baseLayer['apiKey'],
+            layerName: baseLayer['layerName'],
+        };
+        if (baseLayer['subdomains']) {
+            layerConf.subdomains = baseLayer['subdomains'];
+        }
+        acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
+        return acc;
+    }, {}),
+    BASE_LAYER_CONTROL_POSITION: 'topright' as ControlPosition,
+    BASE_LAYER_CONTROL_INIT_COLLAPSED: true,
+    DEFAULT_BASE_MAP: () =>
+        map_conf.BASE_LAYERS[MainConfig['DEFAULT_PROVIDER']],
     PROGRAM_AREA_STYLE: {
         fillColor: 'transparent',
         weight: 2,
@@ -136,7 +158,7 @@ export class ObsFormComponent implements AfterViewInit {
         private auth: AuthService,
         private mapService: MapService,
         private _refGeoService: RefGeoService
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.program_id = this.data.program_id;
@@ -193,11 +215,10 @@ export class ObsFormComponent implements AfterViewInit {
                         const tax_b = b.nom_francais
                             ? b.nom_francais
                             : b.taxref.nom_vern;
-                        return tax_a.localeCompare(tax_b)
+                        return tax_a.localeCompare(tax_b);
                     });
                     this.surveySpecies = res;
                 });
-
 
                 if (this.program.features[0].properties.id_form) {
                     // Load custom form if one is attached to program
@@ -221,18 +242,41 @@ export class ObsFormComponent implements AfterViewInit {
                 L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: 'OpenStreetMap',
                 }).addTo(formMap);
-
+                L.control
+                    .layers(map_conf.BASE_LAYERS, null, {
+                        collapsed: map_conf.BASE_LAYER_CONTROL_INIT_COLLAPSED,
+                        position: map_conf.BASE_LAYER_CONTROL_POSITION,
+                    })
+                    .addTo(formMap);
                 L.control['fullscreen']({
                     position: 'topright',
                     title: {
                         false: 'View Fullscreen',
-                        true: 'Exit Fullscreen',
+                        true: 'Exit Fullscreefullscreenn',
                     },
+                    pseudoFullscreen: true,
+                }).addTo(formMap);
+                console.log('LControl', L.control);
+
+                L.control['search']({
+                    url: 'https://nominatim.openstreetmap.org/search?format=json&accept-language=fr-FR&q={s}',
+                    jsonpParam: 'json_callback',
+                    propertyName: 'display_name',
+                    position: 'topright',
+                    propertyLoc: ['lat', 'lon'],
+                    markerLocation: true,
+                    autoType: true,
+                    autoCollapse: true,
+                    minLength: 3,
+                    zoom: 15,
+                    text: 'Recherche...',
+                    textCancel: 'Annuler',
+                    textErr: 'Erreur',
                 }).addTo(formMap);
 
                 L.control
                     .locate({
-                        icon: 'fa fa-compass',
+                        icon: 'fa fa-location-arrow',
                         position: map_conf.GEOLOCATION_CONTROL_POSITION,
                         strings: {
                             title: MainConfig.LOCATE_CONTROL_TITLE[
@@ -419,10 +463,10 @@ export class ObsFormComponent implements AfterViewInit {
                         icon:
                             this.taxa[taxon]['medias'].length >= 1
                                 ? // ? this.taxa[taxon]["medias"][0]["url"]
-                                MainConfig.API_TAXHUB +
-                                '/tmedias/thumbnail/' +
-                                this.taxa[taxon]['medias'][0]['id_media'] +
-                                '?h=20'
+                                  MainConfig.API_TAXHUB +
+                                  '/tmedias/thumbnail/' +
+                                  this.taxa[taxon]['medias'][0]['id_media'] +
+                                  '?h=20'
                                 : 'assets/default_image.png',
                     });
                 }
@@ -439,14 +483,14 @@ export class ObsFormComponent implements AfterViewInit {
                 term === '' // term.length < n
                     ? []
                     : this.species
-                        .filter(
-                            (v) =>
-                                v['name']
-                                    .toLowerCase()
-                                    .indexOf(term.toLowerCase()) > -1
-                            // v => new RegExp(term, "gi").test(v["name"])
-                        )
-                        .slice(0, taxonAutocompleteMaxResults)
+                          .filter(
+                              (v) =>
+                                  v['name']
+                                      .toLowerCase()
+                                      .indexOf(term.toLowerCase()) > -1
+                              // v => new RegExp(term, "gi").test(v["name"])
+                          )
+                          .slice(0, taxonAutocompleteMaxResults)
             )
         );
 

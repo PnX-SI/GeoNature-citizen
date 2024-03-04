@@ -1,10 +1,5 @@
 <div *ngIf="reward$ | async as rewards">
-    <button
-        type="button"
-        class="close"
-        aria-label="Close"
-        (click)="closeModal()"
-    >
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
         <span aria-hidden="true">&times;</span>
     </button>
     <div class="modal-body new-badge" (click)="clicked('background')">
@@ -14,12 +9,8 @@
             ce badge } other { Vous venez d&apos;obtenir ces badges } }
         </h6>
         <p>
-            <img
-                [ngbTooltip]="b.type + b.name"
-                *ngFor="let b of rewards"
-                [src]="MainConfig.API_ENDPOINT + b.url"
-                [alt]="b.name"
-            />
+            <img loading="lazy" [ngbTooltip]="b.type + b.name" *ngFor="let b of rewards"
+                [src]="MainConfig.API_ENDPOINT + b.url" [alt]="b.name" />
         </p>
     </div>
 </div>

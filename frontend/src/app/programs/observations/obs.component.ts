@@ -71,7 +71,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         public auth: AuthService,
         public userService: UserService,
         private modalService: NgbModal,
-        private observationsService: ObservationsService,
+        private observationsService: ObservationsService
     ) {
         super();
         this.route.params.subscribe((params) => {
@@ -98,7 +98,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             });
         if (this.program_id) {
             this.route.data.subscribe((data: { programs: Program[] }) => {
-                console.log('DATA', data)
+                console.log('DATA', data);
                 this.programs = data.programs;
                 this.program = this.programs.find(
                     (p) => p.id_program == this.program_id
@@ -164,18 +164,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
 
         const access_token = localStorage.getItem('access_token');
         if (access_token) {
-            this.auth
-                .ensureAuthorized()
-                .subscribe((user) => {
-                    if (
-                        user &&
-                        user['features'] &&
-                        user['features']['id_role']
-                    ) {
-                        this.isValidator = user["features"]["validator"]
-
-                    }
-                });
+            this.auth.ensureAuthorized().subscribe((user) => {
+                if (user && user['features'] && user['features']['id_role']) {
+                    this.isValidator = user['features']['validator'];
+                }
+            });
         }
         this.username = localStorage.getItem('username');
     }
@@ -191,13 +184,14 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         };
     }
 
-
     addObsClicked() {
         this.modalFlow.first.clicked();
     }
 
     openValidateModal(validateModal: any, idObs: number) {
-        this.obsToValidate = this.observations.features.find(obs => obs.properties.id_observation === idObs);
+        this.obsToValidate = this.observations.features.find(
+            (obs) => obs.properties.id_observation === idObs
+        );
         if (this.canValidateObservation()) {
             this.modalRef = this.modalService.open(validateModal, {
                 size: 'lg',
@@ -208,23 +202,41 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     }
 
     canValidateObservation(): boolean {
-        console.log(`<canValidateObservation> this.isValidator`, this.isValidator)
-        console.log(`<canValidateObservation> this.obsToValidate.properties`, this.obsToValidate.properties)
-        return (this.MainConfig.VERIFY_OBSERVATIONS_ENABLED && this.isValidator)
-            && (this.obsToValidate.properties.validation_status != "VALIDATED")
-            && (!this.obsToValidate.properties.observer || (
-                this.obsToValidate.properties.observer && this.obsToValidate.properties.observer.username !== this.username)
-            )
+        console.log(
+            `<canValidateObservation> this.isValidator`,
+            this.isValidator
+        );
+        console.log(
+            `<canValidateObservation> this.obsToValidate.properties`,
+            this.obsToValidate.properties
+        );
+        return (
+            this.MainConfig.VERIFY_OBSERVATIONS_ENABLED &&
+            this.isValidator &&
+            this.obsToValidate.properties.validation_status != 'VALIDATED' &&
+            (!this.obsToValidate.properties.observer ||
+                (this.obsToValidate.properties.observer &&
+                    this.obsToValidate.properties.observer.username !==
+                        this.username))
+        );
     }
 
-    closeModal(observationId: number = null) {
+    closeModal(observationId: number = null): void {
         if (observationId) {
             this.route.data.subscribe(() => {
                 this.observationsService
                     .getObservation(observationId)
-                    .subscribe((updatedObservation: ObservationFeatureCollection) => {
-                        this.observations.features[this.observations.features.findIndex(obs => obs.properties.id_observation === observationId)] = updatedObservation.features[0]
-                    });
+                    .subscribe(
+                        (updatedObservation: ObservationFeatureCollection) => {
+                            this.observations.features[
+                                this.observations.features.findIndex(
+                                    (obs) =>
+                                        obs.properties.id_observation ===
+                                        observationId
+                                )
+                            ] = updatedObservation.features[0];
+                        }
+                    );
             });
         }
         this.modalRef.close();

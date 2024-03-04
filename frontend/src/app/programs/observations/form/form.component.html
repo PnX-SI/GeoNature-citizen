@@ -1,4 +1,4 @@
-<form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()">
+<form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()" class="was-validated">
     <div *ngIf="
             taxaCount == 1 &&
             taxa[0].medias &&
@@ -31,7 +31,8 @@
                     taxaCount >= taxonSelectInputThreshold &&
                     taxaCount < taxonAutocompleteInputThreshold
                 " class="d-inline-flex toolbar">
-                <select formControlName="cd_nom" class="form-control rounded-0">
+                <select formControlName="cd_nom" class="form-control rounded-0" required>
+                    <option value="" [disabled]="true">Choisissez une espèce</option>
                     <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
                         {{
                         !!s.nom_francais
@@ -79,7 +80,7 @@
             <input id="cd_nom" type="text" class="form-control rounded-0" formControlName="cd_nom"
                 placeholder="Nom latin ou vernaculaire ou cd_ref" [editable]="false"
                 [ngbTypeahead]="inputAutoCompleteSearch" [resultTemplate]="rt"
-                [inputFormatter]="inputAutoCompleteFormatter" />
+                [inputFormatter]="inputAutoCompleteFormatter" required />
         </div>
         <!-- END TAXON SELECTION -->
         <div class="form-group col-lg-12 col-md-12">
@@ -99,7 +100,7 @@
                     <label for="counting" i18n="Enumeration Label@@enumerationInputLabel">Dénombrement</label>
                     <input type="number" min="1" i18n-placeholder="
                             Enumeration Placeholder@@enumerationInputPlaceHolder" placeholder="Nombre"
-                        class="form-control rounded-0" formControlName="count" id="counting" required />
+                        class="form-control rounded-1" formControlName="count" id="counting" required />
                 </div>
             </div>
 
@@ -152,12 +153,14 @@
                         Zooming instruction@@zoomingInstruction"
                     data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."></div>
             </div>
-            <input formControlName="geometry" type="hidden" id="geometry" name="geometry" #geometry class="col-lg-12" />
-            <p class="text-right m-0">
-                <em i18n="click on map instruction@@clickOnMapInstruction">Cliquez sur la carte pour renseigner le lieu
+            <input formControlName="geometry" id="geometry" type="hidden" name="geometry" class="form-control" #geometry
+                class="col-lg-12" required aria-describedby="geometryFeedback" />
+            <div class="invalid-feedback text-right" id="geometryFeedback">
+                <em i18n="click on map instruction@@clickOnMapInstruction">Cliquez sur
+                    la carte pour renseigner le lieu
                     précis de
                     votre observation</em>
-            </p>
+            </div>
 
             <div class="col-lg-12" *ngIf="MainConfig.email_contact && !(isLoggedIn() | async)">
                 <input type="checkbox" id="agreeContactRGPD" formControlName="agreeContactRGPD"
@@ -173,7 +176,8 @@
                 <input type="text" i18n-placeholder="
                         Contact email input
                         placeholder@@contactEmailInputPlaceHolder" placeholder="E-Mail" id="email"
-                    formControlName="email" />
+                    class="form-control rounded-0" formControlName="email"
+                    [required]="obsForm.get('agreeContactRGPD')" />
             </div>
         </div>
         <p class="ng-invalid ng-dirty pl-1 ml-1" *ngIf="

@@ -6,7 +6,7 @@ from typing import Optional
 from flask import current_app
 from itsdangerous import URLSafeTimedSerializer
 
-default_mail_from_addr = current_app.config["MAIL"]["MAIL_FROM_ADDR"]
+default_mail_from_addr = current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]
 
 
 def send_user_email(
@@ -17,15 +17,10 @@ def send_user_email(
     html_message: Optional[str] = None,
 ):
     """User mail sending"""
-    msg = MIMEMultipart("alternative")
+    msg = MIMEMultipart()
     msg["Subject"] = subject
     msg["From"] = from_addr
     msg["To"] = to
-    plain_msg = MIMEText(
-        html_message,
-        "plain",
-    )
-    msg.attach(plain_msg)
 
     if plain_message:
         plain_msg = MIMEText(
@@ -75,7 +70,7 @@ def send_user_email(
 
 def confirm_user_email(newuser, with_confirm_link=True):
     token = generate_confirmation_token(newuser.email)
-    subject = current_app.config["CONFIRM_EMAIL"]["SUBJECT"]
+    subject = f"[{current_app.config['appName']}] {current_app.config['CONFIRM_EMAIL']['SUBJECT']}"
     to = newuser.email
 
     # Check URL_APPLICATION:
@@ -84,7 +79,6 @@ def confirm_user_email(newuser, with_confirm_link=True):
         url_application = url_application
     else:
         url_application = url_application + "/"
-    print("url_application", url_application)
     activate_url = url_application + "confirmEmail/" + token
 
     # Record the MIME  text/html.
@@ -95,8 +89,8 @@ def confirm_user_email(newuser, with_confirm_link=True):
     try:
         send_user_email(
             subject,
-            from_addr,
             to,
+            from_addr,
             html_message=template.format(activate_url=activate_url),
         )
 

@@ -60,14 +60,16 @@
 
         <div class="map col-lg-12 col-md-12" id="map">
             <div id="switchMapPhotoBtn">
-                <button (click)="mediaPanel = !mediaPanel">
+                <button (click)="mediaPanel = !mediaPanel" placement="right"
+                    [ngbTooltip]="mediaPanel ? 'Voir la carte':'Voir les photos'">
                     <i [class]="mediaPanel ? 'fa fa-map' :'fa fa-camera'"></i>
                 </button>
             </div>
-            <app-media-galery [ngStyle]="!mediaPanel?{'display': 'none'} : {}" [program_id]="program_id"
-                [userDashboard]="userDashboard"></app-media-galery>
-            <app-obs-map #obsMapRef [ngStyle]="mediaPanel?{'display': 'none'} : {}" [features]="observations"
-                [program]="programFeature" (onClick)="onMapClicked($event)"></app-obs-map>
+            <app-media-galery *ngIf="mediaPanel" [ngStyle]="!mediaPanel?{'display': 'none'} : {}"
+                [program_id]="program_id" [userDashboard]="userDashboard"
+                [validationProcess]="validationDashboard"></app-media-galery>
+            <app-obs-map #obsMapRef [hidden]="mediaPanel" [ngStyle]="mediaPanel?{'display': 'none'} : {}"
+                [features]="observations" [program]="programFeature" (onClick)="onMapClicked($event)"></app-obs-map>
         </div>
         <ng-template #validateModal let-modal>
             <div class="modal-header">
@@ -104,7 +106,8 @@
             </ngb-tab>
             <ngb-tab title="Carte">
                 <ng-template ngbTabContent id="tab-map" class="map">
-                    <div id="switchMapPhotoBtn">
+                    <div id="switchMapPhotoBtn" placement="right"
+                        [ngbTooltip]="mediaPanel ? 'Voir la carte':'Voir les photos'">
                         <button class="" (click)="mediaPanel = !mediaPanel">
                             <i [class]="mediaPanel ? 'fa fa-map' :'fa fa-camera'"></i>
                         </button>

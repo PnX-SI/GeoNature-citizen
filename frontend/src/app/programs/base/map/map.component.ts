@@ -15,6 +15,8 @@ import { Feature, FeatureCollection } from 'geojson';
 import { MainConfig } from '../../../../conf/main.config';
 import { MarkerClusterGroup } from 'leaflet';
 import 'leaflet.markercluster';
+//import 'leaflet-search/dist/leaflet-search';
+import 'leaflet-search';
 import 'leaflet.locatecontrol';
 import 'leaflet-gesture-handling';
 import { MapService } from './map.service';
@@ -175,9 +177,25 @@ export abstract class BaseMapComponent implements OnChanges {
             })
             .addTo(this.observationMap);
 
+        L.control['search']({
+            url: 'https://nominatim.openstreetmap.org/search?format=json&accept-language=fr-FR&q={s}',
+            jsonpParam: 'json_callback',
+            propertyName: 'display_name',
+            position: 'topright',
+            propertyLoc: ['lat', 'lon'],
+            markerLocation: true,
+            autoType: true,
+            minLength: 3,
+            autoCollapse: true,
+            zoom: 15,
+            text: 'Recherche...',
+            textCancel: 'Annuler',
+            textErr: 'Erreur',
+        }).addTo(this.observationMap);
+
         L.control
             .locate({
-                icon: 'fa fa-compass',
+                icon: 'fa fa-location-arrow',
                 position: this.options.GEOLOCATION_CONTROL_POSITION,
                 strings: {
                     title: MainConfig.LOCATE_CONTROL_TITLE[this.localeId]
@@ -301,7 +319,9 @@ export abstract class BaseMapComponent implements OnChanges {
                 const obsLayer = L.geoJSON(this.features);
                 console.debug('obsLayerBounds', obsLayer.getBounds());
                 this.observationMap.fitBounds(obsLayer.getBounds());
-                this.observationMap.setZoom(Math.min(this.observationMap.getZoom(), 17)); // limit zoom (eg single feature)
+                this.observationMap.setZoom(
+                    Math.min(this.observationMap.getZoom(), 17)
+                ); // limit zoom (eg single feature)
             }
         }
     }
@@ -383,5 +403,5 @@ export abstract class BaseMapComponent implements OnChanges {
         this.observationMap.off();
         this.observationMap.remove();
     }
-    canStart(): void { }
+    canStart(): void {}
 }

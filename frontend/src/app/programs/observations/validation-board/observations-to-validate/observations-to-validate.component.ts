@@ -16,12 +16,10 @@ import { catchError, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { FeatureCollection } from 'geojson';
 
-
 import { ObsComponent } from '../../obs.component';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { Point } from 'leaflet';
 import { ObsMapComponent } from '../../map/map.component';
-
 
 @Component({
     selector: 'observations-to-validate',
@@ -38,5 +36,4 @@ export class ObsToValidateComponent extends ObsComponent implements OnInit {
     @Output() deleteObs = new EventEmitter();
     @Output() validateObs = new EventEmitter();
     validationDashboard = true;
-
 }

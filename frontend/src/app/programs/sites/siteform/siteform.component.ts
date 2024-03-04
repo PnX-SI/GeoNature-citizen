@@ -101,7 +101,7 @@ export class SiteFormComponent implements AfterViewInit {
             .subscribe((result) => {
                 this.program = result;
                 this.site_types = this.program.features[0].site_types;
-                console.debug('site_types',this.site_types);
+                console.debug('site_types', this.site_types);
                 console.debug('prev', this.siteForm);
                 if (this.site_types.length == 1) {
                     this.siteForm.patchValue({
@@ -126,6 +126,7 @@ export class SiteFormComponent implements AfterViewInit {
                         false: 'View Fullscreen',
                         true: 'Exit Fullscreen',
                     },
+                    pseudoFullscreen: true,
                 }).addTo(formMap);
 
                 const ZoomViewer = L.Control.extend({

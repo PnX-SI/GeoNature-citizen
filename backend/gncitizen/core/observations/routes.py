@@ -458,19 +458,21 @@ def update_observation():
                     else status["mail"]
                 )
             elif update_data.get("cd_nom") != observation_to_update.one().cd_nom:
-                message = f"Nous avons bien reçu votre photo, merci beaucoup pour votre participation. Il s'avère que l'espèce que vous avez observée est un[e] {update_data.get('name')}."
+                message = f"Nous avons bien reçu votre observation, merci beaucoup pour votre participation. Il s'avère que l'espèce que vous avez observée est un[e] {update_data.get('name')}."
             else:
                 message = f"L'espèce que vous avez observée est bien un[e] {update_data.get('name')}. Merci pour votre participation !"
             if obs_to_update_obj.id_role is not None:
                 try:
+                    observer = obs_to_update_obj.observer
                     send_user_email(
                         subject=current_app.config["VALIDATION_EMAIL"]["SUBJECT"],
-                        to=UserModel.query.get(obs_to_update_obj.id_role).email,
+                        to=observer.email,
                         html_message=current_app.config["VALIDATION_EMAIL"][
                             "HTML_TEMPLATE"
                         ].format(
                             message=message,
                             obs_link=f"{current_app.config['URL_APPLICATION']}/programs/{obs_to_update_obj.id_program}/observations/{obs_to_update_obj.id_observation}",
+                            username=observer.username,
                         ),
                     )
                 except Exception as e:

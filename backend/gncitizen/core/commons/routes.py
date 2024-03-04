@@ -3,6 +3,7 @@
 
 from flask import Blueprint, current_app, request, send_from_directory
 from flask_admin.contrib.fileadmin import FileAdmin
+from flask_jwt_extended import jwt_required
 from geojson import FeatureCollection
 from gncitizen.core.observations.models import ObservationMediaModel, ObservationModel
 from gncitizen.core.sites.admin import SiteTypeView
@@ -15,7 +16,8 @@ from gncitizen.core.sites.models import (
 )
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import MEDIA_DIR, admin
-from gncitizen.utils.helpers import set_media_links
+from gncitizen.utils.helpers import get_filter_by_args, set_media_links
+from gncitizen.utils.jwt import get_id_role_if_exists
 from server import db
 from sqlalchemy import and_, case, desc, distinct
 from sqlalchemy.sql import func
@@ -388,18 +390,25 @@ def get_programs():
 
 
 @commons_api.route("/medias", methods=["GET"])
+@jwt_required(optional=True)
 @json_resp
 def get_medias():
     # Filters
-    id_program = request.args.get("id_program")
-    cd_nom = request.args.get("cd_nom")
-    id_observation = request.args.get("id_observation")
+    args = request.args
+    obs_args = {key: args[key] for key in ["id_observation", "cd_nom"] if key in args}
+    validation_args = {
+        key: args[key] for key in args.keys() if key.startswith("validation_status") if key in args
+    }
+    obs_args = {**obs_args, **validation_args}
+    visit_args = {key: args[key] for key in ["id_site", "id_visit"] if key in args}
+    site_args = {key: args[key] for key in [] if key in args}
     id_role = request.args.get("id_role")
-    id_visit = request.args.get("id_visit")
-    id_site = request.args.get("id_site")
+    id_program = request.args.get("id_program")
     no_pagination = request.args.get("no_pagination", default=False, type=bool)
     page_size = request.args.get("page_size", default=100, type=int)
     page = request.args.get("page", default=1, type=int)
+
+    validation_process = request.args.get("validation_process", default=False, type=bool)
 
     qs = (
         MediaModel.query.outerjoin(ObservationMediaModel)
@@ -439,30 +448,30 @@ def get_medias():
         )
     )
 
+    qs = qs.filter(*get_filter_by_args(ObservationModel, obs_args)) if bool(obs_args) else qs
+    qs = qs.filter(*get_filter_by_args(VisitModel, visit_args)) if bool(visit_args) else qs
+    qs = qs.filter(*get_filter_by_args(SiteModel, site_args)) if bool(site_args) else qs
+
     if id_program:
-        qs = qs.filter(ProgramsModel.id_program == id_program)
-
-    if cd_nom:
-        qs = qs.filter(ObservationModel.cd_nom == cd_nom)
-
-    if id_observation:
-        qs = qs.filter(ObservationModel.id_observation == id_observation)
-
+        qs = qs.filter(
+            func.coalesce(ObservationModel.id_program, SiteModel.id_program) == id_program
+        )
     if id_role:
         qs = qs.filter(func.coalesce(ObservationModel.id_role, VisitModel.id_role) == id_role)
+    if validation_process:
+        user = get_id_role_if_exists()
+        qs = (
+            qs.filter(func.coalesce(ObservationModel.id_role, VisitModel.id_role) != user)
+            if user
+            else qs
+        )
 
-    if id_visit:
-        qs = qs.filter(VisitModel.id_visit == id_visit)
-
-    if id_site:
-        qs = qs.filter(SiteModel.id_site == id_site)
     if no_pagination:
         return [set_media_links(media) for media in qs.all()]
 
     qs = qs.order_by(desc(func.coalesce(ObservationModel.date, VisitModel.date))).paginate(
         per_page=page_size, page=page
     )
-
     return {
         "page": qs.page,
         "pages": qs.pages,
