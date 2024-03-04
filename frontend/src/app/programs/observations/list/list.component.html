@@ -28,7 +28,7 @@
             <select *ngIf="validationStatuses && (validationStatuses | json) != '{}'" class="form-control rounded-0"
                 id="inputValidationStatus" [(ngModel)]="selectedValidationStatus" (ngModelChange)="onFilterChange()">
                 <option [ngValue]="null" i18n="All validation status select option@@allValidationStatusSelectOption">
-                    Tout statuts de validation
+                    Tous statuts de validation
                 </option>
                 <option *ngFor="let status of validationStatuses | keyvalue" [ngValue]="status.key">
                     {{ status.value }}
