@@ -1,4 +1,4 @@
-version: "3.4"
+version: '3.4'
 
 services:
   frontend:
@@ -9,7 +9,7 @@ services:
     volumes:
       - ./frontend:/app
     ports:
-      - "${FRONT_PORT-4000}:${FRONT_PORT-4000}"
+      - '${FRONT_PORT:-4000}:4000'
 
   backend:
     image: gnc-back-dev
@@ -23,15 +23,15 @@ services:
       - ./external_modules:/external_modules
       - ./media:/media
     ports:
-      - "${API_PORT-5002}:${API_PORT-5002}"
+      - '${API_PORT:-5002}:5002'
 
   db:
     ports:
-      - "${DB_PORT-8465}:${DB_PORT-5432}"
+      - '${DB_PORT:-8465}:5432'
 
   nginx:
     image: nginx
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "${NGINX_PORT-80}:80"
+      - '${NGINX_PORT:-80}:80'

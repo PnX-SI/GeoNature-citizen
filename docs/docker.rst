@@ -84,17 +84,18 @@ Lancer les services
 
 Lancer ``./docker.sh``
 
-Lancer cette commande : ``docker-compose up``
+Lancer cette commande : ``docker-compose -f docker-compose.yml -f
+docker-compose.prod.yml up``.
 Cette commande va construire les images et les monter une par une
 dans un conteneur qui leur est propre.
 
 Il est possible de détacher le programme (comme un ``&`` sur Linux) et 
 donc toute la sortie de la commande en lançant 
-``docker-compose up -d`` (detaché).
+``docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d`` (detaché).
 
 Arrêter les services
 ^^^^^^^^^^^^^^^^^^^^^
-Pour "tuer" les services : ``docker-compose down``
+Pour "tuer" les services : ``docker-compose -f docker-compose.yml -f docker-compose.prod.yml down``
 
 Contruire une ou plusieurs images
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -102,27 +103,30 @@ Contruire une ou plusieurs images
 **Situation 1** : le front a été modifié et j'ai besoin de reconstruire 
 l'image
 
-Lancer : ``docker-compose build frontend``. Cela va reconstruire le 
-frontend
+Lancer : ``docker-compose -f docker-compose.yml -f docker-compose.prod.yml build 
+frontend``. Cela va reconstruire le frontend.
 
-Pour construire puis lancer directement le service : ``docker-compose up frontend --build``
+Pour construire puis lancer directement le service : ``docker-compose -f
+docker-compose.yml -f docker-compose.prod.yml up frontend --build``
 
 **Situation 2** : J'ai besoin de tout reconstruire
 
-Lancer : ``docker-compose build`` 
-OU : ``docker-compose up --build`` pour tout reconstruire et relancer tous
-les services
+Lancer : ``docker-compose -f docker-compose.yml -f docker-compose.prod.yml build`` 
+OU : ``docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+--build`` pour tout reconstruire et relancer tous les services.
 
 
 Utiliser Docker dans Citizen en developpement
 =============================================
 
-Lancer ``docker-compose -f docker-compose.dev.yml up --build``
+Lancer ``docker-compose up --build``
 
 Cela utilisera le ficher de configuration des services
 et construira les images pour le developpement 
 (rechargement automatique du front, accès à tous les services et pas
 juste au proxy...).
+En effet, par défaut, docker-compose prend comme fichiers ``docker-compose.yml``
+ainsi que ``docker-compose.override.yml``.
 
 
 Ce qu'il reste à améliorer
