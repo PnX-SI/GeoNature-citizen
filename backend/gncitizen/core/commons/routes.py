@@ -376,6 +376,7 @@ def get_programs():
                     "form_message",
                     "id_module",
                     "is_active",
+                    "registration_required",
                     "taxonomy_list",
                     "timestamp_create",
                     "timestamp_update",

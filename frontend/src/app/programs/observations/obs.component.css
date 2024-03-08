@@ -1,8 +1,14 @@
 .obs-section {
     width: 100%;
-    min-height: 70vh;
+    min-height: calc(100vh - 106px);
     position: relative;
     /* margin-bottom: 20px; */
+}
+
+@media screen and (max-width: 991px) {
+    .obs-section {
+        min-height: calc(100vh - 66px);
+    }
 }
 
 /* .obs-section#slide {
@@ -216,7 +222,7 @@ section .observations {
 .observations {
     margin: 0px;
     min-height: inherit;
-    height: calc(100vh - 137px);
+    height: calc(100vh - 106px);
     overflow: hidden;
 }
 
@@ -275,7 +281,7 @@ section .observations {
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
-    padding-bottom: 5px;
+    padding-bottom: 0px;
 }
 
 .obs-tabs .nav-item a {
@@ -316,7 +322,7 @@ section .observations {
 @media screen and (max-width: 576px) {
     .obs-tabs .tab-pane.active #mapList #list,
     .obs-tabs .tab-pane.active #map {
-        max-height: calc(100vh - 260px);
+        max-height: calc(100vh - 196px);
         overflow: scroll;
     }
 
