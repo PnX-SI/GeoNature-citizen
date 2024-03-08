@@ -12,7 +12,6 @@ from geoalchemy2 import Geometry
 from geoalchemy2.functions import ST_GeomFromGeoJSON, ST_GeomFromKML, ST_SetSRID
 from geoalchemy2.shape import to_shape
 from geojson import Feature
-from gncitizen.utils.env import MEDIA_DIR, db
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.declarative import declared_attr
@@ -20,6 +19,8 @@ from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
 from utils_flask_sqla_geo.serializers import geoserializable, serializable
+
+from gncitizen.utils.env import MEDIA_DIR, db
 
 
 class TimestampMixinModel(object):
@@ -177,14 +178,19 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     )
     module = relationship("TModules")
     taxonomy_list = db.Column(db.Integer, nullable=True)
-    is_active = db.Column(db.Boolean(), server_default=expression.true(), default=True)
+    registration_required = db.Column(
+        db.Boolean(), server_default=expression.false(), default=False, nullable=False
+    )
+    is_active = db.Column(
+        db.Boolean(), server_default=expression.true(), default=True, nullable=False
+    )
     id_geom = db.Column(db.Integer, db.ForeignKey(GeometryModel.id_geom), nullable=False)
     id_form = db.Column(db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True)
     custom_form = relationship("CustomFormModel")
     geometry = relationship("GeometryModel")
     project = relationship("ProjectModel")
 
-    def get_geofeature(self, recursif=True, columns=None):
+    def get_geofeature(self, _recursif=True, _columns=None):
         geometry = to_shape(self.geometry.geom)
         feature = Feature(
             id=self.id_program,

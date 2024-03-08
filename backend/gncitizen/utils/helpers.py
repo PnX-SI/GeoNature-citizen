@@ -1,8 +1,9 @@
 """Some useful helpers"""
 
 from flask import url_for
-from gncitizen.utils.env import db
 from sqlalchemy.engine.row import Row
+
+from gncitizen.utils.env import db
 
 
 def set_media_links(item: Row) -> dict:

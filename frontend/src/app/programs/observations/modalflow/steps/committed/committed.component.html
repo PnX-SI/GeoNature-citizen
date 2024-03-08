@@ -6,21 +6,15 @@
     <h4 *ngIf="data.updateData" class="modal-title" i18n="Update obs@@updateObs">
         MODIFIER L'OBSERVATION
     </h4>
-    <button
-        type="button"
-        class="close"
-        aria-label="Close"
-        (click)="closeModal()"
-    >
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
 
 <div class="modal-body add-obs pb-0">
     <!-- <div class="row"> -->
-    <div *ngIf="data.form_message" class="media col-lg-12 bg-light mb-2">
-        <span class="mr-3"
-            ><i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>
+    <div *ngIf="data.form_message" class="media col-lg-12 alert alert-primary">
+        <span class="mr-3"><i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>
         </span>
         <div class="media-body">
             <h5 class="mt-0">Information</h5>
@@ -29,31 +23,18 @@
     </div>
     <!-- </div> -->
 
-    <app-obs-form
-        [data]="data"
-        (newObservation)="onNewObservation($event)"
-    ></app-obs-form>
+    <app-obs-form [data]="data" (newObservation)="onNewObservation($event)"></app-obs-form>
 </div>
 
 <div class="modal-footer">
-    <button
-        *ngIf="!data.updateData"
-        type="submit"
-        [disabled]="!form.isValid() || !enableCommit"
-        class="btn btn-default btn-big btn-outline-primary rounded-0"
-        (click)="committed()"
-        i18n="Valid obs btn@@validObsBtn"
-    >
+    <button *ngIf="!data.updateData" type="submit" [disabled]="!form.isValid() || !enableCommit"
+        class="btn btn-default btn-big btn-outline-primary rounded-0" (click)="committed()"
+        i18n="Valid obs btn@@validObsBtn">
         Valider l'observation
     </button>
-    <button
-        *ngIf="data.updateData"
-        type="submit"
-        [disabled]="!form.obsForm.valid"
-        class="btn btn-default btn-big btn-outline-primary rounded-0"
-        (click)="onUdpdateObs()"
-        i18n="Upddate obs btn@@updateObsBtn"
-    >
+    <button *ngIf="data.updateData" type="submit" [disabled]="!form.obsForm.valid"
+        class="btn btn-default btn-big btn-outline-primary rounded-0" (click)="onUdpdateObs()"
+        i18n="Upddate obs btn@@updateObsBtn">
         Modifier l'observation
     </button>
     <button class="btn btn-secondary btn-big rounded-0" (click)="closeModal()" i18n="Cancel@@cancel">

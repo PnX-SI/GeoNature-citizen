@@ -1,11 +1,12 @@
 from flask import Blueprint
+from utils_flask_sqla.response import json_resp
+
 from gncitizen.utils.taxonomy import (
     get_specie_from_cd_nom,
     refresh_taxonlist,
     taxhub_full_lists,
     taxhub_rest_get_all_lists,
 )
-from utils_flask_sqla.response import json_resp
 
 taxo_api = Blueprint("taxonomy", __name__)
 

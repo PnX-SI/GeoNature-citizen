@@ -5,11 +5,12 @@ from flask_admin.contrib.sqla.view import ModelView
 from flask_admin.form.upload import FileUploadField
 from flask_admin.model.form import InlineFormAdmin
 from flask_ckeditor import CKEditorField
+from wtforms import SelectField
+
 from gncitizen.core.sites.models import CorProgramSiteTypeModel
 from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatter
 from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.taxonomy import taxonomy_lists
-from wtforms import SelectField, fields
 
 logger = current_app.logger
 

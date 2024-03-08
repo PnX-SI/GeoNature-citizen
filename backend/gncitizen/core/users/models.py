@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 from flask import current_app
-from gncitizen.core.commons.models import ProgramsModel, TimestampMixinModel, TModules
 from passlib.hash import pbkdf2_sha256 as sha256
-from server import db
 from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
 from utils_flask_sqla_geo.serializers import serializable
+
+from gncitizen.core.commons.models import ProgramsModel, TimestampMixinModel, TModules
+from server import db
 
 logger = current_app.logger
 

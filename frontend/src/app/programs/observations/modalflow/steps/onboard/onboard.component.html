@@ -1,23 +1,14 @@
 <div class="modal-header">
     <h4 class="modal-title" i18n="Add new obs@@addNewObs">AJOUTER UNE OBSERVATION</h4>
-    <button
-        type="button"
-        class="close"
-        aria-label="Close"
-        (click)="closeModal()"
-    >
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
 
 <div class="modal-body">
     <div class="row">
-        <div
-            *ngIf="MainConfig.registration_message"
-            class="media col-lg-12 bg-light"
-        >
-            <span class="mr-3"
-                ><i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>
+        <div *ngIf="MainConfig.registration_message" class="media col-lg-12 alert alert-primary">
+            <span class="mr-3"><i class="fa fa-info-circle fa-2x" aria-hidden="true"></i>
             </span>
             <div class="media-body">
                 <h5 class="mt-0">Pourquoi s'inscrire ?</h5>
@@ -26,20 +17,15 @@
         </div>
     </div>
     <div class="row">
-        <div
-            class="sign col-lg-6 col-md-12"
-            (click)="register()"
-            data-dismiss="modal"
-        >
+        <!-- TODO: revoke use of MainConfig signup option to prefer program defined preferences -->
+        <div class="sign col-md-12" [class.col-lg-6]="!data.registration_required && MainConfig.signup !== 'always'"
+            (click)="register()" data-dismiss="modal">
             <i class="fa fa-user"></i>
             <span i18n="register and contribute@@registerAndContribute">S'incrire <br />et contribuer au site</span>
         </div>
-        <div
-            class="sign col-lg-6 col-md-12"
-            (click)="continue()"
-            data-dismiss="modal"
-            [hidden]="MainConfig.signup === 'always'"
-        >
+        <!-- TODO: revoke use of MainConfig signup option to prefer program defined preferences -->
+        <div *ngIf="!data.registration_required && MainConfig.signup !== 'always'" class="sign col-lg-6 col-md-12"
+            (click)="continue()" data-dismiss="modal" [hidden]="MainConfig.signup === 'always'">
             <i class="fa fa-user"></i>
             <span i18n="continue unregistered@@continueUnregistered">Continuer <br />sans s'enregistrer</span>
         </div>
@@ -47,7 +33,7 @@
 </div>
 
 <div class="modal-footer">
-    <span (click)="login()" data-dismiss="modal" i18n="Invite to login@@inviteToLogin"
-        >Vous avez déjà un compte ? Connectez-vous !</span
-    >
+    <strong (click)="login()" style="cursor: pointer;" data-dismiss="modal" i18n="Invite to login@@inviteToLogin">Vous
+        avez déjà un compte ?
+        Connectez-vous !</strong>
 </div>

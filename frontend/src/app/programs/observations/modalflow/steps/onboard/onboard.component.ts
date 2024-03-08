@@ -6,7 +6,6 @@ import {
     ElementRef,
     OnInit,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IFlowComponent } from '../../flow/flow';
@@ -32,37 +31,28 @@ export class OnboardComponent implements IFlowComponent, OnInit {
 
     constructor(
         private modalService: NgbModal,
-        private authService: AuthService,
-        private route: ActivatedRoute
+        private authService: AuthService
     ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.authService.authorized$.subscribe((value) => {
             if (value) {
                 this.timeout = setTimeout(() => this.data.next(), 0);
             }
             if (MainConfig.signup === 'never') {
-                this.data.next();
+                this.continue();
             }
         });
     }
 
-    // ngOnInit() {
-    //   // Skip login/register step if already logged in
-    //   let username = localStorage.getItem("username");
-    //   if (username) {
-    //     this.data.next()
-    //   }
-    // }
-
     // Actions
-    register() {
+    register(): void {
         this.RegistrationModalRef = this.modalService.open(RegisterComponent, {
             centered: true,
         });
-        this.RegistrationModalRef.result.then((_) => {
+        this.RegistrationModalRef.result.then(() => {
             this.authService.isLoggedIn().subscribe(
-                (value) => value!!,
+                (value) => !!value,
                 (reason) => {
                     console.debug('registration dismissed:', reason);
                 }
@@ -70,7 +60,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
         });
     }
 
-    login() {
+    login(): void {
         this.LoginModalRef = this.modalService.open(LoginComponent, {
             centered: true,
         });
@@ -85,12 +75,15 @@ export class OnboardComponent implements IFlowComponent, OnInit {
         });
     }
 
-    continue() {
+    continue(): void {
+        if (this.data.registration_required) {
+            return;
+        }
         console.debug('continue');
         this.data.next();
     }
 
-    closeModal() {
+    closeModal(): void {
         this.data.service.closeModal();
     }
 }

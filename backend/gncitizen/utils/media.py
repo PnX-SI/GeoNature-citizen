@@ -7,11 +7,12 @@ import datetime
 import os
 
 from flask import current_app
+from werkzeug.datastructures import FileStorage
+
 from gncitizen.core.commons.models import MediaModel
 from gncitizen.utils.env import ALLOWED_EXTENSIONS, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from server import db
-from werkzeug.datastructures import FileStorage
 
 
 def allowed_file(filename):
