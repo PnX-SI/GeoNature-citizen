@@ -11,10 +11,6 @@ api_endpoint=http://mydomain.net/api        # URL of GeoNature-citizen API, don'
 api_port=5002                               # GeoNature-citizen API port, recommended settings
 api_taxhub=http://mydomain.net/taxhub/api/  # URL of TaxHub API
 
-# Choix installation de TaxHub
-install_taxhub=false
-taxhub_version=1.13.3
-
 
 ################################
 ### CONFIGURATION PostgreSQL ###
