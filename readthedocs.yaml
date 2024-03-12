@@ -17,7 +17,4 @@ python:
       - requirements: backend/requirements-docs.txt
       - method: pip
         path: .
-        extra_requirements:
-            - docs
-            - docutils
             
