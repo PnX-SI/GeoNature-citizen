@@ -12,10 +12,10 @@ DIR=$(pwd)
 
 #Installation de python / gunicorn / supervisor + dépendances
 sudo apt update
-sudo apt -y install gcc curl gunicorn python-setuptools lsb-release \
+sudo apt -y install gcc curl gunicorn python3-setuptools lsb-release \
   apt-transport-https wget build-essential zlib1g-dev libncurses5-dev \
   libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl \
-  libbz2-dev apache2 python-dev libpq-dev libgeos-dev supervisor unzip \
+  libbz2-dev apache2 libpq-dev libgeos-dev supervisor unzip \
   virtualenv libcurl4-openssl-dev libssl-dev libglib2.0-0 libsm6 libxext6 \
   libxrender-dev postgresql postgis python3 python3-dev python3-venv python3-pip
 
