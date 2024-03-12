@@ -4,16 +4,15 @@ import sys
 
 from flask import Flask, current_app
 from flask_cors import CORS
-
 from gncitizen.utils.env import (
     admin,
     ckeditor,
     db,
     jwt,
     list_and_import_gnc_modules,
+    migrate,
     swagger,
 )
-from gncitizen.utils.init_data import create_schemas, populate_modules
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -75,6 +74,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     # Bind app to DB
     db.init_app(app)
+    migrate.init_app(app, db)
     # JWT Auth
     jwt.init_app(app)
     swagger.init_app(app)
@@ -109,9 +109,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 except Exception as e:
                     current_app.logger.debug(e)
                     prefix = url_prefix
-                app.register_blueprint(
-                    module.backend.blueprint.blueprint, url_prefix=prefix
-                )
+                app.register_blueprint(module.backend.blueprint.blueprint, url_prefix=prefix)
                 try:
                     module.backend.models.create_schema(db)
                 except Exception as e:
@@ -121,9 +119,9 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 module.backend.blueprint.blueprint.config = conf
                 app.config[manifest["module_name"]] = conf
 
-        create_schemas(db)
-        db.create_all()
-        populate_modules(db)
+        # create_schemas(db)
+        # db.create_all()
+        # populate_modules(db)
 
     # _app = app
 

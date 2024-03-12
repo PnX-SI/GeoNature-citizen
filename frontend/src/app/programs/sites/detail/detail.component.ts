@@ -1,4 +1,9 @@
-import { Component, AfterViewInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import {
+    Component,
+    AfterViewInit,
+    ViewEncapsulation,
+    ViewChild,
+} from '@angular/core';
 import { GncProgramsService } from '../../../api/gnc-programs.service';
 import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
@@ -45,31 +50,55 @@ export class SiteDetailComponent
         });
         this.module = 'sites';
         this.username = localStorage.getItem('username');
-        this.flowService.modalCloseStatus.subscribe( value => {
+        this.flowService.modalCloseStatus.subscribe((value) => {
             if (value === 'visitPosted') {
                 this.updateData();
             }
         });
-        this.siteService.siteEdited.subscribe(value => {
+        this.siteService.siteEdited.subscribe((value) => {
             this.updateData();
         });
     }
 
-    prepareSiteData() {
+    flatObject(myObject: object): object {
+        const myObjectKeys = Object.keys(myObject);
+        let myFlatObject = { ...myObject };
+        myObjectKeys.forEach((key) => {
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    myFlatObject[key],
+                    'type'
+                ) &&
+                Object.prototype.hasOwnProperty.call(
+                    myFlatObject[key],
+                    'properties'
+                ) &&
+                myFlatObject[key]['type'] === 'object'
+            ) {
+                myFlatObject = {
+                    ...myFlatObject[key]['properties'],
+                    ...myFlatObject,
+                };
+                delete myFlatObject[key];
+            }
+        });
+
+        return myFlatObject;
+    }
+
+    prepareSiteData(): void {
         // setup map
         const map = L.map('map');
         L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'OpenStreetMap',
         }).addTo(map);
-
         const coord = this.site.geometry.coordinates;
         const latLng = L.latLng(coord[1], coord[0]);
         map.setView(latLng, 13);
-
         L.marker(latLng, { icon: markerIcon }).addTo(map);
     }
 
-    prepareVisits() {
+    prepareVisits(): void {
         // photos
         this.photos = this.site.properties.photos;
         this.photos.forEach((e, i) => {
@@ -77,7 +106,7 @@ export class SiteDetailComponent
                 MainConfig.API_ENDPOINT + this.photos[i]['url'];
         });
         // data
-        this.attributes = []
+        this.attributes = [];
         if (this.site.properties.visits) {
             this.site.properties.visits.forEach((e) => {
                 const data = e.json_data;
@@ -90,12 +119,27 @@ export class SiteDetailComponent
                 this.loadJsonSchema().subscribe((jsonschema: any) => {
                     const schema = jsonschema.schema.properties;
                     const custom_data = [];
-                    for (const k in data) {
-                        const v = data[k];
-                        custom_data.push({
-                            name: schema[k].title,
-                            value: v.toString(),
-                        });
+                    const flattenSchema = this.flatObject(schema);
+                    const flattenData = this.flatObject(data);
+                    for (const k in flattenData) {
+                        const v = flattenData[k];
+                        if (
+                            typeof flattenSchema[k] != 'undefined' &&
+                            Object.prototype.hasOwnProperty.call(
+                                flattenSchema[k],
+                                'title'
+                            )
+                        ) {
+                            custom_data.push({
+                                name: flattenSchema[k]['title'],
+                                value:
+                                    typeof v === 'boolean'
+                                        ? v
+                                            ? 'Oui'
+                                            : 'Non'
+                                        : v.toString(),
+                            });
+                        }
                     }
                     if (custom_data.length > 0) {
                         visitData['data'] = custom_data;
@@ -110,14 +154,14 @@ export class SiteDetailComponent
         return this.programService.getSiteDetails(this.site_id);
     }
 
-    updateData() {
+    updateData(): void {
         this.getData().subscribe((sites) => {
             this.site = sites['features'][0];
             this.prepareVisits();
         });
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
         this.getData().subscribe((sites) => {
             this.site = sites['features'][0];
             this.prepareSiteData();
@@ -134,7 +178,9 @@ export class SiteDetailComponent
     }
 
     editSiteVisit(visit_data) {
-        visit_data.photos = this.photos.filter((p) => p.visit_id === visit_data.id)
+        visit_data.photos = this.photos.filter(
+            (p) => p.visit_id === visit_data.id
+        );
         this.flowService.editSiteVisit(this.site_id, visit_data.id, visit_data);
     }
 

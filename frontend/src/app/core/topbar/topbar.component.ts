@@ -28,11 +28,13 @@ export class TopbarComponent implements OnInit {
     isCollapsed = true;
     programs$ = new Subject<Program[]>();
     isAdmin = false;
+    isValidator = false;
     canDisplayAbout: boolean = MainConfig.about;
     canSignup: boolean = MainConfig.signup !== 'never';
     adminUrl: SafeUrl;
     userAvatar: string;
     logoImage: string;
+    hideAuth = false;
 
     @Input()
     displayTopbar: boolean;
@@ -65,6 +67,9 @@ export class TopbarComponent implements OnInit {
                 catchError((error) => throwError(error))
             )
             .subscribe();
+        this.route.queryParams.subscribe((params) => {
+            this.hideAuth = 'hideAuth' in params;
+        });
     }
 
     isLoggedIn(): Observable<boolean> {
@@ -123,6 +128,7 @@ export class TopbarComponent implements OnInit {
                     if (user && user['features'] && user['features'].id_role) {
                         this.username = user['features'].username;
                         this.isAdmin = user['features'].admin ? true : false;
+                        this.isValidator = user['features'].validator;
                         if (this.isAdmin) {
                             const ADMIN_ENDPOINT = [
                                 MainConfig.API_ENDPOINT,
@@ -143,10 +149,10 @@ export class TopbarComponent implements OnInit {
                     this.auth
                         .logout()
                         .then((logout) => {
-                            console.log('Logout Status:', logout.status);
+                            // console.log('Logout Status:', logout.status);
                         })
                         .catch((err) => {
-                            console.error('Logout error:', err);
+                            // console.error('Logout error:', err);
                         });
                     return throwError(err);
                 }

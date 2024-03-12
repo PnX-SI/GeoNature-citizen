@@ -13,16 +13,17 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
-from pathlib import Path
 import sys
-sys.path.insert(0, os.path.abspath('../backend'))
+from pathlib import Path
+
+sys.path.insert(0, os.path.abspath("../backend"))
 
 
 # -- Project information -----------------------------------------------------
 
 project = "GeoNature-citizen"
-copyright = "2020, collectif"
-author = "lpofredc"
+copyright = "2024, collectif"
+author = "Collectif"
 
 # The short X.Y version
 

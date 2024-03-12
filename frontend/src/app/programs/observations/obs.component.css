@@ -1,13 +1,19 @@
 .obs-section {
     width: 100%;
-    min-height: 70vh;
+    min-height: calc(100vh - 106px);
     position: relative;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
-.obs-section#slide {
-    margin-bottom: 20px;
+@media screen and (max-width: 991px) {
+    .obs-section {
+        min-height: calc(100vh - 66px);
+    }
 }
+
+/* .obs-section#slide {
+    margin-bottom: 20px;
+} */
 
 .section:before {
     content: ' ';
@@ -207,10 +213,16 @@ section .observations {
     margin-top: 106px;
 }
 
+.app-no-topbar .observations {
+    height: calc(100vh);
+    --list-obs-offset: 0px;
+    --router-outlet-offset: 0px;
+}
+
 .observations {
     margin: 0px;
     min-height: inherit;
-    height: calc(100vh - 137px);
+    height: calc(100vh - 106px);
     overflow: hidden;
 }
 
@@ -269,7 +281,7 @@ section .observations {
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
-    padding-bottom: 5px;
+    padding-bottom: 0px;
 }
 
 .obs-tabs .nav-item a {
@@ -298,6 +310,7 @@ section .observations {
         min-width: inherit !important;
     }
 }
+
 @media screen and (max-width: 760px) {
     .obs-tabs .tab-pane.active #mapList #list,
     .obs-tabs .tab-pane.active #map {
@@ -305,15 +318,40 @@ section .observations {
         overflow: scroll;
     }
 }
+
 @media screen and (max-width: 576px) {
     .obs-tabs .tab-pane.active #mapList #list,
     .obs-tabs .tab-pane.active #map {
-        max-height: calc(100vh - 260px);
+        max-height: calc(100vh - 196px);
         overflow: scroll;
     }
-}
-@media screen and (max-width: 576px) {
+
     section#slide {
         margin-top: 66px !important;
     }
+
+    #switchMapPhotoBtn {
+        top: 60px;
+    }
+}
+
+#switchMapPhotoBtn {
+    z-index: 1000;
+    position: absolute;
+    /* top: 15px;
+    left: 30px; */
+}
+
+#switchMapPhotoBtn > button {
+    display: block;
+    margin: 10px 10px 10px 30px;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    color: var(--primary);
+    font-size: 1rem;
+    background-color: white;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    /* top: 15px;
+    left: 30px; */
 }

@@ -1,0 +1,14 @@
+<div class="container" id="main">
+    <div class="row">
+        <div class="col-lg-12">
+            <observations-to-validate *ngIf="observations" [observations]="observations"
+                (deleteObs)="openDeleteModal(deleteModal, $event)"
+                (validateObs)="openValidateModal(validateModal, $event)">
+            </observations-to-validate>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!observations" id="spinner">
+    <span class="loader"></span>
+</div>

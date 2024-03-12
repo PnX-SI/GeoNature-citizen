@@ -11,7 +11,6 @@ Côté backend
 
 Les fichiers de configuration sont dans le dossier ``config``.
 Le fichier à modifier est ``config.toml``.
-Le fichier utilisé par GeoNature-citizen est config.toml.
 Il peut-être créé en copiant le fichier ``config.toml.example`` \
 vers ``config.toml``:
 
@@ -21,20 +20,21 @@ vers ``config.toml``:
 
 Editez alors les différents paramètres de ce fichier.
 
-fichier ``config.toml``
+Fichier ``config.toml`` :
 
 .. literalinclude:: ../config/config.toml.template
   :language: toml
 
+Pour que les modifications de ce fichier soient prises en compte, vous devez éxécuter la commande ``sudo supervisorctl restart gncitizen_api``.
+
 Côté frontend
 *************
 
-Les fichiers de configuration du frontend se trouvent dans le dossier ``./frontend/src/conf``
-
+Les fichiers de configuration du frontend se trouvent dans le dossier ``./frontend/src/conf``.
 
 Les fichiers ``app.config.ts`` et ``map.config.ts`` permettent de personnaliser la configuration définie par défaut dans ``main.config.ts``.
-Il sont créés lors de l"installation ou en copiant les fichiers ``app.config.ts.sample`` \
-vers ``app.config.ts`` et ``app.config.ts.sample`` vers ``map.config.ts`` :
+Il sont créés lors de l'installation ou en copiant les fichiers ``app.config.ts.sample`` \
+vers ``app.config.ts`` et ``map.config.ts.sample`` vers ``map.config.ts`` :
 
 
 .. code-block:: bash
@@ -45,12 +45,12 @@ vers ``app.config.ts`` et ``app.config.ts.sample`` vers ``map.config.ts`` :
 
 Editez alors les différents paramètres de ces fichiers.
 
-fichier ``app.config.ts``
+Fichier ``app.config.ts`` :
 
 .. literalinclude:: ../frontend/src/conf/app.config.ts.template
   :language: TypeScript
 
-fichier ``map.config.ts``
+Fichier ``map.config.ts`` :
 
 .. literalinclude:: ../frontend/src/conf/map.config.ts.template
   :language: TypeScript

@@ -15,7 +15,6 @@ from gncitizen.core.commons.models import (
 )
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import ObserverMixinModel
-from gncitizen.utils.env import ROOT_DIR
 from server import db
 
 
@@ -35,9 +34,7 @@ class SiteTypeModel(TimestampMixinModel, db.Model):
     id_typesite = db.Column(db.Integer, primary_key=True, unique=True)
     category = db.Column(db.String(200))
     type = db.Column(db.String(200))
-    id_form = db.Column(
-        db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
-    )
+    id_form = db.Column(db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True)
     custom_form = relationship("CustomFormModel")
     pictogram = db.Column(db.Text)
 
@@ -53,17 +50,23 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     __tablename__ = "t_sites"
     __table_args__ = {"schema": "gnc_sites"}
     id_site = db.Column(db.Integer, primary_key=True, unique=True)
-    uuid_sinp = db.Column(UUID(as_uuid=True), nullable=False, unique=True)
+    uuid_sinp = db.Column(UUID(as_uuid=True), nullable=False, unique=True, index=True)
     id_program = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
+        db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False, index=True
     )
     program = relationship("ProgramsModel")
     name = db.Column(db.String(250))
     id_type = db.Column(
-        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False
+        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite), nullable=False, index=True
     )
     site_type = relationship("SiteTypeModel")
-    geom = db.Column(Geometry("POINT", 4326))
+    geom = db.Column(
+        Geometry(
+            geometry_type="POINT",
+            srid=4326,
+            spatial_index=True,
+        )
+    )
 
     def __repr__(self):
         return "<Site {0}>".format(self.id_site)
@@ -73,16 +76,13 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
 class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     __tablename__ = "cor_program_typesites"
     __table_args__ = {"schema": "gnc_sites"}
-    id_cor_program_typesite = db.Column(
-        db.Integer, primary_key=True, unique=True
-    )
+    id_cor_program_typesite = db.Column(db.Integer, primary_key=True, unique=True)
     id_program = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE")
+        db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE"), index=True
     )
     program = relationship("ProgramsModel", backref="site_types")
     id_typesite = db.Column(
-        db.Integer,
-        db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE"),
+        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE"), index=True
     )
     site_type = relationship("SiteTypeModel")
 
@@ -95,7 +95,7 @@ class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     __table_args__ = {"schema": "gnc_sites"}
     id_visit = db.Column(db.Integer, primary_key=True, unique=True)
     id_site = db.Column(
-        db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE")
+        db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE"), index=True
     )
     site = relationship("SiteModel")
     date = db.Column(db.Date)
@@ -115,11 +115,13 @@ class MediaOnVisitModel(TimestampMixinModel, db.Model):
         db.Integer,
         db.ForeignKey(VisitModel.id_visit, ondelete="CASCADE"),
         nullable=False,
+        index=True,
     )
     id_media = db.Column(
         db.Integer,
         db.ForeignKey(MediaModel.id_media, ondelete="CASCADE"),
         nullable=False,
+        index=True,
     )
 
 
@@ -133,9 +135,11 @@ class ObservationsOnSiteModel(TimestampMixinModel, db.Model):
         db.Integer,
         db.ForeignKey(SiteModel.id_site, ondelete="SET NULL"),
         nullable=False,
+        index=True,
     )
     id_obstax = db.Column(
         db.Integer,
         db.ForeignKey(ObservationModel.id_observation, ondelete="SET NULL"),
         nullable=False,
+        index=True,
     )

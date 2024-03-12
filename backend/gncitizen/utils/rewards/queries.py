@@ -1,12 +1,8 @@
 import logging
 
 from gncitizen.core.commons.models import ProgramsModel  # MediaModel,
-from gncitizen.core.observations.models import (  # ObservationMediaModel,
-    ObservationModel,
-)
-from gncitizen.core.taxonomy.models import (  # BibNoms,; BibListes,; CorNomListe,; TMedias,
-    Taxref,
-)
+from gncitizen.core.observations.models import ObservationModel  # ObservationMediaModel,
+from gncitizen.core.taxonomy.models import Taxref  # BibNoms,; BibListes,; CorNomListe,; TMedias,
 from gncitizen.core.users.models import (  # ObserverMixinModel,; UserGroupsModel,; GroupsModel,
     UserModel,
 )
@@ -31,12 +27,8 @@ def attendance_data(role_id):
 # Count observations the current user submitted program wise
 def program_attendance(attendance_data):
     return [
-        attendance_data.filter(
-            ObservationModel.id_program == program.id_program
-        )
-        for program in ProgramsModel.query.distinct(
-            ProgramsModel.id_program
-        ).all()
+        attendance_data.filter(ObservationModel.id_program == program.id_program)
+        for program in ProgramsModel.query.distinct(ProgramsModel.id_program).all()
     ]
 
 
@@ -49,23 +41,17 @@ def seniority_data(id):
 def filter_class_or_order(model, query):
     criterion = "classe" if "class" in model else "ordre"
     return query.filter(
-        getattr(Taxref, criterion)
-        == model["class" if "class" in model else "order"].capitalize()
+        getattr(Taxref, criterion) == model["class" if "class" in model else "order"].capitalize()
     )
 
 
 def get_occ(attendance_data):
-    base_query = attendance_data.join(
-        Taxref, Taxref.cd_nom == ObservationModel.cd_nom
-    )
+    base_query = attendance_data.join(Taxref, Taxref.cd_nom == ObservationModel.cd_nom)
     # .filter(
     #     ObservationModel.id_role == role_id,
     #     ObservationModel.id_program == program_id
     # )
-    return [
-        filter_class_or_order(item, base_query).count()
-        for item in recognition_model
-    ]
+    return [filter_class_or_order(item, base_query).count() for item in recognition_model]
 
 
 def get_stats(id):

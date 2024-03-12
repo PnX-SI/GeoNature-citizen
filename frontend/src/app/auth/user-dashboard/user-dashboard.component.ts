@@ -55,7 +55,7 @@ export class UserDashboardComponent implements OnInit {
         private flowService: ModalFlowService,
         private formBuilder: FormBuilder,
         public siteService: SiteService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         const access_token = localStorage.getItem('access_token');
@@ -130,10 +130,10 @@ export class UserDashboardComponent implements OnInit {
                 this.myobs = data[0];
                 this.mysites = data[1];
                 if (MainConfig['REWARDS']) {
-                    console.log('data3', data[2]);
+                    // console.debug('data3', data[2]);
                     this.badges = data[2];
                     localStorage.setItem('badges', JSON.stringify(this.badges));
-                    console.log('badges', this.badges);
+                    // console.debug('badges', this.badges);
                     if (this.badges.length > 0) {
                         this.badges.forEach((badge) => {
                             if (
@@ -190,21 +190,19 @@ export class UserDashboardComponent implements OnInit {
             media_url:
                 obs.properties.images && !!obs.properties.images.length
                     ? MainConfig.API_ENDPOINT +
-                      '/media/' +
-                      obs.properties.images[0]
+                    '/media/' +
+                    obs.properties.images[0]
                     : obs.properties.image
-                    ? obs.properties.image
-                    : obs.properties.medias && !!obs.properties.medias.length
-                    ? MainConfig.API_TAXHUB +
-                      '/tmedias/thumbnail/' +
-                      obs.properties.medias[0].id_media +
-                      '?h=80'
-                    : 'assets/default_image.png',
+                        ? obs.properties.image
+                        : obs.properties.medias && !!obs.properties.medias.length
+                            ? MainConfig.API_TAXHUB +
+                            '/tmedias/thumbnail/' +
+                            obs.properties.medias[0].id_media +
+                            '?h=80'
+                            : 'assets/default_image.png',
             taxref: obs.properties.taxref,
             date: obs.properties.date,
-            municipality: obs.properties.municipality
-                ? obs.properties.municipality.name
-                : null,
+            municipality: obs.properties.municipality,
             program_id: obs.properties.id_program,
             program: obs.properties.program_title,
             count: obs.properties.count,
@@ -226,9 +224,7 @@ export class UserDashboardComponent implements OnInit {
             programme: obs.properties.program_title,
             denombrement: obs.properties.count,
             commentaire: obs.properties.comment,
-            commune: obs.properties.municipality
-                ? obs.properties.municipality.name
-                : null,
+            commune: obs.properties.municipality,
             cd_nom: obs.properties.taxref.cd_nom,
             espece: obs.properties.taxref.nom_vern,
             'nom complet': obs.properties.taxref.nom_complet,

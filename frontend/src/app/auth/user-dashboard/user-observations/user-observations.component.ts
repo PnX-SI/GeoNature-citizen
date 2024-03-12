@@ -2,19 +2,12 @@ import {
     Component,
     OnInit,
     ViewEncapsulation,
-    ViewChild,
-    ViewChildren,
-    QueryList,
-    HostListener,
-    Inject,
-    LOCALE_ID,
     Input,
     Output,
     EventEmitter,
 } from '@angular/core';
 import { ObsComponent } from '../../../programs/observations/obs.component';
-import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
-import { Point } from 'leaflet';
+import { BreakpointState } from '@angular/cdk/layout';
 
 @Component({
     selector: 'user-observations',
@@ -54,13 +47,5 @@ export class UserObsComponent extends ObsComponent implements OnInit {
                 }
             });
         this.surveySpecies = all_species;
-    }
-
-    getCoords(obs) {
-        let coords: Point = new Point(
-            obs.geometry.coordinates[0],
-            obs.geometry.coordinates[1]
-        );
-        console.log(obs, coords);
     }
 }

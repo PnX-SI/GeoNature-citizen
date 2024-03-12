@@ -33,18 +33,40 @@ import {
 } from '../observation.model';
 import 'leaflet-gesture-handling';
 import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
+import 'leaflet-search';
 import { ToastrService } from 'ngx-toastr';
 import { ObservationsService } from '../observations.service';
 import { MapService } from '../../base/map/map.service';
 
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 import { RefGeoService } from '../../../api/refgeo.service';
+import { ControlPosition } from 'leaflet';
 
-declare let $: any;
+// declare let $: any;
 
 const map_conf = {
     GEOLOCATION_CONTROL_POSITION: 'topright',
     GEOLOCATION_HIGH_ACCURACY: false,
+    BASE_LAYERS: MainConfig['BASEMAPS'].reduce((acc, baseLayer: Object) => {
+        const layerConf: any = {
+            name: baseLayer['name'],
+            attribution: baseLayer['attribution'],
+            detectRetina: baseLayer['detectRetina'],
+            maxZoom: baseLayer['maxZoom'],
+            bounds: baseLayer['bounds'],
+            apiKey: baseLayer['apiKey'],
+            layerName: baseLayer['layerName'],
+        };
+        if (baseLayer['subdomains']) {
+            layerConf.subdomains = baseLayer['subdomains'];
+        }
+        acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
+        return acc;
+    }, {}),
+    BASE_LAYER_CONTROL_POSITION: 'topright' as ControlPosition,
+    BASE_LAYER_CONTROL_INIT_COLLAPSED: true,
+    DEFAULT_BASE_MAP: () =>
+        map_conf.BASE_LAYERS[MainConfig['DEFAULT_PROVIDER']],
     PROGRAM_AREA_STYLE: {
         fillColor: 'transparent',
         weight: 2,
@@ -101,6 +123,7 @@ export class ObsFormComponent implements AfterViewInit {
     taxonomyListID: number;
     taxa: TaxonomyList;
     surveySpecies$: Observable<TaxonomyList>;
+    surveySpecies: TaxonomyList;
     species: Object[] = [];
     taxaCount: number;
     selectedTaxon: any;
@@ -184,7 +207,18 @@ export class ObsFormComponent implements AfterViewInit {
                         }),
                         share()
                     );
-                this.surveySpecies$.subscribe();
+                this.surveySpecies$.subscribe((res: TaxonomyList) => {
+                    res.sort((a, b): number => {
+                        const tax_a = a.nom_francais
+                            ? a.nom_francais
+                            : a.taxref.nom_vern;
+                        const tax_b = b.nom_francais
+                            ? b.nom_francais
+                            : b.taxref.nom_vern;
+                        return tax_a.localeCompare(tax_b);
+                    });
+                    this.surveySpecies = res;
+                });
 
                 if (this.program.features[0].properties.id_form) {
                     // Load custom form if one is attached to program
@@ -208,18 +242,41 @@ export class ObsFormComponent implements AfterViewInit {
                 L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: 'OpenStreetMap',
                 }).addTo(formMap);
-
+                L.control
+                    .layers(map_conf.BASE_LAYERS, null, {
+                        collapsed: map_conf.BASE_LAYER_CONTROL_INIT_COLLAPSED,
+                        position: map_conf.BASE_LAYER_CONTROL_POSITION,
+                    })
+                    .addTo(formMap);
                 L.control['fullscreen']({
                     position: 'topright',
                     title: {
                         false: 'View Fullscreen',
-                        true: 'Exit Fullscreen',
+                        true: 'Exit Fullscreefullscreenn',
                     },
+                    pseudoFullscreen: true,
+                }).addTo(formMap);
+                console.log('LControl', L.control);
+
+                L.control['search']({
+                    url: 'https://nominatim.openstreetmap.org/search?format=json&accept-language=fr-FR&q={s}',
+                    jsonpParam: 'json_callback',
+                    propertyName: 'display_name',
+                    position: 'topright',
+                    propertyLoc: ['lat', 'lon'],
+                    markerLocation: true,
+                    autoType: true,
+                    autoCollapse: true,
+                    minLength: 3,
+                    zoom: 15,
+                    text: 'Recherche...',
+                    textCancel: 'Annuler',
+                    textErr: 'Erreur',
                 }).addTo(formMap);
 
                 L.control
                     .locate({
-                        icon: 'fa fa-compass',
+                        icon: 'fa fa-location-arrow',
                         position: map_conf.GEOLOCATION_CONTROL_POSITION,
                         strings: {
                             title: MainConfig.LOCATE_CONTROL_TITLE[
@@ -343,7 +400,7 @@ export class ObsFormComponent implements AfterViewInit {
                 .getMunicipality(this.coords.y, this.coords.x)
                 .toPromise()
                 .then((municipality) => (this.municipality = municipality))
-                .catch((err) => console.log(err));
+                .catch((err) => console.error(err));
         }
     }
 
@@ -520,7 +577,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     postObservation() {
         let obs: ObservationFeature;
-        let formData = this.creatFromDataToPost();
+        const formData = this.creatFromDataToPost();
         if (this.customForm.json_schema) {
             formData.append('json_data', JSON.stringify(this.jsonData));
         }

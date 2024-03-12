@@ -17,7 +17,7 @@ Cette documentation suppose que vous avez les bases de l'utilisation de la ligne
 Dépendances
 -----------
 
-La présente documentation présente l'installation de GeoNature-citizen dans un environnement Linux Debian_ (version 9 et supérieures) et Ubuntu_ (version 18.04 et supérieures).
+La présente documentation présente l'installation de GeoNature-citizen dans un environnement Linux Debian_ (version 10 et supérieures) et Ubuntu_ (version 18.04 et supérieures).
 
 La procédure d'installation dépend de TaxHub_, et de certains paquets, qu'il faut installer.
 
@@ -32,7 +32,7 @@ Commencez par installer les paquets suivants :
 Créer un utilisateur pour l'installation
 ----------------------------------------
 
-Il faut un utilisateur qui soit capable d'utiliser la commande ``sudo``.
+Il est recommandé d'installer GeoNature citizen sur un compte utilisateur non ``root`` avec un privilège sur la commande ``sudo``.
 
 Créer un utilisateur appartenant au groupe ``sudo``. Dans cette documentation, nous allons le nommer ``geonatadmin``, mais vous pouvez remplacer cette par une autre si vous le souhaitez. Soyez juste consistant tout au long de l'installation.
 
@@ -42,7 +42,7 @@ Créer un utilisateur appartenant au groupe ``sudo``. Dans cette documentation, 
   # Création de l'utilisateur (ceci vous demandera un mot de passe)
   adduser --gecos "" geonatadmin
   # Ajout dans le groupe sudo
-  adduser geonatadmin sudo
+  usermod -aG sudo geonatadmin
   # Connexion avec cet utilisateur
   su - geonatadmin
 
@@ -138,10 +138,7 @@ Si vous souhaitez à une installation manuelle, suivez les instructions suivante
 Pré-requis
 ----------
 
-- Installer TaxHub, si ce n'est pas déjà fait. Vous pouvez suivre la documentation officielle : https://taxhub.readthedocs.io/fr/latest/
-- Configurer le serveur : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-du-serveur
-- Configurer PostgreSQL : https://taxhub.readthedocs.io/fr/latest/serveur.html#installation-et-configuration-de-posgresql
-- Configuration et installation de l’application : https://taxhub.readthedocs.io/fr/latest/installation.html
+- Installer TaxHub, si ce n'est pas déjà fait. Vous pouvez suivre la documentation officielle : https://taxhub.readthedocs.io/fr/latest/installation.html
 
 **Notez bien les identifiants de connexion à la base de données de Taxhub, car ils seront réutilisés ici.**
 
@@ -189,11 +186,11 @@ L'instance de TaxHub définissant les listes d'espèces et les médias associés
 
 La valeur de ``SQLALCHEMY_DATABASE_URI`` doit donc être changée pour correspondre aux valeurs utilisées pour se connecter à la BDD de TaxHub.
 
-Exemple, si on se connecte à la BDD ``referentielsdb``, avec l'utilisateur ``geonatuser`` et le mot de passe ``admin123``:
+Exemple, si on se connecte à la BDD ``gncitizen``, avec l'utilisateur ``geonatuser`` et le mot de passe ``admin123``:
 
 ::
 
-  SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://geonatuser:admin123@127.0.0.1:5432/referentielsdb"
+  SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://geonatuser:admin123@127.0.0.1:5432/gncitizen"
 
 Référez-vous donc à la configuration de TaxHub pour saisir ce paramètre.
 
@@ -205,7 +202,7 @@ Il y a 3 clés secrètes à changer : ``JWT_SECRET_KEY``, ``SECRET_KEY`` et ``CO
 
 Elles doivent être changées pour contenir chacune une valeur secrète différente, connue de vous seul. Vous n'aurez jamais à saisir ces valeurs plus tard, donc faites les très longues.
 
-Pour se simplifier la vie, on peut utiliser http://nux.net/secret pour générer une valeur pour chaque clé, et simplement la copier/coller. Il suffit de recharger la page pour obtenir une nouvelle valeur.
+Pour se simplifier la vie, on peut utiliser https://djecrety.ir/ pour générer une valeur pour chaque clé, et simplement la copier/coller. Il suffit de recharger la page pour obtenir une nouvelle valeur.
 
 DEBUG
 ~~~~~
@@ -311,7 +308,7 @@ Installation du backend et de la base des données
 Création du référentiel des géométries communales
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On continue d'utiliser les identifiants de la BDD de TaxHub, ici avec les exemples ``referentielsdb`` et ``geonatuser``.
+On continue d'utiliser les identifiants de la BDD de TaxHub, ici avec les exemples ``gncitizen`` et ``geonatuser``.
 
 Téléchargez les données SQL depuis le dépôt de GeoNature:
 
@@ -326,12 +323,12 @@ Pour importer les données dans la BDD, munissez-vous du mot de passe que vous a
 :: 
 
   sudo su postgres # les extensions doivent être ajoutées par un admin
-  psql -d referentielsdb -c "CREATE EXTENSION postgis;"
+  psql -d gncitizen -c "CREATE EXTENSION postgis;"
   exit
-  psql -d referentielsdb -h localhost -p 5432 -U geonatuser -f /tmp/public.sql
+  psql -d gncitizen -h localhost -p 5432 -U geonatuser -f /tmp/public.sql
   # Choix du SRID ici
   sed 's/MYLOCALSRID/2154/g' /tmp/ref_geo.sql > /tmp/ref_geo_2154.sql
-  psql -d referentielsdb -h localhost -p 5432 -U geonatuser -f /tmp/ref_geo_2154.sql
+  psql -d gncitizen -h localhost -p 5432 -U geonatuser -f /tmp/ref_geo_2154.sql
 
 Si les communes françaises ne sont pas déjà dans la base, les importer :
 
@@ -339,11 +336,11 @@ Si les communes françaises ne sont pas déjà dans la base, les importer :
 
     wget  --cache=off http://geonature.fr/data/ign/communes_fr_admin_express_2019-01.zip -P /tmp
     unzip /tmp/communes_fr_admin_express_2019-01.zip -d /tmp/
-    psql -d referentielsdb -h localhost -p 5432 -U geonatuser -f /tmp/fr_municipalities.sql
-    psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "ALTER TABLE ref_geo.temp_fr_municipalities OWNER TO geonatuser;"
+    psql -d gncitizen -h localhost -p 5432 -U geonatuser -f /tmp/fr_municipalities.sql
+    psql -d gncitizen -h localhost -p 5432 -U geonatuser -c "ALTER TABLE ref_geo.temp_fr_municipalities OWNER TO geonatuser;"
     sed -i "s/, geojson\w*//g" /tmp/ref_geo_municipalities.sql
-    psql -d referentielsdb -h localhost -p 5432 -U geonatuser -f /tmp/ref_geo_municipalities.sql
-    psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "DROP TABLE ref_geo.temp_fr_municipalities;"
+    psql -d gncitizen -h localhost -p 5432 -U geonatuser -f /tmp/ref_geo_municipalities.sql
+    psql -d gncitizen -h localhost -p 5432 -U geonatuser -c "DROP TABLE ref_geo.temp_fr_municipalities;"
 
 Générer les schémas de GeoNature-citizen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -369,13 +366,13 @@ Enregistrement du module principal :
 
 ::
 
-  psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "insert into gnc_core.t_modules values (1, 'observations', 'observations', 'observations', NULL, false, now(), now());"
+  psql -d gncitizen -h localhost -p 5432 -U geonatuser -c "insert into gnc_core.t_modules values (1, 'observations', 'observations', 'observations', NULL, false, now(), now());"
 
 Vous pouvez créer un programme test avec la ligne de commande suivante :
 
 ::
 
-  psql -d referentielsdb -h localhost -p 5432 -U geonatuser -c "INSERT INTO gnc_core.t_programs VALUES (1, 'Au 68', 'inventaire  du 68', 'desc', NULL,  NULL, 1,  100,  't', '0106000020E6100000010000000103000000010000000500000001000070947C154042CA401665A5454001000070EE7C15402235D7E667A54540010000D81C7D1540AFBA27365AA5454000000040C47C1540DD9BD74A58A5454001000070947C154042CA401665A54540',  now(), now());"
+  psql -d gncitizen -h localhost -p 5432 -U geonatuser -c "INSERT INTO gnc_core.t_programs VALUES (1, 'Au 68', 'inventaire  du 68', 'desc', NULL,  NULL, 1,  100,  't', '0106000020E6100000010000000103000000010000000500000001000070947C154042CA401665A5454001000070EE7C15402235D7E667A54540010000D81C7D1540AFBA27365AA5454000000040C47C1540DD9BD74A58A5454001000070947C154042CA401665A54540',  now(), now());"
 
 Celui-ci suppose l'existence d'une liste de taxons dont l'ID est 100, qui normalement existe sur TaxHub par défaut. Remplacez la valeur 100 par une liste existante si ce n'est pas le cas, ou créez une liste avec cet ID sur TaxHub.
 
@@ -389,23 +386,6 @@ Mettre en place le système de badge
   cp -v ~/gncitizen/frontend/src/assets/badges_* ~/gncitizen/media/
 
 Vous pouvez aussi optionnellement modifier le fichier ``~/gncitizen/config/badges_config.py`` pour changer les noms, images et nombre d'observations minimum pour obtenir les badges, par programme.
-
-Lancement du service
-------------------------------------------------------
-
-D'abord, créez un fichier de configuration supervisor (``sudo nano /etc/supervisor/conf.d/gncitizen_api.conf``) qui va contenir ceci :
-
-
-.. literalinclude:: ../install/supervisor/gncitizen_api-service.conf
-  :language: ini
-
-
-Puis lancez le chargement du service :
-
-::
-
-  sudo chown geonatadmin:geonatadmin ~/gncitizen/ -R
-  sudo supervisorctl reload
 
 
 Installation du frontend
@@ -481,12 +461,26 @@ Si vous souhaitez que l'application soit disponible depuis un chemin spécifique
   npm run ng build -- --prod --base-href=/citizen/
 
 
+Lancement des services
+++++++++++++++++++++++
+
+Copiez le fichier de service ``supervisor`` (``./install/supervisor/gncitizen_api-service.conf``) dans ``/etc/supervisor/conf.d/``.
+
+Personnalisez ``APP_PATH`` (chemin absolu vers le dossier de GeoNature-citizen) et ``SYSUSER`` (utilisateur système)
+
+Puis lancez le chargement du service :
+
+::
+
+  sudo chown geonatadmin:geonatadmin ~/gncitizen/ -R
+  sudo supervisorctl reload
+
+
 Configuration d'Apache
 ++++++++++++++++++++++
 
 Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage.
 Si vous souhaitez que l'application soit disponible depuis un chemin spécifique (ex: ``mondomaine.org/citizen``), pensez à décommenter la ligne ``Alias`` 
-
 
 
 ::
@@ -573,35 +567,19 @@ Si tout est OK, alors on redémarre le service Apache :
 Servir l'application en mode rendu côté serveur (*SSR = Server side rendering*)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Installer l'application pm2 pour créer un service permanent
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Lancement des services
+++++++++++++++++++++++
 
-`PM2 <https://pm2.keymetrics.io/>`_  permet de lancer une application Javascript en tâche de fond.
+Copiez les fichiers de service ``supervisor`` (``./install/supervisor/*.conf``) dans ``/etc/supervisor/conf.d/``.
+
+Personnalisez ``APP_PATH`` (chemin absolu vers le dossier de GeoNature-citizen) et ``SYSUSER`` (utilisateur système)
+
+Puis lancez le chargement du service :
 
 ::
 
-  cd ~/gncitizen/frontend
-  nvm use
-  npm install -g pm2
-
-
-Faire le build du code du frontend en mode SSR et créer un service pour le frontend
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-Après chaque modification sur un des éléments qui concerne le frontend, il faut relancer le processus de build :
-
-.. code-block:: sh
-
-    npm run build:i18n-ssr && npm run serve:ssr
-
-
-Puis lancer le service pour le mode SSR
-
-.. code-block:: sh
-
-  pm2 start dist/server.js --name gncitizen
-  pm2 save
-
+  sudo chown geonatadmin:geonatadmin ~/gncitizen/ -R
+  sudo supervisorctl reload
 
 
 Configuration d'Apache

@@ -14,7 +14,7 @@ export class UserService {
         'Content-Type': 'application/json',
     });
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     getPersonalInfo() {
         let url = `${MainConfig.API_ENDPOINT}/user/info`;
@@ -28,7 +28,7 @@ export class UserService {
     }
 
     updatePersonalData(personalInfo) {
-        console.log('up', personalInfo);
+        // console.log('up', personalInfo);
 
         return this.http
             .patch(`${MainConfig.API_ENDPOINT}/user/info`, personalInfo, {
@@ -42,8 +42,21 @@ export class UserService {
     }
 
     getObservationsByUserId(userId: number) {
+        let params = { id_role: userId.toString() };
         return this.http.get<Object>(
-            `${MainConfig.API_ENDPOINT}/observations/users/${userId}`
+            `${MainConfig.API_ENDPOINT}/observations`, { params }
+        );
+    }
+
+    getValidationStatuses() {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/validation_statuses`
+        );
+    }
+
+    getInvalidationStatuses() {
+        return this.http.get<Object>(
+            `${MainConfig.API_ENDPOINT}/invalidation_statuses`
         );
     }
 

@@ -1,23 +1,26 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import Optional
 
 from flask import current_app
 from itsdangerous import URLSafeTimedSerializer
 
+default_mail_from_addr = current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]
+
 
 def send_user_email(
-    subject: str, to: str, plain_message: str = None, html_message: str = None
+    subject: str,
+    to: str,
+    from_addr: str = default_mail_from_addr,
+    plain_message: Optional[str] = None,
+    html_message: Optional[str] = None,
 ):
-    msg = MIMEMultipart("alternative")
+    """User mail sending"""
+    msg = MIMEMultipart()
     msg["Subject"] = subject
-    msg["From"] = current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]
+    msg["From"] = from_addr
     msg["To"] = to
-    plain_msg = MIMEText(
-        html_message,
-        "plain",
-    )
-    msg.attach(plain_msg)
 
     if plain_message:
         plain_msg = MIMEText(
@@ -48,12 +51,13 @@ def send_user_email(
         server.ehlo()
         if current_app.config["MAIL"]["MAIL_STARTTLS"]:
             server.starttls()
-        server.login(
-            str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
-            str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
-        )
+        if current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]:
+            server.login(
+                str(current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]),
+                str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
+            )
         server.sendmail(
-            current_app.config["MAIL"]["MAIL_AUTH_LOGIN"],
+            from_addr,
             to,
             msg.as_string(),
         )
@@ -65,9 +69,8 @@ def send_user_email(
 
 
 def confirm_user_email(newuser, with_confirm_link=True):
-
     token = generate_confirmation_token(newuser.email)
-    subject = current_app.config["CONFIRM_EMAIL"]["SUBJECT"]
+    subject = f"[{current_app.config['appName']}] {current_app.config['CONFIRM_EMAIL']['SUBJECT']}"
     to = newuser.email
 
     # Check URL_APPLICATION:
@@ -76,34 +79,29 @@ def confirm_user_email(newuser, with_confirm_link=True):
         url_application = url_application
     else:
         url_application = url_application + "/"
-    print("url_application", url_application)
     activate_url = url_application + "confirmEmail/" + token
 
     # Record the MIME  text/html.
     template = current_app.config["CONFIRM_EMAIL"]["HTML_TEMPLATE"]
     if not with_confirm_link:
-        template = current_app.config["CONFIRM_EMAIL"][
-            "NO_VALIDATION_HTML_TEMPLATE"
-        ]
+        template = current_app.config["CONFIRM_EMAIL"]["NO_VALIDATION_HTML_TEMPLATE"]
+    from_addr = current_app.config["CONFIRM_EMAIL"]["FROM"]
     try:
         send_user_email(
             subject,
             to,
+            from_addr,
             html_message=template.format(activate_url=activate_url),
         )
 
     except Exception as e:
         current_app.logger.warning("send confirm_email failled. %s", str(e))
-        return {
-            "message": """ send confirm_email failled: "{}".""".format(str(e))
-        }
+        return {"message": """ send confirm_email failled: "{}".""".format(str(e))}
 
 
 def generate_confirmation_token(email):
     serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
-    return serializer.dumps(
-        email, salt=current_app.config["CONFIRM_MAIL_SALT"]
-    )
+    return serializer.dumps(email, salt=current_app.config["CONFIRM_MAIL_SALT"])
 
 
 def confirm_token(token):
@@ -113,6 +111,6 @@ def confirm_token(token):
             token,
             salt=current_app.config["CONFIRM_MAIL_SALT"],
         )
-    except:
-        raise Exception("error token")
+    except Exception as e:
+        current_app.logger.warning("confirm_token failled. %s", str(e))
     return email

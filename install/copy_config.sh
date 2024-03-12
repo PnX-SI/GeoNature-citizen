@@ -42,3 +42,7 @@ if [ ! -f frontend/src/custom/home/home.css ]; then
   cp frontend/src/custom/home/home.css.template frontend/src/custom/home/home.css
   cp frontend/src/custom/home/home.html.template frontend/src/custom/home/home.html
 fi
+
+if [! -d media ]; then
+  mkdir media
+fi

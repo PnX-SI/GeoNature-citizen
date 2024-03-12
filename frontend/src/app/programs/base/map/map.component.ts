@@ -15,6 +15,8 @@ import { Feature, FeatureCollection } from 'geojson';
 import { MainConfig } from '../../../../conf/main.config';
 import { MarkerClusterGroup } from 'leaflet';
 import 'leaflet.markercluster';
+//import 'leaflet-search/dist/leaflet-search';
+import 'leaflet-search';
 import 'leaflet.locatecontrol';
 import 'leaflet-gesture-handling';
 import { MapService } from './map.service';
@@ -44,26 +46,26 @@ export const conf = {
     BASE_LAYER_CONTROL_INIT_COLLAPSED: true,
     GEOLOCATION_CONTROL_POSITION: 'topright',
     SCALE_CONTROL_POSITION: 'bottomleft',
-    NEW_OBS_MARKER_ICON: () =>
+    NEW_OBS_MARKER_ICON: (): L.Icon<L.IconOptions> =>
         L.icon({
             iconUrl: MainConfig['NEW_OBS_POINTER'],
             iconSize: [33, 42],
             iconAnchor: [16, 42],
         }),
-    OBS_MARKER_ICON: () =>
+    OBS_MARKER_ICON: (): L.Icon<L.IconOptions> =>
         L.icon({
             iconUrl: MainConfig['OBS_POINTER'],
             iconSize: [33, 42],
             iconAnchor: [16, 42],
         }),
-    OBSERVATION_LAYER: () =>
+    OBSERVATION_LAYER: (): L.MarkerClusterGroup =>
         L.markerClusterGroup({
             iconCreateFunction: (clusters) => {
                 const childCount = clusters.getChildCount();
                 return conf.CLUSTER_MARKER_ICON(childCount);
             },
         }),
-    CLUSTER_MARKER_ICON: (childCount: number) => {
+    CLUSTER_MARKER_ICON: (childCount: number): L.DivIcon => {
         const quantifiedCssClass = (childCount: number) => {
             let c = ' marker-cluster-';
             if (childCount < 10) {
@@ -175,9 +177,25 @@ export abstract class BaseMapComponent implements OnChanges {
             })
             .addTo(this.observationMap);
 
+        L.control['search']({
+            url: 'https://nominatim.openstreetmap.org/search?format=json&accept-language=fr-FR&q={s}',
+            jsonpParam: 'json_callback',
+            propertyName: 'display_name',
+            position: 'topright',
+            propertyLoc: ['lat', 'lon'],
+            markerLocation: true,
+            autoType: true,
+            minLength: 3,
+            autoCollapse: true,
+            zoom: 15,
+            text: 'Recherche...',
+            textCancel: 'Annuler',
+            textErr: 'Erreur',
+        }).addTo(this.observationMap);
+
         L.control
             .locate({
-                icon: 'fa fa-compass',
+                icon: 'fa fa-location-arrow',
                 position: this.options.GEOLOCATION_CONTROL_POSITION,
                 strings: {
                     title: MainConfig.LOCATE_CONTROL_TITLE[this.localeId]
@@ -301,7 +319,9 @@ export abstract class BaseMapComponent implements OnChanges {
                 const obsLayer = L.geoJSON(this.features);
                 console.debug('obsLayerBounds', obsLayer.getBounds());
                 this.observationMap.fitBounds(obsLayer.getBounds());
-                this.observationMap.setZoom(Math.min(this.observationMap.getZoom(), 17)); // limit zoom (eg single feature)
+                this.observationMap.setZoom(
+                    Math.min(this.observationMap.getZoom(), 17)
+                ); // limit zoom (eg single feature)
             }
         }
     }

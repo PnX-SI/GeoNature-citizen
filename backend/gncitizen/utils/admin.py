@@ -2,7 +2,7 @@ import json
 
 from flask_admin.contrib.geoa import ModelView
 from flask_admin.form.fields import JSONField
-from jinja2 import Markup
+from markupsafe import Markup
 
 
 def json_formatter(view, context, model, name):
@@ -26,4 +26,8 @@ class CustomJSONField(JSONField):
 
 class CustomTileView(ModelView):
     tile_layer_url = "a.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    tile_layer_attribution = "some string or html goes here"
+    tile_layer_attribution = """
+    © <a href="https://www.openstreetmap.org/copyright" target="_blank">
+    Les Contributeurs d’OpenStreetMap
+    </a>
+    """

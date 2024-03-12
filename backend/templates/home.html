@@ -1,0 +1,39 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <div class="container">
+    <h2>Refresh TaxHub lists</h2>
+    <p>
+      <i class="fa fa-info-circle"></i> Force taxhub lists refresh from <a href="{{ api_taxhub }}" target="_blank" title="TaxHub API URL">{{ api_taxhub }}</a>
+    </p>
+
+    <div class="row">
+      <div class="col col-3">
+        <button class="btn btn-success btn-block" onclick="refreshData()">Refresh</button>
+      </div>
+      <div class="col col-9">
+        <div class="d-flex align-items-center">
+          <strong id="status"></strong>
+          <div id="statusSpinner" class="spinner-border ml-auto text-primary" role="status" aria-hidden="true" style="visibility: hidden;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block tail %}
+  <script>
+    const refreshData = async () => {
+      const statusText = document.getElementById('status')
+      const statusSpinner = document.getElementById('statusSpinner')
+      statusSpinner.style.visibility = 'visible'
+      statusText.innerHTML = 'Loading...'
+      const reponse = await fetch('/api/taxonomy/refresh')
+      statusText.innerHTML = 'Success !'
+      statusText.className = 'text-success'
+      statusSpinner.style.visibility = 'hidden'
+    
+      // do something
+    }
+  </script>
+{% endblock %}

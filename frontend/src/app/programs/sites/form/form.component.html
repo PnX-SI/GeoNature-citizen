@@ -4,39 +4,24 @@
             Etape {{ currentStep }}/{{ totalSteps() }} :
             {{ jsonSchema.steps[currentStep - 1].title }}
         </h3>
-        <p
-            class="h6"
-            [innerHTML]="jsonSchema.steps[currentStep - 1].description"
-        ></p>
+        <p class="h6" [innerHTML]="jsonSchema.steps[currentStep - 1].description"></p>
     </div>
     <form id="visitForm" [formGroup]="visitForm">
         <div class="row" [ngClass]="currentStep === 1 ? '' : 'hidden'">
             <div class="col-md-4">
                 <div class="input-group">
                     <label for="date">Date de la visite</label>
-                    <input
-                        formControlName="date"
-                        type="text"
-                        class="form-control rounded-0"
-                        placeholder="yyyy-mm-dd"
-                        ngbDatepicker
-                        #d="ngbDatepicker"
-                        (click)="d.toggle()"
-                    />
-                    <div
-                        *ngIf="visitForm.get('date').invalid"
-                        class="alert alert-danger"
-                    >
+                    <input formControlName="date" type="text" class="form-control rounded-0" placeholder="yyyy-mm-dd"
+                        ngbDatepicker #d="ngbDatepicker" (click)="d.toggle()" />
+                    <div *ngIf="visitForm.get('date').invalid" class="alert alert-danger">
                         <div *ngIf="visitForm.get('date').errors.required">
                             La date est obligatoire
                         </div>
-                        <div
-                            *ngIf="
+                        <div *ngIf="
                                 visitForm.get('date').errors[
                                     'Parsed a date in the future'
                                 ]
-                            "
-                        >
+                            ">
                             La date doit être antérieure à la date du jour
                         </div>
                         <div *ngIf="visitForm.get('date').errors.ngbDate">
@@ -47,40 +32,23 @@
             </div>
             <div class="col-md-8">
                 <div *ngIf="visit_data && visit_data.photos.length > 0" class="mb-3">
-                    <label i18n="Existing Photos@@existingPhotos"
-                        >Photos existantes (cocher pour supprimer)</label
-                    ><br />
+                    <label i18n="Existing Photos@@existingPhotos">Photos existantes (cocher pour
+                        supprimer)</label><br />
                     <span *ngFor="let p of visit_data.photos" class="mr-4">
-                        <input
-                            type="checkbox"
-                            name=""
-                            [(ngModel)]="p.checked"
-                            [ngModelOptions]="{ standalone: true }"
-                            class="mr-1"
-                        />
-                        <img
-                            src="{{ p.url }}"
-                            height="50"
-                        />
+                        <input type="checkbox" name="" [(ngModel)]="p.checked" [ngModelOptions]="{ standalone: true }"
+                            class="mr-1" />
+                        <img loading="lazy" src="{{ p.url }}" height="50" />
                     </span>
                 </div>
-                <image-upload
-                    buttonCaption="Ajouter une photo"
-                    dropBoxMessage="Déposez vos photos ici !"
-                    clearButtonCaption="Supprimer"
-                    (uploadFinished)="addImage($event)"
-                    (removed)="deleteImage($event)"
-                ></image-upload>
+                <image-upload buttonCaption="Ajouter une photo" dropBoxMessage="Déposez vos photos ici !"
+                    clearButtonCaption="Supprimer" (uploadFinished)="addImage($event)"
+                    (removed)="deleteImage($event)"></image-upload>
             </div>
         </div>
     </form>
 
-    <json-schema-form
-        [form]="formInputObject"
-        [options]="formOptions"
-        (onChanges)="onJsonFormChange($event)"
-        [framework]="GNCBootstrap4Framework"
-    >
+    <json-schema-form [form]="formInputObject" [options]="formOptions" (onChanges)="onJsonFormChange($event)"
+        [framework]="GNCBootstrap4Framework">
     </json-schema-form>
     <!-- <p>
     <button class="btn btn-link" (click)="toogleAdvancedMode()">{{ advancedMode ? "Masquer" : "Afficher" }} par défaut les champs avancés</button>

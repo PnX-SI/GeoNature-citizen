@@ -4,15 +4,22 @@ import {
     TransferState,
     makeStateKey,
 } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
-import { catchError, map, mergeMap, pluck, tap } from 'rxjs/operators';
+import { catchError, map, pluck, tap } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
 
 import { MainConfig } from '../../conf/main.config';
 import { Program } from '../programs/programs.models';
-import { TaxonomyList } from '../programs/observations/observation.model';
+import {
+    ObservationFeatureCollection,
+    TaxonomyList,
+} from '../programs/observations/observation.model';
+import {
+    MediaList,
+    MediaPaginatedList,
+} from '../programs/media-galery/media-galery.model';
 
 const PROGRAMS_KEY = makeStateKey('programs');
 
@@ -65,7 +72,7 @@ export class GncProgramsService implements OnInit {
         protected http: HttpClient,
         private state: TransferState,
         protected domSanitizer: DomSanitizer
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.programs = this.state.get(PROGRAMS_KEY, null as Program[]);
@@ -85,9 +92,10 @@ export class GncProgramsService implements OnInit {
                             this.domSanitizer.bypassSecurityTrustHtml(
                                 program.short_desc
                             );
-                        // program.html_long_desc = this.domSanitizer.bypassSecurityTrustHtml(
-                        //     program.long_desc
-                        // );
+                        program.html_long_desc =
+                            this.domSanitizer.bypassSecurityTrustHtml(
+                                program.long_desc
+                            );
                         return program;
                     })
                 ),
@@ -118,12 +126,35 @@ export class GncProgramsService implements OnInit {
             );
     }
 
-    getProgramObservations(id: number): Observable<FeatureCollection> {
+    getProgramObservations(
+        id: number,
+        per_page: number = 1000
+    ): Observable<ObservationFeatureCollection> {
+        const params = { id_program: `${id}`, per_page: `${per_page}` };
         return this.http
-            .get<FeatureCollection>(`${this.URL}/programs/${id}/observations`)
+            .get<ObservationFeatureCollection>(`${this.URL}/observations`, {
+                params,
+            })
             .pipe(
                 catchError(
-                    this.handleError<FeatureCollection>(
+                    this.handleError<ObservationFeatureCollection>(
+                        `getProgramObservations id=${id}`,
+                        { type: 'FeatureCollection', features: [] }
+                    )
+                )
+            );
+    }
+
+    getNotValidatedbservations(
+        id: number
+    ): Observable<ObservationFeatureCollection> {
+        return this.http
+            .get<ObservationFeatureCollection>(
+                `${this.URL}/observations/not_validated`
+            )
+            .pipe(
+                catchError(
+                    this.handleError<ObservationFeatureCollection>(
                         `getProgramObservations id=${id}`,
                         { type: 'FeatureCollection', features: [] }
                     )
@@ -181,6 +212,17 @@ export class GncProgramsService implements OnInit {
                     this.handleError<object>(`getCustomForm id=${id_form}`)
                 )
             );
+    }
+
+    getMedias(params: HttpParams): Observable<MediaPaginatedList | MediaList> {
+        Object.keys(params).forEach((key) =>
+            params[key] === undefined ? delete params[key] : {}
+        );
+        return this.http.get<MediaPaginatedList | MediaList>(
+            `${this.URL}/medias`,
+            {
+                params,
+            });
     }
 
     private handleError<T>(operation = 'operation', result?: T) {

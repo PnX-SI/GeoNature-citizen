@@ -37,7 +37,8 @@
                         [ngClass]="{
                             'ng-invalid': email.invalid
                         }"
-                        ><strong>@</strong></span>
+                        ><strong>@</strong></span
+                    >
                 </div>
                 <input
                     type="email"
@@ -72,7 +73,11 @@
         (ngSubmit)="loginForm.form.valid && onLogin()"
     >
         <div class="form-group">
-            <label for="email" i18n="email or username@@emailOrUsernameInputLabel">Email ou pseudo</label>
+            <label
+                for="email"
+                i18n="email or username@@emailOrUsernameInputLabel"
+                >Email ou pseudo</label
+            >
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span
@@ -81,7 +86,8 @@
                             'ng-invalid': username.invalid
                         }"
                         id="emailInput"
-                        ><strong>@</strong></span>
+                        ><strong>@</strong></span
+                    >
                 </div>
                 <input
                     type="email"
@@ -100,7 +106,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="password" i18n="Password input label@@passwordLabel">Mot de passe</label>
+            <label for="password" i18n="Password input label@@passwordLabel"
+                >Mot de passe</label
+            >
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span
@@ -126,7 +134,10 @@
             </div>
         </div>
         <div class="form-group d-flex flex-row justify-content-end">
-            <span id="recoverPassword" (click)="recoverPassword = true" i18n="Forgotten password link@@forgottenPasswordLink"
+            <span
+                id="recoverPassword"
+                (click)="recoverPassword = true"
+                i18n="Forgotten password link@@forgottenPasswordLink"
                 >Mot de passe oublié ?</span
             >
         </div>
@@ -147,7 +158,7 @@
         class="btn btn-outline-primary rounded-0"
         [disabled]="errorMessage || !successMessage"
         expand="block"
-        i18n="close auth modal@@closeModal"
+        i18n="close modal@@closeModal"
         (click)="activeModal.dismiss('Success')"
     >
         Fermer

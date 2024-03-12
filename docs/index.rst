@@ -18,7 +18,6 @@ Documentation de GeoNature-citizen
    configuration
    badges
    devs/index
-   prod/index
 
 
 

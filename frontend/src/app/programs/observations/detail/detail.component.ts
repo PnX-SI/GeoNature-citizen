@@ -38,13 +38,14 @@ export class ObsDetailComponent
 
     ngAfterViewInit() {
         this.programService.getObsDetails(this.obs_id).subscribe((obs) => {
-            this.obs = obs['features'][0];
+            this.obs = obs;
+            console.log(obs)
             this.photos = [];
-            this.photos = this.obs.properties.photos;
-            for (var i = 0; i < this.photos.length; i++) {
-                this.photos[i]['url'] =
-                    MainConfig.API_ENDPOINT + this.photos[i]['url'];
-            }
+            this.photos = this.obs.properties.photos.map(
+                item => {
+                    item['url'] = MainConfig.API_ENDPOINT + item['url']
+                    return item
+                });
 
             // setup map
             const map = L.map('map');

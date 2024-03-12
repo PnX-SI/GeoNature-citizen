@@ -102,6 +102,7 @@ export const DefaulConfig = {
         fr: 'Me localiser',
         en: 'Show me where i am',
     },
+    VERIFY_OBSERVATIONS_ENABLED: false,
 };
 
 export const MainConfig = { ...DefaulConfig, ...AppConfig, ...MapConfig };

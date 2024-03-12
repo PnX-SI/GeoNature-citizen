@@ -12,14 +12,16 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, merge } from 'rxjs';
 import { pluck, share } from 'rxjs/operators';
 
-import { FeatureCollection, Feature } from 'geojson';
+import { Feature } from 'geojson';
 
 import { MainConfig } from '../../../../conf/main.config';
 import {
     TaxonomyList,
     TaxonomyListItem,
     ObservationFeature,
+    ObservationFeatureCollection,
 } from '../observation.model';
+import { UserService } from '../../../auth/user-dashboard/user.service.service';
 
 @Component({
     selector: 'app-obs-list',
@@ -27,19 +29,23 @@ import {
     styleUrls: ['./list.component.css'],
 })
 export class ObsListComponent implements OnChanges {
-    @Input('observations') observations: FeatureCollection;
+    @Input('observations') observations: ObservationFeatureCollection;
     @Input('taxa') surveySpecies: TaxonomyList;
-    @Input('displayOwnerActions') displayOwnerActions: boolean = false;
+    @Input('displayOwnerActions') displayOwnerActions = false;
     @Input('displayForm') display_form: boolean;
     @Output('obsSelect') obsSelect: EventEmitter<Feature> = new EventEmitter();
     @Output() deleteObs = new EventEmitter();
+    @Output() validateObs = new EventEmitter();
     municipalities: any[];
     observationList: Feature[] = [];
     program_id: number;
-    taxa: any[];
+    taxa: unknown[];
+    validationStatuses: any = {};
     public MainConfig = MainConfig;
     selectedTaxon: TaxonomyListItem = null;
     selectedMunicipality: any = null;
+    selectedValidationStatus: any = null;
+    username: string = null;
     changes$ = new BehaviorSubject<SimpleChanges>(null);
     observations$ = new BehaviorSubject<Feature[]>(null);
     features$ = merge(
@@ -50,7 +56,11 @@ export class ObsListComponent implements OnChanges {
         )
     );
 
-    constructor(private cd: ChangeDetectorRef, public router: Router) {}
+    constructor(
+        private cd: ChangeDetectorRef,
+        public router: Router,
+        private userService: UserService,
+    ) { }
 
     ngOnChanges(changes: SimpleChanges) {
         this.changes$.next(changes);
@@ -61,13 +71,28 @@ export class ObsListComponent implements OnChanges {
             this.municipalities = this.observations.features
                 .map((features) => features.properties)
                 .map((property) => property.municipality)
-                .map((municipality) => {
-                    return municipality.name;
-                })
+                // .map((municipality) => {
+                //     return municipality;
+                // })
                 .filter((item, pos, self) => {
                     return self.indexOf(item) === pos;
                 });
+            this.userService.getValidationStatuses().subscribe((allValidationStatuses) => {
+                Array.from(
+                    new Set(this.observations.features
+                        .map((features) => features.properties)
+                        .map((property) => {
+                            return property.validation_status;
+                        })
+                    )
+                ).map((status) => {
+                    this.validationStatuses[status] = allValidationStatuses[status]
+                })
+
+            });
         }
+
+        this.username = localStorage.getItem('username');
     }
 
     // @HostListener("document:NewObservationEvent", ["$event"])
@@ -75,17 +100,22 @@ export class ObsListComponent implements OnChanges {
     // }
 
     onFilterChange(): void {
-        let filters: { taxon: string; municipality: string } = {
+        const filters: {
+            taxon: number;
+            municipality: string;
+            validationStatus: string;
+        } = {
             taxon: null,
             municipality: null,
+            validationStatus: null,
         };
         // WARNING: map.observations is connected to this.observationList
         this.observationList = this.observations['features'].filter((obs) => {
             let results: boolean[] = [];
             if (this.selectedMunicipality) {
                 results.push(
-                    obs.properties.municipality.name ==
-                        this.selectedMunicipality
+                    obs.properties.municipality ==
+                    this.selectedMunicipality
                 );
                 filters.municipality = this.selectedMunicipality;
             }
@@ -94,6 +124,12 @@ export class ObsListComponent implements OnChanges {
                     obs.properties.cd_nom == this.selectedTaxon.taxref['cd_nom']
                 );
                 filters.taxon = this.selectedTaxon.taxref['cd_nom'];
+            }
+            if (this.selectedValidationStatus) {
+                results.push(
+                    obs.properties.validation_status == this.selectedValidationStatus
+                );
+                filters.validationStatus = this.selectedValidationStatus;
             }
             return results.indexOf(false) < 0;
         });
@@ -118,5 +154,9 @@ export class ObsListComponent implements OnChanges {
 
     trackByObs(index: number, obs: ObservationFeature): number {
         return obs.properties.id_observation;
+    }
+
+    onValidateClick(observation) {
+        this.validateObs.emit(observation.properties.id_observation)
     }
 }

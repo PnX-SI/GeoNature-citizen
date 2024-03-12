@@ -21,6 +21,7 @@ export class SiteModalFlowComponent {
     @ViewChild('content', { static: true }) content: ElementRef;
     @Input('updateData') updateData;
     @Input('program_id') program_id;
+    @Input('registration_required') registration_required;
     flowitems: FlowItem[];
     timeout: any;
 
@@ -33,6 +34,7 @@ export class SiteModalFlowComponent {
         // this.flowService.openFormModal({ program_id: this.program_id, coords: this.coords });
         this.flowitems = this.flowService.getFlowItems({
             program_id: this.program_id,
+            registration_required: this.registration_required,
             coords: this.coords,
             updateData: this.updateData,
         });

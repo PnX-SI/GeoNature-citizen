@@ -6,7 +6,6 @@ import { OnboardComponent } from '../../observations/modalflow/steps/onboard/onb
 import { SiteStepComponent } from './steps/site/site_step.component';
 import { VisitStepComponent } from './steps/visit/visit_step.component';
 import { SiteCongratsComponent } from './steps/congrats/congrats.component';
-import { RewardComponent } from '../../observations/modalflow/steps/reward/reward.component';
 import { ModalFlowService } from '../../observations/modalflow/modalflow.service';
 
 @Injectable({
@@ -14,7 +13,7 @@ import { ModalFlowService } from '../../observations/modalflow/modalflow.service
 })
 export class SiteModalFlowService extends ModalFlowService {
     getFlowItems(init_data: any) {
-        let items = [];
+        const items = [];
         items.push(
             new FlowItem(OnboardComponent, { ...init_data, service: this })
         );
@@ -37,12 +36,12 @@ export class SiteModalFlowService extends ModalFlowService {
     }
 
     addSiteVisit(site_id) {
-        var init_data = { site_id: site_id };
+        const init_data = { site_id: site_id };
         this.openFormModal(init_data);
     }
 
     editSiteVisit (site_id, visit_id, visit_data) {
-        var init_data = {
+        const init_data = {
             site_id: site_id,
             visit_id: visit_id,
             visit_data: visit_data
@@ -51,8 +50,8 @@ export class SiteModalFlowService extends ModalFlowService {
     }
 
     openFormModal(init_data) {
-        var flowitems = this.getFlowItems(init_data);
-        var modalRef = this.open(FlowComponent);
+        const flowitems = this.getFlowItems(init_data);
+        const modalRef = this.open(FlowComponent);
         modalRef.componentInstance.flowItems = flowitems;
     }
 }

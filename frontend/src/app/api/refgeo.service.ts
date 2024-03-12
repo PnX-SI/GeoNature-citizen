@@ -23,6 +23,7 @@ type Address = {
     town: string | null;
     village: string | null;
     municipality: string | null;
+    postcode: string | null;
 };
 
 @Injectable({
@@ -34,26 +35,29 @@ export class RefGeoService {
             ? MainConfig['API_CITY']
             : 'https://nominatim.openstreetmap.org/reverse';
 
-    constructor(protected http: HttpClient) {}
+    constructor(protected http: HttpClient) { }
 
     getMunicipality(lat: number, lon: number): Observable<string> {
-        return this.http
-            .get<Municipality>(`${this.URL}?lat=${lat}&lon=${lon}&format=json`)
-            .pipe(
-                map((municipality) => {
-                    const address = municipality.address;
-                    const city = address.village
-                        ? address.village
-                        : address.town
+        const params = {
+            lat: lat.toString(),
+            lon: lon.toString(),
+            format: 'json',
+        };
+        return this.http.get<Municipality>(`${this.URL}`, { params }).pipe(
+            map((municipality: Municipality) => {
+                const address = municipality.address;
+                const city = address.village
+                    ? address.village
+                    : address.town
                         ? address.town
                         : address.city
-                        ? address.city
-                        : address.municipality
-                        ? address.municipality
-                        : null;
-                    return city;
-                })
-            );
+                            ? address.city
+                            : address.municipality
+                                ? address.municipality
+                                : null;
+                return `${city} (${address.postcode})`
+            })
+        );
     }
 
     private handleError<T>(operation = 'operation', result?: T) {

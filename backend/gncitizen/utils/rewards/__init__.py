@@ -29,9 +29,7 @@ base_props = {
 
 program_props = {
     # "program_attendance": 3,
-    "submission_date": (
-        datetime.datetime.now() - datetime.timedelta(days=3)
-    ).timestamp(),
+    "submission_date": (datetime.datetime.now() - datetime.timedelta(days=3)).timestamp(),
     # "reference_taxon": {
     #     "regne": "Animalia",
     #     "phylum": "Chordata",
@@ -102,16 +100,12 @@ def get_rewards(id):
     results = {
         "seniority": stats["seniority"](id).one().timestamp_create.timestamp(),
         "attendance": attendance.count(),
-        "program_attendance": [
-            item.count() for item in stats["program_attendance"](attendance)
-        ],
+        "program_attendance": [item.count() for item in stats["program_attendance"](attendance)],
         # Program date bounds
         # Mission Success
         "get_occ": stats["get_occ"](attendance),
     }
-    rewards = Classifier().tag(
-        default_ruleset, {**base_props, **program_props, **results}
-    )
+    rewards = Classifier().tag(default_ruleset, {**base_props, **program_props, **results})
     return [item for item in flatten(rewards)]
 
 

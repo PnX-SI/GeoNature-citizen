@@ -24,7 +24,7 @@ export class LogoutComponent {
                     localStorage.clear();
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                 });
             localStorage.clear();
             this.router.navigate(['/']);

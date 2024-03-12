@@ -4,13 +4,16 @@ import sys
 from pathlib import Path
 
 from flasgger import Swagger
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView, expose
 from flask_ckeditor import CKEditor
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from gncitizen import __version__
 from gncitizen.utils.toml import load_toml
+
+# from datetime import timedelta
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / "backend"
@@ -36,37 +39,35 @@ def get_config_file_path(config_file=None):
     return Path(config_file or DEFAULT_CONFIG_FILE)
 
 
-def load_config(config_file=None):
-    """ Load the geonature-citizen configuration from a given file"""
+def valid_api_url(url):
+    """Return a valid API URL ending with /"""
+    url = url if url[-1:] == "/" else url + "/"
+    return url
+
+
+def load_config():
+    """Load the geonature-citizen configuration from a given file"""
     config_gnc = load_toml(get_config_file_path())
     config_gnc["FLASK_ADMIN_FLUID_LAYOUT"] = True
     config_gnc["MAPBOX_MAP_ID"] = "light-v10"
-    config_gnc["DEFAULT_CENTER_LAT"] = 5
-    config_gnc["DEFAULT_CENTER_LONG"] = 45
-    # if not "MAPBOX_MAP_ID" in config_gnc:
-    # print("MAPBOXID")
-    # config_gnc["MAPBOX_MAP_ID"] = "light-v10"
+    config_gnc["DEFAULT_CENTER_LAT"] = config_gnc.get("DEFAULT_CENTER_LAT", 45)
+    config_gnc["DEFAULT_CENTER_LONG"] = config_gnc.get("DEFAULT_CENTER_LONG", 5)
+    # config_gnc["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(seconds=20)
+    # config_gnc["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(seconds=40)
     return config_gnc
-
-
-def valid_api_url(url):
-    """Return a valid API URL ending with /"""
-    if url[-1:] == "/":
-        url = url
-    else:
-        url = url + "/"
-    return url
 
 
 app_conf = load_config()
 MEDIA_DIR = str(ROOT_DIR / app_conf["MEDIA_FOLDER"])
 SQLALCHEMY_DATABASE_URI = app_conf["SQLALCHEMY_DATABASE_URI"]
+
+
+API_TAXHUB = valid_api_url(app_conf.get("API_TAXHUB", ""))
+
 db = SQLAlchemy()
-
 jwt = JWTManager()
-
 ckeditor = CKEditor()
-
+migrate = Migrate()
 
 swagger_template = {
     "swagger": "2.0",
@@ -109,20 +110,22 @@ swagger = Swagger(template=swagger_template, config=swagger_config)
 
 # admin_url = "/".join([urlparse(app_conf["URL_APPLICATION"]).path, "/api/admin"])
 
+
+class HomeView(AdminIndexView):
+    @expose("/")
+    def index(self):
+        return self.render("home.html", api_taxhub=API_TAXHUB)
+
+
 admin = Admin(
-    name=f"GN-Citizen: Backoffice d'administration (version: {__version__})",
+    name=f"GnCitizen: Backoffice (version: {__version__})",
+    index_view=HomeView(name="Home", url="/api/admin"),
     template_mode="bootstrap4",
     url="/api/admin",
 )
 
 
-taxhub_url = valid_api_url(app_conf.get("API_TAXHUB", ""))
-
-taxhub_lists_url = taxhub_url + "biblistes/"
-
-API_CITY = app_conf.get(
-    "API_CITY", "https://nominatim.openstreetmap.org/reverse"
-)
+API_CITY = app_conf.get("API_CITY", "https://nominatim.openstreetmap.org/reverse")
 
 
 def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):

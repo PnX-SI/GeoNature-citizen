@@ -216,3 +216,21 @@
     vertical-align: text-bottom;
     margin-left: 10px;
 }
+
+.obs-img-container {
+    position: relative;
+    height: 100px;
+    width: 100px;
+    margin-right: 20px;
+}
+.obs-img-container > img,
+.overlay-text {
+    position: absolute;
+}
+
+.obs-img-container > .overlay-text {
+    padding-left: 10px;
+    padding-top: 5px;
+    color: white !important;
+    text-shadow: #ccc 1px 0 3px;
+}
