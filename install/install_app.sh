@@ -27,11 +27,9 @@ sudo apt-get clean
 # Add a new user in database
 . ./install/create_db_user.sh
 
-#Maj  de pip
-pip3 install --upgrade pip
 
 #Installation de nvm / npm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
@@ -45,7 +43,7 @@ cd ${DIR}
 cd ${DIR}/frontend
 
 #Install and build
-NG_CLI_ANALYTICS=off # Désactive le prompt pour angular metrics
+NG_CLI_ANALYTICS=ci # Désactive le prompt pour angular metrics
 URL=$(echo $my_url | sed 's/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/')
 echo "L'application sera disponible à l'url $my_url"
 
@@ -76,6 +74,7 @@ if [ ! -f $venv_path/bin/activate ]; then
   python3 -m venv $venv_path
 fi
 source .venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
 
 # init DB
@@ -105,12 +104,6 @@ sudo apache2ctl restart
 # Prise en compte de la nouvelle config Supervisor
 sudo supervisorctl reread
 sudo supervisorctl reload
-
-# Installation de Taxhub si demandée
-if $install_taxhub; then
-  echo "Installing taxhub"
-  . ./install/install_taxhub.sh
-fi
 
 echo "End of installation
 You can now access to GeoNature-citizen at ${my_url}

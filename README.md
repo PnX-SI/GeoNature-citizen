@@ -25,14 +25,10 @@ Documentation : https://geonature-citizen.readthedocs.io
 ## Cas d'utilisation
 
 - https://obs.mercantour-parcnational.fr
-- https://www.a-vos-mares.org/participez/
-- http://abc-meylan.lpo-aura.org
-- http://biodiv-valenceromansagglo.lpo-aura.org
 - https://biomap.champs-libres.be
 - https://gncitizen.lpo-aura.org
 - https://citizen.nature-occitanie.org
 - https://phenoclim.org/accueil/individus-phenoclim
-- https://atlasdelabiodiversite.cote-emeraude.fr
 - https://enquetes.lashf.org
 - https://observatoire-biodiversite.parc-du-vercors.fr
 - https://enquetes-biodivrennes.fr
@@ -55,18 +51,18 @@ Documentation : https://geonature-citizen.readthedocs.io
 ### Frontend
 
 - NodeJS
-- Angular 8
+- Angular
 - LeafletJS
-- Bootstrap 4.1
+- Bootstrap 4
 
 ### Dépendances
 
-GeoNature-citizen s'appuie sur [TaxHub](https://github.com/PnX-SI/TaxHub) pour la création des listes d'espèces utilisées dans les programmes.
+:exclamation: GeoNature-citizen s'appuie sur [TaxHub](https://github.com/PnX-SI/TaxHub) pour la création des listes d'espèces utilisées dans les programmes.
 
 ### Installation
 
-- Lancer le script install_app.sh pour installer l'application entière ainsi que ses dépendances (postgres, taxhub ...)
-- Au premier lancement le script créera un fichier settings.ini dans config
+- Lancer le script install_app.sh pour installer l'application entière ainsi que ses dépendances (postgres ...)
+- Au premier lancement le script créera un fichier settings.ini dans le dossier config
 - Remplacer toutes les variables par vos données de votre serveur
 - Relancer le script install_app.sh
   - Les fichiers de conf frontend et backend seront alors créés et configurés

@@ -1,38 +1,31 @@
 # Langue du serveur
 # valeur possible : fr_FR.UTF-8, en_US.utf8 
-# locale -a pour voir la liste des locales disponible
+# locale -a pour voir la liste des locales disponibles
 my_local=fr_FR.UTF-8
 
 # My host URL or IP with / at the end
 my_url=https://mydomain.net/
 
-url_application=http://mydomain.net/        # Url For the frontend
-api_endpoint=http://mydomain.net/api        # Url for the geonature api don't forget /api
+url_application=http://mydomain.net/        # URL of GeoNature-citizen frontend
+api_endpoint=http://mydomain.net/api        # URL of GeoNature-citizen API, don't forget /api
 api_port=5002                               # GeoNature-citizen API port, recommended settings
-api_taxhub=http://mydomain.net/taxhub/api/  # Url for the taxhub api
-
-# Choix installation de taxhub
-install_taxhub=false
-taxhub_version=1.7.3
-
-
+api_taxhub=http://mydomain.net/taxhub/api/  # URL of TaxHub API
 
 
 ################################
 ### CONFIGURATION PostgreSQL ###
 ################################
 
-
 # Localisation du server PostgreSQL. 
 # Les scripts d'installation automatique ne fonctionnent que si votre BDD est sur le même serveur (localhost)
 pg_host=localhost
 # Port sur lequel PostgreSQL ecoute
 pg_port=5432
-#Base de donnée Geonature
+# Base de données GeoNature-citizen
 pg_dbname=gncitizen
-# Nom de l'utilisateur propriétaire des bases UsersHub, GeoNature, TaxHub
+# Nom de l'utilisateur propriétaire des bases de données UsersHub, GeoNature-citizen, TaxHub
 user_pg=dbuser
-# Pass de l'utilisateur propriétaire des bases UsersHub, GeoNature, TaxHub
+# Pass de l'utilisateur propriétaire des bases de données UsersHub, GeoNature-citizen, TaxHub
 user_pg_pass=dbpwd
 
 #########################
