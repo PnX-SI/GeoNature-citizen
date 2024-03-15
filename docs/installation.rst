@@ -41,6 +41,8 @@ Créer un utilisateur appartenant au groupe ``sudo``. Dans cette documentation, 
   su # vous aurez besoin du mot de passe de l'utilisateur root
   # Création de l'utilisateur (ceci vous demandera un mot de passe)
   adduser --gecos "" geonatadmin
+  # Ajout des droits en lecture pour groups et others sur le répertoire de l'utilisateur
+  chmod -R 744 /home/geonatadmin 
   # Ajout dans le groupe sudo
   usermod -aG sudo geonatadmin
   # Connexion avec cet utilisateur
