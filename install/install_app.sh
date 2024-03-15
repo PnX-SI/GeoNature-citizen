@@ -65,6 +65,13 @@ sudo sed -i "s%APP_PATH%${DIR}%" /etc/apache2/sites-available/gncitizen.conf
 sudo sed -i "s%mydomain.net%${URL}%" /etc/apache2/sites-available/gncitizen.conf
 sudo sed -i "s%backoffice_username%${backoffice_username}%" /etc/apache2/sites-available/gncitizen.conf
 
+# Copy main medias to media
+mkdir -p $DIR/media
+cp -r $DIR/frontend/src/assets/* $DIR/media
+
+# Creation des repertoires de log
+mkdir -p var/log
+
 # cd ..
 
 # Création du venv
@@ -82,12 +89,6 @@ pip install -r requirements.txt
 flask db upgrade
 
 cd $DIR
-# Copy main medias to media
-mkdir -p $DIR/media
-cp -r $DIR/frontend/src/assets/* $DIR/media
-
-# Creation des repertoires de log
-mkdir -p var/log
 
 touch init_done
 
