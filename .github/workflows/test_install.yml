@@ -9,25 +9,36 @@ on:
     paths:
       - "backend/**"
       - "frontend/**"
+      - "install/**"
 
   pull_request:
     branches: [master, dev]
     paths:
       - "backend/**"
       - "frontend/**"
-
-    PROJECT_FOLDER: "plugin_qgis_lpo"
-    PYTHON_VERSION: 3.9
+      - "install/**"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "greet"
   greet:
+    strategy:
+      matrix:
+        os: ["ubuntu-22.04", "ubuntu-latest", "debian-11", "debian-12"]
+        node-version: ["14.21.3"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Runs a single command using the runners shell
-      - name: Send greeting
-        run: echo "Hello ${{ inputs.name }}"
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Test install
+        run: install/install_app.sh && sed -i 's,http://mydomain.net/taxhub/api/,https://demo.geonature.fr/taxhub/api/,g' settings.ini.template && install/install_app.sh
