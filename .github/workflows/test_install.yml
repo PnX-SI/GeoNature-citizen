@@ -41,4 +41,4 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Test install
-        run: install/install_app.sh && sed -i 's,http://mydomain.net/taxhub/api/,https://demo.geonature.fr/taxhub/api/,g' settings.ini.template && install/install_app.sh
+        run: cp config/settings.ini.template config/settings.ini && sed -i 's,http://mydomain.net/taxhub/api/,https://demo.geonature.fr/taxhub/api/,g' config/settings.ini && install/install_app.sh
