@@ -6,4 +6,4 @@ if [ ${user_pg_exists} -eq 0 ]; then
   sudo -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_pg_pass';"
 fi
 # Always grant ownership on the newly created database
-sudo -u postgres psql -c "ALTER DATABASE ${pg_dbname} OWNER TO ${user_pg};"
+# sudo -u postgres psql -c "ALTER DATABASE ${pg_dbname} OWNER TO ${user_pg};"

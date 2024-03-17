@@ -20,12 +20,11 @@ sudo apt -y install gcc curl gunicorn python3-setuptools lsb-release \
   libxrender-dev postgresql postgis python3 python3-dev python3-venv python3-pip
 
 sudo apt-get clean
+# Add a new user in database
+. ./install/create_db_user.sh
 
 # Create the database
 . ./install/create_db.sh
-
-# Add a new user in database
-. ./install/create_db_user.sh
 
 
 #Installation de nvm / npm
