@@ -5,5 +5,5 @@ if [ ${user_pg_exists} -eq 0 ]; then
   echo "Create Citizen database user…"
   sudo -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_pg_pass';"
 fi
-# Always grant privileges on the newly created database
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE ${pg_dbname} TO ${user_pg};"
+# Always grant ownership on the newly created database
+# sudo -u postgres psql -c "ALTER DATABASE ${pg_dbname} OWNER TO ${user_pg};"
