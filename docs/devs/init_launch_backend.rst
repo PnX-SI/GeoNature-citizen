@@ -7,7 +7,7 @@ Installer l'environnement virtuel python
 ########################################
 
 La gestion des dépendances du backend est assurée par 
-`python-poetry <https://python-poetry.org/docs/#installation>`.
+`python-poetry <https://python-poetry.org/docs/#installation>`_.
 
 Une fois ``poetry-python`` installé, rendez-vous lancez les commandes suivantes 
 pour créer l'environnement virtuel et installer les dépendances.
