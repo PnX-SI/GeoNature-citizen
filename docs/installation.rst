@@ -19,9 +19,10 @@ Dépendances
 
 La présente documentation présente l'installation de GeoNature-citizen dans un environnement Linux Debian_ (version 10 et supérieures) et Ubuntu_ (version 18.04 et supérieures).
 
-La procédure d'installation dépend de TaxHub_, et de certains paquets, qu'il faut installer.
+GeoNature-citizen dépend de TaxHub_ qui doit donc être installé au préalable. 
+Pour utiliser le module de badges, le schéma de BDD `taxonomie` de TaxHub doit être installé dans la même BDD que celle de GeoNature-citizen.
 
-Commencez par installer les paquets suivants :
+L'installation dépend aussi des paquets suivants :
 
 ::
 
@@ -32,7 +33,7 @@ Commencez par installer les paquets suivants :
 Créer un utilisateur pour l'installation
 ----------------------------------------
 
-Il est recommandé d'installer GeoNature citizen sur un compte utilisateur non ``root`` avec un privilège sur la commande ``sudo``.
+Il est recommandé d'installer GeoNature-citizen sur un compte utilisateur non ``root`` avec un privilège sur la commande ``sudo``.
 
 Créer un utilisateur appartenant au groupe ``sudo``. Dans cette documentation, nous allons le nommer ``geonatadmin``, mais vous pouvez remplacer cette par une autre si vous le souhaitez. Soyez juste consistant tout au long de l'installation.
 
@@ -51,17 +52,17 @@ Créer un utilisateur appartenant au groupe ``sudo``. Dans cette documentation, 
 Mettre la localisation en français
 ------------------------------------
 
-Générer les locales ``en_US.UTF8`` et ``fr_FR.UTF-8`` puis choisir ``fr_FR.UTF-8`` comme locale par default:
+Générer les locales ``en_US.UTF8`` et ``fr_FR.UTF-8`` puis choisir ``fr_FR.UTF-8`` comme locale par defaut :
 
 ::
 
   sudo dpkg-reconfigure locales
 
-Si le message d'erreur suivant apparait ``sudo: pas de tty présent et pas de programme askpass spécifié``, ajoutez remplacez ``sudo`` par ``sudo -S``.
+Si le message d'erreur suivant apparait ``sudo: pas de tty présent et pas de programme askpass spécifié``, remplacez ``sudo`` par ``sudo -S``.
 
 Cette commande va afficher une liste de codes internationaux, vous pouvez naviguer avec les flèches du clavier et sélectionner une valeur avec la touche espace. Les valeurs sélectionnées ont une étoile (``*``) devant.
 
-Choisissez deux valeurs: ``en_US.UTF8`` et ``fr_FR.UTF-8``, puis validez.
+Choisissez deux valeurs : ``en_US.UTF8`` et ``fr_FR.UTF-8``, puis validez.
 
 Pour valider, utilisez la touche de tabulation jusqu'à atteindre ``<ok>`` et appuyez sur la touche entrée.
 
@@ -91,7 +92,7 @@ Téléchargez et décompressez la dernière version de l'application, disponible
 Installation automatique
 ========================
 
-Le script ``install/install_app.sh`` va se charger d'installer automatiquement l'environnement, PostgreSQL, TaxHub et GeoNature-citizen, 
+Le script ``install/install_app.sh`` va se charger d'installer automatiquement l'environnement, PostgreSQL, et GeoNature-citizen, 
 ainsi que leur base de données et leur configuration Apache.
 
 .. tip::
@@ -129,7 +130,7 @@ Lancer le script d'installation :
 
   ./install/install_app.sh
 
-Le script crééra la base de données, configurera TaxHub si l'installation est demandée, configurera le serveur web Apache et installera toutes les dépendances du projet GeoNature-citizen.
+Le script crééra la base de données, configurera le serveur web Apache et installera toutes les dépendances du projet GeoNature-citizen.
 
 
 Installation manuelle
@@ -182,8 +183,8 @@ Et changer les valeurs pour correspondre à la réalité de votre installation. 
 SQLALCHEMY_DATABASE_URI
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-GeoNature-citizen a pour le moment des références au schéma ``taxonomie`` de TaxHub_ (pour l'utilisation du référentiel taxonomique `TaxRef
-<https://inpn.mnhn.fr/programme/referentiel-taxonomique-taxref>`_). Ce schéma doit donc être installé dans cette même base de données. 
+GeoNature-citizen a encore des références au schéma de BDD ``taxonomie`` de TaxHub_ (pour le module de badge uniquement). 
+Ce schéma doit donc être installé dans cette même base de données si vous utilisez le module de badges. 
 L'instance de TaxHub définissant les listes d'espèces et les médias associés peut toutefois être une autre instance indépendante.
 
 La valeur de ``SQLALCHEMY_DATABASE_URI`` doit donc être changée pour correspondre aux valeurs utilisées pour se connecter à la BDD de TaxHub.
@@ -231,7 +232,7 @@ EMAILS
 
 L'inscription à GeoNature-citizen n'est pas obligatoire pour les contributeurs. 
 
-Toutefois, si un contributeur souhaite créer un compte, un email de vérification de son adresse mail lui est transmis. Cet email contient un lien permettant l'activation du compte. 
+Toutefois, si un contributeur souhaite créer un compte, un email de vérification de son adresse email lui est transmis. Cet email contient un lien permettant l'activation du compte. 
 
 Pour cela, il est nécessaire de configurer un serveur SMTP permettant l'envoi de ces emails de vérification. 
 
@@ -306,44 +307,6 @@ Si vous avez des identifiants Mapbox, inscrivez-les dans ``MAPBOX_MAP_ID`` et ``
 Installation du backend et de la base des données
 -------------------------------------------------
 
-
-Création du référentiel des géométries communales
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-On continue d'utiliser les identifiants de la BDD de TaxHub, ici avec les exemples ``gncitizen`` et ``geonatuser``.
-
-Téléchargez les données SQL depuis le dépôt de GeoNature:
-
-::
-
-  wget https://github.com/PnX-SI/GeoNature/raw/master/data/core/public.sql -P /tmp
-  wget https://github.com/PnX-SI/GeoNature/raw/master/data/core/ref_geo.sql -P /tmp
-  wget https://github.com/PnX-SI/GeoNature/raw/master/data/core/ref_geo_municipalities.sql -P /tmp
-
-Pour importer les données dans la BDD, munissez-vous du mot de passe que vous avez choisi lors de la création de celle-ci, puis (dans cet exemple, on utilise le système de coordonnées avec le SRID 2154) :
-
-:: 
-
-  sudo su postgres # les extensions doivent être ajoutées par un admin
-  psql -d gncitizen -c "CREATE EXTENSION postgis;"
-  exit
-  psql -d gncitizen -h localhost -p 5432 -U geonatuser -f /tmp/public.sql
-  # Choix du SRID ici
-  sed 's/MYLOCALSRID/2154/g' /tmp/ref_geo.sql > /tmp/ref_geo_2154.sql
-  psql -d gncitizen -h localhost -p 5432 -U geonatuser -f /tmp/ref_geo_2154.sql
-
-Si les communes françaises ne sont pas déjà dans la base, les importer :
-
-::
-
-    wget  --cache=off http://geonature.fr/data/ign/communes_fr_admin_express_2019-01.zip -P /tmp
-    unzip /tmp/communes_fr_admin_express_2019-01.zip -d /tmp/
-    psql -d gncitizen -h localhost -p 5432 -U geonatuser -f /tmp/fr_municipalities.sql
-    psql -d gncitizen -h localhost -p 5432 -U geonatuser -c "ALTER TABLE ref_geo.temp_fr_municipalities OWNER TO geonatuser;"
-    sed -i "s/, geojson\w*//g" /tmp/ref_geo_municipalities.sql
-    psql -d gncitizen -h localhost -p 5432 -U geonatuser -f /tmp/ref_geo_municipalities.sql
-    psql -d gncitizen -h localhost -p 5432 -U geonatuser -c "DROP TABLE ref_geo.temp_fr_municipalities;"
-
 Générer les schémas de GeoNature-citizen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -353,7 +316,7 @@ Lancement du backend pour générer les schémas :
 
 ::
 
-    # assurez vous de bien être toujours connecté en tant que geonatadmin
+    # Assurez vous de bien être toujours connecté en tant que geonatadmin
     # avec le venv activé avant de lancer cette étape
     sudo chown geonatadmin:geonatadmin /home/geonatadmin/gncitizen/ -R
     cd ~/gncitizen/backend

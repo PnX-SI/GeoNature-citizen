@@ -11,12 +11,12 @@ Côté backend
 
 Les fichiers de configuration sont dans le dossier ``config``.
 Le fichier à modifier est ``config.toml``.
-Il peut-être créé en copiant le fichier ``config.toml.example`` \
+Il peut-être créé en copiant le fichier ``config.toml.template`` \
 vers ``config.toml``:
 
 .. code-block:: bash
 
-    $ cp config.toml.example config.toml
+    $ cp config.toml.template config.toml
 
 Editez alors les différents paramètres de ce fichier.
 

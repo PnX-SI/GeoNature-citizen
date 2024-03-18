@@ -1,3 +1,4 @@
+# Not maintained nor garanted. Rather use official TaxHub installation procedure and scripts at https://github.com/PnX-SI/TaxHub
 
 #Installation de nvm / npm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
