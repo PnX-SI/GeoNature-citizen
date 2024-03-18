@@ -19,9 +19,10 @@ Dépendances
 
 La présente documentation présente l'installation de GeoNature-citizen dans un environnement Linux Debian_ (version 10 et supérieures) et Ubuntu_ (version 18.04 et supérieures).
 
-La procédure d'installation dépend de TaxHub_, et de certains paquets, qu'il faut installer.
+GeoNature-citizen dépend de TaxHub_ qui doit donc être installé au préalable. 
+Pour utiliser le module de badges, le schéma de BDD `taxonomie` de TaxHub doit être installé dans la même BDD que celle de GeoNature-citizen.
 
-Commencez par installer les paquets suivants :
+L'installation dépend aussi des paquets suivants :
 
 ::
 
@@ -91,7 +92,7 @@ Téléchargez et décompressez la dernière version de l'application, disponible
 Installation automatique
 ========================
 
-Le script ``install/install_app.sh`` va se charger d'installer automatiquement l'environnement, PostgreSQL, TaxHub (optionnel) et GeoNature-citizen, 
+Le script ``install/install_app.sh`` va se charger d'installer automatiquement l'environnement, PostgreSQL, et GeoNature-citizen, 
 ainsi que leur base de données et leur configuration Apache.
 
 .. tip::
@@ -129,7 +130,7 @@ Lancer le script d'installation :
 
   ./install/install_app.sh
 
-Le script crééra la base de données, configurera TaxHub si son installation est demandée, configurera le serveur web Apache et installera toutes les dépendances du projet GeoNature-citizen.
+Le script crééra la base de données, configurera le serveur web Apache et installera toutes les dépendances du projet GeoNature-citizen.
 
 
 Installation manuelle
@@ -183,7 +184,7 @@ SQLALCHEMY_DATABASE_URI
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 GeoNature-citizen a encore des références au schéma de BDD ``taxonomie`` de TaxHub_ (pour le module de badge uniquement). 
-Ce schéma doit donc être installé dans cette même base de données. 
+Ce schéma doit donc être installé dans cette même base de données si vous utilisez le module de badges. 
 L'instance de TaxHub définissant les listes d'espèces et les médias associés peut toutefois être une autre instance indépendante.
 
 La valeur de ``SQLALCHEMY_DATABASE_URI`` doit donc être changée pour correspondre aux valeurs utilisées pour se connecter à la BDD de TaxHub.
