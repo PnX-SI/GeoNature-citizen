@@ -1,10 +1,8 @@
 # GeoNature-citizen
 
-Portail d'inventaire participatif de la biodiversité à destination du grand public ([**Démo**](http://democitizen.geonature.fr)).
+Portail d'inventaire participatif de la biodiversité à destination du grand public.
 
 ![logo](https://github.com/PnX-SI/GeoNature-citizen/raw/master/frontend/src/assets/logo.png)
-
-:bangbang: **Projet en cours de développement, actuellement en version beta**
 
 **English:**
 
@@ -12,7 +10,7 @@ GeoNature-citizen is a free and Open Source web solution for citizen science pro
 
 The data collection is gamified to improve the user management using badges and scores. It can also be customized to accept new user to be created or not.
 
-It is based on a fully open Source stack from PostgreSQL to Angular.
+It is based on a fully open source stack from PostgreSQL to Angular.
 
 **Francais:**
 
@@ -46,7 +44,7 @@ Documentation : https://geonature-citizen.readthedocs.io
   - Flask (moteur de l'API)
   - flask-jwt-extended (pour l'authentification)
   - SQLAlchemy
-- PostgreSQL / Postgis
+- PostgreSQL / PostGIS
 
 ### Frontend
 
@@ -61,17 +59,11 @@ Documentation : https://geonature-citizen.readthedocs.io
 
 ### Installation
 
-- Lancer le script install_app.sh pour installer l'application entière ainsi que ses dépendances (postgres ...)
-- Au premier lancement le script créera un fichier settings.ini dans le dossier config
-- Remplacer toutes les variables par vos données de votre serveur
-- Relancer le script install_app.sh
-  - Les fichiers de conf frontend et backend seront alors créés et configurés
-  - Le serveur flask sera lancé via supervisor : api_geonature
-  - Si vous avez choisi le mode Server side pour le frontend, il sera lancé via supervisor : geonature sur le port 4000
+Documentation : https://geonature-citizen.readthedocs.io
 
 ### Mise à jour
 
-- Lancer le script update_app.sh
+- Lancer le script `update_app.sh`
   - Le script récupérera les modifications depuis git
   - il va transpiler le front et redémarrer si besoin les services supervisor
   - [Warning] si des modifications SQL ont été faites, il faudra les faire manuellement
