@@ -28,7 +28,7 @@
 
 ## Release note
 
-Veuillez à ce que votre base de donnée soit bien à jour des scripts de migration de la base de donnée du dossier `data/migrations` (incluant le dernier `v0.99.4_to_1.0.0.sql`). + https://github.com/PnX-SI/GeoNature-citizen/pull/362 ???
+Veuillez à ce que votre base de donnée soit bien à jour des scripts de migration de la base de donnée du dossier `data/migrations` (incluant le dernier `v0.99.4_to_1.0.0.sql`).  
 Vous pourrez ensuite stamper la migration de GeoNature-citizen et lancer la nouvelle procédure de mise à jour.
 
 ```sh
@@ -47,6 +47,8 @@ cd ~/gncitizen
 source backend/venv/bin/activate
 flask db upgrade
 ```
+
+Pour ceux qui avaient activé la synchronisation de GeoNature-citizen avec GeoNature, la fonction `gnc_core.fct_tri_c_upsert_obstax_to_geonature()` a été corrigée. Il est donc conseillée de la supprimer et la recréer (https://github.com/PnX-SI/GeoNature-citizen/blob/1.0.0/data/addons/scripts/gnc2gn_synthese/gnc2gn_synthese.sql#L113-L374), puis de relancer la mise à jour des données avec la requête SQL : `update gnc_obstax.t_obstax set cd_nom=cd_nom;`.  
 
 ## Contributors
 
