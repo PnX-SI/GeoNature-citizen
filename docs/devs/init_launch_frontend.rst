@@ -8,19 +8,21 @@ Installer l'environnement virtuel NodeJS avec nvm
 
 L'installation de ``nvm`` se fait en suivant les instructions du dépot principal de l'outil nvm par creationix `creationix/nvm <https://github.com/creationix/nvm#installation-and-update>`_.
 
-Une fois l'environnement installé, installer la dernière version stable de ``nodejs``:
+Une fois l'environnement installé, installer la dernière version stable de ``nodejs`` compatible:
 
 .. code:: sh
 
-    nvm install v10.16
+    cd frontend
+    nvm install
 
 Pour utiliser cette version:
 
 .. code:: sh
 
-    nvm use v10.16
+    cd frontend
+    nvm use
 
-Installer angular CLI (version LTS 6) et les dépendances requises:
+Installer angular CLI (version LTS 8) et les dépendances requises:
 
 .. code:: sh
 
@@ -37,14 +39,14 @@ En mode développement et client-side rendering:
 
 .. code:: sh
 
-    ng serve
+    nvm exec npm run start
 
 En mode Server Side Rendering, optimisé pour le SEO et réservé aux robots d'indexation:
 ***************************************************************************************
 
 .. code:: sh
 
-    npm run build:ssr && npm run serve:ssr
+    nvm exec npm run build:ssr && nvm exec npm run serve:ssr
 
 Gestion du Server Side Rendering
 ################################
@@ -102,7 +104,7 @@ La commande suivante met à jour les fichiers de traduction (ajout/suppression d
 
 .. code-block:: sh
 
-    npm run extract-i18n
+    nvm exec npm run extract-i18n
 
 Les fichiers de traduction sont dans le répertoire ``frontend/src/i18n``.
 
@@ -116,18 +118,7 @@ Préparer la distribution avec:
 
 .. code-block:: sh
 
-    npm run ng build -- --prod
-
-ou:
-
-.. code-block:: sh
-
-    npm run ng build -- --configuration=en --prod
-
-pour une version en langue anglaise.
-
-Tout est contenu dans le répertoire ``frontend/dist``, qu'il faut copier sur la plateforme acceuillant le service.
-
+    nvm exec npm run build:i18n-ssr
 
 
 Annexe:
@@ -139,27 +130,37 @@ Exemple de fichier de configuration serveur Apache2:
 
 .. code-block:: apacheconf
 
-    # Configuration GeoNature-citizen
-    Alias /citizen /home/utilisateur/citizen/frontend/dist/browser
+    <VirtualHost *:80>
+        # Host
+        ServerName mydomain.net
 
-    <Directory /home/utilisateur/citizen/frontend/dist/browser>
-      Require all granted
-      AllowOverride All
+        # Root url (for frontend)
+        <Location />
+            ProxyPass  http://localhost:4000/ retry=0
+            ProxyPassReverse  http://localhost:4000/
+        </Location>
 
-      <IfModule mod_rewrite.c>
-          Options -MultiViews
+        # API Url
+        <Location /api>
+            ProxyPass  http://localhost:5002/api retry=0
+            ProxyPassReverse  http://localhost:5002/api
+        </Location>
 
-          RewriteEngine On
-            RewriteCond %{REQUEST_FILENAME} !-d
-            RewriteCond %{REQUEST_FILENAME} !-f
-              RewriteRule ".*" "index.html" [QSA,L]
-      </IfModule>
+        # Secured backoffice
+        <Location /api/admin/>
+            AuthType Basic
+            AuthName "Restricted Area"
+            AuthBasicProvider file
+            AuthUserFile "APP_PATH/config/backoffice_htpasswd"
+            Require user backoffice_username
+        </Location>
 
-    </Directory>
-    <Location /citizen/api>
-      ProxyPass http://127.0.0.1:5002/api
-      ProxyPassReverse  http://127.0.0.1:5002/api
-    </Location>
+        # Error logs	
+        ErrorLog APP_PATH/var/log/apache2-citizen.log
+        CustomLog APP_PATH/var/log/apache2-citizen.log combined
+
+    </VirtualHost>
+
 
 Suivi des journaux d'évenements et d'erreurs:
 *********************************************

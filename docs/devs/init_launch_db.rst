@@ -13,14 +13,12 @@ Pour installer le serveur de base de données, suiviz les \
 instructions du site officiel \
 `PostgreSQL Downloads <https://www.postgresql.org/download/>`_:
 
-Concrètement, sur Debian stretch:
+Concrètement, sur Debian et ubuntu:
 
 .. code:: sh
 
-    sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/postgresql.list'
-    sudo wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
     sudo apt update
-    sudo apt install postgresql-10 postgresql-10-postgis-2.5 postgresql-10-postgis-2.5-scripts git
+    sudo apt install postgis
 
 Configurer la base de données
 #############################
