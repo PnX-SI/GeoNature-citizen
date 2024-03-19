@@ -66,6 +66,7 @@ export class ObsDetailComponent
                 this.loadJsonSchema().subscribe((customform: any) => {
                     let schema = customform.json_schema.schema.properties;
                     let layout = customform.json_schema.layout;
+                    // TODO: changer questionnaire pour voir si le item.key sera pris en compte
                     for (const item of layout) {
                         let v = data[item.key];
                         if (v !== undefined) {
