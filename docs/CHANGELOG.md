@@ -7,16 +7,16 @@
 * Validation module by @yaal-coop (#359 financed by [SHF](https://lashf.org))
 * Registration required can be defined on each program (#278 by @xdidx)
 * Refactor and improve performances on observation module (# 363 by @hypsug0)
-* New photo galery on programs by @hypsug0 (#365 financed by [SHF](https://lashf.org))
+* New photo galery on programs (#365 by @hypsug0, financed by [SHF](https://lashf.org))
 * Add observation export in Admin (#349 by @mvergez)
 * Creators can now edit and delete their sites and visits in Sites programs (#319 & #320 by @QuentinJouet)
 * Improve Admin panel display (#329 by @mvergez)
-* Use Alembic and Flask-Migrate to manage databse changes (#342 by @lpofredc)
+* Use Alembic and Flask-Migrate to manage database changes (#342 by @lpofredc)
 * Remove TaxHub installation from installation scripts
 * Reduce TaxHub database dependencies to use its API (#236 & #321 by @mvergez)
 * Remove Ref_geo database dependencies to use Nominatim API (#236 & #321 by @mvergez)
 * Improve Docker installation (by @mvergez)
-* Redimensionnement de l'image d'avatar uploadée (#335 by @xdidx)
+* Automatic resizing of uploaded avatar images (#335 by @xdidx)
 
 ### Fixes
 
@@ -28,7 +28,9 @@
 
 ## Release note
 
-Veuillez à ce que votre base de donnée soit bien à jour des scripts de migration de la base de donnée du dossier `data/migrations` (incluant le dernier `v0.99.4_to_1.0.0.sql`).  
+Si vous mettez à jour GeoNature-citizen : 
+
+Veillez à ce que votre base de données soit bien à jour des scripts de migration de la base de données du dossier `data/migrations` (incluant le dernier `v0.99.4_to_1.0.0.sql`).  
 Vous pourrez ensuite stamper la migration de GeoNature-citizen et lancer la nouvelle procédure de mise à jour.
 
 ```sh
@@ -38,7 +40,7 @@ flask db stamp e8c1cd57ad16
 flask db upgrade
 ```
 
-Si un table `gnc_core.alembic_version` est présente dans la base de donnée, alors vous disposez d'une version récente de l'application avec intégration d'alembic pour gérer les migrations de base de données. Cette table a été récemment déplacée dans le schéma `public` et renommée `alembic_version_gncitizen`. Supprimez cette table et lancez les commandes précédentes.
+Si un table `gnc_core.alembic_version` est présente dans la base de données, alors vous disposez d'une version récente de l'application avec intégration d'Alembic pour gérer les migrations de base de données. Cette table a été récemment déplacée dans le schéma `public` et renommée `alembic_version_gncitizen`. Supprimez cette table et lancez les commandes précédentes.
 
 Si vous disposez déjà d'une table `public.alembic_version_gncitizen`, lancez les commandes suivantes :
 
@@ -48,7 +50,7 @@ source backend/venv/bin/activate
 flask db upgrade
 ```
 
-Pour ceux qui avaient activé la synchronisation de GeoNature-citizen avec GeoNature, la fonction `gnc_core.fct_tri_c_upsert_obstax_to_geonature()` a été corrigée. Il est donc conseillée de la supprimer et la recréer (https://github.com/PnX-SI/GeoNature-citizen/blob/1.0.0/data/addons/scripts/gnc2gn_synthese/gnc2gn_synthese.sql#L113-L374), puis de relancer la mise à jour des données avec la requête SQL : `update gnc_obstax.t_obstax set cd_nom=cd_nom;`.  
+Pour ceux qui avaient activé la synchronisation de GeoNature-citizen avec GeoNature, la fonction `gnc_core.fct_tri_c_upsert_obstax_to_geonature()` a été corrigée. Il est donc conseillé de la supprimer et la recréer (https://github.com/PnX-SI/GeoNature-citizen/blob/1.0.0/data/addons/scripts/gnc2gn_synthese/gnc2gn_synthese.sql#L113-L374), puis de relancer la mise à jour des données dans la synthèse de GeoNature avec la requête SQL : `update gnc_obstax.t_obstax set cd_nom=cd_nom;`.  
 
 ## Contributors
 
