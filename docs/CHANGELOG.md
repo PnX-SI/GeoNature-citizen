@@ -40,7 +40,7 @@ flask db stamp e8c1cd57ad16
 flask db upgrade
 ```
 
-Si un table `gnc_core.alembic_version` est présente dans la base de données, alors vous disposez d'une version récente de l'application avec intégration d'Alembic pour gérer les migrations de base de données. Cette table a été récemment déplacée dans le schéma `public` et renommée `alembic_version_gncitizen`. Supprimez cette table et lancez les commandes précédentes.
+Si une table `gnc_core.alembic_version` est présente dans la base de données, alors vous disposez d'une version récente de l'application avec intégration d'Alembic pour gérer les migrations de base de données. Cette table a été récemment déplacée dans le schéma `public` et renommée `alembic_version_gncitizen`. Supprimez cette table et lancez les commandes précédentes.
 
 Si vous disposez déjà d'une table `public.alembic_version_gncitizen`, lancez les commandes suivantes :
 
