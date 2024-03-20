@@ -154,22 +154,39 @@
             </div>
         </div>
 
-    <div *ngIf="module === 'observations'">
-        <div *ngIf="attributes.length > 0" class="row">
-            <h2 class="mt-4 mb-4">Description</h2>
-        </div>
-        <div class="row bg-light">
-            <table class="table table-striped">
-                <tbody>
-                    <tr *ngFor="let d of attributes" class="d-flex">
-                        <td class="col-4">{{ d.name }}</td>
-                        <td class="col-8">{{ d.value }}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div *ngIf="module === 'observations'">
+            <div *ngIf="attributes.length > 0" class="row">
+                <h2 class="mt-4 mb-4">Description</h2>
+            </div>
+            <div class="row bg-light">
+                <table class="table table-striped">
+                    <tbody>
+                            <ng-container *ngFor="let d of attributes">
+                                <tr class="d-flex" (click)="d.type === 'array' ? toggleCollapse(d) : null" [ngClass]="{'expandable-row': d.type === 'array', 'expanded': d.showDetails}">
+                                    <td  [attr.colspan]="d.type === 'array' ? 2 : 1" class="col-4">{{ d.name }} <span *ngIf="d.type === 'array'">
+                                        <i class="fa fa-chevron-right" *ngIf="!d.showDetails"></i>
+                                        <i class="fa fa-chevron-down" *ngIf="d.showDetails"></i>
+                                        
+                                    </span></td>
+                                    <td  class="col-8">
+                                        <span *ngIf="!d.showDetails && d.type != 'array'">{{d.value}}</span>
+                                    </td>
+                                </tr>
+                                <ng-container *ngIf="d.type === 'array'">
+                                <ng-container *ngFor="let r of d.value">
+                                    <tr *ngIf="d.showDetails" class="additional-content expanded-row">
+                                        <td colspan="2" [innerHTML]="r">
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+                            </ng-container>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+
 
 
 <div class="modal fade" id="photoModal" tabindex="-1" role="dialog">
