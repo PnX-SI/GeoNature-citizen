@@ -37,3 +37,18 @@ h5.card-title {
     height: 225px;
     object-fit: contain;
 }
+
+.expandable-row {
+    cursor: pointer !important;
+    background-color: #f7f7f7; /* Light gray background */
+}
+
+.expandable-row:hover {
+    cursor: pointer !important;
+    background-color: lightblue !important; /* Darker gray background on hover */
+}
+
+.expanded {
+    cursor: pointer !important;
+    background-color: lightblue !important; /* Darker gray background on hover */
+}

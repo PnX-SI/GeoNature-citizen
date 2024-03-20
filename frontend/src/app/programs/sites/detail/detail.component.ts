@@ -114,33 +114,12 @@ export class SiteDetailComponent
                     date: e.date,
                     author: e.author,
                     id: e.id_visit,
-                    json_data: e.json_data
+                    json_data: e.json_data,
                 };
                 this.loadJsonSchema().subscribe((jsonschema: any) => {
                     const schema = jsonschema.schema.properties;
-                    const custom_data = [];
-                    const flattenSchema = this.flatObject(schema);
-                    const flattenData = this.flatObject(data);
-                    for (const k in flattenData) {
-                        const v = flattenData[k];
-                        if (
-                            typeof flattenSchema[k] != 'undefined' &&
-                            Object.prototype.hasOwnProperty.call(
-                                flattenSchema[k],
-                                'title'
-                            )
-                        ) {
-                            custom_data.push({
-                                name: flattenSchema[k]['title'],
-                                value:
-                                    typeof v === 'boolean'
-                                        ? v
-                                            ? 'Oui'
-                                            : 'Non'
-                                        : v.toString(),
-                            });
-                        }
-                    }
+                    // const custom_data = [];
+                    const custom_data = this.formatData(data, schema);
                     if (custom_data.length > 0) {
                         visitData['data'] = custom_data;
                     }
@@ -200,5 +179,80 @@ export class SiteDetailComponent
         this.userService.deleteSiteVisit(idVisitToDelete).subscribe(() => {
             this.updateData();
         });
+    }
+
+    formatData(data: any, schema: any): any[] {
+        const formattedData: any[] = [];
+        this.flattenObject(data, schema, formattedData);
+        return formattedData;
+    }
+
+    flattenObject(obj: any, schema: any, formattedData: any[]): void {
+        const flattenSchema = this.flatObject(schema);
+        const flattenData = this.flatObject(obj);
+        for (const key in flattenData) {
+            if (
+                typeof flattenSchema[key] != 'undefined' &&
+                Object.prototype.hasOwnProperty.call(
+                    flattenSchema[key],
+                    'title'
+                )
+            ) {
+                const value = flattenData[key];
+                const propSchema = flattenSchema[key];
+
+                if (Array.isArray(value)) {
+                    const isArrayType = propSchema.type == 'array';
+                    const listFormattedString = [];
+                    value.forEach((item: any) => {
+                        const schema_nested = propSchema.items.properties;
+                        const formattedStrings = this.formatArrayItem(
+                            item,
+                            schema_nested
+                        );
+                        listFormattedString.push(formattedStrings);
+                    });
+                    formattedData.push({
+                        name: propSchema.title,
+                        value: listFormattedString,
+                        showDetails: isArrayType,
+                        type: propSchema.type,
+                    });
+                } else if (typeof value === 'object') {
+                    this.flattenObject(
+                        value,
+                        propSchema.items.properties,
+                        formattedData
+                    );
+                } else {
+                    const propName = propSchema.title;
+                    const isArrayType = propSchema.type == 'array';
+                    formattedData.push({
+                        name: propName,
+                        value:
+                            typeof value === 'boolean'
+                                ? value
+                                    ? 'Oui'
+                                    : 'Non'
+                                : value.toString(),
+                        showDetails: isArrayType,
+                        type: propSchema.type,
+                    });
+                }
+            }
+        }
+    }
+    // }
+
+    formatArrayItem(item: any, schema: any): string {
+        let formattedString = '';
+        for (const k in item) {
+            const nestedValue = item[k];
+            const nestedSchema = schema[k];
+            formattedString += `<p>${
+                nestedSchema.title
+            }: ${nestedValue.toString()}</p>`;
+        }
+        return formattedString;
     }
 }

@@ -27,4 +27,7 @@ export abstract class BaseDetailComponent {
         this.clickedPhoto = photo;
         $('#photoModal').modal('show');
     }
+    toggleCollapse(data: any): void {
+        data.showDetails = !data.showDetails;
+    }
 }
