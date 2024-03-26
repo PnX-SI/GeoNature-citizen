@@ -91,7 +91,11 @@ def confirm_user_email(newuser, with_confirm_link=True):
             subject,
             to,
             from_addr,
-            html_message=template.format(activate_url=activate_url),
+            html_message=template.format(
+                activate_url=activate_url,
+                app_url=current_app.config["URL_APPLICATION"],
+                app_name=current_app.config["appName"],
+            ),
         )
 
     except Exception as e:
