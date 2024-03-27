@@ -114,7 +114,7 @@ export class SiteDetailComponent
                     date: e.date,
                     author: e.author,
                     id: e.id_visit,
-                    json_data: e.json_data
+                    json_data: e.json_data,
                 };
                 this.loadJsonSchema().subscribe((jsonschema: any) => {
                     const schema = jsonschema.schema.properties;
