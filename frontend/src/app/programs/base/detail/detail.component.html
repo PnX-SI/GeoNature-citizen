@@ -17,8 +17,8 @@
             </h1>
             <p class="card-subtitle mb-2 text-muted">
                 <small>Ajoutée le
-                    {{ module === 'sites' ? site?.properties.timestamp_create.substring(0, 10) :
-                    obs?.properties.timestamp_create.substring(0, 10)
+                    {{ (module === 'sites' ? site?.properties.timestamp_create.substring(0, 10) :
+                    obs?.properties.timestamp_create.substring(0, 10))
                     | date: 'longDate'
                     }}
                     par {{ module === 'sites' ? site?.properties.obs_txt: obs?.properties.obs_txt }}</small>
