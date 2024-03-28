@@ -3,10 +3,6 @@
 # import enum
 
 from geoalchemy2 import Geometry
-from sqlalchemy.dialects.postgresql import JSONB, UUID
-from sqlalchemy.orm import relationship
-from utils_flask_sqla_geo.serializers import geoserializable, serializable
-
 from gncitizen.core.commons.models import (
     CustomFormModel,
     MediaModel,
@@ -16,6 +12,9 @@ from gncitizen.core.commons.models import (
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import ObserverMixinModel
 from server import db
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.orm import relationship
+from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
 
 def create_schema(db):
@@ -69,7 +68,7 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     )
 
     def __repr__(self):
-        return "<Site {0}>".format(self.id_site)
+        return f"Site #{self.id_site} - {self.name}"
 
 
 @serializable
@@ -97,12 +96,12 @@ class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     id_site = db.Column(
         db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE"), index=True
     )
-    site = relationship("SiteModel")
+    site = db.relationship("SiteModel", backref=db.backref("visits"))
     date = db.Column(db.Date)
     json_data = db.Column(JSONB, nullable=True)
 
     def __repr__(self):
-        return "<Visit {0}>".format(self.id_visit)
+        return f"Visit #{self.id_visit}"
 
 
 class MediaOnVisitModel(TimestampMixinModel, db.Model):
