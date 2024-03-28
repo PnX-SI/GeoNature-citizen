@@ -4,7 +4,7 @@ import { MainConfig } from '../../../../conf/main.config';
 declare let $: any;
 
 export const markerIcon = L.icon({
-    iconUrl: 'assets/pointer-blue2.png',
+    iconUrl: MainConfig['OBS_POINTER'],
     iconAnchor: [16, 42],
 });
 
