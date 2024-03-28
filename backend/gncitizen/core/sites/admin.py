@@ -1,11 +1,10 @@
-from flask_admin.actions import action
+"""Flask-Admin views for site module"""
+
 from flask_admin.contrib.sqla.view import ModelView
 from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatter
 from markupsafe import Markup
-from server import db
-from wtforms import SelectField
 
-from .models import SiteModel, VisitModel
+from .models import VisitModel
 
 
 def _visits_list_formatter(view, context, model, name):

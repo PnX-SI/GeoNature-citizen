@@ -34,7 +34,7 @@ def get_municipality_id_from_wkb(wkb):
             i += 1
     except Exception as e:
         current_app.logger.debug(
-            "[get_municipality_id_from_wkb_point] Can't get municipality id: {}".format(str(e))
+            f"[get_municipality_id_from_wkb_point] Can't get municipality id: {str(e)}"
         )
         raise
     return f"{municipality_name} ({municipality_code})"

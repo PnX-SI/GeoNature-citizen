@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+"""Commons models"""
 
 import json
 import os
@@ -7,31 +8,30 @@ import uuid
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
-from flask import url_for
 from geoalchemy2 import Geometry
 from geoalchemy2.functions import ST_GeomFromGeoJSON, ST_GeomFromKML, ST_SetSRID
 from geoalchemy2.shape import to_shape
 from geojson import Feature
+from gncitizen.utils.env import MEDIA_DIR, db
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
 from utils_flask_sqla_geo.serializers import geoserializable, serializable
 
-from gncitizen.utils.env import MEDIA_DIR, db
 
-
-class TimestampMixinModel(object):
+class TimestampMixinModel:
     """Structure commune de suivi des modifications d'une table"""
 
     @declared_attr
-    def timestamp_create(cls):
+    def timestamp_create(self):
+        """Auto timestamp create"""
         return db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     @declared_attr
-    def timestamp_update(cls):
+    def timestamp_update(self):
+        """Auto timestamp update"""
         return db.Column(
             db.DateTime,
             nullable=True,
