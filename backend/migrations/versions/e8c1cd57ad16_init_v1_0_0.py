@@ -1,7 +1,7 @@
 """init v1.0.0
 
 Revision ID: e8c1cd57ad16
-Revises: 
+Revises:
 Create Date: 2022-03-03 21:41:36.783319
 
 """
@@ -265,7 +265,9 @@ def upgrade():
             ["gnc_core.t_programs.id_program"],
             ondelete="SET NULL",
         ),
-        sa.ForeignKeyConstraint(["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"
+        ),
         sa.PrimaryKeyConstraint("id_observation"),
         sa.UniqueConstraint("id_observation"),
         sa.UniqueConstraint("uuid_sinp"),
@@ -318,7 +320,9 @@ def upgrade():
             ["id_program"],
             ["gnc_core.t_programs.id_program"],
         ),
-        sa.ForeignKeyConstraint(["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"
+        ),
         sa.ForeignKeyConstraint(
             ["id_type"],
             ["gnc_sites.t_typesite.id_typesite"],
@@ -340,7 +344,9 @@ def upgrade():
             ["gnc_obstax.t_obstax.id_observation"],
             ondelete="CASCADE",
         ),
-        sa.ForeignKeyConstraint(["id_media"], ["gnc_core.t_medias.id_media"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["id_media"], ["gnc_core.t_medias.id_media"], ondelete="CASCADE"
+        ),
         sa.PrimaryKeyConstraint("id_match"),
         sa.UniqueConstraint("id_match"),
         schema="gnc_obstax",
@@ -357,7 +363,9 @@ def upgrade():
             ["gnc_obstax.t_obstax.id_observation"],
             ondelete="SET NULL",
         ),
-        sa.ForeignKeyConstraint(["id_site"], ["gnc_sites.t_sites.id_site"], ondelete="SET NULL"),
+        sa.ForeignKeyConstraint(
+            ["id_site"], ["gnc_sites.t_sites.id_site"], ondelete="SET NULL"
+        ),
         sa.PrimaryKeyConstraint("id_cor_site_obstax"),
         sa.UniqueConstraint("id_cor_site_obstax"),
         schema="gnc_sites",
@@ -373,8 +381,12 @@ def upgrade():
         sa.Column("id_role", sa.Integer(), nullable=True),
         sa.Column("obs_txt", sa.String(length=150), nullable=True),
         sa.Column("email", sa.String(length=150), nullable=True),
-        sa.ForeignKeyConstraint(["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["id_site"], ["gnc_sites.t_sites.id_site"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["id_role"], ["gnc_core.t_users.id_user"], ondelete="CASCADE"
+        ),
+        sa.ForeignKeyConstraint(
+            ["id_site"], ["gnc_sites.t_sites.id_site"], ondelete="CASCADE"
+        ),
         sa.PrimaryKeyConstraint("id_visit"),
         sa.UniqueConstraint("id_visit"),
         schema="gnc_sites",
@@ -391,7 +403,9 @@ def upgrade():
             ["gnc_sites.t_visit.id_visit"],
             ondelete="CASCADE",
         ),
-        sa.ForeignKeyConstraint(["id_media"], ["gnc_core.t_medias.id_media"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["id_media"], ["gnc_core.t_medias.id_media"], ondelete="CASCADE"
+        ),
         sa.PrimaryKeyConstraint("id_match"),
         sa.UniqueConstraint("id_match"),
         schema="gnc_sites",

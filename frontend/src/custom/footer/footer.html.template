@@ -1,6 +1,6 @@
 <footer>
   <div>
-    <a [routerLink]="[ '/home']">Accueil</a> | <a href="https://github.com/PnX-SI/GeoNature-citizen">GeoNature-citizen</a> | <a [routerLink]="[ '/about']" >A propos</a> 
+    <a [routerLink]="[ '/home']">Accueil</a> | <a href="https://github.com/PnX-SI/GeoNature-citizen">GeoNature-citizen</a> | <a [routerLink]="[ '/about']" >A propos</a>
   </div>
 
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br>

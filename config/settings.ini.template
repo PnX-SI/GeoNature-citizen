@@ -1,5 +1,5 @@
 # Langue du serveur
-# valeur possible : fr_FR.UTF-8, en_US.utf8 
+# valeur possible : fr_FR.UTF-8, en_US.utf8
 # locale -a pour voir la liste des locales disponibles
 my_local=fr_FR.UTF-8
 
@@ -16,7 +16,7 @@ api_taxhub=http://mydomain.net/taxhub/api/  # URL of TaxHub API
 ### CONFIGURATION PostgreSQL ###
 ################################
 
-# Localisation du server PostgreSQL. 
+# Localisation du server PostgreSQL.
 # Les scripts d'installation automatique ne fonctionnent que si votre BDD est sur le même serveur (localhost)
 pg_host=localhost
 # Port sur lequel PostgreSQL ecoute

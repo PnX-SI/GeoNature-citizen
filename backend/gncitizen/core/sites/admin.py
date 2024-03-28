@@ -1,8 +1,9 @@
 """Flask-Admin views for site module"""
 
 from flask_admin.contrib.sqla.view import ModelView
-from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatter
 from markupsafe import Markup
+
+from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatter
 
 from .models import VisitModel
 

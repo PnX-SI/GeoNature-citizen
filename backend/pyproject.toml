@@ -47,14 +47,14 @@ flask-caching = "^2.0.1"
 flask-migrate = "^4.0.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.10.0"
-isort = "^5.10.1"
+black = "^24.3.0"
+isort = "^5.13.2"
 flake8 = "^6.0.0"
 autoflake = "^2.0.0"
 pylint = "^2.17.4"
 pylint-flask = "^0.6"
 pylint-flask-sqlalchemy = "^0.2.0"
-
+pre-commit = ">3,<3.7.0"
 
 
 [tool.poetry.group.docs.dependencies]
@@ -98,7 +98,7 @@ disable = """
     too-many-instance-attributes,
     too-few-public-methods
 """
-good-names = ["i", "j", "k", "ex", "Run", "_", "db"]
+good-names = ["i", "j", "k", "ex", "Run", "_", "db", "e"]
 
 [tool.pylint.MASTER]
 load-plugins = ["pylint_flask_sqlalchemy", "pylint_flask"]

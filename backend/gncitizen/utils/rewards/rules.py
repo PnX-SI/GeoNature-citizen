@@ -83,7 +83,9 @@ def program_date_bounds_action(data) -> str:
     )
 
 
-program_date_bounds_rule = Rule(program_date_bounds_condition, program_date_bounds_action)
+program_date_bounds_rule = Rule(
+    program_date_bounds_condition, program_date_bounds_action
+)
 
 
 def recognition_condition(context) -> bool:
@@ -97,7 +99,9 @@ def recognition_action(data) -> Union[List[str], str]:
     for i, item in enumerate(recognition_model):
         for category, threshold in recognition_model[i]["attendance"].items():
             if q and q[i] >= threshold:
-                r.append("{}.{}".format(recognition_model[i]["specialization"], category))
+                r.append(
+                    "{}.{}".format(recognition_model[i]["specialization"], category)
+                )
     return r if len(r) > 0 else "Recognition.None"
 
 

@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 # import enum
 
 from geoalchemy2 import Geometry
@@ -34,7 +33,9 @@ class SiteTypeModel(TimestampMixinModel, db.Model):
     id_typesite = db.Column(db.Integer, primary_key=True, unique=True)
     category = db.Column(db.String(200))
     type = db.Column(db.String(200))
-    id_form = db.Column(db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True)
+    id_form = db.Column(
+        db.Integer, db.ForeignKey(CustomFormModel.id_form), nullable=True
+    )
     custom_form = relationship("CustomFormModel")
     pictogram = db.Column(db.Text)
 
@@ -78,11 +79,15 @@ class CorProgramSiteTypeModel(TimestampMixinModel, db.Model):
     __table_args__ = {"schema": "gnc_sites"}
     id_cor_program_typesite = db.Column(db.Integer, primary_key=True, unique=True)
     id_program = db.Column(
-        db.Integer, db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE"), index=True
+        db.Integer,
+        db.ForeignKey(ProgramsModel.id_program, ondelete="CASCADE"),
+        index=True,
     )
     program = relationship("ProgramsModel", backref="site_types")
     id_typesite = db.Column(
-        db.Integer, db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE"), index=True
+        db.Integer,
+        db.ForeignKey(SiteTypeModel.id_typesite, ondelete="CASCADE"),
+        index=True,
     )
     site_type = relationship("SiteTypeModel")
 

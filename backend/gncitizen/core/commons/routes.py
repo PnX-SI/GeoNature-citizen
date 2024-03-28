@@ -1,14 +1,9 @@
 #!/usr/bin/python3
-# -*- coding:utf-8 -*-
 
 from flask import Blueprint, current_app, request, send_from_directory
 from flask_admin.contrib.fileadmin import FileAdmin
 from flask_jwt_extended import jwt_required
 from geojson import FeatureCollection
-from sqlalchemy import and_, case, desc, distinct
-from sqlalchemy.sql import func
-from utils_flask_sqla.response import json_resp
-
 from gncitizen.core.observations.models import ObservationMediaModel, ObservationModel
 from gncitizen.core.sites.admin import SiteTypeView
 from gncitizen.core.sites.models import (
@@ -23,6 +18,9 @@ from gncitizen.utils.env import MEDIA_DIR, admin
 from gncitizen.utils.helpers import get_filter_by_args, set_media_links
 from gncitizen.utils.jwt import get_id_role_if_exists
 from server import db
+from sqlalchemy import and_, case, desc, distinct
+from sqlalchemy.sql import func
+from utils_flask_sqla.response import json_resp
 
 from .admin import CustomFormView, GeometryView, ProgramView, ProjectView
 from .models import (
@@ -425,7 +423,7 @@ def get_medias():
         )
         .filter(
             (func.coalesce(ObservationModel.id_observation, MediaOnVisitModel.id_data_source))
-            != None
+            is not None
         )
         .with_entities(
             MediaModel.id_media,

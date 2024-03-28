@@ -28,7 +28,7 @@
 
 ## Release note
 
-Si vous mettez à jour GeoNature-citizen : 
+Si vous mettez à jour GeoNature-citizen :
 
 Veillez à ce que votre base de données soit bien à jour des scripts de migration de la base de données du dossier `data/migrations` (incluant le dernier `v0.99.4_to_1.0.0.sql`).  
 Vous pourrez ensuite stamper la migration de GeoNature-citizen et lancer la nouvelle procédure de mise à jour.

@@ -2,34 +2,40 @@
 BEGIN;
 /* Insert citizen source */
 
-INSERT INTO gn_synthese.t_sources ( name_source
-                                  , desc_source
-                                  , entity_source_pk_field
-                                  , url_source
-                                  , meta_create_date
-                                  , meta_update_date)
-VALUES ( 'gncitizen'
-       , 'Instance intégrée de GeoNature-citizen'
-       , 'gnc_obstax.t_obstax.id_observation'
-       , 'http://<moncitizen.org>/'
-       , now()
-       , now())
+INSERT INTO gn_synthese.t_sources (
+    name_source,
+    desc_source,
+    entity_source_pk_field,
+    url_source,
+    meta_create_date,
+    meta_update_date
+)
+VALUES (
+    'gncitizen',
+    'Instance intégrée de GeoNature-citizen',
+    'gnc_obstax.t_obstax.id_observation',
+    'http://<moncitizen.org>/',
+    now(),
+    now()
+)
 ON CONFLICT (name_source) DO NOTHING;
 
 /* UPSERT project INTO gn_meta.t_acquisition_framework */
 DROP TRIGGER IF EXISTS tri_c_upsert_af_to_geonature ON gnc_core.t_projects;
-DROP FUNCTION IF EXISTS gnc_core.fct_tri_c_upsert_af_to_geonature () CASCADE;
+DROP FUNCTION IF EXISTS gnc_core.fct_tri_c_upsert_af_to_geonature() CASCADE;
 CREATE OR REPLACE FUNCTION gnc_core.fct_tri_c_upsert_af_to_geonature()
-    RETURNS TRIGGER
-    LANGUAGE plpgsql
+RETURNS TRIGGER
+LANGUAGE plpgsql
 AS
 $func$
 BEGIN
-    INSERT INTO gn_meta.t_acquisition_frameworks( acquisition_framework_name
-                                                , unique_acquisition_framework_id
-                                                , acquisition_framework_desc
-                                                , acquisition_framework_start_date
-                                                , meta_create_date)
+    INSERT INTO gn_meta.t_acquisition_frameworks(
+        acquisition_framework_name
+        , unique_acquisition_framework_id
+        , acquisition_framework_desc
+        , acquisition_framework_start_date
+        , meta_create_date
+        )
     VALUES ( new.name
            , new.unique_id_project
            , coalesce(new.long_desc, coalesce(new.short_desc, 'Not defined'))
@@ -43,21 +49,22 @@ BEGIN
 END;
 $func$;
 
-COMMENT ON FUNCTION gnc_core.fct_tri_c_upsert_af_to_geonature () IS 'Trigger function to upsert acquisition framework from GeoNature-citizen project';
+COMMENT ON FUNCTION gnc_core.fct_tri_c_upsert_af_to_geonature() IS
+'Trigger function to upsert acquisition framework from GeoNature-citizen project';
 CREATE TRIGGER tri_c_upsert_af_to_geonature
-    AFTER INSERT OR UPDATE
-    ON gnc_core.t_projects
-    FOR EACH ROW
+AFTER INSERT OR UPDATE
+ON gnc_core.t_projects
+FOR EACH ROW
 EXECUTE PROCEDURE gnc_core.fct_tri_c_upsert_af_to_geonature();
 
 
 /* UPSERT program INTO gn_meta.t_datasets */
 
 DROP TRIGGER IF EXISTS tri_c_upsert_dataset_to_geonature ON gnc_core.t_programs;
-DROP FUNCTION IF EXISTS gnc_core.fct_tri_c_upsert_dataset_to_geonature () CASCADE;
+DROP FUNCTION IF EXISTS gnc_core.fct_tri_c_upsert_dataset_to_geonature() CASCADE;
 CREATE OR REPLACE FUNCTION gnc_core.fct_tri_c_upsert_dataset_to_geonature()
-    RETURNS TRIGGER
-    LANGUAGE plpgsql
+RETURNS TRIGGER
+LANGUAGE plpgsql
 AS
 $func$
 DECLARE
@@ -99,21 +106,21 @@ BEGIN
 END;
 $func$;
 
-COMMENT ON FUNCTION gnc_core.fct_tri_c_upsert_dataset_to_geonature () IS 'Trigger function to upsert acquisition framework from GeoNature-citizen project';
+COMMENT ON FUNCTION gnc_core.fct_tri_c_upsert_dataset_to_geonature() IS 'Trigger function to upsert acquisition framework from GeoNature-citizen project';
 DROP TRIGGER IF EXISTS tri_c_upsert_dataset_to_geonature ON gnc_core.t_programs;
 CREATE TRIGGER tri_c_upsert_dataset_to_geonature
-    AFTER INSERT OR UPDATE
-    ON gnc_core.t_programs
-    FOR EACH ROW
+AFTER INSERT OR UPDATE
+ON gnc_core.t_programs
+FOR EACH ROW
 EXECUTE PROCEDURE gnc_core.fct_tri_c_upsert_dataset_to_geonature();
 
 /* UPSERT observation INTO gn_synthese.synthese */
 
 DROP TRIGGER IF EXISTS tri_c_upsert_obstax_to_geonature ON gnc_core.t_programs;
-DROP FUNCTION IF EXISTS gnc_core.fct_tri_c_upsert_obstax_to_geonature () CASCADE;
+DROP FUNCTION IF EXISTS gnc_core.fct_tri_c_upsert_obstax_to_geonature() CASCADE;
 CREATE OR REPLACE FUNCTION gnc_core.fct_tri_c_upsert_obstax_to_geonature()
-    RETURNS TRIGGER
-    LANGUAGE plpgsql
+RETURNS TRIGGER
+LANGUAGE plpgsql
 AS
 $func$
 DECLARE
@@ -365,14 +372,13 @@ BEGIN
 END;
 $func$;
 
-COMMENT ON FUNCTION gnc_core.fct_tri_c_upsert_obstax_to_geonature () IS 'Trigger function to upsert acquisition framework from GeoNature-citizen project';
+COMMENT ON FUNCTION gnc_core.fct_tri_c_upsert_obstax_to_geonature() IS 'Trigger function to upsert acquisition framework from GeoNature-citizen project';
 DROP TRIGGER IF EXISTS tri_c_upsert_obstax_to_geonature ON gnc_obstax.t_obstax;
 CREATE TRIGGER tri_c_upsert_obstax_to_geonature
-    AFTER INSERT OR UPDATE
-    ON gnc_obstax.t_obstax
-    FOR EACH ROW
+AFTER INSERT OR UPDATE
+ON gnc_obstax.t_obstax
+FOR EACH ROW
 EXECUTE PROCEDURE gnc_core.fct_tri_c_upsert_obstax_to_geonature();
 
 COMMIT;
 /* END TRANSACTION */
-

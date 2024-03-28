@@ -155,7 +155,7 @@ Exemple de fichier de configuration serveur Apache2:
             Require user backoffice_username
         </Location>
 
-        # Error logs	
+        # Error logs
         ErrorLog APP_PATH/var/log/apache2-citizen.log
         CustomLog APP_PATH/var/log/apache2-citizen.log combined
 

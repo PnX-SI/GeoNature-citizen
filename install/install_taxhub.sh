@@ -74,4 +74,3 @@ sudo chown -R $(whoami) /tmp/usershub
 #sed -i "s,PnEcrins,PnX-SI,g" install_db.sh
 ./install_db.sh
 ./install_app.sh
-

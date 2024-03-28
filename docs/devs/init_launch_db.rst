@@ -47,12 +47,8 @@ Activez les extensions ``postgis`` pour la gestion des données spatiales et ``u
 pour la gestion des uuid. Seul un superutilisateur peut activer les extensions (ici, \
 l'utilisateur ``postgres``, installé par défaut) :
 
-.. code:: sh 
+.. code:: sh
 
     sudo -u postgres psql geonaturedb -c 'create extension postgis; create extension "uuid-ossp";'
 
 Votre serveur de base de données est maintenant opérationel.
-
-
-
-

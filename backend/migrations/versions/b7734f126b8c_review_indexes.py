@@ -5,9 +5,9 @@ Revises: e8c1cd57ad16
 Create Date: 2024-02-08 16:11:21.388277
 
 """
-from alembic import op
-import sqlalchemy as sa
 
+import sqlalchemy as sa
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "b7734f126b8c"
@@ -36,13 +36,17 @@ def upgrade():
             unique=False,
         )
         batch_op.create_index(
-            batch_op.f("ix_gnc_obstax_cor_obstax_media_id_media"), ["id_media"], unique=False
+            batch_op.f("ix_gnc_obstax_cor_obstax_media_id_media"),
+            ["id_media"],
+            unique=False,
         )
         batch_op.create_unique_constraint(None, ["id_match"])
 
     with op.batch_alter_table("t_obstax", schema="gnc_obstax") as batch_op:
         batch_op.create_index(
-            batch_op.f("ix_gnc_obstax_t_obstax_id_program"), ["id_program"], unique=False
+            batch_op.f("ix_gnc_obstax_t_obstax_id_program"),
+            ["id_program"],
+            unique=False,
         )
         batch_op.create_unique_constraint(None, ["id_observation"])
 
@@ -61,10 +65,14 @@ def upgrade():
 
     with op.batch_alter_table("cor_sites_obstax", schema="gnc_sites") as batch_op:
         batch_op.create_index(
-            batch_op.f("ix_gnc_sites_cor_sites_obstax_id_obstax"), ["id_obstax"], unique=False
+            batch_op.f("ix_gnc_sites_cor_sites_obstax_id_obstax"),
+            ["id_obstax"],
+            unique=False,
         )
         batch_op.create_index(
-            batch_op.f("ix_gnc_sites_cor_sites_obstax_id_site"), ["id_site"], unique=False
+            batch_op.f("ix_gnc_sites_cor_sites_obstax_id_site"),
+            ["id_site"],
+            unique=False,
         )
         batch_op.create_unique_constraint(None, ["id_cor_site_obstax"])
 
@@ -75,7 +83,9 @@ def upgrade():
             unique=False,
         )
         batch_op.create_index(
-            batch_op.f("ix_gnc_sites_cor_visites_media_id_media"), ["id_media"], unique=False
+            batch_op.f("ix_gnc_sites_cor_visites_media_id_media"),
+            ["id_media"],
+            unique=False,
         )
         batch_op.create_unique_constraint(None, ["id_match"])
 
@@ -132,7 +142,9 @@ def downgrade():
 
     with op.batch_alter_table("cor_program_typesites", schema="gnc_sites") as batch_op:
         batch_op.drop_constraint(None, type_="unique")
-        batch_op.drop_index(batch_op.f("ix_gnc_sites_cor_program_typesites_id_typesite"))
+        batch_op.drop_index(
+            batch_op.f("ix_gnc_sites_cor_program_typesites_id_typesite")
+        )
         batch_op.drop_index(batch_op.f("ix_gnc_sites_cor_program_typesites_id_program"))
 
     with op.batch_alter_table("t_obstax", schema="gnc_obstax") as batch_op:
