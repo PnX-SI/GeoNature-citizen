@@ -4,10 +4,6 @@ from flask import Blueprint, current_app, request, send_from_directory
 from flask_admin.contrib.fileadmin import FileAdmin
 from flask_jwt_extended import jwt_required
 from geojson import FeatureCollection
-from sqlalchemy import and_, case, desc, distinct
-from sqlalchemy.sql import func
-from utils_flask_sqla.response import json_resp
-
 from gncitizen.core.observations.models import ObservationMediaModel, ObservationModel
 from gncitizen.core.sites.admin import SiteTypeView
 from gncitizen.core.sites.models import (
@@ -22,6 +18,9 @@ from gncitizen.utils.env import MEDIA_DIR, admin
 from gncitizen.utils.helpers import get_filter_by_args, set_media_links
 from gncitizen.utils.jwt import get_id_role_if_exists
 from server import db
+from sqlalchemy import and_, case, desc, distinct
+from sqlalchemy.sql import func
+from utils_flask_sqla.response import json_resp
 
 from .admin import CustomFormView, GeometryView, ProgramView, ProjectView
 from .models import (
@@ -36,9 +35,7 @@ from .models import (
 commons_api = Blueprint("commons", __name__)
 
 admin.add_view(FileAdmin(MEDIA_DIR, "/api/media/", name="Medias"))
-admin.add_view(
-    ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes")
-)
+admin.add_view(ProjectView(ProjectModel, db.session, "1 - Projets", category="Enquêtes"))
 admin.add_view(
     GeometryView(
         GeometryModel,
@@ -55,12 +52,8 @@ admin.add_view(
         category="Enquêtes",
     )
 )
-admin.add_view(
-    SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes")
-)
-admin.add_view(
-    ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes")
-)
+admin.add_view(SiteTypeView(SiteTypeModel, db.session, "3b - Types de site", category="Enquêtes"))
+admin.add_view(ProgramView(ProgramsModel, db.session, "4 - Programmes", category="Enquêtes"))
 
 
 @commons_api.route("media/<filename>")
@@ -124,12 +117,8 @@ def get_stat():
         stats = {}
         stats["nb_obs"] = ObservationModel.query.count()
         stats["nb_user"] = UserModel.query.count()
-        stats["nb_program"] = ProgramsModel.query.filter(
-            ProgramsModel.is_active
-        ).count()
-        stats["nb_espece"] = ObservationModel.query.distinct(
-            ObservationModel.cd_nom
-        ).count()
+        stats["nb_program"] = ProgramsModel.query.filter(ProgramsModel.is_active).count()
+        stats["nb_espece"] = ObservationModel.query.distinct(ObservationModel.cd_nom).count()
         return (stats, 200)
     except Exception as e:
         current_app.logger.critical("[get_observations] Error: %s", str(e))
@@ -408,10 +397,7 @@ def get_medias():
     args = request.args
     obs_args = {key: args[key] for key in ["id_observation", "cd_nom"] if key in args}
     validation_args = {
-        key: args[key]
-        for key in args.keys()
-        if key.startswith("validation_status")
-        if key in args
+        key: args[key] for key in args.keys() if key.startswith("validation_status") if key in args
     }
     obs_args = {**obs_args, **validation_args}
     visit_args = {key: args[key] for key in ["id_site", "id_visit"] if key in args}
@@ -422,9 +408,7 @@ def get_medias():
     page_size = request.args.get("page_size", default=100, type=int)
     page = request.args.get("page", default=1, type=int)
 
-    validation_process = request.args.get(
-        "validation_process", default=False, type=bool
-    )
+    validation_process = request.args.get("validation_process", default=False, type=bool)
 
     qs = (
         MediaModel.query.outerjoin(ObservationMediaModel)
@@ -438,29 +422,19 @@ def get_medias():
             == ProgramsModel.id_program,
         )
         .filter(
-            (
-                func.coalesce(
-                    ObservationModel.id_observation, MediaOnVisitModel.id_data_source
-                )
-            )
-            != None
+            (func.coalesce(ObservationModel.id_observation, MediaOnVisitModel.id_data_source))
+            is not None
         )
         .with_entities(
             MediaModel.id_media,
             MediaModel.filename,
             (
-                func.coalesce(
-                    ObservationModel.id_observation, MediaOnVisitModel.id_data_source
-                )
+                func.coalesce(ObservationModel.id_observation, MediaOnVisitModel.id_data_source)
             ).label("id_data_source"),
             ObservationModel.cd_nom,
             func.coalesce(ObservationModel.name, SiteModel.name).label("name"),
-            func.coalesce(ObservationModel.obs_txt, VisitModel.obs_txt).label(
-                "observer"
-            ),
-            func.coalesce(ObservationModel.id_role, VisitModel.id_role).label(
-                "id_role"
-            ),
+            func.coalesce(ObservationModel.obs_txt, VisitModel.obs_txt).label("observer"),
+            func.coalesce(ObservationModel.id_role, VisitModel.id_role).label("id_role"),
             func.coalesce(ObservationModel.date, VisitModel.date).label("date"),
             # TODO: Attribution auto des municipalités aux sites # [fixme]
             ObservationModel.municipality,
@@ -474,33 +448,20 @@ def get_medias():
         )
     )
 
-    qs = (
-        qs.filter(*get_filter_by_args(ObservationModel, obs_args))
-        if bool(obs_args)
-        else qs
-    )
-    qs = (
-        qs.filter(*get_filter_by_args(VisitModel, visit_args))
-        if bool(visit_args)
-        else qs
-    )
+    qs = qs.filter(*get_filter_by_args(ObservationModel, obs_args)) if bool(obs_args) else qs
+    qs = qs.filter(*get_filter_by_args(VisitModel, visit_args)) if bool(visit_args) else qs
     qs = qs.filter(*get_filter_by_args(SiteModel, site_args)) if bool(site_args) else qs
 
     if id_program:
         qs = qs.filter(
-            func.coalesce(ObservationModel.id_program, SiteModel.id_program)
-            == id_program
+            func.coalesce(ObservationModel.id_program, SiteModel.id_program) == id_program
         )
     if id_role:
-        qs = qs.filter(
-            func.coalesce(ObservationModel.id_role, VisitModel.id_role) == id_role
-        )
+        qs = qs.filter(func.coalesce(ObservationModel.id_role, VisitModel.id_role) == id_role)
     if validation_process:
         user = get_id_role_if_exists()
         qs = (
-            qs.filter(
-                func.coalesce(ObservationModel.id_role, VisitModel.id_role) != user
-            )
+            qs.filter(func.coalesce(ObservationModel.id_role, VisitModel.id_role) != user)
             if user
             else qs
         )
@@ -508,9 +469,9 @@ def get_medias():
     if no_pagination:
         return [set_media_links(media) for media in qs.all()]
 
-    qs = qs.order_by(
-        desc(func.coalesce(ObservationModel.date, VisitModel.date))
-    ).paginate(per_page=page_size, page=page)
+    qs = qs.order_by(desc(func.coalesce(ObservationModel.date, VisitModel.date))).paginate(
+        per_page=page_size, page=page
+    )
     return {
         "page": qs.page,
         "pages": qs.pages,
