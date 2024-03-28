@@ -14,14 +14,19 @@ from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.users.models import UserModel
+from gncitizen.utils.env import admin
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
 from server import db
 
+from .admin import SiteView, VisitView
 from .models import MediaOnVisitModel, SiteModel, SiteTypeModel, VisitModel
 
 sites_api = Blueprint("sites", __name__)
+
+admin.add_view(SiteView(SiteModel, db.session, "Sites", category="Sites"))
+admin.add_view(VisitView(VisitModel, db.session, "Visites", category="Sites"))
 
 
 @sites_api.route("/types", methods=["GET"])

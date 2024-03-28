@@ -69,7 +69,7 @@ class SiteModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     )
 
     def __repr__(self):
-        return "<Site {0}>".format(self.id_site)
+        return f"Site #{self.id_site} - {self.name}"
 
 
 @serializable
@@ -97,12 +97,12 @@ class VisitModel(TimestampMixinModel, ObserverMixinModel, db.Model):
     id_site = db.Column(
         db.Integer, db.ForeignKey(SiteModel.id_site, ondelete="CASCADE"), index=True
     )
-    site = relationship("SiteModel")
+    site = db.relationship("SiteModel", backref=db.backref("visits"))
     date = db.Column(db.Date)
     json_data = db.Column(JSONB, nullable=True)
 
     def __repr__(self):
-        return "<Visit {0}>".format(self.id_visit)
+        return f"Visit #{self.id_visit}"
 
 
 class MediaOnVisitModel(TimestampMixinModel, db.Model):
