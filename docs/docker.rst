@@ -13,12 +13,12 @@ Docker
 
 `Docker`_  est un gestionnaire de conteneurs.
 
-Pour faire très simple : un conteneur peut être vu comme une 
-mini machine virtuelle utilisant les librairies de l'OS sur lequel 
+Pour faire très simple : un conteneur peut être vu comme une
+mini machine virtuelle utilisant les librairies de l'OS sur lequel
 il est lancé.
 Cela le rend donc plus léger et plus rapide qu'une machine virtuelle.
 
-Je vous invite à regarder cette vidéo : `IBM`_ et même toute la série de 
+Je vous invite à regarder cette vidéo : `IBM`_ et même toute la série de
 vidéos relatives à la conteneurisation.
 
 L'objectif des conteneurs et d'isoler les applications.
@@ -51,11 +51,11 @@ Avantages
 - Chaque service s'execute dans un environnement vierge (aucun conflit)
 - Le code est beaucoup plus portatif : seul docker est requis sur la machine
 - Donc installations beaucoup plus rapides
-- Le déploiement peut se faire automatiquement : 
-  - à chaque merge sur une branche particulière : construction des images; 
-  - mise à disposition via une bibliothèque d'images; 
-  - Téléchargement des images; 
-  - Montage des images dans les conteneurs; 
+- Le déploiement peut se faire automatiquement :
+  - à chaque merge sur une branche particulière : construction des images;
+  - mise à disposition via une bibliothèque d'images;
+  - Téléchargement des images;
+  - Montage des images dans les conteneurs;
   - les services sont opérationnels et accessibles par les utilisateurs.
 - Beaucoup utilisé dans la communauté open-source.
 
@@ -63,7 +63,7 @@ Avantages
 Inconvénients
 =============
 
-- Concepts parfois complexes à appréhender (images, conteneurs, 
+- Concepts parfois complexes à appréhender (images, conteneurs,
   volumes, network, contexte...).
 - Lignes de commandes à "apprendre"
 - Langage à apprendre (Dockerfile)
@@ -88,8 +88,8 @@ Lancer cette commande : ``docker-compose up``
 Cette commande va construire les images et les monter une par une
 dans un conteneur qui leur est propre.
 
-Il est possible de détacher le programme (comme un ``&`` sur Linux) et 
-donc toute la sortie de la commande en lançant 
+Il est possible de détacher le programme (comme un ``&`` sur Linux) et
+donc toute la sortie de la commande en lançant
 ``docker-compose up -d`` (detaché).
 
 Arrêter les services
@@ -99,17 +99,17 @@ Pour "tuer" les services : ``docker-compose down``
 Contruire une ou plusieurs images
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Situation 1** : le front a été modifié et j'ai besoin de reconstruire 
+**Situation 1** : le front a été modifié et j'ai besoin de reconstruire
 l'image
 
-Lancer : ``docker-compose build frontend``. Cela va reconstruire le 
+Lancer : ``docker-compose build frontend``. Cela va reconstruire le
 frontend
 
 Pour construire puis lancer directement le service : ``docker-compose up frontend --build``
 
 **Situation 2** : J'ai besoin de tout reconstruire
 
-Lancer : ``docker-compose build`` 
+Lancer : ``docker-compose build``
 OU : ``docker-compose up --build`` pour tout reconstruire et relancer tous
 les services
 
@@ -120,7 +120,7 @@ Utiliser Docker dans Citizen en developpement
 Lancer ``docker-compose -f docker-compose.dev.yml up --build``
 
 Cela utilisera le ficher de configuration des services
-et construira les images pour le developpement 
+et construira les images pour le developpement
 (rechargement automatique du front, accès à tous les services et pas
 juste au proxy...).
 
@@ -131,11 +131,10 @@ Ce qu'il reste à améliorer
 - Il n'est pas possible de ne pas construire en front autrement qu'en
   SSR
 - Les docker-compose prod et dev pourraient être mieux écrits pour qu'il
-  y en ai un qui "écrase" l'autre (override) et donc pourraient être 
-  lancés comme ceci : 
+  y en ai un qui "écrase" l'autre (override) et donc pourraient être
+  lancés comme ceci :
   ``docker-compose -f docker-compose.prod.yml -f docker-compose.dev.yml up``
 - Les fichers pourraient être mieux nommés
 - Les Dockerfile pourraient être améliorées nottamment le front en ajoutant
   un "Stage" pour copier le front buildé
 - Sûrement d'autres choses...
- 

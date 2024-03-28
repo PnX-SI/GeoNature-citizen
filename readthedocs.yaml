@@ -15,4 +15,3 @@ sphinx:
 python:
    install:
       - requirements: backend/requirements-docs.txt
-            

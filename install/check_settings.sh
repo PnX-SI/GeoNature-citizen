@@ -6,9 +6,8 @@ if [ ! -f ./config/settings.ini ]; then
   echo "Fichier de config disponible : $DIR/config/settings.ini."
   echo "Merci de renseigner le fichier et de relancer la commande"
   exit 1
-elif [[ $(diff -q ./config/settings.ini.template ./config/settings.ini) = "" ]] 
+elif [[ $(diff -q ./config/settings.ini.template ./config/settings.ini) = "" ]]
 then
   echo "Merci de renseigner le fichier config/settings.ini et de relancer la commande"
   exit 1
 fi
-

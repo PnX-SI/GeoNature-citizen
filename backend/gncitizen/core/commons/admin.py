@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding:utf-8 -*-
 from flask import current_app, flash
 from flask_admin.contrib.sqla.view import ModelView
 from flask_admin.form.upload import FileUploadField

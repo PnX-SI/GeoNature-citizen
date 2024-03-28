@@ -404,7 +404,7 @@
         <ymax>45.32210171161440115</ymax>
       </extent>
       <id>Programmes_9504ff7a_9011_4316_9846_3840f565d6de</id>
-      <datasource>dbname='citizenDbName' host=citizenDbHost port=citizenDbPort user='citizenDbUser' password='citizenDbPwd' key='id_program' checkPrimaryKeyUnicity='1' table="(SELECT     t_programs.id_program   , t_projects.id_project   , t_projects.name AS project_name   , t_programs.title   , t_programs.short_desc   , t_programs.is_active   , t_programs.long_desc   , t_programs.timestamp_update   , t_geometries.geom     FROM         gnc_core.t_programs             JOIN gnc_core.t_geometries ON t_programs.id_geom = t_geometries.id_geom             JOIN gnc_core.t_projects ON t_programs.id_project = t_projects.id_project 
+      <datasource>dbname='citizenDbName' host=citizenDbHost port=citizenDbPort user='citizenDbUser' password='citizenDbPwd' key='id_program' checkPrimaryKeyUnicity='1' table="(SELECT     t_programs.id_program   , t_projects.id_project   , t_projects.name AS project_name   , t_programs.title   , t_programs.short_desc   , t_programs.is_active   , t_programs.long_desc   , t_programs.timestamp_update   , t_geometries.geom     FROM         gnc_core.t_programs             JOIN gnc_core.t_geometries ON t_programs.id_geom = t_geometries.id_geom             JOIN gnc_core.t_projects ON t_programs.id_project = t_projects.id_project
 )" (geom)</datasource>
       <keywordList>
         <value></value>
@@ -4107,7 +4107,7 @@ var medias = JSON.parse(expression.evaluate("map_to_json(medias)"));
 
 &lt;script>
 	var jsonDatas = JSON.parse(expression.evaluate("map_to_json(json_data)"));
-	
+
 	 Vue.component('data-table', {
   // camelCase en JavaScript
   props: ['sourceData'],
@@ -4148,7 +4148,7 @@ var medias = JSON.parse(expression.evaluate("map_to_json(medias)"));
 	  }
 })
 
-	
+
 	var app = new Vue({
 	  el: '#app',
 	  data: {
@@ -4583,7 +4583,7 @@ var medias = JSON.parse(expression.evaluate("map_to_json(medias)"));
     </maplayer>
     <maplayer readOnly="0" wkbType="NoGeometry" refreshOnNotifyEnabled="0" minScale="1e+08" autoRefreshEnabled="0" hasScaleBasedVisibilityFlag="0" geometry="No geometry" maxScale="0" autoRefreshTime="0" refreshOnNotifyMessage="" styleCategories="AllStyleCategories" type="vector">
       <id>v_visit_medias_efe60d0f_04ae_4798_a3b5_4f6c5a9a38f2</id>
-      <datasource>dbname='citizenDbName' host=citizenDbHost port=citizenDbPort user='citizenDbUser' password='citizenDbPwd' key='id_visit' checkPrimaryKeyUnicity='1' table="(select id_data_source as id_visit, array_to_json(array_agg(t_medias.filename)) as medias from gnc_sites.cor_visites_media join gnc_core.t_medias on cor_visites_media.id_media = t_medias.id_media group by id_data_source 
+      <datasource>dbname='citizenDbName' host=citizenDbHost port=citizenDbPort user='citizenDbUser' password='citizenDbPwd' key='id_visit' checkPrimaryKeyUnicity='1' table="(select id_data_source as id_visit, array_to_json(array_agg(t_medias.filename)) as medias from gnc_sites.cor_visites_media join gnc_core.t_medias on cor_visites_media.id_media = t_medias.id_media group by id_data_source
 
 )"</datasource>
       <keywordList>

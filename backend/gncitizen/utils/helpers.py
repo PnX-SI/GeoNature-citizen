@@ -18,7 +18,9 @@ def set_media_links(item: Row) -> dict:
     m = item._asdict()
     m["media_url"] = url_for("commons.get_media", filename=item.filename)
     data_url = None
-    id_data_source = item.id_data_source if item.type_program == "observations" else item.id_site
+    id_data_source = (
+        item.id_data_source if item.type_program == "observations" else item.id_site
+    )
     if item.type_program:
         data_url = f"/programs/{item.id_program}/{item.type_program}/{id_data_source}"
 
@@ -29,7 +31,6 @@ def set_media_links(item: Row) -> dict:
 def get_filter_by_args(model_class: db.Model, dict_args: dict):
     filters = []
     for key, value in dict_args.items():
-        print(f"KEY {key}")  # type: str, any
         if key.endswith("__gt"):
             key = key[:-4]
             filters.append(getattr(model_class, key) > value)

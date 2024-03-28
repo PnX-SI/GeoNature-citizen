@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 
 import uuid
@@ -244,11 +243,15 @@ def post_observation():
                 newobs.id_observation,
                 ObservationMediaModel,
             )
-            current_app.logger.debug("[post_observation] ObsTax UPLOAD FILE {}".format(file))
+            current_app.logger.debug(
+                "[post_observation] ObsTax UPLOAD FILE {}".format(file)
+            )
             features["properties"]["images"] = file
 
         except Exception as e:
-            current_app.logger.warning("[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
+            current_app.logger.warning(
+                "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
+            )
             # raise GeonatureApiError(e)
 
         return (
@@ -368,13 +371,24 @@ def update_observation():
     observation_to_update = ObservationModel.query.filter_by(
         id_observation=request.form.get("id_observation")
     )
-    if observation_to_update.one().id_role != current_user.id_user and not current_user.validator:
+    if (
+        observation_to_update.one().id_role != current_user.id_user
+        and not current_user.validator
+    ):
         abort(403, "unauthorized")
 
     try:
         update_data = request.form
         update_obs = {}
-        for prop in ["cd_nom", "name", "count", "comment", "date", "municipality", "id_validator"]:
+        for prop in [
+            "cd_nom",
+            "name",
+            "count",
+            "comment",
+            "date",
+            "municipality",
+            "id_validator",
+        ]:
             if prop in update_data:
                 update_obs[prop] = update_data[prop]
         if "geometry" in update_data:
@@ -384,7 +398,9 @@ def update_observation():
                 _shape = asShape(_point)
                 update_obs["geom"] = from_shape(Point(_shape), srid=4326)
                 if not update_obs["municipality"]:
-                    update_obs["municipality"] = get_municipality_id_from_wkb(_coordinates)
+                    update_obs["municipality"] = get_municipality_id_from_wkb(
+                        _coordinates
+                    )
             except Exception as e:
                 current_app.logger.warning("[post_observation] coords ", e)
                 raise GeonatureApiError(e)
@@ -405,7 +421,8 @@ def update_observation():
             if len(id_media_to_delete):
                 db.session.query(ObservationMediaModel).filter(
                     ObservationMediaModel.id_media.in_(tuple(id_media_to_delete)),
-                    ObservationMediaModel.id_data_source == update_data.get("id_observation"),
+                    ObservationMediaModel.id_data_source
+                    == update_data.get("id_observation"),
                 ).delete(synchronize_session="fetch")
                 db.session.query(MediaModel).filter(
                     MediaModel.id_media.in_(tuple(id_media_to_delete))
@@ -422,10 +439,14 @@ def update_observation():
                 update_data.get("id_observation"),
                 ObservationMediaModel,
             )
-            current_app.logger.debug("[post_observation] ObsTax UPLOAD FILE {}".format(file))
+            current_app.logger.debug(
+                "[post_observation] ObsTax UPLOAD FILE {}".format(file)
+            )
 
         except Exception as e:
-            current_app.logger.warning("[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
+            current_app.logger.warning(
+                "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
+            )
             # raise GeonatureApiError(e)
         obs_validation = (
             "non_validatable_status" in update_data
@@ -442,7 +463,9 @@ def update_observation():
             new_validation_status = ValidationStatus.VALIDATED
             if non_validatable_status:
                 status = [
-                    s for s in INVALIDATION_STATUSES if s["value"] == non_validatable_status
+                    s
+                    for s in INVALIDATION_STATUSES
+                    if s["value"] == non_validatable_status
                 ][0]
                 new_validation_status = ValidationStatus[status["link"]]
 
@@ -477,8 +500,12 @@ def update_observation():
                         ),
                     )
                 except Exception as e:
-                    current_app.logger.warning("send validation_email failed. %s", str(e))
-                    return {"message": f"""send validation_email failed: "{str(e)}" """}, 400
+                    current_app.logger.warning(
+                        "send validation_email failed. %s", str(e)
+                    )
+                    return {
+                        "message": f"""send validation_email failed: "{str(e)}" """
+                    }, 400
 
         return ("observation updated successfully"), 200
     except Exception as e:

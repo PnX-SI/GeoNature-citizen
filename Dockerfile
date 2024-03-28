@@ -13,7 +13,7 @@ ENV LANG fr_FR.utf8
 ENV TERM xterm
 
 RUN adduser --uid 1001 --gecos ""  --disabled-password appuser
-RUN usermod -aG sudo appuser 
+RUN usermod -aG sudo appuser
 RUN echo "appuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 COPY . /home/appuser/citizen

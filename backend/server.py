@@ -4,6 +4,7 @@ import sys
 
 from flask import Flask, current_app
 from flask_cors import CORS
+
 from gncitizen.utils.env import (
     admin,
     ckeditor,
@@ -109,7 +110,9 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 except Exception as e:
                     current_app.logger.debug(e)
                     prefix = url_prefix
-                app.register_blueprint(module.backend.blueprint.blueprint, url_prefix=prefix)
+                app.register_blueprint(
+                    module.backend.blueprint.blueprint, url_prefix=prefix
+                )
                 try:
                     module.backend.models.create_schema(db)
                 except Exception as e:

@@ -19,7 +19,7 @@ Dépendances
 
 La présente documentation présente l'installation de GeoNature-citizen dans un environnement Linux Debian_ (version 10 et supérieures) et Ubuntu_ (version 18.04 et supérieures).
 
-GeoNature-citizen dépend de TaxHub_ qui doit donc être installé au préalable. 
+GeoNature-citizen dépend de TaxHub_ qui doit donc être installé au préalable.
 Pour utiliser le module de badges, le schéma de BDD `taxonomie` de TaxHub doit être installé dans la même BDD que celle de GeoNature-citizen.
 
 L'installation dépend aussi des paquets suivants :
@@ -43,7 +43,7 @@ Créer un utilisateur appartenant au groupe ``sudo``. Dans cette documentation, 
   # Création de l'utilisateur (ceci vous demandera un mot de passe)
   adduser --gecos "" geonatadmin
   # Ajout des droits en lecture pour groups et others sur le répertoire de l'utilisateur
-  chmod -R 744 /home/geonatadmin 
+  chmod -R 744 /home/geonatadmin
   # Ajout dans le groupe sudo
   usermod -aG sudo geonatadmin
   # Connexion avec cet utilisateur
@@ -80,9 +80,9 @@ Téléchargez et décompressez la dernière version de l'application, disponible
 ::
 
   # Se positionner dans le dossier par défaut de l'utilisateur (ici /home/geonatadmin)
-  cd ~ 
+  cd ~
   # Téléchargement de l'application (en remplaçant X.Y.Z par le numéro de version souhaité)
-  curl -OJL https://github.com/PnX-SI/GeoNature-citizen/archive/X.Y.Z.zip 
+  curl -OJL https://github.com/PnX-SI/GeoNature-citizen/archive/X.Y.Z.zip
   # Décompression de l'application
   unzip GeoNature-citizen-X.Y.Z.zip
   # Renommage du dossier contenant l'application
@@ -92,7 +92,7 @@ Téléchargez et décompressez la dernière version de l'application, disponible
 Installation automatique
 ========================
 
-Le script ``install/install_app.sh`` va se charger d'installer automatiquement l'environnement, PostgreSQL, et GeoNature-citizen, 
+Le script ``install/install_app.sh`` va se charger d'installer automatiquement l'environnement, PostgreSQL, et GeoNature-citizen,
 ainsi que leur base de données et leur configuration Apache.
 
 .. tip::
@@ -183,8 +183,8 @@ Et changer les valeurs pour correspondre à la réalité de votre installation. 
 SQLALCHEMY_DATABASE_URI
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-GeoNature-citizen a encore des références au schéma de BDD ``taxonomie`` de TaxHub_ (pour le module de badge uniquement). 
-Ce schéma doit donc être installé dans cette même base de données si vous utilisez le module de badges. 
+GeoNature-citizen a encore des références au schéma de BDD ``taxonomie`` de TaxHub_ (pour le module de badge uniquement).
+Ce schéma doit donc être installé dans cette même base de données si vous utilisez le module de badges.
 L'instance de TaxHub définissant les listes d'espèces et les médias associés peut toutefois être une autre instance indépendante.
 
 La valeur de ``SQLALCHEMY_DATABASE_URI`` doit donc être changée pour correspondre aux valeurs utilisées pour se connecter à la BDD de TaxHub.
@@ -230,11 +230,11 @@ Notez que nous suffixons avec "citizen", ce qui n'est pas obligatoire, mais nous
 EMAILS
 ~~~~~~
 
-L'inscription à GeoNature-citizen n'est pas obligatoire pour les contributeurs. 
+L'inscription à GeoNature-citizen n'est pas obligatoire pour les contributeurs.
 
-Toutefois, si un contributeur souhaite créer un compte, un email de vérification de son adresse email lui est transmis. Cet email contient un lien permettant l'activation du compte. 
+Toutefois, si un contributeur souhaite créer un compte, un email de vérification de son adresse email lui est transmis. Cet email contient un lien permettant l'activation du compte.
 
-Pour cela, il est nécessaire de configurer un serveur SMTP permettant l'envoi de ces emails de vérification. 
+Pour cela, il est nécessaire de configurer un serveur SMTP permettant l'envoi de ces emails de vérification.
 
 La partie ``EMAILS`` est donc indispensable et il faut la remplir sans erreur.
 
@@ -256,7 +256,7 @@ Voici un exemple de configuration avec office365 :
 
   [RESET_PASSWD]
     SUBJECT = "Changement de votre mot de passe"
-    FROM = 'monnom@mondomaine.fr'    
+    FROM = 'monnom@mondomaine.fr'
     TEXT_TEMPLATE = '''
     Bonjour,\r\nVoici votre nouveau mot de passe :\r\n{passwd}\r\n"{app_url}
     '''
@@ -419,7 +419,7 @@ Après chaque modification sur un des éléments qui concerne le frontend, il fa
   cd ~/gncitizen/frontend/
   npm run ng build -- --prod
 
-Si vous souhaitez que l'application soit disponible depuis un chemin spécifique (ex: ``mondomaine.org/citizen``), remplacez la dernière commande par 
+Si vous souhaitez que l'application soit disponible depuis un chemin spécifique (ex: ``mondomaine.org/citizen``), remplacez la dernière commande par
 
 ::
 
@@ -445,7 +445,7 @@ Configuration d'Apache
 ++++++++++++++++++++++
 
 Voici un exemple de fichier de configuration Apache, qu'il faudra adapter à votre cas d'usage.
-Si vous souhaitez que l'application soit disponible depuis un chemin spécifique (ex: ``mondomaine.org/citizen``), pensez à décommenter la ligne ``Alias`` 
+Si vous souhaitez que l'application soit disponible depuis un chemin spécifique (ex: ``mondomaine.org/citizen``), pensez à décommenter la ligne ``Alias``
 
 
 ::
@@ -646,7 +646,7 @@ L'interface d'administration de GeoNature-citizen n'est par défaut pas sécuris
 Puis ajouter les lignes suivantes dans la configuration Apache2 du site (``nano /etc/apache2/sites-available/citizen.conf``), après le bloc  ``<Location /citizen/api>...</Location>``.
 
 
-:: 
+::
 
     # Sécurisation du chemin du backoffice
     <Location /citizen/api/admin>

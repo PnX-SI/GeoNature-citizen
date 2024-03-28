@@ -54,6 +54,6 @@ cp -r frontend/src/assets/* media/.
 # Down everything
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
 # Launch everything in detached mode
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d 
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 
 # DEV : docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
