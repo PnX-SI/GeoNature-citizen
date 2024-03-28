@@ -2,17 +2,20 @@ name: "✅ Linter"
 
 on:
   push:
-    branches: [master]
+    branches: [master, dev]
     paths:
-      - "**.py"
+      - "backend/**/*.py"
+      - "frontend/*"
 
   pull_request:
-    branches: [master]
+    branches: [master, dev]
     paths:
-      - "**.py"
+      - "backend/**/*.py"
+      - "frontend/*"
 
 env:
-  PROJECT_FOLDER: "backend"
+  BACKEND_FOLDER: "backend"
+  FRONTEND_FOLDER: "frontend"
   PYTHON_VERSION: 3.9
 
 jobs:
@@ -37,6 +40,17 @@ jobs:
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
-          flake8 ${{ env.PROJECT_FOLDER }} --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 ${{ env.BACKEND_FOLDER }} --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings.
-          flake8 ${{ env.PROJECT_FOLDER }} --count --exit-zero --statistics
+          flake8 ${{ env.BACKEND_FOLDER }} --count --exit-zero --statistics
+
+  lint-node:
+    name: NodeJS 🐍
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: "${{ env.BACKEND_FOLDER }}/.nvmrc"
+      - run: cd ${{ env.BACKEND_FOLDER }} && npm ci
+      - run: cd ${{ env.BACKEND_FOLDER }} && npm run lint
