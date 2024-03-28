@@ -52,6 +52,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: "${{ env.BACKEND_FOLDER }}/.nvmrc"
-      - run: cd ${{ env.BACKEND_FOLDER }} && npm ci
-      - run: cd ${{ env.BACKEND_FOLDER }} && npm run lint
+          node-version-file: "${{ env.FRONTEND_FOLDER }}/.nvmrc"
+      - run: cd ${{ env.FRONTEND_FOLDER }} && npm ci
+      - run: cd ${{ env.FRONTEND_FOLDER }} && npm run lint
