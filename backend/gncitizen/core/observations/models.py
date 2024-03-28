@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 
 from enum import Enum
 
@@ -155,7 +154,9 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         """get obs data as geojson feature"""
 
         result_dict = self.as_dict(True)
-        result_dict["observer"] = self.observer.as_simple_dict() if self.observer else None
+        result_dict["observer"] = (
+            self.observer.as_simple_dict() if self.observer else None
+        )
         result_dict["validator"] = (
             self.validator_ref.as_simple_dict() if self.validator_ref else None
         )
@@ -169,7 +170,9 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         for k in result_dict:
             if k in OBS_KEYS:
                 feature["properties"][k] = (
-                    result_dict[k].name if isinstance(result_dict[k], Enum) else result_dict[k]
+                    result_dict[k].name
+                    if isinstance(result_dict[k], Enum)
+                    else result_dict[k]
                 )
         feature["properties"]["photos"] = [
             {
@@ -187,7 +190,9 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
                 for taxon in taxon_repository
                 if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
             )
-            feature["properties"]["taxref"] = {key: taxon["taxref"][key] for key in TAXREF_KEYS}
+            feature["properties"]["taxref"] = {
+                key: taxon["taxref"][key] for key in TAXREF_KEYS
+            }
             feature["properties"]["medias"] = [
                 {key: media[key] for key in MEDIA_KEYS} for media in taxon["medias"]
             ]

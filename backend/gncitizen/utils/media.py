@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """A module to manage medias"""
 
@@ -77,11 +76,15 @@ def save_upload_files(
                 if allowed_file(filename):
                     # save file
                     current_app.logger.debug(
-                        '[save_upload_files] Preparing file "{}" saving'.format(filename)
+                        '[save_upload_files] Preparing file "{}" saving'.format(
+                            filename
+                        )
                     )
                     ext = filename.rsplit(".", 1)[1].lower()
                     timestamp = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-                    filename = "{}_{}_{}_{}.{}".format(prefix, str(cdnom), i, timestamp, ext)
+                    filename = "{}_{}_{}_{}.{}".format(
+                        prefix, str(cdnom), i, timestamp, ext
+                    )
                     current_app.logger.debug(
                         "[save_upload_files] new filename : {}".format(filename)
                     )
@@ -106,7 +109,9 @@ def save_upload_files(
                         raise GeonatureApiError(e)
                     # Save id_media in matching table
                     try:
-                        newmatch = matching_model(id_media=id_media, id_data_source=id_data_source)
+                        newmatch = matching_model(
+                            id_media=id_media, id_data_source=id_data_source
+                        )
                         db.session.add(newmatch)
                         db.session.commit()
                         id_match = newmatch.id_match
@@ -126,7 +131,9 @@ def save_upload_files(
                     files.append(filename)
 
     except Exception as e:
-        current_app.logger.debug("[save_upload_files] ERROR save_upload_file : {}".format(e))
+        current_app.logger.debug(
+            "[save_upload_files] ERROR save_upload_file : {}".format(e)
+        )
         raise GeonatureApiError(e)
 
     return files

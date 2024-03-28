@@ -1,4 +1,3 @@
-# Moteur de la plateforme 
+# Moteur de la plateforme
 
 Déployé avec le framework python Flask
-

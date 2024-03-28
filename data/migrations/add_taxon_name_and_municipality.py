@@ -2,7 +2,7 @@
 """ Script de mise à jour des données obstax lors de la montée en version v0.99.4 > v1.0
 
   Faisant suite à la suppression des schémas taxonomie et ref_geo en base de données,
-  le nom d'espèce ainsi que la commune sont maintenant récupérés par API et stockés 
+  le nom d'espèce ainsi que la commune sont maintenant récupérés par API et stockés
   en dur dans la table gnc_obstax.t_obstax.
     - Communes: récupérées par nominatim.
     - Espèces: récupérées via TaxHub.
@@ -11,11 +11,12 @@
 
 __author__ = "@mvergez (NaturalSolutions)"
 
-from urllib.parse import urljoin
-import requests
 import json
-from os.path import exists
 import logging
+from os.path import exists
+from urllib.parse import urljoin
+
+import requests
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

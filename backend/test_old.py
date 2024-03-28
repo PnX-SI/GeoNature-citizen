@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: UTF-8 -*-
 """ Fichier de test de l'application backend
 """
 

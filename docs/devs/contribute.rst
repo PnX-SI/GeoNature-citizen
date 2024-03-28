@@ -4,9 +4,9 @@ Contribuer avec GitHub
 
 .. warning::
 
-    Aucun commit n'est réalisé directement sur le dépot principal du projet 
-    (https://github.com/PnX-SI/GeoNature-citizen). Pour contribuer, il est 
-    nécessaire de faire un *fork* du projet, de travailler sur un fork et 
+    Aucun commit n'est réalisé directement sur le dépot principal du projet
+    (https://github.com/PnX-SI/GeoNature-citizen). Pour contribuer, il est
+    nécessaire de faire un *fork* du projet, de travailler sur un fork et
     sur une nouvelle branche basée sur la branche ``dev`` du dépot principal.
 
 Faire un ticket pour discuter de votre projet de modification

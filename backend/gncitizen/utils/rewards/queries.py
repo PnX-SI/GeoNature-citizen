@@ -1,13 +1,10 @@
 import logging
 
-from gncitizen.core.commons.models import ProgramsModel  # MediaModel,
-from gncitizen.core.observations.models import ObservationModel  # ObservationMediaModel,
-from gncitizen.core.taxonomy.models import Taxref  # BibNoms,; BibListes,; CorNomListe,; TMedias,
-from gncitizen.core.users.models import (  # ObserverMixinModel,; UserGroupsModel,; GroupsModel,
-    UserModel,
-)
-
-from .models import recognition_model
+from gncitizen.core.commons.models import ProgramsModel
+from gncitizen.core.observations.models import ObservationModel
+from gncitizen.core.taxonomy.models import Taxref
+from gncitizen.core.users.models import UserModel
+from gncitizen.utils.rewards.models import recognition_model
 
 logger = logging.getLogger()
 
@@ -41,7 +38,8 @@ def seniority_data(id):
 def filter_class_or_order(model, query):
     criterion = "classe" if "class" in model else "ordre"
     return query.filter(
-        getattr(Taxref, criterion) == model["class" if "class" in model else "order"].capitalize()
+        getattr(Taxref, criterion)
+        == model["class" if "class" in model else "order"].capitalize()
     )
 
 
@@ -51,7 +49,9 @@ def get_occ(attendance_data):
     #     ObservationModel.id_role == role_id,
     #     ObservationModel.id_program == program_id
     # )
-    return [filter_class_or_order(item, base_query).count() for item in recognition_model]
+    return [
+        filter_class_or_order(item, base_query).count() for item in recognition_model
+    ]
 
 
 def get_stats(id):

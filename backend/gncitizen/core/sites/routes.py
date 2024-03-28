@@ -588,7 +588,9 @@ def export_sites_xls(user_id):
         xls_file = io.BytesIO()
         wb.save(xls_file)
         output = make_response(xls_file.getvalue())
-        output.headers["Content-Disposition"] = "attachment; filename=" + "export_sites.xls"
+        output.headers["Content-Disposition"] = (
+            "attachment; filename=" + "export_sites.xls"
+        )
         output.headers["Content-type"] = "application/xls"
         return output
     except Exception as e:

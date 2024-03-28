@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding:utf-8 -*-
 """Users admin views"""
 
 from flask import current_app

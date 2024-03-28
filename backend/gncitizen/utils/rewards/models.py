@@ -57,7 +57,9 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
             return None
 
 
-attendance_model = OrderedDict(reversed(sorted(conf["attendance"].items(), key=lambda t: t[1])))
+attendance_model = OrderedDict(
+    reversed(sorted(conf["attendance"].items(), key=lambda t: t[1]))
+)
 
 seniority_model = OrderedDict(
     reversed(
@@ -79,11 +81,11 @@ program_date_bounds_model = {
 
 recognition_model = [
     {
-        "class"
-        if "class" in conf["recognition"][i]
-        else "order": conf["recognition"][i]["class"]
-        if "class" in conf["recognition"][i]
-        else conf["recognition"][i]["order"],
+        "class" if "class" in conf["recognition"][i] else "order": (
+            conf["recognition"][i]["class"]
+            if "class" in conf["recognition"][i]
+            else conf["recognition"][i]["order"]
+        ),
         "specialization": conf["recognition"][i]["specialization"],
         "attendance": OrderedDict(
             reversed(
