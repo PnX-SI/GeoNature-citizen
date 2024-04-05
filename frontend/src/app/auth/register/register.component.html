@@ -77,13 +77,14 @@
             </div>
         </div>
         <ngb-alert [dismissible]="false" type="danger" *ngIf="password.value &&
-            (password.invalid  || (password.valid && confirmPassword.errors?.pattern))"
-            i18n="Different password error@@ErrorDifferentPasswords">
-            <div *ngIf="password.invalid" i18n="Strong password required error@@ErrorPasswordNotEnoughStrong">Doit
-                contenir au moins un chiffre et une lettre majuscule et minuscule, et au moins 8 caractères.</div>
+            (password.invalid  || (password.valid && confirmPassword.errors?.pattern))">
+            <div *ngIf="password.invalid" i18n="Strong password required@@ErrorPasswordNotEnoughStrong">
+                Doit contenir au moins un chiffre et une lettre majuscule et minuscule, et au moins 8 caractères.
+            </div>
             <div *ngIf="password.valid && confirmPassword.errors?.pattern"
-                i18n="Different password error@@ErrorDifferentPasswords">Les
-                mots de passe diffèrent.</div>
+                i18n="Different password error@@ErrorDifferentPasswords">
+                Les mots de passe diffèrent.
+            </div>
         </ngb-alert>
         <div class="form-row">
             <div class="col-md-6 col-sm-12">
