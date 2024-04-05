@@ -1,6 +1,22 @@
 # CHANGELOG
 
-## 1.0.0 (2024-03-18)
+## 1.1.0 - 2024-04-06
+
+### Main new features
+
+* New backoffice views to manage site module data (#402 by @hypsug0)
+* Some new github actions (by @hypsug0)
+
+### Fixes
+
+* Fix send email on registration (#396 by @PNPyrenees)
+* Standardizing date formatting (#401 by @hypsug0)
+* Fix new obs pointer not customizable (#400 by @hypsug0)
+* Improve english translations (by @hypsug0)
+* Docs and changelog improvements (by @camillemonchicourt)
+* Fix invalid password check on password with some special characters (by @hypsug0)
+
+## 1.0.0 - 2024-03-18
 
 ### Main new features
 

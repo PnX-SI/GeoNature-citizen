@@ -53,7 +53,7 @@
                             i18n-placeholder="Your email input placeholder label@@yourEmailInputPlaceholder"
                             placeholder="Entrez votre email" [(ngModel)]="user.email" #email="ngModel"
                             autocomplete="email" [ngModelOptions]="{ updateOn: 'blur' }" required
-                            pattern="^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$" />
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" />
                     </div>
                 </div>
             </div>
@@ -76,12 +76,15 @@
                 </div>
             </div>
         </div>
-        <ngb-alert [dismissible]="false" type="danger" *ngIf="
-                confirm_password.errors &&
-                confirm_password.dirty &&
-                password.dirty
-            " i18n="Different password error@@ErrorDifferentPasswords">
-            Les mots de passe diffèrent.
+        <ngb-alert [dismissible]="false" type="danger" *ngIf="password.value &&
+            (password.invalid  || (password.valid && confirmPassword.errors?.pattern))">
+            <div *ngIf="password.invalid" i18n="Strong password required@@ErrorPasswordNotEnoughStrong">
+                Doit contenir au moins un chiffre et une lettre majuscule et minuscule, et au moins 8 caractères.
+            </div>
+            <div *ngIf="password.valid && confirmPassword.errors?.pattern"
+                i18n="Different password error@@ErrorDifferentPasswords">
+                Les mots de passe diffèrent.
+            </div>
         </ngb-alert>
         <div class="form-row">
             <div class="col-md-6 col-sm-12">
@@ -90,17 +93,21 @@
                     <input type="password" class="form-control rounded-0" id="password"
                         i18n-placeholder="Your password input@@yourPasswordInput" placeholder="Votre mot de passe"
                         [(ngModel)]="user.password" name="password" #password="ngModel" autocomplete="new-password"
-                        required />
+                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required />
                 </div>
             </div>
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
                     <label for="confirm-password" i18n>Confirmez votre mot de passe</label>
-                    <input type="password" id="confirm-password" name="confirm-password" class="form-control rounded-0"
-                        ngModel #confirm_password="ngModel"
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control rounded-0"
+                        ngModel #confirmPassword="ngModel"
                         i18n-placeholder="Your confirm password input@@yourPasswordConfirmInput"
                         placeholder="Confirmez le mot de passe" autocomplete="new-password" required
-                        [ngModelOptions]="{ updateOn: 'blur' }" pattern="^{{ password.value }}$" />
+                        [ngModelOptions]="{ updateOn: 'blur' }" pattern="{{ password.value }}" />
+                    <div class="invalid-feedback">
+                        Please provide a valid city.
+                    </div>
+
                 </div>
             </div>
             <span>
