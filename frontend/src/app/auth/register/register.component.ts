@@ -2,7 +2,7 @@ import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, throwError } from 'rxjs';
 import { debounceTime, catchError, map } from 'rxjs/operators';
-
+import { Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { RegisterUser } from '../models';
@@ -80,7 +80,7 @@ export class RegisterComponent {
             );
     }
 
-    handleError(error) {
+    handleError(error): Observable<never> {
         let errorMessage = '';
         if (error.error instanceof ErrorEvent) {
             console.error('client-side error');
@@ -101,15 +101,15 @@ export class RegisterComponent {
         return throwError(errorMessage);
     }
 
-    displayErrorMessage(message) {
+    displayErrorMessage(message: string): void {
         this._error.next(message);
     }
 
-    displaySuccessMessage(message) {
+    displaySuccessMessage(message: string): void {
         this._success.next(message);
     }
 
-    onUploadAvatar($event) {
+    onUploadAvatar($event): void {
         if ($event) {
             if ($event.target.files && $event.target.files[0]) {
                 const file = $event.target.files[0];
@@ -159,7 +159,7 @@ export class RegisterComponent {
         }
     }
 
-    loadCaptchaScript() {
+    loadCaptchaScript(): void {
         if (!MainConfig.HCAPTCHA_SITE_KEY) {
             return;
         }
@@ -179,7 +179,7 @@ export class RegisterComponent {
         }
     }
 
-    resetCaptcha() {
+    resetCaptcha(): void {
         if (window.hcaptcha === null) {
             return;
         }
@@ -187,7 +187,7 @@ export class RegisterComponent {
         window.hcaptcha.reset();
     }
 
-    renderCaptcha() {
+    renderCaptcha(): void {
         if (window.hcaptcha === null) {
             return;
         }
@@ -197,7 +197,7 @@ export class RegisterComponent {
         });
     }
 
-    captchaCallback(token) {
+    captchaCallback(token): void {
         this.user.captchaToken = token;
     }
 }
