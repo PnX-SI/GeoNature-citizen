@@ -80,6 +80,7 @@ if [ ! -f $venv_path/bin/activate ]; then
   python3 -m venv $venv_path
 fi
 source .venv/bin/activate
+pip install --upgrade setuptools
 pip install --upgrade pip
 pip install -r requirements.txt
 
