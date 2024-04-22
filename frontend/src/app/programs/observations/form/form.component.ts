@@ -235,13 +235,11 @@ export class ObsFormComponent implements AfterViewInit {
 
                 // build map control
                 const formMap = L.map('formMap', {
+                    layers: [map_conf.DEFAULT_BASE_MAP()],
                     gestureHandling: true,
                 } as any);
                 this.formMap = formMap;
 
-                L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: 'OpenStreetMap',
-                }).addTo(formMap);
                 L.control
                     .layers(map_conf.BASE_LAYERS, null, {
                         collapsed: map_conf.BASE_LAYER_CONTROL_INIT_COLLAPSED,
