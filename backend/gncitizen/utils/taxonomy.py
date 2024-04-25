@@ -31,11 +31,7 @@ taxonomy_lists = []
 
 def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
     url = f"{TAXHUB_API}biblistes/taxons/{taxhub_list_id}"
-    params = {
-        "existing": "true",
-        "order": "asc",
-        "orderby": "taxref.nom_complet",
-    }
+    params = {"existing": "true", "order": "asc", "orderby": "taxref.nom_complet", "limit": 100000}
     res = session.get(
         url,
         params=params,
@@ -81,9 +77,7 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
         media_types = ("Photo_gncitizen", "Photo_principale", "Photo")
         i = 0
         while i < len(media_types):
-            filtered_medias = [
-                d for d in data["medias"] if d["nom_type_media"] == media_types[i]
-            ]
+            filtered_medias = [d for d in data["medias"] if d["nom_type_media"] == media_types[i]]
             if len(filtered_medias) >= 1:
                 break
             i += 1
