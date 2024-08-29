@@ -1,5 +1,3 @@
-version: "3.4"
-
 services:
   frontend:
     container_name: citizen-front
