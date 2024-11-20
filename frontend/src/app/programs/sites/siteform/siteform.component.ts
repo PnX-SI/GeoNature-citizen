@@ -16,6 +16,7 @@ import { Observable } from 'rxjs';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { Position, Point } from 'geojson';
 import * as L from 'leaflet';
+import { BaseLayer } from '../../programs.models';
 import { LeafletMouseEvent } from 'leaflet';
 import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
 import 'leaflet-gesture-handling';
@@ -31,8 +32,8 @@ import { MapService } from '../../base/map/map.service';
 const map_conf = {
     GEOLOCATION_CONTROL_POSITION: 'topright',
     GEOLOCATION_HIGH_ACCURACY: false,
-    BASE_LAYERS: MainConfig['BASEMAPS'].reduce((acc, baseLayer: Object) => {
-        const layerConf: any = {
+    BASE_LAYERS: MainConfig['BASEMAPS'].reduce((acc, baseLayer: BaseLayer) => {
+        const layerConf: BaseLayer = {
             name: baseLayer['name'],
             attribution: baseLayer['attribution'],
             detectRetina: baseLayer['detectRetina'],
@@ -166,8 +167,8 @@ export class SiteFormComponent implements AfterViewInit {
                 L.control['fullscreen']({
                     position: 'topright',
                     title: {
-                        false: 'View Fullscreen',
-                        true: 'Exit Fullscreefullscreenn',
+                        false: 'Voir en plein écran',
+                        true: 'Sortir du plein écran',
                     },
                     pseudoFullscreen: true,
                 }).addTo(formMap);
