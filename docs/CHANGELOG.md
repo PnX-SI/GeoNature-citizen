@@ -9,6 +9,7 @@
 ### Fixes
 
 * Standardization of frontend map components between site and observation modules (#415 by @xavyeah39)
+* Fix password scratch when user profile edited from backoffice, cf. #420 (#429 by @hypsug0)
 
 ## 1.1.0 - 2024-04-06
 
