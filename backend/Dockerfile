@@ -1,5 +1,5 @@
 # STAGE BASE
-FROM python:3.8.10 as python-base
+FROM python:3.8.10 AS python-base
 
 ENV PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
@@ -16,7 +16,7 @@ ENV PIP_NO_CACHE_DIR=off \
 ENV PATH="$POETRY_PATH/bin:$VENV_PATH/bin:$PATH"
 
 # STAGE POETRY
-FROM python-base as poetry
+FROM python-base AS poetry
 
 WORKDIR $PYSETUP_PATH
 RUN pip install --upgrade pip \
@@ -26,7 +26,7 @@ COPY poetry.lock pyproject.toml ./
 RUN poetry install
 
 # STAGE RUNTIME
-FROM python-base as runtime
+FROM python-base AS runtime
 WORKDIR /app
 
 COPY --from=poetry $PYSETUP_PATH $PYSETUP_PATH

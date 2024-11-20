@@ -1,6 +1,7 @@
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { geometryValidator, ngbDateMaxIsToday } from './formValidators';
 import { MainConfig } from './../../../../conf/main.config';
+import { BaseLayer } from '../../programs.models';
 import * as L from 'leaflet';
 
 import {
@@ -47,8 +48,8 @@ import { ControlPosition } from 'leaflet';
 const map_conf = {
     GEOLOCATION_CONTROL_POSITION: 'topright',
     GEOLOCATION_HIGH_ACCURACY: false,
-    BASE_LAYERS: MainConfig['BASEMAPS'].reduce((acc, baseLayer: Object) => {
-        const layerConf: any = {
+    BASE_LAYERS: MainConfig['BASEMAPS'].reduce((acc, baseLayer: BaseLayer) => {
+        const layerConf: BaseLayer = {
             name: baseLayer['name'],
             attribution: baseLayer['attribution'],
             detectRetina: baseLayer['detectRetina'],
@@ -235,13 +236,11 @@ export class ObsFormComponent implements AfterViewInit {
 
                 // build map control
                 const formMap = L.map('formMap', {
+                    layers: [map_conf.DEFAULT_BASE_MAP()],
                     gestureHandling: true,
                 } as any);
                 this.formMap = formMap;
 
-                L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: 'OpenStreetMap',
-                }).addTo(formMap);
                 L.control
                     .layers(map_conf.BASE_LAYERS, null, {
                         collapsed: map_conf.BASE_LAYER_CONTROL_INIT_COLLAPSED,
@@ -251,8 +250,8 @@ export class ObsFormComponent implements AfterViewInit {
                 L.control['fullscreen']({
                     position: 'topright',
                     title: {
-                        false: 'View Fullscreen',
-                        true: 'Exit Fullscreefullscreenn',
+                        false: 'Voir en plein écran',
+                        true: 'Sortir du plein écran',
                     },
                     pseudoFullscreen: true,
                 }).addTo(formMap);

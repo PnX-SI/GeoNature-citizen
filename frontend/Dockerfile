@@ -1,13 +1,13 @@
 # STAGE INSTALL NODE_MODULES
-FROM node:14 as builder
+FROM node:14 AS builder
 
 COPY ./package.json ./package-lock.json /
 
 RUN npm install
-    # && npm install --save-dev webpack webpack-cli html-webpack-plugin webpack-dev-server webpack-dev-middleware
+# && npm install --save-dev webpack webpack-cli html-webpack-plugin webpack-dev-server webpack-dev-middleware
 
 # STAGE RUNTIME
-FROM builder as runtime
+FROM builder AS runtime
 
 WORKDIR /app
 

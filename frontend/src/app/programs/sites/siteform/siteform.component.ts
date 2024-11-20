@@ -5,6 +5,8 @@ import {
     ViewChild,
     ElementRef,
     Input,
+    LOCALE_ID,
+    Inject,
 } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -14,14 +16,50 @@ import { Observable } from 'rxjs';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { Position, Point } from 'geojson';
 import * as L from 'leaflet';
+import { BaseLayer } from '../../programs.models';
 import { LeafletMouseEvent } from 'leaflet';
 import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
 import 'leaflet-gesture-handling';
+import 'leaflet-search';
+import { ControlPosition } from 'leaflet';
+import { ToastrService } from 'ngx-toastr';
 
 import { MainConfig } from '../../../../conf/main.config';
 import { MapService } from '../../base/map/map.service';
 
 // declare let $: any;
+
+const map_conf = {
+    GEOLOCATION_CONTROL_POSITION: 'topright',
+    GEOLOCATION_HIGH_ACCURACY: false,
+    BASE_LAYERS: MainConfig['BASEMAPS'].reduce((acc, baseLayer: BaseLayer) => {
+        const layerConf: BaseLayer = {
+            name: baseLayer['name'],
+            attribution: baseLayer['attribution'],
+            detectRetina: baseLayer['detectRetina'],
+            maxZoom: baseLayer['maxZoom'],
+            bounds: baseLayer['bounds'],
+            apiKey: baseLayer['apiKey'],
+            layerName: baseLayer['layerName'],
+        };
+        if (baseLayer['subdomains']) {
+            layerConf.subdomains = baseLayer['subdomains'];
+        }
+        acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
+        return acc;
+    }, {}),
+    BASE_LAYER_CONTROL_POSITION: 'topright' as ControlPosition,
+    BASE_LAYER_CONTROL_INIT_COLLAPSED: true,
+    DEFAULT_BASE_MAP: () =>
+        map_conf.BASE_LAYERS[MainConfig['DEFAULT_PROVIDER']],
+    PROGRAM_AREA_STYLE: {
+        fillColor: 'transparent',
+        weight: 2,
+        opacity: 0.8,
+        color: 'red',
+        dashArray: '4',
+    },
+};
 
 const PROGRAM_AREA_STYLE = {
     fillColor: 'transparent',
@@ -68,7 +106,9 @@ export class SiteFormComponent implements AfterViewInit {
     mapVars: any = {};
 
     constructor(
+        @Inject(LOCALE_ID) readonly localeId: string,
         private http: HttpClient,
+        private toastr: ToastrService,
         private mapService: MapService,
         private dateParser: NgbDateParserFormatter
     ) {}
@@ -112,22 +152,71 @@ export class SiteFormComponent implements AfterViewInit {
 
                 // build map control
                 const formMap = L.map('formMap', {
+                    layers: [map_conf.DEFAULT_BASE_MAP()],
                     gestureHandling: true,
                 } as any);
                 this.formMap = formMap;
 
-                L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: 'OpenStreetMap',
-                }).addTo(formMap);
+                L.control
+                    .layers(map_conf.BASE_LAYERS, null, {
+                        collapsed: map_conf.BASE_LAYER_CONTROL_INIT_COLLAPSED,
+                        position: map_conf.BASE_LAYER_CONTROL_POSITION,
+                    })
+                    .addTo(formMap);
 
                 L.control['fullscreen']({
                     position: 'topright',
                     title: {
-                        false: 'View Fullscreen',
-                        true: 'Exit Fullscreen',
+                        false: 'Voir en plein écran',
+                        true: 'Sortir du plein écran',
                     },
                     pseudoFullscreen: true,
                 }).addTo(formMap);
+                console.log('LControl', L.control);
+
+                L.control['search']({
+                    url: 'https://nominatim.openstreetmap.org/search?format=json&accept-language=fr-FR&q={s}',
+                    jsonpParam: 'json_callback',
+                    propertyName: 'display_name',
+                    position: 'topright',
+                    propertyLoc: ['lat', 'lon'],
+                    markerLocation: true,
+                    autoType: true,
+                    autoCollapse: true,
+                    minLength: 3,
+                    zoom: 15,
+                    text: 'Recherche...',
+                    textCancel: 'Annuler',
+                    textErr: 'Erreur',
+                }).addTo(formMap);
+
+                L.control
+                    .locate({
+                        icon: 'fa fa-location-arrow',
+                        position: map_conf.GEOLOCATION_CONTROL_POSITION,
+                        strings: {
+                            title: MainConfig.LOCATE_CONTROL_TITLE[
+                                this.localeId
+                            ]
+                                ? MainConfig.LOCATE_CONTROL_TITLE[this.localeId]
+                                : 'Me géolocaliser',
+                        },
+                        getLocationBounds: (locationEvent) =>
+                            locationEvent.bounds.extend(L.LatLngBounds),
+                        onLocationError: (locationEvent) => {
+                            let msg =
+                                'Vous semblez être en dehors de la zone du programme.';
+                            this.toastr.error(msg, '', {
+                                positionClass: 'toast-top-right',
+                            });
+                            //alert("Vous semblez être en dehors de la zone du programme")
+                        },
+                        locateOptions: {
+                            enableHighAccuracy:
+                                map_conf.GEOLOCATION_HIGH_ACCURACY,
+                        },
+                    } as any)
+                    .addTo(formMap);
 
                 const ZoomViewer = L.Control.extend({
                     onAdd: () => {
