@@ -22,10 +22,6 @@ La présente documentation présente l'installation de GeoNature-citizen dans un
 GeoNature-citizen dépend de TaxHub_ qui doit donc être installé au préalable.
 Pour utiliser le module de badges, le schéma de BDD `taxonomie` de TaxHub doit être installé dans la même BDD que celle de GeoNature-citizen.
 
-.. warning::
-Attention
-Si vous utilisez la dernière version de GeoNature-citizen celle ci est compatible uniquement avec Taxhub  > v2.0.0. De plus taxhub ne doit pas être installé dans la même BDD que celle de GeoNature-citizen.
-
 L'installation dépend aussi des paquets suivants :
 
 ::
@@ -144,11 +140,6 @@ Si vous souhaitez à une installation manuelle, suivez les instructions suivante
 
 Pré-requis
 ----------
-
-.. warning::
-Attention
-Si vous utilisez la dernière version de GeoNature-citizen celle ci est compatible uniquement avec Taxhub  > v2.0.0. De plus taxhub ne doit pas être installé dans la même BDD que celle de GeoNature-citizen.
-
 
 - Installer TaxHub, si ce n'est pas déjà fait. Vous pouvez suivre la documentation officielle : https://taxhub.readthedocs.io/fr/latest/installation.html
 

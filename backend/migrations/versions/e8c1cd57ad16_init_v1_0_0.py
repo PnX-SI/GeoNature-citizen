@@ -15,7 +15,7 @@ from sqlalchemy.dialects import postgresql
 
 revision = "e8c1cd57ad16"
 down_revision = None
-branch_labels = ['gn_citizen']
+branch_labels = ["gn_citizen"]
 depends_on = None
 
 SCHEMAS = ["gnc_core", "gnc_obstax", "gnc_sites"]
