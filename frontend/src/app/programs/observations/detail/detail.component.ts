@@ -81,20 +81,10 @@ export class ObsDetailComponent
 
             // prepare data
             if (this.obs.properties.json_data) {
-                let data = this.obs.properties.json_data;
-                var that = this;
+                const data = this.obs.properties.json_data;
                 this.loadJsonSchema().subscribe((customform: any) => {
-                    let schema = customform.json_schema.schema.properties;
-                    let layout = customform.json_schema.layout;
-                    for (const item of layout) {
-                        let v = data[item.key];
-                        if (v !== undefined) {
-                            that.attributes.push({
-                                name: schema[item.key].title,
-                                value: v.toString(),
-                            });
-                        }
-                    }
+                    const schema = customform.json_schema.schema.properties;
+                    this.attributes = this.formatData(data, schema);
                 });
             }
         });
@@ -104,5 +94,103 @@ export class ObsDetailComponent
         return this.http.get(
             `${this.URL}/programs/${this.program_id}/customform/`
         );
+    }
+
+    flatObject(object: object): object {
+        const flatObjectKeys = Object.keys(object);
+        let flatObject = { ...object };
+
+        flatObjectKeys.forEach(key => {
+            if (
+                flatObject[key].type === 'object' &&
+                Object.prototype.hasOwnProperty.call(
+                    flatObject[key],
+                    'properties'
+                )
+            ) {
+                flatObject = {
+                    ...flatObject[key].properties,
+                    ...flatObject,
+                };
+                delete flatObject[key];
+            }
+        });
+
+        return flatObject;
+    }
+
+    formatData(data: any, schema: any): any[] {
+        const formattedData: any[] = [];
+        this.flattenObject(data, schema, formattedData);
+        return formattedData;
+    }
+
+    flattenObject(
+        object: any,
+        schema: any,
+        formattedData: Array<{
+            name: string;
+            value: string | string[];
+            showDetails: boolean;
+            type: string;
+        }>
+    ): void {
+        const flatSchema = this.flatObject(schema);
+        const flatObject = this.flatObject(object);
+
+        for (const key in flatObject) {
+            if (Object.prototype.hasOwnProperty.call(flatSchema, key)) {
+                const value = flatObject[key];
+                const propSchema = flatSchema[key];
+
+                if (Array.isArray(value)) {
+                    const isArrayType = propSchema.type === 'array';
+                    const listFormattedString = value.map(item =>
+                        this.formatArrayItem(item, propSchema.items.properties)
+                    );
+                    formattedData.push({
+                        name: propSchema.title,
+                        value: listFormattedString,
+                        showDetails: isArrayType,
+                        type: propSchema.type,
+                    });
+                } else if (typeof value === 'object') {
+                    this.flattenObject(
+                        value,
+                        propSchema.items.properties,
+                        formattedData
+                    );
+                } else {
+                    const propName = propSchema.title;
+                    const isArrayType = propSchema.type === 'array';
+                    formattedData.push({
+                        name: propName,
+                        value:
+                            typeof value === 'boolean'
+                                ? value
+                                    ? 'Oui'
+                                    : 'Non'
+                                : value.toString(),
+                        showDetails: isArrayType,
+                        type: propSchema.type,
+                    });
+                }
+            }
+        }
+    }
+
+    formatArrayItem(item: any, schema: any): string {
+        let formattedString = '';
+
+        for (const key in item) {
+            const nestedValue = item[key];
+            const nestedSchema = schema[key];
+
+            formattedString += `<p>${
+                nestedSchema.title
+            }: ${nestedValue.toString()}</p>`;
+        }
+
+        return formattedString;
     }
 }
