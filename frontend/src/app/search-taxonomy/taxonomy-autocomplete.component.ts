@@ -1,6 +1,8 @@
 import {
     Component,
+    ElementRef,
     EventEmitter,
+    HostListener,
     Input,
     OnChanges,
     OnInit,
@@ -149,7 +151,7 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
     }
 
     formatter = (taxon: any) => {
-        return taxon ? taxon[this.displayedLabel].replace(/<[^>]*>/g, ''): ''; // supprime les balises HTML
+        return  taxon[this.displayedLabel].replace(/<[^>]*>/g, '') // Supprime les balises HTML
     };
 
     searchTaxon = (text$: Observable<string>) =>
@@ -173,7 +175,9 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
                         );
                 } else {
                     this.isLoading = false;
-                    this.refreshAllInput();
+                    // TODO: remove refreshAllInput because removed typeahead
+                    // this.refreshAllInput();
+                    this.noResult = true; // Action alternative
                     return [[]];
                 }
             }),
