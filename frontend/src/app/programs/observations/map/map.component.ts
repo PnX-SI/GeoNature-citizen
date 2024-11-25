@@ -59,8 +59,9 @@ export class ObsMapComponent extends BaseMapComponent {
             <img
                 class="default-img"
                 [src]="
-                    data.image
-                        ? data.image
+                    data.photos && !!data.photos.length
+                            ? MainConfig.API_ENDPOINT +
+                              data.photos[0].url
                         : data.medias && !!data.medias.length
                         ? MainConfig.API_TAXHUB +
                           '/tmedias/thumbnail/' +
@@ -91,9 +92,11 @@ export class ObsMapComponent extends BaseMapComponent {
                     target="_blank"
                     href="{{ MainConfig.details_espece_url + data.cd_nom }}"
                     >{{
-                        !!data.nom_francais
-                            ? data.nom_francais
-                            : data.taxref?.nom_vern
+                        !!data.name
+                            ? data.name
+                            : data.taxref?.nom_francais
+                            ? data.taxref.nom_francais
+                            : data.taxref.nom_vern
                     }}</a
                 >
                 <ng-template #no_detail_espece_url
@@ -111,9 +114,11 @@ export class ObsMapComponent extends BaseMapComponent {
                                 )
                         }"
                         >{{
-                            !!data.nom_francais
-                                ? data.nom_francais
-                                : data.taxref?.nom_vern
+                        !!data.name
+                            ? data.name
+                            : data.taxref?.nom_francais
+                            ? data.taxref.nom_francais
+                            : data.taxref.nom_vern
                         }}</span
                     >
                 </ng-template>

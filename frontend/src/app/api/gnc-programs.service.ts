@@ -204,6 +204,13 @@ export class GncProgramsService implements OnInit {
         );
     }
 
+
+    getAllProgramTaxonomyList(): Observable<any[]> {
+        return this.http.get<any[]>(
+            `${this.URL}/taxonomy/lists`
+        );
+    }
+
     getCustomForm(id_form): Observable<object> {
         return this.http
             .get<object>(`${this.URL}/customform/${id_form}`)
@@ -223,6 +230,12 @@ export class GncProgramsService implements OnInit {
             {
                 params,
             });
+    }
+
+    getTaxonInfoByCdNom(cd_nom:number): Observable<TaxonomyList> {
+        return this.http.get<TaxonomyList>(
+            `${this.URL}/taxonomy/taxon/${cd_nom}`
+        );
     }
 
     private handleError<T>(operation = 'operation', result?: T) {

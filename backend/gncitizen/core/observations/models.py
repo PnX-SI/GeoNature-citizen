@@ -27,6 +27,7 @@ OBS_KEYS = (
     "comment",
     "timestamp_create",
     "json_data",
+    "name"
 )
 
 TAXREF_KEYS = ["nom_vern", "cd_nom", "cd_ref", "lb_nom"]
@@ -182,7 +183,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
             }
             for p in self.medias
         ]
-
+        #TODO: it works only for taxhub full list with length <1000 (see if we remove this meanwhile taxhub route allows to return information by list of cd_nom)
         taxon_repository = taxhub_full_lists[self.program_ref.taxonomy_list]
         try:
             taxon = next(

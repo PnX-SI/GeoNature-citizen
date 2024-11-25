@@ -2,15 +2,19 @@
     <ng-content select="[obs-form]" *ngIf="display_form"></ng-content>
     <span [class.d-none]="display_form">
         <div class="d-flex flex-column">
-            <div class="toolbar">
+            <div class="toolbar" *ngIf="observedSpecies">
                 <select class="form-control rounded-0" id="inputSpecies" [(ngModel)]="selectedTaxon"
                     (ngModelChange)="onFilterChange()">
                     <option [ngValue]="null" i18n="All species select option@@allSpeciesSelectOption">
                         Toutes espèces
                     </option>
-                    <option *ngFor="let s of surveySpecies" [ngValue]="s">
+                    <!-- <option *ngFor="let s of surveySpecies" [ngValue]="s">
                         {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }}
                         <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref?.nom_complet }}</i>)</span>
+                    </option> -->
+                    <option *ngFor="let observedSpecie of observedSpecies" [ngValue]="observedSpecie">
+                        {{ !!observedSpecie.name ? observedSpecie.name : observedSpecie.taxref?.nom_vern }}
+                        <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ observedSpecie.taxref?.lb_nom }}</i>)</span>
                     </option>
                 </select>
 
@@ -78,17 +82,17 @@
                             }" target="_blank" href="{{
                                 MainConfig.details_espece_url + o.properties.cd_nom
                             }}">{{
-                                !!o.properties.nom_francais
-                                ? o.properties.nom_francais
-                                : o.properties.taxref?.nom_vern
+                                !!o.properties.name
+                                ? o.properties.name
+                                : o.properties.taxref?.nom_francais ? o.properties.taxref.nom_francais: o.properties.taxref.nom_vern
                                 }}</a>
                             <ng-template #no_detail_espece_url><span [ngClass]="{
                                 'text-warning': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED',
                                 'text-danger': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && ['INVALID', 'NON_VALIDATABLE'].includes(o.properties.validation_status)
                             }">{{
-                                    !!o.properties.nom_francais
-                                    ? o.properties.nom_francais
-                                    : o.properties.taxref?.nom_vern
+                                !!o.properties.name
+                                ? o.properties.name
+                                :  o.properties.taxref?.nom_francais ? o.properties.taxref.nom_francais: o.properties.taxref.nom_vern
                                     }}</span>
                             </ng-template>
 

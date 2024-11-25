@@ -1,23 +1,34 @@
+import { SafeHtml } from '@angular/platform-browser';
 import { Feature, FeatureCollection } from 'geojson';
 
+interface TaxrefLimited {
+    cd_nom: number;
+    cd_ref: number;
+    lb_nom: string;
+    nom_vern: string;
+  }
 
+export interface ObservationProperties {
+    cd_nom: number;
+    comment: string;
+    common_name: string;
+    count: number;
+    date: Date;
+    id_observation: number;
+    images?: string[];
+    municipality?: any;
+    obs_txt: string;
+    observer?: any;
+    sci_name: string;
+    timestamp_create: Date;
+    validation_status?: string;
+    photos?: string[];
+    taxref: TaxrefLimited;
+    name: string;
+    json_data?: any;
+}
 export interface ObservationFeature extends Feature {
-    properties: {
-        cd_nom: number;
-        comment: string;
-        common_name: string;
-        count: number;
-        date: Date;
-        id_observation: number;
-        images?: string[];
-        municipality?: any;
-        obs_txt: string;
-        observer?: any;
-        sci_name: string;
-        timestamp_create: Date;
-        validation_status?: string;
-        taxref: any;
-    };
+    properties: ObservationProperties;
 }
 interface GenericObject {
     [k: string]: boolean | number | string;
@@ -70,3 +81,5 @@ export interface ObservationFeatureCollection extends FeatureCollection {
 export interface PostObservationResponse extends ObservationFeatureCollection {
     message: string;
 }
+
+export type ObservationPropertiesList = ObservationProperties[];

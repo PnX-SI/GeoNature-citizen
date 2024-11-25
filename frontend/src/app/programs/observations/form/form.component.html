@@ -26,8 +26,13 @@
                 <label for="cd_nom" class="m-0">{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
                     isOff {S&eacute;lectionnez une esp&egrave;ce}}</label>
             </h5>
+            <div *ngIf="loading" class="spinner-container">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="sr-only">Chargement...</span>
+                </div>
+              </div>
             <!-- TAXON SELECT -->
-            <div class="row">
+            <div class="row" *ngIf="!loading">
                 <div class="form-group col-lg-12 col-md-12">
                     <div *ngIf="
                     taxaCount >= taxonSelectInputThreshold &&
@@ -74,7 +79,7 @@
                     </div>
                 </div>
                 <!-- TAXON AUTOCOMPLETE -->
-                <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg-8">
+                <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold && taxaCount < autoCompleteThresholdLongList" class="form-group col-lg-8">
                     <ng-template #rt let-r="result" let-t="term">
                         <img [src]="r.icon" class="mr-1" style="height: 1em" />
                         <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
@@ -83,6 +88,19 @@
                         placeholder="Nom latin ou vernaculaire ou cd_ref" [editable]="false"
                         [ngbTypeahead]="inputAutoCompleteSearch" [resultTemplate]="rt"
                         [inputFormatter]="inputAutoCompleteFormatter" required />
+                </div>
+                <div *ngIf="taxaCount >= autoCompleteThresholdLongList" class="form-group col-lg-4">
+                    <taxonomy-autocomplete 
+                    label=""
+                    placeholder="Rechercher par nom ou cd_nom" 
+                    isRequired="true"
+                    [parentFormControl]="obsForm.controls.cd_nom"
+                    [idList]="taxonomyListID" 
+                    [charNumber]="3" 
+                    [listLength]="20"
+                    (onChange)="onSelectedTaxon($event)"
+                    (emptyInput)="onEmptyInput($event)">
+                  </taxonomy-autocomplete >
                 </div>
             </div>
         </div>
