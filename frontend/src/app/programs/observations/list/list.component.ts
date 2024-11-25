@@ -64,8 +64,7 @@ export class ObsListComponent implements OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         this.changes$.next(changes);
-        console.log("this.observations", this.observations);
-
+    
         if (this.observations && this.observations.features) {
             this.observationList = this.observations['features'];
             this.observations$.next(this.observations['features']);
@@ -161,4 +160,19 @@ export class ObsListComponent implements OnChanges {
     onValidateClick(observation) {
         this.validateObs.emit(observation.properties.id_observation)
     }
+
+    getPhotoUrl(o: any): string {
+        if (o.properties.photos && o.properties.photos.length > 0) {
+          return this.MainConfig.API_ENDPOINT + o.properties.photos[0].url;
+        } else if (o.properties.medias && o.properties.medias.length > 0) {
+          return (
+            this.MainConfig.API_TAXHUB +
+            '/tmedias/thumbnail/' +
+            o.properties.medias[0].id_media +
+            '?h=80'
+          );
+        } else {
+          return 'assets/default_image.png';
+        }
+      }
 }

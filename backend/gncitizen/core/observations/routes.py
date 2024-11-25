@@ -248,14 +248,17 @@ def post_observation():
             current_app.logger.debug(
                 "[post_observation] ObsTax UPLOAD FILE {}".format(file)
             )
-            features["properties"]["images"] = file
-
+            newobs = db.session.query(ObservationModel).options(
+                db.joinedload(ObservationModel.medias)
+            ).get(newobs.id_observation)
+            features = newobs.get_feature()
+            #TODO: it seems to be useless now because we get medias from joinedload
+            # features["properties"]["images"] = file
         except Exception as e:
             current_app.logger.warning(
                 "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
             )
             # raise GeonatureApiError(e)
-
         return (
             {
                 "message": "Nouvelle observation créée.",

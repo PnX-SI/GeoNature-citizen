@@ -59,15 +59,7 @@
                     <!-- FIXME: hardcoded api media endpoint -->
                     <div class="obs-img-container">
                         <img loading="lazy" class="obs-img" [src]="
-                        o.properties.photos && !!o.properties.photos.length
-                            ? MainConfig.API_ENDPOINT +
-                              o.properties.photos[0].url
-                            : o.properties.medias && !!o.properties.medias.length
-                            ? MainConfig.API_TAXHUB +
-                              '/tmedias/thumbnail/' +
-                              o.properties.medias[0].id_media +
-                              '?h=80'
-                            : 'assets/default_image.png'
+                        getPhotoUrl(o)
                     " />
                         <span *ngIf="o.properties.photos && !!o.properties.photos.length" class="overlay-text"><i
                                 class="fa fa-camera" aria-hidden="true" placement="right"
