@@ -113,43 +113,9 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                     this.programService.getProgram(this.program_id),
                 ]).subscribe(([observations, program]) => {
                     this.observations = observations;
-                    console.log('observations', this.observations);
-                    // 1. Filtrer les observations pour garder des éléments uniques basés sur `cd_nom` sans altérer la structure des données
-                    const observedSpeciesUnique = this.observations.features
-                    .map((feature: any) => feature.properties)  // Extraire uniquement les propriétés
-                    .filter((property: any, index: number, self: any[]) => {
-                      // Garder uniquement le premier élément avec chaque `cd_nom` pour qu'il n'y ait pas de doublons
-                      return self.findIndex((p) => p.cd_nom === property.cd_nom) === index;
-                    });
+                    this.observedSpeciesUniqueSorted = this.getUniqueSortedSpecies(this.observations.features);
+  
 
-                    // 2. Trier la liste en fonction de `properties.name` sans perdre la structure
-                    observedSpeciesUnique.sort((a: any, b: any) => {
-                        const nameA = a.name.toLowerCase(); // Tri insensible à la casse
-                        const nameB = b.name.toLowerCase();
-                        if (nameA < nameB) {
-                            return -1;
-                        } else if (nameA > nameB) {
-                            return 1;
-                        }
-                        return 0;
-                    });
-
-                    // 3. Assignation à `this.observedSpeciesUniqueSorted` pour conserver la structure complète
-                    this.observedSpeciesUniqueSorted = observedSpeciesUnique;
-                    console.log(
-                        'this.observedSpeciesUniqueSorted',
-                        this.observedSpeciesUniqueSorted)
-
-                    // this.surveySpecies = taxa;
-                    // this.surveySpecies.sort((a, b) => {
-                    //     const tax_a = a.nom_francais
-                    //         ? a.nom_francais
-                    //         : a.taxref.nom_vern;
-                    //     const tax_b = b.nom_francais
-                    //         ? b.nom_francais
-                    //         : b.taxref.nom_vern;
-                    //     return tax_a.localeCompare(tax_b);
-                    // });
                     this.programFeature = program;
                 });
                 this.titleService.setTitle(
@@ -210,7 +176,31 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             type: 'FeatureCollection',
             features: this.observations.features,
         };
+        this.updateObservedSpecies();
     }
+
+    private updateObservedSpecies(): void {
+        this.observedSpeciesUniqueSorted = this.getUniqueSortedSpecies(this.observations.features);
+        // const observedSpeciesUnique = this.observations.features
+        //     .map((feature: any) => feature.properties)
+        //     .filter((property: any, index: number, self: any[]) => {
+        //         return self.findIndex((p) => p.cd_nom === property.cd_nom) === index;
+        //     });
+    
+        // observedSpeciesUnique.sort((a: any, b: any) => {
+        //     const nameA = a.name.toLowerCase(); // Tri insensible à la casse
+        //     const nameB = b.name.toLowerCase();
+        //     if (nameA < nameB) {
+        //         return -1;
+        //     } else if (nameA > nameB) {
+        //         return 1;
+        //     }
+        //     return 0;
+        // });
+    
+        // this.observedSpeciesUniqueSorted = observedSpeciesUnique;
+    }
+    
 
     addObsClicked() {
         this.modalFlow.first.clicked();
@@ -268,6 +258,17 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             });
         }
         this.modalRef.close();
+    }
+
+    private getUniqueSortedSpecies(features: any[]): ObservationPropertiesList {
+        const uniqueSpecies = features
+            .map((feature) => feature.properties)
+            .filter((property, index, self) =>
+                self.findIndex((p) => p.cd_nom === property.cd_nom) === index
+            );
+
+        uniqueSpecies.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        return uniqueSpecies;
     }
 
     ngOnDestroy(): void {

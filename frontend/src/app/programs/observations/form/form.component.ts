@@ -224,8 +224,18 @@ export class ObsFormComponent implements AfterViewInit {
                         map((species: TaxonomyList) =>{
                             if (this.taxaCount < this.autoCompleteThresholdLongList) {
                                 return species.sort((a, b) => {
-                                  const taxA = a.nom_francais ? a.nom_francais : a.taxref.nom_vern;
-                                  const taxB = b.nom_francais ? b.nom_francais : b.taxref.nom_vern;
+                                    const taxA = a.nom_francais !== null && a.nom_francais !== undefined
+                                    ? a.nom_francais
+                                    : a.taxref.nom_vern !== null && a.taxref.nom_vern !== undefined
+                                      ? a.taxref.nom_vern
+                                      : '';
+                                  
+                                  const taxB = b.nom_francais !== null && b.nom_francais !== undefined
+                                    ? b.nom_francais
+                                    : b.taxref.nom_vern !== null && b.taxref.nom_vern !== undefined
+                                      ? b.taxref.nom_vern
+                                      : '';
+                                  
                                   return taxA.localeCompare(taxB);
                                 });
                               } else {

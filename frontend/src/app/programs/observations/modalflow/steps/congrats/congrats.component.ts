@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { COMPILER_OPTIONS, Component, Input, ViewEncapsulation } from '@angular/core';
 import { IFlowComponent } from '../../flow/flow';
 import { MainConfig } from '../../../../../../conf/main.config';
 
@@ -12,6 +12,7 @@ export class CongratsComponent implements IFlowComponent {
     timeout: any;
     username: string;
     obs: any;
+    photoPath: string =  MainConfig.API_ENDPOINT +'/assets/default_program.jpg';
     MainConfig = MainConfig;
 
     constructor() {}
@@ -25,9 +26,12 @@ export class CongratsComponent implements IFlowComponent {
     ngOnInit(): void {
         this.username = localStorage.getItem('username');
         this.obs = this.data.obs.properties;
+        if (this.obs.photos && this.obs.photos.length > 0) {
+            this.photoPath = MainConfig.API_ENDPOINT + '/' + this.obs.photos[0].url;
+        }
         this.timeout = setTimeout(() => {
             this.data.next(this.data);
-        }, 2000);
+        }, 10000);
     }
 
     closeModal() {

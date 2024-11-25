@@ -7,7 +7,11 @@ interface TaxrefLimited {
     lb_nom: string;
     nom_vern: string;
   }
-
+  export interface Photo {
+    author: string;
+    date: string;  // Format ISO: YYYY-MM-DD
+    url: string;   // Chemin ou URL de la photo
+}
 export interface ObservationProperties {
     cd_nom: number;
     comment: string;
@@ -22,7 +26,7 @@ export interface ObservationProperties {
     sci_name: string;
     timestamp_create: Date;
     validation_status?: string;
-    photos?: string[];
+    photos?: Photo[];
     taxref: TaxrefLimited;
     name: string;
     json_data?: any;
