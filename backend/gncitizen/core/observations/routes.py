@@ -21,7 +21,7 @@ from gncitizen.utils.helpers import get_filter_by_args
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.mail_check import send_user_email
 from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.taxonomy import get_specie_from_cd_nom
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom,get_taxa_by_cd_nom
 from server import db
 
 from .admin import ObservationView
@@ -56,6 +56,7 @@ obs_keys = (
     "comment",
     "timestamp_create",
     "json_data",
+    "name",
 )
 
 if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
@@ -222,7 +223,8 @@ def post_observation():
 
         # If taxon name is not provided: call taxhub
         if not newobs.name:
-            taxon = get_specie_from_cd_nom(newobs.cd_nom)
+            # taxon = get_specie_from_cd_nom(newobs.cd_nom)
+            taxon = get_taxa_by_cd_nom(newobs.cd_nom)
             newobs.name = taxon.get("nom_vern", "")
 
         newobs.validation_status = ValidationStatus.NOT_VALIDATED

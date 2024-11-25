@@ -39,16 +39,19 @@ taxhub_full_lists = {}
 taxonomy_lists = []
 
 
-def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
+def taxhub_rest_get_taxon_list(taxhub_list_id: int, params_to_update: Dict = {}) -> Dict:
     url = f"{TAXHUB_API}taxref"
     params = {
         "id_liste": taxhub_list_id,
-        "fields": "medias,medias.types,attributs,attributs.bib_attribut",
+        # TODO: see if PR taxhub is accepted (https://github.com/PnX-SI/TaxHub/pull/583) . If not , this won't work
+        "fields": "medias.types,attributs.bib_attribut",
         "existing": "true",
         "order": "asc",
         "orderby": "nom_complet",
         "limit": 1000,
     }
+    if params_to_update:
+        params.update(params_to_update)
     res = session.get(
         url,
         params=params,
@@ -129,10 +132,11 @@ def get_specie_from_cd_nom(cd_nom) -> Dict:
     :return: french and scientific official name (from ``cd_ref`` = ``cd_nom``) as dict
     :rtype: dict
     """
-    url = f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}"
+    # url = f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}"
+    url = f"{TAXHUB_API}taxref/{cd_nom}"
     params = {
         "is_ref": True,
-        "cd_nom": cd_nom,
+        # "cd_nom": cd_nom,
     }
     res = session.get(url, params=params)
     official_taxa = res.json().get("items", [{}])[0]
@@ -176,9 +180,10 @@ daemon.start()
 def reformat_taxa(taxa):
     result = []
 
+    items = taxa.get("items", [taxa])
     # On parcours chaque item de taxa et on peut ici choisir de garder ou non certains champs pertinent pour citizen
     # NOTES: pour éviter de tout charger peut être alléger l'objet taxref si pas utilisé ?
-    for item in taxa["items"]:
+    for item in items:
         taxon = {
             "medias": [],
             "cd_nom": item.get("cd_nom"),
@@ -211,12 +216,11 @@ def reformat_taxa(taxa):
             },
         }
         for media in item.get("medias", []):
-            if media.get("types", {}).get("nom_type_media") in [
-                "Photo_gncitizen",
-                "Photo_principale",
-                "Photo",
-            ]:
-                taxon["medias"].append(media)
+            types = media.get("types", {})
+            nom_type_media = types.get("nom_type_media")
+            if nom_type_media in ["Photo_gncitizen", "Photo_principale", "Photo"]:
+                media_reformat = {**media, "nom_type_media": nom_type_media}
+                taxon["medias"].append(media_reformat)
         # Parcourir les attributs et chercher 'nom_francais' dans bib_attribut
         for attribut in item.get("attributs", []):
             bib_attribut = attribut.get("bib_attribut", {})
@@ -226,9 +230,27 @@ def reformat_taxa(taxa):
                 taxon["nom_francais"] = attribut.get("valeur_attribut")
 
         result.append(taxon)
-
     return result
 
+
+def get_taxa_by_cd_nom(cd_nom,  params_to_update: Dict = {}) -> Dict:
+    """get taxa datas from taxref id (cd_nom)
+
+    :param cd_nom: taxref unique id (cd_nom)
+    :type cd_nom: int
+    :rtype: dict
+    """
+    # url = f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}"
+    url = f"{TAXHUB_API}taxref/{cd_nom}"
+    params = {
+        "is_ref": True,
+        # "cd_nom": cd_nom,
+    }
+    if params_to_update:
+        params.update(params_to_update)
+    res = session.get(url, params=params)
+    taxon_info = res.json()
+    return reformat_taxa(taxon_info)
 
 def remove_accents(input_str):
     nfkd_form = unicodedata.normalize("NFKD", input_str)

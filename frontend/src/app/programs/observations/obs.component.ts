@@ -19,7 +19,7 @@ import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
 import { GncProgramsService } from '../../api/gnc-programs.service';
 import { ModalFlowService } from './modalflow/modalflow.service';
-import { ObservationFeature, TaxonomyList } from './observation.model';
+import { ObservationFeature, ObservationPropertiesList, TaxonomyList } from './observation.model';
 import { ObsMapComponent } from './map/map.component';
 import { MediaGaleryComponent } from '../media-galery/media-galery.component';
 import { ObsListComponent } from './list/list.component';
@@ -41,6 +41,7 @@ import { MainConfig } from '../../../conf/main.config';
 })
 export class ObsComponent extends ProgramBaseComponent implements OnInit {
     observations: ObservationFeatureCollection;
+    observedSpeciesUniqueSorted: ObservationPropertiesList;
     surveySpecies: TaxonomyList;
     @ViewChild(ObsMapComponent, { static: true }) obsMap: ObsMapComponent;
     @ViewChild(ObsListComponent, { static: true }) obsList: ObsListComponent;
@@ -106,22 +107,49 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                 this.taxonomyListID = this.program.taxonomy_list;
                 forkJoin([
                     this.programService.getProgramObservations(this.program_id),
-                    this.programService.getProgramTaxonomyList(
-                        this.program.taxonomy_list
-                    ),
+                    // this.programService.getProgramTaxonomyList(
+                    //     this.program.taxonomy_list
+                    // ),
                     this.programService.getProgram(this.program_id),
-                ]).subscribe(([observations, taxa, program]) => {
+                ]).subscribe(([observations, program]) => {
                     this.observations = observations;
-                    this.surveySpecies = taxa;
-                    this.surveySpecies.sort((a, b) => {
-                        const tax_a = a.nom_francais
-                            ? a.nom_francais
-                            : a.taxref.nom_vern;
-                        const tax_b = b.nom_francais
-                            ? b.nom_francais
-                            : b.taxref.nom_vern;
-                        return tax_a.localeCompare(tax_b);
+                    console.log('observations', this.observations);
+                    // 1. Filtrer les observations pour garder des éléments uniques basés sur `cd_nom` sans altérer la structure des données
+                    const observedSpeciesUnique = this.observations.features
+                    .map((feature: any) => feature.properties)  // Extraire uniquement les propriétés
+                    .filter((property: any, index: number, self: any[]) => {
+                      // Garder uniquement le premier élément avec chaque `cd_nom` pour qu'il n'y ait pas de doublons
+                      return self.findIndex((p) => p.cd_nom === property.cd_nom) === index;
                     });
+
+                    // 2. Trier la liste en fonction de `properties.name` sans perdre la structure
+                    observedSpeciesUnique.sort((a: any, b: any) => {
+                        const nameA = a.name.toLowerCase(); // Tri insensible à la casse
+                        const nameB = b.name.toLowerCase();
+                        if (nameA < nameB) {
+                            return -1;
+                        } else if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+
+                    // 3. Assignation à `this.observedSpeciesUniqueSorted` pour conserver la structure complète
+                    this.observedSpeciesUniqueSorted = observedSpeciesUnique;
+                    console.log(
+                        'this.observedSpeciesUniqueSorted',
+                        this.observedSpeciesUniqueSorted)
+
+                    // this.surveySpecies = taxa;
+                    // this.surveySpecies.sort((a, b) => {
+                    //     const tax_a = a.nom_francais
+                    //         ? a.nom_francais
+                    //         : a.taxref.nom_vern;
+                    //     const tax_b = b.nom_francais
+                    //         ? b.nom_francais
+                    //         : b.taxref.nom_vern;
+                    //     return tax_a.localeCompare(tax_b);
+                    // });
                     this.programFeature = program;
                 });
                 this.titleService.setTitle(
