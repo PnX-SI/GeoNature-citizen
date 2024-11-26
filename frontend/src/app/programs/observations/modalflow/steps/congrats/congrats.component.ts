@@ -12,7 +12,7 @@ export class CongratsComponent implements IFlowComponent {
     timeout: any;
     username: string;
     obs: any;
-    photoPath: string =  MainConfig.API_ENDPOINT +'/assets/default_program.jpg';
+    photoPath: string =  'assets/default_program.jpg';
     MainConfig = MainConfig;
 
     constructor() {}
