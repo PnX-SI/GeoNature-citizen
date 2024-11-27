@@ -151,7 +151,27 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
     }
 
     formatter = (taxon: any) => {
-        return  taxon[this.displayedLabel].replace(/<[^>]*>/g, '') // Supprime les balises HTML
+
+    // Liste des priorités pour les labels
+    const priorityAttributes = [
+        this.displayedLabel,
+        'nom_vern',
+        'nom_valide',
+        'lb_nom',
+        'search_name',
+        'name',
+    ];
+
+    // Trouver le premier attribut valide
+    const validLabel = priorityAttributes.find(attr => taxon[attr]);
+    this.displayedLabel = validLabel || 'No name associated';
+
+    if (!validLabel) {
+        return '';
+    }
+
+    // Supprimer les balises HTML avant de retourner la valeur
+    return taxon[validLabel].replace(/<[^>]*>/g, '');
     };
 
     searchTaxon = (text$: Observable<string>) =>
