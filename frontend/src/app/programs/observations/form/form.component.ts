@@ -740,8 +740,26 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     getPreferredName(taxon: any): string {
-        return taxon.nom_francais &&taxon.nom_francais !== '' ? taxon.nom_francais  :
-               taxon.taxref.nom_vern !== '' ? taxon.taxref.nom_vern :
-               taxon.taxref.nom_complet;
-      }
+        const priorityAttributes = [
+            'nom_francais',
+            'taxref.nom_vern',
+            'taxref.nom_valide',
+            'taxref.nom_complet',
+            'taxref.lb_nom',
+            'taxref.cd_nom',
+        ];
+    
+        for (const attributePath of priorityAttributes) {
+            const value = this.getValueFromPath(taxon, attributePath);
+            if (value) {
+                return value;
+            }
+        }
+    
+        return 'Unknown';
+    }
+    
+    private getValueFromPath(obj: any, path: string): any {
+        return path.split('.').reduce((acc, key) => acc && acc[key], obj);
+    }
 }
