@@ -95,3 +95,15 @@ app-obs-form .dropdown-menu.show {
     height: 200px;
     max-height: 200px;
 }
+
+.spinner-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;  /* Occupation complète de la fenêtre */
+    width: 100%;
+  }

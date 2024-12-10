@@ -198,9 +198,23 @@ export class GncProgramsService implements OnInit {
             );
     }
 
-    getProgramTaxonomyList(taxonomy_list: number): Observable<TaxonomyList> {
+    getProgramTaxonomyList(taxonomy_list: number, params?:Object): Observable<TaxonomyList> {
+        let httpParams = new HttpParams();
+        if (params) {
+            Object.keys(params).forEach(key => {
+                httpParams = httpParams.set(key, params[key]);
+            });
+        }
         return this.http.get<TaxonomyList>(
-            `${this.URL}/taxonomy/lists/${taxonomy_list}/species`
+            `${this.URL}/taxonomy/lists/${taxonomy_list}/species`,
+           { params: httpParams}
+        );
+    }
+
+
+    getAllProgramTaxonomyList(): Observable<any[]> {
+        return this.http.get<any[]>(
+            `${this.URL}/taxonomy/lists`
         );
     }
 
@@ -223,6 +237,12 @@ export class GncProgramsService implements OnInit {
             {
                 params,
             });
+    }
+
+    getTaxonInfoByCdNom(cd_nom:number): Observable<TaxonomyList> {
+        return this.http.get<TaxonomyList>(
+            `${this.URL}/taxonomy/taxon/${cd_nom}`
+        );
     }
 
     private handleError<T>(operation = 'operation', result?: T) {
