@@ -30,15 +30,14 @@ export interface ObservationProperties {
     taxref: TaxrefLimited;
     name: string;
     json_data?: any;
+    medias?: Media[];
 }
 export interface ObservationFeature extends Feature {
     properties: ObservationProperties;
 }
-interface GenericObject {
-    [k: string]: boolean | number | string;
-}
 
-export interface Taxref {
+
+export interface TaxonBase {
     cd_nom: number;
     cd_ref: number;
     cd_sup: number | null;
@@ -65,11 +64,16 @@ export interface Taxref {
     url: string | null;
 }
 
+export interface Taxon extends TaxonBase {
+    nom_complet_html_sanitized: SafeHtml;
+} 
+
 export interface TaxonomyListItem {
-    medias: GenericObject[];
+    medias: Media[];
+    attributs: Attribut[];
     cd_nom: number;
     nom_francais: string | null;
-    taxref: Taxref;
+    taxref: TaxonBase;
 }
 
 export type TaxonomyList = Array<TaxonomyListItem>;
@@ -87,3 +91,39 @@ export interface PostObservationResponse extends ObservationFeatureCollection {
 }
 
 export type ObservationPropertiesList = ObservationProperties[];
+
+
+export interface Attribut {
+    id_attribut: number;         // Identifiant unique de l'attribut
+    nom_attribut: string;        // Nom de l'attribut
+    label_attribut: string;      // Libellé de l'attribut
+    desc_attribut: string;       // Description de l'attribut
+    type_attribut: string;       // Type de l'attribut (par ex. "text")
+    type_widget: string;         // Type de widget associé à l'attribut (par ex. "textarea", "select")
+    liste_valeur_attribut: string;  // Liste des valeurs possibles pour l'attribut (en format JSON)
+    regne: string | null;        // Règne biologique associé (si applicable)
+    group2_inpn: string | null;  // Groupe INPN de niveau 2 (si applicable)
+    obligatoire: boolean;        // Indicateur si l'attribut est obligatoire
+    ordre: number | null;        // Ordre d'affichage de l'attribut (si défini)
+    id_theme: number;            // Identifiant du thème auquel appartient l'attribut
+  }
+  
+  export interface MediaBase {
+    id_media: number;            // Identifiant unique du média
+    media_url: string;           // URL du média
+    titre: string;               // Titre du média
+    auteur: string | null;       // Auteur du média (peut être null)
+    cd_ref: number;              // Référence principale du média associée à l'espèce
+    chemin: string;              // Chemin du fichier du média sur le serveur
+    desc_media: string;          // Description du média (chaîne vide si non renseignée)
+    id_type: number;             // Identifiant du type du média (ex. image, vidéo, photo, etc.)
+    is_public: boolean;          // Indicateur de visibilité publique du média
+    licence: string | null;      // Licence associée au média (peut être null)
+    source: string | null;       // Source du média (peut être null)
+    url: string | null;          // URL associée au média (peut être null)
+  }
+
+  export interface Media extends MediaBase {
+    nom_type_media: string
+  }
+  

@@ -43,12 +43,11 @@ def taxhub_rest_get_taxon_list(taxhub_list_id: int, params_to_update: Dict = {})
     url = f"{TAXHUB_API}taxref"
     params = {
         "id_liste": taxhub_list_id,
-        # TODO: see if PR taxhub is accepted (https://github.com/PnX-SI/TaxHub/pull/583) . If not , this won't work
-        "fields": "medias.types,attributs.bib_attribut",
+        "fields": "medias,attributs",
         "existing": "true",
         "order": "asc",
         "orderby": "nom_complet",
-        "limit": 1000,
+        "limit": 5,
     }
     if params_to_update:
         params.update(params_to_update)
@@ -65,7 +64,7 @@ def taxhub_rest_get_all_lists() -> Optional[Dict]:
     url = f"{TAXHUB_API}biblistes"
     res = session.get(
         url,
-        timeout=10000,  # TODO : suivant le nombre de taxons dans les listes cette requête peut êtr très longue (voir pour améliorer performance coté TaxHub avec notamment la définition dans le modèle BibListes : https://github.com/PnX-SI/TaxHub/blob/ea9434de5a1f227131e0e8640ad17f8a25e8a39d/apptax/taxonomie/models.py#L238 )
+        timeout=5,
     )
     res.raise_for_status()
     if res.status_code == 200:
@@ -81,39 +80,7 @@ def taxhub_rest_get_all_lists() -> Optional[Dict]:
     return None
 
 
-#  TODO: check if useless and remove
-# def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
-#     if not taxhub_id:
-#         raise ValueError("Null value for taxhub taxon id")
-#     url = f"{TAXHUB_API}taxref/{taxhub_id}"
-#     for _ in range(5):
-#         try:
-#             res = session.get(url, timeout=5)
-#             break
-#         except requests.exceptions.ReadTimeout:
-#             continue
-
-#     res.raise_for_status()
-#     data = res.json()
-#     data.pop("listes", None)
-#     data.pop("attributs", None)
-#     if len(data["medias"]) > 0:
-#         media_types = ("Photo_gncitizen", "Photo_principale", "Photo")
-#         i = 0
-#         while i < len(media_types):
-#              # TODO: résoudre problème de récupérations de types de médias  (nom_type_media non accessible) ---> fonctionne avec branche de TH https://github.com/naturalsolutions/TaxHub/blob/fix/load_types_medias_from_taxref_route/apptax/taxonomie/routestaxref.py#L231
-#             filtered_medias = [
-#                 d for d in data["medias"] if d["types"]["nom_type_media"] == media_types[i]
-#             ]
-#             if len(filtered_medias) >= 1:
-#                 break
-#             i += 1
-#         medias = filtered_medias[:1]
-#         data["medias"] = medias
-
-#     return data
-
-
+# TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
 def make_taxon_repository(taxhub_list_id: int) -> List[Taxon]:
     taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
     if isinstance(taxa, dict) and "items" in taxa:
@@ -132,11 +99,9 @@ def get_specie_from_cd_nom(cd_nom) -> Dict:
     :return: french and scientific official name (from ``cd_ref`` = ``cd_nom``) as dict
     :rtype: dict
     """
-    # url = f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}"
     url = f"{TAXHUB_API}taxref/{cd_nom}"
     params = {
         "is_ref": True,
-        # "cd_nom": cd_nom,
     }
     res = session.get(url, params=params)
     official_taxa = res.json().get("items", [{}])[0]
@@ -156,7 +121,7 @@ def get_specie_from_cd_nom(cd_nom) -> Dict:
         taxref[k] = official_taxa.get(k, "")
     return taxref
 
-
+# TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
 def refresh_taxonlist() -> Dict:
     """refresh taxon list"""
     logger.info("Pre loading taxhub data (taxa lists and medias)")
@@ -172,7 +137,40 @@ def refresh_taxonlist() -> Dict:
         logger.warning("ERROR: No taxhub lists available")
     return taxhub_full_lists
 
+def get_all_medias_types() -> Dict:
+    """get all medias types"""
+    url = f"{TAXHUB_API}tmedias/types"
+    res = session.get(
+        url,
+        timeout=5,
+    )
+    res.raise_for_status()
+    if res.status_code == 200:
+        try:
+            medias_types = res.json()
+        except Exception as e:
+            logger.critical(str(e))
+        return medias_types
+    return None
 
+
+def get_all_attributes() -> Dict:
+    """get all attributs types"""
+    url = f"{TAXHUB_API}bibattributs"
+    res = session.get(
+        url,
+        timeout=5,
+    )
+    res.raise_for_status()
+    if res.status_code == 200:
+        try:
+            attributes = res.json()
+        except Exception as e:
+            logger.critical(str(e))
+        return attributes
+    return None
+
+# TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
 daemon = Thread(target=refresh_taxonlist, daemon=True, name="Monitor")
 daemon.start()
 
@@ -186,6 +184,7 @@ def reformat_taxa(taxa):
     for item in items:
         taxon = {
             "medias": [],
+            "attributs": [],
             "cd_nom": item.get("cd_nom"),
             "nom_francais": None,
             "taxref": {
@@ -215,19 +214,14 @@ def reformat_taxa(taxa):
                 "url": item.get("url"),
             },
         }
+        # Récupérer tous les médias sans condition de types
         for media in item.get("medias", []):
-            types = media.get("types", {})
-            nom_type_media = types.get("nom_type_media")
-            if nom_type_media in ["Photo_gncitizen", "Photo_principale", "Photo"]:
-                media_reformat = {**media, "nom_type_media": nom_type_media}
-                taxon["medias"].append(media_reformat)
-        # Parcourir les attributs et chercher 'nom_francais' dans bib_attribut
+            taxon["medias"].append(media)
+
+        # Récupérer tous les attributs si non vides
         for attribut in item.get("attributs", []):
-            bib_attribut = attribut.get("bib_attribut", {})
-            if remove_accents(
-                bib_attribut.get("nom_attribut", "").lower()
-            ) == "nom_francais":
-                taxon["nom_francais"] = attribut.get("valeur_attribut")
+            if attribut:  # Vérifie simplement que l'attribut n'est pas vide
+                taxon["attributs"].append(attribut)
 
         result.append(taxon)
     return result
@@ -252,6 +246,21 @@ def get_taxa_by_cd_nom(cd_nom,  params_to_update: Dict = {}) -> Dict:
     taxon_info = res.json()
     return reformat_taxa(taxon_info)
 
-def remove_accents(input_str):
-    nfkd_form = unicodedata.normalize("NFKD", input_str)
-    return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
+
+def set_taxa_info_from_taxhub(taxhub_data, features):
+    for taxon in taxhub_data["items"]:  # Parcours des taxons dans les données TaxHub
+        for feature in features:  # Parcours des features
+            if feature["properties"]["cd_nom"] == taxon["cd_nom"]:
+                excluded_keys = {"medias", "attributs"}
+                filtered_data = {key: value for key, value in taxon.items() if key not in excluded_keys}
+                
+                if "taxref" not in feature["properties"] or feature["properties"]["taxref"] is None:
+                    feature["properties"]["taxref"] = {}
+                feature["properties"]["taxref"].update(filtered_data)
+                
+                if "medias" not in feature["properties"]:
+                    feature["properties"]["medias"] = []
+
+                feature["properties"]["medias"] = taxon.get("medias", [])
+               
+    return features

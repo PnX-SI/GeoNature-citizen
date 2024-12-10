@@ -23,7 +23,7 @@ import {
 } from 'rxjs/operators';
 import { DataFormService } from './data-form.service';
 import { MainConfig } from '../../conf/main.config';
-import { Taxref } from '../programs/observations/observation.model';
+import { TaxonBase } from '../programs/observations/observation.model';
 
 
 
@@ -78,7 +78,7 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
     noResult: boolean;
     isLoading = false;
     @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
-    @Output() onDelete = new EventEmitter<Taxref>();
+    @Output() onDelete = new EventEmitter<TaxonBase>();
     @Output() emptyInput: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public isCollapseTaxonomy = true;

@@ -43,6 +43,7 @@ import { MapService } from '../../base/map/map.service';
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 import { RefGeoService } from '../../../api/refgeo.service';
 import { ControlPosition } from 'leaflet';
+import { TaxhubService } from 'src/app/api/taxhub.service';
 
 // declare let $: any;
 
@@ -80,13 +81,15 @@ const map_conf = {
 const taxonSelectInputThreshold = MainConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold =
     MainConfig.taxonAutocompleteInputThreshold;
-const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
+
+//  TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+// const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
 const taxonAutocompleteMaxResults = 10;
 const taxonDisplayImageWhenUnique =
     'taxonDisplayImageWhenUnique' in MainConfig
         ? MainConfig.taxonDisplayImageWhenUnique
         : true;
-const autoCompleteThresholdLongList = 300;
+
 // TODO: migrate to conf
 export const obsFormMarkerIcon = L.icon({
     iconUrl: MainConfig['NEW_OBS_POINTER'],
@@ -118,7 +121,6 @@ export class ObsFormComponent implements AfterViewInit {
     taxonSelectInputThreshold = taxonSelectInputThreshold;
     taxonAutocompleteInputThreshold = taxonAutocompleteInputThreshold;
     taxonDisplayImageWhenUnique = taxonDisplayImageWhenUnique;
-    autoCompleteThresholdLongList = autoCompleteThresholdLongList;
     autocomplete = 'isOff';
     MainConfig = MainConfig;
     formMap: L.Map;
@@ -162,10 +164,12 @@ export class ObsFormComponent implements AfterViewInit {
         private toastr: ToastrService,
         private auth: AuthService,
         private mapService: MapService,
-        private _refGeoService: RefGeoService
+        private _refGeoService: RefGeoService,
+        private _taxhubService: TaxhubService
     ) {}
 
     ngOnInit(): void {
+        this._taxhubService.loadAndCacheData();
         this.program_id = this.data.program_id;
         this.coords = this.data.coords;
         this.updateMunicipality();
@@ -200,7 +204,7 @@ export class ObsFormComponent implements AfterViewInit {
                     .getProgramTaxonomyList(this.taxonomyListID)
                     .pipe(
                         tap((species) => {
-                            this.taxa = species;
+                            this.taxa = this._taxhubService.setMediasAndAttributs(species);
                         }),
                         switchMap((species) => 
                             this.programService.getAllProgramTaxonomyList().pipe(
@@ -211,9 +215,11 @@ export class ObsFormComponent implements AfterViewInit {
                       
                                 console.log('this.taxaCount', this.taxaCount);
                       
-                                if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
-                                  this.inputAutoCompleteSetup();
-                                } else if (this.taxaCount === 1) {
+                                // TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+                                // if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
+                                //   this.inputAutoCompleteSetup();
+                                // } else 
+                                if (this.taxaCount === 1) {
                                   this.onTaxonSelected(species[0]); 
                                 }
                                 console.log('species', species);
@@ -222,7 +228,7 @@ export class ObsFormComponent implements AfterViewInit {
                             )
                           ),
                         map((species: TaxonomyList) =>{
-                            if (this.taxaCount < this.autoCompleteThresholdLongList) {
+                            if (this.taxaCount < this.taxonAutocompleteInputThreshold) {
                                 return species.sort((a, b) => {
                                     const taxA = a.nom_francais !== null && a.nom_francais !== undefined
                                     ? a.nom_francais
@@ -479,30 +485,32 @@ export class ObsFormComponent implements AfterViewInit {
         });
     }
 
-    inputAutoCompleteSetup = () => {
-        for (let taxon in this.taxa) {
-            for (let field of taxonAutocompleteFields) {
-                if (this.taxa[taxon]['taxref'][field]) {
-                    this.species.push({
-                        name:
-                            field === 'cd_nom'
-                                ? `${this.taxa[taxon]['taxref']['cd_nom']} - ${this.taxa[taxon]['taxref']['nom_complet']}`
-                                : this.taxa[taxon]['taxref'][field],
-                        cd_nom: this.taxa[taxon]['taxref']['cd_nom'],
-                        icon:
-                            this.taxa[taxon]['medias'].length >= 1
-                                ? // ? this.taxa[taxon]["medias"][0]["url"]
-                                  MainConfig.API_TAXHUB +
-                                  '/tmedias/thumbnail/' +
-                                  this.taxa[taxon]['medias'][0]['id_media'] +
-                                  '?h=20'
-                                : 'assets/default_image.png',
-                    });
-                }
-            }
-        }
-        this.autocomplete = 'isOn';
-    };
+
+    // TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+    // inputAutoCompleteSetup = () => {
+    //     for (let taxon in this.taxa) {
+    //         for (let field of taxonAutocompleteFields) {
+    //             if (this.taxa[taxon]['taxref'][field]) {
+    //                 this.species.push({
+    //                     name:
+    //                         field === 'cd_nom'
+    //                             ? `${this.taxa[taxon]['taxref']['cd_nom']} - ${this.taxa[taxon]['taxref']['nom_complet']}`
+    //                             : this.taxa[taxon]['taxref'][field],
+    //                     cd_nom: this.taxa[taxon]['taxref']['cd_nom'],
+    //                     icon:
+    //                         this.taxa[taxon]['medias'].length >= 1
+    //                             ? // ? this.taxa[taxon]["medias"][0]["url"]
+    //                               MainConfig.API_TAXHUB +
+    //                               '/tmedias/thumbnail/' +
+    //                               this.taxa[taxon]['medias'][0]['id_media'] +
+    //                               '?h=20'
+    //                             : 'assets/default_image.png',
+    //                 });
+    //             }
+    //         }
+    //     }
+    //     this.autocomplete = 'isOn';
+    // };
 
     inputAutoCompleteSearch = (text$: Observable<string>) =>
         text$.pipe(
@@ -708,7 +716,8 @@ export class ObsFormComponent implements AfterViewInit {
             .getTaxonInfoByCdNom(taxon.item['cd_nom'])
             .subscribe((taxonFullInfo) => {
                 console.log('taxonFullInfo', taxonFullInfo);
-                this.selectedTaxon = taxonFullInfo[0];
+                const taxonWithTaxhubInfos= this._taxhubService.setMediasAndAttributs(taxonFullInfo)
+                this.selectedTaxon = taxonWithTaxhubInfos[0];
                 this.obsForm.controls['cd_nom'].patchValue({
                     cd_nom: this.selectedTaxon['cd_nom'],
                     name:this.getPreferredName(this.selectedTaxon),

@@ -21,7 +21,7 @@ from gncitizen.utils.helpers import get_filter_by_args
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.mail_check import send_user_email
 from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.taxonomy import get_specie_from_cd_nom,get_taxa_by_cd_nom
+from gncitizen.utils.taxonomy import get_taxa_by_cd_nom, taxhub_rest_get_taxon_list, set_taxa_info_from_taxhub
 from server import db
 
 from .admin import ObservationView
@@ -223,7 +223,6 @@ def post_observation():
 
         # If taxon name is not provided: call taxhub
         if not newobs.name:
-            # taxon = get_specie_from_cd_nom(newobs.cd_nom)
             taxon = get_taxa_by_cd_nom(newobs.cd_nom)
             newobs.name = taxon.get("nom_vern", "")
 
@@ -252,8 +251,16 @@ def post_observation():
                 db.joinedload(ObservationModel.medias)
             ).get(newobs.id_observation)
             features = newobs.get_feature()
-            #TODO: it seems to be useless now because we get medias from joinedload
-            # features["properties"]["images"] = file
+
+            id_taxonomy_list = newobs.program_ref.taxonomy_list
+            params = {'cd_nom': newobs.cd_nom}
+            # Appel synchrone à taxhub_rest_get_taxon_list
+            if id_taxonomy_list is not None:
+                taxon_list_data = taxhub_rest_get_taxon_list(id_taxonomy_list, params)
+            else:
+                taxon_list_data = None
+
+            features_with_taxhub_info = set_taxa_info_from_taxhub(taxon_list_data, [features])
         except Exception as e:
             current_app.logger.warning(
                 "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
@@ -263,7 +270,7 @@ def post_observation():
             {
                 "message": "Nouvelle observation créée.",
                 "features": [
-                    features,
+                    features_with_taxhub_info[0],
                 ],
                 "type": "FeatureCollection",
             },
@@ -321,7 +328,27 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         else:
             observations = query.all()
         features = [obs.get_feature() for obs in observations]
-        feature_collection = FeatureCollection(features)
+
+
+        if len(observations) > 0:
+            id_taxonomy_list = observations[0].program_ref.taxonomy_list
+            cd_nom_list = ','.join(map(str, set(obs.cd_nom for obs in observations)))
+        else:
+            id_taxonomy_list = None
+
+     
+        if len(cd_nom_list) > 0:
+            params = {'cd_nom': cd_nom_list}
+        else:
+            params = {}
+
+        if id_taxonomy_list is not None:
+            taxon_list_data = taxhub_rest_get_taxon_list(id_taxonomy_list, params)
+        else:
+            taxon_list_data = None
+
+        features_with_taxhub_info = set_taxa_info_from_taxhub(taxon_list_data, features)
+        feature_collection = FeatureCollection(features_with_taxhub_info)
 
         if paginate:
             feature_collection["per_page"] = query.per_page

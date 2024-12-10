@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MainConfig } from '../../conf/main.config';
-import { Taxref } from '../programs/observations/observation.model';
+import { TaxonBase } from '../programs/observations/observation.model';
 /** Interface for queryString parameters*/
 export interface ParamsDict {
     [key: string]: string;
@@ -25,7 +25,7 @@ export class DataFormService {
                 queryString = queryString.set(key, params[key]);
             }
         }
-        return this._http.get<Taxref[]>(`${api_endpoint}`, {
+        return this._http.get<TaxonBase[]>(`${api_endpoint}`, {
             params: queryString,
         });
     }

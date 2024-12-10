@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { TaxhubService, Taxon } from '../../api/taxhub.service';
+import { TaxhubService } from '../../api/taxhub.service';
+import { TaxonBase } from 'src/app/programs/observations/observation.model';
 
 @Component({
     selector: 'app-species',
@@ -12,7 +13,7 @@ import { TaxhubService, Taxon } from '../../api/taxhub.service';
 export class SpeciesComponent implements OnInit {
     title = 'fiche espèce';
     specie_id: any;
-    taxon: Taxon;
+    taxon: TaxonBase;
 
     constructor(private route: ActivatedRoute, public taxhub: TaxhubService) {
         this.route.params.subscribe((params) => {

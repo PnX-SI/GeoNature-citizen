@@ -198,9 +198,16 @@ export class GncProgramsService implements OnInit {
             );
     }
 
-    getProgramTaxonomyList(taxonomy_list: number): Observable<TaxonomyList> {
+    getProgramTaxonomyList(taxonomy_list: number, params?:Object): Observable<TaxonomyList> {
+        let httpParams = new HttpParams();
+        if (params) {
+            Object.keys(params).forEach(key => {
+                httpParams = httpParams.set(key, params[key]);
+            });
+        }
         return this.http.get<TaxonomyList>(
-            `${this.URL}/taxonomy/lists/${taxonomy_list}/species`
+            `${this.URL}/taxonomy/lists/${taxonomy_list}/species`,
+           { params: httpParams}
         );
     }
 
