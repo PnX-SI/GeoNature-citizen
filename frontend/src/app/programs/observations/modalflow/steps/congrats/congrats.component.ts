@@ -1,7 +1,7 @@
 import { COMPILER_OPTIONS, Component, Input, ViewEncapsulation } from '@angular/core';
 import { IFlowComponent } from '../../flow/flow';
 import { MainConfig } from '../../../../../../conf/main.config';
-import { TaxhubService } from 'src/app/api/taxhub.service';
+import { TaxhubService } from '../../../../../api/taxhub.service';
 
 @Component({
     templateUrl: './congrats.component.html',

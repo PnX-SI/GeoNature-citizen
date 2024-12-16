@@ -15,7 +15,7 @@ import { TaxonomyList, Taxon, Media, Attribut, MediaBase, ObservationFeature, Ob
 })
 export class TaxhubService {
     private readonly URL = MainConfig.API_ENDPOINT;
-    taxon: any;
+    taxon: Taxon;
     MEDIAS_TYPES_ALLOWED = ["Photo_gncitizen", "Photo_principale", "Photo"]
     ATTRIBUTS_ALLOWED = "Nom_francais"
 

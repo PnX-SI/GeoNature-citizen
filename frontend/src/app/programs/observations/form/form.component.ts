@@ -43,7 +43,7 @@ import { MapService } from '../../base/map/map.service';
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 import { RefGeoService } from '../../../api/refgeo.service';
 import { ControlPosition } from 'leaflet';
-import { TaxhubService } from 'src/app/api/taxhub.service';
+import { TaxhubService } from '../../../api/taxhub.service';
 
 // declare let $: any;
 
