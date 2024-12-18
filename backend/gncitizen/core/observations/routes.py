@@ -300,7 +300,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
     paginate = "per_page" in args
     per_page = int(args.pop("per_page", 1000))
     page = int(args.pop("page", 1))
-
+    cd_nom_list = []
     id_role = get_id_role_if_exists()
 
     if validation_process and id_role:
