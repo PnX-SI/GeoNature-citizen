@@ -3,6 +3,7 @@
 """A module to manage taxonomy"""
 
 from threading import Thread
+import unicodedata
 from typing import Dict, List, Optional, Union
 
 import requests
@@ -38,13 +39,18 @@ taxhub_full_lists = {}
 taxonomy_lists = []
 
 
-def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
-    url = f"{TAXHUB_API}biblistes/taxons/{taxhub_list_id}"
+def taxhub_rest_get_taxon_list(taxhub_list_id: int, params_to_update: Dict = {}) -> Dict:
+    url = f"{TAXHUB_API}taxref"
     params = {
+        "id_liste": taxhub_list_id,
+        "fields": "medias,attributs",
         "existing": "true",
         "order": "asc",
-        "orderby": "taxref.nom_complet",
+        "orderby": "nom_complet",
+        "limit": 5,
     }
+    if params_to_update:
+        params.update(params_to_update)
     res = session.get(
         url,
         params=params,
@@ -74,40 +80,14 @@ def taxhub_rest_get_all_lists() -> Optional[Dict]:
     return None
 
 
-def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
-    if not taxhub_id:
-        raise ValueError("Null value for taxhub taxon id")
-    url = f"{TAXHUB_API}bibnoms/{taxhub_id}"
-    for _ in range(5):
-        try:
-            res = session.get(url, timeout=5)
-            break
-        except requests.exceptions.ReadTimeout:
-            continue
-
-    res.raise_for_status()
-    data = res.json()
-    data.pop("listes", None)
-    data.pop("attributs", None)
-    if len(data["medias"]) > 0:
-        media_types = ("Photo_gncitizen", "Photo_principale", "Photo")
-        i = 0
-        while i < len(media_types):
-            filtered_medias = [d for d in data["medias"] if d["nom_type_media"] == media_types[i]]
-            if len(filtered_medias) >= 1:
-                break
-            i += 1
-        medias = filtered_medias[:1]
-        data["medias"] = medias
-
-    return data
-
-
+# TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
 def make_taxon_repository(taxhub_list_id: int) -> List[Taxon]:
     taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
-    taxon_ids = [item["id_nom"] for item in taxa.get("items")]
-    r = [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
-    return r
+    if isinstance(taxa, dict) and "items" in taxa:
+        reformatted_taxa = reformat_taxa(taxa)
+    else:
+        reformatted_taxa = []
+    return reformatted_taxa
 
 
 def get_specie_from_cd_nom(cd_nom) -> Dict:
@@ -119,10 +99,9 @@ def get_specie_from_cd_nom(cd_nom) -> Dict:
     :return: french and scientific official name (from ``cd_ref`` = ``cd_nom``) as dict
     :rtype: dict
     """
-    url = f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}"
+    url = f"{TAXHUB_API}taxref/{cd_nom}"
     params = {
         "is_ref": True,
-        "cd_nom": cd_nom,
     }
     res = session.get(url, params=params)
     official_taxa = res.json().get("items", [{}])[0]
@@ -142,7 +121,7 @@ def get_specie_from_cd_nom(cd_nom) -> Dict:
         taxref[k] = official_taxa.get(k, "")
     return taxref
 
-
+# TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
 def refresh_taxonlist() -> Dict:
     """refresh taxon list"""
     logger.info("Pre loading taxhub data (taxa lists and medias)")
@@ -158,6 +137,130 @@ def refresh_taxonlist() -> Dict:
         logger.warning("ERROR: No taxhub lists available")
     return taxhub_full_lists
 
+def get_all_medias_types() -> Dict:
+    """get all medias types"""
+    url = f"{TAXHUB_API}tmedias/types"
+    res = session.get(
+        url,
+        timeout=5,
+    )
+    res.raise_for_status()
+    if res.status_code == 200:
+        try:
+            medias_types = res.json()
+        except Exception as e:
+            logger.critical(str(e))
+        return medias_types
+    return None
 
+
+def get_all_attributes() -> Dict:
+    """get all attributs types"""
+    url = f"{TAXHUB_API}bibattributs"
+    res = session.get(
+        url,
+        timeout=5,
+    )
+    res.raise_for_status()
+    if res.status_code == 200:
+        try:
+            attributes = res.json()
+        except Exception as e:
+            logger.critical(str(e))
+        return attributes
+    return None
+
+# TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
 daemon = Thread(target=refresh_taxonlist, daemon=True, name="Monitor")
 daemon.start()
+
+
+def reformat_taxa(taxa):
+    result = []
+
+    items = taxa.get("items", [taxa])
+    # On parcours chaque item de taxa et on peut ici choisir de garder ou non certains champs pertinent pour citizen
+    # NOTES: pour éviter de tout charger peut être alléger l'objet taxref si pas utilisé ?
+    for item in items:
+        taxon = {
+            "medias": [],
+            "attributs": [],
+            "cd_nom": item.get("cd_nom"),
+            "nom_francais": None,
+            "taxref": {
+                "cd_nom": item.get("cd_nom"),
+                "cd_ref": item.get("cd_ref"),
+                "cd_sup": item.get("cd_sup"),
+                "cd_taxsup": item.get("cd_taxsup"),
+                "classe": item.get("classe"),
+                "famille": item.get("famille"),
+                "group1_inpn": item.get("group1_inpn"),
+                "group2_inpn": item.get("group2_inpn"),
+                "id_habitat": item.get("id_habitat"),
+                "id_rang": item.get("id_rang"),
+                "id_statut": item.get("id_statut"),
+                "lb_auteur": item.get("lb_auteur"),
+                "lb_nom": item.get("lb_nom"),
+                "nom_complet": item.get("nom_complet"),
+                "nom_complet_html": item.get("nom_complet_html"),
+                "nom_valide": item.get("nom_valide"),
+                "nom_vern": item.get("nom_vern"),
+                "nom_vern_eng": item.get("nom_vern_eng"),
+                "ordre": item.get("ordre"),
+                "phylum": item.get("phylum"),
+                "regne": item.get("regne"),
+                "sous_famille": item.get("sous_famille"),
+                "tribu": item.get("tribu"),
+                "url": item.get("url"),
+            },
+        }
+        # Récupérer tous les médias sans condition de types
+        for media in item.get("medias", []):
+            taxon["medias"].append(media)
+
+        # Récupérer tous les attributs si non vides
+        for attribut in item.get("attributs", []):
+            if attribut:  # Vérifie simplement que l'attribut n'est pas vide
+                taxon["attributs"].append(attribut)
+
+        result.append(taxon)
+    return result
+
+
+def get_taxa_by_cd_nom(cd_nom,  params_to_update: Dict = {}) -> Dict:
+    """get taxa datas from taxref id (cd_nom)
+
+    :param cd_nom: taxref unique id (cd_nom)
+    :type cd_nom: int
+    :rtype: dict
+    """
+    # url = f"{TAXHUB_API}/taxref?is_ref=true&cd_nom={cd_nom}"
+    url = f"{TAXHUB_API}taxref/{cd_nom}"
+    params = {
+        "is_ref": True,
+        # "cd_nom": cd_nom,
+    }
+    if params_to_update:
+        params.update(params_to_update)
+    res = session.get(url, params=params)
+    taxon_info = res.json()
+    return reformat_taxa(taxon_info)
+
+
+def set_taxa_info_from_taxhub(taxhub_data, features):
+    for taxon in taxhub_data["items"]:  # Parcours des taxons dans les données TaxHub
+        for feature in features:  # Parcours des features
+            if feature["properties"]["cd_nom"] == taxon["cd_nom"]:
+                excluded_keys = {"medias", "attributs"}
+                filtered_data = {key: value for key, value in taxon.items() if key not in excluded_keys}
+                
+                if "taxref" not in feature["properties"] or feature["properties"]["taxref"] is None:
+                    feature["properties"]["taxref"] = {}
+                feature["properties"]["taxref"].update(filtered_data)
+                
+                if "medias" not in feature["properties"]:
+                    feature["properties"]["medias"] = []
+
+                feature["properties"]["medias"] = taxon.get("medias", [])
+               
+    return features

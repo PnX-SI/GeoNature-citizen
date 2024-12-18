@@ -20,6 +20,7 @@ import {
     distinctUntilChanged,
     map,
     share,
+    switchMap,
     tap,
 } from 'rxjs/operators';
 import { FeatureCollection } from 'geojson';
@@ -42,6 +43,7 @@ import { MapService } from '../../base/map/map.service';
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 import { RefGeoService } from '../../../api/refgeo.service';
 import { ControlPosition } from 'leaflet';
+import { TaxhubService } from '../../../api/taxhub.service';
 
 // declare let $: any;
 
@@ -79,7 +81,9 @@ const map_conf = {
 const taxonSelectInputThreshold = MainConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold =
     MainConfig.taxonAutocompleteInputThreshold;
-const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
+
+//  TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+// const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
 const taxonAutocompleteMaxResults = 10;
 const taxonDisplayImageWhenUnique =
     'taxonDisplayImageWhenUnique' in MainConfig
@@ -148,6 +152,8 @@ export class ObsFormComponent implements AfterViewInit {
     photos: any[] = [];
     existing_photos: any[] = [];
     mapVars: any = {};
+    isInvalidDirty = false;
+    loading: boolean = true;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -158,10 +164,12 @@ export class ObsFormComponent implements AfterViewInit {
         private toastr: ToastrService,
         private auth: AuthService,
         private mapService: MapService,
-        private _refGeoService: RefGeoService
+        private _refGeoService: RefGeoService,
+        private _taxhubService: TaxhubService
     ) {}
 
     ngOnInit(): void {
+        this._taxhubService.loadAndCacheData();
         this.program_id = this.data.program_id;
         this.coords = this.data.coords;
         this.updateMunicipality();
@@ -185,6 +193,7 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     ngAfterViewInit() {
+        this.loading = true;
         this.programService
             .getProgram(this.program_id)
             .subscribe((result: FeatureCollection) => {
@@ -195,31 +204,58 @@ export class ObsFormComponent implements AfterViewInit {
                     .getProgramTaxonomyList(this.taxonomyListID)
                     .pipe(
                         tap((species) => {
-                            this.taxa = species;
-                            this.taxaCount = Object.keys(this.taxa).length;
-                            if (
-                                this.taxaCount >=
-                                this.taxonAutocompleteInputThreshold
-                            ) {
-                                this.inputAutoCompleteSetup();
-                            } else if (this.taxaCount == 1) {
-                                this.onTaxonSelected(this.taxa[0]);
-                            }
+                            this.taxa = this._taxhubService.setMediasAndAttributs(species);
+                        }),
+                        switchMap((species) => 
+                            this.programService.getAllProgramTaxonomyList().pipe(
+                              map((listsTaxonomy) => {
+                                this.taxaCount = listsTaxonomy
+                                  .filter((lt) => lt.id_liste === this.taxonomyListID)
+                                  .map((lt) => lt.nb_taxons)[0];
+                      
+                                console.log('this.taxaCount', this.taxaCount);
+                      
+                                // TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+                                // if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
+                                //   this.inputAutoCompleteSetup();
+                                // } else 
+                                if (this.taxaCount === 1) {
+                                  this.onTaxonSelected(species[0]); 
+                                }
+                                console.log('species', species);
+                                return species;
+                              })
+                            )
+                          ),
+                        map((species: TaxonomyList) =>{
+                            if (this.taxaCount < this.taxonAutocompleteInputThreshold) {
+                                return species.sort((a, b) => {
+                                    const taxA = a.nom_francais !== null && a.nom_francais !== undefined
+                                    ? a.nom_francais
+                                    : a.taxref.nom_vern !== null && a.taxref.nom_vern !== undefined
+                                      ? a.taxref.nom_vern
+                                      : '';
+                                  
+                                  const taxB = b.nom_francais !== null && b.nom_francais !== undefined
+                                    ? b.nom_francais
+                                    : b.taxref.nom_vern !== null && b.taxref.nom_vern !== undefined
+                                      ? b.taxref.nom_vern
+                                      : '';
+                                  
+                                  return taxA.localeCompare(taxB);
+                                });
+                              } else {
+                                // Si la condition n'est pas remplie, retourner les données sans les trier
+                                return species;
+                              }
                         }),
                         share()
-                    );
-                this.surveySpecies$.subscribe((res: TaxonomyList) => {
-                    res.sort((a, b): number => {
-                        const tax_a = a.nom_francais
-                            ? a.nom_francais
-                            : a.taxref.nom_vern;
-                        const tax_b = b.nom_francais
-                            ? b.nom_francais
-                            : b.taxref.nom_vern;
-                        return tax_a.localeCompare(tax_b);
-                    });
-                    this.surveySpecies = res;
-                });
+                        );
+                        this.surveySpecies$.subscribe((sortedSpecies) => {
+                            console.log("sortedSpecies", sortedSpecies);
+                            this.surveySpecies = sortedSpecies;
+                            this.loading = false;
+                          });
 
                 if (this.program.features[0].properties.id_form) {
                     // Load custom form if one is attached to program
@@ -431,7 +467,7 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     patchForm(updateData) {
-        // console.log("updateData", updateData)
+        console.log("updateData", updateData)
         const taxon = updateData.taxon || {
             media: updateData.taxref.media_url,
             taxref: updateData.taxref,
@@ -449,49 +485,52 @@ export class ObsFormComponent implements AfterViewInit {
         });
     }
 
-    inputAutoCompleteSetup = () => {
-        for (let taxon in this.taxa) {
-            for (let field of taxonAutocompleteFields) {
-                if (this.taxa[taxon]['taxref'][field]) {
-                    this.species.push({
-                        name:
-                            field === 'cd_nom'
-                                ? `${this.taxa[taxon]['taxref']['cd_nom']} - ${this.taxa[taxon]['taxref']['nom_complet']}`
-                                : this.taxa[taxon]['taxref'][field],
-                        cd_nom: this.taxa[taxon]['taxref']['cd_nom'],
-                        icon:
-                            this.taxa[taxon]['medias'].length >= 1
-                                ? // ? this.taxa[taxon]["medias"][0]["url"]
-                                  MainConfig.API_TAXHUB +
-                                  '/tmedias/thumbnail/' +
-                                  this.taxa[taxon]['medias'][0]['id_media'] +
-                                  '?h=20'
-                                : 'assets/default_image.png',
-                    });
-                }
-            }
-        }
-        this.autocomplete = 'isOn';
-    };
 
-    inputAutoCompleteSearch = (text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(200),
-            distinctUntilChanged(),
-            map((term) =>
-                term === '' // term.length < n
-                    ? []
-                    : this.species
-                          .filter(
-                              (v) =>
-                                  v['name']
-                                      .toLowerCase()
-                                      .indexOf(term.toLowerCase()) > -1
-                              // v => new RegExp(term, "gi").test(v["name"])
-                          )
-                          .slice(0, taxonAutocompleteMaxResults)
-            )
-        );
+    // TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+    // inputAutoCompleteSetup = () => {
+    //     for (let taxon in this.taxa) {
+    //         for (let field of taxonAutocompleteFields) {
+    //             if (this.taxa[taxon]['taxref'][field]) {
+    //                 this.species.push({
+    //                     name:
+    //                         field === 'cd_nom'
+    //                             ? `${this.taxa[taxon]['taxref']['cd_nom']} - ${this.taxa[taxon]['taxref']['nom_complet']}`
+    //                             : this.taxa[taxon]['taxref'][field],
+    //                     cd_nom: this.taxa[taxon]['taxref']['cd_nom'],
+    //                     icon:
+    //                         this.taxa[taxon]['medias'].length >= 1
+    //                             ? // ? this.taxa[taxon]["medias"][0]["url"]
+    //                               MainConfig.API_TAXHUB +
+    //                               '/tmedias/thumbnail/' +
+    //                               this.taxa[taxon]['medias'][0]['id_media'] +
+    //                               '?h=20'
+    //                             : 'assets/default_image.png',
+    //                 });
+    //             }
+    //         }
+    //     }
+    //     this.autocomplete = 'isOn';
+    // };
+
+    // TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+    // inputAutoCompleteSearch = (text$: Observable<string>) =>
+    //     text$.pipe(
+    //         debounceTime(200),
+    //         distinctUntilChanged(),
+    //         map((term) =>
+    //             term === '' // term.length < n
+    //                 ? []
+    //                 : this.species
+    //                       .filter(
+    //                           (v) =>
+    //                               v['name']
+    //                                   .toLowerCase()
+    //                                   .indexOf(term.toLowerCase()) > -1
+    //                           // v => new RegExp(term, "gi").test(v["name"])
+    //                       )
+    //                       .slice(0, taxonAutocompleteMaxResults)
+    //         )
+    //     );
 
     inputAutoCompleteFormatter = (x: { name: string }) => x.name;
     disabledDates = (date: NgbDate, current: { month: number }) => {
@@ -501,9 +540,10 @@ export class ObsFormComponent implements AfterViewInit {
 
     onTaxonSelected(taxon: any): void {
         this.selectedTaxon = taxon;
+        console.log('onTaxonSelected', taxon);
         this.obsForm.controls['cd_nom'].patchValue({
             cd_nom: taxon.taxref['cd_nom'],
-            name: taxon.taxref.nom_complet,
+            name: this.getPreferredName(taxon),
         });
     }
 
@@ -541,14 +581,11 @@ export class ObsFormComponent implements AfterViewInit {
         if (isNaN(cd_nom)) {
             cd_nom = Number.parseInt(taxon.cd_nom);
         }
-        // Need to convert the defined interface to an array to have
-        // access to the filter function
-        const tempTaxa = this.taxa as Array<unknown> as Array<TempTaxa>;
-        const taxon_name: TempTaxa = tempTaxa.filter(
-            (t) => t.cd_nom == cd_nom
-        )[0];
+        // const taxon_name = this.selectedTaxon.nom_francais ? this.selectedTaxon.nom_francais : this.selectedTaxon.taxref.nom_vern;
+        const taxon_name = taxon.name
+        console.log('taxon_name', taxon_name);
         formData.append('cd_nom', cd_nom.toString());
-        formData.append('name', taxon_name.nom_francais);
+        formData.append('name', taxon_name);
         const obsDateControlValue = NgbDate.from(
             this.obsForm.controls.date.value
         );
@@ -658,5 +695,66 @@ export class ObsFormComponent implements AfterViewInit {
         let resp = this.obsForm.valid;
         if (this.customForm.json_schema) resp = resp && this.jsonValid;
         return resp;
+    }
+
+    // TODO:  change this to reset objForm or remove this and check if form is invalid
+    targetChanges() {
+        // Subscribe to specific control changes
+        this.obsForm.get('cd_nom').valueChanges.subscribe((cd_nom) => {
+            // Handle changes to the 'firstName' control
+            console.log('First cd_nom changed:', cd_nom);
+
+            // Apply changes based on 'firstName' value (example)
+            if (cd_nom === '') {
+                this.selectedTaxon = '';
+                // Apply specific changes
+            }
+        });
+    }
+
+    onSelectedTaxon(taxon) {
+        this.programService
+            .getTaxonInfoByCdNom(taxon.item['cd_nom'])
+            .subscribe((taxonFullInfo) => {
+                console.log('taxonFullInfo', taxonFullInfo);
+                const taxonWithTaxhubInfos= this._taxhubService.setMediasAndAttributs(taxonFullInfo)
+                this.selectedTaxon = taxonWithTaxhubInfos[0];
+                this.obsForm.controls['cd_nom'].patchValue({
+                    cd_nom: this.selectedTaxon['cd_nom'],
+                    name:this.getPreferredName(this.selectedTaxon),
+                    icon:
+                        this.selectedTaxon['medias'].length >= 1
+                            ? // ? this.taxa[taxon]["medias"][0]["url"]
+                              MainConfig.API_TAXHUB +
+                              '/tmedias/thumbnail/' +
+                              this.selectedTaxon['medias']['id_media'] +
+                              '?h=20'
+                            : 'assets/default_image.png',
+                });
+            });
+    }
+
+    getPreferredName(taxon: any): string {
+        const priorityAttributes = [
+            'nom_francais',
+            'taxref.nom_vern',
+            'taxref.nom_valide',
+            'taxref.nom_complet',
+            'taxref.lb_nom',
+            'taxref.cd_nom',
+        ];
+    
+        for (const attributePath of priorityAttributes) {
+            const value = this.getValueFromPath(taxon, attributePath);
+            if (value) {
+                return value;
+            }
+        }
+    
+        return 'Unknown';
+    }
+    
+    private getValueFromPath(obj: any, path: string): any {
+        return path.split('.').reduce((acc, key) => acc && acc[key], obj);
     }
 }

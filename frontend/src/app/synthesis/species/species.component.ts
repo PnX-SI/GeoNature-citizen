@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { TaxhubService, Taxon } from '../../api/taxhub.service';
+import { TaxhubService } from '../../api/taxhub.service';
+import { Taxon } from '../../programs/observations/observation.model';
 
 @Component({
     selector: 'app-species',

@@ -3,7 +3,7 @@ import {
     BrowserModule,
     BrowserTransferStateModule,
 } from '@angular/platform-browser';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -81,6 +81,8 @@ import { Bootstrap4FrameworkModule } from '@ajsf/bootstrap4';
 import { GNCFrameworkComponent } from './programs/base/jsonform/framework/framework.component';
 import { ImageUploadModule } from 'angular2-image-upload';
 import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.component';
+import { DataFormService } from './search-taxonomy/data-form.service';
+import { SearchAutocompleteTaxonomyComponent } from './search-taxonomy/taxonomy-autocomplete.component';
 
 @NgModule({
     imports: [
@@ -150,12 +152,15 @@ import { UserSitesComponent } from './auth/user-dashboard/user-sites/user-sites.
         AdminComponent,
         ConfirmEmailComponent,
         UserSitesComponent,
+        SearchAutocompleteTaxonomyComponent
     ],
     providers: [
         AuthService,
         UtilsService,
         GncProgramsService,
         ErrorHandler,
+        HttpClient,
+        DataFormService,
         // FlowService,
         ModalFlowService,
         SiteModalFlowService,

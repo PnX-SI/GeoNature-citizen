@@ -1,0 +1,31 @@
+<h5 > {{ label }} </h5>
+<div class="input-group">
+  <div class="input-container">
+  <input
+    data-qa="taxonomy-form-input"
+    type="text"
+    class="form-control form-control-sm"
+    [ngClass]="{
+      'input-with-loader': isLoading && parentFormControl.value?.length >= charNumber,
+      'ng-invalid': !isValid,
+      'ng-valid': isValid
+    }"
+    id="taxonInput"
+    [placement]="'bottom-left'"
+    [ngbTypeahead]="searchTaxon"
+    [inputFormatter]="formatter"
+    [resultTemplate]="rt"
+    (selectItem)="taxonSelected($event)"
+    (blur)="onInputBlur()"
+    (input)="onInputChange($event)"
+    required
+    [placeholder]="placeholder"
+  />
+  </div>
+ <ng-template #rt let-r="result" let-t="term">
+    <span [innerHTML]="r.search_name"> </span>
+  </ng-template>
+</div>
+<small *ngIf="!isLoading && noResult && parentFormControl.value?.length >= charNumber" style="color: red">
+   Espèce non trouvée </small
+>
