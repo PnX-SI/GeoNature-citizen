@@ -733,21 +733,6 @@ export class ObsFormComponent implements AfterViewInit {
             });
     }
 
-    onEmptyInput(isEmpty: boolean) {
-        if (isEmpty) {
-            this.obsForm.controls.cd_nom.setErrors({ required: true });
-            this.checkInputValidity();
-        } else {
-            this.obsForm.controls.cd_nom.setErrors(null);
-        }
-    }
-
-    checkInputValidity() {
-        this.isInvalidDirty =
-            this.obsForm.controls['cd_nom'].invalid &&
-            this.obsForm.controls['cd_nom'].dirty;
-    }
-
     getPreferredName(taxon: any): string {
         const priorityAttributes = [
             'nom_francais',

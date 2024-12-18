@@ -5,13 +5,31 @@
 #sel1{
   margin-right: 8px;
 }
-.loading {
-  background-color: #ffffff;
-  background-image: url('../../assets/Spinner.gif');
-  background-size: 25px 25px;
-  background-position: right center;
-  background-repeat: no-repeat;
+
+.input-container {
+  position: relative;
+  width: 100%;
 }
+
+.input-with-loader {
+  padding-right: 60px; /* Ajoute de l'espace pour le spinner */
+}
+
+.input-with-loader::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 10px; /* Ajustez selon vos besoins */
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: 3px solid white;
+  border-radius: 50%;
+  animation: rotation 1s linear infinite;
+  border-color: var(--secondary) transparent;
+  box-sizing: border-box;
+}
+
 .input-group {
   // Unset position to show .dropdown-menu hover all panels
   position: unset;
@@ -26,4 +44,22 @@
   font-size: .8em;
   padding: 0.2rem;
   white-space: normal;
+}
+
+/* Supprimer l'icône de validation lorsque l'input est valide */
+.input-container .form-control.ng-valid {
+  background-image: none !important;  
+  box-shadow: none !important;  
+}
+
+/* Appliquer des styles pour l'input invalide (bordure rouge, icône) */
+.input-container  .form-control.ng-invalid {
+  background-image: none !important;  
+  border-color: red !important;
+  box-shadow: none !important; 
+}
+
+.text-danger {
+  color: red;
+  font-size: 0.9rem;
 }

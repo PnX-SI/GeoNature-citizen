@@ -79,17 +79,15 @@
                         [ngbTypeahead]="inputAutoCompleteSearch" [resultTemplate]="rt"
                         [inputFormatter]="inputAutoCompleteFormatter" required />
                 </div> -->
-                <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg-4">
+                <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg input-search-autocomplete">
                     <taxonomy-autocomplete 
                     label=""
                     placeholder="Rechercher par nom ou cd_nom" 
-                    isRequired="true"
                     [parentFormControl]="obsForm.controls.cd_nom"
                     [idList]="taxonomyListID" 
                     [charNumber]="3" 
                     [listLength]="20"
-                    (onChange)="onSelectedTaxon($event)"
-                    (emptyInput)="onEmptyInput($event)">
+                    (onChange)="onSelectedTaxon($event)">
                   </taxonomy-autocomplete >
                 </div>
             </div>

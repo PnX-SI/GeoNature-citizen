@@ -63,16 +63,16 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
     // **ombre de résultat affiché */
     @Input() listLength = 20;
     // ** Pour changer la valeur affichée */
-    @Input() displayedLabel = 'nom_vern';
+    @Input() displayedLabel = 'search_name';
     /** Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion */
-    @Input() isRequired = true;
     @Input() placeholder = '';
     isInvalidDirty = false;
     noResult: boolean;
+    isTouched:boolean;
     isLoading = false;
+    isValid = false; 
+    value: string = ''; // Valeur actuelle du champ
     @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
-    @Output() onDelete = new EventEmitter<TaxonBase>();
-    @Output() emptyInput: EventEmitter<boolean> = new EventEmitter<boolean>();
     
     public config = MainConfig;
     constructor(private _dfService: DataFormService) {}
@@ -81,30 +81,6 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
         if (!this.apiEndPoint) {
             this.setApiEndPoint(this.idList);
         }
-        this.parentFormControl.valueChanges
-            .pipe(
-                tap((value: unknown) => {
-                    if (
-                        value === null ||
-                        (typeof value === 'string' && value === '') ||
-                        (Array.isArray(value) && value.length === 0)
-                    ) {
-                        this.markFormControlDirtyIfEmpty();
-                        this.checkInputValidity();
-                    }
-                })
-            )
-            .subscribe((value: string | any[]) => {
-                if (
-                    !(
-                        value === null ||
-                        (typeof value === 'string' && value === '') ||
-                        (Array.isArray(value) && value.length === 0)
-                    )
-                ) {
-                    this.onDelete.emit();
-                }
-            });
     }
 
     ngOnChanges(changes) {
@@ -119,10 +95,6 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
         } else {
             this.apiEndPoint = `${this.config.API_TAXHUB}/taxref/allnamebylist`;
         }
-    }
-
-    taxonSelected(e: NgbTypeaheadSelectItemEvent) {
-        this.onChange.emit(e);
     }
 
     formatter = (taxon: any) => {
@@ -168,9 +140,7 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
                         );
                 } else {
                     this.isLoading = false;
-                    // TODO: remove refreshAllInput because removed typeahead
-                    // this.refreshAllInput();
-                    this.noResult = true; // Action alternative
+                    this.noResult = true; 
                     return [[]];
                 }
             }),
@@ -181,31 +151,27 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
             })
         );
 
-    onInputBlur() {
-        if (
-            this.parentFormControl.value === '' ||
-            this.parentFormControl.value === null
-        ) {
-            this.emptyInput.emit(true);
-            this.checkInputValidity();
-        } else {
-            this.emptyInput.emit(false);
-        }
-    }
+taxonSelected(event: any) {
+    this.isValid = true;
+    this.onChange.emit(event);
+  }
 
-    refreshAllInput() {
-        this.parentFormControl.reset();
-        this.regneControl.reset();
-        this.groupControl.reset();
+  onInputBlur() {
+    if (!this.isValid) {
+      this.isTouched = true;
+      this.parentFormControl.setValue('');
     }
+  }
 
-    markFormControlDirtyIfEmpty() {
-        this.parentFormControl.markAsDirty();
+  onInputChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.value = input.value;
+    if (this.value.trim().length === 0) {
+      this.isValid = false;
+      this.parentFormControl.setValue('');
     }
+  }
 
-    checkInputValidity() {
-        // Replace 'parentFormControl' with your actual FormControl name
-        this.isInvalidDirty =
-            this.parentFormControl.invalid && this.parentFormControl.dirty;
-    }
+
+
 }
