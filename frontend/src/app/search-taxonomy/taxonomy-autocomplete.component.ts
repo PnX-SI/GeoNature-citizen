@@ -65,23 +65,15 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
     // ** Pour changer la valeur affichée */
     @Input() displayedLabel = 'nom_vern';
     /** Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion */
-    @Input() displayAdvancedFilters = false;
     @Input() isRequired = true;
     @Input() placeholder = '';
     isInvalidDirty = false;
-    searchString: any;
-    filteredTaxons: any;
-    regnes = [];
-    regneControl = new FormControl(null);
-    groupControl = new FormControl(null);
-    regnesAndGroup: any;
     noResult: boolean;
     isLoading = false;
     @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
     @Output() onDelete = new EventEmitter<TaxonBase>();
     @Output() emptyInput: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-    public isCollapseTaxonomy = true;
+    
     public config = MainConfig;
     constructor(private _dfService: DataFormService) {}
 
@@ -113,23 +105,6 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
                     this.onDelete.emit();
                 }
             });
-
-        if (this.displayAdvancedFilters) {
-            // get regne and group2
-            this._dfService.getRegneAndGroup2Inpn().subscribe((data) => {
-                this.regnesAndGroup = data;
-                for (const regne in data) {
-                    this.regnes.push(regne);
-                }
-            });
-        }
-
-        // put group to null if regne = null
-        this.regneControl.valueChanges.subscribe((value) => {
-            if (value === '') {
-                this.groupControl.patchValue(null);
-            }
-        });
     }
 
     ngOnChanges(changes) {
@@ -184,8 +159,6 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
                 if (search_name.length >= this.charNumber) {
                     return this._dfService
                         .autocompleteTaxon(this.apiEndPoint, search_name, {
-                            regne: this.regneControl.value,
-                            group2_inpn: this.groupControl.value,
                             limit: this.listLength.toString(),
                         })
                         .pipe(
