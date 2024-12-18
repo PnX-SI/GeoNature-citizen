@@ -24,11 +24,11 @@
                 <label for="cd_nom" class="m-0">{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
                     isOff {S&eacute;lectionnez une esp&egrave;ce}}</label>
             </h5>
-            <div *ngIf="loading" class="spinner-container">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="sr-only">Chargement...</span>
-                </div>
-              </div>
+            <div
+            *ngIf="loading"
+            class="loader"
+            id="spinner"
+          ></div>
             <!-- TAXON SELECT -->
             <div class="row" *ngIf="!loading">
                 <div class="form-group col-lg-12 col-md-12">
