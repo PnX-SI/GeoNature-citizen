@@ -512,24 +512,25 @@ export class ObsFormComponent implements AfterViewInit {
     //     this.autocomplete = 'isOn';
     // };
 
-    inputAutoCompleteSearch = (text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(200),
-            distinctUntilChanged(),
-            map((term) =>
-                term === '' // term.length < n
-                    ? []
-                    : this.species
-                          .filter(
-                              (v) =>
-                                  v['name']
-                                      .toLowerCase()
-                                      .indexOf(term.toLowerCase()) > -1
-                              // v => new RegExp(term, "gi").test(v["name"])
-                          )
-                          .slice(0, taxonAutocompleteMaxResults)
-            )
-        );
+    // TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+    // inputAutoCompleteSearch = (text$: Observable<string>) =>
+    //     text$.pipe(
+    //         debounceTime(200),
+    //         distinctUntilChanged(),
+    //         map((term) =>
+    //             term === '' // term.length < n
+    //                 ? []
+    //                 : this.species
+    //                       .filter(
+    //                           (v) =>
+    //                               v['name']
+    //                                   .toLowerCase()
+    //                                   .indexOf(term.toLowerCase()) > -1
+    //                           // v => new RegExp(term, "gi").test(v["name"])
+    //                       )
+    //                       .slice(0, taxonAutocompleteMaxResults)
+    //         )
+    //     );
 
     inputAutoCompleteFormatter = (x: { name: string }) => x.name;
     disabledDates = (date: NgbDate, current: { month: number }) => {
