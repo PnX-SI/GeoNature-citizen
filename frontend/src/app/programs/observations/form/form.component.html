@@ -13,9 +13,7 @@
                       '?w=800'
                     : 'assets/default_image.png'
             " [alt]="
-                !!taxa[0].nom_francais
-                    ? taxa[0].nom_francais
-                    : taxa[0].taxref.nom_vern
+               getPreferredName(taxa[0])
             " class="object-fit-cover" />
     </div>
 
@@ -38,14 +36,10 @@
                     taxaCount >= taxonSelectInputThreshold &&
                     taxaCount < taxonAutocompleteInputThreshold
                 " class="d-inline-flex toolbar ">
-                        <select formControlName="cd_nom" class="form-control w-100" required>
+                        <select class="form-control w-100" required>
                             <option value="" [disabled]="true">Choisissez une espèce</option>
-                            <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
-                                {{
-                                !!s.nom_francais
-                                ? s.nom_francais
-                                : s.taxref.nom_vern
-                                }}
+                            <option *ngFor="let s of surveySpecies" (click)="onTaxonSelected(s)" [value]="s.taxref.cd_nom">
+                                {{ getPreferredName(s) }}
                                 <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref.nom_complet }}</i>)</span>
                             </option>
                         </select>
@@ -65,15 +59,10 @@
                                       '?h=150'
                                     : 'assets/default_image.png'
                             " [alt]="
-                                !!s.nom_francais
-                                    ? s.nom_francais
-                                    : s.taxref.nom_vern
+                                getPreferredName(s)
                             " (click)="onTaxonSelected(s)" />
-                                <span>{{
-                                    !!s.nom_francais
-                                    ? s.nom_francais
-                                    : s.taxref.nom_vern
-                                    }}</span>
+                                <span> {{ getPreferredName(s) }}
+                                </span>
                             </div>
                         </div>
                     </div>
