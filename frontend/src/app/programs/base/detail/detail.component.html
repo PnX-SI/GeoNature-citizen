@@ -6,13 +6,11 @@
     </div>
     <div class="row">
         <div>
-            <h1 class="mt-3 title">
+            <h1 class="mt-3 title" *ngIf="(module === 'sites' && site?.properties?.name) || (module !== 'sites' && obs?.properties?.name)">
                 {{
                 module === 'sites'
                 ? site?.properties.name
-                : !!obs?.properties.nom_francais
-                ? obs?.properties.nom_francais
-                : obs?.properties.taxref?.nom_vern
+                : !!obs?.properties.name ? obs?.properties.name: "Name Obs is undefined"
                 }}
             </h1>
             <p class="card-subtitle mb-2 text-muted">
