@@ -17,7 +17,7 @@ export class TaxhubService {
     private readonly URL = MainConfig.API_ENDPOINT;
     taxon: Taxon;
     MEDIAS_TYPES_ALLOWED = ["Photo_gncitizen", "Photo_principale", "Photo"]
-    ATTRIBUTS_ALLOWED = "Nom_francais"
+    ATTRIBUTS_ALLOWED = ["Nom_francais"]
 
     constructor(
         protected http: HttpClient,
@@ -104,7 +104,6 @@ export class TaxhubService {
             console.error("Response should be an array", response);
             return response;
         }
-        // Parcourir les items et enrichir les données
         return response = response.map((item: any) => {
           // Ajouter "nom_type_media" à chaque média
           if (item.medias) {
@@ -117,22 +116,19 @@ export class TaxhubService {
             });
             item.medias = this.sort_medias_by_type(item.medias)
           }
-    
-          // Ajouter "nom_francais" à chaque item
+          
+        // Set attributs
+          item.nom_francais = null;
           if (item.attributs && item.attributs.length > 0) {
             const  attributs = item.attributs.find(
               (attr: any) => this.cacheService.getAttributeById(attr.id_attribut
             ))
-            if (attributs.nom_attribut = this.ATTRIBUTS_ALLOWED){
+            this.ATTRIBUTS_ALLOWED.map(attributName => {
+              if (attributName === "Nom_francais") {
                 item.nom_francais = attributs.valeur_attribut
-            } else {
-                item.nom_francais = null
-            }
-
-          } else {
-            item.nom_francais = null;
+              }
+            } )
           }
-    
           return { ...item };
         });
       }
