@@ -468,53 +468,7 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
 
-    // TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
-    // inputAutoCompleteSetup = () => {
-    //     for (let taxon in this.taxa) {
-    //         for (let field of taxonAutocompleteFields) {
-    //             if (this.taxa[taxon]['taxref'][field]) {
-    //                 this.species.push({
-    //                     name:
-    //                         field === 'cd_nom'
-    //                             ? `${this.taxa[taxon]['taxref']['cd_nom']} - ${this.taxa[taxon]['taxref']['nom_complet']}`
-    //                             : this.taxa[taxon]['taxref'][field],
-    //                     cd_nom: this.taxa[taxon]['taxref']['cd_nom'],
-    //                     icon:
-    //                         this.taxa[taxon]['medias'].length >= 1
-    //                             ? // ? this.taxa[taxon]["medias"][0]["url"]
-    //                               MainConfig.API_TAXHUB +
-    //                               '/tmedias/thumbnail/' +
-    //                               this.taxa[taxon]['medias'][0]['id_media'] +
-    //                               '?h=20'
-    //                             : 'assets/default_image.png',
-    //                 });
-    //             }
-    //         }
-    //     }
-    //     this.autocomplete = 'isOn';
-    // };
 
-    // TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
-    // inputAutoCompleteSearch = (text$: Observable<string>) =>
-    //     text$.pipe(
-    //         debounceTime(200),
-    //         distinctUntilChanged(),
-    //         map((term) =>
-    //             term === '' // term.length < n
-    //                 ? []
-    //                 : this.species
-    //                       .filter(
-    //                           (v) =>
-    //                               v['name']
-    //                                   .toLowerCase()
-    //                                   .indexOf(term.toLowerCase()) > -1
-    //                           // v => new RegExp(term, "gi").test(v["name"])
-    //                       )
-    //                       .slice(0, taxonAutocompleteMaxResults)
-    //         )
-    //     );
-
-    inputAutoCompleteFormatter = (x: { name: string }) => x.name;
     disabledDates = (date: NgbDate, current: { month: number }) => {
         const date_impl = new Date(date.year, date.month - 1, date.day);
         return date_impl > this.today;
@@ -679,20 +633,6 @@ export class ObsFormComponent implements AfterViewInit {
         return resp;
     }
 
-    // TODO:  change this to reset objForm or remove this and check if form is invalid
-    targetChanges() {
-        // Subscribe to specific control changes
-        this.obsForm.get('cd_nom').valueChanges.subscribe((cd_nom) => {
-            // Handle changes to the 'firstName' control
-            console.log('First cd_nom changed:', cd_nom);
-
-            // Apply changes based on 'firstName' value (example)
-            if (cd_nom === '') {
-                this.selectedTaxon = '';
-                // Apply specific changes
-            }
-        });
-    }
 
     onSelectedTaxon(taxon) {
         this.programService

@@ -68,17 +68,6 @@
                     </div>
                 </div>
                 <!-- TAXON AUTOCOMPLETE -->
-                <!-- TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever -->
-                <!-- <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold && taxaCount < autoCompleteThresholdLongList" class="form-group col-lg-8">
-                    <ng-template #rt let-r="result" let-t="term">
-                        <img [src]="r.icon" class="mr-1" style="height: 1em" />
-                        <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
-                    </ng-template>
-                    <input id="cd_nom" type="text" class="form-control" formControlName="cd_nom"
-                        placeholder="Nom latin ou vernaculaire ou cd_ref" [editable]="false"
-                        [ngbTypeahead]="inputAutoCompleteSearch" [resultTemplate]="rt"
-                        [inputFormatter]="inputAutoCompleteFormatter" required />
-                </div> -->
                 <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg input-search-autocomplete">
                     <taxonomy-autocomplete 
                     label=""
