@@ -200,59 +200,41 @@ export class ObsFormComponent implements AfterViewInit {
                 this.program = result;
                 this.taxonomyListID =
                     this.program.features[0].properties.taxonomy_list;
-                this.surveySpecies$ = this.programService
-                    .getProgramTaxonomyList(this.taxonomyListID)
+                    this.surveySpecies$ = this.programService
+                    .getAllProgramTaxonomyList()
                     .pipe(
-                        tap((species) => {
-                            this.taxa = this._taxhubService.setMediasAndAttributs(species);
-                        }),
-                        switchMap((species) => 
-                            this.programService.getAllProgramTaxonomyList().pipe(
-                              map((listsTaxonomy) => {
-                                this.taxaCount = listsTaxonomy
-                                  .filter((lt) => lt.id_liste === this.taxonomyListID)
-                                  .map((lt) => lt.nb_taxons)[0];
-                      
-                                console.log('this.taxaCount', this.taxaCount);
-                      
-                                // TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
-                                // if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
-                                //   this.inputAutoCompleteSetup();
-                                // } else 
-                                if (this.taxaCount === 1) {
-                                  this.onTaxonSelected(species[0]); 
-                                }
-                                console.log('species', species);
-                                return species;
-                              })
-                            )
-                          ),
-                        map((species: TaxonomyList) =>{
-                            if (this.taxaCount < this.taxonAutocompleteInputThreshold) {
+                      map((listsTaxonomy) => {
+                        this.taxaCount = listsTaxonomy
+                          .filter((lt) => lt.id_liste === this.taxonomyListID)
+                          .map((lt) => lt.nb_taxons)[0];
+                        return this.taxaCount <this.taxonAutocompleteInputThreshold;
+                      }),
+                      switchMap((shouldFetchTaxonomyList) => {
+                        if (shouldFetchTaxonomyList) {
+                          return this.programService.getProgramTaxonomyList(this.taxonomyListID).pipe(
+                            tap((species) => {
+                              this.taxa = this._taxhubService.setMediasAndAttributs(species);
+                            }),
+                            map((species: TaxonomyList) => {
+                              if (this.taxaCount < this.taxonAutocompleteInputThreshold) {
                                 return species.sort((a, b) => {
-                                    const taxA = a.nom_francais !== null && a.nom_francais !== undefined
-                                    ? a.nom_francais
-                                    : a.taxref.nom_vern !== null && a.taxref.nom_vern !== undefined
-                                      ? a.taxref.nom_vern
-                                      : '';
-                                  
-                                  const taxB = b.nom_francais !== null && b.nom_francais !== undefined
-                                    ? b.nom_francais
-                                    : b.taxref.nom_vern !== null && b.taxref.nom_vern !== undefined
-                                      ? b.taxref.nom_vern
-                                      : '';
-                                  
+                                  const taxA = a.nom_francais || a.taxref.nom_vern || '';
+                                  const taxB = b.nom_francais || b.taxref.nom_vern || '';
                                   return taxA.localeCompare(taxB);
                                 });
                               } else {
-                                // Si la condition n'est pas remplie, retourner les données sans les trier
                                 return species;
                               }
-                        }),
-                        share()
-                        );
+                            })
+                          );
+                        } else {
+                          this.loading = false;
+                          return [];
+                        }
+                      }),
+                      share()
+                    );
                         this.surveySpecies$.subscribe((sortedSpecies) => {
-                            console.log("sortedSpecies", sortedSpecies);
                             this.surveySpecies = sortedSpecies;
                             this.loading = false;
                           });
