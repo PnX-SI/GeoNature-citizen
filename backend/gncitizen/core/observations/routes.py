@@ -330,24 +330,21 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         features = [obs.get_feature() for obs in observations]
 
 
-        if len(observations) > 0:
+        if observations:
             id_taxonomy_list = observations[0].program_ref.taxonomy_list
-            cd_nom_list = ','.join(map(str, set(obs.cd_nom for obs in observations)))
+            cd_nom_list = ','.join(map(str, {obs.cd_nom for obs in observations}))
+            params = {'cd_nom': cd_nom_list} if cd_nom_list else {}
         else:
             id_taxonomy_list = None
-
-     
-        if len(cd_nom_list) > 0:
-            params = {'cd_nom': cd_nom_list}
-        else:
             params = {}
 
-        if id_taxonomy_list is not None:
+        if id_taxonomy_list:
             taxon_list_data = taxhub_rest_get_taxon_list(id_taxonomy_list, params)
+            features_with_taxhub_info = set_taxa_info_from_taxhub(taxon_list_data, features)
         else:
-            taxon_list_data = None
+            features_with_taxhub_info = features
 
-        features_with_taxhub_info = set_taxa_info_from_taxhub(taxon_list_data, features)
+
         feature_collection = FeatureCollection(features_with_taxhub_info)
 
         if paginate:
