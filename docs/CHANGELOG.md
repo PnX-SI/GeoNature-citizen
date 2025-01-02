@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## [x.x.x](Lien vers le tag) next - 202x-xx-xx
+
+### 🚀 Main new features
+
+* Allow using all taxref in program list taxhub (#327, #422)
+* Compatibility with TaxHub V2
+* Research observations in the program are now based on observed 
+* If no photo is added to observation and an image is added to taxa in taxhub, then this image is displayed on the Congrats popup
+* Observation name displayed in program list observations is set based on this "preferred order"
+  *  'nom_francais'
+  *  'taxref.nom_vern'
+  *  'taxref.nom_valide'
+  *  'taxref.nom_complet'
+  *  'taxref.lb_nom'
+  *  'taxref.cd_nom'
+
+### Development
+
+* Add calls to two API routes taxhub in order to get media types and bibattribut.
+* Add component taxonomy-research which calls `allnamebylist` taxhub API route in Form Observation Program 
+* Remove list taxhub from cache backend
+
+### Release note
+
+* If you install citizen or update citizen to this version, you need TaxHub version 2.0.0 minimum.
+
+
 ## 1.2.0-dev - 202x-xx-xx
 
 ### Main new features
