@@ -47,7 +47,7 @@ def taxhub_rest_get_taxon_list(taxhub_list_id: int, params_to_update: Dict = {})
         "existing": "true",
         "order": "asc",
         "orderby": "nom_complet",
-        "limit": 5,
+        "limit": 100,
     }
     if params_to_update:
         params.update(params_to_update)
