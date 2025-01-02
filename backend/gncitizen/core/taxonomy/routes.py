@@ -8,10 +8,18 @@ from gncitizen.utils.taxonomy import (
     reformat_taxa,
     get_taxa_by_cd_nom,
     get_all_medias_types,
-    get_all_attributes
+    get_all_attributes,
+    refresh_taxonlist
 )
 
 taxo_api = Blueprint("taxonomy", __name__)
+
+@taxo_api.route("/taxonomy/refresh", methods=["GET"])
+@json_resp
+def refresh():
+    lists = refresh_taxonlist()
+    return lists
+
 
 @taxo_api.route("/taxonomy/lists", methods=["GET"])
 @json_resp

@@ -80,15 +80,6 @@ def taxhub_rest_get_all_lists() -> Optional[Dict]:
     return None
 
 
-# TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
-def make_taxon_repository(taxhub_list_id: int) -> List[Taxon]:
-    taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
-    if isinstance(taxa, dict) and "items" in taxa:
-        reformatted_taxa = reformat_taxa(taxa)
-    else:
-        reformatted_taxa = []
-    return reformatted_taxa
-
 
 def get_specie_from_cd_nom(cd_nom) -> Dict:
     """get specie datas from taxref id (cd_nom)
@@ -121,21 +112,14 @@ def get_specie_from_cd_nom(cd_nom) -> Dict:
         taxref[k] = official_taxa.get(k, "")
     return taxref
 
-# TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+
 def refresh_taxonlist() -> Dict:
     """refresh taxon list"""
-    logger.info("Pre loading taxhub data (taxa lists and medias)")
+    logger.info("Pre loading taxhub lists information (nb lists, list names)")
     taxhub_lists = taxhub_rest_get_all_lists()
-    if taxhub_lists:
-        count = 0
-        for taxhub_list in taxhub_lists:
-            count += 1
-            logger.info(f"loading list {count}/{len(taxhub_lists)}")
-            r = make_taxon_repository(taxhub_list["id_liste"])
-            taxhub_full_lists[taxhub_list["id_liste"]] = r
-    else:
+    if not taxhub_lists:
         logger.warning("ERROR: No taxhub lists available")
-    return taxhub_full_lists
+    return taxhub_lists
 
 def get_all_medias_types() -> Dict:
     """get all medias types"""
@@ -170,7 +154,7 @@ def get_all_attributes() -> Dict:
         return attributes
     return None
 
-# TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+
 daemon = Thread(target=refresh_taxonlist, daemon=True, name="Monitor")
 daemon.start()
 
