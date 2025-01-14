@@ -7,7 +7,7 @@
 * Allow using all Taxref in programs (#327, #422)
 * Compatibility with TaxHub V2
 * Taxons seach in programs is now based on observed taxons
-* If no photo is added to observation and an image is added to taxa in taxhub, then this image is displayed on the Congrats popup
+* If no photo is added to an observation and if an image is available for this to taxa in TaxHub, then this image is displayed on the Congrats popup
 * Observation name displayed in program list observations is set based on this "preferred order"
   *  'nom_francais'
   *  'taxref.nom_vern'
