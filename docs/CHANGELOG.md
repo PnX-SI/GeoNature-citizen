@@ -8,7 +8,7 @@
 * Compatibility with TaxHub V2
 * Taxons seach in programs is now based on observed taxons
 * If no photo is added to an observation and if an image is available for this to taxa in TaxHub, then this image is displayed on the Congrats popup
-* Observation name displayed in program list observations is set based on this "preferred order"
+* Observation name displayed in program observations list is based on this order:
   *  'nom_francais'
   *  'taxref.nom_vern'
   *  'taxref.nom_valide'
