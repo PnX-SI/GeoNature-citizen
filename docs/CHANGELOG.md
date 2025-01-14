@@ -18,7 +18,7 @@
 
 ### Development
 
-* Add calls to two API routes taxhub in order to get media types and bibattribut.
+* Add calls to two TaxHub API routes in order to get media types and bibattribut.
 * Add component taxonomy-research which calls `allnamebylist` taxhub API route in Form Observation Program 
 * Remove list taxhub from cache backend
 
