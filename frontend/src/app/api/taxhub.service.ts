@@ -64,7 +64,6 @@ export class TaxhubService {
 
         // Si les deux caches sont valides, ne pas recharger
         if (!forceReload && isMediasCacheValid && isAttributesCacheValid) {
-            console.log('Cache is valid, skipping data reload.');
             return;
         }
         forkJoin({
@@ -75,16 +74,15 @@ export class TaxhubService {
             // Transformer les données en Records basés sur IDs
             const mediasRecord = this.mapById(medias, 'id_type');
             const attributesRecord = this.mapById(attributes, 'id_attribut');
-    
+
             // Stocker les données dans le cache
             this.cacheService.setMediasCache(mediasRecord);
             this.cacheService.setAttributesCache(attributesRecord);
-            console.log('Cache updated successfully.');
           },
           error: (error) => console.error('Error loading data:', error),
         });
       }
-    
+
       private mapById(array: any[], idKey: string): Record<string, any> {
         return array.reduce((acc, item) => {
           acc[item[idKey]] = item;
@@ -108,15 +106,13 @@ export class TaxhubService {
           // Ajouter "nom_type_media" à chaque média
           if (item.medias) {
             item.medias = item.medias.map((media: any) => {
-                console.log("media", media)
                 const typeMedias = this.cacheService.getMediaById(media.id_type)
-                console.log("typeMedias", typeMedias)
                 const nomTypeMedia = this.MEDIAS_TYPES_ALLOWED.includes(typeMedias.nom_type_media ) ? typeMedias.nom_type_media : null;
               return { ...media, nom_type_media: nomTypeMedia };
             });
             item.medias = this.sort_medias_by_type(item.medias)
           }
-          
+
         // Set attributs
           item.nom_francais = null;
           if (item.attributs && item.attributs.length > 0) {
@@ -142,20 +138,20 @@ export class TaxhubService {
               : null;
             return { ...media, nom_type_media: nomTypeMedia };
           });
-      
+
           // Appel de la fonction sort_medias_by_type pour trier les médias
           return this.sort_medias_by_type(medias);
         };
-      
+
         if (Array.isArray(items)) {
           items.forEach((item: ObservationFeature) => item.properties.medias && (item.properties.medias = processMedias(item.properties.medias)));
         } else {
           items.properties.medias && (items.properties.medias = processMedias(items.properties.medias));
         }
-      
+
         return items;
       }
-      
+
 
       sort_medias_by_type(medias: Media[]): Media[] {
         return medias.sort((a: any, b: any) => {
@@ -166,7 +162,7 @@ export class TaxhubService {
           }
           if (indexA === -1) return 1;
           if (indexB === -1) return -1;
-  
+
           return 0;
       });
     }
