@@ -9,18 +9,14 @@ export class GlobalCacheService {
     private attributesCache: Record<number, Attribut> = {}; // Stockage des attributs par ID
 
     setMediasCache(data: Record<number, Media>): void {
-        console.log('setMediasCache', data);
         this.mediasCache = data;
     }
 
     setAttributesCache(data: Record<number, Attribut>): void {
-        console.log('setAttributesCache', data);
         this.attributesCache = data;
     }
 
     getMediaById(id: number): Media | undefined {
-        console.log('getMediaById', id);
-        console.log('this.mediasCache', this.mediasCache);
         return this.mediasCache[id];
     }
 
