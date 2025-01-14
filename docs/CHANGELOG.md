@@ -24,7 +24,7 @@
 
 ### Release note
 
-* If you install citizen or update citizen to this version, you need TaxHub version 2.0.0 minimum.
+* To install or update to this version of GeoNature-citizen, you need TaxHub version 2.0.0 minimum.
 
 
 ## 1.2.0-dev - 202x-xx-xx
