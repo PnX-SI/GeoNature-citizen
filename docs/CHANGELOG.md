@@ -4,7 +4,7 @@
 
 ### 🚀 Main new features
 
-* Allow using all taxref in program list taxhub (#327, #422)
+* Allow using all Taxref in programs (#327, #422)
 * Compatibility with TaxHub V2
 * Research observations in the program are now based on observed 
 * If no photo is added to observation and an image is added to taxa in taxhub, then this image is displayed on the Congrats popup
