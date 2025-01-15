@@ -3,7 +3,7 @@ import { geometryValidator, ngbDateMaxIsToday } from './formValidators';
 import { MainConfig } from './../../../../conf/main.config';
 import { BaseLayer } from '../../programs.models';
 import * as L from 'leaflet';
-
+import { getPreferredName } from '../../../api/getPreferredName';
 import {
     AfterViewInit,
     Component,
@@ -467,7 +467,8 @@ export class ObsFormComponent implements AfterViewInit {
         });
     }
 
-
+    // Expose to HTML
+    getPreferredName = getPreferredName;
 
     disabledDates = (date: NgbDate, current: { month: number }) => {
         const date_impl = new Date(date.year, date.month - 1, date.day);
@@ -479,7 +480,7 @@ export class ObsFormComponent implements AfterViewInit {
         console.log('onTaxonSelected', taxon);
         this.obsForm.controls['cd_nom'].patchValue({
             cd_nom: taxon.taxref['cd_nom'],
-            name: this.getPreferredName(taxon),
+            name: getPreferredName(taxon),
         });
     }
 
@@ -643,7 +644,7 @@ export class ObsFormComponent implements AfterViewInit {
                 this.selectedTaxon = taxonWithTaxhubInfos[0];
                 this.obsForm.controls['cd_nom'].patchValue({
                     cd_nom: this.selectedTaxon['cd_nom'],
-                    name:this.getPreferredName(this.selectedTaxon),
+                    name: getPreferredName(this.selectedTaxon),
                     icon:
                         this.selectedTaxon['medias'].length >= 1
                             ? // ? this.taxa[taxon]["medias"][0]["url"]
@@ -654,29 +655,5 @@ export class ObsFormComponent implements AfterViewInit {
                             : 'assets/default_image.png',
                 });
             });
-    }
-
-    getPreferredName(taxon: any): string {
-        const priorityAttributes = [
-            'nom_francais',
-            'taxref.nom_vern',
-            'taxref.nom_valide',
-            'taxref.nom_complet',
-            'taxref.lb_nom',
-            'taxref.cd_nom',
-        ];
-    
-        for (const attributePath of priorityAttributes) {
-            const value = this.getValueFromPath(taxon, attributePath);
-            if (value) {
-                return value;
-            }
-        }
-    
-        return 'Unknown';
-    }
-    
-    private getValueFromPath(obj: any, path: string): any {
-        return path.split('.').reduce((acc, key) => acc && acc[key], obj);
     }
 }

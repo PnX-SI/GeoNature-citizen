@@ -22,7 +22,8 @@ import { GncProgramsService } from '../../../api/gnc-programs.service';
 import { TaxonomyList } from '../observation.model';
 import { markerIcon } from '../../base/detail/detail.component';
 import { UserService } from '../../../auth/user-dashboard/user.service.service';
-import { TaxhubService } from 'src/app/api/taxhub.service';
+import { TaxhubService } from '../../../api/taxhub.service';
+import { getPreferredName } from '../../../api/getPreferredName';
 
 const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
 const taxonSelectInputThreshold = MainConfig.taxonSelectInputThreshold;
@@ -178,7 +179,7 @@ export class ValidationComponent implements OnInit {
         if (shouldPatchForm) {
             this.validationForm.controls['cd_nom'].patchValue({
                 cd_nom: taxon.taxref['cd_nom'],
-                name: this.getPreferredName(taxon),
+                name: getPreferredName(taxon),
             });
         }
         this.obsCorrection =
@@ -260,6 +261,9 @@ export class ValidationComponent implements OnInit {
         return formData;
     }
 
+    // Expose to HTML
+    getPreferredName = getPreferredName;
+
     onSelectedTaxon(taxon) {
         this.programService
             .getTaxonInfoByCdNom(taxon.item['cd_nom'])
@@ -269,7 +273,7 @@ export class ValidationComponent implements OnInit {
                 this.selectedTaxon = taxonWithTaxhubInfos[0];
                 this.validationForm.controls['cd_nom'].patchValue({
                     cd_nom: this.selectedTaxon['cd_nom'],
-                    name:this.getPreferredName(this.selectedTaxon),
+                    name:getPreferredName(this.selectedTaxon),
                     icon:
                         this.selectedTaxon['medias'].length >= 1
                             ? // ? this.taxa[taxon]["medias"][0]["url"]
@@ -280,30 +284,5 @@ export class ValidationComponent implements OnInit {
                             : 'assets/default_image.png',
                 });
             });
-    }
-
-
-    getPreferredName(taxon: any): string {
-        const priorityAttributes = [
-            'nom_francais',
-            'taxref.nom_vern',
-            'taxref.nom_valide',
-            'taxref.nom_complet',
-            'taxref.lb_nom',
-            'taxref.cd_nom',
-        ];
-    
-        for (const attributePath of priorityAttributes) {
-            const value = this.getValueFromPath(taxon, attributePath);
-            if (value) {
-                return value;
-            }
-        }
-    
-        return 'Unknown';
-    }
-    
-    private getValueFromPath(obj: any, path: string): any {
-        return path.split('.').reduce((acc, key) => acc && acc[key], obj);
     }
 }
