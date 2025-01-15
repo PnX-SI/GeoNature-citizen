@@ -3,6 +3,9 @@ import { IFlowComponent } from '../../flow/flow';
 import { MainConfig } from '../../../../../../conf/main.config';
 import { TaxhubService } from '../../../../../api/taxhub.service';
 
+const DEFAULT_PHOTO_PATH = 'assets/default_program.jpg';
+const DEFAULT_TIMEOUT = 5000;
+
 @Component({
     templateUrl: './congrats.component.html',
     styleUrls: ['./congrats.component.css'],
@@ -13,7 +16,7 @@ export class CongratsComponent implements IFlowComponent {
     timeout: any;
     username: string;
     obs: any;
-    photoPath: string =  'assets/default_program.jpg';
+    photoPath: string = DEFAULT_PHOTO_PATH;
     MainConfig = MainConfig;
 
     constructor(private _taxhubService: TaxhubService) {}
@@ -35,7 +38,7 @@ export class CongratsComponent implements IFlowComponent {
         }
         this.timeout = setTimeout(() => {
             this.data.next(this.data);
-        }, 5000);
+        }, DEFAULT_TIMEOUT);
     }
 
     closeModal() {
