@@ -222,14 +222,14 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                 this.observationsService
                     .getObservation(observationId)
                     .subscribe(
-                        (updatedObservation: ObservationFeatureCollection) => {
+                        (updatedObservation: ObservationFeature) => {
                             this.observations.features[
                                 this.observations.features.findIndex(
                                     (obs) =>
                                         obs.properties.id_observation ===
                                         observationId
                                 )
-                            ] = updatedObservation.features[0];
+                            ] = updatedObservation;
                         }
                     );
             });
