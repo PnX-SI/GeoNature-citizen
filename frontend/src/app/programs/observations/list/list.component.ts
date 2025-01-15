@@ -64,10 +64,10 @@ export class ObsListComponent implements OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         this.changes$.next(changes);
-    
+
         if (this.observations && this.observations.features) {
-            this.observationList = this.observations['features'];
-            this.observations$.next(this.observations['features']);
+            this.observationList = this.observations.features;
+            this.observations$.next(this.observations.features);
             this.municipalities = this.observations.features
                 .map((features) => features.properties)
                 .map((property) => property.municipality)
