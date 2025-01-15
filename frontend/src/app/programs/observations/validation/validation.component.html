@@ -21,9 +21,7 @@
                         '?w=800'
                     : 'assets/default_image.png'
             " [alt]="
-                !!taxa[0].nom_francais
-                    ? taxa[0].nom_francais
-                    : taxa[0].taxref.nom_vern
+               getPreferredName(taxa[0])
             " class="object-fit-cover" />
     </div>
     <div class="form-group col-lg-12">
@@ -45,11 +43,7 @@
             <select formControlName="cd_nom" class="form-control rounded-0" [value]="obsToValidate.properties.cd_nom">
                 <option value="" [disabled]="true">Choisissez une espèce</option>
                 <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
-                    {{
-                    !!s.nom_francais
-                    ? s.nom_francais
-                    : s.taxref.nom_vern
-                    }}
+                    {{ getPreferredName(s) }}
                     <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref.nom_complet }}</i>)</span>
                 </option>
             </select>
@@ -69,29 +63,24 @@
                                     '?h=150'
                                 : 'assets/default_image.png'
                         " [alt]="
-                            !!s.nom_francais
-                                ? s.nom_francais
-                                : s.taxref.nom_vern
+                            getPreferredName(s)
                         " (click)="onTaxonSelected(s)" />
-                    <span>{{
-                        !!s.nom_francais
-                        ? s.nom_francais
-                        : s.taxref.nom_vern
-                        }}</span>
+                    <span>{{ getPreferredName(s) }}</span>
                 </div>
             </div>
         </div>
     </div>
     <!-- TAXON AUTOCOMPLETE -->
     <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg-12">
-        <ng-template #rt let-r="result" let-t="term">
-            <img loading="lazy" [src]="r.icon" class="mr-1" style="height: 1em" />
-            <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
-        </ng-template>
-        <input id="cd_nom" type="text" class="form-control rounded-0" formControlName="cd_nom"
-            placeholder="Nom latin ou vernaculaire ou cd_ref" [editable]="false"
-            [ngbTypeahead]="inputAutoCompleteSearch" [resultTemplate]="rt"
-            [inputFormatter]="inputAutoCompleteFormatter" />
+        <taxonomy-autocomplete 
+        label=""
+        placeholder="Rechercher par nom ou cd_nom" 
+        [parentFormControl]="validationForm.controls.cd_nom"
+        [idList]="taxonomyListID" 
+        [charNumber]="3" 
+        [listLength]="20"
+        (onChange)="onSelectedTaxon($event)">
+      </taxonomy-autocomplete >
     </div>
     <!-- END TAXON SELECTION -->
     <div class="form-group col-lg-12 col-md-12">
