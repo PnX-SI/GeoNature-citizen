@@ -164,7 +164,7 @@ def reformat_taxa(taxa):
 
     items = taxa.get("items", [taxa])
     # On parcours chaque item de taxa et on peut ici choisir de garder ou non certains champs pertinent pour citizen
-    # NOTES: pour éviter de tout charger peut être alléger l'objet taxref si pas utilisé ?
+    # TODO: pour éviter de tout charger peut être alléger l'objet taxref si pas utilisé ?
     for item in items:
         taxon = {
             "medias": [],
@@ -237,14 +237,14 @@ def set_taxa_info_from_taxhub(taxhub_data, features):
             if feature["properties"]["cd_nom"] == taxon["cd_nom"]:
                 excluded_keys = {"medias", "attributs"}
                 filtered_data = {key: value for key, value in taxon.items() if key not in excluded_keys}
-                
+
                 if "taxref" not in feature["properties"] or feature["properties"]["taxref"] is None:
                     feature["properties"]["taxref"] = {}
                 feature["properties"]["taxref"].update(filtered_data)
-                
+
                 if "medias" not in feature["properties"]:
                     feature["properties"]["medias"] = []
 
                 feature["properties"]["medias"] = taxon.get("medias", [])
-               
+
     return features
