@@ -99,7 +99,6 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             });
         if (this.program_id) {
             this.route.data.subscribe((data: { programs: Program[] }) => {
-                console.log('DATA', data);
                 this.programs = data.programs;
                 this.program = this.programs.find(
                     (p) => p.id_program == this.program_id
@@ -107,14 +106,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                 this.taxonomyListID = this.program.taxonomy_list;
                 forkJoin([
                     this.programService.getProgramObservations(this.program_id),
-                    // this.programService.getProgramTaxonomyList(
-                    //     this.program.taxonomy_list
-                    // ),
                     this.programService.getProgram(this.program_id),
                 ]).subscribe(([observations, program]) => {
                     this.observations = observations;
                     this.observedSpeciesUniqueSorted = this.getUniqueSortedSpecies(this.observations.features);
-  
+
 
                     this.programFeature = program;
                 });
@@ -181,26 +177,7 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
 
     private updateObservedSpecies(): void {
         this.observedSpeciesUniqueSorted = this.getUniqueSortedSpecies(this.observations.features);
-        // const observedSpeciesUnique = this.observations.features
-        //     .map((feature: any) => feature.properties)
-        //     .filter((property: any, index: number, self: any[]) => {
-        //         return self.findIndex((p) => p.cd_nom === property.cd_nom) === index;
-        //     });
-    
-        // observedSpeciesUnique.sort((a: any, b: any) => {
-        //     const nameA = a.name.toLowerCase(); // Tri insensible à la casse
-        //     const nameB = b.name.toLowerCase();
-        //     if (nameA < nameB) {
-        //         return -1;
-        //     } else if (nameA > nameB) {
-        //         return 1;
-        //     }
-        //     return 0;
-        // });
-    
-        // this.observedSpeciesUniqueSorted = observedSpeciesUnique;
     }
-    
 
     addObsClicked() {
         this.modalFlow.first.clicked();
