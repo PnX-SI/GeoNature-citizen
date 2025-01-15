@@ -122,7 +122,7 @@ export class ValidationComponent implements OnInit {
                     }),
                     switchMap((shouldFetchTaxonomyList) => {
                         if (shouldFetchTaxonomyList) {
-                            return this.programService.getProgramTaxonomyList(this.taxonomyListID).pipe(
+                            return this.programService.getProgramTaxonomyList(this.taxonomyListID,{"limit": this.taxonAutocompleteInputThreshold}).pipe(
                                 tap((species) => {
                                     this.taxa = this._taxhubService.setMediasAndAttributs(species);
                                     if (this.taxaCount == 1) {
