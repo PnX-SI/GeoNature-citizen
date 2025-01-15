@@ -165,39 +165,41 @@ def reformat_taxa(taxa):
     items = taxa.get("items", [taxa])
     # On parcours chaque item de taxa et on peut ici choisir de garder ou non certains champs pertinent pour citizen
     # TODO: pour éviter de tout charger peut être alléger l'objet taxref si pas utilisé ?
+    TAXREF_FIELDS = [
+        "cd_nom",
+        "cd_ref",
+        "cd_sup",
+        "cd_taxsup",
+        "classe",
+        "famille",
+        "group1_inpn",
+        "group2_inpn",
+        "id_habitat",
+        "id_rang",
+        "id_statut",
+        "lb_auteur",
+        "lb_nom",
+        "nom_complet",
+        "nom_complet_html",
+        "nom_valide",
+        "nom_vern",
+        "nom_vern_eng",
+        "ordre",
+        "phylum",
+        "regne",
+        "sous_famille",
+        "tribu",
+        "url"
+    ]
+
     for item in items:
         taxon = {
             "medias": [],
             "attributs": [],
             "cd_nom": item.get("cd_nom"),
             "nom_francais": None,
-            "taxref": {
-                "cd_nom": item.get("cd_nom"),
-                "cd_ref": item.get("cd_ref"),
-                "cd_sup": item.get("cd_sup"),
-                "cd_taxsup": item.get("cd_taxsup"),
-                "classe": item.get("classe"),
-                "famille": item.get("famille"),
-                "group1_inpn": item.get("group1_inpn"),
-                "group2_inpn": item.get("group2_inpn"),
-                "id_habitat": item.get("id_habitat"),
-                "id_rang": item.get("id_rang"),
-                "id_statut": item.get("id_statut"),
-                "lb_auteur": item.get("lb_auteur"),
-                "lb_nom": item.get("lb_nom"),
-                "nom_complet": item.get("nom_complet"),
-                "nom_complet_html": item.get("nom_complet_html"),
-                "nom_valide": item.get("nom_valide"),
-                "nom_vern": item.get("nom_vern"),
-                "nom_vern_eng": item.get("nom_vern_eng"),
-                "ordre": item.get("ordre"),
-                "phylum": item.get("phylum"),
-                "regne": item.get("regne"),
-                "sous_famille": item.get("sous_famille"),
-                "tribu": item.get("tribu"),
-                "url": item.get("url"),
-            },
-        }
+            "taxref": { field: item.get(field) for field in TAXREF_FIELDS }
+        },
         # Récupérer tous les médias sans condition de types
         for media in item.get("medias", []):
             taxon["medias"].append(media)
