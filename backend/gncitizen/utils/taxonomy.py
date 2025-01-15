@@ -199,7 +199,7 @@ def reformat_taxa(taxa):
             "cd_nom": item.get("cd_nom"),
             "nom_francais": None,
             "taxref": { field: item.get(field) for field in TAXREF_FIELDS }
-        },
+        }
         # Récupérer tous les médias sans condition de types
         for media in item.get("medias", []):
             taxon["medias"].append(media)
