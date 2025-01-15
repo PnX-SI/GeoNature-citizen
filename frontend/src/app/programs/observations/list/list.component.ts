@@ -157,18 +157,18 @@ export class ObsListComponent implements OnChanges {
         return obs.properties.id_observation;
     }
 
-    onValidateClick(observation) {
+    onValidateClick(observation: ObservationFeature) {
         this.validateObs.emit(observation.properties.id_observation)
     }
 
-    getPhotoUrl(o: any): string {
-        if (o.properties.photos && o.properties.photos.length > 0) {
-          return this.MainConfig.API_ENDPOINT + o.properties.photos[0].url;
-        } else if (o.properties.medias && o.properties.medias.length > 0) {
+    getPhotoUrl(observation: ObservationFeature): string {
+        if (observation.properties.photos && observation.properties.photos.length > 0) {
+          return this.MainConfig.API_ENDPOINT + observation.properties.photos[0].url;
+        } else if (observation.properties.medias && observation.properties.medias.length > 0) {
           return (
             this.MainConfig.API_TAXHUB +
             '/tmedias/thumbnail/' +
-            o.properties.medias[0].id_media +
+            observation.properties.medias[0].id_media +
             '?h=80'
           );
         } else {
