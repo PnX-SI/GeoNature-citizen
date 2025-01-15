@@ -268,7 +268,6 @@ export class ValidationComponent implements OnInit {
         this.programService
             .getTaxonInfoByCdNom(taxon.item['cd_nom'])
             .subscribe((taxonFullInfo) => {
-                console.log('taxonFullInfo', taxonFullInfo);
                 const taxonWithTaxhubInfos= this._taxhubService.setMediasAndAttributs(taxonFullInfo)
                 this.selectedTaxon = taxonWithTaxhubInfos[0];
                 this.validationForm.controls['cd_nom'].patchValue({

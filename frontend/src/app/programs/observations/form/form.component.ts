@@ -449,7 +449,6 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     patchForm(updateData) {
-        console.log("updateData", updateData)
         const taxon = updateData.taxon || {
             media: updateData.taxref.media_url,
             taxref: updateData.taxref,
@@ -477,7 +476,6 @@ export class ObsFormComponent implements AfterViewInit {
 
     onTaxonSelected(taxon: any): void {
         this.selectedTaxon = taxon;
-        console.log('onTaxonSelected', taxon);
         this.obsForm.controls['cd_nom'].patchValue({
             cd_nom: taxon.taxref['cd_nom'],
             name: getPreferredName(taxon),
@@ -520,7 +518,6 @@ export class ObsFormComponent implements AfterViewInit {
         }
         // const taxon_name = this.selectedTaxon.nom_francais ? this.selectedTaxon.nom_francais : this.selectedTaxon.taxref.nom_vern;
         const taxon_name = taxon.name
-        console.log('taxon_name', taxon_name);
         formData.append('cd_nom', cd_nom.toString());
         formData.append('name', taxon_name);
         const obsDateControlValue = NgbDate.from(
@@ -639,7 +636,6 @@ export class ObsFormComponent implements AfterViewInit {
         this.programService
             .getTaxonInfoByCdNom(taxon.item['cd_nom'])
             .subscribe((taxonFullInfo) => {
-                console.log('taxonFullInfo', taxonFullInfo);
                 const taxonWithTaxhubInfos= this._taxhubService.setMediasAndAttributs(taxonFullInfo)
                 this.selectedTaxon = taxonWithTaxhubInfos[0];
                 this.obsForm.controls['cd_nom'].patchValue({

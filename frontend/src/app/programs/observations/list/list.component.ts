@@ -120,7 +120,6 @@ export class ObsListComponent implements OnChanges {
                 filters.municipality = this.selectedMunicipality;
             }
             if (this.selectedTaxon) {
-                console.log('this.selectedTaxon', this.selectedTaxon);
                 results.push(
                     obs.properties.cd_nom == this.selectedTaxon['cd_nom']
                 );
