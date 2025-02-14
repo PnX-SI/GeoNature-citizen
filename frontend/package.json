@@ -6,6 +6,7 @@
         "start": "ng serve --poll 2000 --host 0.0.0.0 --port 4000",
         "start:fr": "ng serve --poll 2000 --configuration=fr",
         "start:en": "ng serve --poll 2000 --configuration=en",
+        "start:de": "ng serve --poll 2000 --configuration=de",
         "build": "ng build",
         "build:fr": "ng build --configuration=fr",
         "build:en": "ng build --configuration=en",

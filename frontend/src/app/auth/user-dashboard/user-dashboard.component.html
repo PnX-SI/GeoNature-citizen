@@ -10,7 +10,7 @@
                                 (tab === 'observations'
                                     ? 'btn-primary'
                                     : 'btn-dark')
-                            ">
+                            " i18n="Observations button@@myObservationsButton">
                             Mes observations
                             <strong class="badge badge-pill badge-info">{{
                                 stats?.platform_attendance
@@ -19,7 +19,7 @@
                         <button *ngIf="mysites?.features.length > 0" (click)="tab = 'sites'" [class]="
                                 'btn ml-1 ' +
                                 (tab === 'sites' ? 'btn-primary' : 'btn-dark')
-                            ">
+                            " i18n="Sites button@@mySitesButton">
                             Mes sites
                             <strong class="badge badge-pill badge-info">{{
                                 mysites?.features.length
@@ -31,7 +31,7 @@
                         <div *ngIf="userAvatar" class="profile-pic-background" (click)="onEditInfos(personalInfos)"
                             [ngStyle]="{'background-image': 'url(' + userAvatar + ')'}"></div>
                     </div>
-                    <p (click)="onEditInfos(personalInfos)">
+                    <p (click)="onEditInfos(personalInfos)" i18n="Username@@username">
                         {{ username }} <i class="fa fa-pencil"></i>
                     </p>
                 </div>
@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <div *ngIf="programs_badges && programs_badges.length > 0" class="inner-row">
-                    <h5>Récompenses par programmes</h5>
+                    <h5 i18n="Program Awards@@programAwards">Récompenses par programmes</h5>
                     <div class="row">
                         <img *ngFor="let p_badge of programs_badges" loading="lazy"
                             [src]="MainConfig.API_ENDPOINT + p_badge.url" [alt]="p_badge.type + p_badge.name"
@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <div *ngIf="recognition_badges && recognition_badges.length > 0" class="inner-row">
-                    <h5>Récompenses d'identification d'espèces</h5>
+                    <h5 i18n="Recognition Awards@@recognitionAwards">Récompenses d'identification d'espèces</h5>
                     <div class="row">
                         <img *ngFor="let r_badge of recognition_badges" loading="lazy"
                             [src]="MainConfig.API_ENDPOINT + r_badge.url" [alt]="r_badge.type + r_badge.name"
@@ -99,8 +99,7 @@
             <section class="homeLink">
                 <a [routerLink]="['/']">
                     <i class="fa fa-arrow-left"></i>
-                    <ng-container i18n="back@@back"></ng-container>Retour au
-                    site
+                    <ng-container i18n="back@@backSite">Retour au site</ng-container>
                 </a>
             </section>
         </div>
@@ -215,7 +214,7 @@
                                 userForm.errors &&
                                 userForm.errors.MatchPassword &&
                                 userForm.controls.confirmPassword.dirty
-                            " class="danger">
+                            " class="danger" i18n="Password mismatch@@passwordMismatch">
                             * Le mot de passe n'est pas identique.
                         </p>
                     </div>
@@ -234,16 +233,16 @@
     <div class="modal-delete-header">
         <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
     </div>
-    <div class="modal-delete-body">
+    <div class="modal-delete-body" i18n="Delete observation confirmation@@deleteObservationConfirmation">
         Êtes-vous sûr de vouloir supprimer cette observation ?
         <br />
         Sa suppression sera définitive
     </div>
     <div class="modal-delete-footer">
-        <button type="button" class="cancel-btn" style="margin-right: 15px" (click)="onCancelDelete()">
+        <button type="button" class="cancel-btn" style="margin-right: 15px" (click)="onCancelDelete()" i18n="Cancel@@cancel">
             ANNULER
         </button>
-        <button type="button" class="green-btn" (click)="onDeleteObs()">
+        <button type="button" class="green-btn" (click)="onDeleteObs()" i18n="Yes@@yes">
             OUI
         </button>
     </div>
@@ -253,17 +252,17 @@
     <div class="modal-delete-header">
         <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
     </div>
-    <div class="modal-delete-body">
+    <div class="modal-delete-body" i18n="Delete site confirmation@@deleteSiteConfirmation">
         Êtes-vous sûr de vouloir supprimer ce site et toutes les informations
         qui y sont rattachées ?
         <br />
         La suppression sera définitive
     </div>
     <div class="modal-delete-footer">
-        <button type="button" class="cancel-btn" style="margin-right: 15px" (click)="onSiteCancelDelete()">
+        <button type="button" class="cancel-btn" style="margin-right: 15px" (click)="onSiteCancelDelete()" i18n="Cancel@@cancel">
             ANNULER
         </button>
-        <button type="button" class="green-btn" (click)="onDeleteSite()">
+        <button type="button" class="green-btn" (click)="onDeleteSite()" i18n="Yes@@yes">
             OUI
         </button>
     </div>

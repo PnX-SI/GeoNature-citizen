@@ -111,6 +111,29 @@
                             "i18nFormat": "xlf",
                             "i18nLocale": "en",
                             "i18nMissingTranslation": "error"
+                        },
+                        "de": {
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "outputPath": "dist/browser/de/",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "baseHref": "/de/",
+                            "i18nFile": "src/i18n/messages.de.xlf",
+                            "i18nFormat": "xlf",
+                            "i18nLocale": "de",
+                            "i18nMissingTranslation": "error"
                         }
                     }
                 },
@@ -128,6 +151,9 @@
                         },
                         "en": {
                             "browserTarget": "frontend:build:en"
+                        },
+                        "de": {
+                            "browserTarget": "frontend:build:de"
                         }
                     }
                 },
@@ -187,7 +213,7 @@
                             "srcDir": "src/i18n",
                             "genDir": "src/i18n",
                             "defaultLanguage": "fr",
-                            "languages": ["fr", "en"]
+                            "languages": ["fr", "en", "de"]
                         }
                     }
                 }
