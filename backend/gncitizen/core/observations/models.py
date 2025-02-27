@@ -27,10 +27,11 @@ OBS_KEYS = (
     "comment",
     "timestamp_create",
     "json_data",
+    "name"
 )
 
 TAXREF_KEYS = ["nom_vern", "cd_nom", "cd_ref", "lb_nom"]
-MEDIA_KEYS = ["id_media", "nom_type_media"]
+MEDIA_KEYS = ["id_media"]
 
 if current_app.config.get("VERIFY_OBSERVATIONS_ENABLED", False):
     OBS_KEYS = OBS_KEYS + ("validation_status",)
@@ -182,22 +183,6 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
             }
             for p in self.medias
         ]
-
-        taxon_repository = taxhub_full_lists[self.program_ref.taxonomy_list]
-        try:
-            taxon = next(
-                taxon
-                for taxon in taxon_repository
-                if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
-            )
-            feature["properties"]["taxref"] = {
-                key: taxon["taxref"][key] for key in TAXREF_KEYS
-            }
-            feature["properties"]["medias"] = [
-                {key: media[key] for key in MEDIA_KEYS} for media in taxon["medias"]
-            ]
-        except StopIteration:
-            pass
 
         return feature
 

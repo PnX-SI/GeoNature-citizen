@@ -64,7 +64,7 @@ export const DefaulConfig = {
     },
     taxonDisplayImageWhenUnique: true,
     taxonSelectInputThreshold: 7,
-    taxonAutocompleteInputThreshold: 12,
+    taxonAutocompleteInputThreshold: 30,
     taxonAutocompleteFields: [
         'nom_complet',
         'nom_vern',
