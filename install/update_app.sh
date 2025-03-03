@@ -23,7 +23,7 @@ cd ..
 # Mise a jour des requirements
 FLASKDIR=$(readlink -e "${0%/*}")
 APP_DIR="$(dirname "$FLASKDIR")"
-venv_dir="venv"
+venv_dir=".venv"
 venv_path=$FLASKDIR/backend/$venv_dir
 source $venv_path/bin/activate
 echo $(pwd)
