@@ -417,13 +417,13 @@ Après chaque modification sur un des éléments qui concerne le frontend, il fa
 ::
 
   cd ~/gncitizen/frontend/
-  npm run ng build -- --prod
+  npm run build:i18n-ssr
 
 Si vous souhaitez que l'application soit disponible depuis un chemin spécifique (ex: ``mondomaine.org/citizen``), remplacez la dernière commande par
 
 ::
 
-  npm run ng build -- --prod --base-href=/citizen/
+  npm run build:i18n-ssr --base-href=/citizen/
 
 
 Lancement des services
