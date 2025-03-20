@@ -1542,32 +1542,39 @@
           <context context-type="linenumber">18</context>
         </context-group>
         <note priority="1" from="description">Observations</note>
+      </trans-unit><trans-unit id="sites" datatype="html">
+        <source>Sites</source><target state="new">Sites</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/home/home.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <note priority="1" from="description">Sites</note>
       </trans-unit>
       <trans-unit id="species" datatype="html">
         <source>Espèces</source><target state="new">Arten</target>
         
         <note priority="1" from="description">species</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">27</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">36</context></context-group></trans-unit>
       <trans-unit id="observers" datatype="html">
         <source>Observateurs</source><target state="new">Beobachter</target>
         
         <note priority="1" from="description">Observers</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">36</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">45</context></context-group></trans-unit>
       <trans-unit id="momenPrograms" datatype="html">
         <source>Les programmes du moment</source><target state="new">Die Programme des Augenblicks</target>
         
         <note priority="1" from="description">Programs of the moment</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">98</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">107</context></context-group></trans-unit>
       <trans-unit id="ngbCarouselPrev" datatype="html">
         <source>Précédent</source><target state="new">Zurück</target>
         
         <note priority="1" from="description">Carousel previous</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">123</context></context-group></trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">132</context></context-group></trans-unit>
       <trans-unit id="ngbCarouselNext" datatype="html">
         <source>Prochain</source><target state="new">Weiter</target>
         
         <note priority="1" from="description">Carousel next</note>
-      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">127</context></context-group></trans-unit><trans-unit id="pageNotFoundTitle" datatype="html">
+      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">136</context></context-group></trans-unit><trans-unit id="pageNotFoundTitle" datatype="html">
         <source>Page non trouvé</source><target state="new">Seite nicht gefunden</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/page-not-found/page-not-found.component.html</context>
@@ -1581,18 +1588,7 @@
           <context context-type="linenumber">13</context>
         </context-group>
         <note priority="1" from="description">Text for 404 error</note>
-      </trans-unit><trans-unit id="homeLink" datatype="html">
-        <source>Accueil</source><target state="new">Empfang</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">custom/footer/footer.html</context>
-          <context context-type="linenumber">3</context>
-        </context-group>
-        <note priority="1" from="description">Home link</note>
-      </trans-unit><trans-unit id="aboutLink" datatype="html">
-        <source>A propos</source><target state="new">Über uns</target>
-        
-        <note priority="1" from="description">About link</note>
-      <context-group purpose="location"><context context-type="sourcefile">custom/footer/footer.html</context><context context-type="linenumber">6</context></context-group></trans-unit>
+      </trans-unit>
       <trans-unit id="logout" datatype="html">
         <source>Se déconnecter</source><target state="new">Abmelden</target>
         <context-group purpose="location">
