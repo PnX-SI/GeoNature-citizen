@@ -75,7 +75,7 @@ export interface Taxon extends TaxonBase {
 
 export interface TaxonomyListItem {
     medias: Media[];
-    attributs: Attribut[];
+    attributs: AttributItem[];
     cd_nom: number;
     nom_francais: string | null;
     taxref: TaxonBase;
@@ -137,6 +137,12 @@ export interface PostObservationResponse extends ObservationFeatureCollection {
 }
 
 export type ObservationPropertiesList = ObservationProperties[];
+
+export interface AttributItem {
+    cd_ref: number;
+    id_attribut: number;
+    valeur_attribut: string;
+}
 
 export interface Attribut {
     id_attribut: number; // Identifiant unique de l'attribut

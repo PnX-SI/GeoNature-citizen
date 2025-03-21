@@ -19,9 +19,10 @@ export function ngbDateMaxIsToday(): ValidatorFn {
 
 export function geometryValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-        const validGeometry = /Point\(-{0,1}\d{1,3}(|\.\d{1,7}),(|\s)-{0,1}\d{1,3}(|\.\d{1,7})\)$/.test(
-            control.value
-        );
+        const validGeometry =
+            /Point\(-{0,1}\d{1,3}(|\.\d{1,7}),(|\s)-{0,1}\d{1,3}(|\.\d{1,7})\)$/.test(
+                control.value
+            );
         return validGeometry ? null : { geometry: { value: control.value } };
     };
 }

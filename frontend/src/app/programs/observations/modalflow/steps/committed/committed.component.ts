@@ -10,10 +10,10 @@ import { ObservationFeature } from '../../../observation.model';
 export class CommittedComponent implements IFlowComponent {
     @Input() data: any;
     @ViewChild(ObsFormComponent, { static: true }) form: ObsFormComponent;
-    enableCommit: boolean = true;
+    enableCommit = true;
 
     constructor() {}
-    onNewObservation(observation: ObservationFeature) {
+    onNewObservation(observation: ObservationFeature): void {
         if (observation) {
             this.data.obs = observation;
 
@@ -28,16 +28,16 @@ export class CommittedComponent implements IFlowComponent {
         }
     }
 
-    committed() {
+    committed(): void {
         this.enableCommit = false;
         this.form.onFormSubmit();
     }
 
-    onUdpdateObs() {
+    onUdpdateObs(): void {
         this.form.onFormUpdate();
     }
 
-    closeModal() {
+    closeModal(): void {
         this.data.service.closeModal();
     }
 }
