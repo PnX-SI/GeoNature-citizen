@@ -40,11 +40,7 @@ taxonomy_lists = []
 
 def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
     url = f"{TAXHUB_API}biblistes/taxons/{taxhub_list_id}"
-    params = {
-        "existing": "true",
-        "order": "asc",
-        "orderby": "taxref.nom_complet",
-    }
+    params = {"existing": "true", "order": "asc", "orderby": "taxref.nom_complet", "limit": 100000}
     res = session.get(
         url,
         params=params,
