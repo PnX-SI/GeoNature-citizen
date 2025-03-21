@@ -65,9 +65,13 @@
                               '?h=80'
                             : 'assets/default_image.png'
                     " />
-                        <span *ngIf="o.properties.photos && !!o.properties.photos.length" class="overlay-text"><i
-                                class="fa fa-camera" aria-hidden="true" placement="right"
-                                ngbTooltip="Observation avec photo"></i></span>
+                    <span *ngIf="o.properties.photos && !!o.properties.photos.length" class="overlay-text">
+                        <i class="fa fa-camera" aria-hidden="true" placement="right" 
+                           ngbTooltip="Observation avec photo" 
+                           i18n-ngbTooltip="Tooltip for observation with photo@@observationWithPhotoTooltip">
+                        </i>
+                    </span>
+                    
                     </div>
                     <div class="infos">
                         <div>
@@ -93,21 +97,30 @@
                             </ng-template>
 
                             &nbsp;
-                            <span *ngIf="MainConfig.VERIFY_OBSERVATIONS_ENABLED" (click)="onValidateClick(o)"
-                                [ngStyle]="{ 'cursor': o.properties.observer?.username == username ? 'not-allowed' :  'pointer'}">
-                                <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
-                                    class="fa fa-hourglass-half text-warning" aria-hidden="true" placement="bottom"
-                                    ngbTooltip="Observation non validée{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
-                                <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'INVALID'"
-                                    class="fa fa-question-circle text-danger" aria-hidden="true" placement="bottom"
-                                    ngbTooltip="Observation invalide{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
-                                <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NON_VALIDATABLE'"
-                                    class="fa fa-times-circle text-danger" aria-hidden="true" placement="bottom"
-                                    ngbTooltip="Observation non validable{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"></i>
-                                <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'VALIDATED'"
-                                    class="fa fa-certificate text-success" aria-hidden="true" placement="bottom"
-                                    ngbTooltip="Observation approuvée"></i>
-                            </span>
+                        <span *ngIf="MainConfig.VERIFY_OBSERVATIONS_ENABLED" (click)="onValidateClick(o)"
+                            [ngStyle]="{ 'cursor': o.properties.observer?.username == username ? 'not-allowed' :  'pointer'}">
+                          <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
+                             class="fa fa-hourglass-half text-warning" aria-hidden="true" placement="bottom"
+                             ngbTooltip="Observation non validée{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"
+                             i18n-ngbTooltip="Tooltip for non-validated observation@@nonValidatedObservationTooltip">
+                          </i>
+                          <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'INVALID'"
+                             class="fa fa-question-circle text-danger" aria-hidden="true" placement="bottom"
+                             ngbTooltip="Observation invalide{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"
+                             i18n-ngbTooltip="Tooltip for invalid observation@@invalidObservationTooltip">
+                          </i>
+                          <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NON_VALIDATABLE'"
+                             class="fa fa-times-circle text-danger" aria-hidden="true" placement="bottom"
+                             ngbTooltip="Observation non validable{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"
+                             i18n-ngbTooltip="Tooltip for non-validatable observation@@nonValidatableObservationTooltip">
+                          </i>
+                          <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'VALIDATED'"
+                             class="fa fa-certificate text-success" aria-hidden="true" placement="bottom"
+                             ngbTooltip="Observation approuvée"
+                             i18n-ngbTooltip="Tooltip for validated observation@@validatedObservationTooltip">
+                          </i>
+                      </span>
+                      
 
                         </div>
                         <div *ngIf="MainConfig.program_list_observers_names">
@@ -130,19 +143,24 @@
                                 &nbsp;
                                 <app-modalflow [coords]="o.properties.coords" [updateData]="o.properties"
                                     [program_id]="o.properties.id_program" *ngIf="'TODO dashboard condition'">
-                                    <i class="fa fa-edit text-primary" placement="top" ngbTooltip="Editer" btn-open></i>
+                                    <i class="fa fa-edit text-primary" placement="top" ngbTooltip="Editer" i18n-ngbTooltip="Tooltip for edit button@@editButtonTooltip"
+                                    btn-open></i>
                                 </app-modalflow>
                                 &nbsp;
-                                <i class="fa fa-trash text-danger" placement="top" ngbTooltip="Supprimer" (click)="
+                                <i class="fa fa-trash text-danger" placement="top" ngbTooltip="Supprimer"  i18n-ngbTooltip="Tooltip for delete button@@deleteButtonTooltip"
+                                 (click)="
                                     deleteObs.emit(o.properties.id_observation)
                                 " owner-actions></i>
                             </span>
                         </div>
                         <p>
-                            le <span>{{ o.properties.date }}</span>
+                            <span i18n="Date prefix@@datePrefix">le</span> 
+                            <span>{{ o.properties.date }}</span>
                             <span *ngIf="o.properties.municipality">
-                                à {{ o.properties.municipality }}</span>
-                        </p>
+                              <span i18n="Location prefix@@locationPrefix">à</span> {{ o.properties.municipality }}
+                            </span>
+                          </p>
+                          
                     </div>
                     <div class="hide detail-link" [routerLink]="[
                         '/programs',
@@ -150,7 +168,8 @@
                         'observations',
                         o.properties.id_observation
                     ]" queryParamsHandling="preserve" style="cursor: pointer" placement="left"
-                        ngbTooltip="Voir les détails de cette observation">
+                        ngbTooltip="Voir les détails de cette observation"
+                        i18n-ngbTooltip="Tooltip for viewing observation details@@viewObservationDetailsTooltip">
                         <img src="assets/binoculars.png" />
                     </div>
                 </div>

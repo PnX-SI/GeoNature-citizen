@@ -104,8 +104,8 @@
                         i18n-placeholder="Your confirm password input@@yourPasswordConfirmInput"
                         placeholder="Confirmez le mot de passe" autocomplete="new-password" required
                         [ngModelOptions]="{ updateOn: 'blur' }" pattern="{{ password.value }}" />
-                    <div class="invalid-feedback">
-                        Please provide a valid city.
+                    <div class="invalid-feedback" i18n="Error message for invalid password@@invalidPasswordError">
+                        S'il vous plait entrez un mot de passe valide.
                     </div>
 
                 </div>
@@ -114,11 +114,12 @@
                 <ngb-alert [dismissible]="false" type="warning" *ngIf="cgu.errors" i18n="Accept UGC@@acceptUGC">
                     Veuillez accepter les conditions d'utilisation.
                 </ngb-alert>
-                <input type="checkbox" id="cgu" name="cgu" #cgu="ngModel" ngModel required
-                    i18n="I Accept@@iAcceptIntro" />
-                J'accepte les
+                <input type="checkbox" id="cgu" name="cgu" #cgu="ngModel" ngModel required/>
+                <div>
+                <p i18n="I Accept@@iAcceptIntro" style="display: inline;">J'accepte les </p>
                 <a target="_blank" href="{{ MainConfig['termsOfUse'][localeId] }}"
-                    i18n="Use condition@@conditionsOfUse">conditions d&apos;utilisation</a>
+                    i18n="Use condition@@conditionsOfUse" style="display: inline;">conditions d&apos;utilisation</a>
+                </div>
             </span>
         </div>
         <div *ngIf="MainConfig.HCAPTCHA_SITE_KEY !== null" class="form-row">

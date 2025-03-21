@@ -43,15 +43,13 @@
                 (validateObs)="openValidateModal(validateModal, $event)">
                 <button type="button" class="btn btn-success float-right" add-obs (click)="addObsClicked()"
                     *ngIf="!userDashboard && !validationDashboard" ngbTooltip="Ajouter une observation"
-                    placement="left">
-                    Ajouter
+                    placement="left" i18n-ngbTooltip="Ajouter une observation@@addObservationTooltip">
+                    <span i18n="Add button text@@addButtonText">Ajouter</span>
                 </button>
 
                 <app-modalflow #modalFlowRef [coords]="coords" [program_id]="program_id"
                     [registration_required]="program?.registration_required" [form_message]="program?.form_message"
-                    [modalversion]="
-                        MainConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
-                    " obs-form>
+                    [modalversion]="MainConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION" obs-form>
                 </app-modalflow>
             </app-obs-list>
         </div>

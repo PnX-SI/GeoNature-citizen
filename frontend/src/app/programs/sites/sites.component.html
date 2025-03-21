@@ -41,8 +41,8 @@
             <app-sites-list #sitesListRef [sites]="sites" [program_id]="program_id" [displayForm]="flowService.display"
                 [userDashboard]="userDashboard" (siteSelect)="sitesMapRef.showPopup($event)">
                 <button type="button" class="btn btn-success mr-4 float-right" add-obs (click)="addSiteClicked()"
-                    *ngIf="!userDashboard" ngbTooltip="Ajouter un site" placement="left">
-                    Ajouter
+                    *ngIf="!userDashboard" ngbTooltip="Ajouter un site" i18n-ngbTooltip="Tooltip for adding a site@@addSiteTooltip" placement="left">
+                    <span i18n="Add site button text@@addSiteButton">Ajouter</span>
                 </button>
                 <app-sitemodalflow #modalFlowRef [coords]="coords" [modalversion]="
                         MainConfig.FRONTEND.NEW_OBS_FORM_MODAL_VERSION
@@ -72,14 +72,14 @@
                         <app-sites-list #sitesListRef [sites]="sites" [program_id]="program_id"
                             [displayForm]="flowService.display" [userDashboard]="userDashboard"
                             (siteSelect)="sitesMapRef.showPopup($event)">
-                            <button type="button" class="btn btn-success mr-4" btn-open>
+                            <button type="button" class="btn btn-success mr-4" i18n="Add button text@@addButtonText" btn-open>
                                 Ajouter
                             </button>
                             <app-sitemodalflow #modalFlowRef [coords]="coords" [modalversion]="
                                     MainConfig.FRONTEND
                                         .NEW_OBS_FORM_MODAL_VERSION
                                 " [program_id]="program_id" class="float-right" obs-form>
-                                <button type="button" class="btn btn-success mr-4" btn-open>
+                                <button type="button" class="btn btn-success mr-4" btn-open i18n="Add button text@@addButtonText">
                                     Ajouter
                                 </button>
                             </app-sitemodalflow>

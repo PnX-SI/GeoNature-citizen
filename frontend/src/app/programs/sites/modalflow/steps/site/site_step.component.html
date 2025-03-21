@@ -1,6 +1,6 @@
 <!-- Ajouter une observation -->
 <div class="modal-header">
-    <h4 class="modal-title">AJOUTER UN SITE</h4>
+    <h4 class="modal-title" i18n="Title for add site@@addSiteTitle">AJOUTER UN SITE</h4>
     <button
         type="button"
         class="close"
@@ -25,6 +25,7 @@
         [disabled]="!form.siteForm.valid"
         class="btn btn-default btn-outline-primary rounded-0"
         (click)="committed()"
+        i18n="button valid site@@validSiteButton"
     >
         Valider le site
     </button>

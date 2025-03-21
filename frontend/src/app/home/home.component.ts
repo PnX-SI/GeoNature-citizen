@@ -13,6 +13,7 @@ import { MainConfig } from '../../conf/main.config';
 import { ProgramsResolve } from '../programs/programs-resolve.service';
 import { Program } from '../programs/programs.models';
 import { ObservationsService } from '../programs/observations/observations.service';
+import { Stats } from '../programs/observations/observation.model';
 
 @Component({
     selector: 'app-home',
@@ -27,8 +28,8 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     platform_intro: SafeHtml;
     MainConfig = MainConfig;
     htmlContent: SafeHtml;
-    stats: Object;
-    backgroundImage: any;
+    stats: Stats;
+    backgroundImage: string;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -41,18 +42,18 @@ export class HomeComponent implements OnInit, AfterViewChecked {
         protected http: HttpClient
     ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.route.data.subscribe((data: { programs: Program[] }) => {
             this.programs = data.programs;
             this.observationsService
                 .getStat()
                 .subscribe((stats) => (this.stats = stats));
             if (this.programs.length === 1) {
-                const p = this.programs[0]
+                const p = this.programs[0];
                 this.router.navigate([
                     '/programs',
                     p.id_program,
-                    p.module.name
+                    p.module.name,
                 ]);
             }
         });
@@ -60,7 +61,8 @@ export class HomeComponent implements OnInit, AfterViewChecked {
             this.fragment = fragment;
         });
 
-        this.backgroundImage = MainConfig.API_ENDPOINT + '/media/background.jpg';
+        this.backgroundImage =
+            MainConfig.API_ENDPOINT + '/media/background.jpg';
         this.metaTagService.updateTag({
             name: 'description',
             content: this.MainConfig.platform_teaser.fr,

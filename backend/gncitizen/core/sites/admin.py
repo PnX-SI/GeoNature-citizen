@@ -1,9 +1,8 @@
 """Flask-Admin views for site module"""
 
 from flask_admin.contrib.sqla.view import ModelView
-from markupsafe import Markup
-
 from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatter
+from markupsafe import Markup
 
 from .models import VisitModel
 
@@ -20,9 +19,9 @@ class SiteView(CustomTileView):
         VisitModel,
     ]
     column_formatters = {"visits": _visits_list_formatter}
-    # column_exclude_list = ["geom"]
     column_list = [
         "id_site",
+        "uuid_sinp",
         "name",
         "visits",
         "site_type.type",

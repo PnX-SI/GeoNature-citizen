@@ -1,8 +1,7 @@
 from flask_admin.actions import action
-from wtforms import SelectField
-
 from gncitizen.utils.admin import CustomJSONField, CustomTileView, json_formatter
 from server import db
+from wtforms import SelectField
 
 from .models import ObservationModel, ValidationStatus
 
@@ -15,6 +14,7 @@ def enum_formatter(view, context, model, name):
 class ObservationView(CustomTileView):
     can_export = True
     # column_exclude_list = ["geom"]
+    column_display_pk = True
     form_overrides = {"json_schema": CustomJSONField, "validation_status": SelectField}
     form_args = {
         "validation_status": {
@@ -27,6 +27,7 @@ class ObservationView(CustomTileView):
         "validation_status": enum_formatter,
     }
     column_filters = (
+        "id_observation",
         "email",
         "cd_nom",
         "date",
@@ -45,6 +46,7 @@ class ObservationView(CustomTileView):
         "municipality",
         "obs_txt",
         "email",
+        "uuid_sinp",
     )
     can_create = False
 

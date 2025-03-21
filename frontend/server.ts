@@ -18,7 +18,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const DIST_FOLDER = join(process.cwd(), 'dist/browser');
 
-const supportedLocales = ['en', 'fr'];
+const supportedLocales = ['de','en', 'fr'];
 const DEFAULT_LOCALE = 'fr';
 const MockBrowser = require('mock-browser').mocks.MockBrowser;
 const mock = new MockBrowser();

@@ -2,8 +2,10 @@
 
     <div class="form-row">
         <div class="form-group col-lg-12 col-md-12">
-            <h5>Informations</h5>
-            <label for="counting">*Type de site&nbsp;</label>
+            <h5 i18n="Informations@@informations">Informations</h5>
+            <label for="counting">
+            <span aria-hidden="true">*</span>
+            <span i18n="Libellé pour le champ Type de site@@siteTypeLabel">Type de site</span>&nbsp;</label>
             <select
                 type="text"
                 formControlName="id_type"
@@ -18,11 +20,14 @@
                     {{ t.text }}
                 </option>
             </select>
-            <label for="counting">*Nom du site&nbsp;</label>
+            <label for="counting">
+                <span aria-hidden="true">*</span>
+                <span i18n="Libellé pour le champ Nom du site@@siteNameLabel">Nom du site</span>&nbsp;
+              </label>
             <input type="text" formControlName="name" class="form-control" />
         </div>
-        <div class="form-group col-lg-12 col-md-12">
-            <h5>Où est-il situé ?</h5>
+        <div class="form-group col-lg-6 col-md-12 half">
+            <h5 i18n="Question localisation site@@locationSiteQuestion">Où est-il situé ?</h5>
             <div class="position-relative">
                 <div class="zoom-alert" *ngIf="hasZoomAlert">
                     <div class="mb-2 text-center" i18n="Zooming instruction@@zoomingInstruction">
