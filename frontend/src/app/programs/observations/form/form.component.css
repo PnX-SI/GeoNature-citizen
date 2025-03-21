@@ -95,3 +95,7 @@ app-obs-form .dropdown-menu.show {
     height: 200px;
     max-height: 200px;
 }
+
+.form-group.input-search-autocomplete{
+padding-left: 0px;
+}

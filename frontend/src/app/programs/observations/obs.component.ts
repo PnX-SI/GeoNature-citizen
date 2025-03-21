@@ -19,7 +19,7 @@ import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
 import { GncProgramsService } from '../../api/gnc-programs.service';
 import { ModalFlowService } from './modalflow/modalflow.service';
-import { ObservationFeature, TaxonomyList } from './observation.model';
+import { ObservationFeature, ObservationPropertiesList, TaxonomyList } from './observation.model';
 import { ObsMapComponent } from './map/map.component';
 import { MediaGaleryComponent } from '../media-galery/media-galery.component';
 import { ObsListComponent } from './list/list.component';
@@ -41,6 +41,7 @@ import { MainConfig } from '../../../conf/main.config';
 })
 export class ObsComponent extends ProgramBaseComponent implements OnInit {
     observations: ObservationFeatureCollection;
+    observedSpeciesUniqueSorted: ObservationPropertiesList;
     surveySpecies: TaxonomyList;
     @ViewChild(ObsMapComponent, { static: true }) obsMap: ObsMapComponent;
     @ViewChild(ObsListComponent, { static: true }) obsList: ObsListComponent;
@@ -98,7 +99,6 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             });
         if (this.program_id) {
             this.route.data.subscribe((data: { programs: Program[] }) => {
-                console.log('DATA', data);
                 this.programs = data.programs;
                 this.program = this.programs.find(
                     (p) => p.id_program == this.program_id
@@ -106,22 +106,12 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                 this.taxonomyListID = this.program.taxonomy_list;
                 forkJoin([
                     this.programService.getProgramObservations(this.program_id),
-                    this.programService.getProgramTaxonomyList(
-                        this.program.taxonomy_list
-                    ),
                     this.programService.getProgram(this.program_id),
-                ]).subscribe(([observations, taxa, program]) => {
+                ]).subscribe(([observations, program]) => {
                     this.observations = observations;
-                    this.surveySpecies = taxa;
-                    this.surveySpecies.sort((a, b) => {
-                        const tax_a = a.nom_francais
-                            ? a.nom_francais
-                            : a.taxref.nom_vern;
-                        const tax_b = b.nom_francais
-                            ? b.nom_francais
-                            : b.taxref.nom_vern;
-                        return tax_a.localeCompare(tax_b);
-                    });
+                    this.observedSpeciesUniqueSorted = this.getUniqueSortedSpecies(this.observations.features);
+
+
                     this.programFeature = program;
                 });
                 this.titleService.setTitle(
@@ -182,6 +172,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             type: 'FeatureCollection',
             features: this.observations.features,
         };
+        this.updateObservedSpecies();
+    }
+
+    private updateObservedSpecies(): void {
+        this.observedSpeciesUniqueSorted = this.getUniqueSortedSpecies(this.observations.features);
     }
 
     addObsClicked(): void {
@@ -229,19 +224,30 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                 this.observationsService
                     .getObservation(observationId)
                     .subscribe(
-                        (updatedObservation: ObservationFeatureCollection) => {
+                        (updatedObservation: ObservationFeature) => {
                             this.observations.features[
                                 this.observations.features.findIndex(
                                     (obs) =>
                                         obs.properties.id_observation ===
                                         observationId
                                 )
-                            ] = updatedObservation.features[0];
+                            ] = updatedObservation;
                         }
                     );
             });
         }
         this.modalRef.close();
+    }
+
+    private getUniqueSortedSpecies(features: any[]): ObservationPropertiesList {
+        const uniqueSpecies = features
+            .map((feature) => feature.properties)
+            .filter((property, index, self) =>
+                self.findIndex((p) => p.cd_nom === property.cd_nom) === index
+            );
+
+        uniqueSpecies.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        return uniqueSpecies;
     }
 
     ngOnDestroy(): void {
