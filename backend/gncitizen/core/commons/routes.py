@@ -115,11 +115,11 @@ def get_modules():
 def get_stat():
     try:
         stats = {}
-        stats["nb_obs"] = ObservationModel.query.count()
-        stats["nb_user"] = UserModel.query.count()
-        stats["nb_program"] = ProgramsModel.query.filter(ProgramsModel.is_active).count()
-        stats["nb_espece"] = ObservationModel.query.distinct(ObservationModel.cd_nom).count()
-        stats["nb_site"] = SiteModel.query.count()
+        stats["count_obs"] = ObservationModel.query.count()
+        stats["count_users"] = UserModel.query.count()
+        stats["count_programs"] = ProgramsModel.query.filter(ProgramsModel.is_active).count()
+        stats["count_taxa"] = ObservationModel.query.distinct(ObservationModel.cd_nom).count()
+        stats["count_sites"] = SiteModel.query.count()
         return (stats, 200)
     except Exception as e:
         current_app.logger.critical("[get_observations] Error: %s", str(e))
