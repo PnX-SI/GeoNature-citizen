@@ -583,7 +583,11 @@ export class ObsFormComponent implements AfterViewInit {
         this.observationsService.postObservation(formData).subscribe(
             (data: PostObservationResponse) => {
                 obs = data.features[0];
-                if (obs.properties.observer) {
+                if (
+                    obs.properties.observer &&
+                    typeof obs.properties.observer !== 'string'
+                ) {
+                    // Now TypeScript knows that observer is of type Observer
                     obs.properties.observer.userAvatar =
                         localStorage.getItem('userAvatar');
                 }

@@ -184,11 +184,11 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
         };
     }
 
-    addObsClicked() {
+    addObsClicked(): void {
         this.modalFlow.first.clicked();
     }
 
-    openValidateModal(validateModal: any, idObs: number) {
+    openValidateModal(validateModal: any, idObs: number): void {
         this.obsToValidate = this.observations.features.find(
             (obs) => obs.properties.id_observation === idObs
         );
@@ -216,6 +216,8 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             this.obsToValidate.properties.validation_status != 'VALIDATED' &&
             (!this.obsToValidate.properties.observer ||
                 (this.obsToValidate.properties.observer &&
+                    typeof this.obsToValidate.properties.observer !==
+                        'string' &&
                     this.obsToValidate.properties.observer.username !==
                         this.username))
         );
