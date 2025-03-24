@@ -4,60 +4,39 @@
         <div class="form-group col-lg-12 col-md-12">
             <h5 i18n="Informations@@informations">Informations</h5>
             <label for="counting">
-            <span aria-hidden="true">*</span>
-            <span i18n="Libellé pour le champ Type de site@@siteTypeLabel">Type de site</span>&nbsp;</label>
-            <select
-                type="text"
-                formControlName="id_type"
-                class="form-control"
-                *ngIf="program"
-                [value]="site_types.length == 1 ? site_types[0].value : none"
-            >
-                <option
-                    *ngFor="let t of program.features[0].site_types"
-                    [value]="t.value"
-                >
+                <span aria-hidden="true">*</span>
+                <span i18n="Libellé pour le champ Type de site@@siteTypeLabel">Type de site</span>&nbsp;</label>
+            <select type="text" formControlName="id_type" class="form-control" *ngIf="program"
+                [value]="site_types.length == 1 ? site_types[0].value : none">
+                <option *ngFor="let t of program.features[0].site_types" [value]="t.value">
                     {{ t.text }}
                 </option>
             </select>
             <label for="counting">
                 <span aria-hidden="true">*</span>
                 <span i18n="Libellé pour le champ Nom du site@@siteNameLabel">Nom du site</span>&nbsp;
-              </label>
+            </label>
             <input type="text" formControlName="name" class="form-control" />
         </div>
-        <div class="form-group col-lg-6 col-md-12 half">
+        <div class="form-group col-lg-12 half">
             <h5 i18n="Question localisation site@@locationSiteQuestion">Où est-il situé ?</h5>
             <div class="position-relative">
                 <div class="zoom-alert" *ngIf="hasZoomAlert">
                     <div class="mb-2 text-center" i18n="Zooming instruction@@zoomingInstruction">
                         Veuillez zoomer pour localiser votre observation.<br />
-                        <span
-                            >(zoom min:
-                            {{ MainConfig.ZOOM_LEVEL_RELEVE }})</span
-                        >
+                        <span>(zoom min:
+                            {{ MainConfig.ZOOM_LEVEL_RELEVE }})</span>
                     </div>
                     <button class="btn" (click)="hasZoomAlert = false">
                         OK
                     </button>
                 </div>
-                <div
-                    id="formMap"
-                    class="col-lg-12"
-                    [class.ng-invalid]="siteForm.get('geometry').invalid"
+                <div id="formMap" class="col-lg-12" [class.ng-invalid]="siteForm.get('geometry').invalid"
                     [class.ng-valid]="siteForm.get('geometry').valid"
                     i18n-data-observation-zoom-statement-warning="Zooming warning@@zoomingWarning"
-                    data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
-                ></div>
+                    data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."></div>
             </div>
-            <input
-                formControlName="geometry"
-                type="hidden"
-                id="geometry"
-                name="geometry"
-                #geometry
-                class="col-lg-12"
-            />
+            <input formControlName="geometry" type="hidden" id="geometry" name="geometry" #geometry class="col-lg-12" />
         </div>
     </div>
     <!-- <div class="alert alert-primary rounded-0" role="alert">

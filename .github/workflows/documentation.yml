@@ -25,7 +25,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PYTHON_VERSION: 3.11
+  PYTHON_VERSION: 3.12
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:

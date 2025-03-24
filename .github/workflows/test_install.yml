@@ -28,7 +28,7 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
         node-version: ["14.21.3"]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
 

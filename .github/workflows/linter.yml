@@ -16,7 +16,7 @@ on:
 env:
   BACKEND_FOLDER: "backend"
   FRONTEND_FOLDER: "frontend"
-  PYTHON_VERSION: 3.9
+  PYTHON_VERSION: 3.12
 
 jobs:
   lint-py:
