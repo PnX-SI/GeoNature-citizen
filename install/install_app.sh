@@ -80,7 +80,8 @@ if [ ! -f $venv_path/bin/activate ]; then
   python3 -m venv $venv_path
 fi
 source .venv/bin/activate
-pip install --upgrade pip
+python -m ensurepip --upgrade
+pip install --upgrade setuptools
 pip install -r requirements.txt
 
 # init DB

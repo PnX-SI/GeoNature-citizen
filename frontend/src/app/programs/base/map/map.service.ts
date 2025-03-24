@@ -15,7 +15,7 @@ export class MapService {
         });
     }
 
-    changePoint(coords: L.Point) {
+    changePoint(coords: L.Point): void {
         this.coordsChange.next(coords);
     }
 }

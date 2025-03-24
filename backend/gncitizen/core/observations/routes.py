@@ -9,10 +9,6 @@ from flask import Blueprint, abort, current_app, json, request
 from flask_jwt_extended import jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
-from shapely.geometry import Point, asShape
-from sqlalchemy import desc
-from utils_flask_sqla.response import json_resp
-
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.utils.env import admin
 from gncitizen.utils.errors import GeonatureApiError
@@ -23,6 +19,9 @@ from gncitizen.utils.mail_check import send_user_email
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
+from shapely.geometry import Point, shape
+from sqlalchemy import desc
+from utils_flask_sqla.response import json_resp
 
 from .admin import ObservationView
 from .models import (
@@ -187,11 +186,12 @@ def post_observation():
             raise GeonatureApiError(e)
 
         try:
-            _coordinates = json.loads(request_datas["geometry"])
-            _point = Point(_coordinates["x"], _coordinates["y"])
-            _shape = asShape(_point)
-            newobs.geom = from_shape(Point(_shape), srid=4326)
+            geometry = json.loads(request_datas["geometry"])
+            shape_geometry = shape(geometry)
+            newobs.geom = from_shape(shape_geometry, srid=4326)
             current_app.logger.debug("[post_observation] newobs geom ", newobs.geom)
+            if not newobs.municipality:
+                newobs.municipality = get_municipality_id_from_wkb(shape_geometry)
         except Exception as e:
             current_app.logger.warning("[post_observation] coords ", e)
             raise GeonatureApiError(e) from e
@@ -217,8 +217,6 @@ def post_observation():
                 newobs.obs_txt = "Anonyme"
 
         # If municipality is not provided: call API_CITY
-        if not newobs.municipality:
-            newobs.municipality = get_municipality_id_from_wkb(_coordinates)
 
         # If taxon name is not provided: call taxhub
         if not newobs.name:
@@ -243,15 +241,11 @@ def post_observation():
                 newobs.id_observation,
                 ObservationMediaModel,
             )
-            current_app.logger.debug(
-                "[post_observation] ObsTax UPLOAD FILE {}".format(file)
-            )
+            current_app.logger.debug("[post_observation] ObsTax UPLOAD FILE {}".format(file))
             features["properties"]["images"] = file
 
         except Exception as e:
-            current_app.logger.warning(
-                "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
-            )
+            current_app.logger.warning("[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
             # raise GeonatureApiError(e)
 
         return (
@@ -371,10 +365,7 @@ def update_observation():
     observation_to_update = ObservationModel.query.filter_by(
         id_observation=request.form.get("id_observation")
     )
-    if (
-        observation_to_update.one().id_role != current_user.id_user
-        and not current_user.validator
-    ):
+    if observation_to_update.one().id_role != current_user.id_user and not current_user.validator:
         abort(403, "unauthorized")
 
     try:
@@ -393,14 +384,11 @@ def update_observation():
                 update_obs[prop] = update_data[prop]
         if "geometry" in update_data:
             try:
-                _coordinates = json.loads(update_data["geometry"])
-                _point = Point(_coordinates["x"], _coordinates["y"])
-                _shape = asShape(_point)
-                update_obs["geom"] = from_shape(Point(_shape), srid=4326)
+                geometry = json.loads(update_data["geometry"])
+                shape_geometry = shape(geometry)
+                update_obs["geom"] = from_shape(shape_geometry, srid=4326)
                 if not update_obs["municipality"]:
-                    update_obs["municipality"] = get_municipality_id_from_wkb(
-                        _coordinates
-                    )
+                    update_obs["municipality"] = get_municipality_id_from_wkb(shape_geometry)
             except Exception as e:
                 current_app.logger.warning("[post_observation] coords ", e)
                 raise GeonatureApiError(e)
@@ -421,8 +409,7 @@ def update_observation():
             if len(id_media_to_delete):
                 db.session.query(ObservationMediaModel).filter(
                     ObservationMediaModel.id_media.in_(tuple(id_media_to_delete)),
-                    ObservationMediaModel.id_data_source
-                    == update_data.get("id_observation"),
+                    ObservationMediaModel.id_data_source == update_data.get("id_observation"),
                 ).delete(synchronize_session="fetch")
                 db.session.query(MediaModel).filter(
                     MediaModel.id_media.in_(tuple(id_media_to_delete))
@@ -439,14 +426,10 @@ def update_observation():
                 update_data.get("id_observation"),
                 ObservationMediaModel,
             )
-            current_app.logger.debug(
-                "[post_observation] ObsTax UPLOAD FILE {}".format(file)
-            )
+            current_app.logger.debug("[post_observation] ObsTax UPLOAD FILE {}".format(file))
 
         except Exception as e:
-            current_app.logger.warning(
-                "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
-            )
+            current_app.logger.warning("[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
             # raise GeonatureApiError(e)
         obs_validation = (
             "non_validatable_status" in update_data
@@ -463,9 +446,7 @@ def update_observation():
             new_validation_status = ValidationStatus.VALIDATED
             if non_validatable_status:
                 status = [
-                    s
-                    for s in INVALIDATION_STATUSES
-                    if s["value"] == non_validatable_status
+                    s for s in INVALIDATION_STATUSES if s["value"] == non_validatable_status
                 ][0]
                 new_validation_status = ValidationStatus[status["link"]]
 
@@ -500,12 +481,8 @@ def update_observation():
                         ),
                     )
                 except Exception as e:
-                    current_app.logger.warning(
-                        "send validation_email failed. %s", str(e)
-                    )
-                    return {
-                        "message": f"""send validation_email failed: "{str(e)}" """
-                    }, 400
+                    current_app.logger.warning("send validation_email failed. %s", str(e))
+                    return {"message": f"""send validation_email failed: "{str(e)}" """}, 400
 
         return ("observation updated successfully"), 200
     except Exception as e:

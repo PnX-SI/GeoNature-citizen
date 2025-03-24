@@ -1,5 +1,6 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { Point } from 'geojson';
 
 export function ngbDateMaxIsToday(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
@@ -17,11 +18,22 @@ export function ngbDateMaxIsToday(): ValidatorFn {
     };
 }
 
+const isValidGeoJSONPoint = (geometry: any): geometry is Point => {
+    return (
+        geometry &&
+        geometry.type === 'Point' &&
+        Array.isArray(geometry.coordinates) &&
+        geometry.coordinates.length === 2 &&
+        geometry.coordinates.every((coord) => typeof coord === 'number') &&
+        geometry.coordinates.every((coord) => coord >= -180 && coord <= 180)
+    );
+};
+
 export function geometryValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-        const validGeometry = /Point\(-{0,1}\d{1,3}(|\.\d{1,7}),(|\s)-{0,1}\d{1,3}(|\.\d{1,7})\)$/.test(
-            control.value
-        );
-        return validGeometry ? null : { geometry: { value: control.value } };
+        console.log('geometryValidator', control);
+        return isValidGeoJSONPoint(control.value)
+            ? null
+            : { geometry: { value: control.value } };
     };
 }

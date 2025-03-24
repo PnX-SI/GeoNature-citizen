@@ -8,7 +8,7 @@ export abstract class ProgramBaseComponent implements AfterViewInit {
     MainConfig = MainConfig;
     fragment: string;
     coords: L.Point;
-    program_id: any;
+    program_id: number;
     programs: Program[];
     program: Program;
     taxonomyListID: number;
