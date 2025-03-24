@@ -4,7 +4,7 @@
             <img loading="lazy" class="" [src]="API_ENDPOINT+ '/media/' + m.filename" [alt]="m.title"
                 [ngbTooltip]="m.name" />
             <div (click)="showPhoto(m)" class="overlay p-1">
-                <span><a [href]="m.data_url">{{ m.name }} le {{ m.date | date: 'longDate' }}</a> par @{{
+                <span i18n="Link text for observation details@@observationDetailsLink"><a [href]="m.data_url">{{ m.name }} le {{ m.date | date: 'longDate' }}</a> par @{{
                     m.observer
                     }}
                 </span>
@@ -25,7 +25,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
+                <h5 class="modal-title" id="exampleModalLabel"  i18n="Modal title for clicked photo@@clickedPhotoModalTitle">
                     {{ clickedPhoto.name }} le
                     {{ clickedPhoto.date | date: 'longDate' }} par @{{
                     clickedPhoto.observer
@@ -34,7 +34,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
+            </div> 
             <div class="modal-body">
                 <img [src]="
                     API_ENDPOINT+'/media/' +

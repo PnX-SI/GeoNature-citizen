@@ -19,7 +19,11 @@ import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
 import { GncProgramsService } from '../../api/gnc-programs.service';
 import { ModalFlowService } from './modalflow/modalflow.service';
-import { ObservationFeature, ObservationPropertiesList, TaxonomyList } from './observation.model';
+import {
+    ObservationFeature,
+    ObservationPropertiesList,
+    TaxonomyList,
+} from './observation.model';
 import { ObsMapComponent } from './map/map.component';
 import { MediaGaleryComponent } from '../media-galery/media-galery.component';
 import { ObsListComponent } from './list/list.component';
@@ -109,8 +113,8 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
                     this.programService.getProgram(this.program_id),
                 ]).subscribe(([observations, program]) => {
                     this.observations = observations;
-                    this.observedSpeciesUniqueSorted = this.getUniqueSortedSpecies(this.observations.features);
-
+                    this.observedSpeciesUniqueSorted =
+                        this.getUniqueSortedSpecies(this.observations.features);
 
                     this.programFeature = program;
                 });
@@ -176,14 +180,16 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     }
 
     private updateObservedSpecies(): void {
-        this.observedSpeciesUniqueSorted = this.getUniqueSortedSpecies(this.observations.features);
+        this.observedSpeciesUniqueSorted = this.getUniqueSortedSpecies(
+            this.observations.features
+        );
     }
 
-    addObsClicked() {
+    addObsClicked(): void {
         this.modalFlow.first.clicked();
     }
 
-    openValidateModal(validateModal: any, idObs: number) {
+    openValidateModal(validateModal: NgbModalRef, idObs: number): void {
         this.obsToValidate = this.observations.features.find(
             (obs) => obs.properties.id_observation === idObs
         );
@@ -211,6 +217,8 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             this.obsToValidate.properties.validation_status != 'VALIDATED' &&
             (!this.obsToValidate.properties.observer ||
                 (this.obsToValidate.properties.observer &&
+                    typeof this.obsToValidate.properties.observer !==
+                        'string' &&
                     this.obsToValidate.properties.observer.username !==
                         this.username))
         );
@@ -221,17 +229,15 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             this.route.data.subscribe(() => {
                 this.observationsService
                     .getObservation(observationId)
-                    .subscribe(
-                        (updatedObservation: ObservationFeature) => {
-                            this.observations.features[
-                                this.observations.features.findIndex(
-                                    (obs) =>
-                                        obs.properties.id_observation ===
-                                        observationId
-                                )
-                            ] = updatedObservation;
-                        }
-                    );
+                    .subscribe((updatedObservation: ObservationFeature) => {
+                        this.observations.features[
+                            this.observations.features.findIndex(
+                                (obs) =>
+                                    obs.properties.id_observation ===
+                                    observationId
+                            )
+                        ] = updatedObservation;
+                    });
             });
         }
         this.modalRef.close();
@@ -240,11 +246,15 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     private getUniqueSortedSpecies(features: any[]): ObservationPropertiesList {
         const uniqueSpecies = features
             .map((feature) => feature.properties)
-            .filter((property, index, self) =>
-                self.findIndex((p) => p.cd_nom === property.cd_nom) === index
+            .filter(
+                (property, index, self) =>
+                    self.findIndex((p) => p.cd_nom === property.cd_nom) ===
+                    index
             );
 
-        uniqueSpecies.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        uniqueSpecies.sort((a, b) =>
+            a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
         return uniqueSpecies;
     }
 

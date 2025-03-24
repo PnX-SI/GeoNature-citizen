@@ -21,14 +21,12 @@
         <div class="form-group col-lg-12 col-md-12">
             <input formControlName="id_program" type="hidden" />
             <h5 *ngIf="taxaCount > 1" class="m-0">
-                <label for="cd_nom" class="m-0">{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
+                <label for="cd_nom" class="m-0"
+                    i18n="Label for species search and selection@@speciesSearchSelectionLabel">{ autocomplete, select,
+                    isOn {Rechercher une esp&egrave;ce}
                     isOff {S&eacute;lectionnez une esp&egrave;ce}}</label>
             </h5>
-            <div
-            *ngIf="loading"
-            class="loader"
-            id="spinner"
-          ></div>
+            <div *ngIf="loading" class="loader" id="spinner"></div>
             <!-- TAXON SELECT -->
             <div class="row" *ngIf="!loading">
                 <div class="form-group col-lg-12 col-md-12">
@@ -38,7 +36,8 @@
                 " class="d-inline-flex toolbar ">
                         <select class="form-control w-100" required>
                             <option value="" [disabled]="true">Choisissez une espèce</option>
-                            <option *ngFor="let s of surveySpecies" (click)="onTaxonSelected(s)" [value]="s.taxref.cd_nom">
+                            <option *ngFor="let s of surveySpecies" (click)="onTaxonSelected(s)"
+                                [value]="s.taxref.cd_nom">
                                 {{ getPreferredName(s) }}
                                 <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref.nom_complet }}</i>)</span>
                             </option>
@@ -68,16 +67,12 @@
                     </div>
                 </div>
                 <!-- TAXON AUTOCOMPLETE -->
-                <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg input-search-autocomplete">
-                    <taxonomy-autocomplete 
-                    label=""
-                    placeholder="Rechercher par nom ou cd_nom" 
-                    [parentFormControl]="obsForm.controls.cd_nom"
-                    [idList]="taxonomyListID" 
-                    [charNumber]="3" 
-                    [listLength]="20"
-                    (onChange)="onSelectedTaxon($event)">
-                  </taxonomy-autocomplete >
+                <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold"
+                    class="form-group col-lg input-search-autocomplete">
+                    <taxonomy-autocomplete label="" placeholder="Rechercher par nom ou cd_nom"
+                        [parentFormControl]="obsForm.controls.cd_nom" [idList]="taxonomyListID" [charNumber]="3"
+                        [listLength]="20" (onChange)="onSelectedTaxon($event)">
+                    </taxonomy-autocomplete>
                 </div>
             </div>
         </div>

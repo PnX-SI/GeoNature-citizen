@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        <a [routerLink]="['/programs', program_id, module]" queryParamsHandling="preserve" id="back_link">
+        <a [routerLink]="['/programs', program_id, module]" queryParamsHandling="preserve" id="back_link" i18n="Link to go back to the program@@backToProgramLink">
             <i class="fa fa-caret-left" aria-hidden="true"></i>
             Retour au programme</a>
     </div>
@@ -14,7 +14,7 @@
                 }}
             </h1>
             <p class="card-subtitle mb-2 text-muted">
-                <small>Ajoutée le
+                <small i18n="Text for added date and observer@@addedDateObserverText">Ajoutée le
                     {{ (module === 'sites' ? site?.properties.timestamp_create.substring(0, 10) :
                     obs?.properties.timestamp_create.substring(0, 10))
                     | date: 'longDate'
@@ -34,7 +34,8 @@
 
                 <p *ngIf="site?.properties.visits.length > 0; else noVisit" class="card-text">
                     <small class="text-muted">
-                        <span *ngIf="site?.properties.visits.length === 1">
+                        <span *ngIf="site?.properties.visits.length === 1"
+                        i18n="Text for a single site visit date@@singleSiteVisitText">
                             Visite du
                             {{
                             site?.properties.visits[0].date
@@ -48,27 +49,27 @@
                 </p>
                 <ng-template #noVisit>
                     <p class="card-text">
-                        <small class="text-danger">Aucune visite enregistrée :(</small>
+                        <small class="text-danger"  i18n="No visits recorded message@@noVisitsMessage">Aucune visite enregistrée :(</small>
                     </p>
                 </ng-template>
-                <a href="#" (click)="$event.preventDefault(); addSiteVisit()" class="btn btn-primary">Ajouter un rapport
+                <a href="#" (click)="$event.preventDefault(); addSiteVisit()" class="btn btn-primary"
+                i18n="Button to add a site visit report@@addSiteVisitReportButton">Ajouter un rapport
                     de visite</a>
             </div>
         </div>
         <ng-template #obsDisplay>
             <div class="col-md-4 pt-2 card box-shadow">
                 <div class="card-body">
-                    <h5 class="card-title">Observation #{{ obs_id }}</h5>
+                    <h5 class="card-title" i18n="Observation card title with ID@@observationCardTitle">Observation #{{ obs_id }}</h5>
                     <p class="card-subtitle mb-2 text-muted">
-                        Observateur&nbsp;: {{ obs?.properties.obs_txt }}<br>
-                        Date&nbsp;: {{
-                        obs?.properties.date.substring(0, 10)
-                        | date: 'longDate'
-                        }}<br>
-                        {{ obs?.properties.municipality ? 'Commune&nbsp;: '+obs?.properties.municipality :
-                        null }}<br>
-                        Nombre&nbsp;: {{ obs?.properties.count}}
-                    </p>
+                        <span i18n="Observer label@@observerLabel">Observateur&nbsp;:</span> {{ obs?.properties.obs_txt }}<br>
+                        <span i18n="Date label@@dateLabel">Date&nbsp;:</span> {{ obs?.properties.date.substring(0, 10) | date: 'longDate' }}<br>
+                        <span *ngIf="obs?.properties.municipality">
+                          <span i18n="Municipality label@@municipalityLabel">Commune&nbsp;:</span> {{ obs?.properties.municipality }}
+                        </span><br>
+                        <span i18n="Count label@@countLabel">Nombre&nbsp;:</span> {{ obs?.properties.count }}
+                      </p>
+
                 </div>
             </div>
         </ng-template>
@@ -78,7 +79,7 @@
     </div>
     <div *ngIf="photos.length> 0" class="row mb-4">
         <div class="col-12">
-            <h2 class="my-2">Photos</h2>
+            <h2 class="my-2" i18n="Section title for photos@@photosSectionTitle">Photos</h2>
         </div>
         <div *ngFor="let photo of photos" class="col-md-4 col-lg-4 photo" (click)="showPhoto(photo)">
             <div class="card mb-4 box-shadow">
@@ -87,7 +88,7 @@
                     src="{{ photo.url }}" data-holder-rendered="true" />
                 <div class="card-body">
                     <p class="card-text text-muted">
-                        <small>Le {{ photo.date | date: 'longDate' }} par {{ photo.author }}</small>
+                        <small i18n="Photo date and author label@@photoDateAuthorLabel">Le {{ photo.date | date: 'longDate' }} par {{ photo.author }}</small>
                     </p>
                 </div>
             </div>
@@ -95,21 +96,23 @@
     </div>
     <div *ngIf="module === 'sites'">
         <div *ngIf="attributes.length > 0" class="row">
-            <h2 class="my-4">Description</h2>
+            <h2 class="my-4" i18n="Section title for description@@descriptionSectionTitle">Description</h2>
         </div>
         <!-- {{ attributes|json }} -->
         <!-- <span *ngIf="site">{{ site.properties.visits|json }}</span> -->
         <div *ngFor="let a of attributes" class="row bg-light my-3">
-            <h5>
+            <h5 i18n="Date and author for site visit@@siteVisitDateAuthor">
                 <i class="fa fa-calendar"></i>
                 {{ a.date | date: 'longDate' }} par {{ a.author }}
-                <i class="fa fa-edit text-primary" ngbTooltip="Editer" (click)="editSiteVisit(a);"
-                    *ngIf="a.author === username"></i>
+                <i class="fa fa-edit text-primary" ngbTooltip="Editer"
+                   i18n-ngbTooltip="Tooltip for edit site visit@@editSiteVisitTooltip"
+                   (click)="editSiteVisit(a);" *ngIf="a.author === username"></i>
                 &nbsp;
-                <!-- {{ a|json }} deleteSiteVisit(a.id)-->
-                <i class="fa fa-trash text-danger" ngbTooltip="Supprimer" (click)="openDelVisitModal(a.id)"
-                    *ngIf="a.author === username"></i>
+                <i class="fa fa-trash text-danger" ngbTooltip="Supprimer"
+                   i18n-ngbTooltip="Tooltip for delete site visit@@deleteSiteVisitTooltip"
+                   (click)="openDelVisitModal(a.id)" *ngIf="a.author === username"></i>
             </h5>
+
             <table class="table table-striped table-sm table-hover">
                 <tbody>
                     <ng-container *ngIf="a.data; else noData">
@@ -120,7 +123,7 @@
                     </ng-container>
                     <ng-template #noData>
                         <tr class="d-flex">
-                            <td class="col-8">Aucune donnée</td>
+                            <td class="col-8"  i18n="No data available message@@noDataMessage">Aucune donnée</td>
                         </tr>
                     </ng-template>
                 </tbody>
@@ -130,7 +133,7 @@
 
     <div *ngIf="module === 'observations'">
         <div *ngIf="attributes.length > 0" class="row">
-            <h2 class="mt-4 mb-4">Description</h2>
+            <h2 class="mt-4 mb-4" i18n="Section title for description@@descriptionSectionTitle">Description</h2>
         </div>
         <div class="row bg-light">
             <table class="table table-striped">
@@ -164,8 +167,8 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    Close
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" i18n="close modal@@closeModal">
+                    Fermer
                 </button>
             </div>
         </div>
@@ -176,17 +179,20 @@
     <div class="modal-delete-header">
         <h5 class="modal-delete-title"><i class="fa fa-trash"></i></h5>
     </div>
-    <div class="modal-delete-body">
+    <div class="modal-delete-body"
+    i18n="Confirmation message for deleting a site visit@@deleteSiteVisitConfirmation">
         Êtes-vous sûr de vouloir supprimer cette visite et toutes les informations
         qui y sont rattachées ?
         <br />
         La suppression sera définitive
     </div>
     <div class="modal-delete-footer">
-        <button type="button" class="cancel-btn" style="margin-right: 15px" (click)="visitDeleteModalClose()">
+        <button type="button" class="cancel-btn" style="margin-right: 15px" (click)="visitDeleteModalClose()"
+        i18n="Cancel@@cancel">
             ANNULER
         </button>
-        <button type="button" class="green-btn" (click)="deleteSiteVisit(idVisitToDelete); visitDeleteModalClose();">
+        <button type="button" class="green-btn" (click)="deleteSiteVisit(idVisitToDelete); visitDeleteModalClose();"
+        i18n="Yes@@yes">
             OUI
         </button>
     </div>

@@ -87,6 +87,7 @@ export const MAP_CONFIG = {
     // OBS_POINTER: 'assets/pointer-green.png',
     // LOCATE_CONTROL_TITLE: {
     //     fr: 'Me localiser',
-    //     en: 'Show me where i am',
+    //     en: 'Show me where I am',
+    //     de: 'Zeig mir, wo ich bin',
     // },
 };

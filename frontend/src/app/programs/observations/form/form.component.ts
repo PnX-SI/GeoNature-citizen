@@ -31,6 +31,7 @@ import { Observable } from 'rxjs';
 import {
     ObservationFeature,
     PostObservationResponse,
+    Taxon,
     TaxonomyList,
 } from '../observation.model';
 import 'leaflet-gesture-handling';
@@ -192,7 +193,7 @@ export class ObsFormComponent implements AfterViewInit {
         });
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
         this.loading = true;
         this.programService
             .getProgram(this.program_id)
@@ -200,44 +201,77 @@ export class ObsFormComponent implements AfterViewInit {
                 this.program = result;
                 this.taxonomyListID =
                     this.program.features[0].properties.taxonomy_list;
-                    this.surveySpecies$ = this.programService
+                this.surveySpecies$ = this.programService
                     .getAllProgramTaxonomyList()
                     .pipe(
-                      map((listsTaxonomy) => {
-                        this.taxaCount = listsTaxonomy
-                          .filter((lt) => lt.id_liste === this.taxonomyListID)
-                          .map((lt) => lt.nb_taxons)[0];
-                        return this.taxaCount <this.taxonAutocompleteInputThreshold;
-                      }),
-                      switchMap((shouldFetchTaxonomyList) => {
-                        if (shouldFetchTaxonomyList) {
-                          return this.programService.getProgramTaxonomyList(this.taxonomyListID,{"limit": this.taxonAutocompleteInputThreshold}).pipe(
-                            tap((species) => {
-                              this.taxa = this._taxhubService.setMediasAndAttributs(species);
-                            }),
-                            map((species: TaxonomyList) => {
-                              if (this.taxaCount < this.taxonAutocompleteInputThreshold) {
-                                return species.sort((a, b) => {
-                                  const taxA = a.nom_francais || a.taxref.nom_vern || '';
-                                  const taxB = b.nom_francais || b.taxref.nom_vern || '';
-                                  return taxA.localeCompare(taxB);
-                                });
-                              } else {
-                                return species;
-                              }
-                            })
-                          );
-                        } else {
-                          this.loading = false;
-                          return [];
-                        }
-                      }),
-                      share()
+                        map((listsTaxonomy) => {
+                            this.taxaCount = listsTaxonomy
+                                .filter(
+                                    (lt) => lt.id_liste === this.taxonomyListID
+                                )
+                                .map((lt) => lt.nb_taxons)[0];
+                            return (
+                                this.taxaCount <
+                                this.taxonAutocompleteInputThreshold
+                            );
+                        }),
+                        switchMap((shouldFetchTaxonomyList) => {
+                            if (shouldFetchTaxonomyList) {
+                                return this.programService
+                                    .getProgramTaxonomyList(
+                                        this.taxonomyListID,
+                                        {
+                                            limit: this
+                                                .taxonAutocompleteInputThreshold,
+                                        }
+                                    )
+                                    .pipe(
+                                        tap((species) => {
+                                            this.taxa =
+                                                this._taxhubService.setMediasAndAttributs(
+                                                    species
+                                                );
+                                            console.log(
+                                                'THIS.TAXA',
+                                                species,
+                                                this.taxa
+                                            );
+                                        }),
+                                        map((species: TaxonomyList) => {
+                                            if (
+                                                this.taxaCount <
+                                                this
+                                                    .taxonAutocompleteInputThreshold
+                                            ) {
+                                                return species.sort((a, b) => {
+                                                    const taxA =
+                                                        a.nom_francais ||
+                                                        a.taxref.nom_vern ||
+                                                        '';
+                                                    const taxB =
+                                                        b.nom_francais ||
+                                                        b.taxref.nom_vern ||
+                                                        '';
+                                                    return taxA.localeCompare(
+                                                        taxB
+                                                    );
+                                                });
+                                            } else {
+                                                return species;
+                                            }
+                                        })
+                                    );
+                            } else {
+                                this.loading = false;
+                                return [];
+                            }
+                        }),
+                        share()
                     );
-                        this.surveySpecies$.subscribe((sortedSpecies) => {
-                            this.surveySpecies = sortedSpecies;
-                            this.loading = false;
-                          });
+                this.surveySpecies$.subscribe((sortedSpecies) => {
+                    this.surveySpecies = sortedSpecies;
+                    this.loading = false;
+                });
 
                 if (this.program.features[0].properties.id_form) {
                     // Load custom form if one is attached to program
@@ -304,8 +338,8 @@ export class ObsFormComponent implements AfterViewInit {
                         },
                         getLocationBounds: (locationEvent) =>
                             locationEvent.bounds.extend(L.LatLngBounds),
-                        onLocationError: (locationEvent) => {
-                            let msg =
+                        onLocationError: () => {
+                            const msg =
                                 'Vous semblez être en dehors de la zone du programme.';
                             this.toastr.error(msg, '', {
                                 positionClass: 'toast-top-right',
@@ -316,13 +350,13 @@ export class ObsFormComponent implements AfterViewInit {
                             enableHighAccuracy:
                                 map_conf.GEOLOCATION_HIGH_ACCURACY,
                         },
-                    } as any)
+                    } as unknown)
                     .addTo(formMap);
 
-                let ZoomViewer = L.Control.extend({
+                const ZoomViewer = L.Control.extend({
                     onAdd: () => {
-                        let container = L.DomUtil.create('div');
-                        let gauge = L.DomUtil.create('div');
+                        const container = L.DomUtil.create('div');
+                        const gauge = L.DomUtil.create('div');
                         container.style.width = '200px';
                         container.style.background = 'rgba(255,255,255,0.5)';
                         container.style.textAlign = 'left';
@@ -336,12 +370,12 @@ export class ObsFormComponent implements AfterViewInit {
                         return container;
                     },
                 });
-                let zv = new ZoomViewer();
+                const zv = new ZoomViewer();
                 zv.addTo(formMap);
                 zv.setPosition('bottomleft');
 
                 const programArea = L.geoJSON(this.program, {
-                    style: function (_feature) {
+                    style: function () {
                         return map_conf.PROGRAM_AREA_STYLE;
                     },
                 }).addTo(formMap);
@@ -362,9 +396,9 @@ export class ObsFormComponent implements AfterViewInit {
 
                 // Update marker on click event
                 formMap.on('click', (e: LeafletMouseEvent) => {
-                    let z = formMap.getZoom();
+                    const zoom = formMap.getZoom();
 
-                    if (z < MainConfig.ZOOM_LEVEL_RELEVE) {
+                    if (zoom < MainConfig.ZOOM_LEVEL_RELEVE) {
                         // this.hasZoomAlert = true;
                         L.DomUtil.addClass(
                             formMap.getContainer(),
@@ -404,14 +438,14 @@ export class ObsFormComponent implements AfterViewInit {
             });
     }
 
-    updatejsfInputObject() {
+    updatejsfInputObject(): void {
         this.jsfInputObject = {
             ...this.customForm.json_schema,
             data: this.jsonData,
         };
     }
 
-    updateMunicipality() {
+    updateMunicipality(): void {
         if (this.coords) {
             this._refGeoService
                 .getMunicipality(this.coords.y, this.coords.x)
@@ -421,7 +455,7 @@ export class ObsFormComponent implements AfterViewInit {
         }
     }
 
-    intiForm() {
+    intiForm(): void {
         this.obsForm = this.formBuilder.group(
             {
                 cd_nom: ['', Validators.required],
@@ -448,7 +482,7 @@ export class ObsFormComponent implements AfterViewInit {
         );
     }
 
-    patchForm(updateData) {
+    patchForm(updateData): void {
         const taxon = updateData.taxon || {
             media: updateData.taxref.media_url,
             taxref: updateData.taxref,
@@ -469,12 +503,13 @@ export class ObsFormComponent implements AfterViewInit {
     // Expose to HTML
     getPreferredName = getPreferredName;
 
-    disabledDates = (date: NgbDate, current: { month: number }) => {
+    disabledDates = (date: NgbDate): boolean => {
         const date_impl = new Date(date.year, date.month - 1, date.day);
         return date_impl > this.today;
     };
 
     onTaxonSelected(taxon: any): void {
+        console.log('<onTaxonSelected> taxon', taxon);
         this.selectedTaxon = taxon;
         this.obsForm.controls['cd_nom'].patchValue({
             cd_nom: taxon.taxref['cd_nom'],
@@ -500,7 +535,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     creatFromDataToPost(): FormData {
         this.obsForm.controls['id_program'].patchValue(this.program_id);
-        let formData: FormData = new FormData();
+        const formData: FormData = new FormData();
 
         const files = this.photos;
         files.forEach((file) => {
@@ -512,12 +547,13 @@ export class ObsFormComponent implements AfterViewInit {
             JSON.stringify(this.obsForm.get('geometry').value)
         );
         const taxon = this.obsForm.get('cd_nom').value;
+        console.log('TAXON', taxon);
         let cd_nom = Number.parseInt(taxon);
         if (isNaN(cd_nom)) {
             cd_nom = Number.parseInt(taxon.cd_nom);
         }
         // const taxon_name = this.selectedTaxon.nom_francais ? this.selectedTaxon.nom_francais : this.selectedTaxon.taxref.nom_vern;
-        const taxon_name = taxon.name
+        const taxon_name = taxon.name;
         formData.append('cd_nom', cd_nom.toString());
         formData.append('name', taxon_name);
         const obsDateControlValue = NgbDate.from(
@@ -539,13 +575,13 @@ export class ObsFormComponent implements AfterViewInit {
             // the municipality. So only append municipality if defined
             formData.append('municipality', this.municipality);
         }
-        for (let item of ['count', 'comment', 'id_program', 'email']) {
+        for (const item of ['count', 'comment', 'id_program', 'email']) {
             formData.append(item, this.obsForm.get(item).value);
         }
         return formData;
     }
 
-    postObservation() {
+    postObservation(): void {
         let obs: ObservationFeature;
         const formData = this.creatFromDataToPost();
         if (this.customForm.json_schema) {
@@ -554,7 +590,11 @@ export class ObsFormComponent implements AfterViewInit {
         this.observationsService.postObservation(formData).subscribe(
             (data: PostObservationResponse) => {
                 obs = data.features[0];
-                if (obs.properties.observer) {
+                if (
+                    obs.properties.observer &&
+                    typeof obs.properties.observer !== 'string'
+                ) {
+                    // Now TypeScript knows that observer is of type Observer
                     obs.properties.observer.userAvatar =
                         localStorage.getItem('userAvatar');
                 }
@@ -592,27 +632,24 @@ export class ObsFormComponent implements AfterViewInit {
         );
     }
 
-    customFormOnChange(e) {
+    customFormOnChange(e): void {
         this.jsonData = e;
     }
 
-    addImage(event) {
+    addImage(event): void {
         this.photos.push(event.file);
     }
-    deleteImage(event) {
-        for (var i = 0; i < this.photos.length; i++) {
-            if (this.photos[i] == event.file) {
-                this.photos.splice(i, 1);
-            }
-        }
+    deleteImage(event): void {
+        this.photos = this.photos.filter((photo) => photo !== event.file);
     }
 
-    maxPhotos() {
+    maxPhotos(): number {
         let resp = 5;
         if (this.data.updateData) {
             resp =
                 resp -
-                this.data.updateData.photos.filter((p) => !p.checked).length;
+                this.data.updateData.photos.filter((photo) => !photo.checked)
+                    .length;
         }
         return resp;
     }
@@ -631,12 +668,12 @@ export class ObsFormComponent implements AfterViewInit {
         return resp;
     }
 
-
-    onSelectedTaxon(taxon) {
+    onSelectedTaxon(taxon): void {
         this.programService
             .getTaxonInfoByCdNom(taxon.item['cd_nom'])
             .subscribe((taxonFullInfo) => {
-                const taxonWithTaxhubInfos= this._taxhubService.setMediasAndAttributs(taxonFullInfo)
+                const taxonWithTaxhubInfos =
+                    this._taxhubService.setMediasAndAttributs(taxonFullInfo);
                 this.selectedTaxon = taxonWithTaxhubInfos[0];
                 this.obsForm.controls['cd_nom'].patchValue({
                     cd_nom: this.selectedTaxon['cd_nom'],

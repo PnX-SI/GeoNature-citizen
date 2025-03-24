@@ -23,40 +23,49 @@ export const AppConfig = {
     // termsOfUse: {
     //     fr: 'assets/cgu.pdf',
     //     en: 'assets/termsOfUse.pdf',
+    //     de: 'assets/nutzungsbedingungen.pdf',
     // },
     // signup: 'optional', // never|optional|always
     // email_contact: false,
     // platform_intro: {
     //     fr: 'Bienvenue<br /> sur GeoNature Citizen',
     //     en: 'Welcome<br /> on GeoNature Citizen',
+    //     de: 'Willkommen<br /> bei GeoNature Citizen',
     // },
     // platform_teaser: {
     //     fr: 'Hae duae provinciae bello quondam piratico catervis mixtae praedonum a Servilio pro consule missae sub iugum factae sunt vectigales. et hae quidem regiones velut in prominenti terrarum lingua positae ob orbe eoo monte Amano disparantur.',
     //     en: 'Hae duae provinciae bello quondam piratico catervis mixtae praedonum a Servilio pro consule missae sub iugum factae sunt vectigales. et hae quidem regiones velut in prominenti terrarum lingua positae ob orbe eoo monte Amano disparantur.',
+    //     de: 'Diese beiden Provinzen wurden einst durch den Piratenkrieg mit Banden von Räubern vermischt und von Servilius, dem Prokonsul, unterjocht und steuerpflichtig gemacht.',
     // },
     // platform_participate: {
     //     fr: 'PARTICIPER AU PROGRAMME',
     //     en: 'PARTICIPATE',
+    //     de: 'AM PROGRAMM TEILNEHMEN',
     // },
     // programs_label: {
     //     fr: 'Programmes',
     //     en: 'Surveys',
+    //     de: 'Programme',
     // },
     // program_label: {
     //     fr: 'Le programme',
     //     en: 'Survey',
+    //     de: 'Das Programm',
     // },
     // program_share_an_observation: {
     //     fr: 'PARTAGER UNE OBSERVATION',
     //     en: 'SHARE AN OBSERVATION',
+    //     de: 'EINE BEOBACHTUNG TEILEN',
     // },
     // program_add_an_observation: {
     //     fr: 'AJOUTER UNE OBSERVATION',
     //     en: 'CONTRIBUTE AN OBSERVATION',
+    //     de: 'EINE BEOBACHTUNG HINZUFÜGEN',
     // },
     // program_allow_email_contact: {
     //     fr: "J'accepte que mon adresse e-mail puisse être utilisée pour recontacter à propos de mon observation",
     //     en: 'I agree that my e-mail address can be used to recontact about my observation',
+    //     de: 'Ich stimme zu, dass meine E-Mail-Adresse zur Kontaktaufnahme bezüglich meiner Beobachtung verwendet werden kann.',
     // },
     // taxonDisplayImageWhenUnique: true,
     // taxonSelectInputThreshold: 7,
