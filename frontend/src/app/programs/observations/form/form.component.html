@@ -1,5 +1,6 @@
 <form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()" class="was-validated">
     <div *ngIf="
+            taxa &&
             taxaCount == 1 &&
             taxa[0].medias &&
             !!taxa[0].medias.length &&
@@ -10,7 +11,7 @@
                     ? MainConfig.API_TAXHUB +
                       '/tmedias/thumbnail/' +
                       taxa[0].medias[0].id_media +
-                      '?w=800'
+                      '?h=800&w=800'
                     : 'assets/default_image.png'
             " [alt]="
                getPreferredName(taxa[0])

@@ -242,6 +242,7 @@ export class ObsFormComponent implements AfterViewInit {
                                                 this.taxaCount <
                                                 this
                                                     .taxonAutocompleteInputThreshold
+                                                && this.taxaCount > 1
                                             ) {
                                                 return species.sort((a, b) => {
                                                     const taxA =
@@ -256,12 +257,17 @@ export class ObsFormComponent implements AfterViewInit {
                                                         taxB
                                                     );
                                                 });
-                                            } else {
+                                            }
+                                            else if (this.taxaCount == 1){
+                                                this.onTaxonSelected(this.taxa[0]);
+                                            }   
+                                            else {
                                                 return species;
                                             }
                                         })
                                     );
-                            } else {
+                            }
+                            else {
                                 this.loading = false;
                                 return [];
                             }
