@@ -11,6 +11,27 @@ import {
 
 declare let $: any;
 
+const map_conf = {
+    BASE_LAYERS: MainConfig['BASEMAPS'].reduce((acc, baseLayer: Object) => {
+        const layerConf: any = {
+            name: baseLayer['name'],
+            attribution: baseLayer['attribution'],
+            detectRetina: baseLayer['detectRetina'],
+            maxZoom: baseLayer['maxZoom'],
+            bounds: baseLayer['bounds'],
+            apiKey: baseLayer['apiKey'],
+            layerName: baseLayer['layerName'],
+        };
+        if (baseLayer['subdomains']) {
+            layerConf.subdomains = baseLayer['subdomains'];
+        }
+        acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
+        return acc;
+    }, {}),
+    DEFAULT_BASE_MAP: () => 
+        map_conf.BASE_LAYERS[MainConfig['DEFAULT_PROVIDER']],
+};
+
 @Component({
     selector: 'app-obs-detail',
     templateUrl: '../../base/detail/detail.component.html',
@@ -48,10 +69,9 @@ export class ObsDetailComponent
                 });
 
             // setup map
-            const map = L.map('map');
-            L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: 'OpenStreetMap',
-            }).addTo(map);
+            const map = L.map('map', {
+                layers: [map_conf.DEFAULT_BASE_MAP()],
+            } as any);
 
             let coord = this.obs.geometry.coordinates;
             let latLng = L.latLng(coord[1], coord[0]);

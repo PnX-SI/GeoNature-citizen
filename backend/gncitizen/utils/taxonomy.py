@@ -3,7 +3,7 @@
 """A module to manage taxonomy"""
 
 from threading import Thread
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import requests
 from flask import current_app
@@ -15,13 +15,22 @@ retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 50
 
 session.mount("https://", HTTPAdapter(max_retries=retries))
 
+
+logger = current_app.logger
+
+
 TAXHUB_API = (
     current_app.config["API_TAXHUB"] + "/"
     if current_app.config["API_TAXHUB"][-1] != "/"
     else current_app.config["API_TAXHUB"]
 )
 
-logger = current_app.logger
+if "TAXHUB_LISTS_EXCLUDE" in current_app.config:
+    excluded_list_ids = set(current_app.config["TAXHUB_LISTS_EXCLUDE"])
+else:
+    excluded_list_ids = set()
+
+logger.info(f"TAXHUB_EXCLUDED_LISTS {excluded_list_ids}")
 
 Taxon = Dict[str, Union[str, Dict[str, str], List[Dict]]]
 
@@ -45,7 +54,7 @@ def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
     return res.json()
 
 
-def taxhub_rest_get_all_lists() -> Dict:
+def taxhub_rest_get_all_lists() -> Optional[Dict]:
     url = f"{TAXHUB_API}biblistes"
     res = session.get(
         url,
@@ -55,11 +64,14 @@ def taxhub_rest_get_all_lists() -> Dict:
     if res.status_code == 200:
         try:
             taxa_lists = res.json()["data"]
+            taxa_lists = [taxa for taxa in taxa_lists if not taxa["id_liste"] in excluded_list_ids]
             for taxa_list in taxa_lists:
                 taxonomy_lists.append((taxa_list["id_liste"], taxa_list["nom_liste"]))
+            print(f"taxonomy_lists {taxonomy_lists}")
         except Exception as e:
             logger.critical(str(e))
         return res.json().get("data", [])
+    return None
 
 
 def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
@@ -81,9 +93,7 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
         media_types = ("Photo_gncitizen", "Photo_principale", "Photo")
         i = 0
         while i < len(media_types):
-            filtered_medias = [
-                d for d in data["medias"] if d["nom_type_media"] == media_types[i]
-            ]
+            filtered_medias = [d for d in data["medias"] if d["nom_type_media"] == media_types[i]]
             if len(filtered_medias) >= 1:
                 break
             i += 1
@@ -141,7 +151,7 @@ def refresh_taxonlist() -> Dict:
         count = 0
         for taxhub_list in taxhub_lists:
             count += 1
-            logger.info(f"loading list {count}/{len(taxhub_list)}")
+            logger.info(f"loading list {count}/{len(taxhub_lists)}")
             r = make_taxon_repository(taxhub_list["id_liste"])
             taxhub_full_lists[taxhub_list["id_liste"]] = r
     else:

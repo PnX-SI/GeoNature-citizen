@@ -1,6 +1,6 @@
 <!-- Ajouter une observation -->
 <div class="modal-header">
-    <h4 class="modal-title">AJOUTER UN RAPPORT DE VISITE</h4>
+    <h4 class="modal-title"  i18n="Modal title for adding a site visit report@@addSiteVisitReportTitle">AJOUTER UN RAPPORT DE VISITE</h4>
     <button
         type="button"
         class="close"
@@ -24,6 +24,7 @@
         class="btn btn-danger rounded-0"
         (click)="form.previousStep()"
         *ngIf="!form.isFirstStep()"
+        i18n="Previous Step@@previousStep"
     >
         Etape précédente
     </button>
@@ -32,6 +33,7 @@
         (click)="form.nextStep()"
         *ngIf="!form.isLastStep()"
         [disabled]="form.invalidStep()"
+        i18n="Next Step@@nextStep"
     >
         Etape suivante
     </button>
@@ -41,6 +43,7 @@
         class="btn btn-default btn-outline-primary rounded-0"
         (click)="committed()"
         *ngIf="form.isLastStep()"
+        i18n="button valid visit@@validVisitButton"
     >
         Valider la visite
     </button>

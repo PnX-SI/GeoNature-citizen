@@ -398,6 +398,15 @@ span.input-group-text {
     position: relative;
     background-color: #e6e6e6;
     margin: 0 8px;
+    border: 3px solid white;
+}
+
+.obs-img:hover {
+    border: 3px solid var(--secondary);
+}
+
+.obs-img.selected {
+    border: 3px solid var(--secondary);
 }
 
 .obs-img span {
@@ -408,7 +417,7 @@ span.input-group-text {
     display: block;
     background: rgba(255, 255, 255, 0.5);
     position: absolute;
-    bottom: 2px;
+    bottom: 0px;
     width: 100%;
     padding: 2px 5px;
 }
@@ -462,13 +471,11 @@ form .d-inline-flex {
     opacity: 0.7;
 }
 
-.obs-img:hover img,
+/* .obs-img:hover img,
 .obs-img.selected img {
     opacity: 1;
     cursor: pointer;
-    /* box-shadow: 0 0 0 3px var(--secondary);*/
-    border: 3px solid var(--secondary);
-}
+} */
 
 .scroll-img {
     display: inline-flex;

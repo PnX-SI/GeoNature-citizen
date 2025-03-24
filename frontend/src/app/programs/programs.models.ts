@@ -1,4 +1,5 @@
 import { SafeHtml } from '@angular/platform-browser';
+import { TileLayerOptions } from 'leaflet';
 
 export class Program {
     id_program: number;
@@ -14,4 +15,13 @@ export class Program {
     taxonomy_list: number;
     registration_required: boolean;
     on_sidebar: boolean;
+}
+
+export interface BaseLayer extends TileLayerOptions {
+    name: string;
+    layer?: string;
+    attribution: string;
+    detectRetina?: boolean;
+    apiKey?: string;
+    layerName?: string;
 }

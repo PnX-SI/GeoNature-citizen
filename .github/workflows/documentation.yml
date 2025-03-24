@@ -49,7 +49,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd backend
-          poetry install --only=docs
+          poetry install --only=docs --no-root
 
       - name: Build doc using Sphinx
         run: |

@@ -18,6 +18,27 @@ import { UserService } from '../../../auth/user-dashboard/user.service.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SiteService } from '../sites.service';
 
+const map_conf = {
+    BASE_LAYERS: MainConfig['BASEMAPS'].reduce((acc, baseLayer: Object) => {
+        const layerConf: any = {
+            name: baseLayer['name'],
+            attribution: baseLayer['attribution'],
+            detectRetina: baseLayer['detectRetina'],
+            maxZoom: baseLayer['maxZoom'],
+            bounds: baseLayer['bounds'],
+            apiKey: baseLayer['apiKey'],
+            layerName: baseLayer['layerName'],
+        };
+        if (baseLayer['subdomains']) {
+            layerConf.subdomains = baseLayer['subdomains'];
+        }
+        acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
+        return acc;
+    }, {}),
+    DEFAULT_BASE_MAP: () => 
+        map_conf.BASE_LAYERS[MainConfig['DEFAULT_PROVIDER']],
+};
+
 @Component({
     selector: 'app-site-detail',
     templateUrl: '../../base/detail/detail.component.html',
@@ -88,10 +109,9 @@ export class SiteDetailComponent
 
     prepareSiteData(): void {
         // setup map
-        const map = L.map('map');
-        L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'OpenStreetMap',
-        }).addTo(map);
+        const map = L.map('map', {
+            layers: [map_conf.DEFAULT_BASE_MAP()],
+        } as any);
         const coord = this.site.geometry.coordinates;
         const latLng = L.latLng(coord[1], coord[0]);
         map.setView(latLng, 13);
