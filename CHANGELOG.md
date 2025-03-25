@@ -2,7 +2,9 @@
 
 ## 1.2.0 - 202x-xx-xx
 
-**!!! Last version compatible with geoNature 2.14 and below***
+```{warning}
+**!!! Last version compatible with TaxHub 1.x.x (i.e. GeoNature <= 2.14.x)**
+```
 
 ### Main new features
 
