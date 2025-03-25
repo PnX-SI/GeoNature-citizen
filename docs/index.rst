@@ -16,8 +16,10 @@ Documentation de GeoNature-citizen
    installation
    docker
    configuration
+   administration
    badges
    devs/index
+   history
 
 
 
