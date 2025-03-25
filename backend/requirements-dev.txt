@@ -1,4 +1,4 @@
---without-hashes astroid==2.15.8 ; python_version >= "3.9" and python_version < "4.0"
+astroid==2.15.8 ; python_version >= "3.9" and python_version < "4.0"
 autoflake==2.3.1 ; python_version >= "3.9" and python_version < "4.0"
 black==24.8.0 ; python_version >= "3.9" and python_version < "4.0"
 blinker==1.8.2 ; python_version >= "3.9" and python_version < "4.0"
