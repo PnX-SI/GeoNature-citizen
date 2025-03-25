@@ -53,7 +53,7 @@
                             i18n-placeholder="Your email input placeholder label@@yourEmailInputPlaceholder"
                             placeholder="Entrez votre email" [(ngModel)]="user.email" #email="ngModel"
                             autocomplete="email" [ngModelOptions]="{ updateOn: 'blur' }" required
-                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" />
+                            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" />
                     </div>
                 </div>
             </div>
@@ -114,11 +114,11 @@
                 <ngb-alert [dismissible]="false" type="warning" *ngIf="cgu.errors" i18n="Accept UGC@@acceptUGC">
                     Veuillez accepter les conditions d'utilisation.
                 </ngb-alert>
-                <input type="checkbox" id="cgu" name="cgu" #cgu="ngModel" ngModel required/>
+                <input type="checkbox" id="cgu" name="cgu" #cgu="ngModel" ngModel required />
                 <div>
-                <p i18n="I Accept@@iAcceptIntro" style="display: inline;">J'accepte les </p>
-                <a target="_blank" href="{{ MainConfig['termsOfUse'][localeId] }}"
-                    i18n="Use condition@@conditionsOfUse" style="display: inline;">conditions d&apos;utilisation</a>
+                    <p i18n="I Accept@@iAcceptIntro" style="display: inline;">J'accepte les </p>
+                    <a target="_blank" href="{{ MainConfig['termsOfUse'][localeId] }}"
+                        i18n="Use condition@@conditionsOfUse" style="display: inline;">conditions d&apos;utilisation</a>
                 </div>
             </span>
         </div>
