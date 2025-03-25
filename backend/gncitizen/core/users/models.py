@@ -115,23 +115,11 @@ class UserModel(TimestampMixinModel, db.Model):
     def __repr__(self):
         return f"{self.username} <{self.id_user}>"
 
-    # @classmethod
-    # def delete_all(cls):
-    #     try:
-    #         num_rows_deleted = db.session.query(cls).delete()
-    #         db.session.commit()
-    #         return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
-    #     except:
-    #         return {'message': 'Something went wrong'}
-
 
 @event.listens_for(UserModel.password, "set", retval=True)
 def hash_user_password(_target, value, oldvalue, _initiator):
     """Evenement qui hash le mot de passe systèmatiquement"""
-    logger.debug(f"<hash_user_password> OLD PWD {oldvalue} / NEW PWD {value != ''}")
-    print(f"PASSWORD VALUE {value} / OLDVALUE {oldvalue}")
     if value != "" and not sha256.identify(value):
-        logger.debug("<hash_user_password> Update new password")
         return UserModel.generate_hash(value)
     return oldvalue
 

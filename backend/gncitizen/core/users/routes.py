@@ -100,11 +100,8 @@ def registration():
 
         datas_to_save = {}
         for data in request_datas:
-            if hasattr(UserModel, data) and data != "password":
+            if hasattr(UserModel, data):
                 datas_to_save[data] = request_datas[data]
-
-        # Hashed password
-        datas_to_save["password"] = UserModel.generate_hash(request_datas["password"])
 
         if not current_app.config["CONFIRM_EMAIL"]["USE_CONFIRM_EMAIL"]:
             datas_to_save["active"] = True
