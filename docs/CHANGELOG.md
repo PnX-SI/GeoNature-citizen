@@ -5,11 +5,20 @@
 ### Main new features
 
 * Add id_observation to observations list in backoffice (#428 by @hypsug0)
+* Add compatibility to Python 3.12, revoke compatibility with Python 3.8 (#406 by @hypsug0)
+* Use BaseLayers sets in conf and impove map in add-site form component. cf. #411, #413, #414 (#415 by @xavyeah39)
+* Add sites count stats to home (#438 by @andriacap)
+
 
 ### Fixes
 
 * Standardization of frontend map components between site and observation modules (#415 by @xavyeah39)
-* Fix password scratch when user profile edited from backoffice, cf. #420 (#429 by @hypsug0)
+* Fix password scratch when user profile edited from backoffice, cf. #420 (#429, #446 by @hypsug0)
+* Fix clicnat-citizen url (#433 by @PaulLabruyere)
+* Fix url redirection to backoffice (#435 by @andriacap)
+* Avoid using single page application to use server side rendering only (#439 by PaulLabruyère)
+* Fix thumbnail label not clickable on shot species list (#443 by hypsyg0)
+
 
 ## 1.1.0 - 2024-04-06
 

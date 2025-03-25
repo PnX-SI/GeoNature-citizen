@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gncitizen-backend"
-version = "1.0.0-dev"
+version = "1.2.0"
 description = "Citizen nature inventories (Backend"
 authors = [
   "lpofredc",
