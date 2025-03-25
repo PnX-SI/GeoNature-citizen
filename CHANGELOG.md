@@ -18,7 +18,7 @@
 * Fix password scratch when user profile edited from backoffice, cf. #420 (#429, #446 by @hypsug0)
 * Fix clicnat-citizen URL (#433 by @PaulLabruyere)
 * Fix URL redirection to backoffice (#435 by @andriacap)
-* Avoid using single page application to use server side rendering only (#439 by @PaulLabruyère)
+* Avoid using single page application to use server side rendering only (#439 by @PaulLabruyere)
 * Fix thumbnail label not clickable on shot species list (#443 by @hypsyg0)
 
 ## 1.1.0 - 2024-04-06
