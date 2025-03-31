@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
 from flask import current_app
+from gncitizen.core.commons.models import ProgramsModel, TimestampMixinModel, TModules
 from passlib.hash import pbkdf2_sha256 as sha256
+from server import db
 from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
 from utils_flask_sqla_geo.serializers import serializable
-
-from gncitizen.core.commons.models import ProgramsModel, TimestampMixinModel, TModules
-from server import db
 
 logger = current_app.logger
 
@@ -116,24 +115,13 @@ class UserModel(TimestampMixinModel, db.Model):
     def __repr__(self):
         return f"{self.username} <{self.id_user}>"
 
-    # @classmethod
-    # def delete_all(cls):
-    #     try:
-    #         num_rows_deleted = db.session.query(cls).delete()
-    #         db.session.commit()
-    #         return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
-    #     except:
-    #         return {'message': 'Something went wrong'}
-
 
 @event.listens_for(UserModel.password, "set", retval=True)
 def hash_user_password(_target, value, oldvalue, _initiator):
     """Evenement qui hash le mot de passe systèmatiquement"""
-    logger.debug(f"<hash_user_password> OLD PWD {oldvalue} / NEW PWD {value != ''}")
     if value != "" and not sha256.identify(value):
-        logger.debug("<hash_user_password> Update new password")
         return UserModel.generate_hash(value)
-    return value
+    return oldvalue
 
 
 class GroupsModel(db.Model):

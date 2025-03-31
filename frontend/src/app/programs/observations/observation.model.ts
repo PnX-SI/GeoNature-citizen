@@ -1,24 +1,5 @@
 import { Feature, FeatureCollection } from 'geojson';
 
-
-export interface ObservationFeature extends Feature {
-    properties: {
-        cd_nom: number;
-        comment: string;
-        common_name: string;
-        count: number;
-        date: Date;
-        id_observation: number;
-        images?: string[];
-        municipality?: any;
-        obs_txt: string;
-        observer?: any;
-        sci_name: string;
-        timestamp_create: Date;
-        validation_status?: string;
-        taxref: any;
-    };
-}
 interface GenericObject {
     [k: string]: boolean | number | string;
 }
@@ -59,12 +40,71 @@ export interface TaxonomyListItem {
 
 export type TaxonomyList = Array<TaxonomyListItem>;
 
+export interface Stats {
+    count_taxa: number;
+    count_obs: number;
+    count_sites: number;
+    count_programs: number;
+    count_users: number;
+}
+
+export interface Coordinates {
+    type: string;
+    coordinates: [number, number];
+}
+
+export interface Media {
+    id_media: number;
+    nom_type_media: string;
+}
+
+export interface Photo {
+    author: string;
+    date: string;
+    url: string;
+}
+
+export interface Taxref {
+    cd_nom: number;
+    cd_ref: number;
+    lb_nom: string;
+    nom_vern: string;
+}
+
+export interface Observer {
+    username: string;
+    userAvatar?: string;
+    id_role: number;
+    avatar?: string;
+}
+
+export interface ObservationProperties {
+    cd_nom: number;
+    comment: string;
+    count: number;
+    date: string;
+    id_observation: number;
+    id_program: number;
+    json_data: any;
+    medias: Media[];
+    municipality: string;
+    obs_txt: string;
+    observer: Observer | string | null;
+    photos: Photo[];
+    taxref: Taxref;
+    timestamp_create: string;
+    validation_status?: string;
+}
+
+export interface ObservationFeature extends Feature {
+    properties: ObservationProperties;
+}
 export interface ObservationFeatureCollection extends FeatureCollection {
     page?: number;
     pages?: number;
     per_page?: number;
     total?: number;
-    features: Array<ObservationFeature>;
+    features: ObservationFeature[];
 }
 
 export interface PostObservationResponse extends ObservationFeatureCollection {

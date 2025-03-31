@@ -1,5 +1,6 @@
 import { SafeHtml } from '@angular/platform-browser';
 import { TileLayerOptions } from 'leaflet';
+import { Position, Point } from 'geojson';
 
 export class Program {
     id_program: number;
@@ -24,4 +25,9 @@ export interface BaseLayer extends TileLayerOptions {
     detectRetina?: boolean;
     apiKey?: string;
     layerName?: string;
+}
+
+export interface GeometryPoint {
+    type: 'Point';
+    coordinates: Position; // Tuple for [longitude, latitude]
 }

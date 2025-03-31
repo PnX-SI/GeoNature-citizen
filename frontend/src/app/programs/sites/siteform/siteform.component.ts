@@ -298,7 +298,6 @@ export class SiteFormComponent implements AfterViewInit {
                             icon: siteFormMarkerIcon,
                         }).addTo(formMap);
                         this.coords = L.point(e.latlng.lng, e.latlng.lat);
-                        // this.siteForm.patchValue({ geometry: this.coords });
                         const coords = <Point>{
                             type: 'Point',
                             coordinates: <Position>[e.latlng.lng, e.latlng.lat],
@@ -315,7 +314,12 @@ export class SiteFormComponent implements AfterViewInit {
     patchForm(updateData): void {
         this.siteForm.patchValue({
             name: updateData.name,
-            geometry: this.data.coords ? this.coords : '',
+            geometry: this.data.coords
+                ? <Point>{
+                      type: 'Point',
+                      coordinates: <Position>[this.coords.x, this.coords.y],
+                  }
+                : '',
             id_type: updateData.id_type,
             id_program: updateData.program_id,
             id_site: updateData.id_site,

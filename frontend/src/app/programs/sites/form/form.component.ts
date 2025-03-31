@@ -23,7 +23,6 @@ import { MainConfig } from '../../../../conf/main.config';
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 import { ngbDateMaxIsToday } from '../../observations/form/formValidators';
 import { SiteService } from '../sites.service';
-import { cpuUsage } from 'process';
 
 declare let $: any;
 

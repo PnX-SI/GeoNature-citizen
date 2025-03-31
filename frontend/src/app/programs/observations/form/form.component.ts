@@ -22,7 +22,7 @@ import {
     share,
     tap,
 } from 'rxjs/operators';
-import { FeatureCollection } from 'geojson';
+import { FeatureCollection, Point, Position } from 'geojson';
 import { GncProgramsService } from '../../../api/gnc-programs.service';
 import { LeafletMouseEvent } from 'leaflet';
 import { NgbDate, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -172,7 +172,12 @@ export class ObsFormComponent implements AfterViewInit {
         }
         this.mapService.coordsChange.subscribe((value) => {
             this.coords = value;
-            this.obsForm.patchValue({ geometry: this.coords });
+            this.obsForm.patchValue({
+                geometry: <Point>{
+                    type: 'Point',
+                    coordinates: <Position>[this.coords.x, this.coords.y],
+                },
+            });
             if (this.mapVars.minimapMarker)
                 this.formMap.removeLayer(this.mapVars.minimapMarker);
             this.mapVars.minimapMarker = L.marker(
@@ -335,7 +340,15 @@ export class ObsFormComponent implements AfterViewInit {
                 // Set initial observation marker from main map if already spotted
                 let myMarker = null;
                 if (this.coords) {
-                    this.obsForm.patchValue({ geometry: this.coords });
+                    this.obsForm.patchValue({
+                        geometry: <Point>{
+                            type: 'Point',
+                            coordinates: <Position>[
+                                this.coords.x,
+                                this.coords.y,
+                            ],
+                        },
+                    });
 
                     myMarker = L.marker([this.coords.y, this.coords.x], {
                         icon: obsFormMarkerIcon,
@@ -376,7 +389,15 @@ export class ObsFormComponent implements AfterViewInit {
                         }).addTo(formMap);
                         this.coords = L.point(e.latlng.lng, e.latlng.lat);
                         this.updateMunicipality();
-                        this.obsForm.patchValue({ geometry: this.coords });
+                        this.obsForm.patchValue({
+                            geometry: <Point>{
+                                type: 'Point',
+                                coordinates: <Position>[
+                                    this.coords.x,
+                                    this.coords.y,
+                                ],
+                            },
+                        });
                     }
                 });
 
@@ -444,7 +465,12 @@ export class ObsFormComponent implements AfterViewInit {
             count: updateData.count,
             comment: updateData.comment,
             date: this.dateParser.parse(updateData.date),
-            geometry: this.data.coords ? this.coords : '',
+            geometry: this.data.coords
+                ? <Point>{
+                      type: 'Point',
+                      coordinates: <Position>[this.coords.x, this.coords.y],
+                  }
+                : '',
             id_program: updateData.program_id,
         });
     }
@@ -583,7 +609,11 @@ export class ObsFormComponent implements AfterViewInit {
         this.observationsService.postObservation(formData).subscribe(
             (data: PostObservationResponse) => {
                 obs = data.features[0];
-                if (obs.properties.observer) {
+                if (
+                    obs.properties.observer &&
+                    typeof obs.properties.observer !== 'string'
+                ) {
+                    // Now TypeScript knows that observer is of type Observer
                     obs.properties.observer.userAvatar =
                         localStorage.getItem('userAvatar');
                 }

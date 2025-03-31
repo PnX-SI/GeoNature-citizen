@@ -23,7 +23,9 @@
         <div class="form-group col-lg-12 col-md-12">
             <input formControlName="id_program" type="hidden" />
             <h5 *ngIf="taxaCount > 1" class="m-0">
-                <label for="cd_nom" class="m-0">{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
+                <label for="cd_nom" class="m-0"
+                    i18n="Label for species search and selection@@speciesSearchSelectionLabel">{ autocomplete, select,
+                    isOn {Rechercher une esp&egrave;ce}
                     isOff {S&eacute;lectionnez une esp&egrave;ce}}</label>
             </h5>
             <!-- TAXON SELECT -->
@@ -34,7 +36,8 @@
                     taxaCount < taxonAutocompleteInputThreshold
                 " class="d-inline-flex toolbar ">
                         <select formControlName="cd_nom" class="form-control w-100" required>
-                            <option value="" [disabled]="true">Choisissez une espèce</option>
+                            <option value="" [disabled]="true" i18n="Option to choose a species@@chooseSpeciesOption">
+                                Choisissez une espèce</option>
                             <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
                                 {{
                                 !!s.nom_francais
@@ -51,7 +54,8 @@
                     class="form-group col-lg-12 d-inline-flex obs-images">
                     <div class="scroll-img" [class.ng-valid]="selectedTaxon" [class.ng-invalid]="!selectedTaxon">
                         <div *ngFor="let s of surveySpecies">
-                            <div class="obs-img default-img" [class.selected]="isSelectedTaxon(s)">
+                            <div class="obs-img default-img" [class.selected]="isSelectedTaxon(s)"
+                                (click)="onTaxonSelected(s)">
                                 <img [src]="
                                 s.medias && !!s.medias.length
                                     ? MainConfig.API_TAXHUB +
@@ -80,7 +84,8 @@
                         <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
                     </ng-template>
                     <input id="cd_nom" type="text" class="form-control" formControlName="cd_nom"
-                        placeholder="Nom latin ou vernaculaire ou cd_ref" [editable]="false"
+                        placeholder="Nom latin ou vernaculaire ou cd_ref"
+                        i18n-placeholder="Placeholder for species name input@@speciesNamePlaceholder" [editable]="false"
                         [ngbTypeahead]="inputAutoCompleteSearch" [resultTemplate]="rt"
                         [inputFormatter]="inputAutoCompleteFormatter" required />
                 </div>

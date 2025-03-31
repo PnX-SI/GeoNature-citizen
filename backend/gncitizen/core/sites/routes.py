@@ -7,11 +7,6 @@ from flask import Blueprint, current_app, make_response, request
 from flask_jwt_extended import jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
-from shapely.geometry import Point, asShape
-from sqlalchemy import or_
-from utils_flask_sqla.response import json_resp
-from utils_flask_sqla_geo.generic import get_geojson_feature
-
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.users.models import UserModel
 from gncitizen.utils.env import admin
@@ -19,6 +14,10 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.media import save_upload_files
 from server import db
+from shapely.geometry import Point, shape
+from sqlalchemy import or_
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla_geo.generic import get_geojson_feature
 
 from .admin import SiteView, VisitView
 from .models import MediaOnVisitModel, SiteModel, SiteTypeModel, VisitModel
@@ -53,7 +52,7 @@ def get_types():
 @json_resp
 def get_site(pk):
     """Get a site by id
-    ---
+    ---asShape
     tags:
       - Sites (External module)
     parameters:
@@ -319,8 +318,8 @@ def post_site():
             raise GeonatureApiError(e)
 
         try:
-            shape = asShape(request_data["geometry"])
-            newsite.geom = from_shape(Point(shape), srid=4326)
+            shape_geometry = shape(request_data["geometry"])
+            newsite.geom = from_shape(shape_geometry, srid=4326)
         except Exception as e:
             current_app.logger.debug(e)
             raise GeonatureApiError(e)
@@ -365,8 +364,8 @@ def update_site():
         for prop in ["name", "id_type"]:
             update_site[prop] = update_data[prop]
         try:
-            shape = asShape(update_data["geometry"])
-            update_site["geom"] = from_shape(Point(shape), srid=4326)
+            shape_geometry = shape(update_data["geometry"])
+            update_site["geom"] = from_shape(shape_geometry, srid=4326)
         except Exception as e:
             current_app.logger.warning("[update_site] coords ", e)
             raise GeonatureApiError(e)
@@ -588,9 +587,7 @@ def export_sites_xls(user_id):
         xls_file = io.BytesIO()
         wb.save(xls_file)
         output = make_response(xls_file.getvalue())
-        output.headers["Content-Disposition"] = (
-            "attachment; filename=" + "export_sites.xls"
-        )
+        output.headers["Content-Disposition"] = "attachment; filename=" + "export_sites.xls"
         output.headers["Content-type"] = "application/xls"
         return output
     except Exception as e:

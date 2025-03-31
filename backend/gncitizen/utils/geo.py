@@ -2,8 +2,8 @@
 
 import requests
 from flask import current_app
-
 from gncitizen.utils.env import API_CITY
+from shapely.geometry.point import Point
 
 # Get municipality id
 #       newobs.municipality = get_municipality_id_from_wkb_point(
@@ -11,7 +11,7 @@ from gncitizen.utils.env import API_CITY
 #       )
 
 
-def get_municipality_id_from_wkb(wkb):
+def get_municipality_id_from_wkb(point: Point) -> str:
     """Return municipality id from wkb geometry
 
     :param wkb: WKB geometry (epsg 4326)
@@ -21,7 +21,7 @@ def get_municipality_id_from_wkb(wkb):
     :rtype: int
     """
     try:
-        municipality = get_municipality_from_lat_long(lat=wkb["y"], lon=wkb["x"])
+        municipality = get_municipality_from_lat_long(lat=point.x, lon=point.y)
         # Chaining if conditions since the nominatim API does not return
         # the same attributes depending on the "city"
         available_city_keys = ["village", "town", "city", "municipality"]
