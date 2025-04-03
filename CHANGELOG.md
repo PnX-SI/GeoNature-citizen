@@ -2,7 +2,10 @@
 
 ## 1.3.0 - 2025-04-03
 
-### 🚀 Main new features
+> [!WARNING]  
+> **compatible with TaxHub 2.x (i.e. GeoNature >= 2.15.x)**
+
+### :rocket: Main new features
 
 * Allow using all Taxref in programs (#327, #422)
 * Compatibility with TaxHub V2
@@ -16,15 +19,16 @@
   *  'taxref.lb_nom'
   *  'taxref.cd_nom'
 
-### Development
+### :technologist: Development
 
 * Add calls to two TaxHub API routes in order to get media types and bibattribut.
 * Add component taxonomy-research which calls `allnamebylist` TaxHub API route in Form Observation Program 
 * Remove TaxHub list from cache backend
 
-### Release note
+### :speech_balloon: Release note
 
 * To install or update to this version of GeoNature-citizen, you need TaxHub version 2.0.0 minimum.
+* Change `API_TAXHUB` variable to new TaxHub API url in `config/config.toml` and `frontend/src/conf/app.config.ts` (e.g. `https://demo.geonature.fr/geonature/api/taxhub/api/`)
 
 
 ## 1.2.1 - 2025-04-03

@@ -2,12 +2,10 @@
     <div *ngIf="
             taxa &&
             taxaCount == 1 &&
-            taxa[0].medias &&
-            !!taxa[0].medias.length &&
             taxonDisplayImageWhenUnique
         " class="mono-taxa-img">
         <img [src]="
-                taxa[0].medias && !!taxa[0].medias.length
+            taxa[0].medias && !!taxa[0].medias.length
                     ? MainConfig.API_TAXHUB +
                       '/tmedias/thumbnail/' +
                       taxa[0].medias[0].id_media +
@@ -17,7 +15,6 @@
                getPreferredName(taxa[0])
             " class="object-fit-cover" />
     </div>
-
     <div class="form-row">
         <div class="form-group col-lg-12 col-md-12">
             <input formControlName="id_program" type="hidden" />
@@ -30,13 +27,14 @@
             <div *ngIf="loading" class="loader" id="spinner"></div>
             <!-- TAXON SELECT -->
             <div class="row" *ngIf="!loading">
-                <div class="form-group col-lg-12 col-md-12">
+                <div class="form-group col-lg-12">
                     <div *ngIf="
                     taxaCount >= taxonSelectInputThreshold &&
                     taxaCount < taxonAutocompleteInputThreshold
-                " class="d-inline-flex toolbar ">
-                        <select class="form-control w-100" required>
-                            <option value="" [disabled]="true">Choisissez une espèce</option>
+                " class="d-inline-flex toolbar">
+                        <select formControlName="cd_nom" class="form-control w-100" required>
+                            <option [value]="" [disabled]="true" i18n="Option to choose a species@@chooseSpeciesOption">
+                                Choisissez une espèce</option>
                             <option *ngFor="let s of surveySpecies" (click)="onTaxonSelected(s)"
                                 [value]="s.taxref.cd_nom">
                                 {{ getPreferredName(s) }}
