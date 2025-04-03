@@ -1,9 +1,19 @@
 # CHANGELOG
 
-## 1.2.0 - 2025-03-31
+## 1.2.1 - 2025-04-03
 
 > [!WARNING]  
 > **Last version compatible with TaxHub 1.x.x (i.e. GeoNature <= 2.14.x)**
+
+## Fixes
+
+* Set more explicit taxon list labels on backoffice (using code/label/taxa count)
+* Prefills taxon in input select when updating data
+* Update translations
+ 
+
+## 1.2.0 - 2025-03-31
+
 
 ### Main new features
 
