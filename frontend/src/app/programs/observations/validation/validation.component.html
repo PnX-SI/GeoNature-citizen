@@ -21,22 +21,22 @@
                         '?w=800'
                     : 'assets/default_image.png'
             " [alt]="
-                !!taxa[0].nom_francais
-                    ? taxa[0].nom_francais
-                    : taxa[0].taxref.nom_vern
+               getPreferredName(taxa[0])
             " class="object-fit-cover" />
     </div>
     <div class="form-group col-lg-12">
         <h5 i18n="Title for identification proposed@@proposedIdentification">
-            Identification proposée : 
-            <ng-container>{{ obsToValidate.properties.nom_francais || obsToValidate.properties.taxref.nom_vern }}</ng-container>
+            Identification proposée :
+            <ng-container>{{ obsToValidate.properties.nom_francais || obsToValidate.properties.taxref.nom_vern
+                }}</ng-container>
             <span *ngIf="MainConfig.taxonDisplaySciName">
-              (<i>{{ obsToValidate.properties.taxref.lb_nom }}</i>)
+                (<i>{{ obsToValidate.properties.taxref.lb_nom }}</i>)
             </span>
-          </h5>
-          
+        </h5>
+
         <p *ngIf="taxaCount > 1" class="m-0">
-            <label for="cd_nom" class="m-0" i18n="Label for species search or validation@@speciesSearchOrValidation">{ autocomplete, select, isOn {Rechercher une esp&egrave;ce}
+            <label for="cd_nom" class="m-0" i18n="Label for species search or validation@@speciesSearchOrValidation">{
+                autocomplete, select, isOn {Rechercher une esp&egrave;ce}
                 isOff {Validez ou corrigez l&apos;esp&egrave;ce}}</label>
         </p>
         <!-- TAXON SELECT -->
@@ -46,13 +46,10 @@
                 taxaCount < taxonAutocompleteInputThreshold
             " class="d-inline-flex toolbar">
             <select formControlName="cd_nom" class="form-control rounded-0" [value]="obsToValidate.properties.cd_nom">
-                <option value="" [disabled]="true" i18n="Option to choose a species@@chooseSpeciesOption">Choisissez une espèce</option>
+                <option value="" [disabled]="true" i18n="Option to choose a species@@chooseSpeciesOption">Choisissez une
+                    espèce</option>
                 <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
-                    {{
-                    !!s.nom_francais
-                    ? s.nom_francais
-                    : s.taxref.nom_vern
-                    }}
+                    {{ getPreferredName(s) }}
                     <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref.nom_complet }}</i>)</span>
                 </option>
             </select>
@@ -72,31 +69,19 @@
                                     '?h=150'
                                 : 'assets/default_image.png'
                         " [alt]="
-                            !!s.nom_francais
-                                ? s.nom_francais
-                                : s.taxref.nom_vern
+                            getPreferredName(s)
                         " (click)="onTaxonSelected(s)" />
-                    <span>{{
-                        !!s.nom_francais
-                        ? s.nom_francais
-                        : s.taxref.nom_vern
-                        }}</span>
+                    <span>{{ getPreferredName(s) }}</span>
                 </div>
             </div>
         </div>
     </div>
     <!-- TAXON AUTOCOMPLETE -->
     <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg-12">
-        <ng-template #rt let-r="result" let-t="term">
-            <img loading="lazy" [src]="r.icon" class="mr-1" style="height: 1em" />
-            <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
-        </ng-template>
-        <input id="cd_nom" type="text" class="form-control rounded-0" formControlName="cd_nom"
-            placeholder="Nom latin ou vernaculaire ou cd_ref"
-            i18n-placeholder="Placeholder for species name input@@speciesNamePlaceholder"
-            [editable]="false"
-            [ngbTypeahead]="inputAutoCompleteSearch" [resultTemplate]="rt"
-            [inputFormatter]="inputAutoCompleteFormatter" />
+        <taxonomy-autocomplete label="" placeholder="Rechercher par nom ou cd_nom"
+            [parentFormControl]="validationForm.controls.cd_nom" [idList]="taxonomyListID" [charNumber]="3"
+            [listLength]="20" (onChange)="onSelectedTaxon($event)">
+        </taxonomy-autocomplete>
     </div>
     <!-- END TAXON SELECTION -->
     <div class="form-group col-lg-12 col-md-12">
@@ -125,15 +110,18 @@
         <div class="form-check">
             <input type="checkbox" class="form-check-input" id="reportObserver" formControlName="report_observer"
                 checked (change)="true" />
-            <label class="form-check-label" style="margin-left: 5px; margin-bottom: 0;" for="reportObserver" i18n="Label for notifying the observer@@notifyObserverLabel">
+            <label class="form-check-label" style="margin-left: 5px; margin-bottom: 0;" for="reportObserver"
+                i18n="Label for notifying the observer@@notifyObserverLabel">
                 Avertir l'observateur
             </label>
-            <small class="form-text text-muted" i18n="Description for observer notification@@observerNotificationDescription">L'observateur recevra un mail contenant des informations de validation,
+            <small class="form-text text-muted"
+                i18n="Description for observer notification@@observerNotificationDescription">L'observateur recevra un
+                mail contenant des informations de validation,
                 correction ou d'invalidité de son observation.</small>
         </div>
     </div>
     <div class="form-group col-lg-12 col-md-12">
-        <label  i18n="Label for unvalidable observation@@unvalidableObservationLabel">
+        <label i18n="Label for unvalidable observation@@unvalidableObservationLabel">
             Si l'observation est non validable en l'état :
         </label>
         <div class="form-row">
@@ -143,22 +131,24 @@
                     <option *ngFor="let status of invalidationStatuses" [ngValue]="status.value">{{ status.text }}
                     </option>
                 </select>
-                <small class="form-text text-muted"  i18n="Request for observer modification or validator check@@requestObserverModification">Demander à l'observateur de modifier son observation ou a un autre
+                <small class="form-text text-muted"
+                    i18n="Request for observer modification or validator check@@requestObserverModification">Demander à
+                    l'observateur de modifier son observation ou a un autre
                     validateur de la vérifier.</small>
             </div>
         </div>
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-big rounded-0"
-                    [ngClass]="obsValidatable ? 'btn-default btn-outline-primary' : 'btn-warning btn-outline-warning bg-warning'"
-                    i18n="Button for validating, correcting, or invalidating an observation@@obsActionBtn">
+            [ngClass]="obsValidatable ? 'btn-default btn-outline-primary' : 'btn-warning btn-outline-warning bg-warning'"
+            i18n="Button for validating, correcting, or invalidating an observation@@obsActionBtn">
             { obsValidatable, select,
-                true { { obsCorrection, select,
-                        true {Corriger l'observation}
-                        false {Valider l'observation}
-                        }
-                    }
-                false {Invalider l'observation}
+            true { { obsCorrection, select,
+            true {Corriger l'observation}
+            false {Valider l'observation}
+            }
+            }
+            false {Invalider l'observation}
             }
         </button>
 

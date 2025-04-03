@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## 1.3.0 - 2025-04-03
+
+### 🚀 Main new features
+
+* Allow using all Taxref in programs (#327, #422)
+* Compatibility with TaxHub V2
+* Taxons seach in programs is now based on observed taxons
+* If no photo is added to an observation and if an image is available for this to taxa in TaxHub, then this image is displayed on the Congrats popup
+* Observation name displayed in program observations list is based on this order:
+  *  'nom_francais'
+  *  'taxref.nom_vern'
+  *  'taxref.nom_valide'
+  *  'taxref.nom_complet'
+  *  'taxref.lb_nom'
+  *  'taxref.cd_nom'
+
+### Development
+
+* Add calls to two TaxHub API routes in order to get media types and bibattribut.
+* Add component taxonomy-research which calls `allnamebylist` TaxHub API route in Form Observation Program 
+* Remove TaxHub list from cache backend
+
+### Release note
+
+* To install or update to this version of GeoNature-citizen, you need TaxHub version 2.0.0 minimum.
+
+
 ## 1.2.1 - 2025-04-03
 
 > [!WARNING]  
@@ -13,7 +40,6 @@
  
 
 ## 1.2.0 - 2025-03-31
-
 
 ### Main new features
 
