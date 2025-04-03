@@ -2,15 +2,19 @@
     <ng-content select="[obs-form]" *ngIf="display_form"></ng-content>
     <span [class.d-none]="display_form">
         <div class="d-flex flex-column">
-            <div class="toolbar">
+            <div class="toolbar" *ngIf="observedSpecies">
                 <select class="form-control rounded-0" id="inputSpecies" [(ngModel)]="selectedTaxon"
                     (ngModelChange)="onFilterChange()">
                     <option [ngValue]="null" i18n="All species select option@@allSpeciesSelectOption">
                         Toutes espèces
                     </option>
-                    <option *ngFor="let s of surveySpecies" [ngValue]="s">
+                    <!-- <option *ngFor="let s of surveySpecies" [ngValue]="s">
                         {{ !!s.nom_francais ? s.nom_francais : s.taxref?.nom_vern }}
                         <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref?.nom_complet }}</i>)</span>
+                    </option> -->
+                    <option *ngFor="let observedSpecie of observedSpecies" [ngValue]="observedSpecie">
+                        {{ !!observedSpecie.name ? observedSpecie.name : observedSpecie.taxref?.nom_vern }}
+                        <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ observedSpecie.taxref?.lb_nom }}</i>)</span>
                     </option>
                 </select>
 
@@ -55,22 +59,14 @@
                     <!-- FIXME: hardcoded api media endpoint -->
                     <div class="obs-img-container">
                         <img loading="lazy" class="obs-img" [src]="
-                        o.properties.photos && !!o.properties.photos.length
-                            ? MainConfig.API_ENDPOINT +
-                              o.properties.photos[0].url
-                            : o.properties.medias && !!o.properties.medias.length
-                            ? MainConfig.API_TAXHUB +
-                              '/tmedias/thumbnail/' +
-                              o.properties.medias[0].id_media +
-                              '?h=80'
-                            : 'assets/default_image.png'
+                        getPhotoUrl(o)
                     " />
-                        <span *ngIf="o.properties.photos && !!o.properties.photos.length" class="overlay-text">
-                            <i class="fa fa-camera" aria-hidden="true" placement="right"
-                                ngbTooltip="Observation avec photo"
-                                i18n-ngbTooltip="Tooltip for observation with photo@@observationWithPhotoTooltip">
-                            </i>
-                        </span>
+                    <span *ngIf="o.properties.photos && !!o.properties.photos.length" class="overlay-text">
+                        <i class="fa fa-camera" aria-hidden="true" placement="right"
+                           ngbTooltip="Observation avec photo"
+                           i18n-ngbTooltip="Tooltip for observation with photo@@observationWithPhotoTooltip">
+                        </i>
+                    </span>
 
                     </div>
                     <div class="infos">
@@ -82,44 +78,44 @@
                             }" target="_blank" href="{{
                                 MainConfig.details_espece_url + o.properties.cd_nom
                             }}">{{
-                                !!o.properties.nom_francais
-                                ? o.properties.nom_francais
-                                : o.properties.taxref?.nom_vern
+                                !!o.properties.name
+                                ? o.properties.name
+                                : o.properties.taxref?.nom_francais ? o.properties.taxref.nom_francais: o.properties.taxref.nom_vern
                                 }}</a>
                             <ng-template #no_detail_espece_url><span [ngClass]="{
                                 'text-warning': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED',
                                 'text-danger': MainConfig.VERIFY_OBSERVATIONS_ENABLED && o.properties.validation_status && ['INVALID', 'NON_VALIDATABLE'].includes(o.properties.validation_status)
                             }">{{
-                                    !!o.properties.nom_francais
-                                    ? o.properties.nom_francais
-                                    : o.properties.taxref?.nom_vern
+                                !!o.properties.name
+                                ? o.properties.name
+                                :  o.properties.taxref?.nom_francais ? o.properties.taxref.nom_francais: o.properties.taxref.nom_vern
                                     }}</span>
                             </ng-template>
 
                             &nbsp;
-                            <span *ngIf="MainConfig.VERIFY_OBSERVATIONS_ENABLED" (click)="onValidateClick(o)"
-                                [ngStyle]="{ 'cursor': o.properties.observer?.username == username ? 'not-allowed' :  'pointer'}">
-                                <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
-                                    class="fa fa-hourglass-half text-warning" aria-hidden="true" placement="bottom"
-                                    ngbTooltip="Observation non validée{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"
-                                    i18n-ngbTooltip="Tooltip for non-validated observation@@nonValidatedObservationTooltip">
-                                </i>
-                                <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'INVALID'"
-                                    class="fa fa-question-circle text-danger" aria-hidden="true" placement="bottom"
-                                    ngbTooltip="Observation invalide{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"
-                                    i18n-ngbTooltip="Tooltip for invalid observation@@invalidObservationTooltip">
-                                </i>
-                                <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NON_VALIDATABLE'"
-                                    class="fa fa-times-circle text-danger" aria-hidden="true" placement="bottom"
-                                    ngbTooltip="Observation non validable{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"
-                                    i18n-ngbTooltip="Tooltip for non-validatable observation@@nonValidatableObservationTooltip">
-                                </i>
-                                <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'VALIDATED'"
-                                    class="fa fa-certificate text-success" aria-hidden="true" placement="bottom"
-                                    ngbTooltip="Observation approuvée"
-                                    i18n-ngbTooltip="Tooltip for validated observation@@validatedObservationTooltip">
-                                </i>
-                            </span>
+                        <span *ngIf="MainConfig.VERIFY_OBSERVATIONS_ENABLED" (click)="onValidateClick(o)"
+                            [ngStyle]="{ 'cursor': o.properties.observer?.username == username ? 'not-allowed' :  'pointer'}">
+                          <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NOT_VALIDATED'"
+                             class="fa fa-hourglass-half text-warning" aria-hidden="true" placement="bottom"
+                             ngbTooltip="Observation non validée{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"
+                             i18n-ngbTooltip="Tooltip for non-validated observation@@nonValidatedObservationTooltip">
+                          </i>
+                          <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'INVALID'"
+                             class="fa fa-question-circle text-danger" aria-hidden="true" placement="bottom"
+                             ngbTooltip="Observation invalide{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"
+                             i18n-ngbTooltip="Tooltip for invalid observation@@invalidObservationTooltip">
+                          </i>
+                          <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'NON_VALIDATABLE'"
+                             class="fa fa-times-circle text-danger" aria-hidden="true" placement="bottom"
+                             ngbTooltip="Observation non validable{{o.properties.observer?.username == username ? ' - Validation par un tiers requise' : ''}}"
+                             i18n-ngbTooltip="Tooltip for non-validatable observation@@nonValidatableObservationTooltip">
+                          </i>
+                          <i *ngIf="o.properties.validation_status && o.properties.validation_status === 'VALIDATED'"
+                             class="fa fa-certificate text-success" aria-hidden="true" placement="bottom"
+                             ngbTooltip="Observation approuvée"
+                             i18n-ngbTooltip="Tooltip for validated observation@@validatedObservationTooltip">
+                          </i>
+                      </span>
 
 
                         </div>
@@ -155,12 +151,11 @@
                         </div>
                         <p>
                             <span i18n="Date prefix@@datePrefix">le</span>
-                            <span>{{ o.properties.date }} </span>
+                            <span>{{ o.properties.date }}</span>
                             <span *ngIf="o.properties.municipality">
                                 <span i18n="Location prefix@@locationPrefix">à</span> {{ o.properties.municipality }}
                             </span>
-                        </p>
-
+                          </p>
                     </div>
                     <div class="hide detail-link" [routerLink]="[
                         '/programs',

@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { BaseMapComponent, conf } from '../../base/map/map.component';
 import { MapService } from '../../base/map/map.service';
-
+import { getPreferredName } from '../../../api/getPreferredName';
 @Component({
     selector: 'app-obs-map',
     templateUrl: './map.component.html',
@@ -59,8 +59,9 @@ export class ObsMapComponent extends BaseMapComponent {
             <img
                 class="default-img"
                 [src]="
-                    data.image
-                        ? data.image
+                    data.photos && !!data.photos.length
+                            ? MainConfig.API_ENDPOINT +
+                              data.photos[0].url
                         : data.medias && !!data.medias.length
                         ? MainConfig.API_TAXHUB +
                           '/tmedias/thumbnail/' +
@@ -90,11 +91,9 @@ export class ObsMapComponent extends BaseMapComponent {
                     }"
                     target="_blank"
                     href="{{ MainConfig.details_espece_url + data.cd_nom }}"
-                    >{{
-                        !!data.nom_francais
-                            ? data.nom_francais
-                            : data.taxref?.nom_vern
-                    }}</a
+                    >
+                        {{ getPreferredName(data) }}
+                    </a
                 >
                 <ng-template #no_detail_espece_url
                     ><span
@@ -110,11 +109,9 @@ export class ObsMapComponent extends BaseMapComponent {
                                     data.validation_status
                                 )
                         }"
-                        >{{
-                            !!data.nom_francais
-                                ? data.nom_francais
-                                : data.taxref?.nom_vern
-                        }}</span
+                        >
+                            {{ getPreferredName(data) }}
+                        </span
                     >
                 </ng-template>
 
@@ -150,4 +147,7 @@ export class ObsMapComponent extends BaseMapComponent {
 export class MarkerPopupComponent {
     @Input() data;
     public MainConfig = MainConfig;
+
+    // expose to HTML
+    getPreferredName = getPreferredName;
 }

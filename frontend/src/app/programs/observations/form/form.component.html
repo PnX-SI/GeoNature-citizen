@@ -1,24 +1,20 @@
 <form id="obsForm" [formGroup]="obsForm" (ngSubmit)="onFormSubmit()" class="was-validated">
     <div *ngIf="
+            taxa &&
             taxaCount == 1 &&
-            taxa[0].medias &&
-            !!taxa[0].medias.length &&
             taxonDisplayImageWhenUnique
         " class="mono-taxa-img">
         <img [src]="
-                taxa[0].medias && !!taxa[0].medias.length
+            taxa[0].medias && !!taxa[0].medias.length
                     ? MainConfig.API_TAXHUB +
                       '/tmedias/thumbnail/' +
                       taxa[0].medias[0].id_media +
-                      '?w=800'
+                      '?h=800&w=800'
                     : 'assets/default_image.png'
             " [alt]="
-                !!taxa[0].nom_francais
-                    ? taxa[0].nom_francais
-                    : taxa[0].taxref.nom_vern
+               getPreferredName(taxa[0])
             " class="object-fit-cover" />
     </div>
-
     <div class="form-row">
         <div class="form-group col-lg-12 col-md-12">
             <input formControlName="id_program" type="hidden" />
@@ -28,22 +24,20 @@
                     isOn {Rechercher une esp&egrave;ce}
                     isOff {S&eacute;lectionnez une esp&egrave;ce}}</label>
             </h5>
+            <div *ngIf="loading" class="loader" id="spinner"></div>
             <!-- TAXON SELECT -->
-            <div class="row">
-                <div class="form-group col-lg-12 col-md-12">
+            <div class="row" *ngIf="!loading">
+                <div class="form-group col-lg-12">
                     <div *ngIf="
                     taxaCount >= taxonSelectInputThreshold &&
                     taxaCount < taxonAutocompleteInputThreshold
-                " class="d-inline-flex toolbar ">
+                " class="d-inline-flex toolbar">
                         <select formControlName="cd_nom" class="form-control w-100" required>
-                            <option value="" [disabled]="true" i18n="Option to choose a species@@chooseSpeciesOption">
+                            <option [value]="" [disabled]="true" i18n="Option to choose a species@@chooseSpeciesOption">
                                 Choisissez une espèce</option>
-                            <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
-                                {{
-                                !!s.nom_francais
-                                ? s.nom_francais
-                                : s.taxref.nom_vern
-                                }}
+                            <option *ngFor="let s of surveySpecies" (click)="onTaxonSelected(s)"
+                                [value]="s.taxref.cd_nom">
+                                {{ getPreferredName(s) }}
                                 <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref.nom_complet }}</i>)</span>
                             </option>
                         </select>
@@ -64,30 +58,21 @@
                                       '?h=150'
                                     : 'assets/default_image.png'
                             " [alt]="
-                                !!s.nom_francais
-                                    ? s.nom_francais
-                                    : s.taxref.nom_vern
+                                getPreferredName(s)
                             " (click)="onTaxonSelected(s)" />
-                                <span>{{
-                                    !!s.nom_francais
-                                    ? s.nom_francais
-                                    : s.taxref.nom_vern
-                                    }}</span>
+                                <span> {{ getPreferredName(s) }}
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- TAXON AUTOCOMPLETE -->
-                <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold" class="form-group col-lg-12">
-                    <ng-template #rt let-r="result" let-t="term">
-                        <img [src]="r.icon" class="mr-1" style="height: 1em" />
-                        <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
-                    </ng-template>
-                    <input id="cd_nom" type="text" class="form-control" formControlName="cd_nom"
-                        placeholder="Nom latin ou vernaculaire ou cd_ref"
-                        i18n-placeholder="Placeholder for species name input@@speciesNamePlaceholder" [editable]="false"
-                        [ngbTypeahead]="inputAutoCompleteSearch" [resultTemplate]="rt"
-                        [inputFormatter]="inputAutoCompleteFormatter" required />
+                <div *ngIf="taxaCount >= taxonAutocompleteInputThreshold"
+                    class="form-group col-lg input-search-autocomplete">
+                    <taxonomy-autocomplete label="" placeholder="Rechercher par nom ou cd_nom"
+                        [parentFormControl]="obsForm.controls.cd_nom" [idList]="taxonomyListID" [charNumber]="3"
+                        [listLength]="20" (onChange)="onSelectedTaxon($event)">
+                    </taxonomy-autocomplete>
                 </div>
             </div>
         </div>

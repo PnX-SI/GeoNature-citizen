@@ -3,7 +3,7 @@ import { geometryValidator, ngbDateMaxIsToday } from './formValidators';
 import { MainConfig } from './../../../../conf/main.config';
 import { BaseLayer } from '../../programs.models';
 import * as L from 'leaflet';
-
+import { getPreferredName } from '../../../api/getPreferredName';
 import {
     AfterViewInit,
     Component,
@@ -20,6 +20,7 @@ import {
     distinctUntilChanged,
     map,
     share,
+    switchMap,
     tap,
 } from 'rxjs/operators';
 import { FeatureCollection, Point, Position } from 'geojson';
@@ -30,6 +31,7 @@ import { Observable } from 'rxjs';
 import {
     ObservationFeature,
     PostObservationResponse,
+    Taxon,
     TaxonomyList,
 } from '../observation.model';
 import 'leaflet-gesture-handling';
@@ -42,6 +44,7 @@ import { MapService } from '../../base/map/map.service';
 import { GNCFrameworkComponent } from '../../base/jsonform/framework/framework.component';
 import { RefGeoService } from '../../../api/refgeo.service';
 import { ControlPosition } from 'leaflet';
+import { TaxhubService } from '../../../api/taxhub.service';
 
 // declare let $: any;
 
@@ -79,7 +82,9 @@ const map_conf = {
 const taxonSelectInputThreshold = MainConfig.taxonSelectInputThreshold;
 const taxonAutocompleteInputThreshold =
     MainConfig.taxonAutocompleteInputThreshold;
-const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
+
+//  TODO: [LIMIT100-TAXON-COMPAT-THV2] normalement à enlever
+// const taxonAutocompleteFields = MainConfig.taxonAutocompleteFields;
 const taxonAutocompleteMaxResults = 10;
 const taxonDisplayImageWhenUnique =
     'taxonDisplayImageWhenUnique' in MainConfig
@@ -148,6 +153,8 @@ export class ObsFormComponent implements AfterViewInit {
     photos: any[] = [];
     existing_photos: any[] = [];
     mapVars: any = {};
+    isInvalidDirty = false;
+    loading: boolean = true;
 
     constructor(
         @Inject(LOCALE_ID) readonly localeId: string,
@@ -158,10 +165,12 @@ export class ObsFormComponent implements AfterViewInit {
         private toastr: ToastrService,
         private auth: AuthService,
         private mapService: MapService,
-        private _refGeoService: RefGeoService
+        private _refGeoService: RefGeoService,
+        private _taxhubService: TaxhubService
     ) {}
 
     ngOnInit(): void {
+        this._taxhubService.loadAndCacheData();
         this.program_id = this.data.program_id;
         this.coords = this.data.coords;
         this.updateMunicipality();
@@ -189,7 +198,8 @@ export class ObsFormComponent implements AfterViewInit {
         });
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
+        this.loading = true;
         this.programService
             .getProgram(this.program_id)
             .subscribe((result: FeatureCollection) => {
@@ -197,33 +207,81 @@ export class ObsFormComponent implements AfterViewInit {
                 this.taxonomyListID =
                     this.program.features[0].properties.taxonomy_list;
                 this.surveySpecies$ = this.programService
-                    .getProgramTaxonomyList(this.taxonomyListID)
+                    .getAllProgramTaxonomyList()
                     .pipe(
-                        tap((species) => {
-                            this.taxa = species;
-                            this.taxaCount = Object.keys(this.taxa).length;
-                            if (
-                                this.taxaCount >=
+                        map((listsTaxonomy) => {
+                            this.taxaCount = listsTaxonomy
+                                .filter(
+                                    (lt) => lt.id_liste === this.taxonomyListID
+                                )
+                                .map((lt) => lt.nb_taxons)[0];
+                            return (
+                                this.taxaCount <
                                 this.taxonAutocompleteInputThreshold
-                            ) {
-                                this.inputAutoCompleteSetup();
-                            } else if (this.taxaCount == 1) {
-                                this.onTaxonSelected(this.taxa[0]);
+                            );
+                        }),
+                        switchMap((shouldFetchTaxonomyList) => {
+                            if (shouldFetchTaxonomyList) {
+                                return this.programService
+                                    .getProgramTaxonomyList(
+                                        this.taxonomyListID,
+                                        {
+                                            limit: this
+                                                .taxonAutocompleteInputThreshold,
+                                        }
+                                    )
+                                    .pipe(
+                                        tap((species) => {
+                                            this.taxa =
+                                                this._taxhubService.setMediasAndAttributs(
+                                                    species
+                                                );
+                                            console.log(
+                                                'THIS.TAXA',
+                                                species,
+                                                this.taxa
+                                            );
+                                        }),
+                                        map((species: TaxonomyList) => {
+                                            if (
+                                                this.taxaCount <
+                                                this
+                                                    .taxonAutocompleteInputThreshold
+                                                && this.taxaCount > 1
+                                            ) {
+                                                return species.sort((a, b) => {
+                                                    const taxA =
+                                                        a.nom_francais ||
+                                                        a.taxref.nom_vern ||
+                                                        '';
+                                                    const taxB =
+                                                        b.nom_francais ||
+                                                        b.taxref.nom_vern ||
+                                                        '';
+                                                    return taxA.localeCompare(
+                                                        taxB
+                                                    );
+                                                });
+                                            }
+                                            else if (this.taxaCount == 1){
+                                                this.onTaxonSelected(this.taxa[0]);
+                                            }   
+                                            else {
+                                                return species;
+                                            }
+                                        })
+                                    );
+                            }
+                            else {
+                                this.loading = false;
+                                return [];
                             }
                         }),
                         share()
                     );
-                this.surveySpecies$.subscribe((res: TaxonomyList) => {
-                    res.sort((a, b): number => {
-                        const tax_a = a.nom_francais
-                            ? a.nom_francais
-                            : a.taxref.nom_vern;
-                        const tax_b = b.nom_francais
-                            ? b.nom_francais
-                            : b.taxref.nom_vern;
-                        return tax_a.localeCompare(tax_b);
-                    });
-                    this.surveySpecies = res;
+                this.surveySpecies$.subscribe((sortedSpecies) => {
+                    this.surveySpecies = sortedSpecies;
+                    this.loading = false;
                 });
 
                 if (this.program.features[0].properties.id_form) {
@@ -291,8 +349,8 @@ export class ObsFormComponent implements AfterViewInit {
                         },
                         getLocationBounds: (locationEvent) =>
                             locationEvent.bounds.extend(L.LatLngBounds),
-                        onLocationError: (locationEvent) => {
-                            let msg =
+                        onLocationError: () => {
+                            const msg =
                                 'Vous semblez être en dehors de la zone du programme.';
                             this.toastr.error(msg, '', {
                                 positionClass: 'toast-top-right',
@@ -303,13 +361,13 @@ export class ObsFormComponent implements AfterViewInit {
                             enableHighAccuracy:
                                 map_conf.GEOLOCATION_HIGH_ACCURACY,
                         },
-                    } as any)
+                    } as unknown)
                     .addTo(formMap);
 
-                let ZoomViewer = L.Control.extend({
+                const ZoomViewer = L.Control.extend({
                     onAdd: () => {
-                        let container = L.DomUtil.create('div');
-                        let gauge = L.DomUtil.create('div');
+                        const container = L.DomUtil.create('div');
+                        const gauge = L.DomUtil.create('div');
                         container.style.width = '200px';
                         container.style.background = 'rgba(255,255,255,0.5)';
                         container.style.textAlign = 'left';
@@ -323,12 +381,12 @@ export class ObsFormComponent implements AfterViewInit {
                         return container;
                     },
                 });
-                let zv = new ZoomViewer();
+                const zv = new ZoomViewer();
                 zv.addTo(formMap);
                 zv.setPosition('bottomleft');
 
                 const programArea = L.geoJSON(this.program, {
-                    style: function (_feature) {
+                    style: function () {
                         return map_conf.PROGRAM_AREA_STYLE;
                     },
                 }).addTo(formMap);
@@ -357,9 +415,9 @@ export class ObsFormComponent implements AfterViewInit {
 
                 // Update marker on click event
                 formMap.on('click', (e: LeafletMouseEvent) => {
-                    let z = formMap.getZoom();
+                    const zoom = formMap.getZoom();
 
-                    if (z < MainConfig.ZOOM_LEVEL_RELEVE) {
+                    if (zoom < MainConfig.ZOOM_LEVEL_RELEVE) {
                         // this.hasZoomAlert = true;
                         L.DomUtil.addClass(
                             formMap.getContainer(),
@@ -407,14 +465,14 @@ export class ObsFormComponent implements AfterViewInit {
             });
     }
 
-    updatejsfInputObject() {
+    updatejsfInputObject(): void {
         this.jsfInputObject = {
             ...this.customForm.json_schema,
             data: this.jsonData,
         };
     }
 
-    updateMunicipality() {
+    updateMunicipality(): void {
         if (this.coords) {
             this._refGeoService
                 .getMunicipality(this.coords.y, this.coords.x)
@@ -476,61 +534,20 @@ export class ObsFormComponent implements AfterViewInit {
         });
     }
 
-    inputAutoCompleteSetup = () => {
-        for (let taxon in this.taxa) {
-            for (let field of taxonAutocompleteFields) {
-                if (this.taxa[taxon]['taxref'][field]) {
-                    this.species.push({
-                        name:
-                            field === 'cd_nom'
-                                ? `${this.taxa[taxon]['taxref']['cd_nom']} - ${this.taxa[taxon]['taxref']['nom_complet']}`
-                                : this.taxa[taxon]['taxref'][field],
-                        cd_nom: this.taxa[taxon]['taxref']['cd_nom'],
-                        icon:
-                            this.taxa[taxon]['medias'].length >= 1
-                                ? // ? this.taxa[taxon]["medias"][0]["url"]
-                                  MainConfig.API_TAXHUB +
-                                  '/tmedias/thumbnail/' +
-                                  this.taxa[taxon]['medias'][0]['id_media'] +
-                                  '?h=20'
-                                : 'assets/default_image.png',
-                    });
-                }
-            }
-        }
-        this.autocomplete = 'isOn';
-    };
+    // Expose to HTML
+    getPreferredName = getPreferredName;
 
-    inputAutoCompleteSearch = (text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(200),
-            distinctUntilChanged(),
-            map((term) =>
-                term === '' // term.length < n
-                    ? []
-                    : this.species
-                          .filter(
-                              (v) =>
-                                  v['name']
-                                      .toLowerCase()
-                                      .indexOf(term.toLowerCase()) > -1
-                              // v => new RegExp(term, "gi").test(v["name"])
-                          )
-                          .slice(0, taxonAutocompleteMaxResults)
-            )
-        );
-
-    inputAutoCompleteFormatter = (x: { name: string }) => x.name;
-    disabledDates = (date: NgbDate, current: { month: number }) => {
+    disabledDates = (date: NgbDate): boolean => {
         const date_impl = new Date(date.year, date.month - 1, date.day);
         return date_impl > this.today;
     };
 
     onTaxonSelected(taxon: any): void {
+        console.log('<onTaxonSelected> taxon', taxon);
         this.selectedTaxon = taxon;
         this.obsForm.controls['cd_nom'].patchValue({
             cd_nom: taxon.taxref['cd_nom'],
-            name: taxon.taxref.nom_complet,
+            name: getPreferredName(taxon),
         });
     }
 
@@ -552,7 +569,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     createFormDataToPost(): FormData {
         this.obsForm.controls['id_program'].patchValue(this.program_id);
-        let formData: FormData = new FormData();
+        const formData: FormData = new FormData();
 
         const files = this.photos;
         files.forEach((file) => {
@@ -564,18 +581,15 @@ export class ObsFormComponent implements AfterViewInit {
             JSON.stringify(this.obsForm.get('geometry').value)
         );
         const taxon = this.obsForm.get('cd_nom').value;
+        console.log('TAXON', taxon);
         let cd_nom = Number.parseInt(taxon);
         if (isNaN(cd_nom)) {
             cd_nom = Number.parseInt(taxon.cd_nom);
         }
-        // Need to convert the defined interface to an array to have
-        // access to the filter function
-        const tempTaxa = this.taxa as Array<unknown> as Array<TempTaxa>;
-        const taxon_name: TempTaxa = tempTaxa.filter(
-            (t) => t.cd_nom == cd_nom
-        )[0];
+        // const taxon_name = this.selectedTaxon.nom_francais ? this.selectedTaxon.nom_francais : this.selectedTaxon.taxref.nom_vern;
+        const taxon_name = taxon.name;
         formData.append('cd_nom', cd_nom.toString());
-        formData.append('name', taxon_name.nom_francais);
+        formData.append('name', taxon_name);
         const obsDateControlValue = NgbDate.from(
             this.obsForm.controls.date.value
         );
@@ -595,13 +609,13 @@ export class ObsFormComponent implements AfterViewInit {
             // the municipality. So only append municipality if defined
             formData.append('municipality', this.municipality);
         }
-        for (let item of ['count', 'comment', 'id_program', 'email']) {
+        for (const item of ['count', 'comment', 'id_program', 'email']) {
             formData.append(item, this.obsForm.get(item).value);
         }
         return formData;
     }
 
-    postObservation() {
+    postObservation(): void {
         let obs: ObservationFeature;
         const formData = this.createFormDataToPost();
         if (this.customForm.json_schema) {
@@ -652,27 +666,24 @@ export class ObsFormComponent implements AfterViewInit {
         );
     }
 
-    customFormOnChange(e) {
+    customFormOnChange(e): void {
         this.jsonData = e;
     }
 
-    addImage(event) {
+    addImage(event): void {
         this.photos.push(event.file);
     }
-    deleteImage(event) {
-        for (var i = 0; i < this.photos.length; i++) {
-            if (this.photos[i] == event.file) {
-                this.photos.splice(i, 1);
-            }
-        }
+    deleteImage(event): void {
+        this.photos = this.photos.filter((photo) => photo !== event.file);
     }
 
-    maxPhotos() {
+    maxPhotos(): number {
         let resp = 5;
         if (this.data.updateData) {
             resp =
                 resp -
-                this.data.updateData.photos.filter((p) => !p.checked).length;
+                this.data.updateData.photos.filter((photo) => !photo.checked)
+                    .length;
         }
         return resp;
     }
@@ -689,5 +700,27 @@ export class ObsFormComponent implements AfterViewInit {
         let resp = this.obsForm.valid;
         if (this.customForm.json_schema) resp = resp && this.jsonValid;
         return resp;
+    }
+
+    onSelectedTaxon(taxon): void {
+        this.programService
+            .getTaxonInfoByCdNom(taxon.item['cd_nom'])
+            .subscribe((taxonFullInfo) => {
+                const taxonWithTaxhubInfos =
+                    this._taxhubService.setMediasAndAttributs(taxonFullInfo);
+                this.selectedTaxon = taxonWithTaxhubInfos[0];
+                this.obsForm.controls['cd_nom'].patchValue({
+                    cd_nom: this.selectedTaxon['cd_nom'],
+                    name: getPreferredName(this.selectedTaxon),
+                    icon:
+                        this.selectedTaxon['medias'].length >= 1
+                            ? // ? this.taxa[taxon]["medias"][0]["url"]
+                              MainConfig.API_TAXHUB +
+                              '/tmedias/thumbnail/' +
+                              this.selectedTaxon['medias']['id_media'] +
+                              '?h=20'
+                            : 'assets/default_image.png',
+                });
+            });
     }
 }

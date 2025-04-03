@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MainConfig } from '../conf/main.config';
 import { Router, NavigationStart } from '@angular/router';
 import { ModalsTopbarService } from './core/topbar/modalTopbar.service';
+import { TaxhubService } from './api/taxhub.service';
 
 @Component({
     selector: 'app-root',
@@ -30,7 +31,8 @@ export class AppComponent implements OnInit {
         private router: Router,
         private metaTagService: Meta,
         private titleService: Title,
-        private modalService: ModalsTopbarService
+        private modalService: ModalsTopbarService,
+        private _taxhubService: TaxhubService,
     ) {
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationStart) {
@@ -77,5 +79,6 @@ export class AppComponent implements OnInit {
             },
             { property: 'twitter:image', content: this.backgroundImage },
         ]);
+        this._taxhubService.loadAndCacheData();
     }
 }

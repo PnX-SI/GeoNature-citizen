@@ -1,0 +1,35 @@
+{
+  "form": [
+    "specie",
+    "common_name",
+    {
+      "key": "justify",
+      "type": "textarea"
+    }
+  ],
+  "schema": {
+    "type": "object",
+    "title": "Comment",
+    "required": [
+      "justify"
+    ],
+    "properties": {
+      "specie": {
+        "type": "string",
+        "title": "Espèce",
+        "description": "Précisez nous l'espèce si vous la connaissez"
+      },
+      "justify": {
+        "type": "string",
+        "title": "En quoi cet arbre vous semble remarquable",
+        "maxLength": 20,
+        "description": "Décrivez-nous ce qui vous incite à considérer cet arbre comme remarquable!"
+      },
+      "common_name": {
+        "type": "string",
+        "title": "Nom de l'arbre connu localement",
+        "description": "Nom que lui donnent les gens du pays"
+      }
+    }
+  }
+}

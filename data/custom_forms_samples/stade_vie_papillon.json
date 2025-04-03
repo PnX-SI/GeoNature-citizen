@@ -1,0 +1,21 @@
+{
+  "form": [
+    {
+      "key": "stade",
+      "type": "radios"
+    }
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "stade": {
+        "enum": [
+          "Chenille",
+          "Adulte"
+        ],
+        "type": "string",
+        "title": "Quoi ?"
+      }
+    }
+  }
+}
