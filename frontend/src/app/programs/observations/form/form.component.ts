@@ -165,7 +165,7 @@ export class ObsFormComponent implements AfterViewInit {
         this.program_id = this.data.program_id;
         this.coords = this.data.coords;
         this.updateMunicipality();
-        this.intiForm();
+        this.initForm();
         if (this.data.updateData) {
             this.patchForm(this.data.updateData);
             this.jsonData = this.data.updateData.json_data;
@@ -424,7 +424,7 @@ export class ObsFormComponent implements AfterViewInit {
         }
     }
 
-    intiForm() {
+    initForm() {
         this.obsForm = this.formBuilder.group(
             {
                 cd_nom: ['', Validators.required],
@@ -452,7 +452,7 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     patchForm(updateData) {
-        // console.log("updateData", updateData)
+        console.debug("updateData", updateData)
         const taxon = updateData.taxon || {
             media: updateData.taxref.media_url,
             taxref: updateData.taxref,
@@ -462,6 +462,7 @@ export class ObsFormComponent implements AfterViewInit {
             p.checked = false;
         });
         this.obsForm.patchValue({
+            cd_nom: updateData.cd_nom,
             count: updateData.count,
             comment: updateData.comment,
             date: this.dateParser.parse(updateData.date),
@@ -549,7 +550,7 @@ export class ObsFormComponent implements AfterViewInit {
         this.postObservation();
     }
 
-    creatFromDataToPost(): FormData {
+    createFormDataToPost(): FormData {
         this.obsForm.controls['id_program'].patchValue(this.program_id);
         let formData: FormData = new FormData();
 
@@ -602,7 +603,7 @@ export class ObsFormComponent implements AfterViewInit {
 
     postObservation() {
         let obs: ObservationFeature;
-        const formData = this.creatFromDataToPost();
+        const formData = this.createFormDataToPost();
         if (this.customForm.json_schema) {
             formData.append('json_data', JSON.stringify(this.jsonData));
         }
@@ -625,7 +626,7 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     onFormUpdate(): void {
-        let formData = this.creatFromDataToPost();
+        let formData = this.createFormDataToPost();
         formData.append(
             'id_observation',
             this.data.updateData.id_observation.toString()

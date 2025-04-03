@@ -66,7 +66,7 @@ def taxhub_rest_get_all_lists() -> Optional[Dict]:
             taxa_lists = res.json()["data"]
             taxa_lists = [taxa for taxa in taxa_lists if not taxa["id_liste"] in excluded_list_ids]
             for taxa_list in taxa_lists:
-                taxonomy_lists.append((taxa_list["id_liste"], taxa_list["nom_liste"]))
+                taxonomy_lists.append((taxa_list["id_liste"], f'[{taxa_list["code_liste"]}] {taxa_list["nom_liste"]} ({taxa_list["nb_taxons"]} taxon(s))'))
             print(f"taxonomy_lists {taxonomy_lists}")
         except Exception as e:
             logger.critical(str(e))

@@ -249,7 +249,7 @@ export class ValidationComponent implements OnInit {
     }
 
     onFormSubmit(): void {
-        let formData = this.creatFromDataToPost();
+        let formData = this.createFormDataToPost();
         this.observationsService.updateObservation(formData).subscribe(() => {
             this.onCloseModal.emit(
                 this.obsToValidate.properties.id_observation
@@ -261,7 +261,7 @@ export class ValidationComponent implements OnInit {
         this.onCloseModal.emit();
     }
 
-    creatFromDataToPost(): FormData {
+    createFormDataToPost(): FormData {
         let formData: FormData = new FormData();
         const taxon = this.validationForm.get('cd_nom').value;
         let cd_nom = Number.parseInt(taxon);
