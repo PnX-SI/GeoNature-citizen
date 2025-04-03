@@ -558,34 +558,19 @@
 
             <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/modalflow/steps/onboard/onboard.component.html</context><context context-type="linenumber">36</context></context-group></trans-unit><trans-unit id="speciesSearchSelectionLabel" datatype="html">
         <source>{VAR_SELECT, select, isOn {Rechercher une espèce} isOff {Sélectionnez une espèce} }</source><target state="new">{VAR_SELECT, select, isOn {Search for a species} isOff {Select species} }</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">26</context>
-        </context-group>
+        
         <note priority="1" from="description">Label for species search and selection</note>
-      </trans-unit><trans-unit id="chooseSpeciesOption" datatype="html">
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">27</context></context-group></trans-unit><trans-unit id="chooseSpeciesOption" datatype="html">
         <source>Choisissez une espèce</source><target state="new">Choose a species</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">37</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">49</context>
-        </context-group>
+        
+        
         <note priority="1" from="description">Option to choose a species</note>
-      </trans-unit><trans-unit id="speciesNamePlaceholder" datatype="html">
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">39</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">49</context></context-group></trans-unit><trans-unit id="speciesNamePlaceholder" datatype="html">
         <source>Nom latin ou vernaculaire ou cd_ref</source><target state="new">Latin or common name or cd_ref</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/form/form.component.html</context>
-          <context context-type="linenumber">83</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">95</context>
-        </context-group>
+        
+        
         <note priority="1" from="description">Placeholder for species name input</note>
-      </trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">87</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">95</context></context-group></trans-unit>
             <trans-unit id="additionalInfos" datatype="html">
                 <source>
                     Informations complémentaires
@@ -596,7 +581,7 @@
 
                 <note priority="1" from="description">Additional information</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">93</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">96</context></context-group></trans-unit>
             <trans-unit id="bservationDate" datatype="html">
                 <source>Date de l'observation</source>
                 <target state="new">Observation date</target>
@@ -604,7 +589,7 @@
                 <note priority="1" from="description">observation date</note>
 
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">99</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">104</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">102</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">104</context></context-group></trans-unit>
             <trans-unit id="expectedDateFormat" datatype="html">
                 <source>jj/mm/aaaa</source>
                 <target state="new">jj/mm/aaaa</target>
@@ -612,14 +597,14 @@
                 <note priority="1" from="description">
                                 expected date format</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">101</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">104</context></context-group></trans-unit>
             <trans-unit id="enumerationInputLabel" datatype="html">
                 <source>Dénombrement</source>
                 <target state="new">Count</target>
 
                 <note priority="1" from="description">Enumeration Label</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">106</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">109</context></context-group></trans-unit>
             <trans-unit id="enumerationInputPlaceHolder" datatype="html">
                 <source>Nombre</source>
                 <target state="new">Number</target>
@@ -627,7 +612,7 @@
                 <note priority="1" from="description">
                             Enumeration Placeholder</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">108</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">111</context></context-group></trans-unit>
             <trans-unit id="commentInputLabel" datatype="html">
                 <source>Commentaire</source>
                 <target state="new">Comment</target>
@@ -635,7 +620,7 @@
                 <note priority="1" from="description">Comment Input Label</note>
 
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">119</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">118</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">122</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">118</context></context-group></trans-unit>
             <trans-unit id="commentInputPlaceholder" datatype="html">
                 <source>Votre commentaire</source>
                 <target state="new">Your comment</target>
@@ -644,7 +629,7 @@
                         Comment Input Placeholder</note>
 
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">121</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">121</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">124</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">121</context></context-group></trans-unit>
             <trans-unit id="existingPhotos" datatype="html">
                 <source>Photos existantes (cocher pour supprimer)</source>
                 <target state="new">Uploaded pictures (tick to delete)</target>
@@ -652,14 +637,14 @@
                 <note priority="1" from="description">Existing Photos</note>
 
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">126</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/sites/form/form.component.html</context><context context-type="linenumber">35</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">129</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/sites/form/form.component.html</context><context context-type="linenumber">35</context></context-group></trans-unit>
             <trans-unit id="addPhoto" datatype="html">
                 <source>Ajouter une photo</source>
                 <target state="new">Add a photo</target>
 
                 <note priority="1" from="description">Add photo</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">134</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">137</context></context-group></trans-unit>
             <trans-unit id="obsLocation" datatype="html">
                 <source>
                     Où avez-vous observé cette espèce ?
@@ -670,7 +655,7 @@
 
                 <note priority="1" from="description">observation Location</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">142</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">145</context></context-group></trans-unit>
             <trans-unit id="ZoomToPointInstruction" datatype="html">
                 <source>
                         Veuillez zoomer pour localiser votre observation.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/>"/>
@@ -682,7 +667,7 @@
                 </target>
 
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">147</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">150</context></context-group></trans-unit>
             <trans-unit id="zoomingInstruction" datatype="html">
                 <source>Veuillez zoomer pour localiser votre observation.</source>
                 <target state="new">Please zoom in to locate your observation.</target>
@@ -693,7 +678,7 @@
 
 
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">160</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context><context context-type="linenumber">33</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">115</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">163</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context><context context-type="linenumber">25</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context><context context-type="linenumber">115</context></context-group></trans-unit>
             <trans-unit id="clickOnMapInstruction" datatype="html">
                 <source>Cliquez sur
                     la carte pour renseigner le lieu
@@ -704,7 +689,7 @@
 
                 <note priority="1" from="description">click on map instruction</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">165</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">168</context></context-group></trans-unit>
             <trans-unit id="contactEmailInputLabel" datatype="html">
                 <source>E-mail de contact
                 </source>
@@ -713,7 +698,7 @@
 
                 <note priority="1" from="description">Contact email input label</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">180</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">183</context></context-group></trans-unit>
             <trans-unit id="contactEmailInputPlaceHolder" datatype="html">
                 <source>E-Mail</source>
                 <target state="new">E-Mail</target>
@@ -722,7 +707,7 @@
                         Contact email input
                         placeholder</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">184</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">187</context></context-group></trans-unit>
             <trans-unit id="missingFieldsAlert" datatype="html">
                 <source>
                     Champs manquants
@@ -733,7 +718,7 @@
 
                 <note priority="1" from="description">Missing fields alert</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">191</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/form/form.component.html</context><context context-type="linenumber">194</context></context-group></trans-unit>
             <trans-unit id="updateObs" datatype="html">
                 <source>
                     MODIFIER L'OBSERVATION
@@ -954,27 +939,15 @@
         <note priority="1" from="description">Tooltip for validated observation</note>
       </trans-unit><trans-unit id="editButtonTooltip" datatype="html">
         <source>Editer</source><target state="new">Edit</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
-          <context context-type="linenumber">146</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/sites/list/list.component.html</context>
-          <context context-type="linenumber">24</context>
-        </context-group>
+        
+        
         <note priority="1" from="description">Tooltip for edit button</note>
-      </trans-unit><trans-unit id="deleteButtonTooltip" datatype="html">
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/list/list.component.html</context><context context-type="linenumber">146</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/sites/list/list.component.html</context><context context-type="linenumber">25</context></context-group></trans-unit><trans-unit id="deleteButtonTooltip" datatype="html">
         <source>Supprimer</source><target state="new">Delete</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
-          <context context-type="linenumber">150</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/sites/list/list.component.html</context>
-          <context context-type="linenumber">31</context>
-        </context-group>
+        
+        
         <note priority="1" from="description">Tooltip for delete button</note>
-      </trans-unit><trans-unit id="datePrefix" datatype="html">
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/observations/list/list.component.html</context><context context-type="linenumber">150</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/programs/sites/list/list.component.html</context><context context-type="linenumber">32</context></context-group></trans-unit><trans-unit id="datePrefix" datatype="html">
         <source>le</source><target state="new">on</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
@@ -1057,26 +1030,20 @@
         <note priority="1" from="description">Libellé pour le champ Type de site</note>
       </trans-unit><trans-unit id="siteNameLabel" datatype="html">
         <source>Nom du site</source><target state="new">Site name</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context>
-          <context context-type="linenumber">25</context>
-        </context-group>
+        
         <note priority="1" from="description">Libellé pour le champ Nom du site</note>
-      </trans-unit><trans-unit id="locationSiteQuestion" datatype="html">
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context><context context-type="linenumber">17</context></context-group></trans-unit><trans-unit id="locationSiteQuestion" datatype="html">
         <source>Où est-il situé ?</source><target state="new">Where is it located?</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context>
-          <context context-type="linenumber">30</context>
-        </context-group>
+        
         <note priority="1" from="description">Question localisation site</note>
-      </trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context><context context-type="linenumber">22</context></context-group></trans-unit>
             <trans-unit id="zoomingWarning" datatype="html">
                 <source>Veuillez zoomer pour localiser votre observation.</source>
                 <target state="new">Please zoom in to locate your observation.</target>
 
                 <note priority="1" from="description">Zooming warning</note>
 
-            <context-group purpose="location"><context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context><context context-type="linenumber">50</context></context-group></trans-unit><trans-unit id="addSiteTitle" datatype="html">
+            <context-group purpose="location"><context context-type="sourcefile">app/programs/sites/siteform/siteform.component.html</context><context context-type="linenumber">37</context></context-group></trans-unit><trans-unit id="addSiteTitle" datatype="html">
         <source>AJOUTER UN SITE</source><target state="new">ADD A SITE</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/sites/modalflow/steps/site/site_step.component.html</context>
@@ -1203,23 +1170,18 @@
         <note priority="1" from="description">Titre pour Mes Sites</note>
       </trans-unit><trans-unit id="addedMessage" datatype="html">
         <source>
-                            <x id="START_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;ng-container>"/><x id="INTERPOLATION" equiv-text="{{ o.properties.site_type.type | titlecase }}"/><x id="CLOSE_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;/ng-container>"/> ajouté(e) par <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="INTERPOLATION_1" equiv-text="{{ o.properties.obs_txt }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>
+                            <x id="START_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;ng-container>"/><x id="INTERPOLATION" equiv-text="{{ o.properties.site_type.type | titlecase }}"/><x id="CLOSE_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;/ng-container>"/> ajouté(e) par
+                            <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="INTERPOLATION_1" equiv-text="{{ o.properties.obs_txt }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>
                         </source><target state="new">
                             <x id="START_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;ng-container>"/><x id="INTERPOLATION" equiv-text="{{ o.properties.site_type.type | titlecase }}"/><x id="CLOSE_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;/ng-container>"/> added by <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/><x id="INTERPOLATION_1" equiv-text="{{ o.properties.obs_txt }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/>
                         </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/sites/list/list.component.html</context>
-          <context context-type="linenumber">41</context>
-        </context-group>
+        
         <note priority="1" from="description">Message d'ajout</note>
-      </trans-unit><trans-unit id="dateDeterminer" datatype="html">
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/sites/list/list.component.html</context><context context-type="linenumber">43</context></context-group></trans-unit><trans-unit id="dateDeterminer" datatype="html">
         <source>le</source><target state="new">on</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/programs/sites/list/list.component.html</context>
-          <context context-type="linenumber">46</context>
-        </context-group>
+        
         <note priority="1" from="description">Déterminant pour une date</note>
-      </trans-unit><trans-unit id="addSiteButton" datatype="html">
+      <context-group purpose="location"><context context-type="sourcefile">app/programs/sites/list/list.component.html</context><context context-type="linenumber">49</context></context-group></trans-unit><trans-unit id="addSiteButton" datatype="html">
         <source>Ajouter</source><target state="new">Add</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/sites/sites.component.html</context>
@@ -1534,46 +1496,40 @@
                 <target state="new">Observations</target>
 
                 <note priority="1" from="description">Observations</note>
-                <context-group purpose="location">
-                    <context context-type="sourcefile">app/home/home.component.html</context>
-                    <context context-type="linenumber">18</context>
-                </context-group>
-            </trans-unit><trans-unit id="sites" datatype="html">
+                
+            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">19</context></context-group></trans-unit><trans-unit id="sites" datatype="html">
         <source>Sites</source><target state="new">Sites</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/home/home.component.html</context>
-          <context context-type="linenumber">27</context>
-        </context-group>
+        
         <note priority="1" from="description">Sites</note>
-      </trans-unit>
+      <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">28</context></context-group></trans-unit>
             <trans-unit id="species" datatype="html">
                 <source>Espèces</source>
                 <target state="new">Species</target>
 
                 <note priority="1" from="description">species</note>
                 
-            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">36</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">37</context></context-group></trans-unit>
             <trans-unit id="observers" datatype="html">
                 <source>Observateurs</source>
                 <target state="new">Observers</target>
 
                 <note priority="1" from="description">Observers</note>
                 
-            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">45</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">46</context></context-group></trans-unit>
             <trans-unit id="momenPrograms" datatype="html">
                 <source>Les programmes du moment</source>
                 <target state="new">Current programs</target>
 
                 <note priority="1" from="description">Programs of the moment</note>
                 
-            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">107</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">108</context></context-group></trans-unit>
             <trans-unit id="ngbCarouselPrev" datatype="html">
                 <source>Précédent</source>
                 <target state="new">Previous</target>
 
                 <note priority="1" from="description">Carousel previous</note>
                 
-            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">132</context></context-group></trans-unit>
+            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">134</context></context-group></trans-unit>
 
             <trans-unit id="ngbCarouselNext" datatype="html">
                 <source>Prochain</source>
@@ -1581,7 +1537,7 @@
 
                 <note priority="1" from="description">Carousel next</note>
                 
-            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">136</context></context-group></trans-unit><trans-unit id="pageNotFoundTitle" datatype="html">
+            <context-group purpose="location"><context context-type="sourcefile">app/home/home.component.html</context><context context-type="linenumber">138</context></context-group></trans-unit><trans-unit id="pageNotFoundTitle" datatype="html">
         <source>Page non trouvé</source><target state="new">Page not found</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/page-not-found/page-not-found.component.html</context>
