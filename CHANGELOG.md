@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.0 - 202x-xx-xx
+## 1.2.0 - 2025-03-31
 
 > [!WARNING]  
 > **Last version compatible with TaxHub 1.x.x (i.e. GeoNature <= 2.14.x)**
