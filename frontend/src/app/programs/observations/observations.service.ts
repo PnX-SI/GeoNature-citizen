@@ -2,7 +2,11 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MainConfig } from '../../../conf/main.config';
-import { Stats, ObservationFeatureCollection } from './observation.model';
+import {
+    Stats,
+    ObservationFeatureCollection,
+    ObservationFeature,
+} from './observation.model';
 @Injectable({
     providedIn: 'root',
 })
@@ -33,10 +37,8 @@ export class ObservationsService {
         return this.http.get<ObservationFeatureCollection>(url, { params });
     }
 
-    getObservation(
-        observationId: number
-    ): Observable<ObservationFeatureCollection> {
-        return this.http.get<ObservationFeatureCollection>(
+    getObservation(observationId: number): Observable<ObservationFeature> {
+        return this.http.get<ObservationFeature>(
             `${MainConfig.API_ENDPOINT}/observations/${observationId}`
         );
     }

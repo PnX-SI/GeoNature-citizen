@@ -24,7 +24,7 @@ export class ModalFlowComponent implements OnInit {
     @Input('program_id') program_id;
     @Input('registration_required') registration_required;
     @Input('form_message') form_message;
-    @Input('default_image') default_image;
+    // @Input('default_image') default_image; TODO: à supprimer si pas utilisé
     @Input('updateData') updateData;
     @Input('modalversion') modalversion: boolean = true;
     @ViewChild('content', { static: true }) content: ElementRef;
@@ -47,7 +47,7 @@ export class ModalFlowComponent implements OnInit {
             program_id: this.program_id,
             registration_required: this.registration_required,
             form_message: this.form_message,
-            default_image: this.default_image,
+            // default_image: this.default_image, #TODO : où est ce qu'il est utilisé ?
             updateData: this.updateData,
         });
         if (this.modalversion) {

@@ -16,10 +16,10 @@ import { Feature } from 'geojson';
 
 import { MainConfig } from '../../../../conf/main.config';
 import {
-    TaxonomyList,
     TaxonomyListItem,
     ObservationFeature,
     ObservationFeatureCollection,
+    ObservationPropertiesList,
 } from '../observation.model';
 import { UserService } from '../../../auth/user-dashboard/user.service.service';
 
@@ -30,7 +30,7 @@ import { UserService } from '../../../auth/user-dashboard/user.service.service';
 })
 export class ObsListComponent implements OnChanges {
     @Input('observations') observations: ObservationFeatureCollection;
-    @Input('taxa') surveySpecies: TaxonomyList;
+    @Input('observedSpecies') observedSpecies: ObservationPropertiesList;
     @Input('displayOwnerActions') displayOwnerActions = false;
     @Input('displayForm') display_form: boolean;
     @Output('obsSelect') obsSelect: EventEmitter<Feature> = new EventEmitter();
@@ -65,9 +65,9 @@ export class ObsListComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         this.changes$.next(changes);
 
-        if (this.observations) {
-            this.observationList = this.observations['features'];
-            this.observations$.next(this.observations['features']);
+        if (this.observations && this.observations.features) {
+            this.observationList = this.observations.features;
+            this.observations$.next(this.observations.features);
             this.municipalities = this.observations.features
                 .map((features) => features.properties)
                 .map((property) => property.municipality)
@@ -121,9 +121,9 @@ export class ObsListComponent implements OnChanges {
             }
             if (this.selectedTaxon) {
                 results.push(
-                    obs.properties.cd_nom == this.selectedTaxon.taxref['cd_nom']
+                    obs.properties.cd_nom == this.selectedTaxon['cd_nom']
                 );
-                filters.taxon = this.selectedTaxon.taxref['cd_nom'];
+                filters.taxon = this.selectedTaxon['cd_nom'];
             }
             if (this.selectedValidationStatus) {
                 results.push(
@@ -156,7 +156,22 @@ export class ObsListComponent implements OnChanges {
         return obs.properties.id_observation;
     }
 
-    onValidateClick(observation) {
+    onValidateClick(observation: ObservationFeature) {
         this.validateObs.emit(observation.properties.id_observation)
     }
+
+    getPhotoUrl(observation: ObservationFeature): string {
+        if (observation.properties.photos && observation.properties.photos.length > 0) {
+          return this.MainConfig.API_ENDPOINT + observation.properties.photos[0].url;
+        } else if (observation.properties.medias && observation.properties.medias.length > 0) {
+          return (
+            this.MainConfig.API_TAXHUB +
+            '/tmedias/thumbnail/' +
+            observation.properties.medias[0].id_media +
+            '?h=80'
+          );
+        } else {
+          return 'assets/default_image.png';
+        }
+      }
 }

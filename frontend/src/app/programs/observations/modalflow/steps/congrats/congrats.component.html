@@ -6,18 +6,14 @@
             <span aria-hidden="true">&times;</span>
         </button>
         <img loading="lazy" class="default-img" [src]="
-                obs.images[0]
-                    ? MainConfig.API_ENDPOINT + '/media/' + obs.images[0]
-                    : data.default_image
-                    ? data.default_image
-                    : 'assets/default_program.jpg'
+              photoPath
             " />
     </div>
     <h5 i18n="Congrats@@congrats">Félicitations !</h5>
     <h6 i18n="Congrats message@@congratsMessage">
         Votre observation a bien été ajoutée !
     </h6>
-    <p>{{ obs.taxref?.nom_vern }}</p>
+    <p>{{ observationProperties.name }}</p>
     <span i18n="Obs date and observer@@obsDateObserver">Observé par {{ username || 'Anonyme' }} <br />
-        le {{ obs.date }}</span>
+        le {{ observationProperties.date }}</span>
 </div>

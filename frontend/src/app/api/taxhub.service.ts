@@ -1,49 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { map, catchError, tap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
+import { map, catchError } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
 
 import { MainConfig } from '../../conf/main.config';
-
-export interface Taxon {
-    cd_nom: number;
-    id_statut: string;
-    id_habitat: number;
-    id_rang: string;
-    regne: string;
-    phylum: string;
-    classe: string;
-    ordre: string;
-    famille: string;
-    sous_famille: string;
-    tribu: string;
-    cd_taxsup: number;
-    cd_sup: number;
-    cd_ref: number;
-    lb_nom: string;
-    lb_auteur: string;
-    nom_complet: string;
-    nom_complet_html: string;
-    nom_complet_html_sanitized: SafeHtml;
-    nom_vern: string;
-    nom_valide: string;
-    nom_vern_eng: string;
-    group1_inpn: string;
-    group2_inpn: string;
-    url: string;
-}
+import { GlobalCacheService } from './global-cache.service';
+import {
+    TaxonomyList,
+    Taxon,
+    Media,
+    Attribut,
+    MediaBase,
+    ObservationFeature,
+    TaxonomyListItem,
+} from '../programs/observations/observation.model';
 
 @Injectable({
     providedIn: 'root',
 })
 export class TaxhubService {
     private readonly URL = MainConfig.API_ENDPOINT;
-    taxon: any;
+    taxon: Taxon;
+    MEDIAS_TYPES_ALLOWED = ['Photo_gncitizen', 'Photo_principale', 'Photo'];
+    ATTRIBUTS_ALLOWED = ['Nom_francais'];
 
     constructor(
         protected http: HttpClient,
-        protected domSanitizer: DomSanitizer
+        protected domSanitizer: DomSanitizer,
+        private cacheService: GlobalCacheService
     ) {}
 
     getTaxon(cd_nom: number): Observable<Taxon> {
@@ -51,9 +36,10 @@ export class TaxhubService {
             .get<Taxon>(`${this.URL}/taxonomy/taxon/${cd_nom}`)
             .pipe(
                 map((taxon) => {
-                    taxon.nom_complet_html_sanitized = this.domSanitizer.bypassSecurityTrustHtml(
-                        taxon.nom_complet_html
-                    );
+                    taxon.nom_complet_html_sanitized =
+                        this.domSanitizer.bypassSecurityTrustHtml(
+                            taxon.nom_complet_html
+                        );
                     return taxon;
                 }),
                 // tap(taxon => {
@@ -65,10 +51,157 @@ export class TaxhubService {
             );
     }
 
+    getMediasTypesTaxhub(): Observable<MediaBase[]> {
+        return this.http
+            .get<MediaBase[]>(`${this.URL}/taxonomy/tmedias/types`)
+            .pipe(
+                catchError(
+                    this.handleError<MediaBase[]>(`getMediasTypesTaxhub()`)
+                )
+            );
+    }
+
+    getBibAttributesTaxhub(): Observable<Attribut[]> {
+        return this.http
+            .get<Attribut[]>(`${this.URL}/taxonomy/bibattributs`)
+            .pipe(
+                catchError(
+                    this.handleError<Attribut[]>(`getBibAttributesTaxhub()`)
+                )
+            );
+    }
+
+    loadAndCacheData(forceReload = false): void {
+        // Vérifie si le cache est valide
+        const isMediasCacheValid = this.cacheService.isMediasCacheValid();
+        const isAttributesCacheValid =
+            this.cacheService.isAttributesCacheValid();
+
+        // Si les deux caches sont valides, ne pas recharger
+        if (!forceReload && isMediasCacheValid && isAttributesCacheValid) {
+            return;
+        }
+        forkJoin({
+            medias: this.getMediasTypesTaxhub(),
+            attributes: this.getBibAttributesTaxhub(),
+        }).subscribe({
+            next: ({ medias, attributes }) => {
+                // Transformer les données en Records basés sur IDs
+                const mediasRecord = this.mapById(medias, 'id_type');
+                const attributesRecord = this.mapById(
+                    attributes,
+                    'id_attribut'
+                );
+
+                // Stocker les données dans le cache
+                this.cacheService.setMediasCache(mediasRecord);
+                this.cacheService.setAttributesCache(attributesRecord);
+            },
+            error: (error) => console.error('Error loading data:', error),
+        });
+    }
+
+    private mapById(array: any[], idKey: string): Record<string, any> {
+        return array.reduce((acc, item) => {
+            acc[item[idKey]] = item;
+            return acc;
+        }, {});
+    }
+
     private handleError<T>(operation = 'operation', result?: T) {
-        return (error: any): Observable<T> => {
+        return (error: Error): Observable<T> => {
             console.error(`${operation} failed: ${error.message}`, error);
             return of(result as T);
         };
+    }
+
+    setMediasAndAttributs(response: TaxonomyList): TaxonomyList {
+        if (!Array.isArray(response)) {
+            console.error('Response should be an array', response);
+            return response;
+        }
+        return (response = response.map((item: TaxonomyListItem) => {
+            // Ajouter "nom_type_media" à chaque média
+            if (item.medias) {
+                item.medias = item.medias.map((media: MediaBase) => {
+                    const typeMedias = this.cacheService.getMediaById(
+                        media.id_type
+                    );
+                    const nomTypeMedia = this.MEDIAS_TYPES_ALLOWED.includes(
+                        typeMedias.nom_type_media
+                    )
+                        ? typeMedias.nom_type_media
+                        : null;
+                    return { ...media, nom_type_media: nomTypeMedia };
+                });
+                item.medias = this.sort_medias_by_type(item.medias);
+            }
+
+            // Set attributs
+            item.nom_francais = null;
+            if (item.attributs && item.attributs.length > 0) {
+                const attributs = item.attributs.find((attr: any) =>
+                    this.cacheService.getAttributeById(attr.id_attribut)
+                );
+                this.ATTRIBUTS_ALLOWED.map((attributName) => {
+                    if (attributName === 'Nom_francais') {
+                        item.nom_francais = attributs.valeur_attribut;
+                    }
+                });
+            }
+            return { ...item };
+        }));
+    }
+
+    filterMediasTaxhub(
+        items: ObservationFeature | ObservationFeature[]
+    ): ObservationFeature | ObservationFeature[] {
+        const processMedias = (medias: Media[]) => {
+            medias = medias.map((media: Media) => {
+                const typeMedias = this.cacheService.getMediaById(
+                    media.id_type
+                );
+                const nomTypeMedia = this.MEDIAS_TYPES_ALLOWED.includes(
+                    typeMedias.nom_type_media
+                )
+                    ? typeMedias.nom_type_media
+                    : null;
+                return { ...media, nom_type_media: nomTypeMedia };
+            });
+
+            // Appel de la fonction sort_medias_by_type pour trier les médias
+            return this.sort_medias_by_type(medias);
+        };
+
+        if (Array.isArray(items)) {
+            items.forEach(
+                (item: ObservationFeature) =>
+                    item.properties.medias &&
+                    (item.properties.medias = processMedias(
+                        item.properties.medias
+                    ))
+            );
+        } else {
+            items.properties.medias &&
+                (items.properties.medias = processMedias(
+                    items.properties.medias
+                ));
+        }
+
+        return items;
+    }
+
+    sort_medias_by_type(medias: Media[]): Media[] {
+        return medias.sort((a: Media, b: Media) => {
+            const indexA = this.MEDIAS_TYPES_ALLOWED.indexOf(a.nom_type_media);
+            const indexB = this.MEDIAS_TYPES_ALLOWED.indexOf(b.nom_type_media);
+            if (indexA !== -1 && indexB !== -1) {
+                return indexA - indexB;
+            }
+            if (indexA === -1) return 1;
+            if (indexB === -1) return -1;
+
+            return 0;
+        });
     }
 }
