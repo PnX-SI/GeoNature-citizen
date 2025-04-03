@@ -1,0 +1,62 @@
+{
+  "form": [
+    "espece",
+    "espece_precision",
+    "type_taille",
+    "dendromicrohabitats",
+    {
+      "key": "comment_remarquable",
+      "type": "textarea"
+    }
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "espece": {
+        "enum": [
+          "Châtaigner",
+          "Chêne",
+          "Frêne",
+          "Hêtre",
+          "Noyer",
+          "Autre"
+        ],
+        "type": "string",
+        "title": "Espềce"
+      },
+      "type_taille": {
+        "enum": [
+          "En tétard",
+          "Enfut",
+          "Tortueu",
+          "Autre"
+        ],
+        "type": "string",
+        "title": "Type de taille"
+      },
+      "espece_precision": {
+        "type": "string",
+        "title": "Précisions sur l'espèce"
+      },
+      "comment_remarquable": {
+        "type": "string",
+        "title": "En quoi est-ce un arbre remarquable pour vous ?"
+      },
+      "dendromicrohabitats": {
+        "enum": [
+          "Blessure",
+          "Bois mort dans le houpier",
+          "Branche cassée",
+          "Cavité",
+          "Champignon",
+          "Ecorce décollée",
+          "Excroissance",
+          "Exsudat",
+          "Plante sur l'arbre (gui, lierre, lichen, mousse, …)"
+        ],
+        "type": "string",
+        "title": "Dendromicrohabitats"
+      }
+    }
+  }
+}

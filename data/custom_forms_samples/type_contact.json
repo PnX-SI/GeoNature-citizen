@@ -1,0 +1,21 @@
+{
+  "form": [
+    {
+      "key": "contact",
+      "type": "radios"
+    }
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "contact": {
+        "enum": [
+          "Vu",
+          "Entendu"
+        ],
+        "type": "string",
+        "title": "Quoi ?"
+      }
+    }
+  }
+}

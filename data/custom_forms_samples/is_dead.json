@@ -1,0 +1,14 @@
+{
+  "form": [
+    "isDead"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "isDead": {
+        "type": "boolean",
+        "title": "l'animal est mort"
+      }
+    }
+  }
+}

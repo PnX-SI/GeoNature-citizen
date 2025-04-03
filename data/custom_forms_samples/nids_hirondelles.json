@@ -1,0 +1,114 @@
+{
+  "form": [
+    {
+      "key": "type_obs",
+      "type": "radios",
+      "titleMap": [
+        {
+          "name": "Un nid",
+          "value": "nid"
+        },
+        {
+          "name": "Un oiseau",
+          "value": "oiseau"
+        }
+      ]
+    },
+    {
+      "key": "type_nid",
+      "type": "radios",
+      "titleMap": [
+        {
+          "name": "Nid naturel",
+          "value": "naturel"
+        },
+        {
+          "name": "Nid artificiel",
+          "value": "artificiel"
+        }
+      ],
+      "condition": "type_obs=='nid'"
+    },
+    {
+      "key": "nb_nid_occupes",
+      "type": "integer",
+      "title": "Nombre de nid semblant occupés",
+      "minimum": 0,
+      "condition": "type_obs=='nid'"
+    },
+    {
+      "key": "nb_nid_non_occupes",
+      "type": "integer",
+      "title": "Nombre de nid semblant non-occupés",
+      "minimum": 0,
+      "condition": "type_obs=='nid'"
+    },
+    {
+      "key": "nb_nid_endommages",
+      "type": "integer",
+      "title": "Nombre de nid semblant endommagés",
+      "minimum": 0,
+      "condition": "type_obs=='nid'"
+    },
+    {
+      "key": "situation_oiseau",
+      "type": "radios",
+      "titleMap": [
+        {
+          "name": "En vol",
+          "value": "vol"
+        },
+        {
+          "name": "Posé",
+          "value": "pose"
+        }
+      ],
+      "condition": "type_obs=='oiseau'"
+    }
+  ],
+  "schema": {
+    "type": "object",
+    "title": "Comment",
+    "required": [
+      "type_obs"
+    ],
+    "properties": {
+      "type_nid": {
+        "enum": [
+          "naturel",
+          "artificiel"
+        ],
+        "type": "string",
+        "title": "Type de nid"
+      },
+      "type_obs": {
+        "enum": [
+          "nid",
+          "oiseau"
+        ],
+        "type": "string",
+        "title": "L'observation concerne"
+      },
+      "nb_nid_occupes": {
+        "type": "integer",
+        "title": "Nombre de nids semblant occupés"
+      },
+      "nb_nid_endomages": {
+        "type": "integer",
+        "title": "Nombre de nids semblant endommagés"
+      },
+      "situation_oiseau": {
+        "enum": [
+          "vol",
+          "pose"
+        ],
+        "type": "string",
+        "title": "Situation de l'oiseau"
+      },
+      "nb_nid_non_occupes": {
+        "type": "integer",
+        "title": "Nombre de nids semblant non-occupés"
+      }
+    }
+  }
+}
