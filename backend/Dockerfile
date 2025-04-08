@@ -1,5 +1,5 @@
 # STAGE BASE
-FROM python:3.8.10 AS python-base
+FROM python:3.12 AS python-base
 
 ENV PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
