@@ -314,6 +314,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
                 ProgramsModel.id_program == ObservationModel.id_program,
                 isouter=True,
             )
+            .order_by(desc(ObservationModel.date))
             .order_by(desc(ObservationModel.timestamp_create))
             .filter(*filters)
         )
