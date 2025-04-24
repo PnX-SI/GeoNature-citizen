@@ -97,8 +97,8 @@ cd ~/gncitizen
 ```bash
 ALEMBIC_STAMP=e8c1cd57ad16  # Remplacez par le hash correct selon la version
 
-cd ~/gncitizen
-source ./backend/venv/bin/activate
+cd ~/gncitizen/backend
+source .venv/bin/activate
 
 flask db stamp $ALEMBIC_STAMP
 flask db upgrade
