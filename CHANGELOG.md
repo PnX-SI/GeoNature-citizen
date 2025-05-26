@@ -3,12 +3,12 @@
 ## 1.3.0 - 2025-04-03
 
 > [!WARNING]  
-> **compatible with TaxHub 2.x (i.e. GeoNature >= 2.15.x)**
+> **Require TaxHub 2.x (i.e. GeoNature >= 2.15.x)**
 
 ### :rocket: Main new features
 
 * Allow using all Taxref in programs (#327, #422)
-* Compatibility with TaxHub V2
+* Compatibility with TaxHub V2 (#424)
 * Taxons seach in programs is now based on observed taxons
 * If no photo is added to an observation and if an image is available for this to taxa in TaxHub, then this image is displayed on the Congrats popup
 * Observation name displayed in program observations list is based on this order:
