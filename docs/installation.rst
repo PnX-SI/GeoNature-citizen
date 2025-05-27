@@ -310,10 +310,6 @@ Installation du backend et de la base des données
 Générer les schémas de GeoNature-citizen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Il faut maintenant faire au moins une requête au serveur pour le forcer à créer les tables dont il a besoin.
-
-Lancement du backend pour générer les schémas :
-
 ::
 
     # Assurez vous de bien être toujours connecté en tant que geonatadmin
@@ -321,29 +317,11 @@ Lancement du backend pour générer les schémas :
     sudo chown geonatadmin:geonatadmin /home/geonatadmin/gncitizen/ -R
     cd ~/gncitizen/backend
     export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; export FLASK_APP=wsgi;
-    nohup python -m flask run --host=0.0.0.0 > /dev/null 2>&1 &
-    serverPID=$!
-    sleep 1 && wget http://127.0.0.1:5002/ # ceci devrait renvoyer 404: NOT FOUND.
-    kill $serverPID
+    python -m flask db upgrade
 
-
-Enregistrement du module principal :
-
-::
-
-  psql -d gncitizen -h localhost -p 5432 -U geonatuser -c "insert into gnc_core.t_modules values (1, 'observations', 'observations', 'observations', NULL, false, now(), now());"
-
-Vous pouvez créer un programme test avec la ligne de commande suivante :
-
-::
-
-  psql -d gncitizen -h localhost -p 5432 -U geonatuser -c "INSERT INTO gnc_core.t_programs VALUES (1, 'Au 68', 'inventaire  du 68', 'desc', NULL,  NULL, 1,  100,  't', '0106000020E6100000010000000103000000010000000500000001000070947C154042CA401665A5454001000070EE7C15402235D7E667A54540010000D81C7D1540AFBA27365AA5454000000040C47C1540DD9BD74A58A5454001000070947C154042CA401665A54540',  now(), now());"
-
-Celui-ci suppose l'existence d'une liste de taxons dont l'ID est 100, qui normalement existe sur TaxHub par défaut. Remplacez la valeur 100 par une liste existante si ce n'est pas le cas, ou créez une liste avec cet ID sur TaxHub.
 
 Mettre en place le système de badge
 ------------------------------------------------------
-
 
 ::
 
@@ -362,7 +340,7 @@ Installer l'environnement javascript
 ::
 
   cd ~/gncitizen/frontend/
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
   source ~/.bashrc
   nvm install
   npm install
