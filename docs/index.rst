@@ -18,6 +18,7 @@ Documentation de GeoNature-citizen
    configuration
    administration
    badges
+   update
    devs/index
    history
 
