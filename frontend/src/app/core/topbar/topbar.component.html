@@ -76,6 +76,28 @@
                         </a>
                     </ng-template>
                 </div>
+                <li class="nav-item dropdown" ngbDropdown [autoClose]="'outside'">
+                    <!-- switcher Language-->
+                    <a class="nav-link d-flex align-items-center dropdown-toggle p-0 pl-5"
+                        id="langDropdown"
+                        ngbDropdownToggle
+                        role="button">
+                        <i class="fa fa-globe mr-1"></i>
+                        <span class="text-uppercase font-weight-bold">{{ currentLocale }}</span>
+                    </a>
+
+                    <div ngbDropdownMenu aria-labelledby="langDropdown" class="dropdown-menu-right">
+                        <button
+                        ngbDropdownItem
+                        *ngFor="let locale of supportedLocales"
+                        (click)="switchLanguage(locale)"
+                        [class.font-weight-bold]="locale === currentLocale"
+                        class="d-flex justify-content-between align-items-center">
+                            {{ locale.toUpperCase() }}
+                            <i *ngIf="locale === currentLocale" class="fa fa-check ml-2"></i>
+                        </button>
+                    </div>
+                </li>
             </form>
         </div>
         <!-- FIXME: closed elsewhere </nav> -->
