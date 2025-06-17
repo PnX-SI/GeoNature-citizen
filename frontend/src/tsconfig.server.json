@@ -3,7 +3,8 @@
     "compilerOptions": {
         "outDir": "../out-tsc/app-server",
         "baseUrl": ".",
-        "module": "commonjs"
+        "module": "commonjs",
+        "skipLibCheck": true,
     },
     "angularCompilerOptions": {
         "entryModule": "app/app.server.module#AppServerModule"

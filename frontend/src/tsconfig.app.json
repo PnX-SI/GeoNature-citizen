@@ -9,7 +9,8 @@
             "leaflet.locatecontrol",
             "node"
         ],
-        "module": "esnext"
+        "module": "esnext",
+        "skipLibCheck": true,
     },
     "exclude": ["test.ts", "**/*.spec.ts"]
 }
