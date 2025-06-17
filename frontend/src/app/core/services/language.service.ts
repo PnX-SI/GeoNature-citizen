@@ -1,14 +1,49 @@
-import { Injectable } from '@angular/core';
-
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { MainConfig } from '../../../conf/main.config';
 @Injectable({
   providedIn: 'root'
 })
 export class LanguageService {
 
-  // Supported locales, adjust as needed
-  private supportedLocales = ['fr', 'en', 'de'];
-  private defaultLocale = 'fr';
+  private supportedLocales = MainConfig.supportedLocales;
+  private defaultLocale   = MainConfig.defaultLocale;
 
+constructor(
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
+  /**
+   * À appeler au bootstrap de l'app pour :
+   * - si aucune locale dans l'URL, rediriger vers la locale
+   *   du navigateur (si supportée) ou la locale par défaut.
+   */
+  init(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      // ne rien faire côté serveur
+      return;
+    }
+    // Si mono-locale, on n’a rien à faire (pas de switcher ni de redirection)
+    if (this.supportedLocales.length < 2) {
+      return;
+    }
+    const parts = window.location.pathname.split('/');
+    const maybeLocale = parts[1];
+
+    // si l'URL comporte déjà une locale valide : OK
+    if (this.supportedLocales.includes(maybeLocale)) {
+      return;
+    }
+
+    // sinon, on récupère la langue du navigateur
+    const browserLang = navigator.language.split('-')[0];
+    const target = this.supportedLocales.includes(browserLang)
+      ? browserLang
+      : this.defaultLocale;
+
+    // on redirige vers /<target>/...
+    this.switchLanguage(target);
+  }
 
   getCurrentLocale(): string {
     const seg = window.location.pathname.split('/')[1];

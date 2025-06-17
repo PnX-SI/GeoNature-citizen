@@ -20,9 +20,7 @@
         "build:i18n-ssr": "npm run build:client-and-server-bundles-i18n && npm run compile:server",
         "build:client-and-server-bundles": "ng build --prod && ng run frontend:server:production",
         "build:client-and-server-bundles-i18n": "ng run frontend:build:fr && ng run frontend:build:en && ng run frontend:build:de && ng run frontend:server:production",
-        "extract-i18n": "ng xi18n frontend --i18n-format xlf --output-path i18n --i18n-locale fr && ng run frontend:xliffmerge",
-        "start:proxy": "ts-node tools/dev-i18n-proxy.ts",
-        "start:all": "concurrently -k \"ng serve -c fr --port 4200\" \"ng serve -c en --port 4201\" \"ng serve -c de --port 4202\" \"npm run start:proxy\""
+        "extract-i18n": "ng xi18n frontend --i18n-format xlf --output-path i18n --i18n-locale fr && ng run frontend:xliffmerge"
     },
     "private": true,
     "dependencies": {
@@ -71,7 +69,6 @@
         "@angular/compiler-cli": "^8.2.14",
         "@angular/language-service": "^8.2.14",
         "@ngx-i18nsupport/ngx-i18nsupport": "^1.1.6",
-        "@types/express": "^5.0.3",
         "@types/jasmine": "^3.9.1",
         "@types/jasminewd2": "^2.0.10",
         "@types/leaflet": "^1.7.5",
@@ -81,11 +78,9 @@
         "@typescript-eslint/eslint-plugin": "^4.33.0",
         "@typescript-eslint/parser": "^4.33.0",
         "codelyzer": "^5.2.2",
-        "concurrently": "^6.4.0",
         "eslint": "^7.32.0",
         "eslint-config-prettier": "^7.2.0",
         "eslint-plugin-prettier": "^3.4.1",
-        "http-proxy-middleware": "^3.0.5",
         "jasmine-core": "~3.4.0",
         "jasmine-spec-reporter": "~4.2.1",
         "karma": "~4.2.0",

@@ -76,7 +76,7 @@
                         </a>
                     </ng-template>
                 </div>
-                <li class="nav-item dropdown" ngbDropdown [autoClose]="'outside'">
+                <li class="nav-item dropdown" ngbDropdown [autoClose]="'outside'" *ngIf="MainConfig.supportedLocales.length > 1">
                     <!-- switcher Language-->
                     <a class="nav-link d-flex align-items-center dropdown-toggle p-0 pl-5"
                         id="langDropdown"

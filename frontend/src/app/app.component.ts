@@ -11,6 +11,7 @@ import { MainConfig } from '../conf/main.config';
 import { Router, NavigationStart } from '@angular/router';
 import { ModalsTopbarService } from './core/topbar/modalTopbar.service';
 import { TaxhubService } from './api/taxhub.service';
+import { LanguageService } from './core/services/language.service';
 
 @Component({
     selector: 'app-root',
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit {
         private titleService: Title,
         private modalService: ModalsTopbarService,
         private _taxhubService: TaxhubService,
+        private languageService: LanguageService
     ) {
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationStart) {
@@ -46,6 +48,7 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.languageService.init();
         this.MainConfig = MainConfig;
         this.backgroundImage =
             MainConfig.API_ENDPOINT + '/media/background.jpg';
