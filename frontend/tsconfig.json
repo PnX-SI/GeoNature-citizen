@@ -23,8 +23,7 @@
         "typeRoots": ["node_modules/@types"],
         "lib": ["es2018", "dom"],
         "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
+        "esModuleInterop": true
     },
     "angularCompilerOptions": {
         "strictTemplates": true
