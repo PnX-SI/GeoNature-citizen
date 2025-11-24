@@ -21,7 +21,7 @@ export class GlobalCacheService {
             return search_values.includes(this.attributesCache[k].nom_attribut);
         });
 
-        return result ? this.attributesCache[result as unknown as keyof typeof this.attributesCache].id_attribut : undefined;
+        return result ? this.attributesCache[result].id_attribut : undefined;
     }
 
     getMediaById(id: number): Media | undefined {
