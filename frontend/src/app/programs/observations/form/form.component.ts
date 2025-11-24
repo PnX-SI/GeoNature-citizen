@@ -167,7 +167,7 @@ export class ObsFormComponent implements AfterViewInit {
         private mapService: MapService,
         private _refGeoService: RefGeoService,
         private _taxhubService: TaxhubService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this._taxhubService.loadAndCacheData();
@@ -236,11 +236,6 @@ export class ObsFormComponent implements AfterViewInit {
                                                 this._taxhubService.setMediasAndAttributs(
                                                     species
                                                 );
-                                            console.log(
-                                                'THIS.TAXA',
-                                                species,
-                                                this.taxa
-                                            );
                                         }),
                                         map((species: TaxonomyList) => {
                                             if (
@@ -263,9 +258,9 @@ export class ObsFormComponent implements AfterViewInit {
                                                     );
                                                 });
                                             }
-                                            else if (this.taxaCount == 1){
+                                            else if (this.taxaCount == 1) {
                                                 this.onTaxonSelected(this.taxa[0]);
-                                            }   
+                                            }
                                             else {
                                                 return species;
                                             }
@@ -318,7 +313,6 @@ export class ObsFormComponent implements AfterViewInit {
                     },
                     pseudoFullscreen: true,
                 }).addTo(formMap);
-                console.log('LControl', L.control);
 
                 L.control['search']({
                     url: 'https://nominatim.openstreetmap.org/search?format=json&accept-language=fr-FR&q={s}',
@@ -486,6 +480,7 @@ export class ObsFormComponent implements AfterViewInit {
         this.obsForm = this.formBuilder.group(
             {
                 cd_nom: ['', Validators.required],
+                name: [''],
                 count: [1, Validators.required],
                 comment: [''],
                 date: [
@@ -510,7 +505,6 @@ export class ObsFormComponent implements AfterViewInit {
     }
 
     patchForm(updateData) {
-        console.debug("updateData", updateData)
         const taxon = updateData.taxon || {
             media: updateData.taxref.media_url,
             taxref: updateData.taxref,
@@ -526,9 +520,9 @@ export class ObsFormComponent implements AfterViewInit {
             date: this.dateParser.parse(updateData.date),
             geometry: this.data.coords
                 ? <Point>{
-                      type: 'Point',
-                      coordinates: <Position>[this.coords.x, this.coords.y],
-                  }
+                    type: 'Point',
+                    coordinates: <Position>[this.coords.x, this.coords.y],
+                }
                 : '',
             id_program: updateData.program_id,
         });
@@ -543,12 +537,9 @@ export class ObsFormComponent implements AfterViewInit {
     };
 
     onTaxonSelected(taxon: any): void {
-        console.log('<onTaxonSelected> taxon', taxon);
         this.selectedTaxon = taxon;
-        this.obsForm.controls['cd_nom'].patchValue({
-            cd_nom: taxon.taxref['cd_nom'],
-            name: getPreferredName(taxon),
-        });
+        this.obsForm.controls['cd_nom'].patchValue(taxon.taxref['cd_nom']);
+        this.obsForm.controls['name'].patchValue(getPreferredName(taxon));
     }
 
     onChangeContactCheckBoxRGPD(): void {
@@ -580,16 +571,8 @@ export class ObsFormComponent implements AfterViewInit {
             'geometry',
             JSON.stringify(this.obsForm.get('geometry').value)
         );
-        const taxon = this.obsForm.get('cd_nom').value;
-        console.log('TAXON', taxon);
-        let cd_nom = Number.parseInt(taxon);
-        if (isNaN(cd_nom)) {
-            cd_nom = Number.parseInt(taxon.cd_nom);
-        }
-        // const taxon_name = this.selectedTaxon.nom_francais ? this.selectedTaxon.nom_francais : this.selectedTaxon.taxref.nom_vern;
-        const taxon_name = taxon.name;
-        formData.append('cd_nom', cd_nom.toString());
-        formData.append('name', taxon_name);
+        formData.append('cd_nom', (this.obsForm.get('cd_nom').value).toString());
+        formData.append('name', this.obsForm.get('name').value);
         const obsDateControlValue = NgbDate.from(
             this.obsForm.controls.date.value
         );
@@ -702,25 +685,15 @@ export class ObsFormComponent implements AfterViewInit {
         return resp;
     }
 
-    onSelectedTaxon(taxon): void {
+    onAutocompleteSelectedTaxon(taxon): void {
         this.programService
             .getTaxonInfoByCdNom(taxon.item['cd_nom'])
             .subscribe((taxonFullInfo) => {
                 const taxonWithTaxhubInfos =
                     this._taxhubService.setMediasAndAttributs(taxonFullInfo);
                 this.selectedTaxon = taxonWithTaxhubInfos[0];
-                this.obsForm.controls['cd_nom'].patchValue({
-                    cd_nom: this.selectedTaxon['cd_nom'],
-                    name: getPreferredName(this.selectedTaxon),
-                    icon:
-                        this.selectedTaxon['medias'].length >= 1
-                            ? // ? this.taxa[taxon]["medias"][0]["url"]
-                              MainConfig.API_TAXHUB +
-                              '/tmedias/thumbnail/' +
-                              this.selectedTaxon['medias']['id_media'] +
-                              '?h=20'
-                            : 'assets/default_image.png',
-                });
+                this.obsForm.controls['cd_nom'].patchValue(this.selectedTaxon['cd_nom']);
+                this.obsForm.controls['name'].patchValue(getPreferredName(this.selectedTaxon));
             });
     }
 }
