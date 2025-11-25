@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.3.0 - 2025-04-03
+## 1.3.0 - Unreleased
 
 > [!WARNING]  
 > **Require TaxHub 2.x (i.e. GeoNature >= 2.15.x)**
@@ -9,7 +9,7 @@
 
 * Allow using all Taxref in programs (#327, #422)
 * Compatibility with TaxHub V2 (#424)
-* Taxons seach in programs is now based on observed taxons
+* Taxons search in programs is now based on observed taxons
 * If no photo is added to an observation and if an image is available for this to taxa in TaxHub, then this image is displayed on the Congrats popup
 * Observation name displayed in program observations list is based on this order:
   *  'nom_francais'
@@ -29,7 +29,7 @@
 
 * To install or update to this version of GeoNature-citizen, you need TaxHub version 2.0.0 minimum.
 * Change `API_TAXHUB` variable to new TaxHub API url in `config/config.toml` and `frontend/src/conf/app.config.ts` (e.g. `https://demo.geonature.fr/geonature/api/taxhub/api/`)
-
+* The field `nom_francais` has been removed from TaxHub v2. To override a vernacular name, you can create and fill an attribute titled `nom_francais` in TaxHub. The table content of `bib_noms.nom_francais` has been saved in `archive_bib_noms.nom_francais` archive table to recover the data and copy it in a new `nom_francais` attribute.
 
 ## 1.2.1 - 2025-04-03
 
@@ -41,7 +41,6 @@
 * Set more explicit taxon list labels on backoffice (using code/label/taxa count)
 * Prefills taxon in input select when updating data
 * Update translations
- 
 
 ## 1.2.0 - 2025-03-31
 
