@@ -33,6 +33,5 @@ export abstract class ProgramBaseComponent implements AfterViewInit {
 
     onMapClicked(p: L.Point): void {
         this.coords = p;
-        console.debug('map clicked', this.coords);
     }
 }

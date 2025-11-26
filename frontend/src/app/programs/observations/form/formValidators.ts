@@ -31,7 +31,6 @@ const isValidGeoJSONPoint = (geometry: any): geometry is Point => {
 
 export function geometryValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-        //console.debug('geometryValidator', control);
         return isValidGeoJSONPoint(control.value)
             ? null
             : { geometry: { value: control.value } };

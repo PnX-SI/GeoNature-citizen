@@ -25,14 +25,12 @@ export class MediaGaleryComponent implements OnInit {
     constructor(
         private programService: GncProgramsService,
         private auth: AuthService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
-        console.log('this.userDashboard', this.userDashboard);
         const initParams: { [index: string]: string } = {
             id_program: this.program_id ? this.program_id.toString() : null,
         };
-        console.log('validation_process', this.validation_process);
         if (this.validation_process) {
             initParams.validation_status__notequal = 'VALIDATED';
             initParams.validation_process = 'true';

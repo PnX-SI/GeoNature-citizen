@@ -15,7 +15,7 @@ export class ConfirmEmailComponent implements OnInit {
         private activeRoute: ActivatedRoute,
         private router: Router,
         private authService: AuthService
-    ) {}
+    ) { }
 
     ngOnInit() {
         const token = this.activeRoute.snapshot.params.token;
@@ -41,7 +41,6 @@ export class ConfirmEmailComponent implements OnInit {
                     this.confirmedMessage =
                         "Le lien de confirmation n'est pas valide.";
                     this.confirmResponse = error.error;
-                    console.log('confirm error', error);
                     setTimeout(() => {
                         this.router.navigate(['home']);
                     }, 3000);

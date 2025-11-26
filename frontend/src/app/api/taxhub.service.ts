@@ -23,13 +23,13 @@ export class TaxhubService {
     private readonly URL = MainConfig.API_ENDPOINT;
     taxon: Taxon;
     MEDIAS_TYPES_ALLOWED = ['Photo_gncitizen', 'Photo_principale', 'Photo'];
-    ATTRIBUTS_ALLOWED = ['Nom_francais'];
+    ATTRIBUTS_ALLOWED = ['Nom_francais', 'nom_francais'];
 
     constructor(
         protected http: HttpClient,
         protected domSanitizer: DomSanitizer,
         private cacheService: GlobalCacheService
-    ) {}
+    ) { }
 
     getTaxon(cd_nom: number): Observable<Taxon> {
         return this.http
@@ -42,11 +42,6 @@ export class TaxhubService {
                         );
                     return taxon;
                 }),
-                // tap(taxon => {
-                //   // this.state.set(TAXON_KEY, taxon as any);
-                //   console.debug("taxhub taxon", taxon);
-                //   return taxon;
-                // }),
                 catchError(this.handleError<Taxon>(`getTaxon(${cd_nom})`))
             );
     }
@@ -140,14 +135,12 @@ export class TaxhubService {
             // Set attributs
             item.nom_francais = null;
             if (item.attributs && item.attributs.length > 0) {
-                const attributs = item.attributs.find((attr: any) =>
-                    this.cacheService.getAttributeById(attr.id_attribut)
-                );
-                this.ATTRIBUTS_ALLOWED.map((attributName) => {
-                    if (attributName === 'Nom_francais') {
-                        item.nom_francais = attributs.valeur_attribut;
-                    }
-                });
+                // Trouver l'attribut "nom_francais" si existe
+                const attrId = this.cacheService.findAttributId(this.ATTRIBUTS_ALLOWED)
+
+                // Peupler la clé "nom_francais" si valeur
+                const frAttribute = item.attributs.find((attr) => attrId === attr.id_attribut);
+                item.nom_francais = frAttribute ? frAttribute.valeur_attribut : null;
             }
             return { ...item };
         }));
