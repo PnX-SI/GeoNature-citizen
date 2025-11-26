@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.3.0 - Unreleased
+## 1.3.0 - 2025-11-27
 
 > [!WARNING]  
 > **Require TaxHub 2.x (i.e. GeoNature >= 2.15.x)**
