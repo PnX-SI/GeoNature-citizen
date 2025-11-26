@@ -111,7 +111,7 @@ export class SiteFormComponent implements AfterViewInit {
         private toastr: ToastrService,
         private mapService: MapService,
         private dateParser: NgbDateParserFormatter
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         if (this.data.updateData) {
@@ -141,14 +141,11 @@ export class SiteFormComponent implements AfterViewInit {
             .subscribe((result) => {
                 this.program = result;
                 this.site_types = this.program.features[0].site_types;
-                console.debug('site_types', this.site_types);
-                console.debug('prev', this.siteForm);
                 if (this.site_types.length == 1) {
                     this.siteForm.patchValue({
                         id_type: this.site_types[0].value,
                     });
                 }
-                console.debug('post', this.siteForm);
 
                 // build map control
                 const formMap = L.map('formMap', {
@@ -172,7 +169,6 @@ export class SiteFormComponent implements AfterViewInit {
                     },
                     pseudoFullscreen: true,
                 }).addTo(formMap);
-                console.log('LControl', L.control);
 
                 L.control['search']({
                     url: 'https://nominatim.openstreetmap.org/search?format=json&accept-language=fr-FR&q={s}',
@@ -268,8 +264,7 @@ export class SiteFormComponent implements AfterViewInit {
                     let z = formMap.getZoom();
 
                     if (z < MainConfig.ZOOM_LEVEL_RELEVE) {
-                        // this.hasZoomAlert = true;
-                        console.debug('ZOOM ALERT', formMap);
+
                         L.DomUtil.addClass(
                             formMap.getContainer(),
                             'observation-zoom-statement-warning'
@@ -282,7 +277,6 @@ export class SiteFormComponent implements AfterViewInit {
                                 formMap.getContainer(),
                                 'observation-zoom-statement-warning'
                             );
-                            console.debug('Deactivating overlay', formMap);
                         }, 2000);
                         return;
                     }
@@ -316,9 +310,9 @@ export class SiteFormComponent implements AfterViewInit {
             name: updateData.name,
             geometry: this.data.coords
                 ? <Point>{
-                      type: 'Point',
-                      coordinates: <Position>[this.coords.x, this.coords.y],
-                  }
+                    type: 'Point',
+                    coordinates: <Position>[this.coords.x, this.coords.y],
+                }
                 : '',
             id_type: updateData.id_type,
             id_program: updateData.program_id,
@@ -327,7 +321,6 @@ export class SiteFormComponent implements AfterViewInit {
     }
 
     onFormSubmit(): Promise<object> {
-        console.debug('formValues:', this.siteForm.value);
         return this.postSite()
             .toPromise()
             .then(

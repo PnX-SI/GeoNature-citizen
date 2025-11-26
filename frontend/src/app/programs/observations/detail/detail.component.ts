@@ -28,7 +28,7 @@ const map_conf = {
         acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
         return acc;
     }, {}),
-    DEFAULT_BASE_MAP: () => 
+    DEFAULT_BASE_MAP: () =>
         map_conf.BASE_LAYERS[MainConfig['DEFAULT_PROVIDER']],
 };
 
@@ -60,7 +60,6 @@ export class ObsDetailComponent
     ngAfterViewInit() {
         this.programService.getObsDetails(this.obs_id).subscribe((obs) => {
             this.obs = obs;
-            console.log(obs)
             this.photos = [];
             this.photos = this.obs.properties.photos.map(
                 item => {

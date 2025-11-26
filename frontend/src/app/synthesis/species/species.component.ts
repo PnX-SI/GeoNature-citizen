@@ -24,7 +24,6 @@ export class SpeciesComponent implements OnInit {
     ngOnInit() {
         this.taxhub.getTaxon(this.specie_id).subscribe((taxon) => {
             this.taxon = taxon;
-            console.debug('TAXON', taxon);
         });
     }
 }

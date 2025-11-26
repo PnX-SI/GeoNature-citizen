@@ -19,7 +19,6 @@ export class VisitStepComponent implements IFlowComponent {
 
     committed() {
         this.form.onFormSubmit();
-        console.debug('committed action > data:', this.data);
         // this.data.next();
         this.data.service.setModalCloseSatus('visitPosted');
         this.data.service.close(null);

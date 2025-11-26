@@ -136,7 +136,7 @@ export abstract class BaseMapComponent implements OnChanges {
                 if (changes.program && changes.program.currentValue) {
                     this.loadProgramArea();
                 } else if ('user-dashboard') {
-                    // TODO: Creuser à quoi correspond cette condition qui n'en est pas une...
+                    // FIXME: Creuser à quoi correspond cette condition qui n'en est pas une...
                     this.loadProgramArea();
                 }
                 if (changes.features && changes.features.currentValue) {
@@ -264,7 +264,6 @@ export abstract class BaseMapComponent implements OnChanges {
                         this.options.PROGRAM_AREA_STYLE(_feature),
                 }).addTo(this.observationMap);
                 programBounds = this.programArea.getBounds();
-                console.debug('programBounds', programBounds);
                 this.observationMap.fitBounds(programBounds);
                 // this.observationMap.setMaxBounds(programBounds);
             }
@@ -313,11 +312,9 @@ export abstract class BaseMapComponent implements OnChanges {
             }
             this.programMaxBounds = programBounds;
         } else {
-            console.debug('this features', this.features);
             // No program -> user-dashboard -> adapt bounds to observations
             if (this.features) {
                 const obsLayer = L.geoJSON(this.features);
-                console.debug('obsLayerBounds', obsLayer.getBounds());
                 this.observationMap.fitBounds(obsLayer.getBounds());
                 this.observationMap.setZoom(
                     Math.min(this.observationMap.getZoom(), 17)
@@ -403,5 +400,5 @@ export abstract class BaseMapComponent implements OnChanges {
         this.observationMap.off();
         this.observationMap.remove();
     }
-    canStart(): void {}
+    canStart(): void { }
 }

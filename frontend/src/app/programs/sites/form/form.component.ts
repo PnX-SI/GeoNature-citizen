@@ -3,20 +3,14 @@ import {
     ViewEncapsulation,
     OnInit,
     AfterViewInit,
-    ViewChild,
     Input,
-    ElementRef,
 } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { Position, Point } from 'geojson';
-import * as L from 'leaflet';
-import { LeafletMouseEvent } from 'leaflet';
 
 import { MainConfig } from '../../../../conf/main.config';
 
@@ -72,12 +66,9 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         private http: HttpClient,
         private route: ActivatedRoute,
         public siteService: SiteService
-    ) {}
+    ) { }
 
     ngOnInit() {
-        console.debug('ngOnInit');
-        console.debug('site_id:', this.site_id);
-        // const that = this;
         this.loadJsonSchema().subscribe((data: any) => {
             this.initForm(data);
             if (this.visit_id) {
@@ -133,7 +124,7 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
             layout: this.partialLayout,
         };
     }
-    ngAfterViewInit() {}
+    ngAfterViewInit() { }
     nextStep() {
         this.currentStep += 1;
         this.updateFormInput();
@@ -191,26 +182,23 @@ export class SiteVisitFormComponent implements OnInit, AfterViewInit {
         }
     }
     onFormSubmit(): void {
-        console.debug('formValues:', this.visitForm.value);
         this.postSiteVisit().subscribe(
             (data) => {
-                console.debug(data);
                 const visitId =
                     this.visit_id || data['features'][0]['id_visit'];
                 if (this.photos.length > 0) {
                     this.postVisitPhotos(visitId).subscribe(
                         (resp) => {
-                            console.debug(resp);
                             this.siteService.newSiteCreated.emit(true);
                             this.siteService.siteEdited.emit(true);
                         },
                         (err) => console.error(err),
-                        () => console.debug('photo upload done')
+                        () => { }
                     );
                 }
             },
             (err) => console.error(err),
-            () => console.debug('done')
+            () => { }
             // TODO: queue obs in list
         );
     }

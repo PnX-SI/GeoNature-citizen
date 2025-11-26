@@ -16,6 +16,14 @@ export class GlobalCacheService {
         this.attributesCache = data;
     }
 
+    findAttributId(search_values: Array<string>): number | undefined {
+        const result = Object.keys(this.attributesCache).find((k) => {
+            return search_values.includes(this.attributesCache[k].nom_attribut);
+        });
+
+        return result ? this.attributesCache[result].id_attribut : undefined;
+    }
+
     getMediaById(id: number): Media | undefined {
         return this.mediasCache[id];
     }

@@ -110,9 +110,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 except Exception as e:
                     current_app.logger.debug(e)
                     prefix = url_prefix
-                app.register_blueprint(
-                    module.backend.blueprint.blueprint, url_prefix=prefix
-                )
+                app.register_blueprint(module.backend.blueprint.blueprint, url_prefix=prefix)
                 try:
                     module.backend.models.create_schema(db)
                 except Exception as e:
@@ -121,11 +119,5 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 # du module dans le blueprint.config
                 module.backend.blueprint.blueprint.config = conf
                 app.config[manifest["module_name"]] = conf
-
-        # create_schemas(db)
-        # db.create_all()
-        # populate_modules(db)
-
-    # _app = app
 
     return app

@@ -28,7 +28,7 @@ export class SiteModalFlowComponent {
     constructor(
         public flowService: SiteModalFlowService,
         private route: ActivatedRoute
-    ) {}
+    ) { }
 
     clicked() {
         // this.flowService.openFormModal({ program_id: this.program_id, coords: this.coords });
@@ -46,8 +46,7 @@ export class SiteModalFlowComponent {
     }
 
     ngOnDestroy(): void {
-        console.debug('destroyed');
     }
 
-    step(componentName) {}
+    step(componentName) { }
 }

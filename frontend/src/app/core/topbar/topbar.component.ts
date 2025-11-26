@@ -12,7 +12,7 @@ import { Program } from '../../programs/programs.models';
 import { GncProgramsService } from '../../api/gnc-programs.service';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { SafeUrl } from '@angular/platform-browser';
 import { ModalsTopbarService } from './modalTopbar.service';
 
 @Component({
@@ -148,36 +148,15 @@ export class TopbarComponent implements OnInit {
                     console.error(err);
                     this.auth
                         .logout()
-                        .then((logout) => {
+                        .then((_logout) => {
                             // console.log('Logout Status:', logout.status);
                         })
-                        .catch((err) => {
+                        .catch((_err) => {
                             // console.error('Logout error:', err);
                         });
                     return throwError(err);
                 }
             );
-            /*this.auth.ensureAuthorized().pipe(
-        tap(user => {
-          console.log("ensureAuthorized result", user);
-          if (user && user["features"] && user["features"].id_role) {
-            this.username = user["features"].username;
-            this.isAdmin = user["features"].admin ? true : false;
-          }
-        }),
-        catchError(err => {
-          console.error(err);
-          this.auth
-            .logout()
-            .then(logout => {
-              console.log("Logout Status:", logout.status);
-            })
-            .catch(err => {
-              console.error("Logout error:", err);
-            });
-          return throwError(err);
-        })
-      );*/
         }
     }
 }
