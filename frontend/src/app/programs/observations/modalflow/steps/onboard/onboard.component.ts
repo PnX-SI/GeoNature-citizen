@@ -32,7 +32,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     constructor(
         private modalService: NgbModal,
         private authService: AuthService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.authService.authorized$.subscribe((value) => {
@@ -65,7 +65,6 @@ export class OnboardComponent implements IFlowComponent, OnInit {
             centered: true,
         });
         this.LoginModalRef.result.then((_) => {
-            console.debug('[obs-flow] login resolved');
             this.authService.isLoggedIn().subscribe(
                 (value) => !!value,
                 (reason) => {
@@ -79,7 +78,6 @@ export class OnboardComponent implements IFlowComponent, OnInit {
         if (this.data.registration_required) {
             return;
         }
-        console.debug('continue');
         this.data.next();
     }
 

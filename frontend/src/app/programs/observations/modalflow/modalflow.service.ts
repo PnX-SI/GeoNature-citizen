@@ -44,9 +44,7 @@ export class ModalFlowService extends FlowService {
             // keyboard : false
         });
         this.modalRef.result.then(
-            (result) => {
-                console.debug('closed with', !!result);
-            },
+            (_result) => { },
             (reason) => {
                 let trigger = undefined;
                 switch (reason) {

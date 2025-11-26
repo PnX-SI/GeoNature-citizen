@@ -203,14 +203,6 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
     }
 
     canValidateObservation(): boolean {
-        console.log(
-            `<canValidateObservation> this.isValidator`,
-            this.isValidator
-        );
-        console.log(
-            `<canValidateObservation> this.obsToValidate.properties`,
-            this.obsToValidate.properties
-        );
         return (
             this.MainConfig.VERIFY_OBSERVATIONS_ENABLED &&
             this.isValidator &&
@@ -218,9 +210,9 @@ export class ObsComponent extends ProgramBaseComponent implements OnInit {
             (!this.obsToValidate.properties.observer ||
                 (this.obsToValidate.properties.observer &&
                     typeof this.obsToValidate.properties.observer !==
-                        'string' &&
+                    'string' &&
                     this.obsToValidate.properties.observer.username !==
-                        this.username))
+                    this.username))
         );
     }
 

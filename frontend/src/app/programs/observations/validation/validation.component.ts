@@ -81,7 +81,7 @@ export class ValidationComponent implements OnInit {
         private programService: GncProgramsService,
         private userService: UserService,
         private _taxhubService: TaxhubService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.userService.getInvalidationStatuses().subscribe((statuses) => {
@@ -230,7 +230,6 @@ export class ValidationComponent implements OnInit {
     }
 
     initForm(): void {
-        console.log('obsToValidate', this.obsToValidate);
         this.validationForm = this.formBuilder.group({
             id_observation: [this.obsToValidate.properties.id_observation],
             cd_nom: ['', Validators.required],
@@ -311,10 +310,10 @@ export class ValidationComponent implements OnInit {
                     icon:
                         this.selectedTaxon['medias'].length >= 1
                             ? // ? this.taxa[taxon]["medias"][0]["url"]
-                              MainConfig.API_TAXHUB +
-                              '/tmedias/thumbnail/' +
-                              this.selectedTaxon['medias']['id_media'] +
-                              '?h=20'
+                            MainConfig.API_TAXHUB +
+                            '/tmedias/thumbnail/' +
+                            this.selectedTaxon['medias']['id_media'] +
+                            '?h=20'
                             : 'assets/default_image.png',
                 });
             });

@@ -13,12 +13,11 @@ export class SiteStepComponent implements IFlowComponent {
     @Input() data: any;
     @ViewChild(SiteFormComponent, { static: true }) form: SiteFormComponent;
 
-    constructor(public siteService: SiteService) {}
+    constructor(public siteService: SiteService) { }
 
     committed() {
         let resp: any;
         resp = this.form.onFormSubmit();
-        console.debug('committed action > data:', this.data);
         // Wait for resolution of http promise "resp"
         // to get new created site's id and pass it to next step as extra_data
         let that = this;

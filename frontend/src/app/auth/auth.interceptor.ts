@@ -31,7 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
         public errorHandler: ErrorHandler,
         private auth: AuthService,
         private router: Router
-    ) {}
+    ) { }
 
     addToken(request: HttpRequest<any>, token: string): HttpRequest<any> {
         if (token) {
@@ -82,9 +82,8 @@ export class AuthInterceptor implements HttpInterceptor {
         } else {
             return this.token$.pipe(
                 filter((token: string | null) => !!token),
-                tap((token) => console.debug(token)),
+                tap((_token) => { }),
                 switchMap((token: string) => {
-                    console.debug('waited after refresh:', token);
                     return next.handle(this.addToken(request, token));
                 })
             );
