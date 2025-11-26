@@ -1,4 +1,4 @@
-# 🔄 Mise à jour de GeoNature-citizen
+# Mise à jour de GeoNature-citizen
 
 ## ⚠️ Prérequis et précautions
 
