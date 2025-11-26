@@ -35,6 +35,9 @@ Documentation : https://geonature-citizen.readthedocs.io
 - https://observation.lehavre.fr
 - https://enquetes.cbiodiv.org
 - https://jobservemonparc.fr
+- https://obs.parc-livradois-forez.org
+- https://citizen.parc-naturel-pilat.fr
+- https://observatoire-biodiversite.parcdesbauges.com
 
 ## Solutions logicielles
 

@@ -3,33 +3,34 @@ set -e
 
 cd $(dirname $(dirname "${BASH_SOURCE[0]:-$0}"))
 
-# Mise à jour du git
-git pull
+DIR=$(pwd)
+
+# Creation du repertoires de logs
+mkdir -p var/log
 
 . config/settings.ini
-npm install
-
 # Transpilation du frontend
-cd frontend
+# Source nvm.sh pour accéder à nvm
+source ~/.nvm/nvm.sh
+cd ${DIR}/frontend
+nvm install
+nvm use
 npm install
-
-echo "Build frontend"
+echo "Build frontend ..."
 npm run build:i18n-ssr
 
-echo "Reloading Front server ..."
-sudo -s supervisorctl reload geonature
+# Création du venv et mise a jour des requirements
+echo "Upgrade backend ..."
+cd $DIR/backend
+venv_path=$DIR/backend/${venv_dir:-".venv"}
+if [ ! -f $venv_path/bin/activate ]; then
+  python3 -m virtualenv $venv_path
+fi
+source .venv/bin/activate
+pip install -r requirements.txt
 
-cd ..
-
-# Mise a jour des requirements
-FLASKDIR=$(readlink -e "${0%/*}")
-APP_DIR="$(dirname "$FLASKDIR")"
-venv_dir=".venv"
-venv_path=$FLASKDIR/backend/$venv_dir
-source $venv_path/bin/activate
-echo $(pwd)
-pip install -r backend/requirements.txt
 
 # Reload Supervisor pour l'api
 echo "Reloading Api ..."
-sudo -s supervisorctl reload api_geonature
+sudo supervisorctl restart gncitizen_api
+sudo supervisorctl restart gncitizen_front
