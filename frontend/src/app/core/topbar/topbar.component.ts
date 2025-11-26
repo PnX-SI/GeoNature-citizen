@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, LOCALE_ID, Inject } from '@angular/core';
 import { Observable, Subject, throwError } from 'rxjs';
-import { tap, map, catchError } from 'rxjs/operators';
+import { tap, map, catchError, filter } from 'rxjs/operators';
 
 import { MainConfig } from '../../../conf/main.config';
 import { AuthService } from './../../auth/auth.service';
@@ -10,10 +10,11 @@ import { RegisterComponent } from '../../auth/register/register.component';
 import { ProgramsComponent } from '../../programs/programs.component';
 import { Program } from '../../programs/programs.models';
 import { GncProgramsService } from '../../api/gnc-programs.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { SafeUrl } from '@angular/platform-browser';
 import { ModalsTopbarService } from './modalTopbar.service';
+import { LanguageService } from '../services/language.service';
 
 @Component({
     selector: 'app-topbar',
@@ -35,7 +36,10 @@ export class TopbarComponent implements OnInit {
     userAvatar: string;
     logoImage: string;
     hideAuth = false;
+    isOpen = false;
 
+    supportedLocales: string[] = [];
+    currentLocale: string;
     @Input()
     displayTopbar: boolean;
 
@@ -45,7 +49,9 @@ export class TopbarComponent implements OnInit {
         private programService: GncProgramsService,
         private auth: AuthService,
         private modalService: ModalsTopbarService,
-        protected http: HttpClient
+        protected http: HttpClient,
+        private languageService: LanguageService,
+        private router: Router
     ) {
         const tmp = localStorage.getItem('username');
         this.username = tmp ? tmp.replace(/\"/g, '') : 'Anonymous';
@@ -121,6 +127,14 @@ export class TopbarComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.supportedLocales = this.languageService.getSupportedLocales();
+        this.currentLocale   = this.languageService.getCurrentLocale();
+
+        this.router.events
+        .pipe(filter(e => e instanceof NavigationEnd))
+        .subscribe(() => {
+            this.currentLocale = this.languageService.getCurrentLocale();
+        });
         const access_token = localStorage.getItem('access_token');
         if (access_token) {
             this.auth.ensureAuthorized().subscribe(
@@ -158,5 +172,9 @@ export class TopbarComponent implements OnInit {
                 }
             );
         }
+    }
+
+    switchLanguage(newLocale: string): void {
+        this.languageService.switchLanguage(newLocale);
     }
 }
