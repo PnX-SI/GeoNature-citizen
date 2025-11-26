@@ -226,7 +226,14 @@ def get_program_sites(id):
         description: List of all sites
     """
     try:
-        sites = SiteModel.query.filter_by(id_program=id).all()
+        sites = (
+            db.session.query(SiteModel)
+            .join(VisitModel, SiteModel.id_site == VisitModel.id_site)
+            .filter(SiteModel.id_program == id)
+            .order_by(VisitModel.date.desc())
+            .order_by(SiteModel.timestamp_create.desc())
+            .all()
+        )
         return prepare_sites(sites)
     except Exception as e:
         return {"error_message": str(e)}, 400
