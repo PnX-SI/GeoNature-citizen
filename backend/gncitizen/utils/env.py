@@ -5,6 +5,7 @@ from pathlib import Path
 
 from flasgger import Swagger
 from flask_admin import Admin, AdminIndexView, expose
+from flask_admin.theme import Bootstrap4Theme
 from flask_ckeditor import CKEditor
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
@@ -48,10 +49,15 @@ def valid_api_url(url):
 def load_config():
     """Load the geonature-citizen configuration from a given file"""
     config_gnc = load_toml(get_config_file_path())
-    config_gnc["FLASK_ADMIN_FLUID_LAYOUT"] = True
-    config_gnc["MAPBOX_MAP_ID"] = "light-v10"
-    config_gnc["DEFAULT_CENTER_LAT"] = config_gnc.get("DEFAULT_CENTER_LAT", 45)
-    config_gnc["DEFAULT_CENTER_LONG"] = config_gnc.get("DEFAULT_CENTER_LONG", 5)
+    config_gnc["FLASK_ADMIN_MAPBOX_MAP_ID"] = config_gnc.get(
+        "FLASK_ADMIN_MAPBOX_MAP_ID", "light-v10"
+    )
+    config_gnc["FLASK_ADMIN_DEFAULT_CENTER_LAT"] = config_gnc.get(
+        "FLASK_ADMIN_DEFAULT_CENTER_LAT", 45
+    )
+    config_gnc["FLASK_ADMIN_DEFAULT_CENTER_LONG"] = config_gnc.get(
+        "FLASK_ADMIN_DEFAULT_CENTER_LONG", 5
+    )
     # config_gnc["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(seconds=20)
     # config_gnc["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(seconds=40)
     return config_gnc
@@ -120,7 +126,7 @@ class HomeView(AdminIndexView):
 admin = Admin(
     name=f"GnCitizen: Backoffice (version: {__version__})",
     index_view=HomeView(name="Home", url="/api/admin"),
-    template_mode="bootstrap4",
+    theme=Bootstrap4Theme(fluid=True, swatch="lumen"),
     url="/api/admin",
 )
 
