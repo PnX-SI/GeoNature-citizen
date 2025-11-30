@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 1.4.0 - 2025-11-30
+
+### Fixes
+
+- Fix bug introduced by wtforms 3.2.1 (cf. #477), update flask-admin to v2 (fully fix bug partially fixed in v1.3.1)
+
+### Release note
+
+Some flask-admin settings should be rename as mentionned in official package changelog (https://github.com/pallets-eco/flask-admin/releases/tag/v2.0.0)
+
+
 ## 1.3.1 - 2025-11-30
 
 > [!WARNING]
@@ -7,7 +18,7 @@
 
 ### :bug: Fixes
 
-* Fix servor error when create or update programs (temporary patch to fix #477).
+* Fix servor error when creating or updating programs (temporary patch to fix #477).
 
 ## 1.3.0 - 2025-11-26
 

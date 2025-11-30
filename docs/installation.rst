@@ -302,7 +302,7 @@ Gardez cette valeur sous la main, nous l'utiliserons dans la configuration Apach
 Authentification Mapbox
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Si vous avez des identifiants Mapbox, inscrivez-les dans ``MAPBOX_MAP_ID`` et ``MAPBOX_ACCESS_TOKEN``. Ils sont utilisés pour afficher des fonds de carte dans la partie administration des programmes.
+Si vous avez des identifiants Mapbox, inscrivez-les dans ``FLASK_ADMIN_MAPBOX_MAP_ID`` et ``FLASK_ADMIN_MAPBOX_ACCESS_TOKEN``. Ils sont utilisés pour afficher des fonds de carte dans la partie administration des programmes.
 
 Installation du backend et de la base des données
 -------------------------------------------------
