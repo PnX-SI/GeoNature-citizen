@@ -18,7 +18,7 @@ Some flask-admin settings should be rename as mentionned in official package cha
 
 ### :bug: Fixes
 
-* Fix servor error when create or update programs (temporary patch to fix #477).
+* Fix servor error when creating or updating programs (temporary patch to fix #477).
 
 ## 1.3.0 - 2025-11-26
 
