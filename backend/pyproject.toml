@@ -45,6 +45,7 @@ flask-migrate = "^4.1.0"
 flask = "^2"
 flask-admin = "^1.6.1"
 flask-jwt-extended = "^4"
+wtforms = "3.1.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
