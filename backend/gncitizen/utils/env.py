@@ -49,6 +49,7 @@ def valid_api_url(url):
 def load_config():
     """Load the geonature-citizen configuration from a given file"""
     config_gnc = load_toml(get_config_file_path())
+    config_gnc["FLASK_ADMIN_MAPS"] = True
     config_gnc["FLASK_ADMIN_MAPBOX_MAP_ID"] = config_gnc.get(
         "FLASK_ADMIN_MAPBOX_MAP_ID", "light-v10"
     )

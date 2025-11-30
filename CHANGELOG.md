@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 1.3.1 - unreleased
+
+### Fixes
+
+- Fix bug introduced by wtforms 3.2.1 (cf. #477), update flask-admin to v2
+
+### Release note
+
+Some flask-admin settings should be rename as mentionned in official package changelog (https://github.com/pallets-eco/flask-admin/releases/tag/v2.0.0)
+
+
+
 ## 1.3.0 - 2025-11-27
 
 > [!WARNING]  
@@ -22,7 +34,7 @@
 ### :technologist: Development
 
 * Add calls to two TaxHub API routes in order to get media types and bibattribut.
-* Add component taxonomy-research which calls `allnamebylist` TaxHub API route in Form Observation Program 
+* Add component taxonomy-research which calls `allnamebylist` TaxHub API route in Form Observation Program
 * Remove TaxHub list from cache backend
 
 ### :speech_balloon: Release note
