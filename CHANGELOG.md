@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## 1.3.0 - 2025-11-27
+## 1.3.1 - 2025-11-30
+
+> [!WARNING]
+> **Last release compatible with python 3.9**
+
+### :bug: Fixes
+
+* Fix servor error when create or update programs (temporary patch to fix #477).
+
+## 1.3.0 - 2025-11-26
 
 > [!WARNING]  
 > **Require TaxHub 2.x (i.e. GeoNature >= 2.15.x)**
@@ -22,7 +31,7 @@
 ### :technologist: Development
 
 * Add calls to two TaxHub API routes in order to get media types and bibattribut.
-* Add component taxonomy-research which calls `allnamebylist` TaxHub API route in Form Observation Program 
+* Add component taxonomy-research which calls `allnamebylist` TaxHub API route in Form Observation Program
 * Remove TaxHub list from cache backend
 
 ### :speech_balloon: Release note
