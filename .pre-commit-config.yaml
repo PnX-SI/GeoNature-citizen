@@ -39,8 +39,19 @@ repos:
             "--config=setup.cfg",
             "--select=E9,F63,F7,F82,QGS101,QGS102,QGS103,QGS104,QGS106",
           ]
+  - repo: local
+    hooks:
+      - id: generate-requirements
+        name: Generate Python Requirements
+        entry: |
+          bash -c "cd backend && \
+            poetry export -f requirements.txt -o requirements.txt --without-hashes && \
+            poetry export -f requirements.txt --only=dev -o requirements-dev.txt --without-hashes && \
+            poetry export -f requirements.txt --only=docs -o requirements-docs.txt --without-hashes"
+        language: system
+        types: [python]
 
 ci:
-    autoupdate_schedule: quarterly
-    skip: []
-    submodules: false
+  autoupdate_schedule: quarterly
+  skip: []
+  submodules: false

@@ -70,10 +70,10 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
     noResult: boolean;
     isTouched:boolean;
     isLoading = false;
-    isValid = false; 
+    isValid = false;
     value: string = ''; // Valeur actuelle du champ
     @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
-    
+
     public config = MainConfig;
     constructor(private _dfService: DataFormService) {}
 
@@ -140,7 +140,7 @@ export class SearchAutocompleteTaxonomyComponent implements OnInit, OnChanges {
                         );
                 } else {
                     this.isLoading = false;
-                    this.noResult = true; 
+                    this.noResult = true;
                     return [[]];
                 }
             }),

@@ -48,15 +48,15 @@
 
 /* Supprimer l'icône de validation lorsque l'input est valide */
 .input-container .form-control.ng-valid {
-  background-image: none !important;  
-  box-shadow: none !important;  
+  background-image: none !important;
+  box-shadow: none !important;
 }
 
 /* Appliquer des styles pour l'input invalide (bordure rouge, icône) */
 .input-container  .form-control.ng-invalid {
-  background-image: none !important;  
+  background-image: none !important;
   border-color: red !important;
-  box-shadow: none !important; 
+  box-shadow: none !important;
 }
 
 .text-danger {
