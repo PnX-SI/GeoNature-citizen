@@ -1,9 +1,23 @@
 # CHANGELOG
 
+## 1.3.2 - 2025-12-01
+
+> [!WARNING]
+> **Version 1.3.x will be the latest release compatible with python 3.9**
+
+### :bug: Fixes
+
+* Refix servor error when creating or updating programs (missing requirements up to date, temporary patch to fix #477).
+
+### :technologist: Development
+
+* New Makefile to facilitate certain maintenance operations
+* Requirements are now generated automatically during commit validation using pre-commit.
+
 ## 1.3.1 - 2025-11-30
 
 > [!WARNING]
-> **Last release compatible with python 3.9**
+> **Version 1.3.x will be the latest release compatible with python 3.9**
 
 ### :bug: Fixes
 
