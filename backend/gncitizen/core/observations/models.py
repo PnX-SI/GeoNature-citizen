@@ -27,7 +27,7 @@ OBS_KEYS = (
     "comment",
     "timestamp_create",
     "json_data",
-    "name"
+    "name",
 )
 
 TAXREF_KEYS = ["nom_vern", "cd_nom", "cd_ref", "lb_nom"]
@@ -155,9 +155,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         """get obs data as geojson feature"""
 
         result_dict = self.as_dict(True)
-        result_dict["observer"] = (
-            self.observer.as_simple_dict() if self.observer else None
-        )
+        result_dict["observer"] = self.observer.as_simple_dict() if self.observer else None
         result_dict["validator"] = (
             self.validator_ref.as_simple_dict() if self.validator_ref else None
         )
@@ -171,9 +169,7 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
         for k in result_dict:
             if k in OBS_KEYS:
                 feature["properties"][k] = (
-                    result_dict[k].name
-                    if isinstance(result_dict[k], Enum)
-                    else result_dict[k]
+                    result_dict[k].name if isinstance(result_dict[k], Enum) else result_dict[k]
                 )
         feature["properties"]["photos"] = [
             {
