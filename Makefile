@@ -1,10 +1,13 @@
 # Define variables
-APP_NAME := myproject
+APP_NAME := gncitizen
 BACKEND_DIR := backend
 FRONTEND_DIR := frontend
+DOCKER_COMPOSE_FILE := docker-compose.yml
+
+include .env
+
 DOCKER_IMAGE_BACKEND := $(APP_NAME)-backend
 DOCKER_IMAGE_FRONTEND := $(APP_NAME)-frontend
-DOCKER_COMPOSE_FILE := docker-compose.yml
 
 # Phony targets
 .PHONY: all install-dependencies generate-requirements build docker-start clean
