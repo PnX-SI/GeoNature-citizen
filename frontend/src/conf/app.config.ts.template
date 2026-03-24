@@ -86,4 +86,5 @@ export const AppConfig = {
     //     maxWidth: 1440,
     //     quality: 0.9,
     // },
+    // VERIFY_OBSERVATIONS_ENABLED: true,
 };
