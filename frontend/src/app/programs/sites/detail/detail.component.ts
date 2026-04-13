@@ -35,7 +35,7 @@ const map_conf = {
         acc[baseLayer['name']] = L.tileLayer(baseLayer['layer'], layerConf);
         return acc;
     }, {}),
-    DEFAULT_BASE_MAP: () => 
+    DEFAULT_BASE_MAP: () =>
         map_conf.BASE_LAYERS[MainConfig['DEFAULT_PROVIDER']],
 };
 

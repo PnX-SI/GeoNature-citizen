@@ -1,8 +1,6 @@
 from typing import Any, Dict, List, Union
 
 from flask import Blueprint, current_app, request
-from utils_flask_sqla.response import json_resp
-
 from gncitizen.utils.taxonomy import (
     get_all_attributes,
     get_all_medias_types,
@@ -12,6 +10,7 @@ from gncitizen.utils.taxonomy import (
     taxhub_rest_get_all_lists,
     taxhub_rest_get_taxon_list,
 )
+from utils_flask_sqla.response import json_resp
 
 taxo_api = Blueprint("taxonomy", __name__)
 

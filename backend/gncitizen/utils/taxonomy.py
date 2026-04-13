@@ -74,9 +74,7 @@ def taxhub_rest_get_all_lists() -> Optional[Dict]:
     if res.status_code == 200:
         try:
             taxa_lists = res.json()["data"]
-            taxa_lists = [
-                taxa for taxa in taxa_lists if not taxa["id_liste"] in excluded_list_ids
-            ]
+            taxa_lists = [taxa for taxa in taxa_lists if not taxa["id_liste"] in excluded_list_ids]
             for taxa_list in taxa_lists:
                 taxonomy_lists.append(
                     (
@@ -255,9 +253,7 @@ def set_taxa_info_from_taxhub(taxhub_data, features):
             if feature["properties"]["cd_nom"] == taxon["cd_nom"]:
                 excluded_keys = {"medias", "attributs"}
                 filtered_data = {
-                    key: value
-                    for key, value in taxon.items()
-                    if key not in excluded_keys
+                    key: value for key, value in taxon.items() if key not in excluded_keys
                 }
 
                 if (
