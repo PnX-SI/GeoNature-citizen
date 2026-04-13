@@ -15,7 +15,7 @@ import { UserService } from '../../../auth/user-dashboard/user.service.service';
     ],
 })
 export class ValidationBoardComponent implements OnInit {
-    observations: any;
+    observations: any = null;
     invalidationStatuses: any;
     selectedInvalidationStatus: any;
 
@@ -23,7 +23,7 @@ export class ValidationBoardComponent implements OnInit {
         private observationsService: ObservationsService,
         @Inject(LOCALE_ID) readonly localeId: string,
         private userService: UserService,
-    ) {}
+    ) { }
 
     ngOnInit() {
         this.userService.getInvalidationStatuses().subscribe((statuses) => {

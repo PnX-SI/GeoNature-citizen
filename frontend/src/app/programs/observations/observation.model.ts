@@ -77,7 +77,7 @@ export interface TaxonomyListItem {
     medias: Media[];
     attributs: AttributItem[];
     cd_nom: number;
-    nom_francais: string | null;
+    nom_francais?: string | null;
     taxref: TaxonBase;
 }
 
