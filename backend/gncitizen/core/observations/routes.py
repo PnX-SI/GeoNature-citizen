@@ -9,6 +9,10 @@ from flask import Blueprint, abort, current_app, json, request
 from flask_jwt_extended import jwt_required
 from geoalchemy2.shape import from_shape
 from geojson import FeatureCollection
+from shapely.geometry import Point, shape
+from sqlalchemy import desc
+from utils_flask_sqla.response import json_resp
+
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.utils.env import admin
 from gncitizen.utils.errors import GeonatureApiError
@@ -17,11 +21,12 @@ from gncitizen.utils.helpers import get_filter_by_args
 from gncitizen.utils.jwt import get_id_role_if_exists, get_user_if_exists
 from gncitizen.utils.mail_check import send_user_email
 from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.taxonomy import get_taxa_by_cd_nom, taxhub_rest_get_taxon_list, set_taxa_info_from_taxhub
+from gncitizen.utils.taxonomy import (
+    get_taxa_by_cd_nom,
+    set_taxa_info_from_taxhub,
+    taxhub_rest_get_taxon_list,
+)
 from server import db
-from shapely.geometry import Point, shape
-from sqlalchemy import desc
-from utils_flask_sqla.response import json_resp
 
 from .admin import ObservationView
 from .models import (
@@ -245,22 +250,28 @@ def post_observation():
             current_app.logger.debug(
                 "[post_observation] ObsTax UPLOAD FILE {}".format(file)
             )
-            newobs = db.session.query(ObservationModel).options(
-                db.joinedload(ObservationModel.medias)
-            ).get(newobs.id_observation)
+            newobs = (
+                db.session.query(ObservationModel)
+                .options(db.joinedload(ObservationModel.medias))
+                .get(newobs.id_observation)
+            )
             features = newobs.get_feature()
 
             id_taxonomy_list = newobs.program_ref.taxonomy_list
-            params = {'cd_nom': newobs.cd_nom}
+            params = {"cd_nom": newobs.cd_nom}
             # Appel synchrone à taxhub_rest_get_taxon_list
             if id_taxonomy_list is not None:
                 taxon_list_data = taxhub_rest_get_taxon_list(id_taxonomy_list, params)
             else:
                 taxon_list_data = None
 
-            features_with_taxhub_info = set_taxa_info_from_taxhub(taxon_list_data, [features])
+            features_with_taxhub_info = set_taxa_info_from_taxhub(
+                taxon_list_data, [features]
+            )
         except Exception as e:
-            current_app.logger.warning("[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
+            current_app.logger.warning(
+                "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
+            )
             # raise GeonatureApiError(e)
         return (
             {
@@ -296,7 +307,6 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
     paginate = "per_page" in args
     per_page = int(args.pop("per_page", 1000))
     page = int(args.pop("page", 1))
-    cd_nom_list = []
     id_role = get_id_role_if_exists()
 
     if validation_process and id_role:
@@ -325,21 +335,23 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             observations = query.all()
         features = [obs.get_feature() for obs in observations]
 
-
+        id_taxonomy_list = None
+        params = {}
         if observations:
             id_taxonomy_list = observations[0].program_ref.taxonomy_list
-            cd_nom_list = ','.join(map(str, {obs.cd_nom for obs in observations}))
-            params = {'cd_nom': cd_nom_list} if cd_nom_list else {}
-        else:
-            id_taxonomy_list = None
-            params = {}
+            cd_nom_list = map(str, {obs.cd_nom for obs in observations})
+            if cd_nom_list:
+                params["cd_nom"] = ",".join(cd_nom_list)
+            if id_taxonomy_list:
+                params["id_liste"] = id_taxonomy_list
 
-        if id_taxonomy_list:
-            taxon_list_data = taxhub_rest_get_taxon_list(id_taxonomy_list, params)
-            features_with_taxhub_info = set_taxa_info_from_taxhub(taxon_list_data, features)
+        if id_taxonomy_list or cd_nom_list:
+            taxon_list_data = taxhub_rest_get_taxon_list(params_to_update=params)
+            features_with_taxhub_info = set_taxa_info_from_taxhub(
+                taxon_list_data, features
+            )
         else:
             features_with_taxhub_info = features
-
 
         feature_collection = FeatureCollection(features_with_taxhub_info)
 
@@ -396,7 +408,10 @@ def update_observation():
     observation_to_update = ObservationModel.query.filter_by(
         id_observation=request.form.get("id_observation")
     )
-    if observation_to_update.one().id_role != current_user.id_user and not current_user.validator:
+    if (
+        observation_to_update.one().id_role != current_user.id_user
+        and not current_user.validator
+    ):
         abort(403, "unauthorized")
 
     try:
@@ -419,7 +434,9 @@ def update_observation():
                 shape_geometry = shape(geometry)
                 update_obs["geom"] = from_shape(shape_geometry, srid=4326)
                 if not update_obs["municipality"]:
-                    update_obs["municipality"] = get_municipality_id_from_wkb(shape_geometry)
+                    update_obs["municipality"] = get_municipality_id_from_wkb(
+                        shape_geometry
+                    )
             except Exception as e:
                 current_app.logger.warning("[post_observation] coords ", e)
                 raise GeonatureApiError(e)
@@ -440,7 +457,8 @@ def update_observation():
             if len(id_media_to_delete):
                 db.session.query(ObservationMediaModel).filter(
                     ObservationMediaModel.id_media.in_(tuple(id_media_to_delete)),
-                    ObservationMediaModel.id_data_source == update_data.get("id_observation"),
+                    ObservationMediaModel.id_data_source
+                    == update_data.get("id_observation"),
                 ).delete(synchronize_session="fetch")
                 db.session.query(MediaModel).filter(
                     MediaModel.id_media.in_(tuple(id_media_to_delete))
@@ -457,10 +475,14 @@ def update_observation():
                 update_data.get("id_observation"),
                 ObservationMediaModel,
             )
-            current_app.logger.debug("[post_observation] ObsTax UPLOAD FILE {}".format(file))
+            current_app.logger.debug(
+                "[post_observation] ObsTax UPLOAD FILE {}".format(file)
+            )
 
         except Exception as e:
-            current_app.logger.warning("[post_observation] ObsTax ERROR ON FILE SAVING", str(e))
+            current_app.logger.warning(
+                "[post_observation] ObsTax ERROR ON FILE SAVING", str(e)
+            )
             # raise GeonatureApiError(e)
         obs_validation = (
             "non_validatable_status" in update_data
@@ -477,7 +499,9 @@ def update_observation():
             new_validation_status = ValidationStatus.VALIDATED
             if non_validatable_status:
                 status = [
-                    s for s in INVALIDATION_STATUSES if s["value"] == non_validatable_status
+                    s
+                    for s in INVALIDATION_STATUSES
+                    if s["value"] == non_validatable_status
                 ][0]
                 new_validation_status = ValidationStatus[status["link"]]
 
@@ -501,7 +525,12 @@ def update_observation():
                 try:
                     observer = obs_to_update_obj.observer
                     send_user_email(
-                        subject=current_app.config["VALIDATION_EMAIL"]["SUBJECT"],
+                        subject=current_app.config["VALIDATION_EMAIL"][
+                            "SUBJECT"
+                        ].format(
+                            program=f"{obs_to_update_obj.program_ref.title}",
+                            observation=f"{obs_to_update_obj.name} (#{obs_to_update_obj.id_observation})",
+                        ),
                         to=observer.email,
                         html_message=current_app.config["VALIDATION_EMAIL"][
                             "HTML_TEMPLATE"
@@ -512,8 +541,12 @@ def update_observation():
                         ),
                     )
                 except Exception as e:
-                    current_app.logger.warning("send validation_email failed. %s", str(e))
-                    return {"message": f"""send validation_email failed: "{str(e)}" """}, 400
+                    current_app.logger.warning(
+                        "send validation_email failed. %s", str(e)
+                    )
+                    return {
+                        "message": f"""send validation_email failed: "{str(e)}" """
+                    }, 400
 
         return ("observation updated successfully"), 200
     except Exception as e:

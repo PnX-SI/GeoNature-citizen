@@ -1,18 +1,22 @@
-from flask import Blueprint,  request
-from typing import List, Dict, Any, Union
+from typing import Any, Dict, List, Union
+
+from flask import Blueprint, current_app, request
 from utils_flask_sqla.response import json_resp
 
 from gncitizen.utils.taxonomy import (
+    get_all_attributes,
+    get_all_medias_types,
+    get_taxa_by_cd_nom,
+    reformat_taxa,
+    refresh_taxonlist,
     taxhub_rest_get_all_lists,
     taxhub_rest_get_taxon_list,
-    reformat_taxa,
-    get_taxa_by_cd_nom,
-    get_all_medias_types,
-    get_all_attributes,
-    refresh_taxonlist
 )
 
 taxo_api = Blueprint("taxonomy", __name__)
+
+logger = current_app.logger
+
 
 @taxo_api.route("/taxonomy/refresh", methods=["GET"])
 @json_resp
@@ -57,7 +61,7 @@ def get_lists():
 @taxo_api.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
 @json_resp
 # @lru_cache()
-def get_list(id)-> Union[List[Dict[str, Any]], Dict[str, str]]:
+def get_list(id) -> Union[List[Dict[str, Any]], Dict[str, str]]:
     """Renvoie l'ensemble des espèces de la liste demandée.
 
     GET /taxonomy/lists/<id>/species
@@ -252,19 +256,20 @@ def get_list(id)-> Union[List[Dict[str, Any]], Dict[str, str]]:
           message: "Invalid list ID"
     raises:
       Exception: En cas d'erreur inattendue pendant le traitement.
-  """
+    """
 
     try:
         params = request.args.to_dict()
-        res = taxhub_rest_get_taxon_list(id, params)
+        res = taxhub_rest_get_taxon_list(taxhub_list_id=id, params_to_update=params)
         if isinstance(res, dict) and "items" in res:
-          reformatted_taxa = reformat_taxa(res)
+            reformatted_taxa = reformat_taxa(res)
         else:
             reformatted_taxa = []
-        print(reformatted_taxa)
+        logger.debug(reformatted_taxa)
         return reformatted_taxa
     except Exception as e:
         return {"message": str(e)}, 400
+
 
 @taxo_api.route("/taxonomy/taxon/<int:cd_nom>", methods=["GET"])
 @json_resp
@@ -292,12 +297,12 @@ def get_taxon_from_cd_nom(cd_nom):
         return get_taxa_by_cd_nom(cd_nom=cd_nom)
     except Exception as e:
         return {"message": str(e)}, 400
-    
+
 
 @taxo_api.route("/taxonomy/tmedias/types", methods=["GET"])
 @json_resp
-def get_media_types()-> List[Dict[str, Union[int, str]]]:
-  """Get all media types.
+def get_media_types() -> List[Dict[str, Union[int, str]]]:
+    """Get all media types.
     ---
     tags:
      - Taxon
@@ -330,15 +335,16 @@ def get_media_types()-> List[Dict[str, Union[int, str]]]:
                 message:
                   type: string
                   description: Error message.
-  """
-  try:
-      return get_all_medias_types()
-  except Exception as e:
-      return {"message": str(e)}, 400 
+    """
+    try:
+        return get_all_medias_types()
+    except Exception as e:
+        return {"message": str(e)}, 400
+
 
 @taxo_api.route("/taxonomy/bibattributs", methods=["GET"])
 @json_resp
-def get_attributes()-> List[Dict[str, Union[int, str]]]:
+def get_attributes() -> List[Dict[str, Union[int, str]]]:
     """
     Get all attributes.
     ---
@@ -404,4 +410,4 @@ def get_attributes()-> List[Dict[str, Union[int, str]]]:
     try:
         return get_all_attributes()
     except Exception as e:
-        return {"message": str(e)}, 400 
+        return {"message": str(e)}, 400

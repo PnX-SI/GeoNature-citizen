@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-""" Script de mise à jour des données obstax lors de la montée en version v0.99.4 > v1.0
+"""Script de mise à jour des données obstax lors de la montée en version v0.99.4 > v1.0
 
-  Faisant suite à la suppression des schémas taxonomie et ref_geo en base de données,
-  le nom d'espèce ainsi que la commune sont maintenant récupérés par API et stockés
-  en dur dans la table gnc_obstax.t_obstax.
-    - Communes: récupérées par nominatim.
-    - Espèces: récupérées via TaxHub.
+Faisant suite à la suppression des schémas taxonomie et ref_geo en base de données,
+le nom d'espèce ainsi que la commune sont maintenant récupérés par API et stockés
+en dur dans la table gnc_obstax.t_obstax.
+  - Communes: récupérées par nominatim.
+  - Espèces: récupérées via TaxHub.
 
 """
 
@@ -128,12 +128,12 @@ def set_observations(observations, token):
         obs_id = obs.get("id_observation", 0)
         headers = {"Authorization": f"Bearer {token}"}
         resp = requests.patch(GNC_OBS, data=obs, headers=headers)
-        logger.debug(f"STATUS {resp.status_code}")
+        logger.debug("STATUS %s", resp.status_code)
         if not resp.ok:
-            logger.debug(f"OBS values : {obs}")
-            raise RuntimeError(f"Cannot update this observation: n°{obs_id}")
+            logger.debug("OBS values : %s", obs)
+            raise RuntimeError("Cannot update this observation: n°%s", obs_id)
         else:
-            print(f"Done for obs n°{obs_id}")
+            logger.info("Done for obs n°%s", obs_id)
 
 
 if __name__ == "__main__":
@@ -148,4 +148,4 @@ if __name__ == "__main__":
         with open("./obs_save.json", "r") as f:
             obs = json.load(f)
     token = login()
-    print(set_observations(obs, token=token))
+    logger.info(set_observations(obs, token=token))

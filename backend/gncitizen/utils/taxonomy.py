@@ -3,7 +3,6 @@
 """A module to manage taxonomy"""
 
 from threading import Thread
-import unicodedata
 from typing import Dict, List, Optional, Union
 
 import requests
@@ -39,16 +38,21 @@ taxhub_full_lists = {}
 taxonomy_lists = []
 
 
-def taxhub_rest_get_taxon_list(taxhub_list_id: int, params_to_update: Dict = {}) -> Dict:
+def taxhub_rest_get_taxon_list(
+    taxhub_list_id: Optional[int] = None,
+    params_to_update: Dict = {},
+) -> Dict:
     url = f"{TAXHUB_API}taxref"
     params = {
-        "id_liste": taxhub_list_id,
         "fields": "medias,attributs",
         "existing": "true",
         "order": "asc",
         "orderby": "nom_complet",
         "limit": 100,
     }
+    if taxhub_list_id:
+        params["id_liste"] = taxhub_list_id
+
     if params_to_update:
         params.update(params_to_update)
     res = session.get(
@@ -70,15 +74,26 @@ def taxhub_rest_get_all_lists() -> Optional[Dict]:
     if res.status_code == 200:
         try:
             taxa_lists = res.json()["data"]
-            taxa_lists = [taxa for taxa in taxa_lists if not taxa["id_liste"] in excluded_list_ids]
+            taxa_lists = [
+                taxa for taxa in taxa_lists if not taxa["id_liste"] in excluded_list_ids
+            ]
             for taxa_list in taxa_lists:
-                taxonomy_lists.append((taxa_list["id_liste"], f'[{taxa_list["code_liste"]}] {taxa_list["nom_liste"]} ({taxa_list["nb_taxons"]} taxon(s))'))
-            print(f"taxonomy_lists {taxonomy_lists}")
+                taxonomy_lists.append(
+                    (
+                        taxa_list["id_liste"],
+                        f'[{taxa_list["code_liste"]}] {taxa_list["nom_liste"]} ({taxa_list["nb_taxons"]} taxon(s))',
+                    )
+                )
+            logger.info(
+                "%s taxonomy lists have been found on %s",
+                len(taxonomy_lists),
+                TAXHUB_API,
+            )
+            logger.debug("Taxonomy list items are %s", taxonomy_lists)
         except Exception as e:
             logger.critical(str(e))
         return res.json().get("data", [])
     return None
-
 
 
 def get_specie_from_cd_nom(cd_nom) -> Dict:
@@ -120,6 +135,7 @@ def refresh_taxonlist() -> Dict:
     if not taxhub_lists:
         logger.warning("ERROR: No taxhub lists available")
     return taxhub_lists
+
 
 def get_all_medias_types() -> Dict:
     """get all medias types"""
@@ -189,7 +205,7 @@ def reformat_taxa(taxa):
         "regne",
         "sous_famille",
         "tribu",
-        "url"
+        "url",
     ]
 
     for item in items:
@@ -198,7 +214,7 @@ def reformat_taxa(taxa):
             "attributs": [],
             "cd_nom": item.get("cd_nom"),
             "nom_francais": None,
-            "taxref": { field: item.get(field) for field in TAXREF_FIELDS }
+            "taxref": {field: item.get(field) for field in TAXREF_FIELDS},
         }
         # Récupérer tous les médias sans condition de types
         for media in item.get("medias", []):
@@ -213,7 +229,7 @@ def reformat_taxa(taxa):
     return result
 
 
-def get_taxa_by_cd_nom(cd_nom,  params_to_update: Dict = {}) -> Dict:
+def get_taxa_by_cd_nom(cd_nom, params_to_update: Dict = {}) -> Dict:
     """get taxa datas from taxref id (cd_nom)
 
     :param cd_nom: taxref unique id (cd_nom)
@@ -238,9 +254,16 @@ def set_taxa_info_from_taxhub(taxhub_data, features):
         for feature in features:  # Parcours des features
             if feature["properties"]["cd_nom"] == taxon["cd_nom"]:
                 excluded_keys = {"medias", "attributs"}
-                filtered_data = {key: value for key, value in taxon.items() if key not in excluded_keys}
+                filtered_data = {
+                    key: value
+                    for key, value in taxon.items()
+                    if key not in excluded_keys
+                }
 
-                if "taxref" not in feature["properties"] or feature["properties"]["taxref"] is None:
+                if (
+                    "taxref" not in feature["properties"]
+                    or feature["properties"]["taxref"] is None
+                ):
                     feature["properties"]["taxref"] = {}
                 feature["properties"]["taxref"].update(filtered_data)
 
