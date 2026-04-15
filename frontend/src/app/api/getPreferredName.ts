@@ -1,10 +1,17 @@
-import { Taxon } from '../programs/observations/observation.model';
+import {
+    Taxon,
+    TaxonomyListItem,
+} from '../programs/observations/observation.model';
 
-function getValueFromPath(taxon: Taxon, path: string): string {
-    return path.split('.').reduce((acc, key) => acc && acc[key], taxon);
+function getValueFromPath(
+    obj: Record<string, any>,
+    path: string
+): string | undefined {
+    return path
+        .split('.')
+        .reduce<any>((acc, key) => (acc ? acc[key] : undefined), obj);
 }
-
-export function getPreferredName(taxon: Taxon): string {
+export function getPreferredName(taxon: Taxon | TaxonomyListItem): string {
     const priorityAttributes = [
         'nom_francais',
         'taxref.nom_vern',
@@ -16,8 +23,8 @@ export function getPreferredName(taxon: Taxon): string {
 
     for (const attributePath of priorityAttributes) {
         const value = getValueFromPath(taxon, attributePath);
-        if (value) {
-            return value;
+        if (value !== undefined && value !== null && value !== '') {
+            return String(value);
         }
     }
 
