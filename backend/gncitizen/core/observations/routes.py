@@ -19,11 +19,11 @@ from gncitizen.utils.mail_check import send_user_email
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.taxonomy import (
     get_taxa_by_cd_nom,
-    taxhub_rest_get_taxon_list,
     set_taxa_info_from_taxhub,
+    taxhub_rest_get_taxon_list,
 )
 from server import db
-from shapely.geometry import shape
+from shapely.geometry import Point, shape
 from sqlalchemy import desc
 from utils_flask_sqla.response import json_resp
 
@@ -247,6 +247,7 @@ def post_observation():
                 ObservationMediaModel,
             )
             current_app.logger.debug("[post_observation] ObsTax UPLOAD FILE {}".format(file))
+
             newobs = (
                 db.session.query(ObservationModel)
                 .options(db.joinedload(ObservationModel.medias))
@@ -300,7 +301,6 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
     paginate = "per_page" in args
     per_page = int(args.pop("per_page", 1000))
     page = int(args.pop("page", 1))
-    cd_nom_list = []
     id_role = get_id_role_if_exists()
 
     if validation_process and id_role:
@@ -329,16 +329,18 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             observations = query.all()
         features = [obs.get_feature() for obs in observations]
 
+        id_taxonomy_list = None
+        params = {}
         if observations:
             id_taxonomy_list = observations[0].program_ref.taxonomy_list
-            cd_nom_list = ",".join(map(str, {obs.cd_nom for obs in observations}))
-            params = {"cd_nom": cd_nom_list} if cd_nom_list else {}
-        else:
-            id_taxonomy_list = None
-            params = {}
+            cd_nom_list = map(str, {obs.cd_nom for obs in observations})
+            if cd_nom_list:
+                params["cd_nom"] = ",".join(cd_nom_list)
+            if id_taxonomy_list:
+                params["id_liste"] = id_taxonomy_list
 
-        if id_taxonomy_list:
-            taxon_list_data = taxhub_rest_get_taxon_list(id_taxonomy_list, params)
+        if id_taxonomy_list or cd_nom_list:
+            taxon_list_data = taxhub_rest_get_taxon_list(params_to_update=params)
             features_with_taxhub_info = set_taxa_info_from_taxhub(taxon_list_data, features)
         else:
             features_with_taxhub_info = features
@@ -503,7 +505,10 @@ def update_observation():
                 try:
                     observer = obs_to_update_obj.observer
                     send_user_email(
-                        subject=current_app.config["VALIDATION_EMAIL"]["SUBJECT"],
+                        subject=current_app.config["VALIDATION_EMAIL"]["SUBJECT"].format(
+                            program=f"{obs_to_update_obj.program_ref.title}",
+                            observation=f"{obs_to_update_obj.name} (#{obs_to_update_obj.id_observation})",
+                        ),
                         to=observer.email,
                         html_message=current_app.config["VALIDATION_EMAIL"][
                             "HTML_TEMPLATE"

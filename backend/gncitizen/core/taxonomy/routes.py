@@ -1,18 +1,20 @@
-from flask import Blueprint, request
-from typing import List, Dict, Any, Union
-from utils_flask_sqla.response import json_resp
+from typing import Any, Dict, List, Union
 
+from flask import Blueprint, current_app, request
 from gncitizen.utils.taxonomy import (
+    get_all_attributes,
+    get_all_medias_types,
+    get_taxa_by_cd_nom,
+    reformat_taxa,
+    refresh_taxonlist,
     taxhub_rest_get_all_lists,
     taxhub_rest_get_taxon_list,
-    reformat_taxa,
-    get_taxa_by_cd_nom,
-    get_all_medias_types,
-    get_all_attributes,
-    refresh_taxonlist,
 )
+from utils_flask_sqla.response import json_resp
 
 taxo_api = Blueprint("taxonomy", __name__)
+
+logger = current_app.logger
 
 
 @taxo_api.route("/taxonomy/refresh", methods=["GET"])
@@ -257,12 +259,12 @@ def get_list(id) -> Union[List[Dict[str, Any]], Dict[str, str]]:
 
     try:
         params = request.args.to_dict()
-        res = taxhub_rest_get_taxon_list(id, params)
+        res = taxhub_rest_get_taxon_list(taxhub_list_id=id, params_to_update=params)
         if isinstance(res, dict) and "items" in res:
             reformatted_taxa = reformat_taxa(res)
         else:
             reformatted_taxa = []
-        print(reformatted_taxa)
+        logger.debug(reformatted_taxa)
         return reformatted_taxa
     except Exception as e:
         return {"message": str(e)}, 400

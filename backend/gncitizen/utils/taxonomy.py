@@ -3,7 +3,6 @@
 """A module to manage taxonomy"""
 
 from threading import Thread
-import unicodedata
 from typing import Dict, List, Optional, Union
 
 import requests
@@ -39,16 +38,21 @@ taxhub_full_lists = {}
 taxonomy_lists = []
 
 
-def taxhub_rest_get_taxon_list(taxhub_list_id: int, params_to_update: Dict = {}) -> Dict:
+def taxhub_rest_get_taxon_list(
+    taxhub_list_id: Optional[int] = None,
+    params_to_update: Dict = {},
+) -> Dict:
     url = f"{TAXHUB_API}taxref"
     params = {
-        "id_liste": taxhub_list_id,
         "fields": "medias,attributs",
         "existing": "true",
         "order": "asc",
         "orderby": "nom_complet",
         "limit": 100,
     }
+    if taxhub_list_id:
+        params["id_liste"] = taxhub_list_id
+
     if params_to_update:
         params.update(params_to_update)
     res = session.get(
@@ -78,7 +82,12 @@ def taxhub_rest_get_all_lists() -> Optional[Dict]:
                         f'[{taxa_list["code_liste"]}] {taxa_list["nom_liste"]} ({taxa_list["nb_taxons"]} taxon(s))',
                     )
                 )
-            print(f"taxonomy_lists {taxonomy_lists}")
+            logger.info(
+                "%s taxonomy lists have been found on %s",
+                len(taxonomy_lists),
+                TAXHUB_API,
+            )
+            logger.debug("Taxonomy list items are %s", taxonomy_lists)
         except Exception as e:
             logger.critical(str(e))
         return res.json().get("data", [])

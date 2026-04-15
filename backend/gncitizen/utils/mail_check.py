@@ -6,6 +6,8 @@ from typing import Optional
 from flask import current_app
 from itsdangerous import URLSafeTimedSerializer
 
+logger = current_app.logger
+
 default_mail_from_addr = current_app.config["MAIL"]["MAIL_AUTH_LOGIN"]
 
 
@@ -64,7 +66,7 @@ def send_user_email(
         server.quit()
 
     except Exception as e:
-        current_app.logger.warning("send email failled. %s", str(e))
+        logger.warning("send email failled. %s", str(e))
         return {"message": """ send email failled: "{}".""".format(str(e))}
 
 
@@ -99,7 +101,7 @@ def confirm_user_email(newuser, with_confirm_link=True):
         )
 
     except Exception as e:
-        current_app.logger.warning("send confirm_email failled. %s", str(e))
+        logger.warning("send confirm_email failled. %s", str(e))
         return {"message": """ send confirm_email failled: "{}".""".format(str(e))}
 
 
@@ -116,5 +118,5 @@ def confirm_token(token):
             salt=current_app.config["CONFIRM_MAIL_SALT"],
         )
     except Exception as e:
-        current_app.logger.warning("confirm_token failled. %s", str(e))
+        logger.warning("confirm_token failled. %s", str(e))
     return email

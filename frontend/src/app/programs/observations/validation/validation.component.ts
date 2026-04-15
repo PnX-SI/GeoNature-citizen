@@ -72,6 +72,7 @@ export class ValidationComponent implements OnInit {
     obsValidatable = true;
     invalidationStatuses: any;
     selectedInvalidationStatus: any;
+    loading: boolean = true;
 
     constructor(
         private auth: AuthService,
@@ -84,6 +85,7 @@ export class ValidationComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.loading = true;
         this.userService.getInvalidationStatuses().subscribe((statuses) => {
             this.invalidationStatuses = statuses;
             this.selectedInvalidationStatus = this.invalidationStatuses.find(
@@ -109,6 +111,7 @@ export class ValidationComponent implements OnInit {
         leafletMap.setView(latLng, 13);
 
         this.initForm();
+        console.debug('ngOnInit obsToValidate', this.obsToValidate);
 
         this.programService
             .getProgram(this.obsToValidate.properties.id_program)
@@ -125,6 +128,7 @@ export class ValidationComponent implements OnInit {
                                     (lt) => lt.id_liste === this.taxonomyListID
                                 )
                                 .map((lt) => lt.nb_taxons)[0];
+                            console.debug('this.taxaCount', this.taxaCount, this.taxa)
                             return (
                                 this.taxaCount <
                                 this.taxonAutocompleteInputThreshold
@@ -178,6 +182,7 @@ export class ValidationComponent implements OnInit {
                                         })
                                     );
                             } else {
+                                this.loading = false;
                                 return [];
                             }
                         }),
@@ -185,6 +190,7 @@ export class ValidationComponent implements OnInit {
                     );
                 this.surveySpecies$.subscribe((sortedSpecies) => {
                     this.surveySpecies = sortedSpecies;
+                    this.loading = false;
                 });
             });
 
@@ -211,7 +217,7 @@ export class ValidationComponent implements OnInit {
     onTaxonSelected(taxon: any, shouldPatchForm = true): void {
         this.selectedTaxon = taxon;
         if (shouldPatchForm) {
-            this.validationForm.controls['cd_nom'].patchValue({
+            this.validationForm.controls['taxon'].patchValue({
                 cd_nom: taxon.taxref['cd_nom'],
                 name: getPreferredName(taxon),
             });
@@ -230,15 +236,25 @@ export class ValidationComponent implements OnInit {
     }
 
     initForm(): void {
+        console.debug('initForm this', this)
+        console.debug(
+            'initForm surveySpecies',
+            this.surveySpecies$,
+            this.surveySpecies
+        );
         this.validationForm = this.formBuilder.group({
             id_observation: [this.obsToValidate.properties.id_observation],
-            cd_nom: ['', Validators.required],
+            taxon: [
+                this.obsToValidate.properties.cd_nom || '',
+                Validators.required,
+            ],
             name: [''],
             id_role: [this.id_role],
             comment: [''],
             report_observer: [true],
             non_validatable_status: [''],
         });
+        console.log('this.validationForm', this.validationForm)
     }
 
     onSelectInvalidObs(invalidationStatus: boolean): void {
@@ -262,15 +278,23 @@ export class ValidationComponent implements OnInit {
     }
 
     createFormDataToPost(): FormData {
-        let formData: FormData = new FormData();
-        const taxon = this.validationForm.get('cd_nom').value;
+        const formData: FormData = new FormData();
+        const taxon = this.validationForm.get('taxon').value;
+        console.debug('taxon', taxon);
         let cd_nom = Number.parseInt(taxon);
         if (isNaN(cd_nom)) {
             cd_nom = Number.parseInt(taxon.cd_nom);
         }
-        const taxon_name = taxon.name;
+
+        console.log('this.getPreferredName(taxon)',this.getPreferredName(taxon))
+
+        const taxonValue = this.surveySpecies.find(
+            (item) => cd_nom === item.cd_nom
+        );
+        const taxonName = this.getPreferredName(taxonValue);
+        console.debug('TAXON_NAME', taxon, taxonName);
         formData.append('cd_nom', cd_nom.toString());
-        formData.append('name', taxon_name);
+        formData.append('name', taxonName);
         formData.append(
             'comment',
             this.obsToValidate.properties.comment +

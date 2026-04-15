@@ -589,7 +589,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">53</context>
         </context-group>
         <note priority="1" from="description">Option to choose a species</note>
       </trans-unit>
@@ -611,7 +611,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">89</context>
+          <context context-type="linenumber">97</context>
         </context-group>
         <note priority="1" from="description">observation date</note>
       </trans-unit>
@@ -649,7 +649,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">103</context>
+          <context context-type="linenumber">111</context>
         </context-group>
         <note priority="1" from="description">Comment Input Label</note>
       </trans-unit>
@@ -661,7 +661,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">106</context>
+          <context context-type="linenumber">114</context>
         </context-group>
         <note priority="1" from="description">
                         Comment Input Placeholder</note>
@@ -719,7 +719,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">100</context>
+          <context context-type="linenumber">108</context>
         </context-group>
         <note priority="1" from="description">
                         Zooming instruction</note>
@@ -840,7 +840,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">156</context>
+          <context context-type="linenumber">166</context>
         </context-group>
         <note priority="1" from="description">Cancel</note>
       </trans-unit>
@@ -2001,11 +2001,11 @@
       </trans-unit>
       <trans-unit id="proposedIdentification" datatype="html">
         <source>
-            Identification proposée :
-            <x id="START_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;ng-container&gt;"/><x id="INTERPOLATION" equiv-text="{{ obsToValidate.properties.nom_francais || obsToValidate.properties.taxref.nom_vern
+            Identification proposée :
+            <x id="START_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;ng-container&gt;"/><x id="INTERPOLATION" equiv-text="{{ obsToValidate.properties.name || obsToValidate.properties.taxref?.nom_vern
                 }}"/><x id="CLOSE_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;/ng-container&gt;"/>
             <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>
-                (<x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ obsToValidate.properties.taxref.lb_nom }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>)
+                (<x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ obsToValidate.properties.taxref?.lb_nom }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>)
             <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
         </source>
         <context-group purpose="location">
@@ -2015,7 +2015,7 @@
         <note priority="1" from="description">Title for identification proposed</note>
       </trans-unit>
       <trans-unit id="speciesSearchOrValidation" datatype="html">
-        <source>{VAR_SELECT, select, isOn {Rechercher une espèce} isOff {Validez ou corrigez l&apos;espèce} }</source>
+        <source>{VAR_SELECT, select, isOn {Rechercher une espèce} isOff {Sélectionnez une espèce} }</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
           <context context-type="linenumber">38</context>
@@ -2028,17 +2028,18 @@
             </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">114</context>
+          <context context-type="linenumber">122</context>
         </context-group>
         <note priority="1" from="description">Label for notifying the observer</note>
       </trans-unit>
       <trans-unit id="observerNotificationDescription" datatype="html">
-        <source>L&apos;observateur recevra un
+        <source>L&apos;observateur recevra
+                un
                 mail contenant des informations de validation,
                 correction ou d&apos;invalidité de son observation.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">118</context>
+          <context context-type="linenumber">126</context>
         </context-group>
         <note priority="1" from="description">Description for observer notification</note>
       </trans-unit>
@@ -2048,36 +2049,46 @@
         </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">124</context>
+          <context context-type="linenumber">133</context>
         </context-group>
         <note priority="1" from="description">Label for unvalidable observation</note>
       </trans-unit>
       <trans-unit id="requestObserverModification" datatype="html">
-        <source>Demander à
+        <source>Demander
+                    à
                     l&apos;observateur de modifier son observation ou a un autre
                     validateur de la vérifier.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">135</context>
+          <context context-type="linenumber">144</context>
         </context-group>
         <note priority="1" from="description">Request for observer modification or validator check</note>
       </trans-unit>
-      <trans-unit id="obsActionBtn" datatype="html">
+      <trans-unit id="obsCorrection" datatype="html">
         <source>
-            <x id="ICU" equiv-text="{ obsValidatable, select, true {...} false {...}}"/>
-        </source>
+                Corriger l&apos;observation
+            </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">144</context>
+          <context context-type="linenumber">154</context>
         </context-group>
-        <note priority="1" from="description">Button for validating, correcting, or invalidating an observation</note>
       </trans-unit>
-      <trans-unit id="0f6e33dc98887c55e90f3d389b1baffb06b17b33" datatype="html">
-        <source>{VAR_SELECT_1, select, true {{VAR_SELECT, select, true {Corriger l&apos;observation} false {Valider l&apos;observation} }
-            } false {Invalider l&apos;observation} }</source>
+      <trans-unit id="obsValidate" datatype="html">
+        <source>
+                Valider l&apos;observation
+            </source>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
-          <context context-type="linenumber">145</context>
+          <context context-type="linenumber">157</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="obsInvalidate" datatype="html">
+        <source>
+                Invalider l&apos;observation
+            </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/programs/observations/validation/validation.component.html</context>
+          <context context-type="linenumber">160</context>
         </context-group>
       </trans-unit>
       <trans-unit id="discoverINPN" datatype="html">

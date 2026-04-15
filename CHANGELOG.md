@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 1.3.3 - 2026-04-15
+
+> [!WARNING]
+> **Version 1.3.x will be the latest release compatible with python 3.9**
+
+### :bug: Fixes
+
+* Fix taxa set to undefined within validation module when using taxa `select` type input.
+* Fix missing translations on validation modal button (fix [#467 issue comment](https://github.com/PnX-SI/GeoNature-citizen/issues/467#issuecomment-4163231028)).
+* Enable `0` value in count input (fix #472).
+* Improve documentation for validation module (fix #467)
+
+
 ## 1.3.2 - 2025-12-01
 
 > [!WARNING]
@@ -35,12 +48,12 @@
 * Taxons search in programs is now based on observed taxons
 * If no photo is added to an observation and if an image is available for this to taxa in TaxHub, then this image is displayed on the Congrats popup
 * Observation name displayed in program observations list is based on this order:
-  *  'nom_francais'
-  *  'taxref.nom_vern'
-  *  'taxref.nom_valide'
-  *  'taxref.nom_complet'
-  *  'taxref.lb_nom'
-  *  'taxref.cd_nom'
+  * 'nom_francais'
+  * 'taxref.nom_vern'
+  * 'taxref.nom_valide'
+  * 'taxref.nom_complet'
+  * 'taxref.lb_nom'
+  * 'taxref.cd_nom'
 
 ### :technologist: Development
 
