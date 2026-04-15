@@ -31,3 +31,16 @@ Il est possible, pour les enquêtes "Sites" de paramétrer plusieurs types de si
 ## Création d'un programme
 
 ... à compléter
+
+## Activer le module de validation
+
+Module financé par la SHF dans le cadre du projet "Un Dragon dans mon jardin".
+
+Le concept du module de validation de GeoNature-citizen est différent de la validation au sens du SINP. Il s'agit d'un processus d'interaction avec l'observateur permettant de redéfinir l'espèce observée (sur la base de éléments fournis) ou d'informer l'observateur que son observation ne peut être confirmée en l'état. L'initiative de ce module est décrit ici: https://github.com/PnX-SI/GeoNature-citizen/issues/359
+
+Pour activer le module de validation, il est nécessaire de configurer les paramètres :
+
+    VERIFY_OBSERVATIONS_ENABLED (dans `config/config.toml` et `frontend/src/conf/app.config.ts`)
+    VALIDATION_EMAIL (dans `config/config.toml`)
+
+Il est nécessaire de recompiler le frontend pour que ce paramètre prenne effet.
