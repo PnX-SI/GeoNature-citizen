@@ -510,6 +510,7 @@ def update_observation():
                             observation=f"{obs_to_update_obj.name} (#{obs_to_update_obj.id_observation})",
                         ),
                         to=observer.email,
+                        from_addr=current_app.config["MAIL"]["MAIL_FROM_ADDR"],
                         html_message=current_app.config["VALIDATION_EMAIL"][
                             "HTML_TEMPLATE"
                         ].format(
