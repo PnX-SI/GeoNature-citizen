@@ -295,12 +295,15 @@ export class ValidationComponent implements OnInit {
         console.debug('TAXON_NAME', taxon, taxonName);
         formData.append('cd_nom', cd_nom.toString());
         formData.append('name', taxonName);
+        const commentObs = this.obsToValidate.properties.comment;
+        const commentValid = this.validationForm.get('comment').value;
         formData.append(
-            'comment',
-            this.obsToValidate.properties.comment +
-                this.obsToValidate.properties.comment
-                ? ' '
-                : '' + this.validationForm.get('comment').value
+        'comment',
+        commentObs
+            ? commentValid
+                ? commentObs + ' - ' + commentValid
+                : commentObs
+            : commentValid || ''
         );
         formData.append(
             'id_observation',
