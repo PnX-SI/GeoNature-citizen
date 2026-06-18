@@ -330,6 +330,7 @@ def get_all_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
         features = [obs.get_feature() for obs in observations]
 
         id_taxonomy_list = None
+        cd_nom_list = None
         params = {}
         if observations:
             id_taxonomy_list = observations[0].program_ref.taxonomy_list
