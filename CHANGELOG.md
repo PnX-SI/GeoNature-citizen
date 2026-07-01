@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 1.3.4 - 2026-04-15
+
+> [!WARNING]
+> **Version 1.3.x will be the latest release compatible with python 3.9**
+
+### :bug: Fixes
+
+* Fix error on observations API when there is no observations.
+* Fix error while saving observations on chrome based web browsers.
+
+### :technologist: Development
+
+* Minor update on backend and frontend dependencies.
+
 ## 1.3.3 - 2026-04-15
 
 > [!WARNING]
@@ -11,6 +25,7 @@
 * Fix missing translations on validation modal button (fix [#467 issue comment](https://github.com/PnX-SI/GeoNature-citizen/issues/467#issuecomment-4163231028)).
 * Enable `0` value in count input (fix #472).
 * Improve documentation for validation module (fix #467)
+
 
 
 ## 1.3.2 - 2025-12-01
