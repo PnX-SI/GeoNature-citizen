@@ -32,11 +32,11 @@
                     taxaCount >= taxonSelectInputThreshold &&
                     taxaCount < taxonAutocompleteInputThreshold
                 " class="d-inline-flex toolbar">
-                        <select formControlName="cd_nom" class="form-control w-100" required>
+                        <select formControlName="cd_nom" class="form-control w-100" required
+                            (change)="onTaxonSelectedByCdNom($event.target.value)">
                             <option [value]="" [disabled]="true" i18n="Option to choose a species@@chooseSpeciesOption">
                                 Choisissez une espèce</option>
-                            <option *ngFor="let s of surveySpecies" (click)="onTaxonSelected(s)"
-                                [value]="s.taxref.cd_nom">
+                            <option *ngFor="let s of surveySpecies" [value]="s.taxref.cd_nom">
                                 {{ getPreferredName(s) }}
                                 <span *ngIf="MainConfig.taxonDisplaySciName">(<i>{{ s.taxref.nom_complet }}</i>)</span>
                             </option>
@@ -71,7 +71,7 @@
                     class="form-group col-lg input-search-autocomplete">
                     <taxonomy-autocomplete label="" placeholder="Rechercher par nom ou cd_nom"
                         [parentFormControl]="obsForm.controls.cd_nom" [idList]="taxonomyListID" [charNumber]="3"
-                        [listLength]="20" (onChange)="onSelectedTaxon($event)">
+                        [listLength]="20" (onChange)="onAutocompleteSelectedTaxon($event)">
                     </taxonomy-autocomplete>
                 </div>
             </div>

@@ -540,6 +540,16 @@ export class ObsFormComponent implements AfterViewInit {
         this.selectedTaxon = taxon;
         this.obsForm.controls['cd_nom'].patchValue(taxon.taxref['cd_nom']);
         this.obsForm.controls['name'].patchValue(getPreferredName(taxon));
+        console.log('<onTaxonSelected> this.obsForm.controls[name]', this.obsForm.controls['name'])
+    }
+
+    onTaxonSelectedByCdNom(cdNom: string): void {
+        const taxon = this.surveySpecies.find(
+            (species) => species.taxref.cd_nom.toString() === cdNom
+        );
+        if (taxon) {
+            this.onTaxonSelected(taxon);
+        }
     }
 
     onChangeContactCheckBoxRGPD(): void {
@@ -573,6 +583,7 @@ export class ObsFormComponent implements AfterViewInit {
         );
         formData.append('cd_nom', (this.obsForm.get('cd_nom').value).toString());
         formData.append('name', this.obsForm.get('name').value);
+        console.log('<createFormDataToPost> this.obsForm.get(name).value', this.obsForm.get('name').value)
         const obsDateControlValue = NgbDate.from(
             this.obsForm.controls.date.value
         );
