@@ -8,6 +8,7 @@
 ### :bug: Fixes
 
 * Fix error on observations API when there is no observations.
+* Fix error while saving observations on chrome based web browsers.
 
 ### :technologist: Development
 
