@@ -3,6 +3,8 @@ export const AppConfig = {
     API_ENDPOINT: 'http://localhost:5002/api',
     API_TAXHUB: 'http://localhost:5000/api',
     API_CITY: 'https://nominatim.openstreetmap.org/reverse',
+    defaultLocale:    'fr',               // langue de repli
+    supportedLocales: ['fr','en','de'],    // langues actives
     // HCAPTCHA_SITE_KEY: null,
     // FRONTEND: {
     //     PROD_MOD: true,
